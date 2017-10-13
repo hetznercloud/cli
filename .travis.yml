@@ -1,0 +1,12 @@
+language: go
+go:
+  - 1.9
+before_script:
+  - go get -v ./...
+  - git clone --depth 1 https://github.com/sstephenson/bats.git
+script:
+  - diff -u <(echo -n) <(gofmt -d -s .)
+  - go vet ./...
+  - go test ./...
+  - go build -o ./cmd/hcloud/hcloud ./cmd/hcloud
+  - PATH="./cmd/hcloud:$PATH" bats/bin/bats test

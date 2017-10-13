@@ -1,0 +1,84 @@
+package cli
+
+import (
+	"context"
+	"errors"
+	"fmt"
+	"io"
+	"io/ioutil"
+	"os"
+
+	"github.com/hetznercloud/hcloud-go/hcloud"
+	"github.com/spf13/cobra"
+)
+
+func newSSHKeyCreateCommand(cli *CLI) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:              "create",
+		Short:            "Create a SSH key",
+		Args:             cobra.NoArgs,
+		TraverseChildren: true,
+		RunE:             cli.wrap(runSSHKeyCreate),
+		PreRunE:          validateSSHKeyCreate,
+	}
+	cmd.Flags().String("name", "", "Key name")
+	cmd.Flags().String("public-key", "", "Public key")
+	cmd.Flags().String("public-key-from-file", "", "Path to file containing public key")
+	return cmd
+}
+
+func validateSSHKeyCreate(cmd *cobra.Command, args []string) error {
+	if name, _ := cmd.Flags().GetString("name"); name == "" {
+		return errors.New("flag --name is required")
+	}
+
+	publicKey, _ := cmd.Flags().GetString("public-key")
+	publicKeyFile, _ := cmd.Flags().GetString("public-key-from-file")
+	if publicKey != "" && publicKeyFile != "" {
+		return errors.New("flags --public-key and --public-key-from-file are mutually exclusive")
+	}
+
+	return nil
+}
+
+func runSSHKeyCreate(cli *CLI, cmd *cobra.Command, args []string) error {
+	ctx := context.Background()
+
+	name, _ := cmd.Flags().GetString("name")
+	publicKey, _ := cmd.Flags().GetString("public-key")
+	publicKeyFile, _ := cmd.Flags().GetString("public-key-from-file")
+
+	if publicKeyFile != "" {
+		var (
+			data []byte
+			err  error
+		)
+		if publicKeyFile == "-" {
+			data, err = ioutil.ReadAll(os.Stdin)
+		} else {
+			data, err = ioutil.ReadFile(publicKeyFile)
+		}
+		if err != nil {
+			return err
+		}
+		publicKey = string(data)
+	}
+
+	opts := hcloud.SSHKeyCreateOpts{
+		Name:      name,
+		PublicKey: publicKey,
+	}
+	sshKey, resp, err := cli.Client().SSHKey.Create(ctx, opts)
+	if err != nil {
+		return err
+	}
+
+	if cli.JSON {
+		_, err = io.Copy(os.Stdout, resp.Body)
+		return err
+	}
+
+	fmt.Printf("SSH key %d created\n", sshKey.ID)
+
+	return nil
+}

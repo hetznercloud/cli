@@ -1,0 +1,37 @@
+package cli
+
+import (
+	"context"
+	"errors"
+	"fmt"
+	"strconv"
+
+	"github.com/spf13/cobra"
+)
+
+func newSSHKeyDeleteCommand(cli *CLI) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:              "delete <id>",
+		Short:            "Delete a SSH key",
+		Args:             cobra.ExactArgs(1),
+		TraverseChildren: true,
+		RunE:             cli.wrap(runSSHKeyDelete),
+	}
+	return cmd
+}
+
+func runSSHKeyDelete(cli *CLI, cmd *cobra.Command, args []string) error {
+	id, err := strconv.Atoi(args[0])
+	if err != nil {
+		return errors.New("invalid SSH key ID")
+	}
+
+	ctx := context.Background()
+	_, err = cli.Client().SSHKey.Delete(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("SSH key %d deleted\n", id)
+	return nil
+}
