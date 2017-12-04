@@ -12,6 +12,7 @@ func newFloatingIPCommand(cli *CLI) *cobra.Command {
 	}
 	cmd.AddCommand(
 		newFloatingIPListCommand(cli),
+		newFloatingIPCreateCommand(cli),
 	)
 	return cmd
 }
