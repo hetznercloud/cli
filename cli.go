@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"path/filepath"
 
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -16,6 +17,8 @@ type CLI struct {
 	Token    string
 	Endpoint string
 	JSON     bool
+
+	Config *Config
 
 	RootCommand *cobra.Command
 
@@ -38,6 +41,7 @@ func (c *CLI) ReadConfig(path string) error {
 	if err != nil {
 		return err
 	}
+	c.Config = config
 
 	if config.Token != "" {
 		c.Token = config.Token
@@ -46,6 +50,24 @@ func (c *CLI) ReadConfig(path string) error {
 		c.Endpoint = config.Endpoint
 	}
 
+	return nil
+}
+
+func (c *CLI) WriteConfig(path string) error {
+	if c.Config == nil {
+		return nil
+	}
+
+	data, err := MarshalConfig(c.Config)
+	if err != nil {
+		return err
+	}
+	if err := os.MkdirAll(filepath.Dir(path), 0777); err != nil {
+		return err
+	}
+	if err := ioutil.WriteFile(path, data, 0600); err != nil {
+		return err
+	}
 	return nil
 }
 

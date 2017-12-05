@@ -14,7 +14,11 @@ We do not accept pull requests at the moment.
 
 ## Usage
 
-See `hcloud help`.
+Configure the `hcloud` program to use your token:
+
+    hcloud configure
+
+See `hcloud help` for a list of commands.
 
 ## Example
 

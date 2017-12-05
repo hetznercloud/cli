@@ -3,7 +3,6 @@ package main
 import (
 	"log"
 	"os"
-	"path/filepath"
 
 	"github.com/hetznercloud/cli"
 )
@@ -15,31 +14,23 @@ func init() {
 }
 
 func main() {
-	cli := cli.NewCLI()
+	c := cli.NewCLI()
 
-	if p := configPath(); p != "" {
-		_, err := os.Stat(p)
+	if cli.DefaultConfigPath != "" {
+		_, err := os.Stat(cli.DefaultConfigPath)
 		switch {
 		case err == nil:
-			if err := cli.ReadConfig(p); err != nil {
-				log.Fatalf("unable to read config file %q: %s\n", p, err)
+			if err := c.ReadConfig(cli.DefaultConfigPath); err != nil {
+				log.Fatalf("unable to read config file %q: %s\n", cli.DefaultConfigPath, err)
 			}
 		case os.IsNotExist(err):
 			break
 		default:
-			log.Fatalf("unable to read config file %q: %s\n", p, err)
+			log.Fatalf("unable to read config file %q: %s\n", cli.DefaultConfigPath, err)
 		}
 	}
 
-	if err := cli.RootCommand.Execute(); err != nil {
+	if err := c.RootCommand.Execute(); err != nil {
 		log.Fatalln(err)
 	}
-}
-
-func configPath() string {
-	home := os.Getenv("HOME")
-	if home == "" {
-		return ""
-	}
-	return filepath.Join(home, ".config", "hcloud", "config.toml")
 }

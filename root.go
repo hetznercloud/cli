@@ -16,6 +16,7 @@ func NewRootCommand(cli *CLI) *cobra.Command {
 	cmd.Flags().StringVar(&cli.Endpoint, "endpoint", Endpoint, "API endpoint URL")
 	cmd.Flags().BoolVar(&cli.JSON, "json", false, "Output JSON API response")
 	cmd.AddCommand(
+		newConfigureCommand(cli),
 		newFloatingIPCommand(cli),
 		newServerCommand(cli),
 		newSSHKeyCommand(cli),
