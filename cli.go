@@ -11,8 +11,6 @@ import (
 	"golang.org/x/crypto/ssh/terminal"
 )
 
-const Endpoint = "https://api.hetzner.cloud/v1"
-
 type CLI struct {
 	Token    string
 	Endpoint string
