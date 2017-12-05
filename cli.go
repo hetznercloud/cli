@@ -29,6 +29,15 @@ func NewCLI() *CLI {
 	return cli
 }
 
+func (c *CLI) ReadEnv() {
+	if s := os.Getenv("HCLOUD_TOKEN"); s != "" {
+		c.Token = s
+	}
+	if s := os.Getenv("HCLOUD_ENDPOINT"); s != "" {
+		c.Endpoint = s
+	}
+}
+
 func (c *CLI) ReadConfig(path string) error {
 	data, err := ioutil.ReadFile(path)
 	if err != nil {
@@ -77,10 +86,13 @@ func (c *CLI) wrap(f func(*CLI, *cobra.Command, []string) error) func(*cobra.Com
 
 func (c *CLI) Client() *hcloud.Client {
 	if c.client == nil {
-		c.client = hcloud.NewClient(
+		opts := []hcloud.ClientOption{
 			hcloud.WithToken(c.Token),
-			hcloud.WithEndpoint(c.Endpoint),
-		)
+		}
+		if c.Endpoint != "" {
+			opts = append(opts, hcloud.WithEndpoint(c.Endpoint))
+		}
+		c.client = hcloud.NewClient(opts...)
 	}
 	return c.client
 }

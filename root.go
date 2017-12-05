@@ -1,9 +1,6 @@
 package cli
 
-import (
-	"github.com/hetznercloud/hcloud-go/hcloud"
-	"github.com/spf13/cobra"
-)
+import "github.com/spf13/cobra"
 
 func NewRootCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
@@ -15,8 +12,6 @@ func NewRootCommand(cli *CLI) *cobra.Command {
 		SilenceUsage:     true,
 		SilenceErrors:    true,
 	}
-	cmd.Flags().StringVar(&cli.Token, "token", "", "API token used for authentication")
-	cmd.Flags().StringVar(&cli.Endpoint, "endpoint", hcloud.Endpoint, "API endpoint URL")
 	cmd.Flags().BoolVar(&cli.JSON, "json", false, "Output JSON API response")
 	cmd.AddCommand(
 		newConfigureCommand(cli),

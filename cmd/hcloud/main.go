@@ -30,6 +30,8 @@ func main() {
 		}
 	}
 
+	c.ReadEnv()
+
 	if err := c.RootCommand.Execute(); err != nil {
 		log.Fatalln(err)
 	}
