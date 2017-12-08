@@ -2,7 +2,6 @@ package cli
 
 import (
 	"bytes"
-	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -70,20 +69,10 @@ func newCompletionCommand(cli *CLI) *cobra.Command {
 		Short:     "Output shell completion code for the specified shell (bash or zsh)",
 		Long:      completionLongDescription,
 		RunE:      cli.wrap(runCompletion),
-		PreRunE:   validateCompletion,
+		Args:      cobra.ExactArgs(1),
 		ValidArgs: shells,
 	}
 	return cmd
-}
-
-func validateCompletion(cmd *cobra.Command, args []string) error {
-	if len(args) == 0 {
-		return errors.New("shell not specified")
-	}
-	if len(args) > 1 {
-		return errors.New("too many arguments. expected only the shell type")
-	}
-	return nil
 }
 
 func runCompletion(cli *CLI, cmd *cobra.Command, args []string) error {
