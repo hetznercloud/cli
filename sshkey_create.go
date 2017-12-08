@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"io"
 	"io/ioutil"
 	"os"
 
@@ -68,13 +67,8 @@ func runSSHKeyCreate(cli *CLI, cmd *cobra.Command, args []string) error {
 		Name:      name,
 		PublicKey: publicKey,
 	}
-	sshKey, resp, err := cli.Client().SSHKey.Create(ctx, opts)
+	sshKey, _, err := cli.Client().SSHKey.Create(ctx, opts)
 	if err != nil {
-		return err
-	}
-
-	if cli.JSON {
-		_, err = io.Copy(os.Stdout, resp.Body)
 		return err
 	}
 

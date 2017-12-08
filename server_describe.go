@@ -4,8 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"io"
-	"os"
 	"strconv"
 
 	humanize "github.com/dustin/go-humanize"
@@ -31,17 +29,12 @@ func runServerDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 
 	ctx := context.Background()
 
-	server, resp, err := cli.Client().Server.Get(ctx, id)
+	server, _, err := cli.Client().Server.Get(ctx, id)
 	if err != nil {
 		return err
 	}
 	if server == nil {
 		return fmt.Errorf("server not found: %d", id)
-	}
-
-	if cli.JSON {
-		_, err = io.Copy(os.Stdout, resp.Body)
-		return err
 	}
 
 	fmt.Printf("ID:\t\t%d\n", server.ID)
