@@ -10,30 +10,53 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var (
-	completionShells = map[string]func(out io.Writer, cmd *cobra.Command) error{
-		"bash": runCompletionBash,
-		"zsh":  runCompletionZsh,
+const (
+	bashCompletionFunc = `
+	__hcloud_server_ids() {
+		local ctl_output out
+		if ctl_output=$(hcloud server list 2>/dev/null); then
+				COMPREPLY=($(echo "${ctl_output}" | grep -v '^ID' | awk '{print $1}'))
+		fi
 	}
+
+	__custom_func() {
+		case ${last_command} in
+			hcloud_server_delete | hcloud_server_describe )
+				__hcloud_server_ids
+				return
+				;;
+			*)
+				;;
+		esac
+	}
+	`
+
 	completionShortDescription = "Output shell completion code for the specified shell (bash or zsh)"
 	completionLongDescription  = completionShortDescription + `
 
 Note: this requires the bash-completion framework, which is not installed by default on Mac. This can be installed by using homebrew:
 
-  $ brew install bash-completion
+	$ brew install bash-completion
 
 Once installed, bash completion must be evaluated. This can be done by adding the following line to the .bash profile:
 
-  $ source $(brew --prefix)/etc/bash_completion
+	$ source $(brew --prefix)/etc/bash_completion
 
 Note for zsh users: [1] zsh completions are only supported in versions of zsh >= 5.2
 
 Examples:
-  # Load the hcloud completion code for bash into the current shell
-  source <(hcloud completion bash)
+	# Load the hcloud completion code for bash into the current shell
+	source <(hcloud completion bash)
 
-  # Load the hcloud completion code for zsh into the current shell
-  source <(hcloud completion zsh)`
+	# Load the hcloud completion code for zsh into the current shell
+	source <(hcloud completion zsh)`
+)
+
+var (
+	completionShells = map[string]func(out io.Writer, cmd *cobra.Command) error{
+		"bash": runCompletionBash,
+		"zsh":  runCompletionZsh,
+	}
 )
 
 func newCompletionCommand(cli *CLI) *cobra.Command {
@@ -46,19 +69,24 @@ func newCompletionCommand(cli *CLI) *cobra.Command {
 		Use:       "completion SHELL",
 		Short:     "Output shell completion code for the specified shell (bash or zsh)",
 		Long:      completionLongDescription,
-		RunE:      cli.wrap(runCompletionCommand),
+		RunE:      cli.wrap(runCompletion),
+		PreRunE:   validateCompletion,
 		ValidArgs: shells,
 	}
 	return cmd
 }
 
-func runCompletionCommand(cli *CLI, cmd *cobra.Command, args []string) error {
+func validateCompletion(cmd *cobra.Command, args []string) error {
 	if len(args) == 0 {
 		return errors.New("shell not specified")
 	}
 	if len(args) > 1 {
 		return errors.New("too many arguments. expected only the shell type")
 	}
+	return nil
+}
+
+func runCompletion(cli *CLI, cmd *cobra.Command, args []string) error {
 	run, found := completionShells[args[0]]
 	if !found {
 		return fmt.Errorf("unsupported shell type %q", args[0])
