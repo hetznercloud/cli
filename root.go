@@ -20,6 +20,7 @@ func NewRootCommand(cli *CLI) *cobra.Command {
 		newSSHKeyCommand(cli),
 		newVersionCommand(cli),
 		newCompletionCommand(cli),
+		newServerTypeCommand(cli),
 	)
 	return cmd
 }

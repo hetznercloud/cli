@@ -14,7 +14,14 @@ const (
 	__hcloud_server_ids() {
 		local ctl_output out
 		if ctl_output=$(hcloud server list 2>/dev/null); then
-				COMPREPLY=($(echo "${ctl_output}" | grep -v '^ID' | awk '{print $1}'))
+			COMPREPLY=($(echo "${ctl_output}" | grep -v '^ID' | awk '{print $1}'))
+		fi
+	}
+
+	__hcloud_servertype_ids() {
+		local ctl_output out
+		if ctl_output=$(hcloud servertype list 2>/dev/null); then
+			COMPREPLY=($(echo "${ctl_output}" | grep -v '^ID' | awk '{print $1}'))
 		fi
 	}
 
@@ -22,6 +29,10 @@ const (
 		case ${last_command} in
 			hcloud_server_delete | hcloud_server_describe )
 				__hcloud_server_ids
+				return
+				;;
+			hcloud_servertype_describe )
+				__hcloud_servertype_ids
 				return
 				;;
 			*)
