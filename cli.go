@@ -14,7 +14,6 @@ import (
 type CLI struct {
 	Token    string
 	Endpoint string
-	JSON     bool
 
 	Config *Config
 

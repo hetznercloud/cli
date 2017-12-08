@@ -4,8 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"io"
-	"os"
 	"strconv"
 	"strings"
 
@@ -31,17 +29,12 @@ func runSSHKeyDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 
 	ctx := context.Background()
 
-	sshKey, resp, err := cli.Client().SSHKey.Get(ctx, id)
+	sshKey, _, err := cli.Client().SSHKey.Get(ctx, id)
 	if err != nil {
 		return err
 	}
 	if sshKey == nil {
 		return fmt.Errorf("SSH key not found: %d", id)
-	}
-
-	if cli.JSON {
-		_, err = io.Copy(os.Stdout, resp.Body)
-		return err
 	}
 
 	fmt.Printf("ID:\t\t%d\n", sshKey.ID)

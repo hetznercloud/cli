@@ -4,8 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"io"
-	"os"
 	"strconv"
 
 	"github.com/spf13/cobra"
@@ -30,17 +28,12 @@ func runFloatingIPDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 
 	ctx := context.Background()
 
-	floatingIP, resp, err := cli.Client().FloatingIP.Get(ctx, id)
+	floatingIP, _, err := cli.Client().FloatingIP.Get(ctx, id)
 	if err != nil {
 		return err
 	}
 	if floatingIP == nil {
 		return fmt.Errorf("Floating IP not found: %d", id)
-	}
-
-	if cli.JSON {
-		_, err = io.Copy(os.Stdout, resp.Body)
-		return err
 	}
 
 	fmt.Printf("ID:\t\t%d\n", floatingIP.ID)

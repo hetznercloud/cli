@@ -4,8 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"io"
-	"os"
 
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -61,13 +59,8 @@ func runFloatingIPCreate(cli *CLI, cmd *cobra.Command, args []string) error {
 		opts.Server = &hcloud.Server{ID: server}
 	}
 
-	result, resp, err := cli.Client().FloatingIP.Create(ctx, opts)
+	result, _, err := cli.Client().FloatingIP.Create(ctx, opts)
 	if err != nil {
-		return err
-	}
-
-	if cli.JSON {
-		_, err = io.Copy(os.Stdout, resp.Body)
 		return err
 	}
 

@@ -13,7 +13,6 @@ func NewRootCommand(cli *CLI) *cobra.Command {
 		SilenceErrors:          true,
 		BashCompletionFunction: bashCompletionFunc,
 	}
-	cmd.Flags().BoolVar(&cli.JSON, "json", false, "Output JSON API response")
 	cmd.AddCommand(
 		newConfigureCommand(cli),
 		newFloatingIPCommand(cli),

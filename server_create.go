@@ -3,8 +3,6 @@ package cli
 import (
 	"context"
 	"fmt"
-	"io"
-	"os"
 	"time"
 
 	"github.com/hetznercloud/hcloud-go/hcloud"
@@ -42,13 +40,8 @@ func runServerCreate(cli *CLI, cmd *cobra.Command, args []string) error {
 		},
 	}
 
-	result, resp, err := cli.Client().Server.Create(ctx, opts)
+	result, _, err := cli.Client().Server.Create(ctx, opts)
 	if err != nil {
-		return err
-	}
-
-	if cli.JSON {
-		_, err = io.Copy(os.Stdout, resp.Body)
 		return err
 	}
 
