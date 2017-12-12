@@ -16,6 +16,7 @@ func NewRootCommand(cli *CLI) *cobra.Command {
 	cmd.AddCommand(
 		newConfigureCommand(cli),
 		newFloatingIPCommand(cli),
+		newImageCommand(cli),
 		newServerCommand(cli),
 		newSSHKeyCommand(cli),
 		newVersionCommand(cli),

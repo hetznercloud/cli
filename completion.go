@@ -18,10 +18,21 @@ const (
 		fi
 	}
 
+	__hcloud_image_ids() {
+		local ctl_output out
+		if ctl_output=$(hcloud image list 2>/dev/null); then
+				COMPREPLY=($(echo "${ctl_output}" | grep -v '^ID' | awk '{print $1}'))
+		fi
+	}
+
 	__custom_func() {
 		case ${last_command} in
 			hcloud_server_delete | hcloud_server_describe )
 				__hcloud_server_ids
+				return
+				;;
+			hcloud_image_delete | hcloud_image_describe )
+				__hcloud_image_ids
 				return
 				;;
 			*)
