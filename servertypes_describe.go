@@ -40,7 +40,7 @@ func runServerTypeDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 	fmt.Printf("Name:\t\t%s\n", serverType.Name)
 	fmt.Printf("Description:\t%s\n", serverType.Description)
 	fmt.Printf("Cores:\t\t%d\n", serverType.Cores)
-	fmt.Printf("Memory:\t\t%v GB\n", serverType.Memory)
+	fmt.Printf("Memory:\t\t%.1f GB\n", serverType.Memory)
 	fmt.Printf("Disk:\t\t%d GB\n", serverType.Disk)
 	fmt.Printf("Storage Type:\t%s\n", serverType.StorageType)
 

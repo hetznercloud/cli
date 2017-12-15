@@ -5,7 +5,7 @@ import "github.com/spf13/cobra"
 func newServerTypeCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:              "servertype",
-		Short:            "Show information about servertypes",
+		Short:            "Show information about server types",
 		Args:             cobra.NoArgs,
 		TraverseChildren: true,
 		RunE:             cli.wrap(runServer),
