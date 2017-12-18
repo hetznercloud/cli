@@ -12,7 +12,7 @@ import (
 func newServerTypeListCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:              "list",
-		Short:            "List Server Types",
+		Short:            "List server types",
 		TraverseChildren: true,
 		RunE:             cli.wrap(runServerTypeList),
 	}
