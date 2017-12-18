@@ -22,6 +22,8 @@ func newServerCommand(cli *CLI) *cobra.Command {
 		newServerShutdownCommand(cli),
 		newServerCreateimageCommand(cli),
 		newServerResetpasswordCommand(cli),
+		newServerEnableRescueCommand(cli),
+		newServerDisableRescueCommand(cli),
 	)
 	return cmd
 }
