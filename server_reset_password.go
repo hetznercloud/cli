@@ -10,18 +10,18 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func newServerResetpasswordCommand(cli *CLI) *cobra.Command {
+func newServerResetPasswordCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:              "reset-password [flags] <id>",
 		Short:            "Reset password of a server",
 		Args:             cobra.ExactArgs(1),
 		TraverseChildren: true,
-		RunE:             cli.wrap(runServerResetpassword),
+		RunE:             cli.wrap(runServerResetPassword),
 	}
 	return cmd
 }
 
-func runServerResetpassword(cli *CLI, cmd *cobra.Command, args []string) error {
+func runServerResetPassword(cli *CLI, cmd *cobra.Command, args []string) error {
 	id, err := strconv.Atoi(args[0])
 	if err != nil {
 		return errors.New("invalid server id")

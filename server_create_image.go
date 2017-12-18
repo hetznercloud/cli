@@ -10,21 +10,21 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func newServerCreateimageCommand(cli *CLI) *cobra.Command {
+func newServerCreateImageCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:              "create-image [flags] <id>",
 		Short:            "Create image from a server",
 		Args:             cobra.ExactArgs(1),
 		TraverseChildren: true,
-		RunE:             cli.wrap(runServerCreateimage),
-		PreRunE:          validateServerCreateimage,
+		RunE:             cli.wrap(runServerCreateImage),
+		PreRunE:          validateServerCreateImage,
 	}
 	cmd.Flags().String("type", "snapshot", "Image type")
 	cmd.Flags().String("description", "", "Image description")
 	return cmd
 }
 
-func validateServerCreateimage(cmd *cobra.Command, args []string) error {
+func validateServerCreateImage(cmd *cobra.Command, args []string) error {
 	imageType, _ := cmd.Flags().GetString("type")
 	switch imageType {
 	case hcloud.ImageTypeBackup, hcloud.ImageTypeSnapshot:
@@ -36,7 +36,7 @@ func validateServerCreateimage(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func runServerCreateimage(cli *CLI, cmd *cobra.Command, args []string) error {
+func runServerCreateImage(cli *CLI, cmd *cobra.Command, args []string) error {
 	id, err := strconv.Atoi(args[0])
 	if err != nil {
 		return errors.New("invalid server id")
