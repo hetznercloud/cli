@@ -49,14 +49,14 @@ func runServerCreate(cli *CLI, cmd *cobra.Command, args []string) error {
 		return err
 	}
 
+	if err := cli.ActionProgress(ctx, result.Action); err != nil {
+		return err
+	}
+
 	if result.RootPassword != "" {
 		fmt.Printf("Server %d created with root password: %s\n", result.Server.ID, result.RootPassword)
 	} else {
 		fmt.Printf("Server %d created\n", result.Server.ID)
-	}
-
-	if err := <-waitAction(ctx, cli.Client(), result.Action); err != nil {
-		return err
 	}
 
 	return nil

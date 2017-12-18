@@ -33,7 +33,8 @@ func runServerReboot(cli *CLI, cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	if err := <-waitAction(ctx, cli.Client(), action); err != nil {
+	errCh, _ := waitAction(ctx, cli.Client(), action)
+	if err := <-errCh; err != nil {
 		return err
 	}
 	fmt.Printf("Server %d rebooted\n", id)

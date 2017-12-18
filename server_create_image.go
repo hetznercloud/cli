@@ -55,9 +55,12 @@ func runServerCreateImage(cli *CLI, cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	if err := <-waitAction(ctx, cli.Client(), result.Action); err != nil {
+
+	if err := cli.ActionProgress(ctx, result.Action); err != nil {
 		return err
 	}
+
 	fmt.Printf("Image %d created from server %d\n", result.Image.ID, id)
+
 	return nil
 }

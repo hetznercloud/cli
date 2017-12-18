@@ -1,13 +1,14 @@
 package cli
 
 import (
-	"fmt"
+	"context"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
+	"github.com/thcyron/uiprogress"
 	"golang.org/x/crypto/ssh/terminal"
 )
 
@@ -101,10 +102,29 @@ func (c *CLI) Terminal() bool {
 	return terminal.IsTerminal(int(os.Stdout.Fd()))
 }
 
-const ESC = 27
+func (c *CLI) ActionProgress(ctx context.Context, action *hcloud.Action) error {
+	errCh, progressCh := waitAction(ctx, c.Client(), action)
 
-// ClearLine clears the previous line.
-func (c *CLI) ClearLine() {
-	fmt.Printf("%c[%dA", ESC, 1) // move the cursor up
-	fmt.Printf("%c[2K", ESC)     // clear the line
+	if c.Terminal() {
+		progress := uiprogress.New()
+
+		progress.Start()
+		bar := progress.AddBar(100).AppendCompleted().PrependElapsed()
+		bar.Empty = ' '
+
+		for {
+			select {
+			case err := <-errCh:
+				if err == nil {
+					bar.Set(100)
+				}
+				progress.Stop()
+				return err
+			case p := <-progressCh:
+				bar.Set(p)
+			}
+		}
+	} else {
+		return <-errCh
+	}
 }

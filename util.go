@@ -21,16 +21,29 @@ func na(s string) string {
 	return s
 }
 
-func waitAction(ctx context.Context, client *hcloud.Client, action *hcloud.Action) <-chan error {
-	ch := make(chan error, 1)
+func waitAction(ctx context.Context, client *hcloud.Client, action *hcloud.Action) (<-chan error, <-chan int) {
+	errCh := make(chan error, 1)
+	progressCh := make(chan int)
 
 	go func() {
+		defer close(errCh)
+		defer close(progressCh)
+
 		ticker := time.NewTicker(100 * time.Millisecond)
+
+		sendProgress := func(p int) {
+			select {
+			case progressCh <- p:
+				break
+			default:
+				break
+			}
+		}
 
 		for {
 			select {
 			case <-ctx.Done():
-				ch <- ctx.Err()
+				errCh <- ctx.Err()
 				return
 			case <-ticker.C:
 				break
@@ -38,22 +51,24 @@ func waitAction(ctx context.Context, client *hcloud.Client, action *hcloud.Actio
 
 			action, _, err := client.Action.Get(ctx, action.ID)
 			if err != nil {
-				ch <- ctx.Err()
+				errCh <- ctx.Err()
 				return
 			}
 
 			switch action.Status {
 			case hcloud.ActionStatusRunning:
+				sendProgress(action.Progress)
 				break
 			case hcloud.ActionStatusSuccess:
-				ch <- nil
+				sendProgress(100)
+				errCh <- nil
 				return
 			case hcloud.ActionStatusError:
-				ch <- action.Error()
+				errCh <- action.Error()
 				return
 			}
 		}
 	}()
 
-	return ch
+	return errCh, progressCh
 }

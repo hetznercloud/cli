@@ -47,7 +47,8 @@ func runServerEnableRescue(cli *CLI, cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	if err := <-waitAction(ctx, cli.Client(), result.Action); err != nil {
+	errCh, _ := waitAction(ctx, cli.Client(), result.Action)
+	if err := <-errCh; err != nil {
 		return err
 	}
 	fmt.Printf("Password of server %d reset to: %s\n", id, result.RootPassword)
