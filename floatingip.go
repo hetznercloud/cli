@@ -4,7 +4,7 @@ import "github.com/spf13/cobra"
 
 func newFloatingIPCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:              "floatingip",
+		Use:              "floating-ip",
 		Short:            "Manage Floating IPs",
 		Args:             cobra.NoArgs,
 		TraverseChildren: true,

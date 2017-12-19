@@ -4,7 +4,7 @@ import "github.com/spf13/cobra"
 
 func newSSHKeyCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:              "sshkey",
+		Use:              "ssh-key",
 		Short:            "Manage SSH keys",
 		Args:             cobra.NoArgs,
 		TraverseChildren: true,
