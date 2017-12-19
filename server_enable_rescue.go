@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"strconv"
@@ -30,7 +29,6 @@ func runServerEnableRescue(cli *CLI, cmd *cobra.Command, args []string) error {
 	}
 
 	var (
-		ctx    = context.Background()
 		server = &hcloud.Server{ID: id}
 		opts   hcloud.ServerEnableRescueOpts
 	)
@@ -43,11 +41,11 @@ func runServerEnableRescue(cli *CLI, cmd *cobra.Command, args []string) error {
 		opts.SSHKeys = append(opts.SSHKeys, &hcloud.SSHKey{ID: sshKey})
 	}
 
-	result, _, err := cli.Client().Server.EnableRescue(ctx, server, opts)
+	result, _, err := cli.Client().Server.EnableRescue(cli.Context, server, opts)
 	if err != nil {
 		return err
 	}
-	errCh, _ := waitAction(ctx, cli.Client(), result.Action)
+	errCh, _ := waitAction(cli.Context, cli.Client(), result.Action)
 	if err := <-errCh; err != nil {
 		return err
 	}

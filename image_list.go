@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"context"
 	"fmt"
 	"os"
 	"text/tabwriter"
@@ -21,9 +20,7 @@ func newImageListCommand(cli *CLI) *cobra.Command {
 }
 
 func runImageList(cli *CLI, cmd *cobra.Command, args []string) error {
-	ctx := context.Background()
-
-	images, err := cli.Client().Image.All(ctx)
+	images, err := cli.Client().Image.All(cli.Context)
 	if err != nil {
 		return err
 	}

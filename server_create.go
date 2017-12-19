@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/hetznercloud/hcloud-go/hcloud"
@@ -24,8 +23,6 @@ func newServerCreateCommand(cli *CLI) *cobra.Command {
 }
 
 func runServerCreate(cli *CLI, cmd *cobra.Command, args []string) error {
-	ctx := context.Background()
-
 	name, _ := cmd.Flags().GetString("name")
 	serverType, _ := cmd.Flags().GetString("type")
 	image, _ := cmd.Flags().GetString("image")
@@ -44,12 +41,12 @@ func runServerCreate(cli *CLI, cmd *cobra.Command, args []string) error {
 		opts.SSHKeys = append(opts.SSHKeys, &hcloud.SSHKey{ID: sshKey})
 	}
 
-	result, _, err := cli.Client().Server.Create(ctx, opts)
+	result, _, err := cli.Client().Server.Create(cli.Context, opts)
 	if err != nil {
 		return err
 	}
 
-	if err := cli.ActionProgress(ctx, result.Action); err != nil {
+	if err := cli.ActionProgress(cli.Context, result.Action); err != nil {
 		return err
 	}
 

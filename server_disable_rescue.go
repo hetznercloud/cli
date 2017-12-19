@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"strconv"
@@ -27,16 +26,12 @@ func runServerDisableRescue(cli *CLI, cmd *cobra.Command, args []string) error {
 		return errors.New("invalid server id")
 	}
 
-	var (
-		ctx    = context.Background()
-		server = &hcloud.Server{ID: id}
-	)
-
-	action, _, err := cli.Client().Server.DisableRescue(ctx, server)
+	server := &hcloud.Server{ID: id}
+	action, _, err := cli.Client().Server.DisableRescue(cli.Context, server)
 	if err != nil {
 		return err
 	}
-	errCh, _ := waitAction(ctx, cli.Client(), action)
+	errCh, _ := waitAction(cli.Context, cli.Client(), action)
 	if err := <-errCh; err != nil {
 		return err
 	}

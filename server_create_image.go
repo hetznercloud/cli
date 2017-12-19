@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"strconv"
@@ -45,18 +44,17 @@ func runServerCreateImage(cli *CLI, cmd *cobra.Command, args []string) error {
 	imageType, _ := cmd.Flags().GetString("type")
 	description, _ := cmd.Flags().GetString("description")
 
-	ctx := context.Background()
 	server := &hcloud.Server{ID: id}
 	opts := &hcloud.ServerCreateImageOpts{
 		Type:        hcloud.ImageType(imageType),
 		Description: hcloud.String(description),
 	}
-	result, _, err := cli.Client().Server.CreateImage(ctx, server, opts)
+	result, _, err := cli.Client().Server.CreateImage(cli.Context, server, opts)
 	if err != nil {
 		return err
 	}
 
-	if err := cli.ActionProgress(ctx, result.Action); err != nil {
+	if err := cli.ActionProgress(cli.Context, result.Action); err != nil {
 		return err
 	}
 

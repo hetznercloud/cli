@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"context"
 	"fmt"
 	"os"
 	"text/tabwriter"
@@ -20,9 +19,7 @@ func newServerListCommand(cli *CLI) *cobra.Command {
 }
 
 func runServerList(cli *CLI, cmd *cobra.Command, args []string) error {
-	ctx := context.Background()
-
-	servers, err := cli.Client().Server.All(ctx)
+	servers, err := cli.Client().Server.All(cli.Context)
 	if err != nil {
 		return err
 	}

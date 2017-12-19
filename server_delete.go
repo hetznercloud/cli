@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"strconv"
@@ -26,8 +25,7 @@ func runServerDelete(cli *CLI, cmd *cobra.Command, args []string) error {
 		return errors.New("invalid server id")
 	}
 
-	ctx := context.Background()
-	_, err = cli.Client().Server.Delete(ctx, id)
+	_, err = cli.Client().Server.Delete(cli.Context, id)
 	if err != nil {
 		return err
 	}

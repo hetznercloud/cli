@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"context"
 	"fmt"
 	"os"
 	"text/tabwriter"
@@ -20,9 +19,7 @@ func newSSHKeyListCommand(cli *CLI) *cobra.Command {
 }
 
 func runSSHKeyList(cli *CLI, cmd *cobra.Command, args []string) error {
-	ctx := context.Background()
-
-	sshKeys, err := cli.Client().SSHKey.All(ctx)
+	sshKeys, err := cli.Client().SSHKey.All(cli.Context)
 	if err != nil {
 		return err
 	}

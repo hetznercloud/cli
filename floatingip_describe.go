@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"strconv"
@@ -26,9 +25,7 @@ func runFloatingIPDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 		return errors.New("invalid Floating IP ID")
 	}
 
-	ctx := context.Background()
-
-	floatingIP, _, err := cli.Client().FloatingIP.Get(ctx, id)
+	floatingIP, _, err := cli.Client().FloatingIP.Get(cli.Context, id)
 	if err != nil {
 		return err
 	}

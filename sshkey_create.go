@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"io/ioutil"
@@ -41,8 +40,6 @@ func validateSSHKeyCreate(cmd *cobra.Command, args []string) error {
 }
 
 func runSSHKeyCreate(cli *CLI, cmd *cobra.Command, args []string) error {
-	ctx := context.Background()
-
 	name, _ := cmd.Flags().GetString("name")
 	publicKey, _ := cmd.Flags().GetString("public-key")
 	publicKeyFile, _ := cmd.Flags().GetString("public-key-from-file")
@@ -67,7 +64,7 @@ func runSSHKeyCreate(cli *CLI, cmd *cobra.Command, args []string) error {
 		Name:      name,
 		PublicKey: publicKey,
 	}
-	sshKey, _, err := cli.Client().SSHKey.Create(ctx, opts)
+	sshKey, _, err := cli.Client().SSHKey.Create(cli.Context, opts)
 	if err != nil {
 		return err
 	}

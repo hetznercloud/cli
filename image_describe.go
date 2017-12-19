@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"strconv"
@@ -27,8 +26,7 @@ func runImageDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 		return errors.New("invalid image id")
 	}
 
-	ctx := context.Background()
-	image, _, err := cli.Client().Image.Get(ctx, id)
+	image, _, err := cli.Client().Image.Get(cli.Context, id)
 	if err != nil {
 		return err
 	}

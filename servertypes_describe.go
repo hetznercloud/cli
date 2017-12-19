@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"strconv"
@@ -26,9 +25,7 @@ func runServerTypeDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 		return errors.New("invalid server type id")
 	}
 
-	ctx := context.Background()
-
-	serverType, _, err := cli.Client().ServerType.Get(ctx, id)
+	serverType, _, err := cli.Client().ServerType.Get(cli.Context, id)
 	if err != nil {
 		return err
 	}

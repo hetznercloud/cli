@@ -15,8 +15,8 @@ import (
 type CLI struct {
 	Token    string
 	Endpoint string
-
-	Config *Config
+	Context  context.Context
+	Config   *Config
 
 	RootCommand *cobra.Command
 
@@ -24,7 +24,9 @@ type CLI struct {
 }
 
 func NewCLI() *CLI {
-	cli := &CLI{}
+	cli := &CLI{
+		Context: context.Background(),
+	}
 	cli.RootCommand = NewRootCommand(cli)
 	return cli
 }

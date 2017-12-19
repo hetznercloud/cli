@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"context"
 	"errors"
 	"fmt"
 
@@ -41,8 +40,6 @@ func validateFloatingIPCreate(cmd *cobra.Command, args []string) error {
 }
 
 func runFloatingIPCreate(cli *CLI, cmd *cobra.Command, args []string) error {
-	ctx := context.Background()
-
 	typ, _ := cmd.Flags().GetString("type")
 	description, _ := cmd.Flags().GetString("description")
 	homeLocation, _ := cmd.Flags().GetString("home-location")
@@ -59,7 +56,7 @@ func runFloatingIPCreate(cli *CLI, cmd *cobra.Command, args []string) error {
 		opts.Server = &hcloud.Server{ID: server}
 	}
 
-	result, _, err := cli.Client().FloatingIP.Create(ctx, opts)
+	result, _, err := cli.Client().FloatingIP.Create(cli.Context, opts)
 	if err != nil {
 		return err
 	}

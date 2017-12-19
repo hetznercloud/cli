@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"strconv"
@@ -27,9 +26,7 @@ func runSSHKeyDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 		return errors.New("invalid SSH key ID")
 	}
 
-	ctx := context.Background()
-
-	sshKey, _, err := cli.Client().SSHKey.Get(ctx, id)
+	sshKey, _, err := cli.Client().SSHKey.Get(cli.Context, id)
 	if err != nil {
 		return err
 	}

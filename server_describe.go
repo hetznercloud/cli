@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"strconv"
@@ -27,9 +26,7 @@ func runServerDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 		return errors.New("invalid server id")
 	}
 
-	ctx := context.Background()
-
-	server, _, err := cli.Client().Server.Get(ctx, id)
+	server, _, err := cli.Client().Server.Get(cli.Context, id)
 	if err != nil {
 		return err
 	}

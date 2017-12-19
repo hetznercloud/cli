@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"strconv"
@@ -26,8 +25,7 @@ func runSSHKeyDelete(cli *CLI, cmd *cobra.Command, args []string) error {
 		return errors.New("invalid SSH key ID")
 	}
 
-	ctx := context.Background()
-	_, err = cli.Client().SSHKey.Delete(ctx, id)
+	_, err = cli.Client().SSHKey.Delete(cli.Context, id)
 	if err != nil {
 		return err
 	}

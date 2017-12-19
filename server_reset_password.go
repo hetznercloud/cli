@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"strconv"
@@ -27,13 +26,12 @@ func runServerResetPassword(cli *CLI, cmd *cobra.Command, args []string) error {
 		return errors.New("invalid server id")
 	}
 
-	ctx := context.Background()
 	server := &hcloud.Server{ID: id}
-	result, _, err := cli.Client().Server.ResetPassword(ctx, server)
+	result, _, err := cli.Client().Server.ResetPassword(cli.Context, server)
 	if err != nil {
 		return err
 	}
-	errCh, _ := waitAction(ctx, cli.Client(), result.Action)
+	errCh, _ := waitAction(cli.Context, cli.Client(), result.Action)
 	if err := <-errCh; err != nil {
 		return err
 	}

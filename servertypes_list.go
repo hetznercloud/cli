@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"context"
 	"fmt"
 	"os"
 	"text/tabwriter"
@@ -20,9 +19,7 @@ func newServerTypeListCommand(cli *CLI) *cobra.Command {
 }
 
 func runServerTypeList(cli *CLI, cmd *cobra.Command, args []string) error {
-	ctx := context.Background()
-
-	serverTypes, err := cli.Client().ServerType.All(ctx)
+	serverTypes, err := cli.Client().ServerType.All(cli.Context)
 	if err != nil {
 		return err
 	}

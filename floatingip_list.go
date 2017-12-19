@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"context"
 	"fmt"
 	"os"
 	"strconv"
@@ -21,9 +20,7 @@ func newFloatingIPListCommand(cli *CLI) *cobra.Command {
 }
 
 func runFloatingIPList(cli *CLI, cmd *cobra.Command, args []string) error {
-	ctx := context.Background()
-
-	floatingIPs, err := cli.Client().FloatingIP.All(ctx)
+	floatingIPs, err := cli.Client().FloatingIP.All(cli.Context)
 	if err != nil {
 		return err
 	}
