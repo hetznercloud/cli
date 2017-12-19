@@ -13,7 +13,8 @@ func newVersionCommand(cli *CLI) *cobra.Command {
 		Use:   "version",
 		Short: "Print version information",
 		Args:  cobra.NoArgs,
-		RunE:  cli.wrap(runVersion),
+		DisableFlagsInUseLine: true,
+		RunE: cli.wrap(runVersion),
 	}
 	return cmd
 }

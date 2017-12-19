@@ -10,10 +10,11 @@ import (
 
 func newServerListCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:              "list",
-		Short:            "List servers",
-		TraverseChildren: true,
-		RunE:             cli.wrap(runServerList),
+		Use:                   "list [FLAGS]",
+		Short:                 "List servers",
+		TraverseChildren:      true,
+		DisableFlagsInUseLine: true,
+		RunE: cli.wrap(runServerList),
 	}
 	return cmd
 }

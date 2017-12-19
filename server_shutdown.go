@@ -11,11 +11,12 @@ import (
 
 func newServerShutdownCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:              "shutdown [flags] <id>",
-		Short:            "Shutdown a server",
-		Args:             cobra.ExactArgs(1),
-		TraverseChildren: true,
-		RunE:             cli.wrap(runServerShutdown),
+		Use:                   "shutdown [FLAGS] SERVER",
+		Short:                 "Shutdown a server",
+		Args:                  cobra.ExactArgs(1),
+		TraverseChildren:      true,
+		DisableFlagsInUseLine: true,
+		RunE: cli.wrap(runServerShutdown),
 	}
 	return cmd
 }

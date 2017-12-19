@@ -11,6 +11,7 @@ func NewRootCommand(cli *CLI) *cobra.Command {
 		TraverseChildren:       true,
 		SilenceUsage:           true,
 		SilenceErrors:          true,
+		DisableFlagsInUseLine:  true,
 		BashCompletionFunction: bashCompletionFunc,
 	}
 	cmd.AddCommand(

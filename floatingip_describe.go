@@ -10,11 +10,12 @@ import (
 
 func newFloatingIPDescribeCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:              "describe [flags] <id>",
-		Short:            "Describe a Floating IP",
-		Args:             cobra.ExactArgs(1),
-		TraverseChildren: true,
-		RunE:             cli.wrap(runFloatingIPDescribe),
+		Use:                   "describe [FLAGS] FLOATINGIP",
+		Short:                 "Describe a Floating IP",
+		Args:                  cobra.ExactArgs(1),
+		TraverseChildren:      true,
+		DisableFlagsInUseLine: true,
+		RunE: cli.wrap(runFloatingIPDescribe),
 	}
 	return cmd
 }

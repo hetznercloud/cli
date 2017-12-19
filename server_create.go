@@ -9,11 +9,12 @@ import (
 
 func newServerCreateCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:              "create",
-		Short:            "Create server",
-		Args:             cobra.NoArgs,
-		TraverseChildren: true,
-		RunE:             cli.wrap(runServerCreate),
+		Use:                   "create FLAGS",
+		Short:                 "Create server",
+		Args:                  cobra.NoArgs,
+		TraverseChildren:      true,
+		DisableFlagsInUseLine: true,
+		RunE: cli.wrap(runServerCreate),
 	}
 	cmd.Flags().String("name", "", "Server name")
 	cmd.Flags().String("type", "", "Server type (id or name)")

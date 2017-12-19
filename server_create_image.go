@@ -11,12 +11,13 @@ import (
 
 func newServerCreateImageCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:              "create-image [flags] <id>",
-		Short:            "Create image from a server",
-		Args:             cobra.ExactArgs(1),
-		TraverseChildren: true,
-		RunE:             cli.wrap(runServerCreateImage),
-		PreRunE:          validateServerCreateImage,
+		Use:                   "create-image [FLAGS] SERVER",
+		Short:                 "Create image from a server",
+		Args:                  cobra.ExactArgs(1),
+		TraverseChildren:      true,
+		DisableFlagsInUseLine: true,
+		RunE:    cli.wrap(runServerCreateImage),
+		PreRunE: validateServerCreateImage,
 	}
 	cmd.Flags().String("type", "snapshot", "Image type")
 	cmd.Flags().String("description", "", "Image description")

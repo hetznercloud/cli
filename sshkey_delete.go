@@ -10,11 +10,12 @@ import (
 
 func newSSHKeyDeleteCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:              "delete <id>",
-		Short:            "Delete a SSH key",
-		Args:             cobra.ExactArgs(1),
-		TraverseChildren: true,
-		RunE:             cli.wrap(runSSHKeyDelete),
+		Use:                   "delete [FLAGS] SSHKEY",
+		Short:                 "Delete a SSH key",
+		Args:                  cobra.ExactArgs(1),
+		TraverseChildren:      true,
+		DisableFlagsInUseLine: true,
+		RunE: cli.wrap(runSSHKeyDelete),
 	}
 	return cmd
 }

@@ -10,11 +10,12 @@ import (
 
 func newServerTypeDescribeCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:              "describe [flags] <id>",
-		Short:            "Describe a server type",
-		Args:             cobra.ExactArgs(1),
-		TraverseChildren: true,
-		RunE:             cli.wrap(runServerTypeDescribe),
+		Use:                   "describe [FLAGS] SERVERTYPE",
+		Short:                 "Describe a server type",
+		Args:                  cobra.ExactArgs(1),
+		TraverseChildren:      true,
+		DisableFlagsInUseLine: true,
+		RunE: cli.wrap(runServerTypeDescribe),
 	}
 	return cmd
 }

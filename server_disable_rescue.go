@@ -11,11 +11,12 @@ import (
 
 func newServerDisableRescueCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:              "disable-rescue [flags] <id>",
-		Short:            "Disable rescue for a server",
-		Args:             cobra.ExactArgs(1),
-		TraverseChildren: true,
-		RunE:             cli.wrap(runServerDisableRescue),
+		Use:                   "disable-rescue [FLAGS] SERVER",
+		Short:                 "Disable rescue for a server",
+		Args:                  cobra.ExactArgs(1),
+		TraverseChildren:      true,
+		DisableFlagsInUseLine: true,
+		RunE: cli.wrap(runServerDisableRescue),
 	}
 	return cmd
 }

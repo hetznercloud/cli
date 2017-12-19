@@ -11,11 +11,12 @@ import (
 
 func newServerResetCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:              "reset [flags] <id>",
-		Short:            "Reset a server",
-		Args:             cobra.ExactArgs(1),
-		TraverseChildren: true,
-		RunE:             cli.wrap(runServerReset),
+		Use:                   "reset [FLAGS] SERVER",
+		Short:                 "Reset a server",
+		Args:                  cobra.ExactArgs(1),
+		TraverseChildren:      true,
+		DisableFlagsInUseLine: true,
+		RunE: cli.wrap(runServerReset),
 	}
 	return cmd
 }

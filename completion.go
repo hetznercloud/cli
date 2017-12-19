@@ -83,12 +83,13 @@ func newCompletionCommand(cli *CLI) *cobra.Command {
 	}
 
 	cmd := &cobra.Command{
-		Use:       "completion <shell>",
-		Short:     "Output shell completion code for the specified shell (bash or zsh)",
-		Long:      completionLongDescription,
-		RunE:      cli.wrap(runCompletion),
-		Args:      cobra.ExactArgs(1),
-		ValidArgs: shells,
+		Use:                   "completion [FLAGS] SHELL",
+		Short:                 "Output shell completion code for the specified shell (bash or zsh)",
+		Long:                  completionLongDescription,
+		RunE:                  cli.wrap(runCompletion),
+		Args:                  cobra.ExactArgs(1),
+		ValidArgs:             shells,
+		DisableFlagsInUseLine: true,
 	}
 	return cmd
 }

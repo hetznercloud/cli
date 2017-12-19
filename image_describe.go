@@ -11,11 +11,12 @@ import (
 
 func newImageDescribeCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:              "describe [flags] <id>",
-		Short:            "Describe an image",
-		Args:             cobra.ExactArgs(1),
-		TraverseChildren: true,
-		RunE:             cli.wrap(runImageDescribe),
+		Use:                   "describe [FLAGS] IMAGE",
+		Short:                 "Describe an image",
+		Args:                  cobra.ExactArgs(1),
+		TraverseChildren:      true,
+		DisableFlagsInUseLine: true,
+		RunE: cli.wrap(runImageDescribe),
 	}
 	return cmd
 }

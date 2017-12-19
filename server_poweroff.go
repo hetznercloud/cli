@@ -11,11 +11,12 @@ import (
 
 func newServerPoweroffCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:              "poweroff [flags] <id>",
-		Short:            "Poweroff a server",
-		Args:             cobra.ExactArgs(1),
-		TraverseChildren: true,
-		RunE:             cli.wrap(runServerPoweroff),
+		Use:                   "poweroff [FLAGS] SERVER",
+		Short:                 "Poweroff a server",
+		Args:                  cobra.ExactArgs(1),
+		TraverseChildren:      true,
+		DisableFlagsInUseLine: true,
+		RunE: cli.wrap(runServerPoweroff),
 	}
 	return cmd
 }

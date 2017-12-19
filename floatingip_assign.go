@@ -11,11 +11,12 @@ import (
 
 func newFloatingIPAssignCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:              "assign [flags] <floating ip> <server>",
-		Short:            "Assign a Floating IP to a server",
-		Args:             cobra.ExactArgs(2),
-		TraverseChildren: true,
-		RunE:             cli.wrap(runFloatingIPAssign),
+		Use:                   "assign [FLAGS] FLOATINGIP SERVER",
+		Short:                 "Assign a Floating IP to a server",
+		Args:                  cobra.ExactArgs(2),
+		TraverseChildren:      true,
+		DisableFlagsInUseLine: true,
+		RunE: cli.wrap(runFloatingIPAssign),
 	}
 	cmd.MarkFlagRequired("server")
 	return cmd

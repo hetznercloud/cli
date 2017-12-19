@@ -4,11 +4,12 @@ import "github.com/spf13/cobra"
 
 func newServerCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:              "server",
-		Short:            "Manage servers",
-		Args:             cobra.NoArgs,
-		TraverseChildren: true,
-		RunE:             cli.wrap(runServer),
+		Use:                   "server",
+		Short:                 "Manage servers",
+		Args:                  cobra.NoArgs,
+		TraverseChildren:      true,
+		DisableFlagsInUseLine: true,
+		RunE: cli.wrap(runServer),
 	}
 	cmd.AddCommand(
 		newServerListCommand(cli),

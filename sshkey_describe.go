@@ -11,11 +11,12 @@ import (
 
 func newSSHKeyDescribeCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:              "describe [flags] <id>",
-		Short:            "Describe a SSH key",
-		Args:             cobra.ExactArgs(1),
-		TraverseChildren: true,
-		RunE:             cli.wrap(runSSHKeyDescribe),
+		Use:                   "describe [FLAGS] SSHKEY",
+		Short:                 "Describe a SSH key",
+		Args:                  cobra.ExactArgs(1),
+		TraverseChildren:      true,
+		DisableFlagsInUseLine: true,
+		RunE: cli.wrap(runSSHKeyDescribe),
 	}
 	return cmd
 }

@@ -10,10 +10,11 @@ import (
 
 func newSSHKeyListCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:              "list",
-		Short:            "List SSH keys",
-		TraverseChildren: true,
-		RunE:             cli.wrap(runSSHKeyList),
+		Use:                   "list [FLAGS]",
+		Short:                 "List SSH keys",
+		TraverseChildren:      true,
+		DisableFlagsInUseLine: true,
+		RunE: cli.wrap(runSSHKeyList),
 	}
 	return cmd
 }

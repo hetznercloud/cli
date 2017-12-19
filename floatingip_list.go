@@ -11,10 +11,11 @@ import (
 
 func newFloatingIPListCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:              "list",
-		Short:            "List Floating IPs",
-		TraverseChildren: true,
-		RunE:             cli.wrap(runFloatingIPList),
+		Use:                   "list [FLAGS]",
+		Short:                 "List Floating IPs",
+		TraverseChildren:      true,
+		DisableFlagsInUseLine: true,
+		RunE: cli.wrap(runFloatingIPList),
 	}
 	return cmd
 }

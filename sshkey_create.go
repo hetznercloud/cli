@@ -12,12 +12,13 @@ import (
 
 func newSSHKeyCreateCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:              "create",
-		Short:            "Create a SSH key",
-		Args:             cobra.NoArgs,
-		TraverseChildren: true,
-		RunE:             cli.wrap(runSSHKeyCreate),
-		PreRunE:          validateSSHKeyCreate,
+		Use:                   "create FLAGS",
+		Short:                 "Create a SSH key",
+		Args:                  cobra.NoArgs,
+		TraverseChildren:      true,
+		DisableFlagsInUseLine: true,
+		RunE:    cli.wrap(runSSHKeyCreate),
+		PreRunE: validateSSHKeyCreate,
 	}
 	cmd.Flags().String("name", "", "Key name")
 	cmd.Flags().String("public-key", "", "Public key")

@@ -10,11 +10,12 @@ import (
 
 func newImageDeleteCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:              "delete [flags] <id>",
-		Short:            "Delete an image",
-		Args:             cobra.ExactArgs(1),
-		TraverseChildren: true,
-		RunE:             cli.wrap(runImageDelete),
+		Use:                   "delete [FLAGS] IMAGE",
+		Short:                 "Delete an image",
+		Args:                  cobra.ExactArgs(1),
+		TraverseChildren:      true,
+		DisableFlagsInUseLine: true,
+		RunE: cli.wrap(runImageDelete),
 	}
 	return cmd
 }

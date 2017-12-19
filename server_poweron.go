@@ -11,11 +11,12 @@ import (
 
 func newServerPoweronCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:              "poweron [flags] <id>",
-		Short:            "Poweron a server",
-		Args:             cobra.ExactArgs(1),
-		TraverseChildren: true,
-		RunE:             cli.wrap(runServerPoweron),
+		Use:                   "poweron [FLAGS] SERVER",
+		Short:                 "Poweron a server",
+		Args:                  cobra.ExactArgs(1),
+		TraverseChildren:      true,
+		DisableFlagsInUseLine: true,
+		RunE: cli.wrap(runServerPoweron),
 	}
 	return cmd
 }

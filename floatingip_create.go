@@ -10,12 +10,13 @@ import (
 
 func newFloatingIPCreateCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:              "create",
-		Short:            "Create a Floating IP",
-		Args:             cobra.NoArgs,
-		TraverseChildren: true,
-		RunE:             cli.wrap(runFloatingIPCreate),
-		PreRunE:          validateFloatingIPCreate,
+		Use:                   "create FLAGS",
+		Short:                 "Create a Floating IP",
+		Args:                  cobra.NoArgs,
+		TraverseChildren:      true,
+		DisableFlagsInUseLine: true,
+		RunE:    cli.wrap(runFloatingIPCreate),
+		PreRunE: validateFloatingIPCreate,
 	}
 	cmd.Flags().String("type", "", "Type")
 	cmd.Flags().String("description", "", "Description")

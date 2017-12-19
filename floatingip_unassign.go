@@ -11,11 +11,12 @@ import (
 
 func newFloatingIPUnassignCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:              "unassign [flags] <floating ip>",
-		Short:            "Unassign a Floating IP",
-		Args:             cobra.ExactArgs(1),
-		TraverseChildren: true,
-		RunE:             cli.wrap(runFloatingIPUnassign),
+		Use:                   "unassign [FLAGS] FLOATINGIP",
+		Short:                 "Unassign a Floating IP",
+		Args:                  cobra.ExactArgs(1),
+		TraverseChildren:      true,
+		DisableFlagsInUseLine: true,
+		RunE: cli.wrap(runFloatingIPUnassign),
 	}
 	return cmd
 }

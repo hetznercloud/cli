@@ -10,11 +10,12 @@ import (
 
 func newServerDeleteCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:              "delete [flags] <id>",
-		Short:            "Delete a server",
-		Args:             cobra.ExactArgs(1),
-		TraverseChildren: true,
-		RunE:             cli.wrap(runServerDelete),
+		Use:                   "delete [FLAGS] SERVER",
+		Short:                 "Delete a server",
+		Args:                  cobra.ExactArgs(1),
+		TraverseChildren:      true,
+		DisableFlagsInUseLine: true,
+		RunE: cli.wrap(runServerDelete),
 	}
 	return cmd
 }

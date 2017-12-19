@@ -11,11 +11,12 @@ import (
 
 func newServerEnableRescueCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:              "enable-rescue [flags] <id>",
-		Short:            "Enable rescue for a server",
-		Args:             cobra.ExactArgs(1),
-		TraverseChildren: true,
-		RunE:             cli.wrap(runServerEnableRescue),
+		Use:                   "enable-rescue [FLAGS] SERVER",
+		Short:                 "Enable rescue for a server",
+		Args:                  cobra.ExactArgs(1),
+		TraverseChildren:      true,
+		DisableFlagsInUseLine: true,
+		RunE: cli.wrap(runServerEnableRescue),
 	}
 	cmd.Flags().String("type", "linux64", "Rescue type")
 	cmd.Flags().IntSlice("ssh-key", nil, "ID of SSH key to inject (can be specified multiple times)")

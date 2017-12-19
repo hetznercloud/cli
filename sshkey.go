@@ -4,11 +4,12 @@ import "github.com/spf13/cobra"
 
 func newSSHKeyCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:              "ssh-key",
-		Short:            "Manage SSH keys",
-		Args:             cobra.NoArgs,
-		TraverseChildren: true,
-		RunE:             cli.wrap(runSSHKey),
+		Use:                   "ssh-key",
+		Short:                 "Manage SSH keys",
+		Args:                  cobra.NoArgs,
+		TraverseChildren:      true,
+		DisableFlagsInUseLine: true,
+		RunE: cli.wrap(runSSHKey),
 	}
 	cmd.AddCommand(
 		newSSHKeyListCommand(cli),

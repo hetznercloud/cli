@@ -11,11 +11,12 @@ import (
 
 func newServerRebootCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:              "reboot [flags] <id>",
-		Short:            "Reboot a server",
-		Args:             cobra.ExactArgs(1),
-		TraverseChildren: true,
-		RunE:             cli.wrap(runServerReboot),
+		Use:                   "reboot [FLAGS] SERVER",
+		Short:                 "Reboot a server",
+		Args:                  cobra.ExactArgs(1),
+		TraverseChildren:      true,
+		DisableFlagsInUseLine: true,
+		RunE: cli.wrap(runServerReboot),
 	}
 	return cmd
 }

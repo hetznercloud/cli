@@ -11,10 +11,11 @@ import (
 
 func newImageListCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:              "list",
-		Short:            "List images",
-		TraverseChildren: true,
-		RunE:             cli.wrap(runImageList),
+		Use:                   "list [FLAGS]",
+		Short:                 "List images",
+		TraverseChildren:      true,
+		DisableFlagsInUseLine: true,
+		RunE: cli.wrap(runImageList),
 	}
 	return cmd
 }

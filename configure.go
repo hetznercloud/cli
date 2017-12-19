@@ -12,11 +12,12 @@ import (
 
 func newConfigureCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:              "configure",
-		Short:            "Configure the CLI",
-		Args:             cobra.NoArgs,
-		TraverseChildren: true,
-		RunE:             cli.wrap(runConfigure),
+		Use:                   "configure [FLAGS]",
+		Short:                 "Configure the CLI",
+		Args:                  cobra.NoArgs,
+		TraverseChildren:      true,
+		DisableFlagsInUseLine: true,
+		RunE: cli.wrap(runConfigure),
 	}
 	return cmd
 }
