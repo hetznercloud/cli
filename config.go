@@ -11,7 +11,7 @@ var DefaultConfigPath string
 
 func init() {
 	if home := os.Getenv("HOME"); home != "" {
-		DefaultConfigPath = filepath.Join(home, ".config", "hcloud", "config.toml")
+		DefaultConfigPath = filepath.Join(home, ".config", "hcloud", "cli.toml")
 	}
 }
 
@@ -21,10 +21,8 @@ type Config struct {
 }
 
 type RawConfig struct {
-	CLI struct {
-		Token    string `toml:"token,omitempty"`
-		Endpoint string `toml:"endpoint,omitempty"`
-	} `toml:"cli"`
+	Token    string `toml:"token,omitempty"`
+	Endpoint string `toml:"endpoint,omitempty"`
 }
 
 func MarshalConfig(c *Config) ([]byte, error) {
@@ -33,8 +31,8 @@ func MarshalConfig(c *Config) ([]byte, error) {
 	}
 
 	var raw RawConfig
-	raw.CLI.Token = c.Token
-	raw.CLI.Endpoint = c.Endpoint
+	raw.Token = c.Token
+	raw.Endpoint = c.Endpoint
 	return toml.Marshal(raw)
 }
 
@@ -44,7 +42,7 @@ func UnmarshalConfig(data []byte) (*Config, error) {
 		return nil, err
 	}
 	return &Config{
-		Token:    raw.CLI.Token,
-		Endpoint: raw.CLI.Endpoint,
+		Token:    raw.Token,
+		Endpoint: raw.Endpoint,
 	}, nil
 }
