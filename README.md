@@ -21,11 +21,21 @@ Configure the `hcloud` program to use your token:
 
 See `hcloud help` for a list of commands.
 
-## Example
+## Examples
+
+### List all servers
 
 ```
 $ hcloud server list            
 ID       NAME                    STATUS    IPV4
 210216   test1                   running   78.46.122.12
 210729   ubuntu-8gb-nbg1-dc3-1   running   94.130.177.158
+```
+
+### Create a server
+
+```
+$ hcloud server create --name test --image debian-9 --type cx11
+   7s [====================================================================] 100%
+Server 325211 created with root password: gX1kUfYJQJzbDdKJO40hhxtNnyRNoXzz
 ```
