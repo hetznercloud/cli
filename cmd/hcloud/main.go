@@ -16,17 +16,17 @@ func init() {
 func main() {
 	c := cli.NewCLI()
 
-	if cli.DefaultConfigPath != "" {
-		_, err := os.Stat(cli.DefaultConfigPath)
+	if c.ConfigPath != "" {
+		_, err := os.Stat(c.ConfigPath)
 		switch {
 		case err == nil:
-			if err := c.ReadConfig(cli.DefaultConfigPath); err != nil {
-				log.Fatalf("unable to read config file %q: %s\n", cli.DefaultConfigPath, err)
+			if err := c.ReadConfig(); err != nil {
+				log.Fatalf("unable to read config file %q: %s\n", c.ConfigPath, err)
 			}
 		case os.IsNotExist(err):
 			break
 		default:
-			log.Fatalf("unable to read config file %q: %s\n", cli.DefaultConfigPath, err)
+			log.Fatalf("unable to read config file %q: %s\n", c.ConfigPath, err)
 		}
 	}
 

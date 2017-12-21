@@ -2,6 +2,7 @@ package cli
 
 import (
 	"context"
+	"errors"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -12,11 +13,14 @@ import (
 	"golang.org/x/crypto/ssh/terminal"
 )
 
+var ErrConfigPathUnknown = errors.New("config file path unknown")
+
 type CLI struct {
-	Token    string
-	Endpoint string
-	Context  context.Context
-	Config   *Config
+	Token      string
+	Endpoint   string
+	Context    context.Context
+	Config     *Config
+	ConfigPath string
 
 	RootCommand *cobra.Command
 
@@ -25,7 +29,12 @@ type CLI struct {
 
 func NewCLI() *CLI {
 	cli := &CLI{
-		Context: context.Background(),
+		Context:    context.Background(),
+		Config:     &Config{},
+		ConfigPath: DefaultConfigPath,
+	}
+	if s := os.Getenv("HCLOUD_CONFIG"); s != "" {
+		cli.ConfigPath = s
 	}
 	cli.RootCommand = NewRootCommand(cli)
 	return cli
@@ -40,8 +49,12 @@ func (c *CLI) ReadEnv() {
 	}
 }
 
-func (c *CLI) ReadConfig(path string) error {
-	data, err := ioutil.ReadFile(path)
+func (c *CLI) ReadConfig() error {
+	if c.ConfigPath == "" {
+		return ErrConfigPathUnknown
+	}
+
+	data, err := ioutil.ReadFile(c.ConfigPath)
 	if err != nil {
 		return err
 	}
@@ -50,10 +63,13 @@ func (c *CLI) ReadConfig(path string) error {
 	if err != nil {
 		return err
 	}
+	if config == nil {
+		return nil
+	}
 	c.Config = config
 
-	if config.Token != "" {
-		c.Token = config.Token
+	if config.ActiveContext != nil {
+		c.Token = config.ActiveContext.Token
 	}
 	if config.Endpoint != "" {
 		c.Endpoint = config.Endpoint
@@ -62,7 +78,10 @@ func (c *CLI) ReadConfig(path string) error {
 	return nil
 }
 
-func (c *CLI) WriteConfig(path string) error {
+func (c *CLI) WriteConfig() error {
+	if c.ConfigPath == "" {
+		return ErrConfigPathUnknown
+	}
 	if c.Config == nil {
 		return nil
 	}
@@ -71,10 +90,10 @@ func (c *CLI) WriteConfig(path string) error {
 	if err != nil {
 		return err
 	}
-	if err := os.MkdirAll(filepath.Dir(path), 0777); err != nil {
+	if err := os.MkdirAll(filepath.Dir(c.ConfigPath), 0777); err != nil {
 		return err
 	}
-	if err := ioutil.WriteFile(path, data, 0600); err != nil {
+	if err := ioutil.WriteFile(c.ConfigPath, data, 0600); err != nil {
 		return err
 	}
 	return nil

@@ -16,7 +16,8 @@ We do not accept pull requests at the moment.
 
 Configure the `hcloud` program to use your token:
 
-    hcloud configure
+    hcloud context create my-project
+    hcloud context activate my-project
 
 See `hcloud help` for a list of commands.
 

@@ -15,7 +15,6 @@ func NewRootCommand(cli *CLI) *cobra.Command {
 		BashCompletionFunction: bashCompletionFunc,
 	}
 	cmd.AddCommand(
-		newConfigureCommand(cli),
 		newFloatingIPCommand(cli),
 		newImageCommand(cli),
 		newServerCommand(cli),
@@ -23,6 +22,7 @@ func NewRootCommand(cli *CLI) *cobra.Command {
 		newVersionCommand(cli),
 		newCompletionCommand(cli),
 		newServerTypeCommand(cli),
+		newContextCommand(cli),
 	)
 	return cmd
 }
