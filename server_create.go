@@ -19,6 +19,8 @@ func newServerCreateCommand(cli *CLI) *cobra.Command {
 	cmd.Flags().String("name", "", "Server name")
 	cmd.Flags().String("type", "", "Server type (id or name)")
 	cmd.Flags().String("image", "", "Image (id or name)")
+	cmd.Flags().String("location", "", "Location (ID or name)")
+	cmd.Flags().String("datacenter", "", "Datacenter (ID or name)")
 	cmd.Flags().IntSlice("ssh-key", nil, "ID of SSH key to inject (can be specified multiple times)")
 	return cmd
 }
@@ -27,6 +29,8 @@ func runServerCreate(cli *CLI, cmd *cobra.Command, args []string) error {
 	name, _ := cmd.Flags().GetString("name")
 	serverType, _ := cmd.Flags().GetString("type")
 	image, _ := cmd.Flags().GetString("image")
+	location, _ := cmd.Flags().GetString("location")
+	datacenter, _ := cmd.Flags().GetString("datacenter")
 	sshKeys, _ := cmd.Flags().GetIntSlice("ssh-key")
 
 	opts := hcloud.ServerCreateOpts{
@@ -40,6 +44,12 @@ func runServerCreate(cli *CLI, cmd *cobra.Command, args []string) error {
 	}
 	for _, sshKey := range sshKeys {
 		opts.SSHKeys = append(opts.SSHKeys, &hcloud.SSHKey{ID: sshKey})
+	}
+	if datacenter != "" {
+		opts.Datacenter = &hcloud.Datacenter{Name: datacenter}
+	}
+	if location != "" {
+		opts.Location = &hcloud.Location{Name: location}
 	}
 
 	result, _, err := cli.Client().Server.Create(cli.Context, opts)
