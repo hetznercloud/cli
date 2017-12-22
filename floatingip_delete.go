@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
 
@@ -25,8 +26,9 @@ func runFloatingIPDelete(cli *CLI, cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return errors.New("invalid Floating IP ID")
 	}
+	floatingIP := &hcloud.FloatingIP{ID: id}
 
-	if _, err := cli.Client().FloatingIP.Delete(cli.Context, id); err != nil {
+	if _, err := cli.Client().FloatingIP.Delete(cli.Context, floatingIP); err != nil {
 		return err
 	}
 	fmt.Printf("Floating IP %d deleted\n", id)

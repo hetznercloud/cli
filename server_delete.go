@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
 
@@ -25,8 +26,9 @@ func runServerDelete(cli *CLI, cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return errors.New("invalid server id")
 	}
+	server := &hcloud.Server{ID: id}
 
-	_, err = cli.Client().Server.Delete(cli.Context, id)
+	_, err = cli.Client().Server.Delete(cli.Context, server)
 	if err != nil {
 		return err
 	}

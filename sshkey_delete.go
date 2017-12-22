@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
 
@@ -25,8 +26,9 @@ func runSSHKeyDelete(cli *CLI, cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return errors.New("invalid SSH key ID")
 	}
+	sshKey := &hcloud.SSHKey{ID: id}
 
-	_, err = cli.Client().SSHKey.Delete(cli.Context, id)
+	_, err = cli.Client().SSHKey.Delete(cli.Context, sshKey)
 	if err != nil {
 		return err
 	}

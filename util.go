@@ -49,7 +49,7 @@ func waitAction(ctx context.Context, client *hcloud.Client, action *hcloud.Actio
 				break
 			}
 
-			action, _, err := client.Action.Get(ctx, action.ID)
+			action, _, err := client.Action.GetByID(ctx, action.ID)
 			if err != nil {
 				errCh <- ctx.Err()
 				return

@@ -26,7 +26,7 @@ func runFloatingIPDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 		return errors.New("invalid Floating IP ID")
 	}
 
-	floatingIP, _, err := cli.Client().FloatingIP.Get(cli.Context, id)
+	floatingIP, _, err := cli.Client().FloatingIP.GetByID(cli.Context, id)
 	if err != nil {
 		return err
 	}

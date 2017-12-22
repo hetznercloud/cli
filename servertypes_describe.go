@@ -26,7 +26,7 @@ func runServerTypeDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 		return errors.New("invalid server type id")
 	}
 
-	serverType, _, err := cli.Client().ServerType.Get(cli.Context, id)
+	serverType, _, err := cli.Client().ServerType.GetByID(cli.Context, id)
 	if err != nil {
 		return err
 	}

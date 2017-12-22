@@ -27,7 +27,7 @@ func runImageDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 		return errors.New("invalid image id")
 	}
 
-	image, _, err := cli.Client().Image.Get(cli.Context, id)
+	image, _, err := cli.Client().Image.GetByID(cli.Context, id)
 	if err != nil {
 		return err
 	}
