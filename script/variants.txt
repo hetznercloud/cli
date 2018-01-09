@@ -1,0 +1,7 @@
+darwin   amd64    macOS
+freebsd  386      FreeBSD 32-bit
+freebsd  amd64    FreeBSD 64-bit
+linux    386      Linux 32-bit
+linux    amd64    Linux 64-bit
+linux    arm      Linux ARM 32-bit
+linux    arm64    Linux ARM 64-bit
