@@ -91,13 +91,12 @@ const (
 				__hcloud_floating_ip_ids
 				return
 				;;
-<<<<<<< HEAD
 			hcloud_datacenter_describe )
 				__hcloud_datacenter_names
-=======
+				return
+				;;
 			hcloud_location_describe )
 				__hcloud_location_names
->>>>>>> c38e76e... Add location list and describe commands
 				return
 				;;
 			*)
