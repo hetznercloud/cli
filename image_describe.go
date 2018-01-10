@@ -1,9 +1,7 @@
 package cli
 
 import (
-	"errors"
 	"fmt"
-	"strconv"
 
 	humanize "github.com/dustin/go-humanize"
 	"github.com/spf13/cobra"
@@ -22,17 +20,13 @@ func newImageDescribeCommand(cli *CLI) *cobra.Command {
 }
 
 func runImageDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
-	id, err := strconv.Atoi(args[0])
-	if err != nil {
-		return errors.New("invalid image id")
-	}
-
-	image, _, err := cli.Client().Image.GetByID(cli.Context, id)
+	idOrName := args[0]
+	image, _, err := cli.Client().Image.Get(cli.Context, idOrName)
 	if err != nil {
 		return err
 	}
 	if image == nil {
-		return fmt.Errorf("image not found: %d", id)
+		return fmt.Errorf("image not found: %s", idOrName)
 	}
 
 	fmt.Printf("ID:\t\t%d\n", image.ID)

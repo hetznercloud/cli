@@ -1,11 +1,8 @@
 package cli
 
 import (
-	"errors"
 	"fmt"
-	"strconv"
 
-	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
 
@@ -22,17 +19,20 @@ func newImageDeleteCommand(cli *CLI) *cobra.Command {
 }
 
 func runImageDelete(cli *CLI, cmd *cobra.Command, args []string) error {
-	id, err := strconv.Atoi(args[0])
+	idOrName := args[0]
+	image, _, err := cli.Client().Image.Get(cli.Context, idOrName)
 	if err != nil {
-		return errors.New("invalid image id")
+		return err
 	}
-	image := &hcloud.Image{ID: id}
+	if image == nil {
+		return fmt.Errorf("image not found: %s", idOrName)
+	}
 
 	_, err = cli.Client().Image.Delete(cli.Context, image)
 	if err != nil {
 		return err
 	}
 
-	fmt.Printf("Image %d deleted\n", id)
+	fmt.Printf("Image %s deleted\n", idOrName)
 	return nil
 }

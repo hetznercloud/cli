@@ -1,11 +1,8 @@
 package cli
 
 import (
-	"errors"
 	"fmt"
-	"strconv"
 
-	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
 
@@ -22,12 +19,15 @@ func newServerPoweroffCommand(cli *CLI) *cobra.Command {
 }
 
 func runServerPoweroff(cli *CLI, cmd *cobra.Command, args []string) error {
-	id, err := strconv.Atoi(args[0])
+	idOrName := args[0]
+	server, _, err := cli.Client().Server.Get(cli.Context, idOrName)
 	if err != nil {
-		return errors.New("invalid server id")
+		return err
+	}
+	if server == nil {
+		return fmt.Errorf("server not found: %s", idOrName)
 	}
 
-	server := &hcloud.Server{ID: id}
 	action, _, err := cli.Client().Server.Poweroff(cli.Context, server)
 	if err != nil {
 		return err
@@ -36,6 +36,6 @@ func runServerPoweroff(cli *CLI, cmd *cobra.Command, args []string) error {
 	if err := <-errCh; err != nil {
 		return err
 	}
-	fmt.Printf("Server %d stopped\n", id)
+	fmt.Printf("Server %s stopped\n", idOrName)
 	return nil
 }

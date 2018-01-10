@@ -11,35 +11,65 @@ import (
 
 const (
 	bashCompletionFunc = `
-	__hcloud_server_ids() {
+	__hcloud_server_names() {
 		local ctl_output out
 		if ctl_output=$(hcloud server list 2>/dev/null); then
-			COMPREPLY=($(echo "${ctl_output}" | grep -v '^ID' | awk '{print $1}'))
+			COMPREPLY=($(echo "${ctl_output}" | grep -v '^ID' | awk '{print $2}'))
 		fi
 	}
 
-	__hcloud_servertype_ids() {
+	__hcloud_servertype_names() {
 		local ctl_output out
-		if ctl_output=$(hcloud servertype list 2>/dev/null); then
-			COMPREPLY=($(echo "${ctl_output}" | grep -v '^ID' | awk '{print $1}'))
+		if ctl_output=$(hcloud server-type list 2>/dev/null); then
+			COMPREPLY=($(echo "${ctl_output}" | grep -v '^ID' | awk '{print $2}'))
 		fi
 	}
 
-	__hcloud_image_ids() {
+	__hcloud_image_ids_no_system() {
 		local ctl_output out
 		if ctl_output=$(hcloud image list 2>/dev/null); then
-				COMPREPLY=($(echo "${ctl_output}" | grep -v '^ID' | awk '{print $1}'))
+				COMPREPLY=($(echo "${ctl_output}" | grep -v '^ID' | awk '{if ($2 != "system") {print $1}}'))
 		fi
+	}
+
+	__hcloud_image_names() {
+		local ctl_output out
+		if ctl_output=$(hcloud image list 2>/dev/null); then
+				COMPREPLY=($(echo "${ctl_output}" | grep -v '^ID' | awk '{if ($3 == "n/a") {print $1} else {print $3}}'))
+		fi
+	}
+
+	__hcloud_floating_ip_ids() {
+		local ctl_output out
+		if ctl_output=$(hcloud floating-ip list 2>/dev/null); then
+			COMPREPLY=($(echo "${ctl_output}" | grep -v '^ID' | awk '{print $1}'))
+		fi
+	}
+
+	__hcloud_image_types_no_system() {
+		COMPREPLY=($(echo -e "snapshot\nbackup"))
 	}
 
 	__custom_func() {
 		case ${last_command} in
-			hcloud_server_delete | hcloud_server_describe )
-				__hcloud_server_ids
+			hcloud_server_delete | hcloud_server_describe | hcloud_server_create-image | hcloud_server_poweron | hcloud_server_poweroff | hcloud_server_reboot | hcloud_server_reset | hcloud_server_reset-password | hcloud_server_shutdown | hcloud_server_disable-rescue | hcloud_server_enable-rescue )
+				__hcloud_server_names
 				return
 				;;
-			hcloud_image_delete | hcloud_image_describe )
-				__hcloud_image_ids
+			hcloud_server-type_describe )
+				__hcloud_servertype_names
+				return
+				;;
+			hcloud_image_describe )
+				__hcloud_image_names
+				return
+				;;
+			hcloud_image_delete )
+				__hcloud_image_ids_no_system
+				return
+				;;
+			hcloud_floating-ip_assign | hcloud_floating-ip_unassign | hcloud_floating-ip_delete | hcloud_floating-ip_describe )
+				__hcloud_floating_ip_ids
 				return
 				;;
 			*)
