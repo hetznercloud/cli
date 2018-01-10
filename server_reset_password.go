@@ -1,11 +1,8 @@
 package cli
 
 import (
-	"errors"
 	"fmt"
-	"strconv"
 
-	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
 
@@ -22,12 +19,15 @@ func newServerResetPasswordCommand(cli *CLI) *cobra.Command {
 }
 
 func runServerResetPassword(cli *CLI, cmd *cobra.Command, args []string) error {
-	id, err := strconv.Atoi(args[0])
+	idOrName := args[0]
+	server, _, err := cli.Client().Server.Get(cli.Context, idOrName)
 	if err != nil {
-		return errors.New("invalid server id")
+		return err
+	}
+	if server == nil {
+		return fmt.Errorf("server not found: %s", idOrName)
 	}
 
-	server := &hcloud.Server{ID: id}
 	result, _, err := cli.Client().Server.ResetPassword(cli.Context, server)
 	if err != nil {
 		return err
@@ -36,6 +36,6 @@ func runServerResetPassword(cli *CLI, cmd *cobra.Command, args []string) error {
 	if err := <-errCh; err != nil {
 		return err
 	}
-	fmt.Printf("Password of server %d reset to: %s\n", id, result.RootPassword)
+	fmt.Printf("Password of server %s reset to: %s\n", idOrName, result.RootPassword)
 	return nil
 }

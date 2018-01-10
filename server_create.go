@@ -18,8 +18,19 @@ func newServerCreateCommand(cli *CLI) *cobra.Command {
 		RunE: cli.wrap(runServerCreate),
 	}
 	cmd.Flags().String("name", "", "Server name")
+
 	cmd.Flags().String("type", "", "Server type (id or name)")
+	cmd.Flag("type").Annotations = map[string][]string{
+		cobra.BashCompCustom: {"__hcloud_servertype_names"},
+	}
+	cmd.MarkFlagRequired("type")
+
 	cmd.Flags().String("image", "", "Image (id or name)")
+	cmd.Flag("image").Annotations = map[string][]string{
+		cobra.BashCompCustom: {"__hcloud_image_names"},
+	}
+	cmd.MarkFlagRequired("image")
+
 	cmd.Flags().String("location", "", "Location (ID or name)")
 	cmd.Flags().String("datacenter", "", "Datacenter (ID or name)")
 	cmd.Flags().IntSlice("ssh-key", nil, "ID of SSH key to inject (can be specified multiple times)")

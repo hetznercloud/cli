@@ -1,9 +1,7 @@
 package cli
 
 import (
-	"errors"
 	"fmt"
-	"strconv"
 
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -24,16 +22,18 @@ func newServerEnableRescueCommand(cli *CLI) *cobra.Command {
 }
 
 func runServerEnableRescue(cli *CLI, cmd *cobra.Command, args []string) error {
-	id, err := strconv.Atoi(args[0])
+	idOrName := args[0]
+	server, _, err := cli.Client().Server.Get(cli.Context, idOrName)
 	if err != nil {
-		return errors.New("invalid server id")
+		return err
+	}
+	if server == nil {
+		return fmt.Errorf("server not found: %s", idOrName)
 	}
 
 	var (
-		server = &hcloud.Server{ID: id}
-		opts   hcloud.ServerEnableRescueOpts
+		opts hcloud.ServerEnableRescueOpts
 	)
-
 	rescueType, _ := cmd.Flags().GetString("type")
 	opts.Type = hcloud.ServerRescueType(rescueType)
 
@@ -50,6 +50,6 @@ func runServerEnableRescue(cli *CLI, cmd *cobra.Command, args []string) error {
 	if err := <-errCh; err != nil {
 		return err
 	}
-	fmt.Printf("Password of server %d reset to: %s\n", id, result.RootPassword)
+	fmt.Printf("Password of server %s reset to: %s\n", idOrName, result.RootPassword)
 	return nil
 }

@@ -1,9 +1,7 @@
 package cli
 
 import (
-	"errors"
 	"fmt"
-	"strconv"
 
 	humanize "github.com/dustin/go-humanize"
 	"github.com/spf13/cobra"
@@ -22,17 +20,13 @@ func newServerDescribeCommand(cli *CLI) *cobra.Command {
 }
 
 func runServerDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
-	id, err := strconv.Atoi(args[0])
-	if err != nil {
-		return errors.New("invalid server id")
-	}
-
-	server, _, err := cli.Client().Server.GetByID(cli.Context, id)
+	idOrName := args[0]
+	server, _, err := cli.Client().Server.Get(cli.Context, idOrName)
 	if err != nil {
 		return err
 	}
 	if server == nil {
-		return fmt.Errorf("server not found: %d", id)
+		return fmt.Errorf("server not found: %s", idOrName)
 	}
 
 	fmt.Printf("ID:\t\t%d\n", server.ID)

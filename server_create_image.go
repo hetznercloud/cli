@@ -1,9 +1,7 @@
 package cli
 
 import (
-	"errors"
 	"fmt"
-	"strconv"
 
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -20,6 +18,11 @@ func newServerCreateImageCommand(cli *CLI) *cobra.Command {
 		PreRunE: validateServerCreateImage,
 	}
 	cmd.Flags().String("type", "snapshot", "Image type")
+	cmd.Flag("type").Annotations = map[string][]string{
+		cobra.BashCompCustom: {"__hcloud_image_types_no_system"},
+	}
+	cmd.MarkFlagRequired("type")
+
 	cmd.Flags().String("description", "", "Image description")
 	return cmd
 }
@@ -37,15 +40,19 @@ func validateServerCreateImage(cmd *cobra.Command, args []string) error {
 }
 
 func runServerCreateImage(cli *CLI, cmd *cobra.Command, args []string) error {
-	id, err := strconv.Atoi(args[0])
+	idOrName := args[0]
+	server, _, err := cli.Client().Server.Get(cli.Context, idOrName)
 	if err != nil {
-		return errors.New("invalid server id")
+		return err
+	}
+	if server == nil {
+		return fmt.Errorf("server not found: %s", idOrName)
 	}
 
 	imageType, _ := cmd.Flags().GetString("type")
+
 	description, _ := cmd.Flags().GetString("description")
 
-	server := &hcloud.Server{ID: id}
 	opts := &hcloud.ServerCreateImageOpts{
 		Type:        hcloud.ImageType(imageType),
 		Description: hcloud.String(description),
@@ -59,7 +66,7 @@ func runServerCreateImage(cli *CLI, cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	fmt.Printf("Image %d created from server %d\n", result.Image.ID, id)
+	fmt.Printf("Image %d created from server %s\n", result.Image.ID, idOrName)
 
 	return nil
 }

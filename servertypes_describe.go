@@ -1,9 +1,7 @@
 package cli
 
 import (
-	"errors"
 	"fmt"
-	"strconv"
 
 	"github.com/spf13/cobra"
 )
@@ -21,17 +19,13 @@ func newServerTypeDescribeCommand(cli *CLI) *cobra.Command {
 }
 
 func runServerTypeDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
-	id, err := strconv.Atoi(args[0])
-	if err != nil {
-		return errors.New("invalid server type id")
-	}
-
-	serverType, _, err := cli.Client().ServerType.GetByID(cli.Context, id)
+	idOrName := args[0]
+	serverType, _, err := cli.Client().ServerType.Get(cli.Context, idOrName)
 	if err != nil {
 		return err
 	}
 	if serverType == nil {
-		return fmt.Errorf("server type not found: %d", id)
+		return fmt.Errorf("server type not found: %s", idOrName)
 	}
 
 	fmt.Printf("ID:\t\t%d\n", serverType.ID)
