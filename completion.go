@@ -78,7 +78,18 @@ const (
 			hcloud_server_poweroff | hcloud_server_reboot | \
 			hcloud_server_reset | hcloud_server_reset-password | \
 			hcloud_server_shutdown | hcloud_server_disable-rescue | \
-			hcloud_server_enable-rescue )
+			hcloud_server_enable-rescue | hcloud_server_detach-iso )
+				__hcloud_server_names
+				return
+				;;
+			hcloud_server_attach-iso )
+				if [[ ${#nouns[@]} -gt 1 ]]; then
+					return 1
+				fi
+				if [[ ${#nouns[@]} -eq 1 ]]; then
+					__hcloud_iso_names
+					return
+				fi
 				__hcloud_server_names
 				return
 				;;
