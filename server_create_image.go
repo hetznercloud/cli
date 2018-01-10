@@ -46,7 +46,7 @@ func runServerCreateImage(cli *CLI, cmd *cobra.Command, args []string) error {
 
 	imageType, _ := cmd.Flags().GetString("type")
 	cmd.Flag("type").Annotations = map[string][]string{
-		cobra.BashCompCustom: []string{"__hcloud_image_types_no_system"},
+		cobra.BashCompCustom: {"__hcloud_image_types_no_system"},
 	}
 	cmd.MarkFlagRequired("type")
 

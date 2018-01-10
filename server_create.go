@@ -21,13 +21,13 @@ func newServerCreateCommand(cli *CLI) *cobra.Command {
 
 	cmd.Flags().String("type", "", "Server type (id or name)")
 	cmd.Flag("type").Annotations = map[string][]string{
-		cobra.BashCompCustom: []string{"__hcloud_servertype_names"},
+		cobra.BashCompCustom: {"__hcloud_servertype_names"},
 	}
 	cmd.MarkFlagRequired("type")
 
 	cmd.Flags().String("image", "", "Image (id or name)")
 	cmd.Flag("image").Annotations = map[string][]string{
-		cobra.BashCompCustom: []string{"__hcloud_image_names"},
+		cobra.BashCompCustom: {"__hcloud_image_names"},
 	}
 	cmd.MarkFlagRequired("image")
 
