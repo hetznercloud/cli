@@ -28,7 +28,7 @@ const (
 	__hcloud_image_ids_no_system() {
 		local ctl_output out
 		if ctl_output=$(hcloud image list 2>/dev/null); then
-				COMPREPLY=($(echo "${ctl_output}" | grep -v '^ID' | awk '{if ($2 != "system") {print $1}}'))
+			COMPREPLY=($(echo "${ctl_output}" | grep -v '^ID' | awk '{if ($2 != "system") {print $1}}'))
 		fi
 	}
 
@@ -52,7 +52,12 @@ const (
 
 	__custom_func() {
 		case ${last_command} in
-			hcloud_server_delete | hcloud_server_describe | hcloud_server_create-image | hcloud_server_poweron | hcloud_server_poweroff | hcloud_server_reboot | hcloud_server_reset | hcloud_server_reset-password | hcloud_server_shutdown | hcloud_server_disable-rescue | hcloud_server_enable-rescue )
+			hcloud_server_delete | hcloud_server_describe | \
+			hcloud_server_create-image | hcloud_server_poweron | \
+			hcloud_server_poweroff | hcloud_server_reboot | \
+			hcloud_server_reset | hcloud_server_reset-password | \
+			hcloud_server_shutdown | hcloud_server_disable-rescue | \
+			hcloud_server_enable-rescue )
 				__hcloud_server_names
 				return
 				;;
