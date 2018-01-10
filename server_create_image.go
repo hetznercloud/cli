@@ -18,6 +18,11 @@ func newServerCreateImageCommand(cli *CLI) *cobra.Command {
 		PreRunE: validateServerCreateImage,
 	}
 	cmd.Flags().String("type", "snapshot", "Image type")
+	cmd.Flag("type").Annotations = map[string][]string{
+		cobra.BashCompCustom: {"__hcloud_image_types_no_system"},
+	}
+	cmd.MarkFlagRequired("type")
+
 	cmd.Flags().String("description", "", "Image description")
 	return cmd
 }
@@ -45,10 +50,6 @@ func runServerCreateImage(cli *CLI, cmd *cobra.Command, args []string) error {
 	}
 
 	imageType, _ := cmd.Flags().GetString("type")
-	cmd.Flag("type").Annotations = map[string][]string{
-		cobra.BashCompCustom: {"__hcloud_image_types_no_system"},
-	}
-	cmd.MarkFlagRequired("type")
 
 	description, _ := cmd.Flags().GetString("description")
 

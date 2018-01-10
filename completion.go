@@ -47,7 +47,7 @@ const (
 	}
 
 	__hcloud_image_types_no_system() {
-		COMPREPLY=($(echo -e "snapshot\nbackup"))
+		COMPREPLY=($(echo "snapshot backup"))
 	}
 
 	__custom_func() {
