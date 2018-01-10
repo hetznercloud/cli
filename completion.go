@@ -11,6 +11,13 @@ import (
 
 const (
 	bashCompletionFunc = `
+	__hcloud_datacenter_names() {
+		local ctl_output out
+		if ctl_output=$(hcloud datacenter list 2>/dev/null); then
+			COMPREPLY=($(echo "${ctl_output}" | grep -v '^ID' | awk '{print $2}'))
+		fi
+	}
+
 	__hcloud_server_names() {
 		local ctl_output out
 		if ctl_output=$(hcloud server list 2>/dev/null); then
@@ -47,7 +54,7 @@ const (
 	}
 
 	__hcloud_image_types_no_system() {
-		COMPREPLY=($(echo "snapshot backup"))
+		COMPREPLY="snapshot backup"
 	}
 
 	__custom_func() {
@@ -75,6 +82,10 @@ const (
 				;;
 			hcloud_floating-ip_assign | hcloud_floating-ip_unassign | hcloud_floating-ip_delete | hcloud_floating-ip_describe )
 				__hcloud_floating_ip_ids
+				return
+				;;
+			hcloud_datacenter_describe )
+				__hcloud_datacenter_names
 				return
 				;;
 			*)
