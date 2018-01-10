@@ -53,8 +53,14 @@ func runServerDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 	fmt.Printf("    Blocked:\t%s\n", yesno(server.PublicNet.IPv6.Blocked))
 	fmt.Printf("  Floating IPs:\n")
 	if len(server.PublicNet.FloatingIPs) > 0 {
-		for _, floatingIP := range server.PublicNet.FloatingIPs {
-			fmt.Printf("    - ID: %d\n", floatingIP.ID)
+		for _, f := range server.PublicNet.FloatingIPs {
+			floatinIP, _, err := cli.client.FloatingIP.GetByID(cli.Context, f.ID)
+			if err != nil {
+				return fmt.Errorf("error fetching floating ip: %v", err)
+			}
+			fmt.Printf("  - ID:\t\t%d\n", floatinIP.ID)
+			fmt.Printf("    Description:\t%s\n", floatinIP.Description)
+			fmt.Printf("    IP:\t\t%s\n", floatinIP.IP)
 		}
 	} else {
 		fmt.Printf("    No Floating IPs\n")
