@@ -18,6 +18,13 @@ const (
 		fi
 	}
 
+	__hcloud_location_names() {
+		local ctl_output out
+		if ctl_output=$(hcloud location list 2>/dev/null); then
+			COMPREPLY=($(echo "${ctl_output}" | grep -v '^ID' | awk '{print $2}'))
+		fi
+	}
+
 	__hcloud_server_names() {
 		local ctl_output out
 		if ctl_output=$(hcloud server list 2>/dev/null); then
@@ -84,8 +91,13 @@ const (
 				__hcloud_floating_ip_ids
 				return
 				;;
+<<<<<<< HEAD
 			hcloud_datacenter_describe )
 				__hcloud_datacenter_names
+=======
+			hcloud_location_describe )
+				__hcloud_location_names
+>>>>>>> c38e76e... Add location list and describe commands
 				return
 				;;
 			*)

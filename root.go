@@ -24,6 +24,7 @@ func NewRootCommand(cli *CLI) *cobra.Command {
 		newServerTypeCommand(cli),
 		newContextCommand(cli),
 		newDatacenterCommand(cli),
+		newLocationCommand(cli),
 	)
 	return cmd
 }
