@@ -9,7 +9,7 @@ import (
 func newISODescribeCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "describe [FLAGS] ISO",
-		Short:                 "Describe a server type",
+		Short:                 "Describe an ISO",
 		Args:                  cobra.ExactArgs(1),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,

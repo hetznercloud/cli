@@ -11,7 +11,7 @@ import (
 func newISOListCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "list [FLAGS]",
-		Short:                 "List isos",
+		Short:                 "List ISOs",
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		RunE: cli.wrap(runISOList),

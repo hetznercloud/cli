@@ -9,7 +9,7 @@ import (
 func newServerDetachISOCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "detach-iso [FLAGS] SERVER",
-		Short:                 "Detaches an ISO from the server",
+		Short:                 "Detaches an ISO from a server",
 		Args:                  cobra.ExactArgs(1),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,

@@ -9,7 +9,7 @@ import (
 func newServerAttachISOCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "attach-iso [FLAGS] SERVER ISO",
-		Short:                 "Attaches an ISO to the server",
+		Short:                 "Attaches an ISO to a server",
 		Args:                  cobra.ExactArgs(2),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
