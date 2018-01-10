@@ -11,6 +11,13 @@ import (
 
 const (
 	bashCompletionFunc = `
+	__hcloud_iso_names() {
+		local ctl_output out
+		if ctl_output=$(hcloud iso list 2>/dev/null); then
+			COMPREPLY=($(echo "${ctl_output}" | grep -v '^ID' | awk '{print $2}'))
+		fi
+	}
+
 	__hcloud_datacenter_names() {
 		local ctl_output out
 		if ctl_output=$(hcloud datacenter list 2>/dev/null); then
@@ -97,6 +104,10 @@ const (
 				;;
 			hcloud_location_describe )
 				__hcloud_location_names
+				return
+				;;
+			hcloud_iso_describe )
+				__hcloud_iso_names
 				return
 				;;
 			*)
