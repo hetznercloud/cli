@@ -28,6 +28,7 @@ func newServerCommand(cli *CLI) *cobra.Command {
 		newServerAttachISOCommand(cli),
 		newServerDetachISOCommand(cli),
 		newServerUpdateCommand(cli),
+		newServerChangeTypeCommand(cli),
 	)
 	return cmd
 }

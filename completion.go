@@ -94,6 +94,17 @@ const (
 				__hcloud_server_names
 				return
 				;;
+			hcloud_server_change-type )
+				if [[ ${#nouns[@]} -gt 1 ]]; then
+					return 1
+				fi
+				if [[ ${#nouns[@]} -eq 1 ]]; then
+					__hcloud_servertype_names
+					return
+				fi
+				__hcloud_server_names
+				return
+				;;
 			hcloud_server-type_describe )
 				__hcloud_servertype_names
 				return
