@@ -1,10 +1,7 @@
 package cli
 
 import (
-	"fmt"
-	"os"
-	"text/tabwriter"
-
+	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
 
@@ -20,17 +17,35 @@ func newSSHKeyListCommand(cli *CLI) *cobra.Command {
 }
 
 func runSSHKeyList(cli *CLI, cmd *cobra.Command, args []string) error {
+	out, _ := cmd.Flags().GetStringArray("output")
+	outOpts, err := parseOutputOpts(out)
+	if err != nil {
+		return err
+	}
+
 	sshKeys, err := cli.Client().SSHKey.All(cli.Context)
 	if err != nil {
 		return err
 	}
 
-	w := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', 0)
-	fmt.Fprintln(w, "ID\tNAME\tFINGERPRINT")
-	for _, sshKey := range sshKeys {
-		fmt.Fprintf(w, "%d\t%.50s\t%s\n", sshKey.ID, sshKey.Name, sshKey.Fingerprint)
+	cols := []string{"id", "name", "fingerprint"}
+	if outOpts.IsSet("columns") {
+		cols = outOpts["columns"]
 	}
-	w.Flush()
 
+	tw := newTableOutput().
+		AddAllowedFields(hcloud.SSHKey{})
+
+	if err = tw.ValidateColumns(cols); err != nil {
+		return err
+	}
+
+	if !outOpts.IsSet("noheader") {
+		tw.WriteHeader(cols)
+	}
+	for _, sshKey := range sshKeys {
+		tw.Write(cols, sshKey)
+	}
+	tw.Flush()
 	return nil
 }

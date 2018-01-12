@@ -103,6 +103,9 @@ func (o *tableOutput) AddAllowedFields(obj interface{}) *tableOutput {
 	}
 	t := v.Type()
 	for i := 0; i < v.NumField(); i++ {
+		if t.Field(i).Type.Kind() == reflect.Ptr {
+			continue
+		}
 		o.allowedFields[strings.ToLower(t.Field(i).Name)] = true
 	}
 	return o
