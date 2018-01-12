@@ -75,11 +75,15 @@ const (
 	}
 
 	__hcloud_image_types_no_system() {
-		COMPREPLY=($(echo -e "snapshot\nbackup"))
+		COMPREPLY=($(echo "snapshot backup"))
 	}
 
 	__hcloud_floatingip_types() {
-		COMPREPLY=($(echo -e "ipv4 ipv6"))
+		COMPREPLY=($(echo "ipv4 ipv6"))
+	}
+
+	__hcloud_backup_windows() {
+		COMPREPLY=($(echo "22-02 02-06 06-10 10-14 14-18 18-22"))
 	}
 
 	__custom_func() {
@@ -90,7 +94,8 @@ const (
 			hcloud_server_reset | hcloud_server_reset-password | \
 			hcloud_server_shutdown | hcloud_server_disable-rescue | \
 			hcloud_server_enable-rescue | hcloud_server_detach-iso | \
-			hcloud_server_update | hcloud_server_rebuild )
+			hcloud_server_update | hcloud_server_enable-backup | \
+			hcloud_server_disable-backup | hcloud_server_rebuild )
 				__hcloud_server_names
 				return
 				;;
