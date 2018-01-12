@@ -26,8 +26,8 @@ If you have Go installed, you can build and install the `hcloud` program with:
 
 2.  Configure the `hcloud` program to use your token:
     
-        hcloud context create my-project
-        hcloud context activate my-project
+        hcloud context create my-project
+        hcloud context use my-project
 
 3.  You’re ready to use the program. For example, to get a list of available server
     types, run:
