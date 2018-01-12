@@ -11,9 +11,12 @@ release="$1"
 assets=()
 
 while read -r os arch label; do
-  asset="dist/hcloud-$os-$arch-$release.tar.gz"
-  if [ ! -f "$asset" ]; then
-    echo "$asset not found" >&2
+  if [ -f "dist/hcloud-$os-$arch-$release.tar.gz" ]; then
+    asset="dist/hcloud-$os-$arch-$release.tar.gz"
+  elif [ -f "dist/hcloud-$os-$arch-$release.zip" ]; then
+    asset="dist/hcloud-$os-$arch-$release.zip"
+   else
+    echo "no asset found for $os-$arch" >&2
     exit 1
   fi
   assets+=(-a $asset)
