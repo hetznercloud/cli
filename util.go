@@ -16,7 +16,7 @@ func yesno(b bool) string {
 
 func na(s string) string {
 	if s == "" {
-		return "n/a"
+		return "-"
 	}
 	return s
 }
