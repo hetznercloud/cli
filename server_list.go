@@ -1,10 +1,7 @@
 package cli
 
 import (
-	"fmt"
-	"os"
-	"text/tabwriter"
-
+	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
 
@@ -20,18 +17,39 @@ func newServerListCommand(cli *CLI) *cobra.Command {
 }
 
 func runServerList(cli *CLI, cmd *cobra.Command, args []string) error {
+	out, _ := cmd.Flags().GetStringArray("output")
+	outOpts, err := parseOutputOpts(out)
+	if err != nil {
+		return err
+	}
+
 	servers, err := cli.Client().Server.All(cli.Context)
 	if err != nil {
 		return err
 	}
 
-	w := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', 0)
-	fmt.Fprintln(w, "ID\tNAME\tSTATUS\tIPV4")
-	for _, server := range servers {
-		fmt.Fprintf(w, "%d\t%.50s\t%s\t%s\n", server.ID, server.Name, server.Status,
-			server.PublicNet.IPv4.IP)
+	cols := []string{"id", "name", "status", "ipv4"}
+	if outOpts.IsSet("columns") {
+		cols = outOpts["columns"]
 	}
-	w.Flush()
 
+	tw := newTableOutput().
+		AddAllowedFields(hcloud.Server{}).
+		AddFieldOutputFn("ipv4", fieldOutputFn(func(obj interface{}) string {
+			server := obj.(*hcloud.Server)
+			return server.PublicNet.IPv4.IP.String()
+		}))
+
+	if err = tw.ValidateColumns(cols); err != nil {
+		return err
+	}
+
+	if !outOpts.IsSet("noheader") {
+		tw.WriteHeader(cols)
+	}
+	for _, server := range servers {
+		tw.Write(cols, server)
+	}
+	tw.Flush()
 	return nil
 }

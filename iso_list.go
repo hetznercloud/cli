@@ -1,10 +1,7 @@
 package cli
 
 import (
-	"fmt"
-	"os"
-	"text/tabwriter"
-
+	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
 
@@ -20,22 +17,36 @@ func newISOListCommand(cli *CLI) *cobra.Command {
 }
 
 func runISOList(cli *CLI, cmd *cobra.Command, args []string) error {
+	out, _ := cmd.Flags().GetStringArray("output")
+	outOpts, err := parseOutputOpts(out)
+	if err != nil {
+		return err
+	}
+
 	isos, err := cli.Client().ISO.All(cli.Context)
 	if err != nil {
 		return err
 	}
 
-	w := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', 0)
-	fmt.Fprintln(w, "ID\tNAME\tDESCRIPTION\tTYPE")
-	for _, iso := range isos {
-		fmt.Fprintf(w, "%d\t%.50s\t%s\t%s\n",
-			iso.ID,
-			iso.Name,
-			iso.Description,
-			iso.Type,
-		)
+	cols := []string{"id", "name", "description", "type"}
+	if outOpts.IsSet("columns") {
+		cols = outOpts["columns"]
 	}
-	w.Flush()
+
+	tw := newTableOutput().
+		AddAllowedFields(hcloud.ISO{})
+
+	if err = tw.ValidateColumns(cols); err != nil {
+		return err
+	}
+
+	if !outOpts.IsSet("noheader") {
+		tw.WriteHeader(cols)
+	}
+	for _, iso := range isos {
+		tw.Write(cols, iso)
+	}
+	tw.Flush()
 
 	return nil
 }
