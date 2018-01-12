@@ -36,6 +36,6 @@ func runServerDisableRescue(cli *CLI, cmd *cobra.Command, args []string) error {
 	if err := <-errCh; err != nil {
 		return err
 	}
-	fmt.Printf("Rescue disabled for server %s\n", idOrName)
+	fmt.Printf("Rescue disabled for server %s\n", server.Name)
 	return nil
 }

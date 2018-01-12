@@ -36,6 +36,6 @@ func runServerShutdown(cli *CLI, cmd *cobra.Command, args []string) error {
 	if err := <-errCh; err != nil {
 		return err
 	}
-	fmt.Printf("Server %s shut down\n", idOrName)
+	fmt.Printf("Server %s shut down\n", server.Name)
 	return nil
 }

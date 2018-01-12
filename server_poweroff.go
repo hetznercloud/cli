@@ -36,6 +36,6 @@ func runServerPoweroff(cli *CLI, cmd *cobra.Command, args []string) error {
 	if err := <-errCh; err != nil {
 		return err
 	}
-	fmt.Printf("Server %s stopped\n", idOrName)
+	fmt.Printf("Server %s stopped\n", server.Name)
 	return nil
 }

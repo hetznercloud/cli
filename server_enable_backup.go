@@ -43,6 +43,6 @@ func runServerEnableBackup(cli *CLI, cmd *cobra.Command, args []string) error {
 	if err := <-errCh; err != nil {
 		return err
 	}
-	fmt.Printf("Backup enabled for server %s\n", idOrName)
+	fmt.Printf("Backup enabled for server %s\n", server.Name)
 	return nil
 }

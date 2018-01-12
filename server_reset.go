@@ -36,6 +36,6 @@ func runServerReset(cli *CLI, cmd *cobra.Command, args []string) error {
 	if err := <-errCh; err != nil {
 		return err
 	}
-	fmt.Printf("Server %s reset\n", idOrName)
+	fmt.Printf("Server %s reset\n", server.Name)
 	return nil
 }

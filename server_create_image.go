@@ -66,7 +66,7 @@ func runServerCreateImage(cli *CLI, cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	fmt.Printf("Image %d created from server %s\n", result.Image.ID, idOrName)
+	fmt.Printf("Image %d created from server %s\n", result.Image.ID, server.Name)
 
 	return nil
 }

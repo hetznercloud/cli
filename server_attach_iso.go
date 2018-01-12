@@ -47,6 +47,6 @@ func runServerAttachISO(cli *CLI, cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	fmt.Printf("ISO %s attached to server %s\n", isoIDOrName, idOrName)
+	fmt.Printf("ISO %s attached to server %s\n", isoIDOrName, server.Name)
 	return nil
 }

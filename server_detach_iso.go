@@ -38,6 +38,6 @@ func runServerDetachISO(cli *CLI, cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	fmt.Printf("ISO detached from server %s\n", idOrName)
+	fmt.Printf("ISO detached from server %s\n", server.Name)
 	return nil
 }
