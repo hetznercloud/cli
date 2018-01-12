@@ -772,7 +772,7 @@ func TestPricingFromSchema(t *testing.T) {
 			}
 		},
 		"traffic": {
-			"price_per_gb": {
+			"price_per_tb": {
 				"net": "1",
 				"gross": "1.19"
 			}
@@ -833,17 +833,17 @@ func TestPricingFromSchema(t *testing.T) {
 		t.Errorf("unexpected FloatingIP.Monthly.Gross: %v", pricing.FloatingIP.Monthly.Gross)
 	}
 
-	if pricing.Traffic.PerGB.Currency != "EUR" {
-		t.Errorf("unexpected Traffic.PerGB.Currency: %v", pricing.Traffic.PerGB.Currency)
+	if pricing.Traffic.PerTB.Currency != "EUR" {
+		t.Errorf("unexpected Traffic.PerTB.Currency: %v", pricing.Traffic.PerTB.Currency)
 	}
-	if pricing.Traffic.PerGB.VATRate != "19.00" {
-		t.Errorf("unexpected Traffic.PerGB.VATRate: %v", pricing.Traffic.PerGB.VATRate)
+	if pricing.Traffic.PerTB.VATRate != "19.00" {
+		t.Errorf("unexpected Traffic.PerTB.VATRate: %v", pricing.Traffic.PerTB.VATRate)
 	}
-	if pricing.Traffic.PerGB.Net != "1" {
-		t.Errorf("unexpected Traffic.PerGB.Net: %v", pricing.Traffic.PerGB.Net)
+	if pricing.Traffic.PerTB.Net != "1" {
+		t.Errorf("unexpected Traffic.PerTB.Net: %v", pricing.Traffic.PerTB.Net)
 	}
-	if pricing.Traffic.PerGB.Gross != "1.19" {
-		t.Errorf("unexpected Traffic.PerGB.Gross: %v", pricing.Traffic.PerGB.Gross)
+	if pricing.Traffic.PerTB.Gross != "1.19" {
+		t.Errorf("unexpected Traffic.PerTB.Gross: %v", pricing.Traffic.PerTB.Gross)
 	}
 
 	if pricing.ServerBackup.Percentage != "20" {

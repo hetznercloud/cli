@@ -261,3 +261,29 @@ func (c *FloatingIPClient) Unassign(ctx context.Context, floatingIP *FloatingIP)
 	}
 	return ActionFromSchema(respBody.Action), resp, nil
 }
+
+// ChangeDNSPtr changes or resets the reverse DNS pointer for a Floating IP address.
+// Pass a nil ptr to reset the reverse DNS pointer to its default value.
+func (c *FloatingIPClient) ChangeDNSPtr(ctx context.Context, floatingIP *FloatingIP, ip string, ptr *string) (*Action, *Response, error) {
+	reqBody := schema.FloatingIPActionChangeDNSPtrRequest{
+		IP:     ip,
+		DNSPtr: ptr,
+	}
+	reqBodyData, err := json.Marshal(reqBody)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	path := fmt.Sprintf("/floating_ips/%d/actions/change_dns_ptr", floatingIP.ID)
+	req, err := c.client.NewRequest(ctx, "POST", path, bytes.NewReader(reqBodyData))
+	if err != nil {
+		return nil, nil, err
+	}
+
+	respBody := schema.FloatingIPActionChangeDNSPtrResponse{}
+	resp, err := c.client.Do(req, &respBody)
+	if err != nil {
+		return nil, resp, err
+	}
+	return ActionFromSchema(respBody.Action), resp, nil
+}

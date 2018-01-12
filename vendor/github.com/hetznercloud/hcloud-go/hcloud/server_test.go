@@ -1118,3 +1118,72 @@ func TestServerClientChangeType(t *testing.T) {
 		}
 	})
 }
+
+func TestServerClientChangeDNSPtr(t *testing.T) {
+	var (
+		ctx    = context.Background()
+		server = &Server{ID: 1}
+	)
+
+	t.Run("set", func(t *testing.T) {
+		env := newTestEnv()
+		defer env.Teardown()
+
+		env.Mux.HandleFunc("/servers/1/actions/change_dns_ptr", func(w http.ResponseWriter, r *http.Request) {
+			var reqBody schema.ServerActionChangeDNSPtrRequest
+			if err := json.NewDecoder(r.Body).Decode(&reqBody); err != nil {
+				t.Fatal(err)
+			}
+			if reqBody.IP != "127.0.0.1" {
+				t.Errorf("unexpected IP: %v", reqBody.IP)
+			}
+			if reqBody.DNSPtr == nil || *reqBody.DNSPtr != "example.com" {
+				t.Errorf("unexpected DNS ptr: %v", reqBody.DNSPtr)
+			}
+			json.NewEncoder(w).Encode(schema.ServerActionChangeDNSPtrResponse{
+				Action: schema.Action{
+					ID: 1,
+				},
+			})
+		})
+
+		action, _, err := env.Client.Server.ChangeDNSPtr(ctx, server, "127.0.0.1", String("example.com"))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if action.ID != 1 {
+			t.Errorf("unexpected action ID: %d", action.ID)
+		}
+	})
+
+	t.Run("reset", func(t *testing.T) {
+		env := newTestEnv()
+		defer env.Teardown()
+
+		env.Mux.HandleFunc("/servers/1/actions/change_dns_ptr", func(w http.ResponseWriter, r *http.Request) {
+			var reqBody schema.ServerActionChangeDNSPtrRequest
+			if err := json.NewDecoder(r.Body).Decode(&reqBody); err != nil {
+				t.Fatal(err)
+			}
+			if reqBody.IP != "127.0.0.1" {
+				t.Errorf("unexpected IP: %v", reqBody.IP)
+			}
+			if reqBody.DNSPtr != nil {
+				t.Errorf("unexpected DNS ptr: %v", reqBody.DNSPtr)
+			}
+			json.NewEncoder(w).Encode(schema.ServerActionChangeDNSPtrResponse{
+				Action: schema.Action{
+					ID: 1,
+				},
+			})
+		})
+
+		action, _, err := env.Client.Server.ChangeDNSPtr(ctx, server, "127.0.0.1", nil)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if action.ID != 1 {
+			t.Errorf("unexpected action ID: %d", action.ID)
+		}
+	})
+}

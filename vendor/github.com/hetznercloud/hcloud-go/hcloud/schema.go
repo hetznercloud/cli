@@ -298,11 +298,11 @@ func PricingFromSchema(s schema.Pricing) Pricing {
 			},
 		},
 		Traffic: TrafficPricing{
-			PerGB: Price{
+			PerTB: Price{
 				Currency: s.Currency,
 				VATRate:  s.VATRate,
-				Net:      s.Traffic.PricePerGB.Net,
-				Gross:    s.Traffic.PricePerGB.Gross,
+				Net:      s.Traffic.PricePerTB.Net,
+				Gross:    s.Traffic.PricePerTB.Gross,
 			},
 		},
 		ServerBackup: ServerBackupPricing{

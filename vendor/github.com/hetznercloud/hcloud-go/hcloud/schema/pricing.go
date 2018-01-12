@@ -29,7 +29,7 @@ type PricingFloatingIP struct {
 
 // PricingTraffic defines the schema of pricing information for traffic.
 type PricingTraffic struct {
-	PricePerGB Price `json:"price_per_gb"`
+	PricePerTB Price `json:"price_per_tb"`
 }
 
 // PricingServerBackup defines the schema of pricing information for server backups.

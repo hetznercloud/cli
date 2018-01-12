@@ -259,3 +259,16 @@ type ServerActionChangeTypeRequest struct {
 type ServerActionChangeTypeResponse struct {
 	Action Action `json:"action"`
 }
+
+// ServerActionChangeDNSPtrRequest defines the schema for the request to
+// change a server's reverse DNS pointer.
+type ServerActionChangeDNSPtrRequest struct {
+	IP     string  `json:"ip"`
+	DNSPtr *string `json:"dns_ptr"`
+}
+
+// ServerActionChangeDNSPtrResponse defines the schema of the response when
+// creating a change_dns_ptr server action.
+type ServerActionChangeDNSPtrResponse struct {
+	Action Action `json:"action"`
+}

@@ -78,3 +78,16 @@ type FloatingIPActionUnassignRequest struct{}
 type FloatingIPActionUnassignResponse struct {
 	Action Action `json:"action"`
 }
+
+// FloatingIPActionChangeDNSPtrRequest defines the schema for the request to
+// change a Floating IP's reverse DNS pointer.
+type FloatingIPActionChangeDNSPtrRequest struct {
+	IP     string  `json:"ip"`
+	DNSPtr *string `json:"dns_ptr"`
+}
+
+// FloatingIPActionChangeDNSPtrResponse defines the schema of the response when
+// creating a change_dns_ptr Floating IP action.
+type FloatingIPActionChangeDNSPtrResponse struct {
+	Action Action `json:"action"`
+}

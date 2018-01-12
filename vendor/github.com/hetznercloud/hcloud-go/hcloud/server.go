@@ -692,3 +692,29 @@ func (c *ServerClient) ChangeType(ctx context.Context, server *Server, opts Serv
 	}
 	return ActionFromSchema(respBody.Action), resp, nil
 }
+
+// ChangeDNSPtr changes or resets the reverse DNS pointer for a server IP address.
+// Pass a nil ptr to reset the reverse DNS pointer to its default value.
+func (c *ServerClient) ChangeDNSPtr(ctx context.Context, server *Server, ip string, ptr *string) (*Action, *Response, error) {
+	reqBody := schema.ServerActionChangeDNSPtrRequest{
+		IP:     ip,
+		DNSPtr: ptr,
+	}
+	reqBodyData, err := json.Marshal(reqBody)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	path := fmt.Sprintf("/servers/%d/actions/change_dns_ptr", server.ID)
+	req, err := c.client.NewRequest(ctx, "POST", path, bytes.NewReader(reqBodyData))
+	if err != nil {
+		return nil, nil, err
+	}
+
+	respBody := schema.ServerActionChangeDNSPtrResponse{}
+	resp, err := c.client.Do(req, &respBody)
+	if err != nil {
+		return nil, resp, err
+	}
+	return ActionFromSchema(respBody.Action), resp, nil
+}

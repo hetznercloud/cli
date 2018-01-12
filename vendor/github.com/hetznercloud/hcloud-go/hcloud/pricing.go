@@ -37,7 +37,7 @@ type FloatingIPPricing struct {
 
 // TrafficPricing provides pricing information for traffic.
 type TrafficPricing struct {
-	PerGB Price
+	PerTB Price
 }
 
 // ServerBackupPricing provides pricing information for server backups.

@@ -3,8 +3,8 @@
   name = "github.com/dustin/go-humanize"
 
 [[constraint]]
-  branch = "master"
   name = "github.com/hetznercloud/hcloud-go"
+  version = "1.0.0"
 
 [[constraint]]
   name = "github.com/pelletier/go-toml"
