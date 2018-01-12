@@ -1,0 +1,27 @@
+[[constraint]]
+  branch = "master"
+  name = "github.com/dustin/go-humanize"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/hetznercloud/hcloud-go"
+
+[[constraint]]
+  name = "github.com/pelletier/go-toml"
+  version = "1.0.1"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/spf13/cobra"
+
+[[constraint]]
+  name = "github.com/spf13/pflag"
+  version = "1.0.0"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/thcyron/uiprogress"
+
+[[constraint]]
+  branch = "master"
+  name = "golang.org/x/crypto"

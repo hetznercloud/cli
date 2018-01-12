@@ -3,10 +3,9 @@ language: go
 go:
   - 1.9
 before_script:
-  - go get -v ./...
   - git clone --depth 1 https://github.com/sstephenson/bats.git
 script:
-  - diff -u <(echo -n) <(gofmt -d -s .)
+  - diff -u <(echo -n) <(gofmt -d -s $(find . -type f -name '*.go' | grep -v ^./vendor))
   - go vet ./...
   - go test ./...
   - go build -o ./cmd/hcloud/hcloud ./cmd/hcloud
