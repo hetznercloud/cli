@@ -5,7 +5,7 @@ import "github.com/spf13/cobra"
 func newISOCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "iso",
-		Short:                 "Show information about ISOs",
+		Short:                 "Manage ISOs",
 		Args:                  cobra.NoArgs,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,

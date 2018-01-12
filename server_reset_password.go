@@ -9,7 +9,7 @@ import (
 func newServerResetPasswordCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "reset-password [FLAGS] SERVER",
-		Short:                 "Reset password of a server",
+		Short:                 "Reset the root password of a server",
 		Args:                  cobra.ExactArgs(1),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,

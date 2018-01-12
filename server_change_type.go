@@ -10,7 +10,7 @@ import (
 func newServerChangeTypeCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "change-type [FLAGS] SERVER SERVERTYPE",
-		Short:                 "Change the server type of a server",
+		Short:                 "Change type of a server",
 		Args:                  cobra.ExactArgs(2),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,

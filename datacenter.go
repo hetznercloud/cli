@@ -5,7 +5,7 @@ import "github.com/spf13/cobra"
 func newDatacenterCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "datacenter",
-		Short:                 "Show information about datacenters",
+		Short:                 "Manage datacenters",
 		Args:                  cobra.NoArgs,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,

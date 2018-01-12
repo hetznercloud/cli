@@ -11,7 +11,7 @@ import (
 func newServerCreateCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "create FLAGS",
-		Short:                 "Create server",
+		Short:                 "Create a server",
 		Args:                  cobra.NoArgs,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,

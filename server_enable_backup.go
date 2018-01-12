@@ -9,7 +9,7 @@ import (
 func newServerEnableBackupCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "enable-backup [FLAGS] SERVER",
-		Short:                 "Enable backups for a server",
+		Short:                 "Enable backup for a server",
 		Args:                  cobra.ExactArgs(1),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
@@ -43,6 +43,6 @@ func runServerEnableBackup(cli *CLI, cmd *cobra.Command, args []string) error {
 	if err := <-errCh; err != nil {
 		return err
 	}
-	fmt.Printf("Backups of server %s enabled\n", idOrName)
+	fmt.Printf("Backup enabled for server %s\n", idOrName)
 	return nil
 }

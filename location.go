@@ -5,7 +5,7 @@ import "github.com/spf13/cobra"
 func newLocationCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "location",
-		Short:                 "Show information about locations",
+		Short:                 "Manage locations",
 		Args:                  cobra.NoArgs,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
