@@ -68,7 +68,7 @@ const (
 	}
 
 	__hcloud_image_types_no_system() {
-		COMPREPLY="snapshot backup"
+		COMPREPLY=($(echo -e "snapshot\nbackup"))
 	}
 
 	__custom_func() {
@@ -102,7 +102,7 @@ const (
 				__hcloud_image_names
 				return
 				;;
-			hcloud_image_delete )
+			hcloud_image_delete | hcloud_image_update )
 				__hcloud_image_ids_no_system
 				return
 				;;
