@@ -12,6 +12,7 @@ func newFloatingIPCommand(cli *CLI) *cobra.Command {
 		RunE: cli.wrap(runFloatingIP),
 	}
 	cmd.AddCommand(
+		newFloatingIPUpdateCommand(cli),
 		newFloatingIPListCommand(cli),
 		newFloatingIPCreateCommand(cli),
 		newFloatingIPDescribeCommand(cli),
