@@ -2,19 +2,11 @@ package cli
 
 import (
 	"fmt"
-	"os"
-	"path/filepath"
 
 	toml "github.com/pelletier/go-toml"
 )
 
 var DefaultConfigPath string
-
-func init() {
-	if home := os.Getenv("HOME"); home != "" {
-		DefaultConfigPath = filepath.Join(home, ".config", "hcloud", "cli.toml")
-	}
-}
 
 type Config struct {
 	Endpoint      string
