@@ -11,6 +11,13 @@ import (
 
 const (
 	bashCompletionFunc = `
+	__hcloud_floatingip_ids() {
+		local ctl_output out
+		if ctl_output=$(hcloud floating-ip list 2>/dev/null); then
+			COMPREPLY=($(echo "${ctl_output}" | grep -v '^ID' | awk '{print $1}'))
+		fi
+	}
+
 	__hcloud_iso_names() {
 		local ctl_output out
 		if ctl_output=$(hcloud iso list 2>/dev/null); then
@@ -71,6 +78,10 @@ const (
 		COMPREPLY=($(echo -e "snapshot\nbackup"))
 	}
 
+	__hcloud_floatingip_types() {
+		COMPREPLY=($(echo -e "ipv4 ipv6"))
+	}
+
 	__custom_func() {
 		case ${last_command} in
 			hcloud_server_delete | hcloud_server_describe | \
@@ -106,7 +117,19 @@ const (
 				__hcloud_image_ids_no_system
 				return
 				;;
-			hcloud_floating-ip_assign | hcloud_floating-ip_unassign | hcloud_floating-ip_delete | hcloud_floating-ip_describe )
+			hcloud_floating-ip_assign )
+				if [[ ${#nouns[@]} -gt 1 ]]; then
+					return 1
+				fi
+				if [[ ${#nouns[@]} -eq 1 ]]; then
+					__hcloud_server_names
+					return
+				fi
+				__hcloud_floating_ip_ids
+				return
+				;;
+			hcloud_floating-ip_unassign | hcloud_floating-ip_delete | \
+			hcloud_floating-ip_describe | hcloud_floating-ip_update )
 				__hcloud_floating_ip_ids
 				return
 				;;

@@ -19,9 +19,21 @@ func newFloatingIPCreateCommand(cli *CLI) *cobra.Command {
 		PreRunE: validateFloatingIPCreate,
 	}
 	cmd.Flags().String("type", "", "Type")
+	cmd.Flag("type").Annotations = map[string][]string{
+		cobra.BashCompCustom: {"__hcloud_floatingip_types"},
+	}
+	cmd.MarkFlagRequired("type")
+
 	cmd.Flags().String("description", "", "Description")
 	cmd.Flags().String("home-location", "", "Home location")
-	cmd.Flags().Int("server", 0, "Server to assign Floating IP to")
+	cmd.Flag("home-location").Annotations = map[string][]string{
+		cobra.BashCompCustom: {"__hcloud_location_names"},
+	}
+
+	cmd.Flags().String("server", "", "Server to assign Floating IP to")
+	cmd.Flag("server").Annotations = map[string][]string{
+		cobra.BashCompCustom: {"__hcloud_server_names"},
+	}
 	return cmd
 }
 
@@ -44,7 +56,7 @@ func runFloatingIPCreate(cli *CLI, cmd *cobra.Command, args []string) error {
 	typ, _ := cmd.Flags().GetString("type")
 	description, _ := cmd.Flags().GetString("description")
 	homeLocation, _ := cmd.Flags().GetString("home-location")
-	server, _ := cmd.Flags().GetInt("server")
+	serverNameOrID, _ := cmd.Flags().GetString("server")
 
 	opts := hcloud.FloatingIPCreateOpts{
 		Type:        hcloud.FloatingIPType(typ),
@@ -53,8 +65,15 @@ func runFloatingIPCreate(cli *CLI, cmd *cobra.Command, args []string) error {
 	if homeLocation != "" {
 		opts.HomeLocation = &hcloud.Location{Name: homeLocation}
 	}
-	if server != 0 {
-		opts.Server = &hcloud.Server{ID: server}
+	if serverNameOrID != "" {
+		server, _, err := cli.Client().Server.Get(cli.Context, serverNameOrID)
+		if err != nil {
+			return err
+		}
+		if server == nil {
+			return fmt.Errorf("server not found: %s", serverNameOrID)
+		}
+		opts.Server = server
 	}
 
 	result, _, err := cli.Client().FloatingIP.Create(cli.Context, opts)

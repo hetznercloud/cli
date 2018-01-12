@@ -29,11 +29,14 @@ func runFloatingIPAssign(cli *CLI, cmd *cobra.Command, args []string) error {
 	}
 	floatingIP := &hcloud.FloatingIP{ID: floatingIPID}
 
-	serverID, err := strconv.Atoi(args[1])
+	serverIDOrName := args[1]
+	server, _, err := cli.Client().Server.Get(cli.Context, serverIDOrName)
 	if err != nil {
-		return errors.New("invalid server ID")
+		return err
 	}
-	server := &hcloud.Server{ID: serverID}
+	if server == nil {
+		return fmt.Errorf("server not found: %s", serverIDOrName)
+	}
 
 	action, _, err := cli.Client().FloatingIP.Assign(cli.Context, floatingIP, server)
 	if err != nil {
