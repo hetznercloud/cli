@@ -10,3 +10,4 @@ script:
   - go test ./...
   - go build -o ./cmd/hcloud/hcloud ./cmd/hcloud
   - PATH="./cmd/hcloud:$PATH" bats/bin/bats test
+  - while read os arch _; do echo $os/$arch; GOOS=$os GOARCH=$arch go build ./cmd/hcloud; done < script/variants.txt
