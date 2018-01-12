@@ -79,7 +79,7 @@ const (
 			hcloud_server_reset | hcloud_server_reset-password | \
 			hcloud_server_shutdown | hcloud_server_disable-rescue | \
 			hcloud_server_enable-rescue | hcloud_server_detach-iso | \
-			hcloud_server_update )
+			hcloud_server_update | hcloud_server_rebuild )
 				__hcloud_server_names
 				return
 				;;
