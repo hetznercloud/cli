@@ -39,13 +39,22 @@ func runFloatingIPDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 	fmt.Printf("Description:\t%s\n", floatingIP.Description)
 	fmt.Printf("Home Location:\t%s\n", floatingIP.HomeLocation.Name)
 	if floatingIP.Server != nil {
-		fmt.Printf("Server:\t\t%d\n", floatingIP.Server.ID)
+		server, _, err := cli.Client().Server.GetByID(cli.Context, floatingIP.Server.ID)
+		if err != nil {
+			return err
+		}
+		if server == nil {
+			return fmt.Errorf("server not found: %d", id)
+		}
+		fmt.Printf("Server:\n")
+		fmt.Printf("  ID:\t%d\n", server.ID)
+		fmt.Printf("  Name:\t%s\n", server.Name)
 	} else {
-		fmt.Print("Server:\t\tnot assigned\n")
+		fmt.Print("Server:\n  Not assigned\n")
 	}
 	fmt.Print("DNS:\n")
 	if len(floatingIP.DNSPtr) == 0 {
-		fmt.Print("none set\n")
+		fmt.Print("  No reverse DNS entries\n")
 	} else {
 		for ip, dns := range floatingIP.DNSPtr {
 			fmt.Printf("  %s: %s\n", ip, dns)

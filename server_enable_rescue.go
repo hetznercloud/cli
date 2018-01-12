@@ -17,7 +17,14 @@ func newServerEnableRescueCommand(cli *CLI) *cobra.Command {
 		RunE: cli.wrap(runServerEnableRescue),
 	}
 	cmd.Flags().String("type", "linux64", "Rescue type")
-	cmd.Flags().IntSlice("ssh-key", nil, "ID of SSH key to inject (can be specified multiple times)")
+	cmd.Flag("type").Annotations = map[string][]string{
+		cobra.BashCompCustom: {"__hcloud_rescue_types"},
+	}
+
+	cmd.Flags().StringSlice("ssh-key", nil, "ID or name of SSH key to inject (can be specified multiple times)")
+	cmd.Flag("ssh-key").Annotations = map[string][]string{
+		cobra.BashCompCustom: {"__hcloud_sshkey_names"},
+	}
 	return cmd
 }
 
@@ -37,9 +44,16 @@ func runServerEnableRescue(cli *CLI, cmd *cobra.Command, args []string) error {
 	rescueType, _ := cmd.Flags().GetString("type")
 	opts.Type = hcloud.ServerRescueType(rescueType)
 
-	sshKeys, _ := cmd.Flags().GetIntSlice("ssh-key")
-	for _, sshKey := range sshKeys {
-		opts.SSHKeys = append(opts.SSHKeys, &hcloud.SSHKey{ID: sshKey})
+	sshKeys, _ := cmd.Flags().GetStringSlice("ssh-key")
+	for _, sshKeyIDOrName := range sshKeys {
+		sshKey, _, err := cli.Client().SSHKey.Get(cli.Context, sshKeyIDOrName)
+		if err != nil {
+			return err
+		}
+		if sshKey == nil {
+			return fmt.Errorf("SSH key not found: %s", sshKeyIDOrName)
+		}
+		opts.SSHKeys = append(opts.SSHKeys, sshKey)
 	}
 
 	result, _, err := cli.Client().Server.EnableRescue(cli.Context, server, opts)
@@ -50,6 +64,6 @@ func runServerEnableRescue(cli *CLI, cmd *cobra.Command, args []string) error {
 	if err := <-errCh; err != nil {
 		return err
 	}
-	fmt.Printf("Password of server %s reset to: %s\n", idOrName, result.RootPassword)
+	fmt.Printf("Rescue mode enabled for server %s rescue root password: %s\n", idOrName, result.RootPassword)
 	return nil
 }

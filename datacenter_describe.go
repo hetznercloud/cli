@@ -73,7 +73,7 @@ func runDatacenterDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 	}
 	fmt.Printf("  Supported:\n")
 	if len(datacenter.ServerTypes.Supported) > 0 {
-		printServerTypes(datacenter.ServerTypes.Available, serverTypesMap)
+		printServerTypes(datacenter.ServerTypes.Supported, serverTypesMap)
 	} else {
 		fmt.Printf("    No supported server types\n")
 	}

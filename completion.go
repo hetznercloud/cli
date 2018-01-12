@@ -11,6 +11,22 @@ import (
 
 const (
 	bashCompletionFunc = `
+	__hcloud_sshkey_names() {
+		local ctl_output out
+		if ctl_output=$(hcloud ssh-key list -o noheader -o columns=name 2>/dev/null); then
+			IFS=$'\n'
+			COMPREPLY=($(echo "${ctl_output}" | while read -r line; do printf "%q\n" "$line"; done))
+		fi
+	}
+
+	__hcloud_context_names() {
+		local ctl_output out
+		if ctl_output=$(hcloud context list 2>/dev/null); then
+			IFS=$'\n'
+			COMPREPLY=($(echo "${ctl_output}" | grep -v '^NAME' | while read -r line; do printf "%q\n" "$line"; done))
+		fi
+	}
+
 	__hcloud_floatingip_ids() {
 		local ctl_output out
 		if ctl_output=$(hcloud floating-ip list 2>/dev/null); then
@@ -63,7 +79,7 @@ const (
 	__hcloud_image_names() {
 		local ctl_output out
 		if ctl_output=$(hcloud image list 2>/dev/null); then
-				COMPREPLY=($(echo "${ctl_output}" | grep -v '^ID' | awk '{if ($3 == "n/a") {print $1} else {print $3}}'))
+				COMPREPLY=($(echo "${ctl_output}" | grep -v '^ID' | awk '{if ($3 == "-") {print $1} else {print $3}}'))
 		fi
 	}
 
@@ -84,6 +100,10 @@ const (
 
 	__hcloud_backup_windows() {
 		COMPREPLY=($(echo "22-02 02-06 06-10 10-14 14-18 18-22"))
+	}
+
+	__hcloud_rescue_types() {
+		COMPREPLY=($(echo "linux64 linux32 freebsd64"))
 	}
 
 	__custom_func() {
@@ -159,6 +179,14 @@ const (
 				;;
 			hcloud_iso_describe )
 				__hcloud_iso_names
+				return
+				;;
+			hcloud_context_use | hcloud_context_delete )
+				__hcloud_context_names
+				return
+				;;
+			hcloud_ssh-key_delete | hcloud_ssh-key_describe )
+				__hcloud_sshkey_names
 				return
 				;;
 			*)

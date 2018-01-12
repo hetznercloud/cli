@@ -14,7 +14,7 @@ func newContextCommand(cli *CLI) *cobra.Command {
 	cmd.AddCommand(
 		newContextCreateCommand(cli),
 		newContextActiveCommand(cli),
-		newContextActivateCommand(cli),
+		newContextUseCommand(cli),
 		newContextDeleteCommand(cli),
 		newContextListCommand(cli),
 	)
