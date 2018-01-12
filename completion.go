@@ -78,7 +78,8 @@ const (
 			hcloud_server_poweroff | hcloud_server_reboot | \
 			hcloud_server_reset | hcloud_server_reset-password | \
 			hcloud_server_shutdown | hcloud_server_disable-rescue | \
-			hcloud_server_enable-rescue | hcloud_server_detach-iso )
+			hcloud_server_enable-rescue | hcloud_server_detach-iso | \
+			hcloud_server_update )
 				__hcloud_server_names
 				return
 				;;
