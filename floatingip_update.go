@@ -19,7 +19,7 @@ func newFloatingIPUpdateCommand(cli *CLI) *cobra.Command {
 		RunE: cli.wrap(runFloatingIPUpdate),
 	}
 
-	cmd.Flags().String("description", "", "FloatingIP description")
+	cmd.Flags().String("description", "", "Floating IP description")
 
 	return cmd
 }
