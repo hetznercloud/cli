@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"errors"
 	"fmt"
 
 	"github.com/hetznercloud/hcloud-go/hcloud"
@@ -36,6 +37,10 @@ func runServerUpdate(cli *CLI, cmd *cobra.Command, args []string) error {
 	opts := hcloud.ServerUpdateOpts{
 		Name: name,
 	}
+	if opts.Name == "" {
+		return errors.New("no updates")
+	}
+
 	_, _, err = cli.Client().Server.Update(cli.Context, server, opts)
 	if err != nil {
 		return err
