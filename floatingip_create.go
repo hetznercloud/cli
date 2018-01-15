@@ -44,8 +44,8 @@ func validateFloatingIPCreate(cmd *cobra.Command, args []string) error {
 	}
 
 	homeLocation, _ := cmd.Flags().GetString("home-location")
-	server, _ := cmd.Flags().GetInt("server")
-	if homeLocation == "" && server == 0 {
+	server, _ := cmd.Flags().GetString("server")
+	if homeLocation == "" && server == "" {
 		return errors.New("one of --home-location or --server is required")
 	}
 
