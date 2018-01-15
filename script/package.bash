@@ -19,6 +19,11 @@ trap "rm -rf $tmp" EXIT
 
 mkdir $tmp/hcloud-$os-$arch-$release
 
+mkdir $tmp/hcloud-$os-$arch-$release/etc
+go build -o $tmp/_hcloud ./cmd/hcloud
+$tmp/_hcloud completion bash > $tmp/hcloud-$os-$arch-$release/etc/hcloud.bash_completion.sh
+$tmp/_hcloud completion zsh > $tmp/hcloud-$os-$arch-$release/etc/hcloud.zsh_completion
+
 if [ "$os" = "windows" ]; then
   cp dist/hcloud-$os-$arch-$release $tmp/hcloud-$os-$arch-$release/hcloud.exe
   cp LICENSE README.md $tmp/hcloud-$os-$arch-$release/
