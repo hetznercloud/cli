@@ -62,6 +62,13 @@ func runFloatingIPList(cli *CLI, cmd *cobra.Command, args []string) error {
 		AddFieldOutputFn("home", fieldOutputFn(func(obj interface{}) string {
 			floatingIP := obj.(*hcloud.FloatingIP)
 			return floatingIP.HomeLocation.Name
+		})).
+		AddFieldOutputFn("ip", fieldOutputFn(func(obj interface{}) string {
+			floatingIP := obj.(*hcloud.FloatingIP)
+			if floatingIP.Network != nil {
+				return floatingIP.Network.String()
+			}
+			return floatingIP.IP.String()
 		}))
 
 	if err = tw.ValidateColumns(cols); err != nil {
