@@ -36,6 +36,16 @@ If you have Go installed, you can build and install the `hcloud` program with:
 
 See `hcloud help` for a list of commands.
 
+## Shell Completion
+
+To enable shell completion, run one of the following commands (or better,
+add it to your `.bashrc` or `.zshrc`):
+
+```
+$ source <(hcloud completion bash)   # bash
+$ source <(hcloud completion zsh)    # zsh
+```
+
 ## Examples
 
 ### List all servers
