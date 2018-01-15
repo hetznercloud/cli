@@ -47,6 +47,9 @@ func (c *CLI) ReadEnv() {
 	if s := os.Getenv("HCLOUD_ENDPOINT"); s != "" {
 		c.Endpoint = s
 	}
+	if s := os.Getenv("HCLOUD_CONTEXT"); s != "" && c.Config != nil {
+		c.Config.ActiveContext = c.Config.ContextByName(s)
+	}
 }
 
 func (c *CLI) ReadConfig() error {
