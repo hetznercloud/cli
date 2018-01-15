@@ -59,7 +59,7 @@ func runServerDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 				return fmt.Errorf("error fetching Floating IP: %v", err)
 			}
 			fmt.Printf("  - ID:\t\t\t%d\n", floatingIP.ID)
-			fmt.Printf("    Description:\t%s\n", floatingIP.Description)
+			fmt.Printf("    Description:\t%s\n", na(floatingIP.Description))
 			fmt.Printf("    IP:\t\t\t%s\n", floatingIP.IP)
 		}
 	} else {

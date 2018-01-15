@@ -36,7 +36,7 @@ func runFloatingIPDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 
 	fmt.Printf("ID:\t\t%d\n", floatingIP.ID)
 	fmt.Printf("Type:\t\t%s\n", floatingIP.Type)
-	fmt.Printf("Description:\t%s\n", floatingIP.Description)
+	fmt.Printf("Description:\t%s\n", na(floatingIP.Description))
 	fmt.Printf("Home Location:\t%s\n", floatingIP.HomeLocation.Name)
 	if floatingIP.Server != nil {
 		server, _, err := cli.Client().Server.GetByID(cli.Context, floatingIP.Server.ID)
