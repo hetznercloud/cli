@@ -3,5 +3,5 @@
 @test "prints version" {
   run hcloud version
   test $status -eq 0
-  test "$output" = "hcloud 0.0.1"
+  test "$output" = "hcloud 1.0.0"
 }
