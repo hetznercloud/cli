@@ -1,10 +1,7 @@
 package cli
 
 import (
-	"fmt"
-	"os"
-	"text/tabwriter"
-
+	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
 
@@ -21,12 +18,31 @@ func newContextListCommand(cli *CLI) *cobra.Command {
 }
 
 func runContextList(cli *CLI, cmd *cobra.Command, args []string) error {
-	w := tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', 0)
-	fmt.Fprintln(w, "NAME")
-	for _, context := range cli.Config.Contexts {
-		fmt.Fprintf(w, "%s\n", context.Name)
+	out, _ := cmd.Flags().GetStringArray("output")
+	outOpts, err := parseOutputOpts(out)
+	if err != nil {
+		return err
 	}
-	w.Flush()
 
+	cols := []string{"name"}
+	if outOpts.IsSet("columns") {
+		cols = outOpts["columns"]
+	}
+
+	tw := newTableOutput().
+		AddAllowedFields(hcloud.Datacenter{}).
+		RemoveAllowedField("token")
+
+	if err = tw.ValidateColumns(cols); err != nil {
+		return err
+	}
+
+	if !outOpts.IsSet("noheader") {
+		tw.WriteHeader(cols)
+	}
+	for _, context := range cli.Config.Contexts {
+		tw.Write(cols, context)
+	}
+	tw.Flush()
 	return nil
 }
