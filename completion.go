@@ -21,72 +21,72 @@ const (
 
 	__hcloud_context_names() {
 		local ctl_output out
-		if ctl_output=$(hcloud context list 2>/dev/null); then
+		if ctl_output=$(hcloud context list -o noheader 2>/dev/null); then
 			IFS=$'\n'
-			COMPREPLY=($(echo "${ctl_output}" | grep -v '^NAME' | while read -r line; do printf "%q\n" "$line"; done))
+			COMPREPLY=($(echo "${ctl_output}" | while read -r line; do printf "%q\n" "$line"; done))
 		fi
 	}
 
 	__hcloud_floatingip_ids() {
 		local ctl_output out
-		if ctl_output=$(hcloud floating-ip list 2>/dev/null); then
-			COMPREPLY=($(echo "${ctl_output}" | grep -v '^ID' | awk '{print $1}'))
+		if ctl_output=$(hcloud floating-ip list -o noheader -o columns=id 2>/dev/null); then
+			COMPREPLY=($(echo "${ctl_output}"))
 		fi
 	}
 
 	__hcloud_iso_names() {
 		local ctl_output out
-		if ctl_output=$(hcloud iso list 2>/dev/null); then
-			COMPREPLY=($(echo "${ctl_output}" | grep -v '^ID' | awk '{print $2}'))
+		if ctl_output=$(hcloud iso list -o noheader -o columns=name 2>/dev/null); then
+			COMPREPLY=($(echo "${ctl_output}"))
 		fi
 	}
 
 	__hcloud_datacenter_names() {
 		local ctl_output out
-		if ctl_output=$(hcloud datacenter list 2>/dev/null); then
-			COMPREPLY=($(echo "${ctl_output}" | grep -v '^ID' | awk '{print $2}'))
+		if ctl_output=$(hcloud datacenter list -o noheader -o columns=name 2>/dev/null); then
+			COMPREPLY=($(echo "${ctl_output}"))
 		fi
 	}
 
 	__hcloud_location_names() {
 		local ctl_output out
-		if ctl_output=$(hcloud location list 2>/dev/null); then
-			COMPREPLY=($(echo "${ctl_output}" | grep -v '^ID' | awk '{print $2}'))
+		if ctl_output=$(hcloud location list -o noheader -o columns=name 2>/dev/null); then
+			COMPREPLY=($(echo "${ctl_output}"))
 		fi
 	}
 
 	__hcloud_server_names() {
 		local ctl_output out
-		if ctl_output=$(hcloud server list 2>/dev/null); then
-			COMPREPLY=($(echo "${ctl_output}" | grep -v '^ID' | awk '{print $2}'))
+		if ctl_output=$(hcloud server list -o noheader -o columns=name 2>/dev/null); then
+			COMPREPLY=($(echo "${ctl_output}"))
 		fi
 	}
 
 	__hcloud_servertype_names() {
 		local ctl_output out
-		if ctl_output=$(hcloud server-type list 2>/dev/null); then
-			COMPREPLY=($(echo "${ctl_output}" | grep -v '^ID' | awk '{print $2}'))
+		if ctl_output=$(hcloud server-type list -o noheader -o columns=name 2>/dev/null); then
+			COMPREPLY=($(echo "${ctl_output}"))
 		fi
 	}
 
 	__hcloud_image_ids_no_system() {
 		local ctl_output out
-		if ctl_output=$(hcloud image list 2>/dev/null); then
-			COMPREPLY=($(echo "${ctl_output}" | grep -v '^ID' | awk '{if ($2 != "system") {print $1}}'))
+		if ctl_output=$(hcloud image list -o noheader 2>/dev/null); then
+			COMPREPLY=($(echo "${ctl_output}" | awk '{if ($2 != "system") {print $1}}'))
 		fi
 	}
 
 	__hcloud_image_names() {
 		local ctl_output out
-		if ctl_output=$(hcloud image list 2>/dev/null); then
-				COMPREPLY=($(echo "${ctl_output}" | grep -v '^ID' | awk '{if ($3 == "-") {print $1} else {print $3}}'))
+		if ctl_output=$(hcloud image list -o noheader 2>/dev/null); then
+				COMPREPLY=($(echo "${ctl_output}" | awk '{if ($3 == "-") {print $1} else {print $3}}'))
 		fi
 	}
 
 	__hcloud_floating_ip_ids() {
 		local ctl_output out
-		if ctl_output=$(hcloud floating-ip list 2>/dev/null); then
-			COMPREPLY=($(echo "${ctl_output}" | grep -v '^ID' | awk '{print $1}'))
+		if ctl_output=$(hcloud floating-ip list -o noheader 2>/dev/null); then
+			COMPREPLY=($(echo "${ctl_output}" | awk '{print $1}'))
 		fi
 	}
 

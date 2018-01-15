@@ -111,6 +111,14 @@ func (o *tableOutput) AddAllowedFields(obj interface{}) *tableOutput {
 	return o
 }
 
+// RemoveAllowedField removes fields from the allowed list.
+func (o *tableOutput) RemoveAllowedField(fields ...string) *tableOutput {
+	for _, field := range fields {
+		delete(o.allowedFields, field)
+	}
+	return o
+}
+
 // ValidateColumns returns an error if invalid columns are specified.
 func (o *tableOutput) ValidateColumns(cols []string) error {
 	var invalidCols []string
