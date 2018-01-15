@@ -49,7 +49,7 @@ func runServerDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 	fmt.Printf("    Blocked:\t%s\n", yesno(server.PublicNet.IPv4.Blocked))
 	fmt.Printf("    DNS:\t%s\n", server.PublicNet.IPv4.DNSPtr)
 	fmt.Printf("  IPv6:\n")
-	fmt.Printf("    IP:\t\t%s\n", server.PublicNet.IPv6.IP)
+	fmt.Printf("    IP:\t\t%s\n", server.PublicNet.IPv6.Network.String())
 	fmt.Printf("    Blocked:\t%s\n", yesno(server.PublicNet.IPv6.Blocked))
 	fmt.Printf("  Floating IPs:\n")
 	if len(server.PublicNet.FloatingIPs) > 0 {
