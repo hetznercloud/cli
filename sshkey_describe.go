@@ -1,9 +1,7 @@
 package cli
 
 import (
-	"errors"
 	"fmt"
-	"strconv"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -23,17 +21,12 @@ func newSSHKeyDescribeCommand(cli *CLI) *cobra.Command {
 }
 
 func runSSHKeyDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
-	id, err := strconv.Atoi(args[0])
-	if err != nil {
-		return errors.New("invalid SSH key ID")
-	}
-
-	sshKey, _, err := cli.Client().SSHKey.GetByID(cli.Context, id)
+	sshKey, _, err := cli.Client().SSHKey.Get(cli.Context, args[0])
 	if err != nil {
 		return err
 	}
 	if sshKey == nil {
-		return fmt.Errorf("SSH key not found: %d", id)
+		return fmt.Errorf("SSH key not found: %s", args[0])
 	}
 
 	fmt.Printf("ID:\t\t%d\n", sshKey.ID)
