@@ -14,7 +14,8 @@ func newServerEnableRescueCommand(cli *CLI) *cobra.Command {
 		Args:                  cobra.ExactArgs(1),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE: cli.wrap(runServerEnableRescue),
+		PreRunE:               cli.ensureActiveContext,
+		RunE:                  cli.wrap(runServerEnableRescue),
 	}
 	cmd.Flags().String("type", "linux64", "Rescue type")
 	cmd.Flag("type").Annotations = map[string][]string{

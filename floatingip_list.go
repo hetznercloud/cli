@@ -14,7 +14,8 @@ func newFloatingIPListCommand(cli *CLI) *cobra.Command {
 		Short:                 "List Floating IPs",
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE: cli.wrap(runFloatingIPList),
+		PreRunE:               cli.ensureActiveContext,
+		RunE:                  cli.wrap(runFloatingIPList),
 	}
 	return cmd
 }

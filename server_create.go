@@ -15,7 +15,8 @@ func newServerCreateCommand(cli *CLI) *cobra.Command {
 		Args:                  cobra.NoArgs,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE: cli.wrap(runServerCreate),
+		PreRunE:               cli.ensureActiveContext,
+		RunE:                  cli.wrap(runServerCreate),
 	}
 	cmd.Flags().String("name", "", "Server name")
 	cmd.MarkFlagRequired("name")

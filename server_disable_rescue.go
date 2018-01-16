@@ -13,7 +13,8 @@ func newServerDisableRescueCommand(cli *CLI) *cobra.Command {
 		Args:                  cobra.ExactArgs(1),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE: cli.wrap(runServerDisableRescue),
+		PreRunE:               cli.ensureActiveContext,
+		RunE:                  cli.wrap(runServerDisableRescue),
 	}
 	return cmd
 }

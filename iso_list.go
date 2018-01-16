@@ -11,7 +11,8 @@ func newISOListCommand(cli *CLI) *cobra.Command {
 		Short:                 "List ISOs",
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE: cli.wrap(runISOList),
+		PreRunE:               cli.ensureActiveContext,
+		RunE:                  cli.wrap(runISOList),
 	}
 	return cmd
 }

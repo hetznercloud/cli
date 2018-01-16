@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/hetznercloud/hcloud-go/hcloud"
+	"github.com/spf13/cobra"
 )
 
 func yesno(b bool) string {
@@ -71,4 +72,15 @@ func waitAction(ctx context.Context, client *hcloud.Client, action *hcloud.Actio
 	}()
 
 	return errCh, progressCh
+}
+
+func chainRunE(fns ...func(cmd *cobra.Command, args []string) error) func(cmd *cobra.Command, args []string) error {
+	return func(cmd *cobra.Command, args []string) error {
+		for _, fn := range fns {
+			if err := fn(cmd, args); err != nil {
+				return err
+			}
+		}
+		return nil
+	}
 }

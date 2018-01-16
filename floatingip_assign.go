@@ -16,7 +16,8 @@ func newFloatingIPAssignCommand(cli *CLI) *cobra.Command {
 		Args:                  cobra.ExactArgs(2),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE: cli.wrap(runFloatingIPAssign),
+		PreRunE:               cli.ensureActiveContext,
+		RunE:                  cli.wrap(runFloatingIPAssign),
 	}
 	cmd.MarkFlagRequired("server")
 	return cmd

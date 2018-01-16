@@ -11,7 +11,8 @@ func newServerListCommand(cli *CLI) *cobra.Command {
 		Short:                 "List servers",
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE: cli.wrap(runServerList),
+		PreRunE:               cli.ensureActiveContext,
+		RunE:                  cli.wrap(runServerList),
 	}
 	return cmd
 }

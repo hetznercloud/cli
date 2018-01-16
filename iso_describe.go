@@ -13,7 +13,8 @@ func newISODescribeCommand(cli *CLI) *cobra.Command {
 		Args:                  cobra.ExactArgs(1),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE: cli.wrap(runISODescribe),
+		PreRunE:               cli.ensureActiveContext,
+		RunE:                  cli.wrap(runISODescribe),
 	}
 	return cmd
 }

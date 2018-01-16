@@ -13,7 +13,8 @@ func newServerTypeListCommand(cli *CLI) *cobra.Command {
 		Short:                 "List server types",
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE: cli.wrap(runServerTypeList),
+		PreRunE:               cli.ensureActiveContext,
+		RunE:                  cli.wrap(runServerTypeList),
 	}
 	return cmd
 }
