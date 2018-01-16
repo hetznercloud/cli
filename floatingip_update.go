@@ -16,7 +16,8 @@ func newFloatingIPUpdateCommand(cli *CLI) *cobra.Command {
 		Args:                  cobra.ExactArgs(1),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE: cli.wrap(runFloatingIPUpdate),
+		PreRunE:               cli.ensureActiveContext,
+		RunE:                  cli.wrap(runFloatingIPUpdate),
 	}
 
 	cmd.Flags().String("description", "", "Floating IP description")

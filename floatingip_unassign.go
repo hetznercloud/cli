@@ -16,7 +16,8 @@ func newFloatingIPUnassignCommand(cli *CLI) *cobra.Command {
 		Args:                  cobra.ExactArgs(1),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE: cli.wrap(runFloatingIPUnassign),
+		PreRunE:               cli.ensureActiveContext,
+		RunE:                  cli.wrap(runFloatingIPUnassign),
 	}
 	return cmd
 }

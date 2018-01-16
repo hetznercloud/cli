@@ -15,7 +15,8 @@ func newServerUpdateCommand(cli *CLI) *cobra.Command {
 		Args:                  cobra.ExactArgs(1),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE: cli.wrap(runServerUpdate),
+		PreRunE:               cli.ensureActiveContext,
+		RunE:                  cli.wrap(runServerUpdate),
 	}
 
 	cmd.Flags().String("name", "", "Server name")

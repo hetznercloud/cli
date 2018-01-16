@@ -14,7 +14,8 @@ func newDatacenterDescribeCommand(cli *CLI) *cobra.Command {
 		Args:                  cobra.ExactArgs(1),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE: cli.wrap(runDatacenterDescribe),
+		PreRunE:               cli.ensureActiveContext,
+		RunE:                  cli.wrap(runDatacenterDescribe),
 	}
 	return cmd
 }

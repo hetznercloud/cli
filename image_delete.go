@@ -13,7 +13,8 @@ func newImageDeleteCommand(cli *CLI) *cobra.Command {
 		Args:                  cobra.ExactArgs(1),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE: cli.wrap(runImageDelete),
+		PreRunE:               cli.ensureActiveContext,
+		RunE:                  cli.wrap(runImageDelete),
 	}
 	return cmd
 }

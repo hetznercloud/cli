@@ -13,7 +13,8 @@ func newServerRebootCommand(cli *CLI) *cobra.Command {
 		Args:                  cobra.ExactArgs(1),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE: cli.wrap(runServerReboot),
+		PreRunE:               cli.ensureActiveContext,
+		RunE:                  cli.wrap(runServerReboot),
 	}
 	return cmd
 }

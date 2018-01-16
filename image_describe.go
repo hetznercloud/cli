@@ -14,7 +14,8 @@ func newImageDescribeCommand(cli *CLI) *cobra.Command {
 		Args:                  cobra.ExactArgs(1),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE: cli.wrap(runImageDescribe),
+		PreRunE:               cli.ensureActiveContext,
+		RunE:                  cli.wrap(runImageDescribe),
 	}
 	return cmd
 }

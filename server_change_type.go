@@ -14,7 +14,8 @@ func newServerChangeTypeCommand(cli *CLI) *cobra.Command {
 		Args:                  cobra.ExactArgs(2),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE: cli.wrap(runServerChangeType),
+		PreRunE:               cli.ensureActiveContext,
+		RunE:                  cli.wrap(runServerChangeType),
 	}
 
 	cmd.Flags().Bool("keep-disk", false, "Keep disk size of current server type. This enables downgrading the server.")

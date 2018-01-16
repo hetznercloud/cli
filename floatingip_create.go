@@ -15,8 +15,8 @@ func newFloatingIPCreateCommand(cli *CLI) *cobra.Command {
 		Args:                  cobra.NoArgs,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE:    cli.wrap(runFloatingIPCreate),
-		PreRunE: validateFloatingIPCreate,
+		PreRunE:               chainRunE(validateFloatingIPCreate, cli.ensureActiveContext),
+		RunE:                  cli.wrap(runFloatingIPCreate),
 	}
 	cmd.Flags().String("type", "", "Type")
 	cmd.Flag("type").Annotations = map[string][]string{

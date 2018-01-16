@@ -11,7 +11,8 @@ func newDatacenterListCommand(cli *CLI) *cobra.Command {
 		Short:                 "List datacenters",
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE: cli.wrap(runDatacenterList),
+		PreRunE:               cli.ensureActiveContext,
+		RunE:                  cli.wrap(runDatacenterList),
 	}
 	return cmd
 }

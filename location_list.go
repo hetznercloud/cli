@@ -11,7 +11,8 @@ func newLocationListCommand(cli *CLI) *cobra.Command {
 		Short:                 "List locations",
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE: cli.wrap(runLocationList),
+		PreRunE:               cli.ensureActiveContext,
+		RunE:                  cli.wrap(runLocationList),
 	}
 	return cmd
 }

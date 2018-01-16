@@ -152,3 +152,10 @@ func (c *CLI) ActionProgress(ctx context.Context, action *hcloud.Action) error {
 		return <-errCh
 	}
 }
+
+func (c *CLI) ensureActiveContext(cmd *cobra.Command, args []string) error {
+	if c.Config.ActiveContext == nil {
+		return errors.New("no active context (see `hcloud context --help`)")
+	}
+	return nil
+}

@@ -13,7 +13,8 @@ func newServerDetachISOCommand(cli *CLI) *cobra.Command {
 		Args:                  cobra.ExactArgs(1),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE: cli.wrap(runServerDetachISO),
+		PreRunE:               cli.ensureActiveContext,
+		RunE:                  cli.wrap(runServerDetachISO),
 	}
 
 	return cmd

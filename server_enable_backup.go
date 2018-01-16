@@ -13,7 +13,8 @@ func newServerEnableBackupCommand(cli *CLI) *cobra.Command {
 		Args:                  cobra.ExactArgs(1),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE: cli.wrap(runServerEnableBackup),
+		PreRunE:               cli.ensureActiveContext,
+		RunE:                  cli.wrap(runServerEnableBackup),
 	}
 	cmd.Flags().String(
 		"window", "",

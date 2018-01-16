@@ -13,7 +13,8 @@ func newServerPoweroffCommand(cli *CLI) *cobra.Command {
 		Args:                  cobra.ExactArgs(1),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE: cli.wrap(runServerPoweroff),
+		PreRunE:               cli.ensureActiveContext,
+		RunE:                  cli.wrap(runServerPoweroff),
 	}
 	return cmd
 }
