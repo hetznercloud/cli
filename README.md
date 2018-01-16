@@ -17,7 +17,7 @@ On macOS, you can install `hcloud` via [Homebrew](https://brew.sh/):
 
 If you have Go installed, you can build and install the `hcloud` program with:
 
-    go install github.com/hetznercloud/cli/cmd/hcloud
+    go get -u github.com/hetznercloud/cli/cmd/hcloud
 
 ## Getting Started
 
