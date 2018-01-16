@@ -52,6 +52,9 @@ func runImageList(cli *CLI, cmd *cobra.Command, args []string) error {
 		})).
 		AddFieldOutputFn("image size", fieldOutputFn(func(obj interface{}) string {
 			image := obj.(*hcloud.Image)
+			if image.ImageSize == 0 {
+				return na("")
+			}
 			return fmt.Sprintf("%.1f GB", image.ImageSize)
 		})).
 		AddFieldOutputFn("disk size", fieldOutputFn(func(obj interface{}) string {
