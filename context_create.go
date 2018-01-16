@@ -53,6 +53,9 @@ func runContextCreate(cli *CLI, cmd *cobra.Command, args []string) error {
 	}
 
 	cli.Config.Contexts = append(cli.Config.Contexts, context)
+	if len(cli.Config.Contexts) == 1 {
+		cli.Config.ActiveContext = context
+	}
 	if err := cli.WriteConfig(); err != nil {
 		return err
 	}
