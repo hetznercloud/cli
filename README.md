@@ -62,6 +62,7 @@ ID       NAME                    STATUS    IPV4
 ```
 $ hcloud server create --name test --image debian-9 --type cx11 --ssh-key demo
    7s [====================================================================] 100%
+Server 325211 created
 ```
 
 ## License
