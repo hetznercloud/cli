@@ -6,7 +6,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-const Version = "1.0.0"
+// Version is set via compiler flags (see script/build.bash)
+var Version = "was not build properly"
 
 func newVersionCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
