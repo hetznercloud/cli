@@ -12,24 +12,20 @@ DETAIL=''
 
 # use the matching tag as the version, if available
 if [ -z "$TAG" ]; then
-	TAG=$(git describe --abbrev=0)
-	COMMITS=$(git --no-pager log ${TAG}..HEAD --oneline)
-	COMMIT_COUNT=$(echo -e "${COMMITS}" | wc -l)
-	COMMIT_COUNT_PADDING=$(printf %03d $COMMIT_COUNT)
-	SHORT_COMMIT_ID=$(git rev-parse --short HEAD)
+  TAG=$(git describe --abbrev=0)
+  COMMITS=$(git --no-pager log ${TAG}..HEAD --oneline)
+  COMMIT_COUNT=$(echo -e "${COMMITS}" | wc -l)
+  COMMIT_COUNT_PADDING=$(printf %03d $COMMIT_COUNT)
+  SHORT_COMMIT_ID=$(git rev-parse --short HEAD)
 
-  SUFFIX='dev'
+  SUFFIX='-dev'
   DETAIL=".${COMMIT_COUNT_PADDING}.${SHORT_COMMIT_ID}"
 fi
 
 if [ -n "$(git diff --shortstat 2> /dev/null | tail -n1)" ]; then
-  SUFFIX="dirty"
+  SUFFIX="-dirty"
 fi
 
-if [[ $TAG == *"-"* ]]; then
-  VERSION="${TAG}.${SUFFIX}${DETAIL}"
-else
-  VERSION="${TAG}-${SUFFIX}${DETAIL}"
-fi
 
+VERSION="${TAG}${SUFFIX}${DETAIL}"
 echo $VERSION

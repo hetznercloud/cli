@@ -7,7 +7,7 @@ import (
 )
 
 // Version is set via compiler flags (see script/build.bash)
-var Version = "was not build properly"
+var Version = "was not built properly"
 
 func newVersionCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
