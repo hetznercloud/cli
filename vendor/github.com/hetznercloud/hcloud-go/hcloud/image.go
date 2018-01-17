@@ -35,7 +35,7 @@ type ImageType string
 
 const (
 	// ImageTypeSnapshot represents a snapshot image.
-	ImageTypeSnapshot = "snapshot"
+	ImageTypeSnapshot ImageType = "snapshot"
 	// ImageTypeBackup represents a backup image.
 	ImageTypeBackup = "backup"
 	// ImageTypeSystem represents a system image.
@@ -47,7 +47,7 @@ type ImageStatus string
 
 const (
 	// ImageStatusCreating is the status when an image is being created.
-	ImageStatusCreating = "creating"
+	ImageStatusCreating ImageStatus = "creating"
 	// ImageStatusAvailable is the stats when an image is available.
 	ImageStatusAvailable = "available"
 )

@@ -185,8 +185,8 @@ func (c *ServerClient) All(ctx context.Context) ([]*Server, error) {
 // ServerCreateOpts specifies options for creating a new server.
 type ServerCreateOpts struct {
 	Name       string
-	ServerType ServerType
-	Image      Image
+	ServerType *ServerType
+	Image      *Image
 	SSHKeys    []*SSHKey
 	Location   *Location
 	Datacenter *Datacenter
@@ -197,10 +197,10 @@ func (o ServerCreateOpts) Validate() error {
 	if o.Name == "" {
 		return errors.New("missing name")
 	}
-	if o.ServerType.ID == 0 && o.ServerType.Name == "" {
+	if o.ServerType == nil || (o.ServerType.ID == 0 && o.ServerType.Name == "") {
 		return errors.New("missing server type")
 	}
-	if o.Image.ID == 0 && o.Image.Name == "" {
+	if o.Image == nil || (o.Image.ID == 0 && o.Image.Name == "") {
 		return errors.New("missing image")
 	}
 	if o.Location != nil && o.Datacenter != nil {

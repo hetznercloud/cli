@@ -22,7 +22,7 @@
 [[projects]]
   name = "github.com/hetznercloud/hcloud-go"
   packages = ["hcloud","hcloud/schema"]
-  revision = "834c81058c748cbdcf2933b93a98279770d470a2"
+  revision = "197f4452ccf450bb3e1f12d99a7898f3f8639a1b"
   version = "v1.0.0"
 
 [[projects]]

@@ -232,8 +232,8 @@ func TestServersCreateWithSSHKeys(t *testing.T) {
 	ctx := context.Background()
 	result, _, err := env.Client.Server.Create(ctx, ServerCreateOpts{
 		Name:       "test",
-		ServerType: ServerType{ID: 1},
-		Image:      Image{ID: 2},
+		ServerType: &ServerType{ID: 1},
+		Image:      &Image{ID: 2},
 		SSHKeys: []*SSHKey{
 			{ID: 1},
 			{ID: 2},
@@ -276,8 +276,8 @@ func TestServersCreateWithoutSSHKeys(t *testing.T) {
 	ctx := context.Background()
 	result, _, err := env.Client.Server.Create(ctx, ServerCreateOpts{
 		Name:       "test",
-		ServerType: ServerType{ID: 1},
-		Image:      Image{ID: 2},
+		ServerType: &ServerType{ID: 1},
+		Image:      &Image{ID: 2},
 	})
 	if err != nil {
 		t.Fatalf("Server.Create failed: %s", err)
@@ -315,8 +315,8 @@ func TestServersCreateWithDatacenterID(t *testing.T) {
 	ctx := context.Background()
 	result, _, err := env.Client.Server.Create(ctx, ServerCreateOpts{
 		Name:       "test",
-		ServerType: ServerType{ID: 1},
-		Image:      Image{ID: 2},
+		ServerType: &ServerType{ID: 1},
+		Image:      &Image{ID: 2},
 		Datacenter: &Datacenter{ID: 1},
 	})
 	if err != nil {
@@ -349,8 +349,8 @@ func TestServersCreateWithDatacenterName(t *testing.T) {
 	ctx := context.Background()
 	result, _, err := env.Client.Server.Create(ctx, ServerCreateOpts{
 		Name:       "test",
-		ServerType: ServerType{ID: 1},
-		Image:      Image{ID: 2},
+		ServerType: &ServerType{ID: 1},
+		Image:      &Image{ID: 2},
 		Datacenter: &Datacenter{Name: "dc1"},
 	})
 	if err != nil {
@@ -383,8 +383,8 @@ func TestServersCreateWithLocationID(t *testing.T) {
 	ctx := context.Background()
 	result, _, err := env.Client.Server.Create(ctx, ServerCreateOpts{
 		Name:       "test",
-		ServerType: ServerType{ID: 1},
-		Image:      Image{ID: 2},
+		ServerType: &ServerType{ID: 1},
+		Image:      &Image{ID: 2},
 		Location:   &Location{ID: 1},
 	})
 	if err != nil {
@@ -417,8 +417,8 @@ func TestServersCreateWithLocationName(t *testing.T) {
 	ctx := context.Background()
 	result, _, err := env.Client.Server.Create(ctx, ServerCreateOpts{
 		Name:       "test",
-		ServerType: ServerType{ID: 1},
-		Image:      Image{ID: 2},
+		ServerType: &ServerType{ID: 1},
+		Image:      &Image{ID: 2},
 		Location:   &Location{Name: "loc1"},
 	})
 	if err != nil {
