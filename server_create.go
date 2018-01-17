@@ -83,10 +83,10 @@ func optsFromFlags(cli *CLI, flags *pflag.FlagSet) (opts hcloud.ServerCreateOpts
 
 	opts = hcloud.ServerCreateOpts{
 		Name: name,
-		ServerType: hcloud.ServerType{
+		ServerType: &hcloud.ServerType{
 			Name: serverType,
 		},
-		Image: hcloud.Image{
+		Image: &hcloud.Image{
 			Name: image,
 		},
 	}

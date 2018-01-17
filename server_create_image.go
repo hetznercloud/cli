@@ -29,7 +29,7 @@ func newServerCreateImageCommand(cli *CLI) *cobra.Command {
 
 func validateServerCreateImage(cmd *cobra.Command, args []string) error {
 	imageType, _ := cmd.Flags().GetString("type")
-	switch imageType {
+	switch hcloud.ImageType(imageType) {
 	case hcloud.ImageTypeBackup, hcloud.ImageTypeSnapshot:
 		break
 	default:
