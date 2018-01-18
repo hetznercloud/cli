@@ -5,6 +5,10 @@ usage() {
   exit 2
 }
 
+crlf() {
+  sed $'s/$/\r/'
+}
+
 os="$1"
 [ -z "$os" ] && usage
 
@@ -26,7 +30,8 @@ $tmp/_hcloud completion zsh > $tmp/hcloud-$os-$arch-$release/etc/hcloud.zsh_comp
 
 if [ "$os" = "windows" ]; then
   cp dist/hcloud-$os-$arch-$release $tmp/hcloud-$os-$arch-$release/hcloud.exe
-  cp LICENSE README.md $tmp/hcloud-$os-$arch-$release/
+  cat LICENSE | crlf > $tmp/hcloud-$os-$arch-$release/LICENSE
+  cat README.md | crlf > $tmp/hcloud-$os-$arch-$release/README.md
   (cd $tmp/ && zip - $(find hcloud-$os-$arch-$release -type f)) > dist/hcloud-$os-$arch-$release.zip
 else
   mkdir $tmp/hcloud-$os-$arch-$release/bin
