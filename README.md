@@ -4,6 +4,8 @@
 
 `hcloud` is a command-line interface for interacting with Hetzner Cloud.
 
+[![asciicast](https://asciinema.org/a/157981.png)](https://asciinema.org/a/157981)
+
 ## Installation
 
 You can download pre-built binaries for Linux, FreeBSD, macOS, and Windows on
