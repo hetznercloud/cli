@@ -4,7 +4,7 @@
 
 `hcloud` is a command-line interface for interacting with Hetzner Cloud.
 
-[![asciicast](https://asciinema.org/a/157981.png)](https://asciinema.org/a/157981)
+[![asciicast](https://asciinema.org/a/157991.png)](https://asciinema.org/a/157991)
 
 ## Installation
 
