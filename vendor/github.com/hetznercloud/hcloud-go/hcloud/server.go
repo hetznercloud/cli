@@ -30,6 +30,7 @@ type Server struct {
 	RescueEnabled   bool
 	Locked          bool
 	ISO             *ISO
+	Image           *Image
 }
 
 // ServerStatus specifies a server's status.
