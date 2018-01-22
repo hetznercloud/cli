@@ -119,6 +119,9 @@ func ServerFromSchema(s schema.Server) *Server {
 		Datacenter:      DatacenterFromSchema(s.Datacenter),
 		Locked:          s.Locked,
 	}
+	if s.Image != nil {
+		server.Image = ImageFromSchema(*s.Image)
+	}
 	if s.BackupWindow != nil {
 		server.BackupWindow = *s.BackupWindow
 	}

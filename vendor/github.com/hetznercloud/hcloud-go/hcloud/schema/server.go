@@ -18,6 +18,7 @@ type Server struct {
 	ISO             *ISO            `json:"iso"`
 	Locked          bool            `json:"locked"`
 	Datacenter      Datacenter      `json:"datacenter"`
+	Image           *Image          `json:"image"`
 }
 
 // ServerPublicNet defines the schema of a server's

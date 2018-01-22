@@ -290,6 +290,24 @@ func TestServerFromSchema(t *testing.T) {
 		"included_traffic": 654321,
 		"backup_window": "22-02",
 		"rescue_enabled": true,
+		"image": {
+			"id": 4711,
+			"type": "system",
+			"status": "available",
+			"name": "ubuntu16.04-standard-x64",
+			"description": "Ubuntu 16.04 Standard 64 bit",
+			"image_size": 2.3,
+			"disk_size": 10,
+			"created": "2017-08-16T17:29:14+00:00",
+			"created_from": {
+				"id": 1,
+				"name": "Server"
+			},
+			"bound_to": 1,
+			"os_flavor": "ubuntu",
+			"os_version": "16.04",
+			"rapid_deploy": false
+		},
 		"iso": {
 			"id": 4711,
 			"name": "FreeBSD-11.0-RELEASE-amd64-dvd1",
@@ -351,6 +369,9 @@ func TestServerFromSchema(t *testing.T) {
 	}
 	if !server.RescueEnabled {
 		t.Errorf("unexpected rescue enabled state: %v", server.RescueEnabled)
+	}
+	if server.Image == nil || server.Image.ID != 4711 {
+		t.Errorf("unexpected Image: %v", server.Image)
 	}
 	if server.ISO == nil || server.ISO.ID != 4711 {
 		t.Errorf("unexpected ISO: %v", server.ISO)
