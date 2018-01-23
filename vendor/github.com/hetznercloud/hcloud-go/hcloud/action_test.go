@@ -134,3 +134,79 @@ func TestActionClientAll(t *testing.T) {
 		t.Errorf("unexpected actions")
 	}
 }
+
+func TestActionClientWatchProgress(t *testing.T) {
+	env := newTestEnv()
+	defer env.Teardown()
+
+	callCount := 0
+	env.Mux.HandleFunc("/actions/1", func(w http.ResponseWriter, r *http.Request) {
+		callCount++
+		w.Header().Set("Content-Type", "application/json")
+		switch callCount {
+		case 1:
+			json.NewEncoder(w).Encode(schema.ActionGetResponse{
+				Action: schema.Action{
+					ID:       1,
+					Status:   "running",
+					Progress: 50,
+				},
+			})
+		case 2:
+			w.WriteHeader(http.StatusTooManyRequests)
+			json.NewEncoder(w).Encode(schema.ErrorResponse{
+				Error: schema.Error{
+					Code:    "limit_reached",
+					Message: "ratelimited",
+				},
+			})
+			return
+		case 3:
+			json.NewEncoder(w).Encode(schema.ActionGetResponse{
+				Action: schema.Action{
+					ID:       1,
+					Status:   "error",
+					Progress: 100,
+					Error: &schema.ActionError{
+						Code:    "action_failed",
+						Message: "action failed",
+					},
+				},
+			})
+		default:
+			t.Errorf("unexpected number of calls to the test server: %v", callCount)
+		}
+	})
+	action := &Action{
+		ID:       1,
+		Status:   ActionStatusRunning,
+		Progress: 0,
+	}
+
+	ctx := context.Background()
+	progressCh, errCh := env.Client.Action.WatchProgress(ctx, action)
+	var (
+		progressUpdates []int
+		err             error
+	)
+
+loop:
+	for {
+		select {
+		case progress := <-progressCh:
+			progressUpdates = append(progressUpdates, progress)
+		case err = <-errCh:
+			break loop
+		}
+	}
+
+	if err == nil {
+		t.Fatal("expected an error")
+	}
+	if e, ok := err.(ActionError); !ok || e.Code != "action_failed" {
+		t.Fatalf("expected hcloud.Error, but got: %#v", err)
+	}
+	if len(progressUpdates) != 1 || progressUpdates[0] != 50 {
+		t.Fatalf("unexpected progress updates: %v", progressUpdates)
+	}
+}

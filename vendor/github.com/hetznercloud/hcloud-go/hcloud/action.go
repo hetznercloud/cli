@@ -48,9 +48,22 @@ const (
 	ActionResourceTypeFloatingIP                    = "floating_ip"
 )
 
+// ActionError is the error of an action.
+type ActionError struct {
+	Code    string
+	Message string
+}
+
+func (e ActionError) Error() string {
+	return fmt.Sprintf("%s (%s)", e.Message, e.Code)
+}
+
 func (a *Action) Error() error {
 	if a.ErrorCode != "" && a.ErrorMessage != "" {
-		return fmt.Errorf("%s (%s)", a.ErrorMessage, a.ErrorCode)
+		return ActionError{
+			Code:    a.ErrorCode,
+			Message: a.ErrorMessage,
+		}
 	}
 	return nil
 }
@@ -124,4 +137,63 @@ func (c *ActionClient) All(ctx context.Context) ([]*Action, error) {
 	}
 
 	return allActions, nil
+}
+
+// WatchProgress watches the actions progress until it completes with success or error.
+func (c *ActionClient) WatchProgress(ctx context.Context, action *Action) (<-chan int, <-chan error) {
+	errCh := make(chan error, 1)
+	progressCh := make(chan int)
+
+	go func() {
+		defer close(errCh)
+		defer close(progressCh)
+
+		ticker := time.NewTicker(100 * time.Millisecond)
+		sendProgress := func(p int) {
+			select {
+			case progressCh <- p:
+				break
+			default:
+				break
+			}
+		}
+
+		var retries = 0
+		for {
+			select {
+			case <-ctx.Done():
+				errCh <- ctx.Err()
+				return
+			case <-ticker.C:
+				break
+			}
+
+			action, _, err := c.GetByID(ctx, action.ID)
+			if err != nil {
+				if err, ok := err.(Error); ok && err.Code == ErrorCodeLimitReached {
+					c.client.backoff(retries)
+					retries++
+					continue
+				}
+				errCh <- ctx.Err()
+				return
+			}
+			retries = 0
+
+			switch action.Status {
+			case ActionStatusRunning:
+				sendProgress(action.Progress)
+				break
+			case ActionStatusSuccess:
+				sendProgress(100)
+				errCh <- nil
+				return
+			case ActionStatusError:
+				errCh <- action.Error()
+				return
+			}
+		}
+	}()
+
+	return progressCh, errCh
 }

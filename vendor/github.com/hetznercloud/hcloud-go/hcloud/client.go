@@ -179,12 +179,10 @@ func (c *Client) all(f func(int) (*Response, error)) (*Response, error) {
 	for {
 		resp, err := f(page)
 		if err != nil {
-			if err, ok := err.(Error); ok {
-				if err.Code == ErrorCodeLimitReached {
-					c.backoff(retries)
-					retries++
-					continue
-				}
+			if err, ok := err.(Error); ok && err.Code == ErrorCodeRateLimitExceeded {
+				c.backoff(retries)
+				retries++
+				continue
 			}
 			return nil, err
 		}

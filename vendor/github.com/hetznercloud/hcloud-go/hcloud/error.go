@@ -7,11 +7,14 @@ type ErrorCode string
 
 // Error codes returned from the API.
 const (
-	ErrorCodeServiceError ErrorCode = "service_error" // Generic server error
-	ErrorCodeLimitReached           = "limit_reached" // Rate limit reached
-	ErrorCodeUnknownError           = "unknown_error" // Unknown error
-	ErrorCodeNotFound               = "not_found"     // Resource not found
-	ErrorCodeInvalidInput           = "invalid_input" // Validation error
+	ErrorCodeServiceError      ErrorCode = "service_error"       // Generic server error
+	ErrorCodeRateLimitExceeded           = "rate_limit_exceeded" // Rate limit exceeded
+	ErrorCodeUnknownError                = "unknown_error"       // Unknown error
+	ErrorCodeNotFound                    = "not_found"           // Resource not found
+	ErrorCodeInvalidInput                = "invalid_input"       // Validation error
+
+	// Deprecated error codes
+	ErrorCodeLimitReached = "limit_reached"
 )
 
 // Error is an error returned from the API.
