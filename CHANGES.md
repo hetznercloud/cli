@@ -1,5 +1,9 @@
 # Changes
 
+## master
+
+* Do not echo token when creating a context
+
 ## v1.2.0
 
 * Update hcloud library to v1.2.0 fixing rate limit check
