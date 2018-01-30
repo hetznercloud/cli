@@ -22,6 +22,10 @@ func na(s string) string {
 	return s
 }
 
+func datetime(t time.Time) string {
+	return t.Local().Format(time.UnixDate)
+}
+
 func waitAction(ctx context.Context, client *hcloud.Client, action *hcloud.Action) (<-chan error, <-chan int) {
 	errCh := make(chan error, 1)
 	progressCh := make(chan int)

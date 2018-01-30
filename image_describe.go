@@ -41,7 +41,7 @@ func runImageDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 		fmt.Printf("Image size:\t%s\n", na(""))
 	}
 	fmt.Printf("Disk size:\t%.0f GB\n", image.DiskSize)
-	fmt.Printf("Created:\t%s (%s)\n", image.Created, humanize.Time(image.Created))
+	fmt.Printf("Created:\t%s (%s)\n", datetime(image.Created), humanize.Time(image.Created))
 	fmt.Printf("OS flavor:\t%s\n", image.OSFlavor)
 	fmt.Printf("OS version:\t%s\n", na(image.OSVersion))
 	fmt.Printf("Rapid deploy:\t%s\n", yesno(image.RapidDeploy))

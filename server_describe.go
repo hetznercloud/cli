@@ -33,7 +33,7 @@ func runServerDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 	fmt.Printf("ID:\t\t%d\n", server.ID)
 	fmt.Printf("Name:\t\t%s\n", server.Name)
 	fmt.Printf("Status:\t\t%s\n", server.Status)
-	fmt.Printf("Created:\t%s (%s)\n", server.Created, humanize.Time(server.Created))
+	fmt.Printf("Created:\t%s (%s)\n", datetime(server.Created), humanize.Time(server.Created))
 
 	fmt.Printf("Server Type:\t%s (ID: %d)\n", server.ServerType.Name, server.ServerType.ID)
 	fmt.Printf("  ID:\t\t%d\n", server.ServerType.ID)
@@ -80,7 +80,7 @@ func runServerDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 			fmt.Printf("  Image size:\t%s\n", na(""))
 		}
 		fmt.Printf("  Disk size:\t%.0f GB\n", image.DiskSize)
-		fmt.Printf("  Created:\t%s (%s)\n", image.Created, humanize.Time(image.Created))
+		fmt.Printf("  Created:\t%s (%s)\n", datetime(image.Created), humanize.Time(image.Created))
 		fmt.Printf("  OS flavor:\t%s\n", image.OSFlavor)
 		fmt.Printf("  OS version:\t%s\n", na(image.OSVersion))
 		fmt.Printf("  Rapid deploy:\t%s\n", yesno(image.RapidDeploy))
