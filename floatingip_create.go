@@ -18,7 +18,7 @@ func newFloatingIPCreateCommand(cli *CLI) *cobra.Command {
 		PreRunE:               chainRunE(validateFloatingIPCreate, cli.ensureActiveContext),
 		RunE:                  cli.wrap(runFloatingIPCreate),
 	}
-	cmd.Flags().String("type", "", "Type")
+	cmd.Flags().String("type", "", "Type (ipv4 or ipv6)")
 	cmd.Flag("type").Annotations = map[string][]string{
 		cobra.BashCompCustom: {"__hcloud_floatingip_types"},
 	}
