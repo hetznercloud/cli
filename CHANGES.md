@@ -3,6 +3,7 @@
 ## master
 
 * Print dates in local time
+* Do not echo token when creating a context
 
 ## v1.2.0
 

@@ -1,13 +1,14 @@
 package cli
 
 import (
-	"bufio"
+	"bytes"
 	"errors"
 	"fmt"
-	"os"
 	"strings"
+	"syscall"
 
 	"github.com/spf13/cobra"
+	"golang.org/x/crypto/ssh/terminal"
 )
 
 func newContextCreateCommand(cli *CLI) *cobra.Command {
@@ -35,16 +36,16 @@ func runContextCreate(cli *CLI, cmd *cobra.Command, args []string) error {
 		return errors.New("name already used")
 	}
 
-	r := bufio.NewReader(os.Stdin)
 	context := &ConfigContext{Name: name}
 
 	for {
 		fmt.Printf("Token: ")
-		token, err := r.ReadString('\n')
+		btoken, err := terminal.ReadPassword(int(syscall.Stdin))
+		fmt.Print("\n")
 		if err != nil {
 			return err
 		}
-		token = strings.TrimSpace(token)
+		token := string(bytes.TrimSpace(btoken))
 		if token == "" {
 			continue
 		}
