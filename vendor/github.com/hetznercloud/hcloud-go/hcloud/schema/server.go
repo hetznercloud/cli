@@ -73,6 +73,7 @@ type ServerCreateRequest struct {
 	SSHKeys    []int       `json:"ssh_keys,omitempty"`
 	Location   string      `json:"location,omitempty"`
 	Datacenter string      `json:"datacenter,omitempty"`
+	UserData   string      `json:"user_data,omitempty"`
 }
 
 // ServerCreateResponse defines the schema of the response when
