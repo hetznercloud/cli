@@ -50,7 +50,8 @@ func newServerCreateCommand(cli *CLI) *cobra.Command {
 		cobra.BashCompCustom: {"__hcloud_sshkey_names"},
 	}
 
-	cmd.Flags().String("user-data-from-file", "", "Cloud-Init user data to use during server creation.")
+	cmd.Flags().String("user-data-from-file", "", "Read user data from specified file (use - to read from stdin)")
+
 	return cmd
 }
 
