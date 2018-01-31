@@ -1,6 +1,6 @@
 # Changes
 
-## master
+## v1.3.0
 
 * Print dates in local time
 * Do not echo token when creating a context
