@@ -191,6 +191,7 @@ type ServerCreateOpts struct {
 	SSHKeys    []*SSHKey
 	Location   *Location
 	Datacenter *Datacenter
+	UserData   string
 }
 
 // Validate checks if options are valid.
@@ -224,6 +225,7 @@ func (c *ServerClient) Create(ctx context.Context, opts ServerCreateOpts) (Serve
 	}
 
 	var reqBody schema.ServerCreateRequest
+	reqBody.UserData = opts.UserData
 	reqBody.Name = opts.Name
 	if opts.ServerType.ID != 0 {
 		reqBody.ServerType = opts.ServerType.ID

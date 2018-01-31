@@ -140,8 +140,10 @@ func (c *Client) Do(r *http.Request, v interface{}) (*Response, error) {
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
+		resp.Body.Close()
 		return response, err
 	}
+	resp.Body.Close()
 	resp.Body = ioutil.NopCloser(bytes.NewReader(body))
 
 	if err := response.readMeta(body); err != nil {

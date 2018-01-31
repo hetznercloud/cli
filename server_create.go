@@ -2,6 +2,8 @@ package cli
 
 import (
 	"fmt"
+	"io/ioutil"
+	"os"
 
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -47,6 +49,8 @@ func newServerCreateCommand(cli *CLI) *cobra.Command {
 	cmd.Flag("ssh-key").Annotations = map[string][]string{
 		cobra.BashCompCustom: {"__hcloud_sshkey_names"},
 	}
+
+	cmd.Flags().String("user-data-from-file", "", "Cloud-Init user data to use during server creation.")
 	return cmd
 }
 
@@ -80,6 +84,7 @@ func optsFromFlags(cli *CLI, flags *pflag.FlagSet) (opts hcloud.ServerCreateOpts
 	image, _ := flags.GetString("image")
 	location, _ := flags.GetString("location")
 	datacenter, _ := flags.GetString("datacenter")
+	userDataFile, _ := flags.GetString("user-data-from-file")
 	sshKeys, _ := flags.GetStringSlice("ssh-key")
 
 	opts = hcloud.ServerCreateOpts{
@@ -91,6 +96,20 @@ func optsFromFlags(cli *CLI, flags *pflag.FlagSet) (opts hcloud.ServerCreateOpts
 			Name: image,
 		},
 	}
+
+	if userDataFile != "" {
+		var data []byte
+		if userDataFile == "-" {
+			data, err = ioutil.ReadAll(os.Stdin)
+		} else {
+			data, err = ioutil.ReadFile(userDataFile)
+		}
+		if err != nil {
+			return
+		}
+		opts.UserData = string(data)
+	}
+
 	for _, sshKeyIDOrName := range sshKeys {
 		var sshKey *hcloud.SSHKey
 		sshKey, _, err = cli.Client().SSHKey.Get(cli.Context, sshKeyIDOrName)

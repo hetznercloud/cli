@@ -22,8 +22,8 @@
 [[projects]]
   name = "github.com/hetznercloud/hcloud-go"
   packages = ["hcloud","hcloud/schema"]
-  revision = "402a89d70e7577145b7ce706a89cbc82c4aa43fe"
-  version = "v1.2.0"
+  revision = "8ba5ecb6e802d98c3b7a65f755a240cbe79bebea"
+  version = "v1.3.0"
 
 [[projects]]
   name = "github.com/inconshreveable/mousetrap"
@@ -76,6 +76,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "783827241e8561c3a486a39e88f63ff474755488e7b9803d98f47b5ec2a0076a"
+  inputs-digest = "c95b457792397f664430d5126e60d6d34105e7dcd4df8cb69cfa95e774724be2"
   solver-name = "gps-cdcl"
   solver-version = 1

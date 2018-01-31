@@ -4,6 +4,7 @@
 
 * Print dates in local time
 * Do not echo token when creating a context
+* Add `--user-data-from-file` flag to `hcloud server create` command
 
 ## v1.2.0
 
