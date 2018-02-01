@@ -15,6 +15,17 @@ On macOS, you can install `hcloud` via [Homebrew](https://brew.sh/):
 
     brew install hetznercloud/tap/hcloud
 
+### Third-party packages
+
+There are inofficial packages maintained by third-party users. Please note
+that these packages aren’t supported nor maintained by Hetzner Cloud and
+may not always be up-to-date. Downloading the binary or building from source
+is still the recommended install method.
+
+| Operating System | Command                                           |
+| ---------------- | ------------------------------------------------- |
+| Arch Linux       | `pacman -Syu hcloud`                              |
+
 ### Build manually
 
 If you have Go installed, you can build and install the `hcloud` program with:
