@@ -15,7 +15,7 @@ func newFloatingIPCreateCommand(cli *CLI) *cobra.Command {
 		Args:                  cobra.NoArgs,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		PreRunE:               chainRunE(validateFloatingIPCreate, cli.ensureActiveContext),
+		PreRunE:               chainRunE(validateFloatingIPCreate, cli.ensureToken),
 		RunE:                  cli.wrap(runFloatingIPCreate),
 	}
 	cmd.Flags().String("type", "", "Type (ipv4 or ipv6)")

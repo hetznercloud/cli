@@ -15,7 +15,7 @@ func newImageListCommand(cli *CLI) *cobra.Command {
 		Short:                 "List images",
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		PreRunE:               cli.ensureActiveContext,
+		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runImageList),
 	}
 	return cmd

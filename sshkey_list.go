@@ -11,7 +11,7 @@ func newSSHKeyListCommand(cli *CLI) *cobra.Command {
 		Short:                 "List SSH keys",
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		PreRunE:               cli.ensureActiveContext,
+		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runSSHKeyList),
 	}
 	return cmd

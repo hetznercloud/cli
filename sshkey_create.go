@@ -17,7 +17,7 @@ func newSSHKeyCreateCommand(cli *CLI) *cobra.Command {
 		Args:                  cobra.NoArgs,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		PreRunE:               chainRunE(validateSSHKeyCreate, cli.ensureActiveContext),
+		PreRunE:               chainRunE(validateSSHKeyCreate, cli.ensureToken),
 		RunE:                  cli.wrap(runSSHKeyCreate),
 	}
 	cmd.Flags().String("name", "", "Key name")

@@ -14,7 +14,7 @@ func newServerCreateImageCommand(cli *CLI) *cobra.Command {
 		Args:                  cobra.ExactArgs(1),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		PreRunE:               chainRunE(validateServerCreateImage, cli.ensureActiveContext),
+		PreRunE:               chainRunE(validateServerCreateImage, cli.ensureToken),
 		RunE:                  cli.wrap(runServerCreateImage),
 	}
 	cmd.Flags().String("type", "snapshot", "Image type")
