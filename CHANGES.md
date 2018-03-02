@@ -1,5 +1,9 @@
 # Changes
 
+## master
+
+* Document `HCLOUD_TOKEN` and make it work when there is no active context
+
 ## v1.3.0
 
 * Print dates in local time

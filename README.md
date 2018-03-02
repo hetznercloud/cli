@@ -58,6 +58,24 @@ $ source <(hcloud completion bash)   # bash
 $ source <(hcloud completion zsh)    # zsh
 ```
 
+## Using it in scripts
+
+When using `hcloud` in scripts, it may be cumbersome to work with contexts.
+Instead of creating a context, you can set the token via the `HCLOUD_TOKEN`
+environment variable:
+
+```
+$ hcloud image list
+hcloud: no active context or token (see `hcloud context --help`)
+$ export HCLOUD_TOKEN=token
+$ hcloud image list
+ID   TYPE     NAME           DESCRIPTION    IMAGE SIZE   DISK SIZE   CREATED
+1    system   ubuntu-16.04   Ubuntu 16.04   -            5 GB        1 month ago
+2    system   debian-9       Debian 9.3     -            5 GB        1 month ago
+3    system   centos-7       Centos 7.4     -            5 GB        1 month ago
+4    system   fedora-27      Fedora 27      -            5 GB        1 month ago
+```
+
 ## Examples
 
 ### List all servers

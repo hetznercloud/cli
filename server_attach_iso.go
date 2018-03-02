@@ -13,7 +13,7 @@ func newServerAttachISOCommand(cli *CLI) *cobra.Command {
 		Args:                  cobra.ExactArgs(2),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		PreRunE:               cli.ensureActiveContext,
+		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runServerAttachISO),
 	}
 
