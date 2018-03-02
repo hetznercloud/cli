@@ -156,7 +156,7 @@ func TestActionClientWatchProgress(t *testing.T) {
 			w.WriteHeader(http.StatusTooManyRequests)
 			json.NewEncoder(w).Encode(schema.ErrorResponse{
 				Error: schema.Error{
-					Code:    "limit_reached",
+					Code:    ErrorCodeRateLimitExceeded,
 					Message: "ratelimited",
 				},
 			})

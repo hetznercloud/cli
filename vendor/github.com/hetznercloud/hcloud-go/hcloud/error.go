@@ -14,7 +14,13 @@ const (
 	ErrorCodeInvalidInput                = "invalid_input"       // Validation error
 
 	// Deprecated error codes
-	ErrorCodeLimitReached = "limit_reached"
+
+	// The actual value of this error code is limit_reached. The new error code
+	// rate_limit_exceeded for ratelimiting was introduced before Hetzner Cloud
+	// launched into the public. To make clients using the old error code still
+	// work as expected, we set the value of the old error code to that of the
+	// new error code.
+	ErrorCodeLimitReached = ErrorCodeRateLimitExceeded
 )
 
 // Error is an error returned from the API.

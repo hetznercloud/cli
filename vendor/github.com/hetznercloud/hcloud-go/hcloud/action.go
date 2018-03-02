@@ -148,7 +148,7 @@ func (c *ActionClient) WatchProgress(ctx context.Context, action *Action) (<-cha
 		defer close(errCh)
 		defer close(progressCh)
 
-		ticker := time.NewTicker(100 * time.Millisecond)
+		ticker := time.NewTicker(500 * time.Millisecond)
 		sendProgress := func(p int) {
 			select {
 			case progressCh <- p:
@@ -158,7 +158,6 @@ func (c *ActionClient) WatchProgress(ctx context.Context, action *Action) (<-cha
 			}
 		}
 
-		var retries = 0
 		for {
 			select {
 			case <-ctx.Done():
@@ -168,28 +167,22 @@ func (c *ActionClient) WatchProgress(ctx context.Context, action *Action) (<-cha
 				break
 			}
 
-			action, _, err := c.GetByID(ctx, action.ID)
+			a, _, err := c.GetByID(ctx, action.ID)
 			if err != nil {
-				if err, ok := err.(Error); ok && err.Code == ErrorCodeLimitReached {
-					c.client.backoff(retries)
-					retries++
-					continue
-				}
 				errCh <- ctx.Err()
 				return
 			}
-			retries = 0
 
-			switch action.Status {
+			switch a.Status {
 			case ActionStatusRunning:
-				sendProgress(action.Progress)
+				sendProgress(a.Progress)
 				break
 			case ActionStatusSuccess:
 				sendProgress(100)
 				errCh <- nil
 				return
 			case ActionStatusError:
-				errCh <- action.Error()
+				errCh <- a.Error()
 				return
 			}
 		}

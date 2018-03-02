@@ -1,5 +1,15 @@
 # Changes
 
+## v1.4.0
+
+* Retry all calls that triggered the API ratelimit
+* Slow down `WatchProgress()` in action client from 100ms polling interval to 500ms
+
+## v1.3.1
+
+* Make clients using the old error code for ratelimiting work as expected
+  ([issue #73](https://github.com/hetznercloud/hcloud-go/issues/73))
+
 ## v1.3.0
 
 * Support passing user data on server creation ([issue #70](https://github.com/hetznercloud/hcloud-go/issues/70))

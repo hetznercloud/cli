@@ -132,41 +132,49 @@ func (c *Client) NewRequest(ctx context.Context, method, path string, body io.Re
 
 // Do performs an HTTP request against the API.
 func (c *Client) Do(r *http.Request, v interface{}) (*Response, error) {
-	resp, err := c.httpClient.Do(r)
-	if err != nil {
-		return nil, err
-	}
-	response := &Response{Response: resp}
+	var retries int
+	for {
+		resp, err := c.httpClient.Do(r)
+		if err != nil {
+			return nil, err
+		}
+		response := &Response{Response: resp}
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
+		body, err := ioutil.ReadAll(resp.Body)
+		if err != nil {
+			resp.Body.Close()
+			return response, err
+		}
 		resp.Body.Close()
+		resp.Body = ioutil.NopCloser(bytes.NewReader(body))
+
+		if err = response.readMeta(body); err != nil {
+			return response, fmt.Errorf("hcloud: error reading response meta data: %s", err)
+		}
+
+		if resp.StatusCode >= 400 && resp.StatusCode <= 599 {
+			err = errorFromResponse(resp, body)
+			if err == nil {
+				err = fmt.Errorf("hcloud: server responded with status code %d", resp.StatusCode)
+			} else {
+				if err, ok := err.(Error); ok && err.Code == ErrorCodeRateLimitExceeded {
+					c.backoff(retries)
+					retries++
+					continue
+				}
+			}
+			return response, err
+		}
+		if v != nil {
+			if w, ok := v.(io.Writer); ok {
+				_, err = io.Copy(w, bytes.NewReader(body))
+			} else {
+				err = json.Unmarshal(body, v)
+			}
+		}
+
 		return response, err
 	}
-	resp.Body.Close()
-	resp.Body = ioutil.NopCloser(bytes.NewReader(body))
-
-	if err := response.readMeta(body); err != nil {
-		return response, fmt.Errorf("hcloud: error reading response meta data: %s", err)
-	}
-
-	if resp.StatusCode >= 400 && resp.StatusCode <= 599 {
-		err := errorFromResponse(resp, body)
-		if err == nil {
-			err = fmt.Errorf("hcloud: server responded with status code %d", resp.StatusCode)
-		}
-		return response, err
-	}
-
-	if v != nil {
-		if w, ok := v.(io.Writer); ok {
-			_, err = io.Copy(w, bytes.NewReader(body))
-		} else {
-			err = json.Unmarshal(body, v)
-		}
-	}
-
-	return response, err
 }
 
 func (c *Client) backoff(retries int) {
@@ -175,20 +183,13 @@ func (c *Client) backoff(retries int) {
 
 func (c *Client) all(f func(int) (*Response, error)) (*Response, error) {
 	var (
-		retries = 0
-		page    = 1
+		page = 1
 	)
 	for {
 		resp, err := f(page)
 		if err != nil {
-			if err, ok := err.(Error); ok && err.Code == ErrorCodeRateLimitExceeded {
-				c.backoff(retries)
-				retries++
-				continue
-			}
 			return nil, err
 		}
-		retries = 0
 		if resp.Meta.Pagination == nil || resp.Meta.Pagination.NextPage == 0 {
 			return resp, nil
 		}

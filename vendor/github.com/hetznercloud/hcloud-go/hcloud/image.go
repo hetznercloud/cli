@@ -48,7 +48,7 @@ type ImageStatus string
 const (
 	// ImageStatusCreating is the status when an image is being created.
 	ImageStatusCreating ImageStatus = "creating"
-	// ImageStatusAvailable is the stats when an image is available.
+	// ImageStatusAvailable is the status when an image is available.
 	ImageStatusAvailable = "available"
 )
 

@@ -230,3 +230,35 @@ func TestClientAll(t *testing.T) {
 		t.Errorf("expected to have walked through 3 pages, but walked through %d pages", expectedPage-1)
 	}
 }
+
+func TestClientDo(t *testing.T) {
+	env := newTestEnv()
+	defer env.Teardown()
+
+	callCount := 0
+	env.Mux.HandleFunc("/test", func(w http.ResponseWriter, r *http.Request) {
+		callCount++
+		w.Header().Set("Content-Type", "application/json")
+		switch callCount {
+		case 1:
+			w.WriteHeader(http.StatusTooManyRequests)
+			json.NewEncoder(w).Encode(schema.ErrorResponse{
+				Error: schema.Error{
+					Code:    ErrorCodeRateLimitExceeded,
+					Message: "ratelimited",
+				},
+			})
+		case 2:
+			fmt.Fprintln(w, "{}")
+		default:
+			t.Errorf("unexpected number of calls to the test server: %v", callCount)
+		}
+	})
+
+	ctx := context.Background()
+	request, _ := env.Client.NewRequest(ctx, http.MethodGet, "/test", nil)
+	_, err := env.Client.Do(request, nil)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+}
