@@ -1,7 +1,8 @@
 # Changes
 
-## master
+## v1.3.1
 
+* Only poll action progress every 500ms (instead of every 100ms)
 * Document `HCLOUD_TOKEN` and make it work when there is no active context
 
 ## v1.3.0
