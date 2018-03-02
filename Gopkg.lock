@@ -21,9 +21,12 @@
 
 [[projects]]
   name = "github.com/hetznercloud/hcloud-go"
-  packages = ["hcloud","hcloud/schema"]
-  revision = "8ba5ecb6e802d98c3b7a65f755a240cbe79bebea"
-  version = "v1.3.0"
+  packages = [
+    "hcloud",
+    "hcloud/schema"
+  ]
+  revision = "b37849e439d7a02b07d495f65e7b797bec30eeae"
+  version = "v1.4.0"
 
 [[projects]]
   name = "github.com/inconshreveable/mousetrap"
@@ -70,12 +73,15 @@
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
-  packages = ["unix","windows"]
+  packages = [
+    "unix",
+    "windows"
+  ]
   revision = "810d7000345868fc619eb81f46307107118f4ae1"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "c95b457792397f664430d5126e60d6d34105e7dcd4df8cb69cfa95e774724be2"
+  inputs-digest = "31a0813d0c807ef77c53293b7f68ca85b71f5f89d13faac3f2d6a2c7a0d7a87b"
   solver-name = "gps-cdcl"
   solver-version = 1
