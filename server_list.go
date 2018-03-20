@@ -29,7 +29,7 @@ func runServerList(cli *CLI, cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	cols := []string{"id", "name", "status", "ipv4", "ipv6"}
+	cols := []string{"id", "name", "status", "ipv4", "ipv6", "datacenter"}
 	if outOpts.IsSet("columns") {
 		cols = outOpts["columns"]
 	}
@@ -43,6 +43,14 @@ func runServerList(cli *CLI, cmd *cobra.Command, args []string) error {
 		AddFieldOutputFn("ipv6", fieldOutputFn(func(obj interface{}) string {
 			server := obj.(*hcloud.Server)
 			return server.PublicNet.IPv6.Network.String()
+		})).
+		AddFieldOutputFn("datacenter", fieldOutputFn(func(obj interface{}) string {
+			server := obj.(*hcloud.Server)
+			return server.Datacenter.Name
+		})).
+		AddFieldOutputFn("location", fieldOutputFn(func(obj interface{}) string {
+			server := obj.(*hcloud.Server)
+			return server.Datacenter.Location.Name
 		}))
 
 	if err = tw.ValidateColumns(cols); err != nil {

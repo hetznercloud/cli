@@ -88,6 +88,18 @@ func runServerDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 		fmt.Printf("  No Image\n")
 	}
 
+	fmt.Printf("Datacenter:\n")
+	fmt.Printf("  ID:\t\t%d\n", server.Datacenter.ID)
+	fmt.Printf("  Name:\t\t%s\n", server.Datacenter.Name)
+	fmt.Printf("  Description:\t%s\n", server.Datacenter.Description)
+	fmt.Printf("  Location:\n")
+	fmt.Printf("    Name:\t\t%s\n", server.Datacenter.Location.Name)
+	fmt.Printf("    Description:\t%s\n", server.Datacenter.Location.Description)
+	fmt.Printf("    Country:\t\t%s\n", server.Datacenter.Location.Country)
+	fmt.Printf("    City:\t\t%s\n", server.Datacenter.Location.City)
+	fmt.Printf("    Latitude:\t\t%f\n", server.Datacenter.Location.Latitude)
+	fmt.Printf("    Longitude:\t\t%f\n", server.Datacenter.Location.Longitude)
+
 	fmt.Printf("Traffic:\n")
 	fmt.Printf("  Outgoing:\t%v\n", humanize.Bytes(server.OutgoingTraffic))
 	fmt.Printf("  Ingoing:\t%v\n", humanize.Bytes(server.IngoingTraffic))
