@@ -1,5 +1,9 @@
 # Changes
 
+## master
+
+* Show datacenter in `server list` and `server describe`
+
 ## v1.3.1
 
 * Only poll action progress every 500ms (instead of every 100ms)
