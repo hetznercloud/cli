@@ -25,8 +25,8 @@
     "hcloud",
     "hcloud/schema"
   ]
-  revision = "b37849e439d7a02b07d495f65e7b797bec30eeae"
-  version = "v1.4.0"
+  revision = "bddabd41e017b7a562e3e8e70e75391c156a380f"
+  version = "v1.5.0"
 
 [[projects]]
   name = "github.com/inconshreveable/mousetrap"
@@ -43,14 +43,14 @@
 [[projects]]
   name = "github.com/pelletier/go-toml"
   packages = ["."]
-  revision = "16398bac157da96aa88f98a2df640c7f32af1da2"
-  version = "v1.0.1"
+  revision = "acdc4509485b587f5e675510c4f2c63e90ff68a8"
+  version = "v1.1.0"
 
 [[projects]]
   branch = "master"
   name = "github.com/spf13/cobra"
   packages = ["."]
-  revision = "b95ab734e27d33e0d8fbabf71ca990568d4e2020"
+  revision = "c439c4fa093711d42e1b01acb1235b52004753c1"
 
 [[projects]]
   name = "github.com/spf13/pflag"
@@ -68,7 +68,7 @@
   branch = "master"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
-  revision = "5f55bce93ad2c89f411e009659bb1fd83da36e7b"
+  revision = "80db560fac1fb3e6ac81dbc7f8ae4c061f5257bd"
 
 [[projects]]
   branch = "master"
@@ -77,11 +77,11 @@
     "unix",
     "windows"
   ]
-  revision = "810d7000345868fc619eb81f46307107118f4ae1"
+  revision = "641605214e7dab930817f68e2fef560efbb033e5"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "31a0813d0c807ef77c53293b7f68ca85b71f5f89d13faac3f2d6a2c7a0d7a87b"
+  inputs-digest = "be34aa939fe594b427e23410db2e675d10cd4d696144f698ae327faa4267b34a"
   solver-name = "gps-cdcl"
   solver-version = 1
