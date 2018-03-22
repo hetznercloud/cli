@@ -152,17 +152,17 @@ func getSSHKeyForFingerprint(cli *CLI, file string) (sshKey *hcloud.SSHKey, err 
 		err = nil
 		return
 	} else if err != nil {
-		err = fmt.Errorf("lockup SSH key by fingerprint: %v", err)
+		err = fmt.Errorf("lookup SSH key by fingerprint: %v", err)
 		return
 	}
 
 	if publicKey, _, _, _, err = ssh.ParseAuthorizedKey(fileContent); err != nil {
-		err = fmt.Errorf("lockup SSH key by fingerprint: %v", err)
+		err = fmt.Errorf("lookup SSH key by fingerprint: %v", err)
 		return
 	}
 	sshKey, _, err = cli.Client().SSHKey.GetByFingerprint(cli.Context, ssh.FingerprintLegacyMD5(publicKey))
 	if err != nil {
-		err = fmt.Errorf("lockup SSH key by fingerprint: %v", err)
+		err = fmt.Errorf("lookup SSH key by fingerprint: %v", err)
 		return
 	}
 	if sshKey == nil {
