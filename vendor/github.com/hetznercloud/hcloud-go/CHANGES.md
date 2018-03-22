@@ -1,5 +1,9 @@
 # Changes
 
+## v1.5.0
+
+* Add `GetByFingerprint()` to SSH key client
+
 ## v1.4.0
 
 * Retry all calls that triggered the API ratelimit

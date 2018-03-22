@@ -63,6 +63,26 @@ func (c *SSHKeyClient) GetByName(ctx context.Context, name string) (*SSHKey, *Re
 	return SSHKeyFromSchema(body.SSHKeys[0]), resp, nil
 }
 
+// GetByFingerprint retreives a SSH key by its fingerprint.
+func (c *SSHKeyClient) GetByFingerprint(ctx context.Context, fingerprint string) (*SSHKey, *Response, error) {
+	path := "/ssh_keys?fingerprint=" + url.QueryEscape(fingerprint)
+	req, err := c.client.NewRequest(ctx, "GET", path, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	var body schema.SSHKeyListResponse
+	resp, err := c.client.Do(req, &body)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	if len(body.SSHKeys) == 0 {
+		return nil, resp, nil
+	}
+	return SSHKeyFromSchema(body.SSHKeys[0]), resp, nil
+}
+
 // Get retrieves a SSH key by its ID if the input can be parsed as an integer, otherwise it retrieves a SSH key by its name.
 func (c *SSHKeyClient) Get(ctx context.Context, idOrName string) (*SSHKey, *Response, error) {
 	if id, err := strconv.Atoi(idOrName); err == nil {

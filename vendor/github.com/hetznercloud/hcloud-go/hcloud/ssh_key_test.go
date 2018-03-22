@@ -142,6 +142,60 @@ func TestSSHKeyClientGetByNameNotFound(t *testing.T) {
 	}
 }
 
+func TestSSHKeyClientGetByFingerprint(t *testing.T) {
+	env := newTestEnv()
+	defer env.Teardown()
+
+	env.Mux.HandleFunc("/ssh_keys", func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Query().Get("fingerprint") != "76:66:08:8c:86:81:7e:f0:7b:cd:fa:c3:8c:8b:83:c0" {
+			t.Fatal("missing or invalid fingerprint query")
+		}
+		fmt.Fprint(w, `{
+			"ssh_keys": [{
+				"id": 1,
+				"name": "My Key",
+				"fingerprint": "b7:2f:30:a0:2f:6c:58:6c:21:04:58:61:ba:06:3b:2c",
+				"public_key": "ssh-rsa AAAjjk76kgf...Xt"
+			}]
+		}`)
+	})
+
+	ctx := context.Background()
+	sshKey, _, err := env.Client.SSHKey.GetByFingerprint(ctx, "76:66:08:8c:86:81:7e:f0:7b:cd:fa:c3:8c:8b:83:c0")
+	if err != nil {
+		t.Fatalf("SSHKey.GetByFingerprint failed: %s", err)
+	}
+	if sshKey == nil {
+		t.Fatal("no SSH key")
+	}
+	if sshKey.ID != 1 {
+		t.Errorf("unexpected SSH key ID: %v", sshKey.ID)
+	}
+}
+
+func TestSSHKeyClientGetByFingerprintNotFound(t *testing.T) {
+	env := newTestEnv()
+	defer env.Teardown()
+
+	env.Mux.HandleFunc("/ssh_keys", func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Query().Get("fingerprint") != "76:66:08:8c:86:81:7e:f0:7b:cd:fa:c3:8c:8b:83:c0" {
+			t.Fatal("missing or invalid fingerprint query")
+		}
+		fmt.Fprint(w, `{
+			"ssh_keys": []
+		}`)
+	})
+
+	ctx := context.Background()
+	sshKey, _, err := env.Client.SSHKey.GetByFingerprint(ctx, "76:66:08:8c:86:81:7e:f0:7b:cd:fa:c3:8c:8b:83:c0")
+	if err != nil {
+		t.Fatalf("SSHKey.GetByFingerprint failed: %s", err)
+	}
+	if sshKey != nil {
+		t.Fatal("unexpected SSH key")
+	}
+}
+
 func TestSSHKeyClientList(t *testing.T) {
 	env := newTestEnv()
 	defer env.Teardown()

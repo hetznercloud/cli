@@ -8,6 +8,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
+	"golang.org/x/crypto/ssh"
 )
 
 func newServerCreateCommand(cli *CLI) *cobra.Command {
@@ -117,6 +118,14 @@ func optsFromFlags(cli *CLI, flags *pflag.FlagSet) (opts hcloud.ServerCreateOpts
 		if err != nil {
 			return
 		}
+
+		if sshKey == nil {
+			sshKey, err = getSSHKeyForFingerprint(cli, sshKeyIDOrName)
+			if err != nil {
+				return
+			}
+		}
+
 		if sshKey == nil {
 			err = fmt.Errorf("SSH key not found: %s", sshKeyIDOrName)
 			return
@@ -130,5 +139,35 @@ func optsFromFlags(cli *CLI, flags *pflag.FlagSet) (opts hcloud.ServerCreateOpts
 		opts.Location = &hcloud.Location{Name: location}
 	}
 
+	return
+}
+
+func getSSHKeyForFingerprint(cli *CLI, file string) (sshKey *hcloud.SSHKey, err error) {
+	var (
+		fileContent []byte
+		publicKey   ssh.PublicKey
+	)
+
+	if fileContent, err = ioutil.ReadFile(file); err == os.ErrNotExist {
+		err = nil
+		return
+	} else if err != nil {
+		err = fmt.Errorf("lookup SSH key by fingerprint: %v", err)
+		return
+	}
+
+	if publicKey, _, _, _, err = ssh.ParseAuthorizedKey(fileContent); err != nil {
+		err = fmt.Errorf("lookup SSH key by fingerprint: %v", err)
+		return
+	}
+	sshKey, _, err = cli.Client().SSHKey.GetByFingerprint(cli.Context, ssh.FingerprintLegacyMD5(publicKey))
+	if err != nil {
+		err = fmt.Errorf("lookup SSH key by fingerprint: %v", err)
+		return
+	}
+	if sshKey == nil {
+		err = fmt.Errorf("SSH key not found by using fingerprint of public key: %s", file)
+		return
+	}
 	return
 }
