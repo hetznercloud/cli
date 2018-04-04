@@ -127,7 +127,10 @@ func (c *CLI) Terminal() bool {
 }
 
 func (c *CLI) ActionProgress(ctx context.Context, action *hcloud.Action) error {
-	errCh, progressCh := waitAction(ctx, c.Client(), action)
+	var (
+		err               error
+		progressCh, errCh = c.Client().Action.WatchProgress(ctx, action)
+	)
 
 	if c.Terminal() {
 		progress := uiprogress.New()
@@ -136,21 +139,32 @@ func (c *CLI) ActionProgress(ctx context.Context, action *hcloud.Action) error {
 		bar := progress.AddBar(100).AppendCompleted().PrependElapsed()
 		bar.Empty = ' '
 
+	loop:
 		for {
 			select {
-			case err := <-errCh:
+			case err = <-errCh:
 				if err == nil {
 					bar.Set(100)
 				}
 				progress.Stop()
-				return err
+				break loop
 			case p := <-progressCh:
 				bar.Set(p)
 			}
 		}
 	} else {
-		return <-errCh
+		err = <-errCh
 	}
+
+	if err != nil {
+		return err
+	}
+
+	action, _, err = c.Client().Action.GetByID(ctx, action.ID)
+	if err != nil {
+		return err
+	}
+	return action.Error()
 }
 
 func (c *CLI) ensureToken(cmd *cobra.Command, args []string) error {
