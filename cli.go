@@ -127,7 +127,7 @@ func (c *CLI) Terminal() bool {
 }
 
 func (c *CLI) ActionProgress(ctx context.Context, action *hcloud.Action) error {
-	errCh, progressCh := waitAction(ctx, c.Client(), action)
+	progressCh, errCh := c.Client().Action.WatchProgress(ctx, action)
 
 	if c.Terminal() {
 		progress := uiprogress.New()

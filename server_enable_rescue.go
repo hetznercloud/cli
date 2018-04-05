@@ -61,10 +61,11 @@ func runServerEnableRescue(cli *CLI, cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	errCh, _ := waitAction(cli.Context, cli.Client(), result.Action)
-	if err := <-errCh; err != nil {
+
+	if err := cli.ActionProgress(cli.Context, result.Action); err != nil {
 		return err
 	}
+
 	fmt.Printf("Rescue enabled for server %s with root password: %s\n", server.Name, result.RootPassword)
 	return nil
 }

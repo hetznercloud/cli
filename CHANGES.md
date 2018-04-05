@@ -2,6 +2,7 @@
 
 ## master
 
+* Show progress for every action
 * Show datacenter in `server list` and `server describe`
 
 ## v1.3.1
