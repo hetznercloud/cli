@@ -1,6 +1,6 @@
 # Changes
 
-## master
+## v1.3.2
 
 * Show progress for every action
 * Show datacenter in `server list` and `server describe`
