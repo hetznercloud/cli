@@ -13,7 +13,7 @@ the [releases page](https://github.com/hetznercloud/cli/releases).
 
 On macOS, you can install `hcloud` via [Homebrew](https://brew.sh/):
 
-    brew install hetznercloud/tap/hcloud
+    brew install hcloud
 
 ### Third-party packages
 
