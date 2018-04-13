@@ -17,6 +17,12 @@ type Image struct {
 	OSFlavor    string            `json:"os_flavor"`
 	OSVersion   *string           `json:"os_version"`
 	RapidDeploy bool              `json:"rapid_deploy"`
+	Protection  ImageProtection   `json:"protection"`
+}
+
+// ImageProtection represents the protection level of a image.
+type ImageProtection struct {
+	Delete bool `json:"delete"`
 }
 
 // ImageCreatedFrom defines the schema of the images created from reference.
@@ -46,4 +52,14 @@ type ImageUpdateRequest struct {
 // ImageUpdateResponse defines the schema of the response when updating an image.
 type ImageUpdateResponse struct {
 	Image Image `json:"image"`
+}
+
+// ImageActionChangeProtectionRequest defines the schema of the request to change the resource protection of an image.
+type ImageActionChangeProtectionRequest struct {
+	Delete *bool `json:"delete,omitempty"`
+}
+
+// ImageActionChangeProtectionResponse defines the schema of the response when changing the resource protection of an image.
+type ImageActionChangeProtectionResponse struct {
+	Action Action `json:"action"`
 }

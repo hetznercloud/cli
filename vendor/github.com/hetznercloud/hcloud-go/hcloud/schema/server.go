@@ -4,21 +4,28 @@ import "time"
 
 // Server defines the schema of a server.
 type Server struct {
-	ID              int             `json:"id"`
-	Name            string          `json:"name"`
-	Status          string          `json:"status"`
-	Created         time.Time       `json:"created"`
-	PublicNet       ServerPublicNet `json:"public_net"`
-	ServerType      ServerType      `json:"server_type"`
-	IncludedTraffic uint64          `json:"included_traffic"`
-	OutgoingTraffic *uint64         `json:"outgoing_traffic"`
-	IngoingTraffic  *uint64         `json:"ingoing_traffic"`
-	BackupWindow    *string         `json:"backup_window"`
-	RescueEnabled   bool            `json:"rescue_enabled"`
-	ISO             *ISO            `json:"iso"`
-	Locked          bool            `json:"locked"`
-	Datacenter      Datacenter      `json:"datacenter"`
-	Image           *Image          `json:"image"`
+	ID              int              `json:"id"`
+	Name            string           `json:"name"`
+	Status          string           `json:"status"`
+	Created         time.Time        `json:"created"`
+	PublicNet       ServerPublicNet  `json:"public_net"`
+	ServerType      ServerType       `json:"server_type"`
+	IncludedTraffic uint64           `json:"included_traffic"`
+	OutgoingTraffic *uint64          `json:"outgoing_traffic"`
+	IngoingTraffic  *uint64          `json:"ingoing_traffic"`
+	BackupWindow    *string          `json:"backup_window"`
+	RescueEnabled   bool             `json:"rescue_enabled"`
+	ISO             *ISO             `json:"iso"`
+	Locked          bool             `json:"locked"`
+	Datacenter      Datacenter       `json:"datacenter"`
+	Image           *Image           `json:"image"`
+	Protection      ServerProtection `json:"protection"`
+}
+
+// ServerProtection defines the schema of a server's resource protection.
+type ServerProtection struct {
+	Delete  bool `json:"delete"`
+	Rebuild bool `json:"rebuild"`
 }
 
 // ServerPublicNet defines the schema of a server's
@@ -272,5 +279,16 @@ type ServerActionChangeDNSPtrRequest struct {
 // ServerActionChangeDNSPtrResponse defines the schema of the response when
 // creating a change_dns_ptr server action.
 type ServerActionChangeDNSPtrResponse struct {
+	Action Action `json:"action"`
+}
+
+// ServerActionChangeProtectionRequest defines the schema of the request to change the resource protection of a server.
+type ServerActionChangeProtectionRequest struct {
+	Rebuild *bool `json:"rebuild,omitempty"`
+	Delete  *bool `json:"delete,omitempty"`
+}
+
+// ServerActionChangeProtectionResponse defines the schema of the response when changing the resource protection of a server.
+type ServerActionChangeProtectionResponse struct {
 	Action Action `json:"action"`
 }

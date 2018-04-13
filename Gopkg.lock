@@ -25,7 +25,8 @@
     "hcloud",
     "hcloud/schema"
   ]
-  revision = "106f1796e380f4a5cb94a712f0ed5f4f14379acd"
+  revision = "e100f592eda7491411d22df6d8cda4de5711aa33"
+  version = "v1.6.0"
 
 [[projects]]
   name = "github.com/inconshreveable/mousetrap"
@@ -89,6 +90,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "4becf798eeb0482cfee0478faf9eafd75b6a7049d7a2320ada957710e835997a"
+  inputs-digest = "ede1b81829a9a091d3d4bac244c36dec4f44595c4e8d5a8662d8454001b5590f"
   solver-name = "gps-cdcl"
   solver-version = 1

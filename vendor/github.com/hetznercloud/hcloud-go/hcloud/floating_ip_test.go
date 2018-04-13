@@ -349,3 +349,45 @@ func TestFloatingIPClientChangeDNSPtr(t *testing.T) {
 		}
 	})
 }
+
+func TestFloatingIPClientChangeProtection(t *testing.T) {
+	var (
+		ctx        = context.Background()
+		floatingIP = &FloatingIP{ID: 1}
+	)
+
+	t.Run("enable delete protection", func(t *testing.T) {
+		env := newTestEnv()
+		defer env.Teardown()
+
+		env.Mux.HandleFunc("/floating_ips/1/actions/change_protection", func(w http.ResponseWriter, r *http.Request) {
+			if r.Method != "POST" {
+				t.Error("expected POST")
+			}
+			var reqBody schema.FloatingIPActionChangeProtectionRequest
+			if err := json.NewDecoder(r.Body).Decode(&reqBody); err != nil {
+				t.Fatal(err)
+			}
+			if reqBody.Delete == nil || *reqBody.Delete != true {
+				t.Errorf("unexpected delete: %v", reqBody.Delete)
+			}
+			json.NewEncoder(w).Encode(schema.FloatingIPActionChangeProtectionResponse{
+				Action: schema.Action{
+					ID: 1,
+				},
+			})
+		})
+
+		opts := FloatingIPChangeProtectionOpts{
+			Delete: Bool(true),
+		}
+		action, _, err := env.Client.FloatingIP.ChangeProtection(ctx, floatingIP, opts)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if action.ID != 1 {
+			t.Errorf("unexpected action ID: %v", action.ID)
+		}
+	})
+}

@@ -2,14 +2,20 @@ package schema
 
 // FloatingIP defines the schema of a Floating IP.
 type FloatingIP struct {
-	ID           int                `json:"id"`
-	Description  *string            `json:"description"`
-	IP           string             `json:"ip"`
-	Type         string             `json:"type"`
-	Server       *int               `json:"server"`
-	DNSPtr       []FloatingIPDNSPtr `json:"dns_ptr"`
-	HomeLocation Location           `json:"home_location"`
-	Blocked      bool               `json:"blocked"`
+	ID           int                  `json:"id"`
+	Description  *string              `json:"description"`
+	IP           string               `json:"ip"`
+	Type         string               `json:"type"`
+	Server       *int                 `json:"server"`
+	DNSPtr       []FloatingIPDNSPtr   `json:"dns_ptr"`
+	HomeLocation Location             `json:"home_location"`
+	Blocked      bool                 `json:"blocked"`
+	Protection   FloatingIPProtection `json:"protection"`
+}
+
+// FloatingIPProtection represents the protection level of a Floating IP.
+type FloatingIPProtection struct {
+	Delete bool `json:"delete"`
 }
 
 // FloatingIPDNSPtr contains reverse DNS information for a
@@ -89,5 +95,15 @@ type FloatingIPActionChangeDNSPtrRequest struct {
 // FloatingIPActionChangeDNSPtrResponse defines the schema of the response when
 // creating a change_dns_ptr Floating IP action.
 type FloatingIPActionChangeDNSPtrResponse struct {
+	Action Action `json:"action"`
+}
+
+// FloatingIPActionChangeProtectionRequest defines the schema of the request to change the resource protection of a Floating IP.
+type FloatingIPActionChangeProtectionRequest struct {
+	Delete *bool `json:"delete,omitempty"`
+}
+
+// FloatingIPActionChangeProtectionResponse defines the schema of the response when changing the resource protection of a Floating IP.
+type FloatingIPActionChangeProtectionResponse struct {
 	Action Action `json:"action"`
 }

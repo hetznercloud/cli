@@ -310,3 +310,45 @@ func TestImageClientUpdate(t *testing.T) {
 		}
 	})
 }
+
+func TestImageClientChangeProtection(t *testing.T) {
+	var (
+		ctx   = context.Background()
+		image = &Image{ID: 1}
+	)
+
+	t.Run("enable delete protection", func(t *testing.T) {
+		env := newTestEnv()
+		defer env.Teardown()
+
+		env.Mux.HandleFunc("/images/1/actions/change_protection", func(w http.ResponseWriter, r *http.Request) {
+			if r.Method != "POST" {
+				t.Error("expected POST")
+			}
+			var reqBody schema.ImageActionChangeProtectionRequest
+			if err := json.NewDecoder(r.Body).Decode(&reqBody); err != nil {
+				t.Fatal(err)
+			}
+			if reqBody.Delete == nil || *reqBody.Delete != true {
+				t.Errorf("unexpected delete: %v", reqBody.Delete)
+			}
+			json.NewEncoder(w).Encode(schema.ImageActionChangeProtectionResponse{
+				Action: schema.Action{
+					ID: 1,
+				},
+			})
+		})
+
+		opts := ImageChangeProtectionOpts{
+			Delete: Bool(true),
+		}
+		action, _, err := env.Client.Image.ChangeProtection(ctx, image, opts)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if action.ID != 1 {
+			t.Errorf("unexpected action ID: %v", action.ID)
+		}
+	})
+}

@@ -1221,3 +1221,49 @@ func TestServerClientChangeDNSPtr(t *testing.T) {
 		}
 	})
 }
+
+func TestServerClientChangeProtection(t *testing.T) {
+	var (
+		ctx    = context.Background()
+		server = &Server{ID: 1}
+	)
+
+	t.Run("enable delete and rebuild protection", func(t *testing.T) {
+		env := newTestEnv()
+		defer env.Teardown()
+
+		env.Mux.HandleFunc("/servers/1/actions/change_protection", func(w http.ResponseWriter, r *http.Request) {
+			if r.Method != "POST" {
+				t.Error("expected POST")
+			}
+			var reqBody schema.ServerActionChangeProtectionRequest
+			if err := json.NewDecoder(r.Body).Decode(&reqBody); err != nil {
+				t.Fatal(err)
+			}
+			if reqBody.Delete == nil || *reqBody.Delete != true {
+				t.Errorf("unexpected delete: %v", reqBody.Delete)
+			}
+			if reqBody.Rebuild == nil || *reqBody.Rebuild != true {
+				t.Errorf("unexpected rebuild: %v", reqBody.Rebuild)
+			}
+			json.NewEncoder(w).Encode(schema.ImageActionChangeProtectionResponse{
+				Action: schema.Action{
+					ID: 1,
+				},
+			})
+		})
+
+		opts := ServerChangeProtectionOpts{
+			Delete:  Bool(true),
+			Rebuild: Bool(true),
+		}
+		action, _, err := env.Client.Server.ChangeProtection(ctx, server, opts)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if action.ID != 1 {
+			t.Errorf("unexpected action ID: %v", action.ID)
+		}
+	})
+}
