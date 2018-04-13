@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 	"strconv"
+	"strings"
 
 	humanize "github.com/dustin/go-humanize"
 	"github.com/hetznercloud/hcloud-go/hcloud"
@@ -53,6 +54,14 @@ func init() {
 				return strconv.Itoa(image.CreatedFrom.ID)
 			}
 			return na("")
+		})).
+		AddFieldOutputFn("protection", fieldOutputFn(func(obj interface{}) string {
+			image := obj.(*hcloud.Image)
+			var protection []string
+			if image.Protection.Delete {
+				protection = append(protection, "delete")
+			}
+			return strings.Join(protection, ", ")
 		}))
 }
 

@@ -45,6 +45,8 @@ func runImageDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 	fmt.Printf("OS flavor:\t%s\n", image.OSFlavor)
 	fmt.Printf("OS version:\t%s\n", na(image.OSVersion))
 	fmt.Printf("Rapid deploy:\t%s\n", yesno(image.RapidDeploy))
+	fmt.Printf("PROTECTION:\n")
+	fmt.Printf("  Delete:\t%s\n", yesno(image.Protection.Delete))
 
 	return nil
 }
