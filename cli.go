@@ -13,7 +13,11 @@ import (
 	"golang.org/x/crypto/ssh/terminal"
 )
 
-var ErrConfigPathUnknown = errors.New("config file path unknown")
+var (
+	ErrConfigPathUnknown = errors.New("config file path unknown")
+	OutputDescription    = `Output can be controlled by the -o flag. Use -o noheader to suppress the table header.
+Displayed columns and their order can be set with -o columns=[col1,col2].`
+)
 
 type CLI struct {
 	Token      string
