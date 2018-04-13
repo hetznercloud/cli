@@ -4,7 +4,7 @@
 
 [[constraint]]
   name = "github.com/hetznercloud/hcloud-go"
-  version = "1.5.0"
+  revision = "106f1796e380f4a5cb94a712f0ed5f4f14379acd"
 
 [[constraint]]
   name = "github.com/pelletier/go-toml"

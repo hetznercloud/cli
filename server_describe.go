@@ -127,5 +127,9 @@ func runServerDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 		fmt.Printf("  No ISO attached\n")
 	}
 
+	fmt.Printf("PROTECTION:\n")
+	fmt.Printf("  Delete:\t%s\n", yesno(server.Protection.Delete))
+	fmt.Printf("  Rebuild:\t%s\n", yesno(server.Protection.Rebuild))
+
 	return nil
 }
