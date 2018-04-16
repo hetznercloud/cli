@@ -30,12 +30,18 @@ func runFloatingIPDisableProtection(cli *CLI, cmd *cobra.Command, args []string)
 	}
 	floatingIP := &hcloud.FloatingIP{ID: floatingIPID}
 
+	var unknown []string
 	opts := hcloud.FloatingIPChangeProtectionOpts{}
 	for _, arg := range args[1:] {
 		switch strings.ToLower(arg) {
 		case "delete":
 			opts.Delete = hcloud.Bool(false)
+		default:
+			unknown = append(unknown, arg)
 		}
+	}
+	if len(unknown) > 0 {
+		return fmt.Errorf("unknown protection level: %s", strings.Join(unknown, ", "))
 	}
 
 	action, _, err := cli.Client().FloatingIP.ChangeProtection(cli.Context, floatingIP, opts)

@@ -31,6 +31,7 @@ func runServerEnableProtection(cli *CLI, cmd *cobra.Command, args []string) erro
 		return fmt.Errorf("server not found: %s", idOrName)
 	}
 
+	var unknown []string
 	opts := hcloud.ServerChangeProtectionOpts{}
 	for _, arg := range args[1:] {
 		switch strings.ToLower(arg) {
@@ -38,7 +39,12 @@ func runServerEnableProtection(cli *CLI, cmd *cobra.Command, args []string) erro
 			opts.Delete = hcloud.Bool(true)
 		case "rebuild":
 			opts.Rebuild = hcloud.Bool(true)
+		default:
+			unknown = append(unknown, arg)
 		}
+	}
+	if len(unknown) > 0 {
+		return fmt.Errorf("unknown protection level: %s", strings.Join(unknown, ", "))
 	}
 
 	action, _, err := cli.Client().Server.ChangeProtection(cli.Context, server, opts)

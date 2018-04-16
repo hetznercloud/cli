@@ -30,12 +30,18 @@ func runImageEnableProtection(cli *CLI, cmd *cobra.Command, args []string) error
 	}
 	image := &hcloud.Image{ID: imageID}
 
+	var unknown []string
 	opts := hcloud.ImageChangeProtectionOpts{}
 	for _, arg := range args[1:] {
 		switch strings.ToLower(arg) {
 		case "delete":
 			opts.Delete = hcloud.Bool(true)
+		default:
+			unknown = append(unknown, arg)
 		}
+	}
+	if len(unknown) > 0 {
+		return fmt.Errorf("unknown protection level: %s", strings.Join(unknown, ", "))
 	}
 
 	action, _, err := cli.Client().Image.ChangeProtection(cli.Context, image, opts)
