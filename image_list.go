@@ -3,7 +3,6 @@ package cli
 import (
 	"fmt"
 	"strconv"
-	"strings"
 
 	humanize "github.com/dustin/go-humanize"
 	"github.com/hetznercloud/hcloud-go/hcloud"
@@ -61,12 +60,10 @@ func newImageListCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list [FLAGS]",
 		Short: "List images",
-		Long: fmt.Sprintf(`Displays a list of images.
-
-%s
-
-Columns:
- - %s`, OutputDescription, strings.Join(imageListTableOutput.Columns(), "\n - ")),
+		Long: listLongDescription(
+			"Displays a list of images.",
+			imageListTableOutput.Columns(),
+		),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.ensureToken,

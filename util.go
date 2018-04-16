@@ -1,6 +1,8 @@
 package cli
 
 import (
+	"fmt"
+	"strings"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -33,4 +35,16 @@ func chainRunE(fns ...func(cmd *cobra.Command, args []string) error) func(cmd *c
 		}
 		return nil
 	}
+}
+
+var outputDescription = `Output can be controlled by the -o flag. Use -o noheader to suppress the table header.
+Displayed columns and their order can be set with -o columns=col1,col2, see available columns below.`
+
+func listLongDescription(intro string, columns []string) string {
+	return fmt.Sprintf(
+		"%s\n\n%s\n\nColumns:\n - %s",
+		intro,
+		outputDescription,
+		strings.Join(columns, "\n - "),
+	)
 }

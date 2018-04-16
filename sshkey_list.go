@@ -1,9 +1,6 @@
 package cli
 
 import (
-	"fmt"
-	"strings"
-
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
@@ -19,12 +16,10 @@ func newSSHKeyListCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list [FLAGS]",
 		Short: "List SSH keys",
-		Long: fmt.Sprintf(`Displays a list of SSH keys.
-
-%s
-
-Columns:
- - %s`, OutputDescription, strings.Join(sshKeyListTableOutput.Columns(), "\n - ")),
+		Long: listLongDescription(
+			"Displays a list of SSH keys.",
+			sshKeyListTableOutput.Columns(),
+		),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.ensureToken,

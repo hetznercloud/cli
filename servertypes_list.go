@@ -2,7 +2,6 @@ package cli
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -28,12 +27,10 @@ func newServerTypeListCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list [FLAGS]",
 		Short: "List server types",
-		Long: fmt.Sprintf(`Displays a list of server types.
-
-%s
-
-Columns:
- - %s`, OutputDescription, strings.Join(serverTypeListTableOutput.Columns(), "\n - ")),
+		Long: listLongDescription(
+			"Displays a list of server types.",
+			serverTypeListTableOutput.Columns(),
+		),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.ensureToken,

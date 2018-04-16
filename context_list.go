@@ -1,9 +1,6 @@
 package cli
 
 import (
-	"fmt"
-	"strings"
-
 	"github.com/spf13/cobra"
 )
 
@@ -19,12 +16,10 @@ func newContextListCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list [FLAGS]",
 		Short: "List contexts",
-		Long: fmt.Sprintf(`Displays a list of contexts.
-
-%s
-
-Columns:
- - %s`, OutputDescription, strings.Join(contextListTableOutput.Columns(), "\n - ")),
+		Long: listLongDescription(
+			"Displays a list of contexts.",
+			contextListTableOutput.Columns(),
+		),
 		Args:                  cobra.NoArgs,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,

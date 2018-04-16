@@ -1,9 +1,6 @@
 package cli
 
 import (
-	"fmt"
-	"strings"
-
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
@@ -19,12 +16,10 @@ func newISOListCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list [FLAGS]",
 		Short: "List ISOs",
-		Long: fmt.Sprintf(`Displays a list of ISOs.
-
-%s
-
-Columns:
- - %s`, OutputDescription, strings.Join(isoListTableOutput.Columns(), "\n - ")),
+		Long: listLongDescription(
+			"Displays a list of ISOs.",
+			serverListTableOutput.Columns(),
+		),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.ensureToken,
