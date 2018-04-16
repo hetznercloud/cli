@@ -12,7 +12,7 @@ import (
 
 func newFloatingIPDisableProtectionCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   "disable-protection [FLAGS] FLOATINGIP [PROTECTION LEVELS]",
+		Use:                   "disable-protection [FLAGS] FLOATINGIP [PROTECTION LEVELS...]",
 		Short:                 "Disable resource protection for a Floating IP",
 		Args:                  cobra.MinimumNArgs(2),
 		TraverseChildren:      true,

@@ -12,7 +12,7 @@ import (
 
 func newImageEnableProtectionCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   "enable-protection [FLAGS] image [PROTECTION LEVELS]",
+		Use:                   "enable-protection [FLAGS] IMAGE [PROTECTION LEVELS...]",
 		Short:                 "Enable resource protection for an image",
 		Args:                  cobra.MinimumNArgs(2),
 		TraverseChildren:      true,
