@@ -18,13 +18,14 @@ func newISOListCommand(cli *CLI) *cobra.Command {
 		Short: "List ISOs",
 		Long: listLongDescription(
 			"Displays a list of ISOs.",
-			serverListTableOutput.Columns(),
+			isoListTableOutput.Columns(),
 		),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runISOList),
 	}
+	addListOutputFlag(cmd, isoListTableOutput.Columns())
 	return cmd
 }
 

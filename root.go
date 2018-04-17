@@ -28,8 +28,6 @@ func NewRootCommand(cli *CLI) *cobra.Command {
 		newISOCommand(cli),
 	)
 
-	cmd.PersistentFlags().StringArrayP("output", "o", []string{}, "Output options. One of: noheader|columns=[col1,col2]")
-
 	return cmd
 }
 

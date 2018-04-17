@@ -25,6 +25,7 @@ func newContextListCommand(cli *CLI) *cobra.Command {
 		DisableFlagsInUseLine: true,
 		RunE: cli.wrap(runContextList),
 	}
+	addListOutputFlag(cmd, contextListTableOutput.Columns())
 	return cmd
 }
 

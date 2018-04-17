@@ -36,6 +36,7 @@ func newServerTypeListCommand(cli *CLI) *cobra.Command {
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runServerTypeList),
 	}
+	addListOutputFlag(cmd, serverTypeListTableOutput.Columns())
 	return cmd
 }
 

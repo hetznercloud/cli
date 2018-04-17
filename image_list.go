@@ -69,6 +69,7 @@ func newImageListCommand(cli *CLI) *cobra.Command {
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runImageList),
 	}
+	addListOutputFlag(cmd, imageListTableOutput.Columns())
 	return cmd
 }
 

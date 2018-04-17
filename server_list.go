@@ -41,6 +41,7 @@ func newServerListCommand(cli *CLI) *cobra.Command {
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runServerList),
 	}
+	addListOutputFlag(cmd, serverListTableOutput.Columns())
 	return cmd
 }
 

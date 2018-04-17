@@ -25,6 +25,7 @@ func newSSHKeyListCommand(cli *CLI) *cobra.Command {
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runSSHKeyList),
 	}
+	addListOutputFlag(cmd, sshKeyListTableOutput.Columns())
 	return cmd
 }
 
