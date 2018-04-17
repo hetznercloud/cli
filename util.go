@@ -37,8 +37,9 @@ func chainRunE(fns ...func(cmd *cobra.Command, args []string) error) func(cmd *c
 	}
 }
 
-var outputDescription = `Output can be controlled by the -o flag. Use -o noheader to suppress the table header.
-Displayed columns and their order can be set with -o columns=%s see available columns below.`
+var outputDescription = `Output can be controlled with the -o flag. Use -o noheader to suppress the
+table header. Displayed columns and their order can be set with
+-o columns=%s (see available columns below).`
 
 func listLongDescription(intro string, columns []string) string {
 	var colExample []string
