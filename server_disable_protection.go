@@ -10,7 +10,7 @@ import (
 
 func newServerDisableProtectionCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   "disable-protection [FLAGS] SERVER [PROTECTION LEVELS]",
+		Use:                   "disable-protection [FLAGS] SERVER PROTECTIONLEVEL [PROTECTIONLEVEL...]",
 		Short:                 "Disable resource protection for a server",
 		Args:                  cobra.MinimumNArgs(2),
 		TraverseChildren:      true,
