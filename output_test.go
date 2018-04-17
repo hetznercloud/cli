@@ -72,11 +72,11 @@ func TestTableOutput(t *testing.T) {
 		}
 	})
 	t.Run("ValidateColumns", func(t *testing.T) {
-		err := to.ValidateColumns([]string{"leeroy_jenkins", "name"})
+		err := to.ValidateColumns([]string{"non-existent", "NAME"})
 		if err == nil ||
 			strings.Contains(err.Error(), "name") ||
-			!strings.Contains(err.Error(), "leeroy_jenkins") {
-			t.Errorf("error should contain 'leeroy_jenkins' but not 'name': %v", err)
+			!strings.Contains(err.Error(), "non-existent") {
+			t.Errorf("error should contain 'non-existent' but not 'name': %v", err)
 		}
 	})
 	t.Run("WriteHeader", func(t *testing.T) {
@@ -93,4 +93,28 @@ func TestTableOutput(t *testing.T) {
 		}
 		wfs.Reset()
 	})
+	t.Run("Columns", func(t *testing.T) {
+		if len(to.Columns()) != 2 {
+			t.Errorf("unexpected number of columns: %v", to.Columns())
+		}
+	})
+}
+
+func TestFieldName(t *testing.T) {
+	type fixture struct {
+		in, out string
+	}
+	tests := []fixture{
+		{"test", "test"},
+		{"t", "t"},
+		{"T", "t"},
+		{"Server", "server"},
+		{"BoundTo", "bound_to"},
+	}
+
+	for _, test := range tests {
+		if f := fieldName(test.in); f != test.out {
+			t.Errorf("Unexpected output expected %q, is %q", test.out, f)
+		}
+	}
 }

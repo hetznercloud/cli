@@ -6,8 +6,10 @@ import (
 	"io"
 	"os"
 	"reflect"
+	"sort"
 	"strings"
 	"text/tabwriter"
+	"unicode"
 )
 
 var validOutputOptsKeys = map[string]bool{
@@ -61,6 +63,7 @@ func parseOutputOpts(in []string) (outputOpts, error) {
 func newTableOutput() *tableOutput {
 	return &tableOutput{
 		w:             tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', 0),
+		columns:       map[string]bool{},
 		fieldMapping:  map[string]fieldOutputFn{},
 		fieldAlias:    map[string]string{},
 		allowedFields: map[string]bool{},
@@ -77,9 +80,19 @@ type writerFlusher interface {
 // tableOutput is a generic way to format object as a table.
 type tableOutput struct {
 	w             writerFlusher
+	columns       map[string]bool
 	fieldMapping  map[string]fieldOutputFn
 	fieldAlias    map[string]string
 	allowedFields map[string]bool
+}
+
+// Columns returns a list of known output columns.
+func (o *tableOutput) Columns() (cols []string) {
+	for c := range o.columns {
+		cols = append(cols, c)
+	}
+	sort.Strings(cols)
+	return
 }
 
 // AddFieldAlias overrides the field name to allow custom column headers.
@@ -92,6 +105,7 @@ func (o *tableOutput) AddFieldAlias(field, alias string) *tableOutput {
 func (o *tableOutput) AddFieldOutputFn(field string, fn fieldOutputFn) *tableOutput {
 	o.fieldMapping[field] = fn
 	o.allowedFields[field] = true
+	o.columns[field] = true
 	return o
 }
 
@@ -103,10 +117,19 @@ func (o *tableOutput) AddAllowedFields(obj interface{}) *tableOutput {
 	}
 	t := v.Type()
 	for i := 0; i < v.NumField(); i++ {
-		if t.Field(i).Type.Kind() == reflect.Ptr {
+		k := t.Field(i).Type.Kind()
+		if k != reflect.Bool &&
+			k != reflect.Float32 &&
+			k != reflect.Float64 &&
+			k != reflect.String &&
+			k != reflect.Int {
+			// only allow simple values
+			// complex values need to be mapped via a fieldOutputFn
 			continue
 		}
 		o.allowedFields[strings.ToLower(t.Field(i).Name)] = true
+		o.allowedFields[fieldName(t.Field(i).Name)] = true
+		o.columns[fieldName(t.Field(i).Name)] = true
 	}
 	return o
 }
@@ -115,6 +138,7 @@ func (o *tableOutput) AddAllowedFields(obj interface{}) *tableOutput {
 func (o *tableOutput) RemoveAllowedField(fields ...string) *tableOutput {
 	for _, field := range fields {
 		delete(o.allowedFields, field)
+		delete(o.columns, field)
 	}
 	return o
 }
@@ -123,7 +147,7 @@ func (o *tableOutput) RemoveAllowedField(fields ...string) *tableOutput {
 func (o *tableOutput) ValidateColumns(cols []string) error {
 	var invalidCols []string
 	for _, col := range cols {
-		if _, ok := o.allowedFields[col]; !ok {
+		if _, ok := o.allowedFields[strings.ToLower(col)]; !ok {
 			invalidCols = append(invalidCols, col)
 		}
 	}
@@ -140,7 +164,7 @@ func (o *tableOutput) WriteHeader(collumns []string) {
 		if alias, ok := o.fieldAlias[col]; ok {
 			col = alias
 		}
-		header = append(header, strings.ToUpper(col))
+		header = append(header, strings.Replace(strings.ToUpper(col), "_", " ", -1))
 	}
 	fmt.Fprintln(o.w, strings.Join(header, "\t"))
 }
@@ -173,7 +197,7 @@ func (o *tableOutput) Write(collumns []string, obj interface{}) {
 			out = append(out, fn(obj))
 			continue
 		}
-		if value, ok := dataL[colName]; ok {
+		if value, ok := dataL[strings.Replace(colName, "_", "", -1)]; ok {
 			if value == nil {
 				out = append(out, na(""))
 				continue
@@ -190,4 +214,16 @@ func (o *tableOutput) Write(collumns []string, obj interface{}) {
 		}
 	}
 	fmt.Fprintln(o.w, strings.Join(out, "\t"))
+}
+
+func fieldName(name string) string {
+	r := []rune(name)
+	var out []rune
+	for i := range r {
+		if i > 0 && (unicode.IsUpper(r[i])) && (i+1 < len(r) && unicode.IsLower(r[i+1]) || unicode.IsLower(r[i-1])) {
+			out = append(out, '_')
+		}
+		out = append(out, unicode.ToLower(r[i]))
+	}
+	return string(out)
 }

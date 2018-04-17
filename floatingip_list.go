@@ -8,36 +8,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func newFloatingIPListCommand(cli *CLI) *cobra.Command {
-	cmd := &cobra.Command{
-		Use:                   "list [FLAGS]",
-		Short:                 "List Floating IPs",
-		TraverseChildren:      true,
-		DisableFlagsInUseLine: true,
-		PreRunE:               cli.ensureToken,
-		RunE:                  cli.wrap(runFloatingIPList),
-	}
-	return cmd
-}
+var floatingIPListTableOutput *tableOutput
 
-func runFloatingIPList(cli *CLI, cmd *cobra.Command, args []string) error {
-	out, _ := cmd.Flags().GetStringArray("output")
-	outOpts, err := parseOutputOpts(out)
-	if err != nil {
-		return err
-	}
-
-	floatingIPs, err := cli.Client().FloatingIP.All(cli.Context)
-	if err != nil {
-		return err
-	}
-
-	cols := []string{"id", "type", "description", "ip", "home", "server", "dns"}
-	if outOpts.IsSet("columns") {
-		cols = outOpts["columns"]
-	}
-
-	tw := newTableOutput().
+func init() {
+	floatingIPListTableOutput = newTableOutput().
 		AddAllowedFields(hcloud.FloatingIP{}).
 		AddFieldOutputFn("dns", fieldOutputFn(func(obj interface{}) string {
 			floatingIP := obj.(*hcloud.FloatingIP)
@@ -71,7 +45,43 @@ func runFloatingIPList(cli *CLI, cmd *cobra.Command, args []string) error {
 			}
 			return floatingIP.IP.String()
 		}))
+}
 
+func newFloatingIPListCommand(cli *CLI) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "list [FLAGS]",
+		Short: "List Floating IPs",
+		Long: listLongDescription(
+			"Displays a list of Floating IPs.",
+			floatingIPListTableOutput.Columns(),
+		),
+		TraverseChildren:      true,
+		DisableFlagsInUseLine: true,
+		PreRunE:               cli.ensureToken,
+		RunE:                  cli.wrap(runFloatingIPList),
+	}
+	addListOutputFlag(cmd, floatingIPListTableOutput.Columns())
+	return cmd
+}
+
+func runFloatingIPList(cli *CLI, cmd *cobra.Command, args []string) error {
+	out, _ := cmd.Flags().GetStringArray("output")
+	outOpts, err := parseOutputOpts(out)
+	if err != nil {
+		return err
+	}
+
+	floatingIPs, err := cli.Client().FloatingIP.All(cli.Context)
+	if err != nil {
+		return err
+	}
+
+	cols := []string{"id", "type", "description", "ip", "home", "server", "dns"}
+	if outOpts.IsSet("columns") {
+		cols = outOpts["columns"]
+	}
+
+	tw := floatingIPListTableOutput
 	if err = tw.ValidateColumns(cols); err != nil {
 		return err
 	}

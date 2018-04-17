@@ -5,15 +5,27 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var sshKeyListTableOutput *tableOutput
+
+func init() {
+	sshKeyListTableOutput = newTableOutput().
+		AddAllowedFields(hcloud.SSHKey{})
+}
+
 func newSSHKeyListCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   "list [FLAGS]",
-		Short:                 "List SSH keys",
+		Use:   "list [FLAGS]",
+		Short: "List SSH keys",
+		Long: listLongDescription(
+			"Displays a list of SSH keys.",
+			sshKeyListTableOutput.Columns(),
+		),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runSSHKeyList),
 	}
+	addListOutputFlag(cmd, sshKeyListTableOutput.Columns())
 	return cmd
 }
 
@@ -34,9 +46,7 @@ func runSSHKeyList(cli *CLI, cmd *cobra.Command, args []string) error {
 		cols = outOpts["columns"]
 	}
 
-	tw := newTableOutput().
-		AddAllowedFields(hcloud.SSHKey{})
-
+	tw := sshKeyListTableOutput
 	if err = tw.ValidateColumns(cols); err != nil {
 		return err
 	}

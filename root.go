@@ -28,8 +28,6 @@ func NewRootCommand(cli *CLI) *cobra.Command {
 		newISOCommand(cli),
 	)
 
-	cmd.PersistentFlags().StringArrayP("output", "o", []string{}, "Output options")
-
 	return cmd
 }
 

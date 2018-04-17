@@ -5,15 +5,32 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var datacenterListTableOutput *tableOutput
+
+func init() {
+	datacenterListTableOutput = newTableOutput().
+		AddAllowedFields(hcloud.Datacenter{}).
+		AddFieldOutputFn("location", fieldOutputFn(func(obj interface{}) string {
+			datacenter := obj.(*hcloud.Datacenter)
+			return datacenter.Location.Name
+		}))
+}
+
 func newDatacenterListCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   "list [FLAGS]",
-		Short:                 "List datacenters",
+		Use:   "list [FLAGS]",
+		Short: "List datacenters",
+		Long: listLongDescription(
+			"Displays a list of datacenters.",
+			datacenterListTableOutput.Columns(),
+		),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runDatacenterList),
 	}
+	addListOutputFlag(cmd, datacenterListTableOutput.Columns())
+
 	return cmd
 }
 
@@ -34,13 +51,7 @@ func runDatacenterList(cli *CLI, cmd *cobra.Command, args []string) error {
 		cols = outOpts["columns"]
 	}
 
-	tw := newTableOutput().
-		AddAllowedFields(hcloud.Datacenter{}).
-		AddFieldOutputFn("location", fieldOutputFn(func(obj interface{}) string {
-			datacenter := obj.(*hcloud.Datacenter)
-			return datacenter.Location.Name
-		}))
-
+	tw := datacenterListTableOutput
 	if err = tw.ValidateColumns(cols); err != nil {
 		return err
 	}

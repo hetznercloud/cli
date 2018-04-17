@@ -1,5 +1,9 @@
 # Changes
 
+## master
+
+* Document `-o` flag for controlling output formatting
+
 ## v1.3.2
 
 * Show progress for every action

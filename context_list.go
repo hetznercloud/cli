@@ -1,19 +1,31 @@
 package cli
 
 import (
-	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
 
+var contextListTableOutput *tableOutput
+
+func init() {
+	contextListTableOutput = newTableOutput().
+		AddAllowedFields(ConfigContext{}).
+		RemoveAllowedField("token")
+}
+
 func newContextListCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   "list [FLAGS]",
-		Short:                 "List contexts",
+		Use:   "list [FLAGS]",
+		Short: "List contexts",
+		Long: listLongDescription(
+			"Displays a list of contexts.",
+			contextListTableOutput.Columns(),
+		),
 		Args:                  cobra.NoArgs,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		RunE: cli.wrap(runContextList),
 	}
+	addListOutputFlag(cmd, contextListTableOutput.Columns())
 	return cmd
 }
 
@@ -29,10 +41,7 @@ func runContextList(cli *CLI, cmd *cobra.Command, args []string) error {
 		cols = outOpts["columns"]
 	}
 
-	tw := newTableOutput().
-		AddAllowedFields(hcloud.Datacenter{}).
-		RemoveAllowedField("token")
-
+	tw := contextListTableOutput
 	if err = tw.ValidateColumns(cols); err != nil {
 		return err
 	}
