@@ -1,6 +1,6 @@
 # Changes
 
-## master
+## v1.4.0
 
 * Document `-o` flag for controlling output formatting
 * Add commands `enable-protection` and `disable-protection` for
