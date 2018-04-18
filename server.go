@@ -32,6 +32,8 @@ func newServerCommand(cli *CLI) *cobra.Command {
 		newServerRebuildCommand(cli),
 		newServerEnableBackupCommand(cli),
 		newServerDisableBackupCommand(cli),
+		newServerEnableProtectionCommand(cli),
+		newServerDisableProtectionCommand(cli),
 	)
 	return cmd
 }

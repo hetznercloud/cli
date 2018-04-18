@@ -3,6 +3,8 @@
 ## master
 
 * Document `-o` flag for controlling output formatting
+* Add commands `enable-protection` and `disable-protection` for
+  images, Floating IPs, and servers
 
 ## v1.3.2
 

@@ -25,8 +25,8 @@
     "hcloud",
     "hcloud/schema"
   ]
-  revision = "bddabd41e017b7a562e3e8e70e75391c156a380f"
-  version = "v1.5.0"
+  revision = "e100f592eda7491411d22df6d8cda4de5711aa33"
+  version = "v1.6.0"
 
 [[projects]]
   name = "github.com/inconshreveable/mousetrap"
@@ -50,13 +50,13 @@
   branch = "master"
   name = "github.com/spf13/cobra"
   packages = ["."]
-  revision = "c439c4fa093711d42e1b01acb1235b52004753c1"
+  revision = "615425954c3b0d9485a7027d4d451fdcdfdee84e"
 
 [[projects]]
   name = "github.com/spf13/pflag"
   packages = ["."]
-  revision = "e57e3eeb33f795204c1ca35f56c44f83227c6e66"
-  version = "v1.0.0"
+  revision = "583c0c0531f06d5278b7d917446061adc344b5cd"
+  version = "v1.0.1"
 
 [[projects]]
   branch = "master"
@@ -67,8 +67,16 @@
 [[projects]]
   branch = "master"
   name = "golang.org/x/crypto"
-  packages = ["ssh/terminal"]
-  revision = "80db560fac1fb3e6ac81dbc7f8ae4c061f5257bd"
+  packages = [
+    "curve25519",
+    "ed25519",
+    "ed25519/internal/edwards25519",
+    "internal/chacha20",
+    "poly1305",
+    "ssh",
+    "ssh/terminal"
+  ]
+  revision = "d6449816ce06963d9d136eee5a56fca5b0616e7e"
 
 [[projects]]
   branch = "master"
@@ -77,11 +85,11 @@
     "unix",
     "windows"
   ]
-  revision = "641605214e7dab930817f68e2fef560efbb033e5"
+  revision = "3b87a42e500a6dc65dae1a55d0b641295971163e"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "be34aa939fe594b427e23410db2e675d10cd4d696144f698ae327faa4267b34a"
+  inputs-digest = "ede1b81829a9a091d3d4bac244c36dec4f44595c4e8d5a8662d8454001b5590f"
   solver-name = "gps-cdcl"
   solver-version = 1

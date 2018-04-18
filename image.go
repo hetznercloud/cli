@@ -16,6 +16,8 @@ func newImageCommand(cli *CLI) *cobra.Command {
 		newImageDeleteCommand(cli),
 		newImageDescribeCommand(cli),
 		newImageUpdateCommand(cli),
+		newImageEnableProtectionCommand(cli),
+		newImageDisableProtectionCommand(cli),
 	)
 	return cmd
 }

@@ -94,6 +94,14 @@ const (
 		COMPREPLY=($(echo "snapshot backup"))
 	}
 
+	__hcloud_protection_levels() {
+		COMPREPLY=($(echo "delete"))
+	}
+
+	__hcloud_server_protection_levels() {
+		COMPREPLY=($(echo "delete rebuild"))
+	}
+
 	__hcloud_floatingip_types() {
 		COMPREPLY=($(echo "ipv4 ipv6"))
 	}
@@ -162,6 +170,39 @@ const (
 					return
 				fi
 				__hcloud_floating_ip_ids
+				return
+				;;
+			hcloud_floating-ip_enable-protection | hcloud_floating-ip_disable-protection )
+				if [[ ${#nouns[@]} -gt 1 ]]; then
+					return 1
+				fi
+				if [[ ${#nouns[@]} -eq 1 ]]; then
+					__hcloud_protection_levels
+					return
+				fi
+				__hcloud_floating_ip_ids
+				return
+				;;
+			hcloud_image_enable-protection | hcloud_image_disable-protection )
+				if [[ ${#nouns[@]} -gt 1 ]]; then
+					return 1
+				fi
+				if [[ ${#nouns[@]} -eq 1 ]]; then
+					__hcloud_protection_levels
+					return
+				fi
+				__hcloud_image_ids_no_system
+				return
+				;;
+			hcloud_server_enable-protection | hcloud_server_disable-protection )
+				if [[ ${#nouns[@]} -gt 2 ]]; then
+					return 1
+				fi
+				if [[ ${#nouns[@]} -gt 0 ]]; then
+					__hcloud_server_protection_levels
+					return
+				fi
+				__hcloud_server_names
 				return
 				;;
 			hcloud_floating-ip_unassign | hcloud_floating-ip_delete | \

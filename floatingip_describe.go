@@ -68,5 +68,8 @@ func runFloatingIPDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 		}
 	}
 
+	fmt.Printf("Protection:\n")
+	fmt.Printf("  Delete:\t%s\n", yesno(floatingIP.Protection.Delete))
+
 	return nil
 }

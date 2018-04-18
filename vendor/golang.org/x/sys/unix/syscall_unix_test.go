@@ -492,16 +492,18 @@ func TestFchmodat(t *testing.T) {
 	}
 
 	mode = os.FileMode(0644)
+	didChmodSymlink := true
 	err = unix.Fchmodat(unix.AT_FDCWD, "symlink1", uint32(mode), unix.AT_SYMLINK_NOFOLLOW)
 	if err != nil {
-		if runtime.GOOS == "linux" && err == unix.EOPNOTSUPP {
-			// Linux doesn't support flags != 0
+		if (runtime.GOOS == "linux" || runtime.GOOS == "solaris") && err == unix.EOPNOTSUPP {
+			// Linux and Illumos don't support flags != 0
+			didChmodSymlink = false
 		} else {
 			t.Fatalf("Fchmodat: unexpected error: %v", err)
 		}
 	}
 
-	if runtime.GOOS == "linux" {
+	if !didChmodSymlink {
 		// Didn't change mode of the symlink. On Linux, the permissions
 		// of a symbolic link are always 0777 according to symlink(7)
 		mode = os.FileMode(0777)

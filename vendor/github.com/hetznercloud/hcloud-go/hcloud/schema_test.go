@@ -88,6 +88,9 @@ func TestFloatingIPFromSchema(t *testing.T) {
 				"city": "Falkenstein",
 				"latitude": 50.47612,
 				"longitude": 12.370071
+			},
+			"protection": {
+				"delete": true
 			}
 		}`)
 
@@ -120,6 +123,9 @@ func TestFloatingIPFromSchema(t *testing.T) {
 		}
 		if floatingIP.HomeLocation == nil || floatingIP.HomeLocation.ID != 1 {
 			t.Errorf("unexpected home location: %v", floatingIP.HomeLocation)
+		}
+		if !floatingIP.Protection.Delete {
+			t.Errorf("unexpected Protection.Delete: %v", floatingIP.Protection.Delete)
 		}
 	})
 
@@ -328,6 +334,10 @@ func TestServerFromSchema(t *testing.T) {
 				"longitude": 12.370071
 			}
 		},
+		"protection": {
+			"delete": true,
+			"rebuild": true
+		},
 		"locked": true
 	}`)
 
@@ -381,6 +391,12 @@ func TestServerFromSchema(t *testing.T) {
 	}
 	if !server.Locked {
 		t.Errorf("unexpected value for Locked: %v", server.Locked)
+	}
+	if !server.Protection.Delete {
+		t.Errorf("unexpected value for Protection.Delete: %v", server.Protection.Delete)
+	}
+	if !server.Protection.Rebuild {
+		t.Errorf("unexpected value for Protection.Rebuild: %v", server.Protection.Rebuild)
 	}
 }
 
@@ -726,7 +742,10 @@ func TestImageFromSchema(t *testing.T) {
 		"bound_to": 1,
 		"os_flavor": "ubuntu",
 		"os_version": "16.04",
-		"rapid_deploy": false
+		"rapid_deploy": false,
+		"protection": {
+			"delete": true
+		}
 	}`)
 
 	var s schema.Image
@@ -773,6 +792,9 @@ func TestImageFromSchema(t *testing.T) {
 	}
 	if image.RapidDeploy {
 		t.Errorf("unexpected RapidDeploy: %v", image.RapidDeploy)
+	}
+	if !image.Protection.Delete {
+		t.Errorf("unexpected Protection.Delete: %v", image.Protection.Delete)
 	}
 }
 

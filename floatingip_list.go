@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -44,6 +45,14 @@ func init() {
 				return floatingIP.Network.String()
 			}
 			return floatingIP.IP.String()
+		})).
+		AddFieldOutputFn("protection", fieldOutputFn(func(obj interface{}) string {
+			floatingIP := obj.(*hcloud.FloatingIP)
+			var protection []string
+			if floatingIP.Protection.Delete {
+				protection = append(protection, "delete")
+			}
+			return strings.Join(protection, ", ")
 		}))
 }
 

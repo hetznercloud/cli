@@ -19,6 +19,8 @@ func newFloatingIPCommand(cli *CLI) *cobra.Command {
 		newFloatingIPAssignCommand(cli),
 		newFloatingIPUnassignCommand(cli),
 		newFloatingIPDeleteCommand(cli),
+		newFloatingIPEnableProtectionCommand(cli),
+		newFloatingIPDisableProtectionCommand(cli),
 	)
 	return cmd
 }
