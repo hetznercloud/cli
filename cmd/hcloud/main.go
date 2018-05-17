@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/hetznercloud/cli"
+	"github.com/hetznercloud/cli/cli"
 )
 
 func init() {
