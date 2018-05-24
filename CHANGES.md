@@ -1,5 +1,9 @@
 # Changes
 
+## master
+
+* Add `ssh` command for servers to start a new SSH connection to the server
+
 ## v1.4.0
 
 * Document `-o` flag for controlling output formatting
