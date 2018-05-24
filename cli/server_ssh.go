@@ -53,15 +53,12 @@ func runServerSSH(cli *CLI, cmd *cobra.Command, args []string) error {
 	sshCommand.Stdout = os.Stdout
 	sshCommand.Stderr = os.Stderr
 
-	var waitStatus syscall.WaitStatus
-
 	if err := sshCommand.Run(); err != nil {
 		if exitError, ok := err.(*exec.ExitError); ok {
-			waitStatus = exitError.Sys().(syscall.WaitStatus)
+			waitStatus := exitError.Sys().(syscall.WaitStatus)
 			os.Exit(waitStatus.ExitStatus())
 		} else {
-			os.Stderr.WriteString(fmt.Sprintf("Error: %s\n", err.Error()))
-			os.Exit(1)
+			return err
 		}
 	}
 

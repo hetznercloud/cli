@@ -1,6 +1,6 @@
 # Changes
 
-## v1.5.0
+## master
 
 * Add `ssh` command for servers to start a new SSH connection to the server
 
