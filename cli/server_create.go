@@ -71,10 +71,15 @@ func runServerCreate(cli *CLI, cmd *cobra.Command, args []string) error {
 		return err
 	}
 
+	fmt.Printf("Server created with ID: %d\n", result.Server.ID)
+
+	// Print the server's IPv4 address
+	fmt.Printf("IP address: %s\n", result.Server.PublicNet.IPv4.IP.String())
+
+	// Only print the root password if it's not empty,
+	// which is only the case if it wasn't created with an SSH key.
 	if result.RootPassword != "" {
-		fmt.Printf("Server %d created with root password: %s\n", result.Server.ID, result.RootPassword)
-	} else {
-		fmt.Printf("Server %d created\n", result.Server.ID)
+		fmt.Printf("Root password: %s\n", result.RootPassword)
 	}
 
 	return nil
