@@ -53,6 +53,8 @@ func newServerCreateCommand(cli *CLI) *cobra.Command {
 
 	cmd.Flags().String("user-data-from-file", "", "Read user data from specified file (use - to read from stdin)")
 
+	cmd.Flags().Bool("disable-progress", false,"Disable the pulling of the server creation progress")
+
 	return cmd
 }
 
@@ -67,8 +69,11 @@ func runServerCreate(cli *CLI, cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	if err := cli.ActionProgress(cli.Context, result.Action); err != nil {
-		return err
+	disableProgressBar, _ := cmd.Flags().GetBool("disable-progress")
+	if disableProgressBar == false{
+		if err := cli.ActionProgress(cli.Context, result.Action); err != nil {
+			return err
+		}
 	}
 
 	fmt.Printf("Server %d created\n", result.Server.ID)
