@@ -119,7 +119,7 @@ func (c *CLI) Client() *hcloud.Client {
 		}
 		pollInterval, _ := c.RootCommand.PersistentFlags().GetInt("poll-interval")
 		if pollInterval > 0 {
-			opts = append(opts, hcloud.WithPollInterval(time.Duration(pollInterval) * time.Millisecond))
+			opts = append(opts, hcloud.WithPollInterval(time.Duration(pollInterval)*time.Millisecond))
 		}
 		c.client = hcloud.NewClient(opts...)
 	}
