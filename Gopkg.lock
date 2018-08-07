@@ -25,8 +25,8 @@
     "hcloud",
     "hcloud/schema"
   ]
-  revision = "e100f592eda7491411d22df6d8cda4de5711aa33"
-  version = "v1.6.0"
+  revision = "400c6f026bf3c8d5fead3df7806e6981a16bb6b8"
+  version = "v1.8.0"
 
 [[projects]]
   name = "github.com/inconshreveable/mousetrap"

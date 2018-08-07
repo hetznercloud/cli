@@ -27,6 +27,7 @@ func NewRootCommand(cli *CLI) *cobra.Command {
 		newLocationCommand(cli),
 		newISOCommand(cli),
 	)
+	cmd.PersistentFlags().Int("poll-interval", 500, "Determine in which interval (in ms) the CLI poll the new status information of an action from the API. If you have problems with the API limits, you should increase this value.")
 
 	return cmd
 }
