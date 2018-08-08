@@ -190,7 +190,8 @@ func TestISOFromSchema(t *testing.T) {
 		"id": 4711,
 		"name": "FreeBSD-11.0-RELEASE-amd64-dvd1",
 		"description": "FreeBSD 11.0 x64",
-		"type": "public"
+		"type": "public",
+		"deprecated": "2018-02-28T00:00:00+00:00"
 	}`)
 
 	var s schema.ISO
@@ -198,7 +199,6 @@ func TestISOFromSchema(t *testing.T) {
 		t.Fatal(err)
 	}
 	iso := ISOFromSchema(s)
-
 	if iso.ID != 4711 {
 		t.Errorf("unexpected ID: %v", iso.ID)
 	}
@@ -210,6 +210,9 @@ func TestISOFromSchema(t *testing.T) {
 	}
 	if iso.Type != ISOTypePublic {
 		t.Errorf("unexpected type: %v", iso.Type)
+	}
+	if iso.Deprecated.IsZero() {
+		t.Errorf("unexpected value for deprecated: %v", iso.Deprecated)
 	}
 }
 
@@ -531,6 +534,7 @@ func TestServerTypeFromSchema(t *testing.T) {
 		"memory": 1.0,
 		"disk": 20,
 		"storage_type": "local",
+		"cpu_type": "shared",
 		"prices": [
 			{
 				"location": "fsn1",
@@ -572,6 +576,9 @@ func TestServerTypeFromSchema(t *testing.T) {
 	}
 	if serverType.StorageType != StorageTypeLocal {
 		t.Errorf("unexpected storage type: %q", serverType.StorageType)
+	}
+	if serverType.CPUType != CPUTypeShared {
+		t.Errorf("unexpected cpu type: %q", serverType.CPUType)
 	}
 	if len(serverType.Pricings) != 1 {
 		t.Errorf("unexpected number of pricings: %d", len(serverType.Pricings))
@@ -745,7 +752,8 @@ func TestImageFromSchema(t *testing.T) {
 		"rapid_deploy": false,
 		"protection": {
 			"delete": true
-		}
+		},
+		"deprecated": "2018-02-28T00:00:00+00:00"
 	}`)
 
 	var s schema.Image
@@ -795,6 +803,9 @@ func TestImageFromSchema(t *testing.T) {
 	}
 	if !image.Protection.Delete {
 		t.Errorf("unexpected Protection.Delete: %v", image.Protection.Delete)
+	}
+	if image.Deprecated.IsZero() {
+		t.Errorf("unexpected value for Deprecated: %v", image.Deprecated)
 	}
 }
 

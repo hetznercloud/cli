@@ -48,7 +48,7 @@ func TestActionClientGetByIDNotFound(t *testing.T) {
 		w.WriteHeader(http.StatusNotFound)
 		json.NewEncoder(w).Encode(schema.ErrorResponse{
 			Error: schema.Error{
-				Code: ErrorCodeNotFound,
+				Code: string(ErrorCodeNotFound),
 			},
 		})
 	})
@@ -156,7 +156,7 @@ func TestActionClientWatchProgress(t *testing.T) {
 			w.WriteHeader(http.StatusTooManyRequests)
 			json.NewEncoder(w).Encode(schema.ErrorResponse{
 				Error: schema.Error{
-					Code:    ErrorCodeRateLimitExceeded,
+					Code:    string(ErrorCodeRateLimitExceeded),
 					Message: "ratelimited",
 				},
 			})

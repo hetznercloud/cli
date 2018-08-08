@@ -116,6 +116,10 @@ func (c *CLI) Client() *hcloud.Client {
 		if c.Endpoint != "" {
 			opts = append(opts, hcloud.WithEndpoint(c.Endpoint))
 		}
+		pollInterval, _ := c.RootCommand.PersistentFlags().GetDuration("poll-interval")
+		if pollInterval > 0 {
+			opts = append(opts, hcloud.WithPollInterval(pollInterval))
+		}
 		c.client = hcloud.NewClient(opts...)
 	}
 	return c.client
