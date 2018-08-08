@@ -5,6 +5,7 @@
 package autocert_test
 
 import (
+	"crypto/tls"
 	"fmt"
 	"log"
 	"net/http"
@@ -26,9 +27,10 @@ func ExampleManager() {
 		Prompt:     autocert.AcceptTOS,
 		HostPolicy: autocert.HostWhitelist("example.org"),
 	}
+	go http.ListenAndServe(":http", m.HTTPHandler(nil))
 	s := &http.Server{
 		Addr:      ":https",
-		TLSConfig: m.TLSConfig(),
+		TLSConfig: &tls.Config{GetCertificate: m.GetCertificate},
 	}
 	s.ListenAndServeTLS("", "")
 }

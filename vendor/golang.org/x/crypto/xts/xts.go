@@ -25,8 +25,6 @@ import (
 	"crypto/cipher"
 	"encoding/binary"
 	"errors"
-
-	"golang.org/x/crypto/internal/subtle"
 )
 
 // Cipher contains an expanded key structure. It doesn't contain mutable state
@@ -66,9 +64,6 @@ func (c *Cipher) Encrypt(ciphertext, plaintext []byte, sectorNum uint64) {
 	if len(plaintext)%blockSize != 0 {
 		panic("xts: plaintext is not a multiple of the block size")
 	}
-	if subtle.InexactOverlap(ciphertext[:len(plaintext)], plaintext) {
-		panic("xts: invalid buffer overlap")
-	}
 
 	var tweak [blockSize]byte
 	binary.LittleEndian.PutUint64(tweak[:8], sectorNum)
@@ -99,9 +94,6 @@ func (c *Cipher) Decrypt(plaintext, ciphertext []byte, sectorNum uint64) {
 	}
 	if len(ciphertext)%blockSize != 0 {
 		panic("xts: ciphertext is not a multiple of the block size")
-	}
-	if subtle.InexactOverlap(plaintext[:len(ciphertext)], ciphertext) {
-		panic("xts: invalid buffer overlap")
 	}
 
 	var tweak [blockSize]byte

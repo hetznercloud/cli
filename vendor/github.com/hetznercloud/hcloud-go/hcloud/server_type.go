@@ -18,7 +18,6 @@ type ServerType struct {
 	Memory      float32
 	Disk        int
 	StorageType StorageType
-	CPUType     CPUType
 	Pricings    []ServerTypeLocationPricing
 }
 
@@ -30,18 +29,7 @@ const (
 	StorageTypeLocal StorageType = "local"
 
 	// StorageTypeCeph is the type for remote storage.
-	StorageTypeCeph StorageType = "ceph"
-)
-
-// CPUType specifies the type of the CPU.
-type CPUType string
-
-const (
-	// CPUTypeShared is the type for shared CPU.
-	CPUTypeShared CPUType = "shared"
-
-	//CPUTypeDedicated is the type for dedicated CPU.
-	CPUTypeDedicated CPUType = "dedicated"
+	StorageTypeCeph = "ceph"
 )
 
 // ServerTypeClient is a client for the server types API.

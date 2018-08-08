@@ -5,28 +5,9 @@ import (
 	"encoding/json"
 	"net/http"
 	"testing"
-	"time"
 
 	"github.com/hetznercloud/hcloud-go/hcloud/schema"
 )
-
-func TestISOIsDeprecated(t *testing.T) {
-	t.Run("not deprecated", func(t *testing.T) {
-		iso := &ISO{}
-		if iso.IsDeprecated() {
-			t.Errorf("unexpected value for IsDeprecated: %v", iso.IsDeprecated())
-		}
-	})
-
-	t.Run("deprecated", func(t *testing.T) {
-		iso := &ISO{
-			Deprecated: time.Now(),
-		}
-		if !iso.IsDeprecated() {
-			t.Errorf("unexpected value for IsDeprecated: %v", iso.IsDeprecated())
-		}
-	})
-}
 
 func TestISOClient(t *testing.T) {
 	t.Run("GetByID", func(t *testing.T) {
@@ -76,7 +57,7 @@ func TestISOClient(t *testing.T) {
 			w.WriteHeader(http.StatusNotFound)
 			json.NewEncoder(w).Encode(schema.ErrorResponse{
 				Error: schema.Error{
-					Code: string(ErrorCodeNotFound),
+					Code: ErrorCodeNotFound,
 				},
 			})
 		})

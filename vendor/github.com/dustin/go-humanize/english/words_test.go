@@ -47,7 +47,6 @@ func TestPlural(t *testing.T) {
 	}{
 		{1, "object", "", "1 object"},
 		{42, "object", "", "42 objects"},
-		{1234567, "object", "", "1,234,567 objects"},
 	}
 	for _, tt := range tests {
 		if got := Plural(tt.n, tt.singular, tt.plural); got != tt.want {

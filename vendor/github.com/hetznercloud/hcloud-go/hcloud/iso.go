@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/url"
 	"strconv"
-	"time"
 
 	"github.com/hetznercloud/hcloud-go/hcloud/schema"
 )
@@ -16,12 +15,6 @@ type ISO struct {
 	Name        string
 	Description string
 	Type        ISOType
-	Deprecated  time.Time
-}
-
-// IsDeprecated returns true if the ISO is deprecated
-func (iso *ISO) IsDeprecated() bool {
-	return !iso.Deprecated.IsZero()
 }
 
 // ISOType specifies the type of an ISO image.
@@ -32,7 +25,7 @@ const (
 	ISOTypePublic ISOType = "public"
 
 	// ISOTypePrivate is the type of a private ISO image.
-	ISOTypePrivate ISOType = "private"
+	ISOTypePrivate = "private"
 )
 
 // ISOClient is a client for the ISO API.

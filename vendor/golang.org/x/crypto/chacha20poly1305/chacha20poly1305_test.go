@@ -6,13 +6,9 @@ package chacha20poly1305
 
 import (
 	"bytes"
-	"crypto/cipher"
-	cryptorand "crypto/rand"
+	cr "crypto/rand"
 	"encoding/hex"
-	"fmt"
-	"log"
-	mathrand "math/rand"
-	"strconv"
+	mr "math/rand"
 	"testing"
 )
 
@@ -23,18 +19,7 @@ func TestVectors(t *testing.T) {
 		ad, _ := hex.DecodeString(test.aad)
 		plaintext, _ := hex.DecodeString(test.plaintext)
 
-		var (
-			aead cipher.AEAD
-			err  error
-		)
-		switch len(nonce) {
-		case NonceSize:
-			aead, err = New(key)
-		case NonceSizeX:
-			aead, err = NewX(key)
-		default:
-			t.Fatalf("#%d: wrong nonce length: %d", i, len(nonce))
-		}
+		aead, err := New(key)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -57,7 +42,7 @@ func TestVectors(t *testing.T) {
 		}
 
 		if len(ad) > 0 {
-			alterAdIdx := mathrand.Intn(len(ad))
+			alterAdIdx := mr.Intn(len(ad))
 			ad[alterAdIdx] ^= 0x80
 			if _, err := aead.Open(nil, nonce, ct, ad); err == nil {
 				t.Errorf("#%d: Open was successful after altering additional data", i)
@@ -65,14 +50,14 @@ func TestVectors(t *testing.T) {
 			ad[alterAdIdx] ^= 0x80
 		}
 
-		alterNonceIdx := mathrand.Intn(aead.NonceSize())
+		alterNonceIdx := mr.Intn(aead.NonceSize())
 		nonce[alterNonceIdx] ^= 0x80
 		if _, err := aead.Open(nil, nonce, ct, ad); err == nil {
 			t.Errorf("#%d: Open was successful after altering nonce", i)
 		}
 		nonce[alterNonceIdx] ^= 0x80
 
-		alterCtIdx := mathrand.Intn(len(ct))
+		alterCtIdx := mr.Intn(len(ct))
 		ct[alterCtIdx] ^= 0x80
 		if _, err := aead.Open(nil, nonce, ct, ad); err == nil {
 			t.Errorf("#%d: Open was successful after altering ciphertext", i)
@@ -83,117 +68,87 @@ func TestVectors(t *testing.T) {
 
 func TestRandom(t *testing.T) {
 	// Some random tests to verify Open(Seal) == Plaintext
-	f := func(t *testing.T, nonceSize int) {
-		for i := 0; i < 256; i++ {
-			var nonce = make([]byte, nonceSize)
-			var key [32]byte
+	for i := 0; i < 256; i++ {
+		var nonce [12]byte
+		var key [32]byte
 
-			al := mathrand.Intn(128)
-			pl := mathrand.Intn(16384)
-			ad := make([]byte, al)
-			plaintext := make([]byte, pl)
-			cryptorand.Read(key[:])
-			cryptorand.Read(nonce[:])
-			cryptorand.Read(ad)
-			cryptorand.Read(plaintext)
+		al := mr.Intn(128)
+		pl := mr.Intn(16384)
+		ad := make([]byte, al)
+		plaintext := make([]byte, pl)
+		cr.Read(key[:])
+		cr.Read(nonce[:])
+		cr.Read(ad)
+		cr.Read(plaintext)
 
-			var (
-				aead cipher.AEAD
-				err  error
-			)
-			switch len(nonce) {
-			case NonceSize:
-				aead, err = New(key[:])
-			case NonceSizeX:
-				aead, err = NewX(key[:])
-			default:
-				t.Fatalf("#%d: wrong nonce length: %d", i, len(nonce))
-			}
-			if err != nil {
-				t.Fatal(err)
-			}
-
-			ct := aead.Seal(nil, nonce[:], plaintext, ad)
-
-			plaintext2, err := aead.Open(nil, nonce[:], ct, ad)
-			if err != nil {
-				t.Errorf("Random #%d: Open failed", i)
-				continue
-			}
-
-			if !bytes.Equal(plaintext, plaintext2) {
-				t.Errorf("Random #%d: plaintext's don't match: got %x vs %x", i, plaintext2, plaintext)
-				continue
-			}
-
-			if len(ad) > 0 {
-				alterAdIdx := mathrand.Intn(len(ad))
-				ad[alterAdIdx] ^= 0x80
-				if _, err := aead.Open(nil, nonce[:], ct, ad); err == nil {
-					t.Errorf("Random #%d: Open was successful after altering additional data", i)
-				}
-				ad[alterAdIdx] ^= 0x80
-			}
-
-			alterNonceIdx := mathrand.Intn(aead.NonceSize())
-			nonce[alterNonceIdx] ^= 0x80
-			if _, err := aead.Open(nil, nonce[:], ct, ad); err == nil {
-				t.Errorf("Random #%d: Open was successful after altering nonce", i)
-			}
-			nonce[alterNonceIdx] ^= 0x80
-
-			alterCtIdx := mathrand.Intn(len(ct))
-			ct[alterCtIdx] ^= 0x80
-			if _, err := aead.Open(nil, nonce[:], ct, ad); err == nil {
-				t.Errorf("Random #%d: Open was successful after altering ciphertext", i)
-			}
-			ct[alterCtIdx] ^= 0x80
+		aead, err := New(key[:])
+		if err != nil {
+			t.Fatal(err)
 		}
+
+		ct := aead.Seal(nil, nonce[:], plaintext, ad)
+
+		plaintext2, err := aead.Open(nil, nonce[:], ct, ad)
+		if err != nil {
+			t.Errorf("Random #%d: Open failed", i)
+			continue
+		}
+
+		if !bytes.Equal(plaintext, plaintext2) {
+			t.Errorf("Random #%d: plaintext's don't match: got %x vs %x", i, plaintext2, plaintext)
+			continue
+		}
+
+		if len(ad) > 0 {
+			alterAdIdx := mr.Intn(len(ad))
+			ad[alterAdIdx] ^= 0x80
+			if _, err := aead.Open(nil, nonce[:], ct, ad); err == nil {
+				t.Errorf("Random #%d: Open was successful after altering additional data", i)
+			}
+			ad[alterAdIdx] ^= 0x80
+		}
+
+		alterNonceIdx := mr.Intn(aead.NonceSize())
+		nonce[alterNonceIdx] ^= 0x80
+		if _, err := aead.Open(nil, nonce[:], ct, ad); err == nil {
+			t.Errorf("Random #%d: Open was successful after altering nonce", i)
+		}
+		nonce[alterNonceIdx] ^= 0x80
+
+		alterCtIdx := mr.Intn(len(ct))
+		ct[alterCtIdx] ^= 0x80
+		if _, err := aead.Open(nil, nonce[:], ct, ad); err == nil {
+			t.Errorf("Random #%d: Open was successful after altering ciphertext", i)
+		}
+		ct[alterCtIdx] ^= 0x80
 	}
-	t.Run("Standard", func(t *testing.T) { f(t, NonceSize) })
-	t.Run("X", func(t *testing.T) { f(t, NonceSizeX) })
 }
 
-func benchamarkChaCha20Poly1305Seal(b *testing.B, buf []byte, nonceSize int) {
-	b.ReportAllocs()
+func benchamarkChaCha20Poly1305Seal(b *testing.B, buf []byte) {
 	b.SetBytes(int64(len(buf)))
 
 	var key [32]byte
-	var nonce = make([]byte, nonceSize)
+	var nonce [12]byte
 	var ad [13]byte
 	var out []byte
 
-	var aead cipher.AEAD
-	switch len(nonce) {
-	case NonceSize:
-		aead, _ = New(key[:])
-	case NonceSizeX:
-		aead, _ = NewX(key[:])
-	}
-
+	aead, _ := New(key[:])
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		out = aead.Seal(out[:0], nonce[:], buf[:], ad[:])
 	}
 }
 
-func benchamarkChaCha20Poly1305Open(b *testing.B, buf []byte, nonceSize int) {
-	b.ReportAllocs()
+func benchamarkChaCha20Poly1305Open(b *testing.B, buf []byte) {
 	b.SetBytes(int64(len(buf)))
 
 	var key [32]byte
-	var nonce = make([]byte, nonceSize)
+	var nonce [12]byte
 	var ad [13]byte
 	var ct []byte
 	var out []byte
 
-	var aead cipher.AEAD
-	switch len(nonce) {
-	case NonceSize:
-		aead, _ = New(key[:])
-	case NonceSizeX:
-		aead, _ = NewX(key[:])
-	}
+	aead, _ := New(key[:])
 	ct = aead.Seal(ct[:0], nonce[:], buf[:], ad[:])
 
 	b.ResetTimer()
@@ -202,54 +157,26 @@ func benchamarkChaCha20Poly1305Open(b *testing.B, buf []byte, nonceSize int) {
 	}
 }
 
-func BenchmarkChacha20Poly1305(b *testing.B) {
-	for _, length := range []int{64, 1350, 8 * 1024} {
-		b.Run("Open-"+strconv.Itoa(length), func(b *testing.B) {
-			benchamarkChaCha20Poly1305Open(b, make([]byte, length), NonceSize)
-		})
-		b.Run("Seal-"+strconv.Itoa(length), func(b *testing.B) {
-			benchamarkChaCha20Poly1305Seal(b, make([]byte, length), NonceSize)
-		})
-
-		b.Run("Open-"+strconv.Itoa(length)+"-X", func(b *testing.B) {
-			benchamarkChaCha20Poly1305Open(b, make([]byte, length), NonceSizeX)
-		})
-		b.Run("Seal-"+strconv.Itoa(length)+"-X", func(b *testing.B) {
-			benchamarkChaCha20Poly1305Seal(b, make([]byte, length), NonceSizeX)
-		})
-	}
+func BenchmarkChacha20Poly1305Open_64(b *testing.B) {
+	benchamarkChaCha20Poly1305Open(b, make([]byte, 64))
 }
 
-var key = make([]byte, KeySize)
+func BenchmarkChacha20Poly1305Seal_64(b *testing.B) {
+	benchamarkChaCha20Poly1305Seal(b, make([]byte, 64))
+}
 
-func ExampleNewX() {
-	aead, err := NewX(key)
-	if err != nil {
-		log.Fatalln("Failed to instantiate XChaCha20-Poly1305:", err)
-	}
+func BenchmarkChacha20Poly1305Open_1350(b *testing.B) {
+	benchamarkChaCha20Poly1305Open(b, make([]byte, 1350))
+}
 
-	for _, msg := range []string{
-		"Attack at dawn.",
-		"The eagle has landed.",
-		"Gophers, gophers, gophers everywhere!",
-	} {
-		// Encryption.
-		nonce := make([]byte, NonceSizeX)
-		if _, err := cryptorand.Read(nonce); err != nil {
-			panic(err)
-		}
-		ciphertext := aead.Seal(nil, nonce, []byte(msg), nil)
+func BenchmarkChacha20Poly1305Seal_1350(b *testing.B) {
+	benchamarkChaCha20Poly1305Seal(b, make([]byte, 1350))
+}
 
-		// Decryption.
-		plaintext, err := aead.Open(nil, nonce, ciphertext, nil)
-		if err != nil {
-			log.Fatalln("Failed to decrypt or authenticate message:", err)
-		}
+func BenchmarkChacha20Poly1305Open_8K(b *testing.B) {
+	benchamarkChaCha20Poly1305Open(b, make([]byte, 8*1024))
+}
 
-		fmt.Printf("%s\n", plaintext)
-	}
-
-	// Output: Attack at dawn.
-	// The eagle has landed.
-	// Gophers, gophers, gophers everywhere!
+func BenchmarkChacha20Poly1305Seal_8K(b *testing.B) {
+	benchamarkChaCha20Poly1305Seal(b, make([]byte, 8*1024))
 }

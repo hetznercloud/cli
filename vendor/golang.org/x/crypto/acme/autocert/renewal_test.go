@@ -48,6 +48,8 @@ func TestRenewalNext(t *testing.T) {
 }
 
 func TestRenewFromCache(t *testing.T) {
+	const domain = "example.org"
+
 	// ACME CA server stub
 	var ca *httptest.Server
 	ca = httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -82,7 +84,7 @@ func TestRenewFromCache(t *testing.T) {
 			if err != nil {
 				t.Fatalf("new-cert: CSR: %v", err)
 			}
-			der, err := dummyCert(csr.PublicKey, exampleDomain)
+			der, err := dummyCert(csr.PublicKey, domain)
 			if err != nil {
 				t.Fatalf("new-cert: dummyCert: %v", err)
 			}
@@ -103,28 +105,30 @@ func TestRenewFromCache(t *testing.T) {
 	}))
 	defer ca.Close()
 
+	// use EC key to run faster on 386
+	key, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+	if err != nil {
+		t.Fatal(err)
+	}
 	man := &Manager{
 		Prompt:      AcceptTOS,
-		Cache:       newMemCache(t),
+		Cache:       newMemCache(),
 		RenewBefore: 24 * time.Hour,
 		Client: &acme.Client{
+			Key:          key,
 			DirectoryURL: ca.URL,
 		},
 	}
 	defer man.stopRenew()
 
 	// cache an almost expired cert
-	key, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
-	if err != nil {
-		t.Fatal(err)
-	}
 	now := time.Now()
-	cert, err := dateDummyCert(key.Public(), now.Add(-2*time.Hour), now.Add(time.Minute), exampleDomain)
+	cert, err := dateDummyCert(key.Public(), now.Add(-2*time.Hour), now.Add(time.Minute), domain)
 	if err != nil {
 		t.Fatal(err)
 	}
 	tlscert := &tls.Certificate{PrivateKey: key, Certificate: [][]byte{cert}}
-	if err := man.cachePut(context.Background(), exampleCertKey, tlscert); err != nil {
+	if err := man.cachePut(context.Background(), domain, tlscert); err != nil {
 		t.Fatal(err)
 	}
 
@@ -148,7 +152,7 @@ func TestRenewFromCache(t *testing.T) {
 
 		// ensure the new cert is cached
 		after := time.Now().Add(future)
-		tlscert, err := man.cacheGet(context.Background(), exampleCertKey)
+		tlscert, err := man.cacheGet(context.Background(), domain)
 		if err != nil {
 			t.Fatalf("man.cacheGet: %v", err)
 		}
@@ -159,9 +163,9 @@ func TestRenewFromCache(t *testing.T) {
 		// verify the old cert is also replaced in memory
 		man.stateMu.Lock()
 		defer man.stateMu.Unlock()
-		s := man.state[exampleCertKey]
+		s := man.state[domain]
 		if s == nil {
-			t.Fatalf("m.state[%q] is nil", exampleCertKey)
+			t.Fatalf("m.state[%q] is nil", domain)
 		}
 		tlscert, err = s.tlscert()
 		if err != nil {
@@ -173,7 +177,7 @@ func TestRenewFromCache(t *testing.T) {
 	}
 
 	// trigger renew
-	hello := clientHelloInfo(exampleDomain, true)
+	hello := &tls.ClientHelloInfo{ServerName: domain}
 	if _, err := man.GetCertificate(hello); err != nil {
 		t.Fatal(err)
 	}
@@ -187,11 +191,19 @@ func TestRenewFromCache(t *testing.T) {
 }
 
 func TestRenewFromCacheAlreadyRenewed(t *testing.T) {
+	const domain = "example.org"
+
+	// use EC key to run faster on 386
+	key, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+	if err != nil {
+		t.Fatal(err)
+	}
 	man := &Manager{
 		Prompt:      AcceptTOS,
-		Cache:       newMemCache(t),
+		Cache:       newMemCache(),
 		RenewBefore: 24 * time.Hour,
 		Client: &acme.Client{
+			Key:          key,
 			DirectoryURL: "invalid",
 		},
 	}
@@ -203,42 +215,38 @@ func TestRenewFromCacheAlreadyRenewed(t *testing.T) {
 		t.Fatal(err)
 	}
 	now := time.Now()
-	newCert, err := dateDummyCert(newKey.Public(), now.Add(-2*time.Hour), now.Add(time.Hour*24*90), exampleDomain)
+	newCert, err := dateDummyCert(newKey.Public(), now.Add(-2*time.Hour), now.Add(time.Hour*24*90), domain)
 	if err != nil {
 		t.Fatal(err)
 	}
-	newLeaf, err := validCert(exampleCertKey, [][]byte{newCert}, newKey)
+	newLeaf, err := validCert(domain, [][]byte{newCert}, newKey)
 	if err != nil {
 		t.Fatal(err)
 	}
 	newTLSCert := &tls.Certificate{PrivateKey: newKey, Certificate: [][]byte{newCert}, Leaf: newLeaf}
-	if err := man.cachePut(context.Background(), exampleCertKey, newTLSCert); err != nil {
+	if err := man.cachePut(context.Background(), domain, newTLSCert); err != nil {
 		t.Fatal(err)
 	}
 
 	// set internal state to an almost expired cert
-	key, err := ecdsa.GenerateKey(elliptic.P256(), rand.Reader)
+	oldCert, err := dateDummyCert(key.Public(), now.Add(-2*time.Hour), now.Add(time.Minute), domain)
 	if err != nil {
 		t.Fatal(err)
 	}
-	oldCert, err := dateDummyCert(key.Public(), now.Add(-2*time.Hour), now.Add(time.Minute), exampleDomain)
-	if err != nil {
-		t.Fatal(err)
-	}
-	oldLeaf, err := validCert(exampleCertKey, [][]byte{oldCert}, key)
+	oldLeaf, err := validCert(domain, [][]byte{oldCert}, key)
 	if err != nil {
 		t.Fatal(err)
 	}
 	man.stateMu.Lock()
 	if man.state == nil {
-		man.state = make(map[certKey]*certState)
+		man.state = make(map[string]*certState)
 	}
 	s := &certState{
 		key:  key,
 		cert: [][]byte{oldCert},
 		leaf: oldLeaf,
 	}
-	man.state[exampleCertKey] = s
+	man.state[domain] = s
 	man.stateMu.Unlock()
 
 	// veriy the renewal accepted the newer cached cert
@@ -259,7 +267,7 @@ func TestRenewFromCacheAlreadyRenewed(t *testing.T) {
 		}
 
 		// ensure the cached cert was not modified
-		tlscert, err := man.cacheGet(context.Background(), exampleCertKey)
+		tlscert, err := man.cacheGet(context.Background(), domain)
 		if err != nil {
 			t.Fatalf("man.cacheGet: %v", err)
 		}
@@ -270,9 +278,9 @@ func TestRenewFromCacheAlreadyRenewed(t *testing.T) {
 		// verify the old cert is also replaced in memory
 		man.stateMu.Lock()
 		defer man.stateMu.Unlock()
-		s := man.state[exampleCertKey]
+		s := man.state[domain]
 		if s == nil {
-			t.Fatalf("m.state[%q] is nil", exampleCertKey)
+			t.Fatalf("m.state[%q] is nil", domain)
 		}
 		stateKey := s.key.Public().(*ecdsa.PublicKey)
 		if stateKey.X.Cmp(newKey.X) != 0 || stateKey.Y.Cmp(newKey.Y) != 0 {
@@ -287,9 +295,9 @@ func TestRenewFromCacheAlreadyRenewed(t *testing.T) {
 		}
 
 		// verify the private key is replaced in the renewal state
-		r := man.renewal[exampleCertKey]
+		r := man.renewal[domain]
 		if r == nil {
-			t.Fatalf("m.renewal[%q] is nil", exampleCertKey)
+			t.Fatalf("m.renewal[%q] is nil", domain)
 		}
 		renewalKey := r.key.Public().(*ecdsa.PublicKey)
 		if renewalKey.X.Cmp(newKey.X) != 0 || renewalKey.Y.Cmp(newKey.Y) != 0 {
@@ -299,7 +307,7 @@ func TestRenewFromCacheAlreadyRenewed(t *testing.T) {
 	}
 
 	// assert the expiring cert is returned from state
-	hello := clientHelloInfo(exampleDomain, true)
+	hello := &tls.ClientHelloInfo{ServerName: domain}
 	tlscert, err := man.GetCertificate(hello)
 	if err != nil {
 		t.Fatal(err)
@@ -309,7 +317,7 @@ func TestRenewFromCacheAlreadyRenewed(t *testing.T) {
 	}
 
 	// trigger renew
-	go man.renew(exampleCertKey, s.key, s.leaf.NotAfter)
+	go man.renew(domain, s.key, s.leaf.NotAfter)
 
 	// wait for renew loop
 	select {
@@ -317,7 +325,7 @@ func TestRenewFromCacheAlreadyRenewed(t *testing.T) {
 		t.Fatal("renew took too long to occur")
 	case <-done:
 		// assert the new cert is returned from state after renew
-		hello := clientHelloInfo(exampleDomain, true)
+		hello := &tls.ClientHelloInfo{ServerName: domain}
 		tlscert, err := man.GetCertificate(hello)
 		if err != nil {
 			t.Fatal(err)
