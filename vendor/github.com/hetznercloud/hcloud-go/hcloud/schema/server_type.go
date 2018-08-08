@@ -9,6 +9,7 @@ type ServerType struct {
 	Memory      float32                  `json:"memory"`
 	Disk        int                      `json:"disk"`
 	StorageType string                   `json:"storage_type"`
+	CPUType     string                   `json:"cpu_type"`
 	Prices      []PricingServerTypePrice `json:"prices"`
 }
 

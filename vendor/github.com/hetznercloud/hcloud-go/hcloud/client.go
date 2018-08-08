@@ -46,10 +46,11 @@ func ExponentialBackoff(b float64, d time.Duration) BackoffFunc {
 
 // Client is a client for the Hetzner Cloud API.
 type Client struct {
-	endpoint    string
-	token       string
-	backoffFunc BackoffFunc
-	httpClient  *http.Client
+	endpoint     string
+	token        string
+	pollInterval time.Duration
+	backoffFunc  BackoffFunc
+	httpClient   *http.Client
 
 	Action     ActionClient
 	Datacenter DatacenterClient
@@ -80,6 +81,14 @@ func WithToken(token string) ClientOption {
 	}
 }
 
+// WithPollInterval configures a Client to use the specified interval when polling
+// from the API.
+func WithPollInterval(pollInterval time.Duration) ClientOption {
+	return func(client *Client) {
+		client.pollInterval = pollInterval
+	}
+}
+
 // WithBackoffFunc configures a Client to use the specified backoff function.
 func WithBackoffFunc(f BackoffFunc) ClientOption {
 	return func(client *Client) {
@@ -90,9 +99,10 @@ func WithBackoffFunc(f BackoffFunc) ClientOption {
 // NewClient creates a new client.
 func NewClient(options ...ClientOption) *Client {
 	client := &Client{
-		endpoint:    Endpoint,
-		httpClient:  &http.Client{},
-		backoffFunc: ExponentialBackoff(2, 500*time.Millisecond),
+		endpoint:     Endpoint,
+		httpClient:   &http.Client{},
+		backoffFunc:  ExponentialBackoff(2, 500*time.Millisecond),
+		pollInterval: 500 * time.Millisecond,
 	}
 
 	for _, option := range options {

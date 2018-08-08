@@ -27,8 +27,8 @@ type ActionStatus string
 // List of action statuses.
 const (
 	ActionStatusRunning ActionStatus = "running"
-	ActionStatusSuccess              = "success"
-	ActionStatusError                = "error"
+	ActionStatusSuccess ActionStatus = "success"
+	ActionStatusError   ActionStatus = "error"
 )
 
 // ActionResource references other resources from an action.
@@ -43,9 +43,9 @@ type ActionResourceType string
 // List of action resource reference types.
 const (
 	ActionResourceTypeServer     ActionResourceType = "server"
-	ActionResourceTypeImage                         = "image"
-	ActionResourceTypeISO                           = "iso"
-	ActionResourceTypeFloatingIP                    = "floating_ip"
+	ActionResourceTypeImage      ActionResourceType = "image"
+	ActionResourceTypeISO        ActionResourceType = "iso"
+	ActionResourceTypeFloatingIP ActionResourceType = "floating_ip"
 )
 
 // ActionError is the error of an action.
@@ -139,7 +139,7 @@ func (c *ActionClient) All(ctx context.Context) ([]*Action, error) {
 	return allActions, nil
 }
 
-// WatchProgress watches the actions progress until it completes with success or error.
+// WatchProgress watches the action's progress until it completes with success or error.
 func (c *ActionClient) WatchProgress(ctx context.Context, action *Action) (<-chan int, <-chan error) {
 	errCh := make(chan error, 1)
 	progressCh := make(chan int)
@@ -148,7 +148,7 @@ func (c *ActionClient) WatchProgress(ctx context.Context, action *Action) (<-cha
 		defer close(errCh)
 		defer close(progressCh)
 
-		ticker := time.NewTicker(500 * time.Millisecond)
+		ticker := time.NewTicker(c.client.pollInterval)
 		sendProgress := func(p int) {
 			select {
 			case progressCh <- p:

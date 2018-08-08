@@ -41,7 +41,7 @@ type FloatingIPType string
 // Floating IP types.
 const (
 	FloatingIPTypeIPv4 FloatingIPType = "ipv4"
-	FloatingIPTypeIPv6                = "ipv6"
+	FloatingIPTypeIPv6 FloatingIPType = "ipv6"
 )
 
 // FloatingIPClient is a client for the Floating IP API.

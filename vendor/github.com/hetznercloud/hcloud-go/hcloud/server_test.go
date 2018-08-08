@@ -56,7 +56,7 @@ func TestServerClientGetByIDNotFound(t *testing.T) {
 		w.WriteHeader(http.StatusNotFound)
 		json.NewEncoder(w).Encode(schema.ErrorResponse{
 			Error: schema.Error{
-				Code: ErrorCodeNotFound,
+				Code: string(ErrorCodeNotFound),
 			},
 		})
 	})
@@ -454,6 +454,40 @@ func TestServersCreateWithUserData(t *testing.T) {
 		ServerType: &ServerType{ID: 1},
 		Image:      &Image{ID: 2},
 		UserData:   "---user data---",
+	})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if result.Server == nil {
+		t.Fatal("no server")
+	}
+}
+
+func TestServersCreateWithoutStarting(t *testing.T) {
+	env := newTestEnv()
+	defer env.Teardown()
+
+	env.Mux.HandleFunc("/servers", func(w http.ResponseWriter, r *http.Request) {
+		var reqBody schema.ServerCreateRequest
+		if err := json.NewDecoder(r.Body).Decode(&reqBody); err != nil {
+			t.Fatal(err)
+		}
+		if reqBody.StartAfterCreate == nil || *reqBody.StartAfterCreate {
+			t.Errorf("unexpected value for start_after_create: %v", reqBody.StartAfterCreate)
+		}
+		json.NewEncoder(w).Encode(schema.ServerCreateResponse{
+			Server: schema.Server{
+				ID: 1,
+			},
+		})
+	})
+
+	ctx := context.Background()
+	result, _, err := env.Client.Server.Create(ctx, ServerCreateOpts{
+		Name:             "test",
+		ServerType:       &ServerType{ID: 1},
+		Image:            &Image{ID: 2},
+		StartAfterCreate: Bool(false),
 	})
 	if err != nil {
 		t.Fatal(err)

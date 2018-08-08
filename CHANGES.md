@@ -1,5 +1,9 @@
 # Changes
 
+## master
+
+* Add `--poll-interval` flag for controlling the polling interval (for example for action progress updates)
+
 ## v1.5.0
 
 * Add `hcloud server ssh` command to open an SSH connection to the server

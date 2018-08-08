@@ -1,6 +1,10 @@
 package cli
 
-import "github.com/spf13/cobra"
+import (
+	"time"
+
+	"github.com/spf13/cobra"
+)
 
 func NewRootCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
@@ -27,7 +31,7 @@ func NewRootCommand(cli *CLI) *cobra.Command {
 		newLocationCommand(cli),
 		newISOCommand(cli),
 	)
-
+	cmd.PersistentFlags().Duration("poll-interval", 500*time.Millisecond, "Interval at which to poll information, for example action progress")
 	return cmd
 }
 
