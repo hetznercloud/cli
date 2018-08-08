@@ -71,6 +71,7 @@ func ISOFromSchema(s schema.ISO) *ISO {
 		Name:        s.Name,
 		Description: s.Description,
 		Type:        ISOType(s.Type),
+		Deprecated:  s.Deprecated,
 	}
 }
 
@@ -191,6 +192,7 @@ func ServerTypeFromSchema(s schema.ServerType) *ServerType {
 		Memory:      s.Memory,
 		Disk:        s.Disk,
 		StorageType: StorageType(s.StorageType),
+		CPUType:     CPUType(s.CPUType),
 	}
 	for _, price := range s.Prices {
 		st.Pricings = append(st.Pricings, ServerTypeLocationPricing{
@@ -232,6 +234,7 @@ func ImageFromSchema(s schema.Image) *Image {
 		Protection: ImageProtection{
 			Delete: s.Protection.Delete,
 		},
+		Deprecated: s.Deprecated,
 	}
 	if s.Name != nil {
 		i.Name = *s.Name

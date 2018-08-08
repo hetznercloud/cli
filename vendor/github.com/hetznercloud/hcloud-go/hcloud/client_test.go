@@ -189,7 +189,7 @@ func TestClientAll(t *testing.T) {
 				w.WriteHeader(http.StatusTooManyRequests)
 				json.NewEncoder(w).Encode(schema.ErrorResponse{
 					Error: schema.Error{
-						Code:    ErrorCodeRateLimitExceeded,
+						Code:    string(ErrorCodeRateLimitExceeded),
 						Message: "ratelimited",
 					},
 				})
@@ -244,7 +244,7 @@ func TestClientDo(t *testing.T) {
 			w.WriteHeader(http.StatusTooManyRequests)
 			json.NewEncoder(w).Encode(schema.ErrorResponse{
 				Error: schema.Error{
-					Code:    ErrorCodeRateLimitExceeded,
+					Code:    string(ErrorCodeRateLimitExceeded),
 					Message: "ratelimited",
 				},
 			})

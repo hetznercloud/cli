@@ -74,13 +74,14 @@ type ServerListResponse struct {
 // ServerCreateRequest defines the schema for the request to
 // create a server.
 type ServerCreateRequest struct {
-	Name       string      `json:"name"`
-	ServerType interface{} `json:"server_type"` // int or string
-	Image      interface{} `json:"image"`       // int or string
-	SSHKeys    []int       `json:"ssh_keys,omitempty"`
-	Location   string      `json:"location,omitempty"`
-	Datacenter string      `json:"datacenter,omitempty"`
-	UserData   string      `json:"user_data,omitempty"`
+	Name             string      `json:"name"`
+	ServerType       interface{} `json:"server_type"` // int or string
+	Image            interface{} `json:"image"`       // int or string
+	SSHKeys          []int       `json:"ssh_keys,omitempty"`
+	Location         string      `json:"location,omitempty"`
+	Datacenter       string      `json:"datacenter,omitempty"`
+	UserData         string      `json:"user_data,omitempty"`
+	StartAfterCreate *bool       `json:"start_after_create,omitempty"`
 }
 
 // ServerCreateResponse defines the schema of the response when

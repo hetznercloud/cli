@@ -47,10 +47,10 @@ const (
 	ServerStatusInitializing ServerStatus = "initializing"
 
 	// ServerStatusOff is the status when a server is off.
-	ServerStatusOff = "off"
+	ServerStatusOff ServerStatus = "off"
 
 	// ServerStatusRunning is the status when a server is running.
-	ServerStatusRunning = "running"
+	ServerStatusRunning ServerStatus = "running"
 )
 
 // ServerPublicNet represents a server's public network.
@@ -86,8 +86,8 @@ type ServerRescueType string
 // List of rescue types.
 const (
 	ServerRescueTypeLinux32   ServerRescueType = "linux32"
-	ServerRescueTypeLinux64                    = "linux64"
-	ServerRescueTypeFreeBSD64                  = "freebsd64"
+	ServerRescueTypeLinux64   ServerRescueType = "linux64"
+	ServerRescueTypeFreeBSD64 ServerRescueType = "freebsd64"
 )
 
 // ServerClient is a client for the servers API.
@@ -191,13 +191,14 @@ func (c *ServerClient) All(ctx context.Context) ([]*Server, error) {
 
 // ServerCreateOpts specifies options for creating a new server.
 type ServerCreateOpts struct {
-	Name       string
-	ServerType *ServerType
-	Image      *Image
-	SSHKeys    []*SSHKey
-	Location   *Location
-	Datacenter *Datacenter
-	UserData   string
+	Name             string
+	ServerType       *ServerType
+	Image            *Image
+	SSHKeys          []*SSHKey
+	Location         *Location
+	Datacenter       *Datacenter
+	UserData         string
+	StartAfterCreate *bool
 }
 
 // Validate checks if options are valid.
@@ -233,6 +234,7 @@ func (c *ServerClient) Create(ctx context.Context, opts ServerCreateOpts) (Serve
 	var reqBody schema.ServerCreateRequest
 	reqBody.UserData = opts.UserData
 	reqBody.Name = opts.Name
+	reqBody.StartAfterCreate = opts.StartAfterCreate
 	if opts.ServerType.ID != 0 {
 		reqBody.ServerType = opts.ServerType.ID
 	} else if opts.ServerType.Name != "" {

@@ -57,7 +57,7 @@ func TestServerTypeClient(t *testing.T) {
 			w.WriteHeader(http.StatusNotFound)
 			json.NewEncoder(w).Encode(schema.ErrorResponse{
 				Error: schema.Error{
-					Code: ErrorCodeNotFound,
+					Code: string(ErrorCodeNotFound),
 				},
 			})
 		})
