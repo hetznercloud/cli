@@ -11,7 +11,6 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/thcyron/uiprogress"
 	"golang.org/x/crypto/ssh/terminal"
-	"time"
 )
 
 var ErrConfigPathUnknown = errors.New("config file path unknown")
@@ -117,9 +116,9 @@ func (c *CLI) Client() *hcloud.Client {
 		if c.Endpoint != "" {
 			opts = append(opts, hcloud.WithEndpoint(c.Endpoint))
 		}
-		pollInterval, _ := c.RootCommand.PersistentFlags().GetInt("poll-interval")
+		pollInterval, _ := c.RootCommand.PersistentFlags().GetDuration("poll-interval")
 		if pollInterval > 0 {
-			opts = append(opts, hcloud.WithPollInterval(time.Duration(pollInterval)*time.Millisecond))
+			opts = append(opts, hcloud.WithPollInterval(pollInterval))
 		}
 		c.client = hcloud.NewClient(opts...)
 	}
