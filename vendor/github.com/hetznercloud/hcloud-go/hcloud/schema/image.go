@@ -18,6 +18,7 @@ type Image struct {
 	OSVersion   *string           `json:"os_version"`
 	RapidDeploy bool              `json:"rapid_deploy"`
 	Protection  ImageProtection   `json:"protection"`
+	Deprecated  time.Time         `json:"deprecated"`
 }
 
 // ImageProtection represents the protection level of a image.

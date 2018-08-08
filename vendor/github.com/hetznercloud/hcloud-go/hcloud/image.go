@@ -30,6 +30,12 @@ type Image struct {
 	OSVersion string
 
 	Protection ImageProtection
+	Deprecated time.Time // The zero value denotes the image is not deprecated.
+}
+
+// IsDeprecated returns whether the image is deprecated.
+func (image *Image) IsDeprecated() bool {
+	return !image.Deprecated.IsZero()
 }
 
 // ImageProtection represents the protection level of an image.
@@ -44,9 +50,9 @@ const (
 	// ImageTypeSnapshot represents a snapshot image.
 	ImageTypeSnapshot ImageType = "snapshot"
 	// ImageTypeBackup represents a backup image.
-	ImageTypeBackup = "backup"
+	ImageTypeBackup ImageType = "backup"
 	// ImageTypeSystem represents a system image.
-	ImageTypeSystem = "system"
+	ImageTypeSystem ImageType = "system"
 )
 
 // ImageStatus specifies the status of an image.
@@ -56,7 +62,7 @@ const (
 	// ImageStatusCreating is the status when an image is being created.
 	ImageStatusCreating ImageStatus = "creating"
 	// ImageStatusAvailable is the status when an image is available.
-	ImageStatusAvailable = "available"
+	ImageStatusAvailable ImageStatus = "available"
 )
 
 // ImageClient is a client for the image API.

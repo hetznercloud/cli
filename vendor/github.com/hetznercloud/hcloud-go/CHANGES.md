@@ -1,5 +1,17 @@
 # Changes
 
+## v1.8.0
+
+* Add `WithPollInterval()` option to `Client` which allows to specify the polling interval
+  ([issue #92](https://github.com/hetznercloud/hcloud-go/issues/92))
+* Add `CPUType` field to `ServerType` ([issue #91](https://github.com/hetznercloud/hcloud-go/pull/91))
+
+## v1.7.0
+
+* Add `Deprecated ` field to `Image` ([issue #88](https://github.com/hetznercloud/hcloud-go/issues/88))
+* Add `StartAfterCreate` flag to `ServerCreateOpts` ([issue #87](https://github.com/hetznercloud/hcloud-go/issues/87))
+* Fix enum types ([issue #89](https://github.com/hetznercloud/hcloud-go/issues/89))
+
 ## v1.6.0
 
 * Add `ChangeProtection()` to server, Floating IP, and image client
