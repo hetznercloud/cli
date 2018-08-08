@@ -2,6 +2,7 @@
 
 ## master
 
+* Show IP address upon creating a server
 * Add `--poll-interval` flag for controlling the polling interval (for example for action progress updates)
 
 ## v1.5.0
