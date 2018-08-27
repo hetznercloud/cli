@@ -1,7 +1,8 @@
 # Changes
 
 ## master
-* Fix display notation of resource id could be broken (#121)
+
+* Fix invalid formatting of integers in `hcloud * list` commands
 
 ## v1.6.0
 
