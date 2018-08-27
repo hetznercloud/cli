@@ -1,6 +1,6 @@
 # Changes
 
-## master
+## v1.6.1
 
 * Fix invalid formatting of integers in `hcloud * list` commands
 
