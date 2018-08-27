@@ -210,6 +210,11 @@ func (o *tableOutput) Write(collumns []string, obj interface{}) {
 				out = append(out, na(s))
 				continue
 			}
+			if f, ok := value.(float64); ok {
+				f := int(f)
+				out = append(out, fmt.Sprintf("%v", f))
+				continue
+			}
 			out = append(out, fmt.Sprintf("%v", value))
 		}
 	}

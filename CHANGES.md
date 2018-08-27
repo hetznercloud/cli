@@ -1,5 +1,8 @@
 # Changes
 
+## master
+* Fix display notation of resource id could be broken (#121)
+
 ## v1.6.0
 
 * Show IP address upon creating a server
