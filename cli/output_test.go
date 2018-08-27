@@ -43,7 +43,8 @@ func (s writerFlusherStub) Flush() error {
 }
 
 type testFieldsStruct struct {
-	Name string
+	Name   string
+	Number int
 }
 
 func TestTableOutput(t *testing.T) {
@@ -87,14 +88,14 @@ func TestTableOutput(t *testing.T) {
 		wfs.Reset()
 	})
 	t.Run("WriteLine", func(t *testing.T) {
-		to.Write([]string{"leeroy_jenkins", "name"}, &testFieldsStruct{"test123"})
-		if wfs.String() != "LEEROY JENKINS!!!\ttest123\n" {
-			t.Errorf("written line should be 'LEEROY JENKINS!!!\\ttest123\\n', is: %q", wfs.String())
+		to.Write([]string{"leeroy_jenkins", "name", "number"}, &testFieldsStruct{"test123", 1000000000})
+		if wfs.String() != "LEEROY JENKINS!!!\ttest123\t1000000000\n" {
+			t.Errorf("written line should be 'LEEROY JENKINS!!!\\ttest123\\t1000000000\\n', is: %q", wfs.String())
 		}
 		wfs.Reset()
 	})
 	t.Run("Columns", func(t *testing.T) {
-		if len(to.Columns()) != 2 {
+		if len(to.Columns()) != 3 {
 			t.Errorf("unexpected number of columns: %v", to.Columns())
 		}
 	})

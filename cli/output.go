@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"encoding/json"
 	"fmt"
 	"io"
 	"os"
@@ -10,6 +9,8 @@ import (
 	"strings"
 	"text/tabwriter"
 	"unicode"
+
+	"github.com/fatih/structs"
 )
 
 var validOutputOptsKeys = map[string]bool{
@@ -175,10 +176,7 @@ func (o *tableOutput) Flush() error {
 
 // Write writes a table line.
 func (o *tableOutput) Write(collumns []string, obj interface{}) {
-	data := map[string]interface{}{}
-	objJSON, _ := json.Marshal(obj)
-	json.Unmarshal(objJSON, &data)
-
+	data := structs.Map(obj)
 	dataL := map[string]interface{}{}
 	for key, value := range data {
 		dataL[strings.ToLower(key)] = value

@@ -1,5 +1,9 @@
 # Changes
 
+## master
+
+* Fix invalid formatting of integers in `hcloud * list` commands
+
 ## v1.6.0
 
 * Show IP address upon creating a server
