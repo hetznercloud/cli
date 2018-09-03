@@ -1,5 +1,9 @@
 # Changes
 
+## master
+
+* Add type filter flag `-t` / `--type` to `image list` command
+
 ## v1.6.1
 
 * Fix invalid formatting of integers in `hcloud * list` commands
