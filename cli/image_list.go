@@ -5,12 +5,13 @@ import (
 	"strconv"
 	"strings"
 
-	humanize "github.com/dustin/go-humanize"
+	"github.com/dustin/go-humanize"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
 
 var imageListTableOutput *tableOutput
+var typeFilter string
 
 func init() {
 	imageListTableOutput = newTableOutput().
@@ -79,6 +80,7 @@ func newImageListCommand(cli *CLI) *cobra.Command {
 		RunE:                  cli.wrap(runImageList),
 	}
 	addListOutputFlag(cmd, imageListTableOutput.Columns())
+	cmd.Flags().StringVarP(&typeFilter, "type", "t", "", "Only show images of given type")
 	return cmd
 }
 
@@ -93,7 +95,15 @@ func runImageList(cli *CLI, cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-
+	if typeFilter != "" {
+		var _images []*hcloud.Image
+		for _, image := range images {
+			if string(image.Type) == typeFilter {
+				_images = append(_images, image)
+			}
+		}
+		images = _images
+	}
 	cols := []string{"id", "type", "name", "description", "image_size", "disk_size", "created"}
 	if outOpts.IsSet("columns") {
 		cols = outOpts["columns"]
