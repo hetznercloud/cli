@@ -80,7 +80,7 @@ func newImageListCommand(cli *CLI) *cobra.Command {
 		RunE:                  cli.wrap(runImageList),
 	}
 	addListOutputFlag(cmd, imageListTableOutput.Columns())
-	cmd.Flags().StringVarP(&typeFilter, "type", "t", "", "For filtering the response with the type")
+	cmd.Flags().StringVarP(&typeFilter, "type", "t", "", "Only show images of given type")
 	return cmd
 }
 
