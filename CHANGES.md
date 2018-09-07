@@ -1,6 +1,6 @@
 # Changes
 
-## master
+## v1.7.0
 
 * Add type filter flag `-t` / `--type` to `image list` command
 * Expose labels of servers, Floating IPs, images, and SSH Keys
