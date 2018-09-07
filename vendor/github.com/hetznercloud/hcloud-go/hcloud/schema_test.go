@@ -91,6 +91,10 @@ func TestFloatingIPFromSchema(t *testing.T) {
 			},
 			"protection": {
 				"delete": true
+			},
+			"labels": {
+				"key": "value",
+				"key2": "value2"
 			}
 		}`)
 
@@ -126,6 +130,9 @@ func TestFloatingIPFromSchema(t *testing.T) {
 		}
 		if !floatingIP.Protection.Delete {
 			t.Errorf("unexpected Protection.Delete: %v", floatingIP.Protection.Delete)
+		}
+		if floatingIP.Labels["key"] != "value" || floatingIP.Labels["key2"] != "value2" {
+			t.Errorf("unexpected Labels: %v", floatingIP.Labels)
 		}
 	})
 
@@ -341,7 +348,11 @@ func TestServerFromSchema(t *testing.T) {
 			"delete": true,
 			"rebuild": true
 		},
-		"locked": true
+		"locked": true,
+		"labels": {
+			"key": "value",
+			"key2": "value2"
+		}
 	}`)
 
 	var s schema.Server
@@ -400,6 +411,9 @@ func TestServerFromSchema(t *testing.T) {
 	}
 	if !server.Protection.Rebuild {
 		t.Errorf("unexpected value for Protection.Rebuild: %v", server.Protection.Rebuild)
+	}
+	if server.Labels["key"] != "value" || server.Labels["key2"] != "value2" {
+		t.Errorf("unexpected Labels: %v", server.Labels)
 	}
 }
 
@@ -606,7 +620,11 @@ func TestSSHKeyFromSchema(t *testing.T) {
 		"id": 2323,
 		"name": "My key",
 		"fingerprint": "b7:2f:30:a0:2f:6c:58:6c:21:04:58:61:ba:06:3b:2c",
-		"public_key": "ssh-rsa AAAjjk76kgf...Xt"
+		"public_key": "ssh-rsa AAAjjk76kgf...Xt",
+		"labels": {
+			"key": "value",
+			"key2": "value2"
+		}
 	}`)
 
 	var s schema.SSHKey
@@ -626,6 +644,9 @@ func TestSSHKeyFromSchema(t *testing.T) {
 	}
 	if sshKey.PublicKey != "ssh-rsa AAAjjk76kgf...Xt" {
 		t.Errorf("unexpected public key: %v", sshKey.PublicKey)
+	}
+	if sshKey.Labels["key"] != "value" || sshKey.Labels["key2"] != "value2" {
+		t.Errorf("unexpected labels: %v", sshKey.Labels)
 	}
 }
 
@@ -753,7 +774,11 @@ func TestImageFromSchema(t *testing.T) {
 		"protection": {
 			"delete": true
 		},
-		"deprecated": "2018-02-28T00:00:00+00:00"
+		"deprecated": "2018-02-28T00:00:00+00:00",
+		"labels": {
+			"key": "value",
+			"key2": "value2"
+		}
 	}`)
 
 	var s schema.Image
@@ -806,6 +831,9 @@ func TestImageFromSchema(t *testing.T) {
 	}
 	if image.Deprecated.IsZero() {
 		t.Errorf("unexpected value for Deprecated: %v", image.Deprecated)
+	}
+	if image.Labels["key"] != "value" || image.Labels["key2"] != "value2" {
+		t.Errorf("unexpected Labels: %v", image.Labels)
 	}
 }
 

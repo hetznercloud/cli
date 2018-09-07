@@ -19,6 +19,7 @@ type Image struct {
 	RapidDeploy bool              `json:"rapid_deploy"`
 	Protection  ImageProtection   `json:"protection"`
 	Deprecated  time.Time         `json:"deprecated"`
+	Labels      map[string]string `json:"labels"`
 }
 
 // ImageProtection represents the protection level of a image.
@@ -46,8 +47,9 @@ type ImageListResponse struct {
 
 // ImageUpdateRequest defines the schema of the request to update an image.
 type ImageUpdateRequest struct {
-	Description *string `json:"description,omitempty"`
-	Type        *string `json:"type,omitempty"`
+	Description *string            `json:"description,omitempty"`
+	Type        *string            `json:"type,omitempty"`
+	Labels      *map[string]string `json:"labels,omitempty"`
 }
 
 // ImageUpdateResponse defines the schema of the response when updating an image.

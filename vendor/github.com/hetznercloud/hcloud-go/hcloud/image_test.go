@@ -229,6 +229,49 @@ func TestImageClient(t *testing.T) {
 		}
 	})
 
+	t.Run("AllWithOpts", func(t *testing.T) {
+		env := newTestEnv()
+		defer env.Teardown()
+
+		env.Mux.HandleFunc("/images", func(w http.ResponseWriter, r *http.Request) {
+			if labelSelector := r.URL.Query().Get("label_selector"); labelSelector != "key=value" {
+				t.Errorf("unexpected label selector: %s", labelSelector)
+			}
+			w.Header().Set("Content-Type", "application/json")
+			json.NewEncoder(w).Encode(struct {
+				Images []schema.Image `json:"images"`
+				Meta   schema.Meta    `json:"meta"`
+			}{
+				Images: []schema.Image{
+					{ID: 1},
+					{ID: 2},
+					{ID: 3},
+				},
+				Meta: schema.Meta{
+					Pagination: &schema.MetaPagination{
+						Page:         1,
+						LastPage:     1,
+						PerPage:      3,
+						TotalEntries: 3,
+					},
+				},
+			})
+		})
+
+		ctx := context.Background()
+		opts := ImageListOpts{ListOpts{LabelSelector: "key=value"}}
+		images, err := env.Client.Image.AllWithOpts(ctx, opts)
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(images) != 3 {
+			t.Fatalf("expected 3 images; got %d", len(images))
+		}
+		if images[0].ID != 1 || images[1].ID != 2 || images[2].ID != 3 {
+			t.Errorf("unexpected images")
+		}
+	})
+
 	t.Run("Delete", func(t *testing.T) {
 		env := newTestEnv()
 		defer env.Teardown()

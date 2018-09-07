@@ -18,6 +18,8 @@ func newImageCommand(cli *CLI) *cobra.Command {
 		newImageUpdateCommand(cli),
 		newImageEnableProtectionCommand(cli),
 		newImageDisableProtectionCommand(cli),
+		newImageAddLabelCommand(cli),
+		newImageRemoveLabelCommand(cli),
 	)
 	return cmd
 }

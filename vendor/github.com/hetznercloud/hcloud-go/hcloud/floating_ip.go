@@ -23,6 +23,7 @@ type FloatingIP struct {
 	HomeLocation *Location
 	Blocked      bool
 	Protection   FloatingIPProtection
+	Labels       map[string]string
 }
 
 // DNSPtrForIP returns the reverse DNS pointer of the IP address.
@@ -94,10 +95,12 @@ func (c *FloatingIPClient) List(ctx context.Context, opts FloatingIPListOpts) ([
 
 // All returns all Floating IPs.
 func (c *FloatingIPClient) All(ctx context.Context) ([]*FloatingIP, error) {
-	allFloatingIPs := []*FloatingIP{}
+	return c.AllWithOpts(ctx, FloatingIPListOpts{ListOpts{PerPage: 50}})
+}
 
-	opts := FloatingIPListOpts{}
-	opts.PerPage = 50
+// AllWithOpts returns all Floating IPs for the given options.
+func (c *FloatingIPClient) AllWithOpts(ctx context.Context, opts FloatingIPListOpts) ([]*FloatingIP, error) {
+	allFloatingIPs := []*FloatingIP{}
 
 	_, err := c.client.all(func(page int) (*Response, error) {
 		opts.Page = page
@@ -121,6 +124,7 @@ type FloatingIPCreateOpts struct {
 	HomeLocation *Location
 	Server       *Server
 	Description  *string
+	Labels       map[string]string
 }
 
 // Validate checks if options are valid.
@@ -159,6 +163,9 @@ func (c *FloatingIPClient) Create(ctx context.Context, opts FloatingIPCreateOpts
 	if opts.Server != nil {
 		reqBody.Server = Int(opts.Server.ID)
 	}
+	if opts.Labels != nil {
+		reqBody.Labels = &opts.Labels
+	}
 	reqBodyData, err := json.Marshal(reqBody)
 	if err != nil {
 		return FloatingIPCreateResult{}, nil, err
@@ -196,12 +203,16 @@ func (c *FloatingIPClient) Delete(ctx context.Context, floatingIP *FloatingIP) (
 // FloatingIPUpdateOpts specifies options for updating a Floating IP.
 type FloatingIPUpdateOpts struct {
 	Description string
+	Labels      map[string]string
 }
 
 // Update updates a Floating IP.
 func (c *FloatingIPClient) Update(ctx context.Context, floatingIP *FloatingIP, opts FloatingIPUpdateOpts) (*FloatingIP, *Response, error) {
 	reqBody := schema.FloatingIPUpdateRequest{
 		Description: opts.Description,
+	}
+	if opts.Labels != nil {
+		reqBody.Labels = &opts.Labels
 	}
 	reqBodyData, err := json.Marshal(reqBody)
 	if err != nil {

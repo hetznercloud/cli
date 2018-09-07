@@ -290,6 +290,58 @@ func TestSSHKeyAll(t *testing.T) {
 	}
 }
 
+func TestSSHKeyAllWithOpts(t *testing.T) {
+	env := newTestEnv()
+	defer env.Teardown()
+
+	env.Mux.HandleFunc("/ssh_keys", func(w http.ResponseWriter, r *http.Request) {
+		if labelSelector := r.URL.Query().Get("label_selector"); labelSelector != "key=value" {
+			t.Errorf("unexpected label selector: %s", labelSelector)
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(struct {
+			SSHKeys []schema.SSHKey `json:"ssh_keys"`
+			Meta    schema.Meta     `json:"meta"`
+		}{
+			SSHKeys: []schema.SSHKey{
+				{
+					ID:          1,
+					Name:        "My key",
+					Fingerprint: "b7:2f:30:a0:2f:6c:58:6c:21:04:58:61:ba:06:3b:2c",
+					PublicKey:   "ssh-rsa AAAjjk76kgf...Xt",
+				},
+				{
+					ID:          2,
+					Name:        "Another key",
+					Fingerprint: "c7:2f:30:a0:2f:6c:58:6c:21:04:58:61:ba:06:3b:2c",
+					PublicKey:   "ssh-rsa AAAjjk76kgf...XX",
+				},
+			},
+			Meta: schema.Meta{
+				Pagination: &schema.MetaPagination{
+					Page:         1,
+					LastPage:     1,
+					PerPage:      2,
+					TotalEntries: 2,
+				},
+			},
+		})
+	})
+
+	ctx := context.Background()
+	opts := SSHKeyListOpts{ListOpts{LabelSelector: "key=value"}}
+	sshKeys, err := env.Client.SSHKey.AllWithOpts(ctx, opts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(sshKeys) != 2 {
+		t.Fatalf("expected 2 SSH keys; got %d", len(sshKeys))
+	}
+	if sshKeys[0].ID != 1 || sshKeys[1].ID != 2 {
+		t.Error("got wrong SSH keys")
+	}
+}
+
 func TestSSHKeyClientDelete(t *testing.T) {
 	env := newTestEnv()
 	defer env.Teardown()
@@ -335,6 +387,43 @@ func TestSSHKeyClientCreate(t *testing.T) {
 	}
 }
 
+func TestSSHKeyClientCreateWithLabels(t *testing.T) {
+	env := newTestEnv()
+	defer env.Teardown()
+
+	env.Mux.HandleFunc("/ssh_keys", func(w http.ResponseWriter, r *http.Request) {
+		var reqBody schema.SSHKeyCreateRequest
+		if err := json.NewDecoder(r.Body).Decode(&reqBody); err != nil {
+			t.Fatal(err)
+		}
+		if reqBody.Labels == nil || (*reqBody.Labels)["key"] != "value" {
+			t.Errorf("unexpected labels in request: %v", reqBody.Labels)
+		}
+		fmt.Fprint(w, `{
+			"ssh_key": {
+				"id": 1,
+				"name": "My key",
+				"fingerprint": "b7:2f:30:a0:2f:6c:58:6c:21:04:58:61:ba:06:3b:2c",
+				"public_key": "ssh-rsa AAAjjk76kgf...Xt"
+			}
+		}`)
+	})
+
+	ctx := context.Background()
+	opts := SSHKeyCreateOpts{
+		Name:      "My key",
+		PublicKey: "ssh-rsa AAAjjk76kgf...Xt",
+		Labels:    map[string]string{"key": "value"},
+	}
+	sshKey, _, err := env.Client.SSHKey.Create(ctx, opts)
+	if err != nil {
+		t.Fatalf("SSHKey.Get failed: %s", err)
+	}
+	if sshKey.ID != 1 {
+		t.Errorf("unexpected SSH key ID: %v", sshKey.ID)
+	}
+}
+
 func TestSSHKeyClientUpdate(t *testing.T) {
 	var (
 		ctx    = context.Background()
@@ -365,6 +454,42 @@ func TestSSHKeyClientUpdate(t *testing.T) {
 
 		opts := SSHKeyUpdateOpts{
 			Name: "test",
+		}
+		updatedSSHKey, _, err := env.Client.SSHKey.Update(ctx, sshKey, opts)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if updatedSSHKey.ID != 1 {
+			t.Errorf("unexpected SSH key ID: %v", updatedSSHKey.ID)
+		}
+	})
+
+	t.Run("update labels", func(t *testing.T) {
+		env := newTestEnv()
+		defer env.Teardown()
+
+		env.Mux.HandleFunc("/ssh_keys/1", func(w http.ResponseWriter, r *http.Request) {
+			if r.Method != "PUT" {
+				t.Error("expected PUT")
+			}
+			var reqBody schema.SSHKeyUpdateRequest
+			if err := json.NewDecoder(r.Body).Decode(&reqBody); err != nil {
+				t.Fatal(err)
+			}
+			if reqBody.Labels == nil || (*reqBody.Labels)["key"] != "value" {
+				t.Errorf("unexpected labels in request: %v", reqBody.Labels)
+			}
+			json.NewEncoder(w).Encode(schema.SSHKeyUpdateResponse{
+				SSHKey: schema.SSHKey{
+					ID: 1,
+				},
+			})
+		})
+
+		opts := SSHKeyUpdateOpts{
+			Name:   "test",
+			Labels: map[string]string{"key": "value"},
 		}
 		updatedSSHKey, _, err := env.Client.SSHKey.Update(ctx, sshKey, opts)
 		if err != nil {

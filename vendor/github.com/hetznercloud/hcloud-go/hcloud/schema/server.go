@@ -4,22 +4,23 @@ import "time"
 
 // Server defines the schema of a server.
 type Server struct {
-	ID              int              `json:"id"`
-	Name            string           `json:"name"`
-	Status          string           `json:"status"`
-	Created         time.Time        `json:"created"`
-	PublicNet       ServerPublicNet  `json:"public_net"`
-	ServerType      ServerType       `json:"server_type"`
-	IncludedTraffic uint64           `json:"included_traffic"`
-	OutgoingTraffic *uint64          `json:"outgoing_traffic"`
-	IngoingTraffic  *uint64          `json:"ingoing_traffic"`
-	BackupWindow    *string          `json:"backup_window"`
-	RescueEnabled   bool             `json:"rescue_enabled"`
-	ISO             *ISO             `json:"iso"`
-	Locked          bool             `json:"locked"`
-	Datacenter      Datacenter       `json:"datacenter"`
-	Image           *Image           `json:"image"`
-	Protection      ServerProtection `json:"protection"`
+	ID              int               `json:"id"`
+	Name            string            `json:"name"`
+	Status          string            `json:"status"`
+	Created         time.Time         `json:"created"`
+	PublicNet       ServerPublicNet   `json:"public_net"`
+	ServerType      ServerType        `json:"server_type"`
+	IncludedTraffic uint64            `json:"included_traffic"`
+	OutgoingTraffic *uint64           `json:"outgoing_traffic"`
+	IngoingTraffic  *uint64           `json:"ingoing_traffic"`
+	BackupWindow    *string           `json:"backup_window"`
+	RescueEnabled   bool              `json:"rescue_enabled"`
+	ISO             *ISO              `json:"iso"`
+	Locked          bool              `json:"locked"`
+	Datacenter      Datacenter        `json:"datacenter"`
+	Image           *Image            `json:"image"`
+	Protection      ServerProtection  `json:"protection"`
+	Labels          map[string]string `json:"labels"`
 }
 
 // ServerProtection defines the schema of a server's resource protection.
@@ -74,14 +75,15 @@ type ServerListResponse struct {
 // ServerCreateRequest defines the schema for the request to
 // create a server.
 type ServerCreateRequest struct {
-	Name             string      `json:"name"`
-	ServerType       interface{} `json:"server_type"` // int or string
-	Image            interface{} `json:"image"`       // int or string
-	SSHKeys          []int       `json:"ssh_keys,omitempty"`
-	Location         string      `json:"location,omitempty"`
-	Datacenter       string      `json:"datacenter,omitempty"`
-	UserData         string      `json:"user_data,omitempty"`
-	StartAfterCreate *bool       `json:"start_after_create,omitempty"`
+	Name             string             `json:"name"`
+	ServerType       interface{}        `json:"server_type"` // int or string
+	Image            interface{}        `json:"image"`       // int or string
+	SSHKeys          []int              `json:"ssh_keys,omitempty"`
+	Location         string             `json:"location,omitempty"`
+	Datacenter       string             `json:"datacenter,omitempty"`
+	UserData         string             `json:"user_data,omitempty"`
+	StartAfterCreate *bool              `json:"start_after_create,omitempty"`
+	Labels           *map[string]string `json:"labels,omitempty"`
 }
 
 // ServerCreateResponse defines the schema of the response when
@@ -94,7 +96,8 @@ type ServerCreateResponse struct {
 
 // ServerUpdateRequest defines the schema of the request to update a server.
 type ServerUpdateRequest struct {
-	Name string `json:"name,omitempty"`
+	Name   string             `json:"name,omitempty"`
+	Labels *map[string]string `json:"labels,omitempty"`
 }
 
 // ServerUpdateResponse defines the schema of the response when updating a server.
@@ -166,8 +169,9 @@ type ServerActionResetPasswordResponse struct {
 // ServerActionCreateImageRequest defines the schema for the request to
 // create a create_image server action.
 type ServerActionCreateImageRequest struct {
-	Type        *string `json:"type"`
-	Description *string `json:"description"`
+	Type        *string            `json:"type"`
+	Description *string            `json:"description"`
+	Labels      *map[string]string `json:"labels,omitempty"`
 }
 
 // ServerActionCreateImageResponse defines the schema of the response when

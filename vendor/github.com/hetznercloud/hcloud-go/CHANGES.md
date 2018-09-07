@@ -1,5 +1,10 @@
 # Changes
 
+## v1.9.0
+
+* Add `AllWithOpts()` to server, Floating IP, image, and SSH key client
+* Expose labels of servers, Floating IPs, images, and SSH Keys
+
 ## v1.8.0
 
 * Add `WithPollInterval()` option to `Client` which allows to specify the polling interval

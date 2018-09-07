@@ -2,17 +2,19 @@ package schema
 
 // SSHKey defines the schema of a SSH key.
 type SSHKey struct {
-	ID          int    `json:"id"`
-	Name        string `json:"name"`
-	Fingerprint string `json:"fingerprint"`
-	PublicKey   string `json:"public_key"`
+	ID          int               `json:"id"`
+	Name        string            `json:"name"`
+	Fingerprint string            `json:"fingerprint"`
+	PublicKey   string            `json:"public_key"`
+	Labels      map[string]string `json:"labels"`
 }
 
 // SSHKeyCreateRequest defines the schema of the request
 // to create a SSH key.
 type SSHKeyCreateRequest struct {
-	Name      string `json:"name"`
-	PublicKey string `json:"public_key"`
+	Name      string             `json:"name"`
+	PublicKey string             `json:"public_key"`
+	Labels    *map[string]string `json:"labels,omitempty"`
 }
 
 // SSHKeyCreateResponse defines the schema of the response
@@ -35,7 +37,8 @@ type SSHKeyGetResponse struct {
 
 // SSHKeyUpdateRequest defines the schema of the request to update a SSH key.
 type SSHKeyUpdateRequest struct {
-	Name string `json:"name,omitempty"`
+	Name   string             `json:"name,omitempty"`
+	Labels *map[string]string `json:"labels,omitempty"`
 }
 
 // SSHKeyUpdateResponse defines the schema of the response when updating a SSH key.

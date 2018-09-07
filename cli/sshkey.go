@@ -16,6 +16,8 @@ func newSSHKeyCommand(cli *CLI) *cobra.Command {
 		newSSHKeyCreateCommand(cli),
 		newSSHKeyDeleteCommand(cli),
 		newSSHKeyDescribeCommand(cli),
+		newSSHKeyAddLabelCommand(cli),
+		newSSHKeyRemoveLabelCommand(cli),
 	)
 	return cmd
 }

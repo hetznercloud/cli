@@ -70,3 +70,7 @@ func addListOutputFlag(cmd *cobra.Command, columns []string) {
 		),
 	)
 }
+
+func splitLabel(label string) []string {
+	return strings.SplitN(label, "=", 2)
+}

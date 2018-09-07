@@ -3,6 +3,8 @@
 ## master
 
 * Add type filter flag `-t` / `--type` to `image list` command
+* Expose labels of servers, Floating IPs, images, and SSH Keys
+* Add `hcloud {server|ssh-key|image|floating-ip} {add-label|remove-label}` commands
 
 ## v1.6.1
 
