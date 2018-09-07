@@ -93,6 +93,33 @@ func TestFloatingIPClientList(t *testing.T) {
 	}
 }
 
+func TestFloatingIPClientAllWithOpts(t *testing.T) {
+	env := newTestEnv()
+	defer env.Teardown()
+
+	env.Mux.HandleFunc("/floating_ips", func(w http.ResponseWriter, r *http.Request) {
+		if labelSelector := r.URL.Query().Get("label_selector"); labelSelector != "key=value" {
+			t.Errorf("unexpected label selector: %s", labelSelector)
+		}
+		json.NewEncoder(w).Encode(schema.FloatingIPListResponse{
+			FloatingIPs: []schema.FloatingIP{
+				{ID: 1, Type: "ipv4", IP: "131.232.99.1"},
+				{ID: 2, Type: "ipv4", IP: "131.232.99.1"},
+			},
+		})
+	})
+
+	ctx := context.Background()
+	opts := FloatingIPListOpts{ListOpts{LabelSelector: "key=value"}}
+	floatingIPs, err := env.Client.FloatingIP.AllWithOpts(ctx, opts)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(floatingIPs) != 2 {
+		t.Fatal("expected 2 Floating IPs")
+	}
+}
+
 func TestFloatingIPClientCreate(t *testing.T) {
 	env := newTestEnv()
 	defer env.Teardown()
@@ -100,6 +127,13 @@ func TestFloatingIPClientCreate(t *testing.T) {
 	env.Mux.HandleFunc("/floating_ips", func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != "POST" {
 			t.Error("expected POST")
+		}
+		var reqBody schema.FloatingIPCreateRequest
+		if err := json.NewDecoder(r.Body).Decode(&reqBody); err != nil {
+			t.Fatal(err)
+		}
+		if reqBody.Labels == nil || (*reqBody.Labels)["key"] != "value" {
+			t.Errorf("unexpected labels in request: %v", reqBody.Labels)
 		}
 		json.NewEncoder(w).Encode(schema.FloatingIPCreateResponse{
 			FloatingIP: schema.FloatingIP{ID: 1, Type: "ipv4", IP: "131.232.99.1"},
@@ -114,6 +148,7 @@ func TestFloatingIPClientCreate(t *testing.T) {
 		Description:  String("test"),
 		HomeLocation: &Location{Name: "test"},
 		Server:       &Server{ID: 1},
+		Labels:       map[string]string{"key": "value"},
 	}
 
 	ctx := context.Background()
@@ -178,6 +213,41 @@ func TestFloatingIPClientUpdate(t *testing.T) {
 
 		opts := FloatingIPUpdateOpts{
 			Description: "test",
+		}
+		updatedFloatingIP, _, err := env.Client.FloatingIP.Update(ctx, floatingIP, opts)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if updatedFloatingIP.ID != 1 {
+			t.Errorf("unexpected Floating IP ID: %v", updatedFloatingIP.ID)
+		}
+	})
+
+	t.Run("update labels", func(t *testing.T) {
+		env := newTestEnv()
+		defer env.Teardown()
+
+		env.Mux.HandleFunc("/floating_ips/1", func(w http.ResponseWriter, r *http.Request) {
+			if r.Method != "PUT" {
+				t.Error("expected PUT")
+			}
+			var reqBody schema.FloatingIPUpdateRequest
+			if err := json.NewDecoder(r.Body).Decode(&reqBody); err != nil {
+				t.Fatal(err)
+			}
+			if reqBody.Labels == nil || (*reqBody.Labels)["key"] != "value" {
+				t.Errorf("unexpected labels in request: %v", reqBody.Labels)
+			}
+			json.NewEncoder(w).Encode(schema.FloatingIPUpdateResponse{
+				FloatingIP: schema.FloatingIP{
+					ID: 1,
+				},
+			})
+		})
+
+		opts := FloatingIPUpdateOpts{
+			Labels: map[string]string{"key": "value"},
 		}
 		updatedFloatingIP, _, err := env.Client.FloatingIP.Update(ctx, floatingIP, opts)
 		if err != nil {

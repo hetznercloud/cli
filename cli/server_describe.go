@@ -131,5 +131,14 @@ func runServerDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 	fmt.Printf("  Delete:\t%s\n", yesno(server.Protection.Delete))
 	fmt.Printf("  Rebuild:\t%s\n", yesno(server.Protection.Rebuild))
 
+	fmt.Print("Labels:\n")
+	if len(server.Labels) == 0 {
+		fmt.Print("  No labels\n")
+	} else {
+		for key, value := range server.Labels {
+			fmt.Printf("  %s: %s\n", key, value)
+		}
+	}
+
 	return nil
 }

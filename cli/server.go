@@ -35,6 +35,8 @@ func newServerCommand(cli *CLI) *cobra.Command {
 		newServerEnableProtectionCommand(cli),
 		newServerDisableProtectionCommand(cli),
 		newServerSSHCommand(cli),
+		newServerAddLabelCommand(cli),
+		newServerRemoveLabelCommand(cli),
 	)
 	return cmd
 }

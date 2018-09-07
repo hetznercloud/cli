@@ -42,6 +42,7 @@ func newServerListCommand(cli *CLI) *cobra.Command {
 		RunE:                  cli.wrap(runServerList),
 	}
 	addListOutputFlag(cmd, serverListTableOutput.Columns())
+	cmd.Flags().StringP("selector", "l", "", "Selector to filter by labels")
 	return cmd
 }
 
@@ -52,7 +53,14 @@ func runServerList(cli *CLI, cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	servers, err := cli.Client().Server.All(cli.Context)
+	labelSelector, _ := cmd.Flags().GetString("selector")
+	opts := hcloud.ServerListOpts{
+		ListOpts: hcloud.ListOpts{
+			LabelSelector: labelSelector,
+			PerPage:       50,
+		},
+	}
+	servers, err := cli.Client().Server.AllWithOpts(cli.Context, opts)
 	if err != nil {
 		return err
 	}

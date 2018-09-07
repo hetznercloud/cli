@@ -26,6 +26,7 @@ func newSSHKeyListCommand(cli *CLI) *cobra.Command {
 		RunE:                  cli.wrap(runSSHKeyList),
 	}
 	addListOutputFlag(cmd, sshKeyListTableOutput.Columns())
+	cmd.Flags().StringP("selector", "l", "", "Selector to filter by labels")
 	return cmd
 }
 
@@ -36,7 +37,14 @@ func runSSHKeyList(cli *CLI, cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	sshKeys, err := cli.Client().SSHKey.All(cli.Context)
+	labelSelector, _ := cmd.Flags().GetString("selector")
+	opts := hcloud.SSHKeyListOpts{
+		ListOpts: hcloud.ListOpts{
+			LabelSelector: labelSelector,
+			PerPage:       50,
+		},
+	}
+	sshKeys, err := cli.Client().SSHKey.AllWithOpts(cli.Context, opts)
 	if err != nil {
 		return err
 	}

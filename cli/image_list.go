@@ -81,6 +81,7 @@ func newImageListCommand(cli *CLI) *cobra.Command {
 	}
 	addListOutputFlag(cmd, imageListTableOutput.Columns())
 	cmd.Flags().StringVarP(&typeFilter, "type", "t", "", "Only show images of given type")
+	cmd.Flags().StringP("selector", "l", "", "Selector to filter by labels")
 	return cmd
 }
 
@@ -91,7 +92,14 @@ func runImageList(cli *CLI, cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	images, err := cli.Client().Image.All(cli.Context)
+	labelSelector, _ := cmd.Flags().GetString("selector")
+	opts := hcloud.ImageListOpts{
+		ListOpts: hcloud.ListOpts{
+			LabelSelector: labelSelector,
+			PerPage:       50,
+		},
+	}
+	images, err := cli.Client().Image.AllWithOpts(cli.Context, opts)
 	if err != nil {
 		return err
 	}

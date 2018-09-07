@@ -34,5 +34,14 @@ func runSSHKeyDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 	fmt.Printf("Fingerprint:\t%s\n", sshKey.Fingerprint)
 	fmt.Printf("Public Key:\n%s\n", strings.TrimSpace(sshKey.PublicKey))
 
+	fmt.Print("Labels:\n")
+	if len(sshKey.Labels) == 0 {
+		fmt.Print("  No labels\n")
+	} else {
+		for key, value := range sshKey.Labels {
+			fmt.Printf("  %s: %s\n", key, value)
+		}
+	}
+
 	return nil
 }

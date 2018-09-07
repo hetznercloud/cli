@@ -1,0 +1,80 @@
+package cli
+
+import (
+	"errors"
+	"fmt"
+	"strconv"
+
+	"github.com/hetznercloud/hcloud-go/hcloud"
+	"github.com/spf13/cobra"
+)
+
+func newFloatingIPRemoveLabelCommand(cli *CLI) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:                   "remove-label [FLAGS] FLOATINGIP LABELKEY",
+		Short:                 "Remove a label from a Floating IP",
+		Args:                  cobra.RangeArgs(1, 2),
+		TraverseChildren:      true,
+		DisableFlagsInUseLine: true,
+		PreRunE:               chainRunE(validateFloatingIPRemoveLabel, cli.ensureToken),
+		RunE:                  cli.wrap(runFloatingIPRemoveLabel),
+	}
+
+	cmd.Flags().BoolP("all", "a", false, "Remove all labels")
+	return cmd
+}
+
+func validateFloatingIPRemoveLabel(cmd *cobra.Command, args []string) error {
+	all, _ := cmd.Flags().GetBool("all")
+
+	if all && len(args) == 2 {
+		return errors.New("must not specify a label key when using --all/-a")
+	}
+	if !all && len(args) != 2 {
+		return errors.New("must specify a label key when not using --all/-a")
+	}
+
+	return nil
+}
+
+func runFloatingIPRemoveLabel(cli *CLI, cmd *cobra.Command, args []string) error {
+	all, _ := cmd.Flags().GetBool("all")
+	id, err := strconv.Atoi(args[0])
+	if err != nil {
+		return errors.New("invalid Floating IP ID")
+	}
+	floatingIP, _, err := cli.Client().FloatingIP.GetByID(cli.Context, id)
+	if err != nil {
+		return err
+	}
+	if floatingIP == nil {
+		return fmt.Errorf("Floating IP not found: %d", id)
+	}
+
+	labels := floatingIP.Labels
+	if all {
+		labels = make(map[string]string)
+	} else {
+		label := args[1]
+		if _, ok := floatingIP.Labels[label]; !ok {
+			return fmt.Errorf("label %s on Floating IP %d does not exist", label, floatingIP.ID)
+		}
+		delete(labels, label)
+	}
+
+	opts := hcloud.FloatingIPUpdateOpts{
+		Labels: labels,
+	}
+	_, _, err = cli.Client().FloatingIP.Update(cli.Context, floatingIP, opts)
+	if err != nil {
+		return err
+	}
+
+	if all {
+		fmt.Printf("All labels removed from Floating IP %d\n", floatingIP.ID)
+	} else {
+		fmt.Printf("Label %s removed from Floating IP %d\n", args[1], floatingIP.ID)
+	}
+
+	return nil
+}

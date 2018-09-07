@@ -210,6 +210,49 @@ func TestServersAll(t *testing.T) {
 	}
 }
 
+func TestServersAllWithOpts(t *testing.T) {
+	env := newTestEnv()
+	defer env.Teardown()
+
+	env.Mux.HandleFunc("/servers", func(w http.ResponseWriter, r *http.Request) {
+		if labelSelector := r.URL.Query().Get("label_selector"); labelSelector != "key=value" {
+			t.Errorf("unexpected label selector: %s", labelSelector)
+		}
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(struct {
+			Servers []schema.Server `json:"servers"`
+			Meta    schema.Meta     `json:"meta"`
+		}{
+			Servers: []schema.Server{
+				{ID: 1},
+				{ID: 2},
+				{ID: 3},
+			},
+			Meta: schema.Meta{
+				Pagination: &schema.MetaPagination{
+					Page:         1,
+					LastPage:     1,
+					PerPage:      3,
+					TotalEntries: 3,
+				},
+			},
+		})
+	})
+
+	ctx := context.Background()
+	opts := ServerListOpts{ListOpts{LabelSelector: "key=value"}}
+	servers, err := env.Client.Server.AllWithOpts(ctx, opts)
+	if err != nil {
+		t.Fatalf("Servers.List failed: %s", err)
+	}
+	if len(servers) != 3 {
+		t.Fatalf("expected 3 servers; got %d", len(servers))
+	}
+	if servers[0].ID != 1 || servers[1].ID != 2 || servers[2].ID != 3 {
+		t.Errorf("unexpected servers")
+	}
+}
+
 func TestServersCreateWithSSHKeys(t *testing.T) {
 	env := newTestEnv()
 	defer env.Teardown()
@@ -463,6 +506,47 @@ func TestServersCreateWithUserData(t *testing.T) {
 	}
 }
 
+func TestServersCreateWithLabels(t *testing.T) {
+	env := newTestEnv()
+	defer env.Teardown()
+
+	env.Mux.HandleFunc("/servers", func(w http.ResponseWriter, r *http.Request) {
+		var reqBody schema.ServerCreateRequest
+		if err := json.NewDecoder(r.Body).Decode(&reqBody); err != nil {
+			t.Fatal(err)
+		}
+		if len(reqBody.SSHKeys) != 0 {
+			t.Errorf("expected no SSH keys, but got %v", reqBody.SSHKeys)
+		}
+		if reqBody.Labels == nil || (*reqBody.Labels)["key"] != "value" {
+			t.Errorf("unexpected labels in request: %v", reqBody.Labels)
+		}
+		json.NewEncoder(w).Encode(schema.ServerCreateResponse{
+			Server: schema.Server{
+				ID: 1,
+			},
+			RootPassword: String("test"),
+		})
+	})
+
+	ctx := context.Background()
+	result, _, err := env.Client.Server.Create(ctx, ServerCreateOpts{
+		Name:       "test",
+		ServerType: &ServerType{ID: 1},
+		Image:      &Image{ID: 2},
+		Labels:     map[string]string{"key": "value"},
+	})
+	if err != nil {
+		t.Fatalf("Server.Create failed: %s", err)
+	}
+	if result.Server == nil {
+		t.Fatal("no server")
+	}
+	if result.Server.ID != 1 {
+		t.Errorf("unexpected server ID: %v", result.Server.ID)
+	}
+}
+
 func TestServersCreateWithoutStarting(t *testing.T) {
 	env := newTestEnv()
 	defer env.Teardown()
@@ -545,6 +629,42 @@ func TestServerClientUpdate(t *testing.T) {
 
 		opts := ServerUpdateOpts{
 			Name: "test",
+		}
+		updatedServer, _, err := env.Client.Server.Update(ctx, server, opts)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		if updatedServer.ID != 1 {
+			t.Errorf("unexpected server ID: %v", updatedServer.ID)
+		}
+
+	})
+
+	t.Run("update labels", func(t *testing.T) {
+		env := newTestEnv()
+		defer env.Teardown()
+
+		env.Mux.HandleFunc("/servers/1", func(w http.ResponseWriter, r *http.Request) {
+			if r.Method != "PUT" {
+				t.Error("expected PUT")
+			}
+			var reqBody schema.ServerUpdateRequest
+			if err := json.NewDecoder(r.Body).Decode(&reqBody); err != nil {
+				t.Fatal(err)
+			}
+			if reqBody.Labels == nil || (*reqBody.Labels)["key"] != "value" {
+				t.Errorf("unexpected labels in request: %v", reqBody.Labels)
+			}
+			json.NewEncoder(w).Encode(schema.ServerUpdateResponse{
+				Server: schema.Server{
+					ID: 1,
+				},
+			})
+		})
+
+		opts := ServerUpdateOpts{
+			Labels: map[string]string{"key": "value"},
 		}
 		updatedServer, _, err := env.Client.Server.Update(ctx, server, opts)
 		if err != nil {

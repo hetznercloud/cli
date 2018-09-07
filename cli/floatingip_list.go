@@ -70,6 +70,7 @@ func newFloatingIPListCommand(cli *CLI) *cobra.Command {
 		RunE:                  cli.wrap(runFloatingIPList),
 	}
 	addListOutputFlag(cmd, floatingIPListTableOutput.Columns())
+	cmd.Flags().StringP("selector", "l", "", "Selector to filter by labels")
 	return cmd
 }
 
@@ -80,7 +81,14 @@ func runFloatingIPList(cli *CLI, cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	floatingIPs, err := cli.Client().FloatingIP.All(cli.Context)
+	labelSelector, _ := cmd.Flags().GetString("selector")
+	opts := hcloud.FloatingIPListOpts{
+		ListOpts: hcloud.ListOpts{
+			LabelSelector: labelSelector,
+			PerPage:       50,
+		},
+	}
+	floatingIPs, err := cli.Client().FloatingIP.AllWithOpts(cli.Context, opts)
 	if err != nil {
 		return err
 	}
