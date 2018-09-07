@@ -9,7 +9,7 @@ func newSSHKeyCommand(cli *CLI) *cobra.Command {
 		Args:                  cobra.NoArgs,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE: cli.wrap(runSSHKey),
+		RunE:                  cli.wrap(runSSHKey),
 	}
 	cmd.AddCommand(
 		newSSHKeyListCommand(cli),

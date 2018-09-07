@@ -13,7 +13,7 @@ func newContextActiveCommand(cli *CLI) *cobra.Command {
 		Args:                  cobra.NoArgs,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE: cli.wrap(runContextActive),
+		RunE:                  cli.wrap(runContextActive),
 	}
 	return cmd
 }

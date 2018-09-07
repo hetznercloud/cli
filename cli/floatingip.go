@@ -9,7 +9,7 @@ func newFloatingIPCommand(cli *CLI) *cobra.Command {
 		Args:                  cobra.NoArgs,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE: cli.wrap(runFloatingIP),
+		RunE:                  cli.wrap(runFloatingIP),
 	}
 	cmd.AddCommand(
 		newFloatingIPUpdateCommand(cli),

@@ -9,7 +9,7 @@ func newContextCommand(cli *CLI) *cobra.Command {
 		Args:                  cobra.NoArgs,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE: cli.wrap(runContext),
+		RunE:                  cli.wrap(runContext),
 	}
 	cmd.AddCommand(
 		newContextCreateCommand(cli),
