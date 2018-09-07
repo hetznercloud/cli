@@ -9,7 +9,7 @@ func newImageCommand(cli *CLI) *cobra.Command {
 		Args:                  cobra.NoArgs,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE: cli.wrap(runImage),
+		RunE:                  cli.wrap(runImage),
 	}
 	cmd.AddCommand(
 		newImageListCommand(cli),

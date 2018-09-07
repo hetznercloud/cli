@@ -11,11 +11,11 @@ var Version = "was not built properly"
 
 func newVersionCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "version",
-		Short: "Print version information",
-		Args:  cobra.NoArgs,
+		Use:                   "version",
+		Short:                 "Print version information",
+		Args:                  cobra.NoArgs,
 		DisableFlagsInUseLine: true,
-		RunE: cli.wrap(runVersion),
+		RunE:                  cli.wrap(runVersion),
 	}
 	return cmd
 }

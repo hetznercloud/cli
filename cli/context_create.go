@@ -18,7 +18,7 @@ func newContextCreateCommand(cli *CLI) *cobra.Command {
 		Args:                  cobra.ExactArgs(1),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE: cli.wrap(runContextCreate),
+		RunE:                  cli.wrap(runContextCreate),
 	}
 	return cmd
 }

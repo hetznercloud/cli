@@ -9,7 +9,7 @@ func newLocationCommand(cli *CLI) *cobra.Command {
 		Args:                  cobra.NoArgs,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE: cli.wrap(runServer),
+		RunE:                  cli.wrap(runServer),
 	}
 	cmd.AddCommand(
 		newLocationListCommand(cli),

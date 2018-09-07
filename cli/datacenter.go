@@ -9,7 +9,7 @@ func newDatacenterCommand(cli *CLI) *cobra.Command {
 		Args:                  cobra.NoArgs,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE: cli.wrap(runDatacenter),
+		RunE:                  cli.wrap(runDatacenter),
 	}
 	cmd.AddCommand(
 		newDatacenterListCommand(cli),
