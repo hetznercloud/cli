@@ -1,13 +1,13 @@
 sudo: false
 language: go
 go:
-  - "1.9"
-  - "1.10"
+  - "1.11"
+env:
+  - GO111MODULE=on
 before_script:
   - git clone --depth 1 https://github.com/sstephenson/bats.git
 script:
-  - diff -u <(echo -n) <(gofmt -d -s $(find . -type f -name '*.go' | grep -v ^./vendor))
-  - go vet ./cli/...
+  - diff -u <(echo -n) <(gofmt -d -s $(find . -type f -name '*.go'))
   - go test ./cli/...
   - ./script/build.bash linux amd64 `./script/git-version.bash`; mv dist/hcloud* cmd/hcloud/hcloud
   - PATH="./cmd/hcloud:$PATH" bats/bin/bats test
