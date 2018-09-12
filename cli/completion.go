@@ -124,7 +124,7 @@ const (
 			hcloud_server_enable-rescue | hcloud_server_detach-iso | \
 			hcloud_server_update | hcloud_server_enable-backup | \
 			hcloud_server_disable-backup | hcloud_server_rebuild | \
-            hcloud_server_add-label | hcloud_server_remove-label )
+			hcloud_server_add-label | hcloud_server_remove-label )
 				__hcloud_server_names
 				return
 				;;
@@ -208,7 +208,7 @@ const (
 				;;
 			hcloud_floating-ip_unassign | hcloud_floating-ip_delete | \
 			hcloud_floating-ip_describe | hcloud_floating-ip_update | \
-            hcloud_floating-ip_add-label | hcloud_floating-ip_remove-label )
+			hcloud_floating-ip_add-label | hcloud_floating-ip_remove-label )
 				__hcloud_floating_ip_ids
 				return
 				;;
@@ -229,7 +229,7 @@ const (
 				return
 				;;
 			hcloud_ssh-key_delete | hcloud_ssh-key_describe | \
-            hcloud_ssh-key_add-label | hcloud_ssk-key_remove-label)
+			hcloud_ssh-key_add-label | hcloud_ssk-key_remove-label)
 				__hcloud_sshkey_names
 				return
 				;;
