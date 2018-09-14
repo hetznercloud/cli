@@ -46,6 +46,6 @@ func runSSHKeyUpdate(cli *CLI, cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("SSH Key %s updated\n", sshKey.Name)
+	fmt.Printf("SSH Key %d updated\n", sshKey.ID)
 	return nil
 }
