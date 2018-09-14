@@ -58,6 +58,6 @@ func runServerRebuild(cli *CLI, cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	fmt.Printf("Server %s rebuilt with image %s\n", server.Name, imageIDOrName)
+	fmt.Printf("Server %d rebuilt with image %s\n", server.ID, image.Name)
 	return nil
 }
