@@ -4,6 +4,7 @@
 
 * Add `hcloud ssh-key update` command
 * Add `hcloud server set-rdns` command
+* Add `hcloud floating-ip set-rdns` command
 
 ## v1.7.0
 
