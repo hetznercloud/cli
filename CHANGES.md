@@ -3,7 +3,7 @@
 ## master
 
 * Add `hcloud ssh-key update` command
-* Add `-u` & `-p` / `--port` to `server ssh` command
+* Add `-u/--user` and `-p/--port` flags to `hcloud server ssh` command
 
 ## v1.7.0
 
