@@ -34,6 +34,6 @@ func runServerDelete(cli *CLI, cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	fmt.Printf("Server %s deleted\n", server.Name)
+	fmt.Printf("Server %d deleted\n", server.ID)
 	return nil
 }

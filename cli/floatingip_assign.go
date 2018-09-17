@@ -48,6 +48,6 @@ func runFloatingIPAssign(cli *CLI, cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	fmt.Printf("Floating IP %d assigned to server %s\n", floatingIP.ID, server.Name)
+	fmt.Printf("Floating IP %d assigned to server %d\n", floatingIP.ID, server.ID)
 	return nil
 }

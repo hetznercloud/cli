@@ -33,6 +33,6 @@ func runSSHKeyDelete(cli *CLI, cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	fmt.Printf("SSH key %s deleted\n", sshKey.Name)
+	fmt.Printf("SSH key %d deleted\n", sshKey.ID)
 	return nil
 }

@@ -56,9 +56,9 @@ func runServerChangeType(cli *CLI, cmd *cobra.Command, args []string) error {
 	}
 
 	if opts.UpgradeDisk {
-		fmt.Printf("Server %s changed to type %s\n", server.Name, serverTypeIDOrName)
+		fmt.Printf("Server %d changed to type %s\n", server.ID, serverType.Name)
 	} else {
-		fmt.Printf("Server %s changed to type %s (disk size was unchanged)\n", server.Name, serverTypeIDOrName)
+		fmt.Printf("Server %d changed to type %s (disk size was unchanged)\n", server.ID, serverType.Name)
 	}
 	return nil
 }

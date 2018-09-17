@@ -46,6 +46,6 @@ func runServerUpdate(cli *CLI, cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("Server %s updated\n", server.Name)
+	fmt.Printf("Server %d updated\n", server.ID)
 	return nil
 }
