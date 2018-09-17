@@ -37,7 +37,7 @@ func newServerCommand(cli *CLI) *cobra.Command {
 		newServerSSHCommand(cli),
 		newServerAddLabelCommand(cli),
 		newServerRemoveLabelCommand(cli),
-		newServerSetRdnsCommand(cli),
+		newServerSetRDNSCommand(cli),
 	)
 	return cmd
 }

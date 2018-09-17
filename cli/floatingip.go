@@ -23,7 +23,7 @@ func newFloatingIPCommand(cli *CLI) *cobra.Command {
 		newFloatingIPDisableProtectionCommand(cli),
 		newFloatingIPAddLabelCommand(cli),
 		newFloatingIPRemoveLabelCommand(cli),
-		newFloatingIPSetRdnsCommand(cli),
+		newFloatingIPSetRDNSCommand(cli),
 	)
 	return cmd
 }

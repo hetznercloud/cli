@@ -8,26 +8,25 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func newFloatingIPSetRdnsCommand(cli *CLI) *cobra.Command {
+func newFloatingIPSetRDNSCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "set-rdns [FLAGS] FLOATINGIP",
-		Short:                 "Change reverse dns of a Floating IP",
+		Short:                 "Change reverse DNS of a Floating IP",
 		Args:                  cobra.ExactArgs(1),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.ensureToken,
-		RunE:                  cli.wrap(runFloatingIPSetRdns),
+		RunE:                  cli.wrap(runFloatingIPSetRDNS),
 	}
 
-	cmd.Flags().StringP("hostname", "r", "", "Primary IP address for which the reverse DNS entry should be set")
+	cmd.Flags().StringP("hostname", "r", "", "Hostname to set as a reverse DNS PTR entry")
 	cmd.MarkFlagRequired("hostname")
 
-	cmd.Flags().StringP("ip", "i", "", "Hostname to set as a reverse DNS PTR entry")
-
+	cmd.Flags().StringP("ip", "i", "", "IP address for which the reverse DNS entry should be set")
 	return cmd
 }
 
-func runFloatingIPSetRdns(cli *CLI, cmd *cobra.Command, args []string) error {
+func runFloatingIPSetRDNS(cli *CLI, cmd *cobra.Command, args []string) error {
 	id, err := strconv.Atoi(args[0])
 	if err != nil {
 		return err
@@ -56,7 +55,7 @@ func runFloatingIPSetRdns(cli *CLI, cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	fmt.Printf("Reverse DNS from Floating IP %d was changed\n", floatingIP.ID)
+	fmt.Printf("Reverse DNS of Floating IP %d changed\n", floatingIP.ID)
 
 	return nil
 }

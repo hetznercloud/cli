@@ -7,26 +7,26 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func newServerSetRdnsCommand(cli *CLI) *cobra.Command {
+func newServerSetRDNSCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "set-rdns [FLAGS] SERVER",
-		Short:                 "Change reverse dns of a server",
+		Short:                 "Change reverse DNS of a server",
 		Args:                  cobra.ExactArgs(1),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.ensureToken,
-		RunE:                  cli.wrap(runServerSetRdns),
+		RunE:                  cli.wrap(runServerSetRDNS),
 	}
 
-	cmd.Flags().StringP("hostname", "r", "", "Primary IP address for which the reverse DNS entry should be set")
+	cmd.Flags().StringP("hostname", "r", "", "Hostname to set as a reverse DNS PTR entry")
 	cmd.MarkFlagRequired("hostname")
 
-	cmd.Flags().StringP("ip", "i", "", "Hostname to set as a reverse DNS PTR entry")
+	cmd.Flags().StringP("ip", "i", "", "IP address for which the reverse DNS entry should be set")
 
 	return cmd
 }
 
-func runServerSetRdns(cli *CLI, cmd *cobra.Command, args []string) error {
+func runServerSetRDNS(cli *CLI, cmd *cobra.Command, args []string) error {
 	idOrName := args[0]
 	server, _, err := cli.Client().Server.Get(cli.Context, idOrName)
 	if err != nil {
@@ -50,7 +50,7 @@ func runServerSetRdns(cli *CLI, cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	fmt.Printf("Reverse DNS from server %d was changed\n", server.ID)
+	fmt.Printf("Reverse DNS of server %d changed\n", server.ID)
 
 	return nil
 }
