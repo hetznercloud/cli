@@ -38,7 +38,7 @@ func runFloatingIPSetRdns(cli *CLI, cmd *cobra.Command, args []string) error {
 		return err
 	}
 	if floatingIP == nil {
-		return fmt.Errorf("Floating IP not found: %s", id)
+		return fmt.Errorf("Floating IP not found: %d", id)
 	}
 
 	ip, _ := cmd.Flags().GetString("ip")
