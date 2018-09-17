@@ -3,7 +3,7 @@
 ## master
 
 * Add `hcloud ssh-key update` command
-
+* Add `-u` & `-p` / `--port` to `server ssh` command
 ## v1.7.0
 
 * Add type filter flag `-t` / `--type` to `image list` command

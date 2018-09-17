@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
+	"strconv"
 	"syscall"
 
 	"github.com/spf13/cobra"
@@ -20,7 +21,8 @@ func newServerSSHCommand(cli *CLI) *cobra.Command {
 		RunE:                  cli.wrap(runServerSSH),
 	}
 	cmd.Flags().Bool("ipv6", false, "Establish SSH connection to IPv6 address")
-	cmd.Flags().String("user", "root", "Username for SSH connection")
+	cmd.Flags().StringP("user", "u", "root", "Username for SSH connection")
+	cmd.Flags().IntP("port", "p", 22, "Port for SSH connection")
 	return cmd
 }
 
@@ -36,6 +38,7 @@ func runServerSSH(cli *CLI, cmd *cobra.Command, args []string) error {
 
 	useIPv6, _ := cmd.Flags().GetBool("ipv6")
 	user, _ := cmd.Flags().GetString("user")
+	port, _ := cmd.Flags().GetInt("port")
 
 	ipAddress := server.PublicNet.IPv4.IP
 	if useIPv6 {
@@ -44,7 +47,7 @@ func runServerSSH(cli *CLI, cmd *cobra.Command, args []string) error {
 		ipAddress[15]++
 	}
 
-	sshCommand := exec.Command("ssh", "-l", user, ipAddress.String())
+	sshCommand := exec.Command("ssh", "-l", user, "-p", strconv.Itoa(port), ipAddress.String())
 	sshCommand.Stdin = os.Stdin
 	sshCommand.Stdout = os.Stdout
 	sshCommand.Stderr = os.Stderr
