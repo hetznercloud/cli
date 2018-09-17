@@ -11,7 +11,7 @@ import (
 func newSSHKeyUpdateCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "update [FLAGS] SSHKEY",
-		Short:                 "Update a SSH Key",
+		Short:                 "Update a SSH key",
 		Args:                  cobra.ExactArgs(1),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
@@ -19,7 +19,7 @@ func newSSHKeyUpdateCommand(cli *CLI) *cobra.Command {
 		RunE:                  cli.wrap(runSSHKeyUpdate),
 	}
 
-	cmd.Flags().String("name", "", "SSH Key name")
+	cmd.Flags().String("name", "", "SSH key name")
 
 	return cmd
 }
@@ -46,6 +46,6 @@ func runSSHKeyUpdate(cli *CLI, cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("SSH Key %d updated\n", sshKey.ID)
+	fmt.Printf("SSH key %d updated\n", sshKey.ID)
 	return nil
 }
