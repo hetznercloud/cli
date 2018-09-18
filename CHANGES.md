@@ -1,6 +1,6 @@
 # Changes
 
-## master
+## v1.8.0
 
 * Add `hcloud ssh-key update` command
 * Add `-u/--user` and `-p/--port` flags to `hcloud server ssh` command
