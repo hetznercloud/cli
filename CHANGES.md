@@ -3,6 +3,7 @@
 ## master
 
 * Add `hcloud ssh-key update` command
+* Add `-u/--user` and `-p/--port` flags to `hcloud server ssh` command
 * Add `hcloud server set-rdns` command
 * Add `hcloud floating-ip set-rdns` command
 
