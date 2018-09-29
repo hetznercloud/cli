@@ -53,6 +53,8 @@ func newServerCreateCommand(cli *CLI) *cobra.Command {
 
 	cmd.Flags().String("user-data-from-file", "", "Read user data from specified file (use - to read from stdin)")
 
+	cmd.Flags().Bool("start-after-create", true, "Start Server right after creation. Defaults to true.")
+
 	return cmd
 }
 
@@ -90,6 +92,7 @@ func optsFromFlags(cli *CLI, flags *pflag.FlagSet) (opts hcloud.ServerCreateOpts
 	location, _ := flags.GetString("location")
 	datacenter, _ := flags.GetString("datacenter")
 	userDataFile, _ := flags.GetString("user-data-from-file")
+	startAfterCreate, _ := flags.GetBool("start-after-create")
 	sshKeys, _ := flags.GetStringSlice("ssh-key")
 
 	opts = hcloud.ServerCreateOpts{
@@ -100,6 +103,7 @@ func optsFromFlags(cli *CLI, flags *pflag.FlagSet) (opts hcloud.ServerCreateOpts
 		Image: &hcloud.Image{
 			Name: image,
 		},
+		StartAfterCreate: &startAfterCreate,
 	}
 
 	if userDataFile != "" {
