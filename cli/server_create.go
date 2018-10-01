@@ -53,7 +53,7 @@ func newServerCreateCommand(cli *CLI) *cobra.Command {
 
 	cmd.Flags().String("user-data-from-file", "", "Read user data from specified file (use - to read from stdin)")
 
-	cmd.Flags().Bool("start-after-create", true, "Start Server right after creation. Defaults to true.")
+	cmd.Flags().Bool("start-after-create", true, "Start server right after creation (default: true)")
 
 	return cmd
 }
