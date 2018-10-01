@@ -1,5 +1,9 @@
 # Changes
 
+## master
+
+* Add `--start-after-create` flag to `hcloud server create` command
+
 ## v1.8.0
 
 * Add `hcloud ssh-key update` command
