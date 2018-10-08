@@ -25,7 +25,8 @@ is still the recommended install method.
 | Operating System | Command                                           |
 | ---------------- | ------------------------------------------------- |
 | Arch Linux       | `pacman -Syu hcloud`                              |
-
+| Void Linux       | `xbps-install -Syu hcloud`                        |
+ 
 ### Build manually
 
 If you have Go installed, you can build and install the `hcloud` program with:
