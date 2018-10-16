@@ -5,7 +5,7 @@ require (
 	github.com/fatih/structs v0.0.0-20180123065059-ebf56d35bba7
 	github.com/gosuri/uilive v0.0.0-20170323041506-ac356e6e42cd
 	github.com/gosuri/uiprogress v0.0.0-20170224063937-d0567a9d84a1
-	github.com/hetznercloud/hcloud-go v1.9.0
+	github.com/hetznercloud/hcloud-go v1.10.0
 	github.com/inconshreveable/mousetrap v1.0.0
 	github.com/mattn/go-isatty v0.0.3
 	github.com/pelletier/go-toml v1.1.0

@@ -2,6 +2,7 @@
 
 ## master
 
+* Add support for volumes
 * Add `--start-after-create` flag to `hcloud server create` command
 
 ## v1.8.0
