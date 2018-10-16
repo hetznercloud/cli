@@ -2,6 +2,8 @@ package cli
 
 import (
 	"fmt"
+
+	"github.com/dustin/go-humanize"
 	"github.com/spf13/cobra"
 )
 
@@ -29,26 +31,26 @@ func runVolumeDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 
 	fmt.Printf("ID:\t\t%d\n", volume.ID)
 	fmt.Printf("Name:\t\t%s\n", volume.Name)
-	fmt.Printf("Size:\t\t%d GB\n", volume.Size)
-	fmt.Printf("Linux Device:\t\t%s\n", volume.LinuxDevice)
+	fmt.Printf("Size:\t\t%s\n", humanize.Bytes(uint64(volume.Size*humanize.GByte)))
+	fmt.Printf("Linux Device:\t%s\n", volume.LinuxDevice)
 	fmt.Printf("Location:\n")
 	fmt.Printf("  Name:\t\t%s\n", volume.Location.Name)
 	fmt.Printf("  Description:\t%s\n", volume.Location.Description)
-	fmt.Printf("  Country:\t\t%s\n", volume.Location.Country)
+	fmt.Printf("  Country:\t%s\n", volume.Location.Country)
 	fmt.Printf("  City:\t\t%s\n", volume.Location.City)
-	fmt.Printf("  Latitude:\t\t%f\n", volume.Location.Latitude)
-	fmt.Printf("  Longitude:\t\t%f\n", volume.Location.Longitude)
+	fmt.Printf("  Latitude:\t%f\n", volume.Location.Latitude)
+	fmt.Printf("  Longitude:\t%f\n", volume.Location.Longitude)
 	if volume.Server != nil {
 		server, _, err := cli.Client().Server.GetByID(cli.Context, volume.Server.ID)
 		if err != nil {
 			return err
 		}
 		if server == nil {
-			return fmt.Errorf("server not found: %d", *volume.Server)
+			return fmt.Errorf("server not found: %d", volume.Server.ID)
 		}
 		fmt.Printf("Server:\n")
-		fmt.Printf("  ID:\t%d\n", server.ID)
-		fmt.Printf("  Name:\t%s\n", server.Name)
+		fmt.Printf("  ID:\t\t%d\n", server.ID)
+		fmt.Printf("  Name:\t\t%s\n", server.Name)
 	} else {
 		fmt.Print("Server:\n  Not attached\n")
 	}

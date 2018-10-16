@@ -1,5 +1,9 @@
 # Changes
 
+## v1.9.1
+
+* Fix formatting issue on `hcloud volume list` and `hcloud volume describe`
+
 ## v1.9.0
 
 * Add support for volumes

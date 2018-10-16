@@ -3,6 +3,7 @@ package cli
 import (
 	"strconv"
 
+	"github.com/dustin/go-humanize"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
@@ -19,6 +20,10 @@ func init() {
 				server = strconv.Itoa(volume.Server.ID)
 			}
 			return na(server)
+		})).
+		AddFieldOutputFn("size", fieldOutputFn(func(obj interface{}) string {
+			volume := obj.(*hcloud.Volume)
+			return humanize.Bytes(uint64(volume.Size * humanize.GByte))
 		})).
 		AddFieldOutputFn("location", fieldOutputFn(func(obj interface{}) string {
 			volume := obj.(*hcloud.Volume)
