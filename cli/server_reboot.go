@@ -38,6 +38,6 @@ func runServerReboot(cli *CLI, cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	fmt.Printf("Server %s rebooted\n", server.Name)
+	fmt.Printf("Server %d rebooted\n", server.ID)
 	return nil
 }

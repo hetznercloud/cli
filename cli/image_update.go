@@ -48,6 +48,6 @@ func runImageUpdate(cli *CLI, cmd *cobra.Command, args []string) error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("Image %s updated\n", idOrName)
+	fmt.Printf("Image %d updated\n", image.ID)
 	return nil
 }

@@ -56,6 +56,6 @@ func runServerDisableProtection(cli *CLI, cmd *cobra.Command, args []string) err
 		return err
 	}
 
-	fmt.Printf("Resource protection disabled for server %s\n", server.Name)
+	fmt.Printf("Resource protection disabled for server %d\n", server.ID)
 	return nil
 }

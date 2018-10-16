@@ -38,6 +38,6 @@ func runServerResetPassword(cli *CLI, cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	fmt.Printf("Password of server %s reset to: %s\n", server.Name, result.RootPassword)
+	fmt.Printf("Password of server %d reset to: %s\n", server.ID, result.RootPassword)
 	return nil
 }

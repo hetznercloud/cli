@@ -34,6 +34,6 @@ func runImageDelete(cli *CLI, cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	fmt.Printf("Image %s deleted\n", idOrName)
+	fmt.Printf("Image %d deleted\n", image.ID)
 	return nil
 }

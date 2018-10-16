@@ -38,6 +38,6 @@ func runServerPoweron(cli *CLI, cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	fmt.Printf("Server %s started\n", server.Name)
+	fmt.Printf("Server %d started\n", server.ID)
 	return nil
 }
