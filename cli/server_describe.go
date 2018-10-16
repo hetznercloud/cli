@@ -73,12 +73,12 @@ func runServerDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 			if err != nil {
 				return fmt.Errorf("error fetching Volume: %v", err)
 			}
-			fmt.Printf(" - ID:\t\t%d\n", volume.ID)
-			fmt.Printf("   Name:\t%s\n", volume.Name)
-			fmt.Printf("   Size:\t%d GB\n", volume.Size)
+			fmt.Printf("  - ID:\t\t%d\n", volume.ID)
+			fmt.Printf("    Name:\t%s\n", volume.Name)
+			fmt.Printf("    Size:\t%s\n", humanize.Bytes(uint64(volume.Size*humanize.GByte)))
 		}
 	} else {
-		fmt.Printf("   No Volumes\n")
+		fmt.Printf("  No Volumes\n")
 	}
 	fmt.Printf("Image:\n")
 	if server.Image != nil {
