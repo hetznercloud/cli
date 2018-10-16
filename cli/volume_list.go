@@ -1,10 +1,9 @@
 package cli
 
 import (
-	"fmt"
-	"github.com/dustin/go-humanize"
 	"strconv"
 
+	"github.com/dustin/go-humanize"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
@@ -24,7 +23,7 @@ func init() {
 		})).
 		AddFieldOutputFn("size", fieldOutputFn(func(obj interface{}) string {
 			volume := obj.(*hcloud.Volume)
-			return fmt.Sprintf("%s", humanize.Bytes(uint64(volume.Size * humanize.GByte)))
+			return humanize.Bytes(uint64(volume.Size * humanize.GByte))
 		})).
 		AddFieldOutputFn("location", fieldOutputFn(func(obj interface{}) string {
 			volume := obj.(*hcloud.Volume)
