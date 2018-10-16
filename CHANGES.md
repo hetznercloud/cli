@@ -1,6 +1,7 @@
 # Changes
 
 ## master
+
 * Add support for volumes
 
 ## v1.7.0
