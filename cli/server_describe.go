@@ -66,6 +66,20 @@ func runServerDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 	} else {
 		fmt.Printf("    No Floating IPs\n")
 	}
+	fmt.Printf("  Volumes:\n")
+	if len(server.Volumes) > 0 {
+		for _, v := range server.Volumes {
+			volume, _, err := cli.client.Volume.GetByID(cli.Context, v.ID)
+			if err != nil {
+				return fmt.Errorf("error fetching Volume: %v", err)
+			}
+			fmt.Printf("  - ID:\t\t\t%d\n", volume.ID)
+			fmt.Printf("    Name:\t\t%s\n", volume.Name)
+			fmt.Printf("    Size:\t\t%d GB\n", volume.Size)
+		}
+	} else {
+		fmt.Printf("    No Volumes\n")
+	}
 	fmt.Printf("Image:\n")
 	if server.Image != nil {
 		image := server.Image

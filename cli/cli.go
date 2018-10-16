@@ -112,6 +112,7 @@ func (c *CLI) Client() *hcloud.Client {
 	if c.client == nil {
 		opts := []hcloud.ClientOption{
 			hcloud.WithToken(c.Token),
+			hcloud.WithApplication("hcloud-cli", Version),
 		}
 		if c.Endpoint != "" {
 			opts = append(opts, hcloud.WithEndpoint(c.Endpoint))
