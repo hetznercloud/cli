@@ -34,6 +34,13 @@ const (
 		fi
 	}
 
+	__hcloud_volume_names() {
+		local ctl_output out
+		if ctl_output=$(hcloud volume list -o noheader -o columns=name 2>/dev/null); then
+			COMPREPLY=($(echo "${ctl_output}"))
+		fi
+	}
+
 	__hcloud_iso_names() {
 		local ctl_output out
 		if ctl_output=$(hcloud iso list -o noheader -o columns=name 2>/dev/null); then
@@ -206,10 +213,27 @@ const (
 				__hcloud_server_names
 				return
 				;;
+			hcloud_volumes_enable-protection | hcloud_volume_disable-protection )
+				if [[ ${#nouns[@]} -gt 1 ]]; then
+					return 1
+				fi
+				if [[ ${#nouns[@]} -eq 1 ]]; then
+					__hcloud_protection_levels
+					return
+				fi
+				__hcloud_volume_names
+				return
+				;;
 			hcloud_floating-ip_unassign | hcloud_floating-ip_delete | \
 			hcloud_floating-ip_describe | hcloud_floating-ip_update | \
 			hcloud_floating-ip_add-label | hcloud_floating-ip_remove-label )
 				__hcloud_floating_ip_ids
+				return
+				;;
+            hcloud_volume_detach | hcloud_volume_delete | \
+			hcloud_volume_describe | hcloud_volume_update | \
+			hcloud_volume_add-label | hcloud_volume_remove-label )
+				__hcloud_volume_names
 				return
 				;;
 			hcloud_datacenter_describe )
