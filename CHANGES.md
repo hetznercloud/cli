@@ -1,6 +1,6 @@
 # Changes
 
-## master
+## v1.9.0
 
 * Add support for volumes
 * Add `--start-after-create` flag to `hcloud server create` command
