@@ -32,7 +32,7 @@ func runVolumeDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 	fmt.Printf("ID:\t\t%d\n", volume.ID)
 	fmt.Printf("Name:\t\t%s\n", volume.Name)
 	fmt.Printf("Size:\t\t%s\n", humanize.Bytes(uint64(volume.Size*humanize.GByte)))
-	fmt.Printf("Linux Device:   %s\n", volume.LinuxDevice)
+	fmt.Printf("Linux Device:\t%s\n", volume.LinuxDevice)
 	fmt.Printf("Location:\n")
 	fmt.Printf("  Name:\t\t%s\n", volume.Location.Name)
 	fmt.Printf("  Description:\t%s\n", volume.Location.Description)
