@@ -2,7 +2,7 @@
 
 ## master
 
-* Fix error on `hcloud volume create` with the `--server` parameter.
+* Fix creating a volume when server is specified by its name
 
 ## v1.9.1
 
