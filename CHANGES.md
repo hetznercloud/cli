@@ -1,5 +1,9 @@
 # Changes
 
+## master
+
+* Fix creating a volume when server is specified by its name
+
 ## v1.9.1
 
 * Fix formatting issue on `hcloud volume list` and `hcloud volume describe`

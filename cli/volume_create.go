@@ -6,7 +6,6 @@ import (
 
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
-	"github.com/spf13/pflag"
 )
 
 func newVolumeCreateCommand(cli *CLI) *cobra.Command {
@@ -39,31 +38,12 @@ func newVolumeCreateCommand(cli *CLI) *cobra.Command {
 }
 
 func runVolumeCreate(cli *CLI, cmd *cobra.Command, args []string) error {
-	opts, err := volumeOptsFromFlags(cli, cmd.Flags())
-	if err != nil {
-		return err
-	}
+	name, _ := cmd.Flags().GetString("name")
+	serverIDOrName, _ := cmd.Flags().GetString("server")
+	size, _ := cmd.Flags().GetInt("size")
+	location, _ := cmd.Flags().GetString("location")
 
-	result, _, err := cli.Client().Volume.Create(cli.Context, opts)
-	if err != nil {
-		return err
-	}
-
-	if err := cli.ActionProgress(cli.Context, result.Action); err != nil {
-		return err
-	}
-	fmt.Printf("Volume %d created\n", result.Volume.ID)
-
-	return nil
-}
-
-func volumeOptsFromFlags(cli *CLI, flags *pflag.FlagSet) (opts hcloud.VolumeCreateOpts, err error) {
-	name, _ := flags.GetString("name")
-	server, _ := flags.GetString("server")
-	size, _ := flags.GetInt("size")
-	location, _ := flags.GetString("location")
-
-	opts = hcloud.VolumeCreateOpts{
+	opts := hcloud.VolumeCreateOpts{
 		Name: name,
 		Size: size,
 	}
@@ -76,13 +56,25 @@ func volumeOptsFromFlags(cli *CLI, flags *pflag.FlagSet) (opts hcloud.VolumeCrea
 			opts.Location = &hcloud.Location{Name: location}
 		}
 	}
-	if server != "" {
-		id, err := strconv.Atoi(server)
-		if err == nil {
-			opts.Server = &hcloud.Server{ID: id}
-		} else {
-			opts.Server = &hcloud.Server{Name: server}
+	if serverIDOrName != "" {
+		server, _, err := cli.Client().Server.Get(cli.Context, serverIDOrName)
+		if err != nil {
+			return err
 		}
+		if server == nil {
+			return fmt.Errorf("server not found: %s", serverIDOrName)
+		}
+		opts.Server = server
 	}
-	return
+	result, _, err := cli.Client().Volume.Create(cli.Context, opts)
+	if err != nil {
+		return err
+	}
+
+	if err := cli.ActionProgress(cli.Context, result.Action); err != nil {
+		return err
+	}
+	fmt.Printf("Volume %d created\n", result.Volume.ID)
+
+	return nil
 }
