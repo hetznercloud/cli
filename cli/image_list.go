@@ -63,6 +63,10 @@ func init() {
 				protection = append(protection, "delete")
 			}
 			return strings.Join(protection, ", ")
+		})).
+		AddFieldOutputFn("labels", fieldOutputFn(func(obj interface{}) string {
+			image := obj.(*hcloud.Image)
+			return parseLabelsToString(image.Labels)
 		}))
 }
 

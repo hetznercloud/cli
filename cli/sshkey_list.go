@@ -9,7 +9,11 @@ var sshKeyListTableOutput *tableOutput
 
 func init() {
 	sshKeyListTableOutput = newTableOutput().
-		AddAllowedFields(hcloud.SSHKey{})
+		AddAllowedFields(hcloud.SSHKey{}).
+		AddFieldOutputFn("labels", fieldOutputFn(func(obj interface{}) string {
+			sshKey := obj.(*hcloud.SSHKey)
+			return parseLabelsToString(sshKey.Labels)
+		}))
 }
 
 func newSSHKeyListCommand(cli *CLI) *cobra.Command {
