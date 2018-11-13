@@ -18,7 +18,7 @@ func newServerEnableBackupCommand(cli *CLI) *cobra.Command {
 	}
 	cmd.Flags().String(
 		"window", "",
-		"The time window for the daily backup to run. All times are in UTC. 22-02 means that the backup will be started between 10 PM and 2 AM.")
+		"(deprecated) The time window for the daily backup to run. All times are in UTC. 22-02 means that the backup will be started between 10 PM and 2 AM.")
 	return cmd
 }
 
