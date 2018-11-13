@@ -113,10 +113,6 @@ const (
 		COMPREPLY=($(echo "ipv4 ipv6"))
 	}
 
-	__hcloud_backup_windows() {
-		COMPREPLY=($(echo "22-02 02-06 06-10 10-14 14-18 18-22"))
-	}
-
 	__hcloud_rescue_types() {
 		COMPREPLY=($(echo "linux64 linux32 freebsd64"))
 	}

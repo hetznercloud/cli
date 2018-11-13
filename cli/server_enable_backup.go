@@ -18,10 +18,7 @@ func newServerEnableBackupCommand(cli *CLI) *cobra.Command {
 	}
 	cmd.Flags().String(
 		"window", "",
-		"The time window for the daily backup to run. All times are in UTC. 22-02 means that the backup will be started between 10 PM and 2 AM.")
-	cmd.Flag("window").Annotations = map[string][]string{
-		cobra.BashCompCustom: {"__hcloud_backup_windows"},
-	}
+		"(deprecated) The time window for the daily backup to run. All times are in UTC. 22-02 means that the backup will be started between 10 PM and 2 AM.")
 	return cmd
 }
 
@@ -36,7 +33,11 @@ func runServerEnableBackup(cli *CLI, cmd *cobra.Command, args []string) error {
 	}
 
 	window, _ := cmd.Flags().GetString("window")
-	action, _, err := cli.Client().Server.EnableBackup(cli.Context, server, window)
+	if window != "" {
+		fmt.Print("[WARN] The ability to specify a backup window when enabling backups has been removed. Ignoring flag.\n")
+	}
+
+	action, _, err := cli.Client().Server.EnableBackup(cli.Context, server, "")
 	if err != nil {
 		return err
 	}
