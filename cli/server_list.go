@@ -1,10 +1,11 @@
 package cli
 
 import (
-	"github.com/hetznercloud/hcloud-go/hcloud"
-	"github.com/spf13/cobra"
 	"strconv"
 	"strings"
+
+	"github.com/hetznercloud/hcloud-go/hcloud"
+	"github.com/spf13/cobra"
 )
 
 var serverListTableOutput *tableOutput

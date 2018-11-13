@@ -6,7 +6,7 @@
 * Deprecate and ignore the `--window` flag on `hcloud server enable-backup`
 * Add output columns `type|labels|volumes|protection` to `hcloud server list`
 * Add output columns `labels|protection` to `hcloud volume list`
-* Add output columns `labels|protection` to `hcloud image list`
+* Add output column `labels` to `hcloud image list`
 * Add output column `labels` to `hcloud floating-ip list`
 * Add output column `labels` to `hcloud ssh-key list`
 
