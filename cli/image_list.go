@@ -66,7 +66,7 @@ func init() {
 		})).
 		AddFieldOutputFn("labels", fieldOutputFn(func(obj interface{}) string {
 			image := obj.(*hcloud.Image)
-			return parseLabelsToString(image.Labels)
+			return labelsToString(image.Labels)
 		}))
 }
 

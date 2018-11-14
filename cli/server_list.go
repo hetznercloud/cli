@@ -31,7 +31,7 @@ func init() {
 		})).
 		AddFieldOutputFn("labels", fieldOutputFn(func(obj interface{}) string {
 			server := obj.(*hcloud.Server)
-			return parseLabelsToString(server.Labels)
+			return labelsToString(server.Labels)
 		})).
 		AddFieldOutputFn("type", fieldOutputFn(func(obj interface{}) string {
 			server := obj.(*hcloud.Server)

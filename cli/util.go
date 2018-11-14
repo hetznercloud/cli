@@ -75,11 +75,11 @@ func splitLabel(label string) []string {
 	return strings.SplitN(label, "=", 2)
 }
 
-func parseLabelsToString(labels map[string]string) string {
+func labelsToString(labels map[string]string) string {
 	var labelsString []string
 	for key, value := range labels {
 		if value == "" {
-			labelsString = append(labelsString, fmt.Sprintf("%s", key))
+			labelsString = append(labelsString, key)
 		} else {
 			labelsString = append(labelsString, fmt.Sprintf("%s=%s", key, value))
 		}

@@ -56,7 +56,7 @@ func init() {
 		})).
 		AddFieldOutputFn("labels", fieldOutputFn(func(obj interface{}) string {
 			floatingIP := obj.(*hcloud.FloatingIP)
-			return parseLabelsToString(floatingIP.Labels)
+			return labelsToString(floatingIP.Labels)
 		}))
 }
 

@@ -40,7 +40,7 @@ func init() {
 		})).
 		AddFieldOutputFn("labels", fieldOutputFn(func(obj interface{}) string {
 			volume := obj.(*hcloud.Volume)
-			return parseLabelsToString(volume.Labels)
+			return labelsToString(volume.Labels)
 		}))
 }
 

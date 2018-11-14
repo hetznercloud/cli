@@ -12,7 +12,7 @@ func init() {
 		AddAllowedFields(hcloud.SSHKey{}).
 		AddFieldOutputFn("labels", fieldOutputFn(func(obj interface{}) string {
 			sshKey := obj.(*hcloud.SSHKey)
-			return parseLabelsToString(sshKey.Labels)
+			return labelsToString(sshKey.Labels)
 		}))
 }
 
