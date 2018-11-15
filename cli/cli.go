@@ -167,16 +167,29 @@ func (c *CLI) ensureToken(cmd *cobra.Command, args []string) error {
 }
 
 func (c *CLI) WaitForActions(ctx context.Context, actions []*hcloud.Action) error {
-	if len(actions) > 0 {
-		for _, action := range actions {
-			fmt.Print(actionToString(action))
-			_, errCh := c.Client().Action.WatchProgress(ctx, action)
-			if err := <-errCh; err != nil {
-				fmt.Println("failed")
-				return err
-			}
-			fmt.Println("done")
+	for _, action := range actions {
+
+		resources := make(map[string]int)
+		for _, resource := range action.Resources {
+			resources[string(resource.Type)] = resource.ID
 		}
+
+		switch action.Command {
+		default:
+			fmt.Print("Waiting for action to have finished... ")
+		case "start_server":
+			fmt.Printf("Waiting for server %d to have started... ", resources["server"])
+		case "attach_volume":
+			fmt.Printf("Waiting for volume %d to have been attached to server %d... ", resources["volume"], resources["server"])
+		}
+
+		_, errCh := c.Client().Action.WatchProgress(ctx, action)
+		if err := <-errCh; err != nil {
+			fmt.Println("failed")
+			return err
+		}
+		fmt.Println("done")
 	}
+
 	return nil
 }

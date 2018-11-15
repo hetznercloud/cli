@@ -5,8 +5,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/hetznercloud/hcloud-go/hcloud"
-
 	"github.com/spf13/cobra"
 )
 
@@ -87,17 +85,4 @@ func labelsToString(labels map[string]string) string {
 		}
 	}
 	return strings.Join(labelsString, ", ")
-}
-
-func actionToString(action *hcloud.Action) string {
-	var actionString string
-	switch action.Command {
-	default:
-		actionString = "Waiting for actions to have finished"
-	case "start_server":
-		actionString = fmt.Sprintf("Waiting for server %d to have started", action.Resources[0].ID)
-	case "attach_volume":
-		actionString = fmt.Sprintf("Waiting for volume %d to have been attached to server %d", action.Resources[0].ID, action.Resources[1].ID)
-	}
-	return actionString + "... "
 }
