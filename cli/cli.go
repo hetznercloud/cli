@@ -176,7 +176,7 @@ func (c *CLI) WaitForActions(ctx context.Context, actions []*hcloud.Action) erro
 
 		switch action.Command {
 		default:
-			fmt.Print("Waiting for action to have finished... ")
+			fmt.Printf("Waiting for action %s to have finished... ", action.Command)
 		case "start_server":
 			fmt.Printf("Waiting for server %d to have started... ", resources["server"])
 		case "attach_volume":
