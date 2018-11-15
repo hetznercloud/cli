@@ -3,6 +3,7 @@ package cli
 import (
 	"context"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -161,6 +162,21 @@ func (c *CLI) ActionProgress(ctx context.Context, action *hcloud.Action) error {
 func (c *CLI) ensureToken(cmd *cobra.Command, args []string) error {
 	if c.Token == "" {
 		return errors.New("no active context or token (see `hcloud context --help`)")
+	}
+	return nil
+}
+
+func (c *CLI) WaitForActions(ctx context.Context, actions []*hcloud.Action) error {
+	if len(actions) > 0 {
+		for _, action := range actions {
+			fmt.Print(actionToString(action))
+			_, errCh := c.Client().Action.WatchProgress(ctx, action)
+			if err := <-errCh; err != nil {
+				fmt.Println("failed")
+				return err
+			}
+			fmt.Println("done")
+		}
 	}
 	return nil
 }
