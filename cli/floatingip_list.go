@@ -53,6 +53,10 @@ func init() {
 				protection = append(protection, "delete")
 			}
 			return strings.Join(protection, ", ")
+		})).
+		AddFieldOutputFn("labels", fieldOutputFn(func(obj interface{}) string {
+			floatingIP := obj.(*hcloud.FloatingIP)
+			return labelsToString(floatingIP.Labels)
 		}))
 }
 

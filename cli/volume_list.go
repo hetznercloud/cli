@@ -2,6 +2,7 @@ package cli
 
 import (
 	"strconv"
+	"strings"
 
 	"github.com/dustin/go-humanize"
 	"github.com/hetznercloud/hcloud-go/hcloud"
@@ -28,6 +29,18 @@ func init() {
 		AddFieldOutputFn("location", fieldOutputFn(func(obj interface{}) string {
 			volume := obj.(*hcloud.Volume)
 			return volume.Location.Name
+		})).
+		AddFieldOutputFn("protection", fieldOutputFn(func(obj interface{}) string {
+			volume := obj.(*hcloud.Volume)
+			var protection []string
+			if volume.Protection.Delete {
+				protection = append(protection, "delete")
+			}
+			return strings.Join(protection, ", ")
+		})).
+		AddFieldOutputFn("labels", fieldOutputFn(func(obj interface{}) string {
+			volume := obj.(*hcloud.Volume)
+			return labelsToString(volume.Labels)
 		}))
 }
 

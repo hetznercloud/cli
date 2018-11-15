@@ -1,6 +1,9 @@
 package cli
 
 import (
+	"strconv"
+	"strings"
+
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
@@ -25,6 +28,34 @@ func init() {
 		AddFieldOutputFn("location", fieldOutputFn(func(obj interface{}) string {
 			server := obj.(*hcloud.Server)
 			return server.Datacenter.Location.Name
+		})).
+		AddFieldOutputFn("labels", fieldOutputFn(func(obj interface{}) string {
+			server := obj.(*hcloud.Server)
+			return labelsToString(server.Labels)
+		})).
+		AddFieldOutputFn("type", fieldOutputFn(func(obj interface{}) string {
+			server := obj.(*hcloud.Server)
+			return server.ServerType.Name
+		})).
+		AddFieldOutputFn("volumes", fieldOutputFn(func(obj interface{}) string {
+			server := obj.(*hcloud.Server)
+			var volumes []string
+			for _, volume := range server.Volumes {
+				volumeID := strconv.Itoa(volume.ID)
+				volumes = append(volumes, volumeID)
+			}
+			return strings.Join(volumes, ", ")
+		})).
+		AddFieldOutputFn("protection", fieldOutputFn(func(obj interface{}) string {
+			server := obj.(*hcloud.Server)
+			var protection []string
+			if server.Protection.Delete {
+				protection = append(protection, "delete")
+			}
+			if server.Protection.Rebuild {
+				protection = append(protection, "rebuild")
+			}
+			return strings.Join(protection, ", ")
 		}))
 }
 
