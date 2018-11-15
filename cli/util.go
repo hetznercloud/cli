@@ -2,9 +2,10 @@ package cli
 
 import (
 	"fmt"
-	"github.com/hetznercloud/hcloud-go/hcloud"
 	"strings"
 	"time"
+
+	"github.com/hetznercloud/hcloud-go/hcloud"
 
 	"github.com/spf13/cobra"
 )
@@ -98,5 +99,5 @@ func actionToString(action *hcloud.Action) string {
 	case "attach_volume":
 		actionString = fmt.Sprintf("Waiting for volume %d to have been attached to server %d", action.Resources[0].ID, action.Resources[1].ID)
 	}
-	return actionString+"... "
+	return actionString + "... "
 }
