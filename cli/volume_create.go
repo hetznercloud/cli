@@ -74,6 +74,9 @@ func runVolumeCreate(cli *CLI, cmd *cobra.Command, args []string) error {
 	if err := cli.ActionProgress(cli.Context, result.Action); err != nil {
 		return err
 	}
+	if err := cli.WaitForActions(cli.Context, result.NextActions); err != nil {
+		return err
+	}
 	fmt.Printf("Volume %d created\n", result.Volume.ID)
 
 	return nil

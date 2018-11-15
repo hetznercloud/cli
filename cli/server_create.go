@@ -72,6 +72,9 @@ func runServerCreate(cli *CLI, cmd *cobra.Command, args []string) error {
 	if err := cli.ActionProgress(cli.Context, result.Action); err != nil {
 		return err
 	}
+	if err := cli.WaitForActions(cli.Context, result.NextActions); err != nil {
+		return err
+	}
 
 	fmt.Printf("Server %d created\n", result.Server.ID)
 	fmt.Printf("IPv4: %s\n", result.Server.PublicNet.IPv4.IP.String())
