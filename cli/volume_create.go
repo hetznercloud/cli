@@ -34,6 +34,8 @@ func newVolumeCreateCommand(cli *CLI) *cobra.Command {
 	cmd.Flags().Int("size", 0, "Size (GB)")
 	cmd.MarkFlagRequired("size")
 
+	cmd.Flags().Bool("automount", false, "Auto mount volume after attach (Server must be provided)")
+	cmd.Flags().String("format", "", "Format volume after creation (One of: xfs, ext4) (Automount must be set)")
 	return cmd
 }
 
@@ -42,6 +44,8 @@ func runVolumeCreate(cli *CLI, cmd *cobra.Command, args []string) error {
 	serverIDOrName, _ := cmd.Flags().GetString("server")
 	size, _ := cmd.Flags().GetInt("size")
 	location, _ := cmd.Flags().GetString("location")
+	automount, _ := cmd.Flags().GetBool("automount")
+	format, _ := cmd.Flags().GetString("format")
 
 	opts := hcloud.VolumeCreateOpts{
 		Name: name,
@@ -66,6 +70,13 @@ func runVolumeCreate(cli *CLI, cmd *cobra.Command, args []string) error {
 		}
 		opts.Server = server
 	}
+	if automount == true {
+		opts.Automount = &automount
+		if format != "" {
+			opts.Format = &format
+		}
+	}
+
 	result, _, err := cli.Client().Volume.Create(cli.Context, opts)
 	if err != nil {
 		return err

@@ -30,7 +30,7 @@ func newServerCreateCommand(cli *CLI) *cobra.Command {
 	}
 	cmd.MarkFlagRequired("type")
 
-	cmd.Flags().String("image", "", "Image (id or name)")
+	cmd.Flags().String("image", "", "Image (ID or name)")
 	cmd.Flag("image").Annotations = map[string][]string{
 		cobra.BashCompCustom: {"__hcloud_image_names"},
 	}
@@ -55,6 +55,12 @@ func newServerCreateCommand(cli *CLI) *cobra.Command {
 
 	cmd.Flags().Bool("start-after-create", true, "Start server right after creation (default: true)")
 
+	cmd.Flags().StringSlice("volume", nil, "ID or name of Volume to attach before boot (can be specified multiple times)")
+	cmd.Flag("volume").Annotations = map[string][]string{
+		cobra.BashCompCustom: {"__hcloud_volume_names"},
+	}
+
+	cmd.Flags().Bool("automount", false, "Auto mount volumes after attach (default: false)")
 	return cmd
 }
 
@@ -97,6 +103,8 @@ func optsFromFlags(cli *CLI, flags *pflag.FlagSet) (opts hcloud.ServerCreateOpts
 	userDataFile, _ := flags.GetString("user-data-from-file")
 	startAfterCreate, _ := flags.GetBool("start-after-create")
 	sshKeys, _ := flags.GetStringSlice("ssh-key")
+	volumes, _ := flags.GetStringSlice("volume")
+	automount, _ := flags.GetBool("automount")
 
 	opts = hcloud.ServerCreateOpts{
 		Name: name,
@@ -107,6 +115,7 @@ func optsFromFlags(cli *CLI, flags *pflag.FlagSet) (opts hcloud.ServerCreateOpts
 			Name: image,
 		},
 		StartAfterCreate: &startAfterCreate,
+		Automount:        &automount,
 	}
 
 	if userDataFile != "" {
@@ -141,6 +150,19 @@ func optsFromFlags(cli *CLI, flags *pflag.FlagSet) (opts hcloud.ServerCreateOpts
 			return
 		}
 		opts.SSHKeys = append(opts.SSHKeys, sshKey)
+	}
+	for _, volumeIDOrName := range volumes {
+		var volume *hcloud.Volume
+		volume, _, err = cli.Client().Volume.Get(cli.Context, volumeIDOrName)
+		if err != nil {
+			return
+		}
+
+		if volume == nil {
+			err = fmt.Errorf("Volume not found: %s", volumeIDOrName)
+			return
+		}
+		opts.Volumes = append(opts.Volumes, volume)
 	}
 	if datacenter != "" {
 		opts.Datacenter = &hcloud.Datacenter{Name: datacenter}
