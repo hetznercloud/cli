@@ -17,7 +17,7 @@ func newVolumeAttachCommand(cli *CLI) *cobra.Command {
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runVolumeAttach),
 	}
-	cmd.Flags().String("server", "", "Server (id or name)")
+	cmd.Flags().String("server", "", "Server (ID or name)")
 	cmd.Flag("server").Annotations = map[string][]string{
 		cobra.BashCompCustom: {"__hcloud_server_names"},
 	}

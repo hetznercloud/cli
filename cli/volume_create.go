@@ -21,7 +21,7 @@ func newVolumeCreateCommand(cli *CLI) *cobra.Command {
 	cmd.Flags().String("name", "", "Volume name")
 	cmd.MarkFlagRequired("name")
 
-	cmd.Flags().String("server", "", "Server (id or name)")
+	cmd.Flags().String("server", "", "Server (ID or name)")
 	cmd.Flag("server").Annotations = map[string][]string{
 		cobra.BashCompCustom: {"__hcloud_server_names"},
 	}
