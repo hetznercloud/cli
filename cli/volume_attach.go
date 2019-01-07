@@ -2,6 +2,8 @@ package cli
 
 import (
 	"fmt"
+
+	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
 
@@ -20,6 +22,8 @@ func newVolumeAttachCommand(cli *CLI) *cobra.Command {
 		cobra.BashCompCustom: {"__hcloud_server_names"},
 	}
 	cmd.MarkFlagRequired("server")
+	cmd.Flags().Bool("automount", false, "Automount volume after attach")
+
 	return cmd
 }
 
@@ -40,8 +44,12 @@ func runVolumeAttach(cli *CLI, cmd *cobra.Command, args []string) error {
 	if server == nil {
 		return fmt.Errorf("server not found: %s", serverIDOrName)
 	}
+	automount, _ := cmd.Flags().GetBool("automount")
+	action, _, err := cli.Client().Volume.AttachWithOpts(cli.Context, volume, hcloud.VolumeAttachOpts{
+		Server:    server,
+		Automount: &automount,
+	})
 
-	action, _, err := cli.Client().Volume.Attach(cli.Context, volume, server)
 	if err != nil {
 		return err
 	}
