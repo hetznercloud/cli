@@ -60,7 +60,7 @@ func newServerCreateCommand(cli *CLI) *cobra.Command {
 		cobra.BashCompCustom: {"__hcloud_volume_names"},
 	}
 
-	cmd.Flags().Bool("automount", false, "Auto mount volumes after attach (default: false)")
+	cmd.Flags().Bool("automount", false, "Automount volumes after attach (default: false)")
 	return cmd
 }
 
@@ -159,7 +159,7 @@ func optsFromFlags(cli *CLI, flags *pflag.FlagSet) (opts hcloud.ServerCreateOpts
 		}
 
 		if volume == nil {
-			err = fmt.Errorf("Volume not found: %s", volumeIDOrName)
+			err = fmt.Errorf("volume not found: %s", volumeIDOrName)
 			return
 		}
 		opts.Volumes = append(opts.Volumes, volume)
