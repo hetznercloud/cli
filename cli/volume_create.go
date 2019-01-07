@@ -34,8 +34,8 @@ func newVolumeCreateCommand(cli *CLI) *cobra.Command {
 	cmd.Flags().Int("size", 0, "Size (GB)")
 	cmd.MarkFlagRequired("size")
 
-	cmd.Flags().Bool("automount", false, "Auto mount volume after attach (Server must be provided)")
-	cmd.Flags().String("format", "", "Format volume after creation (One of: xfs, ext4) (Automount must be set)")
+	cmd.Flags().Bool("automount", false, "Automount volume after attach (server must be provided)")
+	cmd.Flags().String("format", "", "Format volume after creation (automount must be enabled)")
 	return cmd
 }
 
@@ -70,7 +70,7 @@ func runVolumeCreate(cli *CLI, cmd *cobra.Command, args []string) error {
 		}
 		opts.Server = server
 	}
-	if automount == true {
+	if automount {
 		opts.Automount = &automount
 		if format != "" {
 			opts.Format = &format
