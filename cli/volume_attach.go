@@ -22,7 +22,7 @@ func newVolumeAttachCommand(cli *CLI) *cobra.Command {
 		cobra.BashCompCustom: {"__hcloud_server_names"},
 	}
 	cmd.MarkFlagRequired("server")
-	cmd.Flags().Bool("automount", false, "Auto mount volume after attach (Server must be provided)")
+	cmd.Flags().Bool("automount", false, "Automount volume after attach (server must be provided)")
 
 	return cmd
 }
