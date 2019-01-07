@@ -1,5 +1,9 @@
 # Changes
 
+## master
+
+* Add support for automounting and formatting volumes
+
 ## 1.10.0
 
 * Fix creating a volume when server is specified by its name
