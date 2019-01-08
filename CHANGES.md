@@ -1,6 +1,6 @@
 # Changes
 
-## master
+## 1.11.0
 
 * Add support for automounting and formatting volumes
 
