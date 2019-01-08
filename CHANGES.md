@@ -1,10 +1,10 @@
 # Changes
 
-## 1.11.0
+## v1.11.0
 
 * Add support for automounting and formatting volumes
 
-## 1.10.0
+## v1.10.0
 
 * Fix creating a volume when server is specified by its name
 * Deprecate and ignore the `--window` flag on `hcloud server enable-backup`
