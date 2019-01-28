@@ -1,5 +1,9 @@
 # Changes
 
+## master
+
+* Add support for executing commands via `hcloud server ssh <server> <command>`
+
 ## v1.11.0
 
 * Add support for automounting and formatting volumes

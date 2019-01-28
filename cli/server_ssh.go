@@ -12,14 +12,15 @@ import (
 
 func newServerSSHCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   "ssh [FLAGS] SERVER",
+		Use:                   "ssh [FLAGS] SERVER [COMMAND...]",
 		Short:                 "Spawn an SSH connection for the server",
-		Args:                  cobra.ExactArgs(1),
+		Args:                  cobra.MinimumNArgs(1),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runServerSSH),
 	}
+	cmd.Flags().SetInterspersed(false) // To make "hcloud server ssh <server> uname -a" execute "uname -a"
 	cmd.Flags().Bool("ipv6", false, "Establish SSH connection to IPv6 address")
 	cmd.Flags().StringP("user", "u", "root", "Username for SSH connection")
 	cmd.Flags().IntP("port", "p", 22, "Port for SSH connection")
@@ -47,7 +48,8 @@ func runServerSSH(cli *CLI, cmd *cobra.Command, args []string) error {
 		ipAddress[15]++
 	}
 
-	sshCommand := exec.Command("ssh", "-l", user, "-p", strconv.Itoa(port), ipAddress.String())
+	sshArgs := []string{"-l", user, "-p", strconv.Itoa(port), ipAddress.String()}
+	sshCommand := exec.Command("ssh", append(sshArgs, args[1:]...)...)
 	sshCommand.Stdin = os.Stdin
 	sshCommand.Stdout = os.Stdout
 	sshCommand.Stderr = os.Stderr
