@@ -1,10 +1,12 @@
 package cli
 
 import (
+	"bytes"
 	"context"
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
 
@@ -50,6 +52,35 @@ func (c *CLI) ReadEnv() {
 	}
 	if s := os.Getenv("HCLOUD_CONTEXT"); s != "" && c.Config != nil {
 		c.Config.ActiveContext = c.Config.ContextByName(s)
+	}
+}
+
+const ContextFileName = ".hcloud-context"
+
+func (c *CLI) ReadContextFile() {
+	if c.Config == nil {
+		return
+	}
+
+	data, err := ioutil.ReadFile(ContextFileName)
+	if os.IsNotExist(err) {
+		return
+	}
+	if err != nil {
+		log.Printf("warning: failed to read %s file: %s\n", ContextFileName, err)
+		return
+	}
+
+	name := string(bytes.TrimSpace(data))
+	if name == "" {
+		log.Printf("warning: ignoring invalid context in %s\n", ContextFileName)
+		return
+	}
+	if context := c.Config.ContextByName(name); context != nil {
+		c.Config.ActiveContext = context
+		c.Token = context.Token
+	} else {
+		log.Printf("warning: context %q specified in %s does not exist\n", name, ContextFileName)
 	}
 }
 

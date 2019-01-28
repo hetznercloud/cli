@@ -30,6 +30,7 @@ func main() {
 		}
 	}
 
+	c.ReadContextFile()
 	c.ReadEnv()
 
 	if err := c.RootCommand.Execute(); err != nil {
