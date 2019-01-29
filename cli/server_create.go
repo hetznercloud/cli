@@ -1,9 +1,13 @@
 package cli
 
 import (
+	"encoding/base64"
 	"fmt"
 	"io/ioutil"
+	"math/rand"
 	"os"
+	"strings"
+	"time"
 
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -51,7 +55,7 @@ func newServerCreateCommand(cli *CLI) *cobra.Command {
 		cobra.BashCompCustom: {"__hcloud_sshkey_names"},
 	}
 
-	cmd.Flags().String("user-data-from-file", "", "Read user data from specified file (use - to read from stdin)")
+	cmd.Flags().StringArray("user-data-from-file", []string{}, "Read user data from specified file (use - to read from stdin)")
 
 	cmd.Flags().Bool("start-after-create", true, "Start server right after creation (default: true)")
 
@@ -94,13 +98,85 @@ func runServerCreate(cli *CLI, cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+func createBoundaryString() string {
+	rand.Seed(time.Now().UnixNano())
+	var len int = 40
+	bytes := make([]byte, len)
+	for i := 0; i < len; i++ {
+		bytes[i] = byte(65 + rand.Intn(25))
+	}
+	return string(bytes)
+}
+
+func detectContentType(data string) string {
+	if strings.HasPrefix(data, "#!") {
+		return "text/x-shellscript"
+	}
+	if strings.HasPrefix(data, "#include") {
+		return "text/x-include-url"
+	}
+	if strings.HasPrefix(data, "#cloud-config") {
+		return "text/cloud-config"
+	}
+	if strings.HasPrefix(data, "#upstart-job") {
+		return "text/upstart-job"
+	}
+	if strings.HasPrefix(data, "#cloud-boothook") {
+		return "text/cloud-boothook"
+	}
+	if strings.HasPrefix(data, "#part-handler") {
+		return "text/part-handler"
+	}
+
+	return ""
+}
+
+func buildUserData(files []string) (userData string, err error) {
+	var boundary string = createBoundaryString()
+
+	userData = "MIME-Version: 1.0\nContent-Type: multipart/mixed; boundary="
+	userData += boundary
+	userData += "\n\n--"
+	userData += boundary
+
+	for _, file := range files {
+		var data []byte
+
+		if file == "-" {
+			data, err = ioutil.ReadAll(os.Stdin)
+		} else {
+			data, err = ioutil.ReadFile(file)
+		}
+		if err != nil {
+			return
+		}
+
+		var contentType string = detectContentType(string(data))
+		if contentType == "" {
+			err = fmt.Errorf("can not detect user data type of file: %s", file)
+			return
+		}
+
+		userData += "\nContent-Type: "
+		userData += contentType
+		userData += "\nContent-Transfer-Encoding: base64\n\n"
+		userData += base64.StdEncoding.EncodeToString(data)
+
+		userData += "\n--"
+		userData += boundary
+	}
+
+	userData += "--\n"
+	return
+}
+
 func optsFromFlags(cli *CLI, flags *pflag.FlagSet) (opts hcloud.ServerCreateOpts, err error) {
 	name, _ := flags.GetString("name")
 	serverType, _ := flags.GetString("type")
 	image, _ := flags.GetString("image")
 	location, _ := flags.GetString("location")
 	datacenter, _ := flags.GetString("datacenter")
-	userDataFile, _ := flags.GetString("user-data-from-file")
+	userDataFiles, _ := flags.GetStringArray("user-data-from-file")
 	startAfterCreate, _ := flags.GetBool("start-after-create")
 	sshKeys, _ := flags.GetStringSlice("ssh-key")
 	volumes, _ := flags.GetStringSlice("volume")
@@ -118,17 +194,22 @@ func optsFromFlags(cli *CLI, flags *pflag.FlagSet) (opts hcloud.ServerCreateOpts
 		Automount:        &automount,
 	}
 
-	if userDataFile != "" {
+	if len(userDataFiles) == 1 {
 		var data []byte
-		if userDataFile == "-" {
+		if userDataFiles[0] == "-" {
 			data, err = ioutil.ReadAll(os.Stdin)
 		} else {
-			data, err = ioutil.ReadFile(userDataFile)
+			data, err = ioutil.ReadFile(userDataFiles[0])
 		}
 		if err != nil {
 			return
 		}
 		opts.UserData = string(data)
+	} else if len(userDataFiles) > 1 {
+		opts.UserData, err = buildUserData(userDataFiles)
+		if err != nil {
+			return
+		}
 	}
 
 	for _, sshKeyIDOrName := range sshKeys {
