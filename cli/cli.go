@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
 
@@ -49,7 +50,12 @@ func (c *CLI) ReadEnv() {
 		c.Endpoint = s
 	}
 	if s := os.Getenv("HCLOUD_CONTEXT"); s != "" && c.Config != nil {
-		c.Config.ActiveContext = c.Config.ContextByName(s)
+		if context := c.Config.ContextByName(s); context != nil {
+			c.Config.ActiveContext = context
+			c.Token = context.Token
+		} else {
+			log.Printf("warning: context %q specified in HCLOUD_CONTEXT does not exist\n", s)
+		}
 	}
 }
 
