@@ -3,6 +3,7 @@
 ## master
 
 * Add support for executing commands via `hcloud server ssh <server> <command>`
+* Make overriding context via `HCLOUD_CONTEXT` work
 
 ## v1.11.0
 
