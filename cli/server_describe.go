@@ -17,6 +17,7 @@ func newServerDescribeCommand(cli *CLI) *cobra.Command {
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runServerDescribe),
 	}
+	cmd.Flags().StringP("get", "g", "", "Get parameter")
 	return cmd
 }
 
@@ -28,6 +29,18 @@ func runServerDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 	}
 	if server == nil {
 		return fmt.Errorf("server not found: %s", idOrName)
+	}
+
+	parameter, _ := cmd.Flags().GetString("get")
+	if parameter == "public_net.ipv4.ip" {
+		fmt.Printf("%s\n", server.PublicNet.IPv4.IP)
+		return nil
+	}
+
+	// more parameters can be added here
+
+	if parameter != "" {
+		return fmt.Errorf("unknown parameter: %s", parameter)
 	}
 
 	fmt.Printf("ID:\t\t%d\n", server.ID)
