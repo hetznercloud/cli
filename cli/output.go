@@ -11,11 +11,89 @@ import (
 	"unicode"
 
 	"github.com/fatih/structs"
+	"github.com/spf13/cobra"
 )
 
-var validOutputOptsKeys = map[string]bool{
-	"columns":  true,
-	"noheader": true,
+type outputOption struct {
+	Name   string
+	Values []string
+}
+
+func outputOptionNoHeader() outputOption {
+	return outputOption{Name: "noheader"}
+}
+
+func outputOptionJSON() outputOption {
+	return outputOption{Name: "json"}
+}
+
+func outputOptionFormat() outputOption {
+	return outputOption{Name: "format"}
+}
+
+func outputOptionColumns(columns []string) outputOption {
+	return outputOption{Name: "columns", Values: columns}
+}
+
+func addOutputFlag(cmd *cobra.Command, options ...outputOption) {
+	var names []string
+	for _, option := range options {
+		if option.Values != nil {
+			names = append(names, option.Name+"=...")
+		} else {
+			names = append(names, option.Name)
+		}
+	}
+	cmd.Flags().StringArrayP(
+		"output",
+		"o",
+		[]string{},
+		fmt.Sprintf("output options: %s", strings.Join(names, "|")),
+	)
+	cmd.PreRunE = chainRunE(cmd.PreRunE, validateOutputFlag(options))
+}
+
+func validateOutputFlag(options []outputOption) func(cmd *cobra.Command, args []string) error {
+	return func(cmd *cobra.Command, args []string) error {
+		validOptions := map[string]map[string]bool{}
+		for _, option := range options {
+			if option.Values == nil {
+				// all values allowed
+				validOptions[option.Name] = nil
+			} else {
+				// only discrete values allowed
+				validOptions[option.Name] = map[string]bool{}
+				for _, value := range option.Values {
+					validOptions[option.Name][value] = true
+				}
+			}
+		}
+
+		flagValues, err := cmd.Flags().GetStringArray("output")
+		if err != nil {
+			return err
+		}
+
+		for _, flagValue := range flagValues {
+			parts := strings.SplitN(flagValue, "=", 2)
+			if _, ok := validOptions[parts[0]]; !ok {
+				return fmt.Errorf("invalid output option: %s", parts[0])
+			}
+			if validOptions[parts[0]] != nil {
+				for _, v := range strings.Split(parts[1], ",") {
+					if !validOptions[parts[0]][v] {
+						return fmt.Errorf("invalid value for output option %s: %s", parts[0], v)
+					}
+				}
+			}
+		}
+		return nil
+	}
+}
+
+func outputFlagsForCommand(cmd *cobra.Command) outputOpts {
+	opts, _ := cmd.Flags().GetStringArray("output")
+	return parseOutputFlags(opts)
 }
 
 type outputOpts map[string][]string
@@ -39,25 +117,17 @@ func (o outputOpts) IsSet(key string) bool {
 	return false
 }
 
-func parseOutputOpts(in []string) (outputOpts, error) {
+func parseOutputFlags(in []string) outputOpts {
 	o := outputOpts{}
 	for _, param := range in {
 		parts := strings.SplitN(param, "=", 2)
-		var key string
-		var values []string
 		if len(parts) == 2 {
-			key = parts[0]
-			values = strings.Split(parts[1], ",")
+			o[parts[0]] = strings.Split(parts[1], ",")
 		} else {
-			key = param
-			values = []string{""}
+			o[parts[0]] = []string{""}
 		}
-		if _, ok := validOutputOptsKeys[key]; !ok {
-			return o, fmt.Errorf("invalid output key: %s", key)
-		}
-		o[key] = values
 	}
-	return o, nil
+	return o
 }
 
 // newTableOutput creates a new tableOutput.

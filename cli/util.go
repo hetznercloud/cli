@@ -1,8 +1,11 @@
 package cli
 
 import (
+	"encoding/json"
 	"fmt"
+	"os"
 	"strings"
+	"text/template"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -29,6 +32,9 @@ func datetime(t time.Time) string {
 func chainRunE(fns ...func(cmd *cobra.Command, args []string) error) func(cmd *cobra.Command, args []string) error {
 	return func(cmd *cobra.Command, args []string) error {
 		for _, fn := range fns {
+			if fn == nil {
+				continue
+			}
 			if err := fn(cmd, args); err != nil {
 				return err
 			}
@@ -56,21 +62,6 @@ func listLongDescription(intro string, columns []string) string {
 	)
 }
 
-func addListOutputFlag(cmd *cobra.Command, columns []string) {
-	if len(columns) > 2 {
-		columns = columns[0:2]
-	}
-	cmd.Flags().StringArrayP(
-		"output",
-		"o",
-		[]string{},
-		fmt.Sprintf(
-			"output options: noheader|columns=%s,...",
-			strings.Join(columns, ","),
-		),
-	)
-}
-
 func splitLabel(label string) []string {
 	return strings.SplitN(label, "=", 2)
 }
@@ -85,4 +76,21 @@ func labelsToString(labels map[string]string) string {
 		}
 	}
 	return strings.Join(labelsString, ", ")
+}
+
+func describeFormat(object interface{}, format string) error {
+	if !strings.HasSuffix(format, "\n") {
+		format = format + "\n"
+	}
+	t, err := template.New("").Parse(format)
+	if err != nil {
+		return err
+	}
+	return t.Execute(os.Stderr, object)
+}
+
+func describeJSON(object interface{}) error {
+	enc := json.NewEncoder(os.Stdout)
+	enc.SetIndent("", "  ")
+	return enc.Encode(object)
 }

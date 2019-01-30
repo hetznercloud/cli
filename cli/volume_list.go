@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/dustin/go-humanize"
+	humanize "github.com/dustin/go-humanize"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
@@ -57,17 +57,13 @@ func newVolumeListCommand(cli *CLI) *cobra.Command {
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runVolumeList),
 	}
-	addListOutputFlag(cmd, volumeListTableOutput.Columns())
+	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(volumeListTableOutput.Columns()))
 	cmd.Flags().StringP("selector", "l", "", "Selector to filter by labels")
 	return cmd
 }
 
 func runVolumeList(cli *CLI, cmd *cobra.Command, args []string) error {
-	out, _ := cmd.Flags().GetStringArray("output")
-	outOpts, err := parseOutputOpts(out)
-	if err != nil {
-		return err
-	}
+	outOpts := outputFlagsForCommand(cmd)
 
 	labelSelector, _ := cmd.Flags().GetString("selector")
 	opts := hcloud.VolumeListOpts{

@@ -29,17 +29,12 @@ func newDatacenterListCommand(cli *CLI) *cobra.Command {
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runDatacenterList),
 	}
-	addListOutputFlag(cmd, datacenterListTableOutput.Columns())
-
+	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(datacenterListTableOutput.Columns()))
 	return cmd
 }
 
 func runDatacenterList(cli *CLI, cmd *cobra.Command, args []string) error {
-	out, _ := cmd.Flags().GetStringArray("output")
-	outOpts, err := parseOutputOpts(out)
-	if err != nil {
-		return err
-	}
+	outOpts := outputFlagsForCommand(cmd)
 
 	datacenters, err := cli.Client().Datacenter.All(cli.Context)
 	if err != nil {

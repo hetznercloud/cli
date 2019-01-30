@@ -25,16 +25,12 @@ func newContextListCommand(cli *CLI) *cobra.Command {
 		DisableFlagsInUseLine: true,
 		RunE:                  cli.wrap(runContextList),
 	}
-	addListOutputFlag(cmd, contextListTableOutput.Columns())
+	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(contextListTableOutput.Columns()))
 	return cmd
 }
 
 func runContextList(cli *CLI, cmd *cobra.Command, args []string) error {
-	out, _ := cmd.Flags().GetStringArray("output")
-	outOpts, err := parseOutputOpts(out)
-	if err != nil {
-		return err
-	}
+	outOpts := outputFlagsForCommand(cmd)
 
 	cols := []string{"name"}
 	if outOpts.IsSet("columns") {
@@ -42,7 +38,7 @@ func runContextList(cli *CLI, cmd *cobra.Command, args []string) error {
 	}
 
 	tw := contextListTableOutput
-	if err = tw.ValidateColumns(cols); err != nil {
+	if err := tw.ValidateColumns(cols); err != nil {
 		return err
 	}
 

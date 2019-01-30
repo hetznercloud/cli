@@ -25,16 +25,12 @@ func newLocationListCommand(cli *CLI) *cobra.Command {
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runLocationList),
 	}
-	addListOutputFlag(cmd, locationListTableOutput.Columns())
+	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(locationListTableOutput.Columns()))
 	return cmd
 }
 
 func runLocationList(cli *CLI, cmd *cobra.Command, args []string) error {
-	out, _ := cmd.Flags().GetStringArray("output")
-	outOpts, err := parseOutputOpts(out)
-	if err != nil {
-		return err
-	}
+	outOpts := outputFlagsForCommand(cmd)
 
 	locations, err := cli.Client().Location.All(cli.Context)
 	if err != nil {

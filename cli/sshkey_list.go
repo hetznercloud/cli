@@ -29,17 +29,13 @@ func newSSHKeyListCommand(cli *CLI) *cobra.Command {
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runSSHKeyList),
 	}
-	addListOutputFlag(cmd, sshKeyListTableOutput.Columns())
+	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(sshKeyListTableOutput.Columns()))
 	cmd.Flags().StringP("selector", "l", "", "Selector to filter by labels")
 	return cmd
 }
 
 func runSSHKeyList(cli *CLI, cmd *cobra.Command, args []string) error {
-	out, _ := cmd.Flags().GetStringArray("output")
-	outOpts, err := parseOutputOpts(out)
-	if err != nil {
-		return err
-	}
+	outOpts := outputFlagsForCommand(cmd)
 
 	labelSelector, _ := cmd.Flags().GetString("selector")
 	opts := hcloud.SSHKeyListOpts{
