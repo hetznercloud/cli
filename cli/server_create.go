@@ -1,13 +1,14 @@
 package cli
 
 import (
+	"bytes"
 	"encoding/base64"
 	"fmt"
 	"io/ioutil"
-	"math/rand"
+	"mime/multipart"
+	"net/textproto"
 	"os"
 	"strings"
-	"time"
 
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -98,76 +99,71 @@ func runServerCreate(cli *CLI, cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func createBoundaryString() string {
-	rand.Seed(time.Now().UnixNano())
-	var len int = 40
-	bytes := make([]byte, len)
-	for i := 0; i < len; i++ {
-		bytes[i] = byte(65 + rand.Intn(25))
-	}
-	return string(bytes)
+var userDataContentTypes = map[string]string{
+	"#!":              "text/x-shellscript",
+	"#include":        "text/x-include-url",
+	"#cloud-config":   "text/cloud-config",
+	"#upstart-job":    "text/upstart-job",
+	"#cloud-boothook": "text/cloud-boothook",
+	"#part-handler":   "text/part-handler",
 }
 
 func detectContentType(data string) string {
-	if strings.HasPrefix(data, "#!") {
-		return "text/x-shellscript"
+	for prefix, contentType := range userDataContentTypes {
+		if strings.HasPrefix(data, prefix) {
+			return contentType
+		}
 	}
-	if strings.HasPrefix(data, "#include") {
-		return "text/x-include-url"
-	}
-	if strings.HasPrefix(data, "#cloud-config") {
-		return "text/cloud-config"
-	}
-	if strings.HasPrefix(data, "#upstart-job") {
-		return "text/upstart-job"
-	}
-	if strings.HasPrefix(data, "#cloud-boothook") {
-		return "text/cloud-boothook"
-	}
-	if strings.HasPrefix(data, "#part-handler") {
-		return "text/part-handler"
-	}
-
 	return ""
 }
 
-func buildUserData(files []string) (userData string, err error) {
-	var boundary string = createBoundaryString()
+func buildUserData(files []string) (string, error) {
+	var (
+		buf = new(bytes.Buffer)
+		mp  = multipart.NewWriter(buf)
+	)
 
-	userData = "MIME-Version: 1.0\nContent-Type: multipart/mixed; boundary="
-	userData += boundary
-	userData += "\n\n--"
-	userData += boundary
+	fmt.Fprint(buf, "MIME-Version: 1.0\r\n")
+	fmt.Fprint(buf, "Content-Type: multipart/mixed; boundary="+mp.Boundary()+"\r\n\r\n")
 
 	for _, file := range files {
-		var data []byte
-
+		var (
+			data []byte
+			err  error
+		)
 		if file == "-" {
 			data, err = ioutil.ReadAll(os.Stdin)
 		} else {
 			data, err = ioutil.ReadFile(file)
 		}
 		if err != nil {
-			return
+			return "", err
 		}
 
-		var contentType string = detectContentType(string(data))
+		contentType := detectContentType(string(data))
 		if contentType == "" {
-			err = fmt.Errorf("can not detect user data type of file: %s", file)
-			return
+			return "", fmt.Errorf("cannot detect user data type of file %q", file)
 		}
 
-		userData += "\nContent-Type: "
-		userData += contentType
-		userData += "\nContent-Transfer-Encoding: base64\n\n"
-		userData += base64.StdEncoding.EncodeToString(data)
+		header := textproto.MIMEHeader{}
+		header.Set("Content-Type", contentType)
+		header.Set("Content-Transfer-Encoding", "base64")
 
-		userData += "\n--"
-		userData += boundary
+		w, err := mp.CreatePart(header)
+		if err != nil {
+			return "", fmt.Errorf("failed to create multipart for file %q: %s", file, err)
+		}
+
+		if _, err := base64.NewEncoder(base64.StdEncoding, w).Write(data); err != nil {
+			return "", fmt.Errorf("failed to encode data for file %q: %s", file, err)
+		}
 	}
 
-	userData += "--\n"
-	return
+	if err := mp.Close(); err != nil {
+		return "", err
+	}
+
+	return buf.String(), nil
 }
 
 func optsFromFlags(cli *CLI, flags *pflag.FlagSet) (opts hcloud.ServerCreateOpts, err error) {
