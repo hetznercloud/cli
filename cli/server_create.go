@@ -1,9 +1,14 @@
 package cli
 
 import (
+	"bytes"
+	"encoding/base64"
 	"fmt"
 	"io/ioutil"
+	"mime/multipart"
+	"net/textproto"
 	"os"
+	"strings"
 
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -51,7 +56,7 @@ func newServerCreateCommand(cli *CLI) *cobra.Command {
 		cobra.BashCompCustom: {"__hcloud_sshkey_names"},
 	}
 
-	cmd.Flags().String("user-data-from-file", "", "Read user data from specified file (use - to read from stdin)")
+	cmd.Flags().StringArray("user-data-from-file", []string{}, "Read user data from specified file (use - to read from stdin)")
 
 	cmd.Flags().Bool("start-after-create", true, "Start server right after creation (default: true)")
 
@@ -94,13 +99,80 @@ func runServerCreate(cli *CLI, cmd *cobra.Command, args []string) error {
 	return nil
 }
 
+var userDataContentTypes = map[string]string{
+	"#!":              "text/x-shellscript",
+	"#include":        "text/x-include-url",
+	"#cloud-config":   "text/cloud-config",
+	"#upstart-job":    "text/upstart-job",
+	"#cloud-boothook": "text/cloud-boothook",
+	"#part-handler":   "text/part-handler",
+}
+
+func detectContentType(data string) string {
+	for prefix, contentType := range userDataContentTypes {
+		if strings.HasPrefix(data, prefix) {
+			return contentType
+		}
+	}
+	return ""
+}
+
+func buildUserData(files []string) (string, error) {
+	var (
+		buf = new(bytes.Buffer)
+		mp  = multipart.NewWriter(buf)
+	)
+
+	fmt.Fprint(buf, "MIME-Version: 1.0\r\n")
+	fmt.Fprint(buf, "Content-Type: multipart/mixed; boundary="+mp.Boundary()+"\r\n\r\n")
+
+	for _, file := range files {
+		var (
+			data []byte
+			err  error
+		)
+		if file == "-" {
+			data, err = ioutil.ReadAll(os.Stdin)
+		} else {
+			data, err = ioutil.ReadFile(file)
+		}
+		if err != nil {
+			return "", err
+		}
+
+		contentType := detectContentType(string(data))
+		if contentType == "" {
+			return "", fmt.Errorf("cannot detect user data type of file %q", file)
+		}
+
+		header := textproto.MIMEHeader{}
+		header.Set("Content-Type", contentType)
+		header.Set("Content-Transfer-Encoding", "base64")
+
+		w, err := mp.CreatePart(header)
+		if err != nil {
+			return "", fmt.Errorf("failed to create multipart for file %q: %s", file, err)
+		}
+
+		if _, err := base64.NewEncoder(base64.StdEncoding, w).Write(data); err != nil {
+			return "", fmt.Errorf("failed to encode data for file %q: %s", file, err)
+		}
+	}
+
+	if err := mp.Close(); err != nil {
+		return "", err
+	}
+
+	return buf.String(), nil
+}
+
 func optsFromFlags(cli *CLI, flags *pflag.FlagSet) (opts hcloud.ServerCreateOpts, err error) {
 	name, _ := flags.GetString("name")
 	serverType, _ := flags.GetString("type")
 	image, _ := flags.GetString("image")
 	location, _ := flags.GetString("location")
 	datacenter, _ := flags.GetString("datacenter")
-	userDataFile, _ := flags.GetString("user-data-from-file")
+	userDataFiles, _ := flags.GetStringArray("user-data-from-file")
 	startAfterCreate, _ := flags.GetBool("start-after-create")
 	sshKeys, _ := flags.GetStringSlice("ssh-key")
 	volumes, _ := flags.GetStringSlice("volume")
@@ -118,17 +190,22 @@ func optsFromFlags(cli *CLI, flags *pflag.FlagSet) (opts hcloud.ServerCreateOpts
 		Automount:        &automount,
 	}
 
-	if userDataFile != "" {
+	if len(userDataFiles) == 1 {
 		var data []byte
-		if userDataFile == "-" {
+		if userDataFiles[0] == "-" {
 			data, err = ioutil.ReadAll(os.Stdin)
 		} else {
-			data, err = ioutil.ReadFile(userDataFile)
+			data, err = ioutil.ReadFile(userDataFiles[0])
 		}
 		if err != nil {
 			return
 		}
 		opts.UserData = string(data)
+	} else if len(userDataFiles) > 1 {
+		opts.UserData, err = buildUserData(userDataFiles)
+		if err != nil {
+			return
+		}
 	}
 
 	for _, sshKeyIDOrName := range sshKeys {

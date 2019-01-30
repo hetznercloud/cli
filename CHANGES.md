@@ -5,6 +5,7 @@
 * Add support for executing commands via `hcloud server ssh <server> <command>`
 * Make overriding context via `HCLOUD_CONTEXT` work
 * Add support for JSON and Go template output
+* Add support for multiple user data files
 
 ## v1.11.0
 
