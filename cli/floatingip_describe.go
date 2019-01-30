@@ -1,10 +1,12 @@
 package cli
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"strconv"
 
+	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
 
@@ -18,16 +20,19 @@ func newFloatingIPDescribeCommand(cli *CLI) *cobra.Command {
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runFloatingIPDescribe),
 	}
+	addOutputFlag(cmd, outputOptionJSON(), outputOptionFormat())
 	return cmd
 }
 
 func runFloatingIPDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
+	outputFlags := outputFlagsForCommand(cmd)
+
 	id, err := strconv.Atoi(args[0])
 	if err != nil {
 		return errors.New("invalid Floating IP ID")
 	}
 
-	floatingIP, _, err := cli.Client().FloatingIP.GetByID(cli.Context, id)
+	floatingIP, resp, err := cli.Client().FloatingIP.GetByID(cli.Context, id)
 	if err != nil {
 		return err
 	}
@@ -35,6 +40,17 @@ func runFloatingIPDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("Floating IP not found: %d", id)
 	}
 
+	switch {
+	case outputFlags.IsSet("json"):
+		return floatingIPDescribeJSON(resp)
+	case outputFlags.IsSet("format"):
+		return describeFormat(floatingIP, outputFlags["format"][0])
+	default:
+		return floatingIPDescribeText(cli, floatingIP)
+	}
+}
+
+func floatingIPDescribeText(cli *CLI, floatingIP *hcloud.FloatingIP) error {
 	fmt.Printf("ID:\t\t%d\n", floatingIP.ID)
 	fmt.Printf("Type:\t\t%s\n", floatingIP.Type)
 	fmt.Printf("Description:\t%s\n", na(floatingIP.Description))
@@ -51,7 +67,7 @@ func runFloatingIPDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 			return err
 		}
 		if server == nil {
-			return fmt.Errorf("server not found: %d", id)
+			return fmt.Errorf("server not found: %d", floatingIP.Server.ID)
 		}
 		fmt.Printf("Server:\n")
 		fmt.Printf("  ID:\t%d\n", server.ID)
@@ -80,4 +96,15 @@ func runFloatingIPDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 		}
 	}
 	return nil
+}
+
+func floatingIPDescribeJSON(resp *hcloud.Response) error {
+	var data map[string]interface{}
+	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+		return err
+	}
+	if floatingIP, ok := data["floating_ip"]; ok {
+		return describeJSON(floatingIP)
+	}
+	return describeJSON(data)
 }

@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/hetznercloud/hcloud-go/hcloud"
@@ -17,12 +18,15 @@ func newDatacenterDescribeCommand(cli *CLI) *cobra.Command {
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runDatacenterDescribe),
 	}
+	addOutputFlag(cmd, outputOptionJSON(), outputOptionFormat())
 	return cmd
 }
 
 func runDatacenterDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
+	outputFlags := outputFlagsForCommand(cmd)
+
 	idOrName := args[0]
-	datacenter, _, err := cli.Client().Datacenter.Get(cli.Context, idOrName)
+	datacenter, resp, err := cli.Client().Datacenter.Get(cli.Context, idOrName)
 	if err != nil {
 		return err
 	}
@@ -30,6 +34,17 @@ func runDatacenterDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("datacenter not found: %s", idOrName)
 	}
 
+	switch {
+	case outputFlags.IsSet("json"):
+		return datacenterDescribeJSON(resp)
+	case outputFlags.IsSet("format"):
+		return describeFormat(datacenter, outputFlags["format"][0])
+	default:
+		return datacenterDescribeText(cli, datacenter)
+	}
+}
+
+func datacenterDescribeText(cli *CLI, datacenter *hcloud.Datacenter) error {
 	fmt.Printf("ID:\t\t%d\n", datacenter.ID)
 	fmt.Printf("Name:\t\t%s\n", datacenter.Name)
 	fmt.Printf("Description:\t%s\n", datacenter.Description)
@@ -80,4 +95,18 @@ func runDatacenterDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 	}
 
 	return nil
+}
+
+func datacenterDescribeJSON(resp *hcloud.Response) error {
+	var data map[string]interface{}
+	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+		return err
+	}
+	if datacenter, ok := data["datacenter"]; ok {
+		return describeJSON(datacenter)
+	}
+	if datacenters, ok := data["datacenters"].([]interface{}); ok {
+		return describeJSON(datacenters[0])
+	}
+	return describeJSON(data)
 }

@@ -25,16 +25,12 @@ func newISOListCommand(cli *CLI) *cobra.Command {
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runISOList),
 	}
-	addListOutputFlag(cmd, isoListTableOutput.Columns())
+	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(isoListTableOutput.Columns()))
 	return cmd
 }
 
 func runISOList(cli *CLI, cmd *cobra.Command, args []string) error {
-	out, _ := cmd.Flags().GetStringArray("output")
-	outOpts, err := parseOutputOpts(out)
-	if err != nil {
-		return err
-	}
+	outOpts := outputFlagsForCommand(cmd)
 
 	isos, err := cli.Client().ISO.All(cli.Context)
 	if err != nil {

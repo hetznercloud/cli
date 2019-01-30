@@ -36,16 +36,12 @@ func newServerTypeListCommand(cli *CLI) *cobra.Command {
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runServerTypeList),
 	}
-	addListOutputFlag(cmd, serverTypeListTableOutput.Columns())
+	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(serverTypeListTableOutput.Columns()))
 	return cmd
 }
 
 func runServerTypeList(cli *CLI, cmd *cobra.Command, args []string) error {
-	out, _ := cmd.Flags().GetStringArray("output")
-	outOpts, err := parseOutputOpts(out)
-	if err != nil {
-		return err
-	}
+	outOpts := outputFlagsForCommand(cmd)
 
 	serverTypes, err := cli.Client().ServerType.All(cli.Context)
 	if err != nil {

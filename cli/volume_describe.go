@@ -1,9 +1,11 @@
 package cli
 
 import (
+	"encoding/json"
 	"fmt"
 
-	"github.com/dustin/go-humanize"
+	humanize "github.com/dustin/go-humanize"
+	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
 
@@ -17,11 +19,14 @@ func newVolumeDescribeCommand(cli *CLI) *cobra.Command {
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runVolumeDescribe),
 	}
+	addOutputFlag(cmd, outputOptionJSON(), outputOptionFormat())
 	return cmd
 }
 
 func runVolumeDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
-	volume, _, err := cli.Client().Volume.Get(cli.Context, args[0])
+	outputFlags := outputFlagsForCommand(cmd)
+
+	volume, resp, err := cli.Client().Volume.Get(cli.Context, args[0])
 	if err != nil {
 		return err
 	}
@@ -29,6 +34,17 @@ func runVolumeDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("volume not found: %s", args[0])
 	}
 
+	switch {
+	case outputFlags.IsSet("json"):
+		return volumeDescribeJSON(resp)
+	case outputFlags.IsSet("format"):
+		return describeFormat(volume, outputFlags["format"][0])
+	default:
+		return volumeDescribeText(cli, volume)
+	}
+}
+
+func volumeDescribeText(cli *CLI, volume *hcloud.Volume) error {
 	fmt.Printf("ID:\t\t%d\n", volume.ID)
 	fmt.Printf("Name:\t\t%s\n", volume.Name)
 	fmt.Printf("Size:\t\t%s\n", humanize.Bytes(uint64(volume.Size*humanize.GByte)))
@@ -67,4 +83,18 @@ func runVolumeDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 	}
 
 	return nil
+}
+
+func volumeDescribeJSON(resp *hcloud.Response) error {
+	var data map[string]interface{}
+	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+		return err
+	}
+	if volume, ok := data["volume"]; ok {
+		return describeJSON(volume)
+	}
+	if volumes, ok := data["volumes"].([]interface{}); ok {
+		return describeJSON(volumes[0])
+	}
+	return describeJSON(data)
 }

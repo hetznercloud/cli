@@ -1,9 +1,11 @@
 package cli
 
 import (
+	"encoding/json"
 	"fmt"
 
 	humanize "github.com/dustin/go-humanize"
+	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
 
@@ -17,12 +19,15 @@ func newServerDescribeCommand(cli *CLI) *cobra.Command {
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runServerDescribe),
 	}
+	addOutputFlag(cmd, outputOptionJSON(), outputOptionFormat())
 	return cmd
 }
 
 func runServerDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
+	outputFlags := outputFlagsForCommand(cmd)
+
 	idOrName := args[0]
-	server, _, err := cli.Client().Server.Get(cli.Context, idOrName)
+	server, resp, err := cli.Client().Server.Get(cli.Context, idOrName)
 	if err != nil {
 		return err
 	}
@@ -30,6 +35,17 @@ func runServerDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("server not found: %s", idOrName)
 	}
 
+	switch {
+	case outputFlags.IsSet("json"):
+		return serverDescribeJSON(resp)
+	case outputFlags.IsSet("format"):
+		return describeFormat(server, outputFlags["format"][0])
+	default:
+		return serverDescribeText(cli, server)
+	}
+}
+
+func serverDescribeText(cli *CLI, server *hcloud.Server) error {
 	fmt.Printf("ID:\t\t%d\n", server.ID)
 	fmt.Printf("Name:\t\t%s\n", server.Name)
 	fmt.Printf("Status:\t\t%s\n", server.Status)
@@ -155,4 +171,18 @@ func runServerDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 	}
 
 	return nil
+}
+
+func serverDescribeJSON(resp *hcloud.Response) error {
+	var data map[string]interface{}
+	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+		return err
+	}
+	if server, ok := data["server"]; ok {
+		return describeJSON(server)
+	}
+	if servers, ok := data["servers"].([]interface{}); ok {
+		return describeJSON(servers[0])
+	}
+	return describeJSON(data)
 }
