@@ -6,34 +6,6 @@ import (
 	"testing"
 )
 
-func TestOutOpts(t *testing.T) {
-	t.Run("success", func(t *testing.T) {
-		opts, err := parseOutputOpts([]string{"columns=val1,val2,val3", "noheader"})
-		if err != nil {
-			t.Fatal(err)
-		}
-		if !opts.IsSet("columns") {
-			t.Error("columns should be set")
-		}
-		if !opts.IsSet("noheader") {
-			t.Error("noheader should be set")
-		}
-		if len(opts["columns"]) != 3 ||
-			opts["columns"][0] != "val1" ||
-			opts["columns"][1] != "val2" ||
-			opts["columns"][2] != "val3" {
-			t.Errorf("Expected columns to be ['val1','val2','val3'], got: %v", opts["columns"])
-		}
-	})
-
-	t.Run("invalid key", func(t *testing.T) {
-		_, err := parseOutputOpts([]string{"key1"})
-		if err == nil {
-			t.Fatal("expected an error")
-		}
-	})
-}
-
 type writerFlusherStub struct {
 	bytes.Buffer
 }

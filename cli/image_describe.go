@@ -1,9 +1,11 @@
 package cli
 
 import (
+	"encoding/json"
 	"fmt"
 
 	humanize "github.com/dustin/go-humanize"
+	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
 
@@ -17,12 +19,15 @@ func newImageDescribeCommand(cli *CLI) *cobra.Command {
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runImageDescribe),
 	}
+	addOutputFlag(cmd, outputOptionJSON(), outputOptionFormat())
 	return cmd
 }
 
 func runImageDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
+	outputFlags := outputFlagsForCommand(cmd)
+
 	idOrName := args[0]
-	image, _, err := cli.Client().Image.Get(cli.Context, idOrName)
+	image, resp, err := cli.Client().Image.Get(cli.Context, idOrName)
 	if err != nil {
 		return err
 	}
@@ -30,6 +35,17 @@ func runImageDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("image not found: %s", idOrName)
 	}
 
+	switch {
+	case outputFlags.IsSet("json"):
+		return imageDescribeJSON(resp)
+	case outputFlags.IsSet("format"):
+		return describeFormat(image, outputFlags["format"][0])
+	default:
+		return imageDescribeText(cli, image)
+	}
+}
+
+func imageDescribeText(cli *CLI, image *hcloud.Image) error {
 	fmt.Printf("ID:\t\t%d\n", image.ID)
 	fmt.Printf("Type:\t\t%s\n", image.Type)
 	fmt.Printf("Status:\t\t%s\n", image.Status)
@@ -58,4 +74,18 @@ func runImageDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 	}
 
 	return nil
+}
+
+func imageDescribeJSON(resp *hcloud.Response) error {
+	var data map[string]interface{}
+	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+		return err
+	}
+	if image, ok := data["image"]; ok {
+		return describeJSON(image)
+	}
+	if images, ok := data["images"].([]interface{}); ok {
+		return describeJSON(images[0])
+	}
+	return describeJSON(data)
 }

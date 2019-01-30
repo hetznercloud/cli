@@ -59,6 +59,24 @@ $ source <(hcloud completion bash)   # bash
 $ source <(hcloud completion zsh)    # zsh
 ```
 
+## Output configuration
+
+You can control output via the `-o` option:
+
+* For `list` commands, you can specify `-o noheader` to omit the table header.
+
+* For `list` commands, you can specify `-o columns=id,name` to only show certain
+  columns in the table.
+
+* For `describe` commands, you can specify `-o json` to get a JSON representation
+  of the resource. The schema is identical to those in the Hetzner Cloud API which
+  are documented at [docs.hetzner.cloud](https://docs.hetzner.cloud).
+
+* For `describe` commands, you can specify `-o format={{.ID}}` to format output
+  according to the given [Go template](https://golang.org/pkg/text/template/).
+  The template’s input is the resource’s corresponding struct in the
+  [hcloud-go](https://godoc.org/github.com/hetznercloud/hcloud-go/hcloud) library.
+
 ## Configure hcloud using environment variables
 
 You can use the following environment variables to configure `hcloud`:
