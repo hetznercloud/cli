@@ -86,7 +86,7 @@ func describeFormat(object interface{}, format string) error {
 	if err != nil {
 		return err
 	}
-	return t.Execute(os.Stderr, object)
+	return t.Execute(os.Stdout, object)
 }
 
 func describeJSON(object interface{}) error {
