@@ -6,9 +6,15 @@ import (
 
 var contextListTableOutput *tableOutput
 
+type ContextPresentation struct {
+	Name   string
+	Token  string
+	Active string
+}
+
 func init() {
 	contextListTableOutput = newTableOutput().
-		AddAllowedFields(ConfigContext{}).
+		AddAllowedFields(ContextPresentation{}).
 		RemoveAllowedField("token")
 }
 
@@ -32,7 +38,7 @@ func newContextListCommand(cli *CLI) *cobra.Command {
 func runContextList(cli *CLI, cmd *cobra.Command, args []string) error {
 	outOpts := outputFlagsForCommand(cmd)
 
-	cols := []string{"name"}
+	cols := []string{"active", "name"}
 	if outOpts.IsSet("columns") {
 		cols = outOpts["columns"]
 	}
@@ -46,7 +52,16 @@ func runContextList(cli *CLI, cmd *cobra.Command, args []string) error {
 		tw.WriteHeader(cols)
 	}
 	for _, context := range cli.Config.Contexts {
-		tw.Write(cols, context)
+		presentation := ContextPresentation{
+			Name:   context.Name,
+			Token:  context.Token,
+			Active: " ",
+		}
+		if cli.Config.ActiveContext.Name == context.Name {
+			presentation.Active = "*"
+		}
+
+		tw.Write(cols, presentation)
 	}
 	tw.Flush()
 	return nil
