@@ -7,6 +7,7 @@
 * Add support for JSON and Go template output
 * Add support for multiple user data files
 * Add length validation for API token on `hcloud context create`
+* Add `active` column to context list on `hcloud context list`
 
 ## v1.11.0
 
