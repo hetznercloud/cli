@@ -46,6 +46,9 @@ func runContextList(cli *CLI, cmd *cobra.Command, args []string) error {
 		tw.WriteHeader(cols)
 	}
 	for _, context := range cli.Config.Contexts {
+		if context.Token == cli.Token {
+			context.Name = context.Name + " |ACTIVE|"
+		}
 		tw.Write(cols, context)
 	}
 	tw.Flush()
