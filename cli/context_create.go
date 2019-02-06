@@ -49,6 +49,10 @@ func runContextCreate(cli *CLI, cmd *cobra.Command, args []string) error {
 		if token == "" {
 			continue
 		}
+		if len(token) < 64 {
+			fmt.Printf("Your API Token should be at least 64 characters long. Your Token is %d characters long.\n", len(token))
+			continue
+		}
 		context.Token = token
 		break
 	}

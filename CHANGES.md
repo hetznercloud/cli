@@ -6,6 +6,7 @@
 * Make overriding context via `HCLOUD_CONTEXT` work
 * Add support for JSON and Go template output
 * Add support for multiple user data files
+* Add length validation for API Token on `hcloud context create`
 
 ## v1.11.0
 
