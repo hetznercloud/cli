@@ -15,9 +15,8 @@ type Config struct {
 }
 
 type ConfigContext struct {
-	Name    string
-	Token   string
-	Current string
+	Name  string
+	Token string
 }
 
 func (config *Config) ContextByName(name string) *ConfigContext {
