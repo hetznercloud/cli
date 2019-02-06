@@ -32,7 +32,7 @@ func newContextListCommand(cli *CLI) *cobra.Command {
 func runContextList(cli *CLI, cmd *cobra.Command, args []string) error {
 	outOpts := outputFlagsForCommand(cmd)
 
-	cols := []string{"name"}
+	cols := []string{"current", "name"}
 	if outOpts.IsSet("columns") {
 		cols = outOpts["columns"]
 	}
@@ -46,6 +46,11 @@ func runContextList(cli *CLI, cmd *cobra.Command, args []string) error {
 		tw.WriteHeader(cols)
 	}
 	for _, context := range cli.Config.Contexts {
+		context.Current = " "
+		if cli.Config.ActiveContext.Name == context.Name {
+			context.Current = "*"
+		}
+
 		tw.Write(cols, context)
 	}
 	tw.Flush()
