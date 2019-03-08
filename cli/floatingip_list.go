@@ -88,7 +88,9 @@ func describeFloatingIPListTableOutput(cli *CLI) *tableOutput {
 			var server string
 			if floatingIP.Server != nil && cli != nil {
 				_server, _, _ := cli.Client().Server.GetByID(cli.Context, floatingIP.Server.ID)
-				server = _server.Name
+				if _server != nil {
+					return _server.Name
+				}
 			}
 			return na(server)
 		})).

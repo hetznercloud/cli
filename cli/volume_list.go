@@ -75,7 +75,9 @@ func describeVolumeListTableOutput(cli *CLI) *tableOutput {
 			var server string
 			if volume.Server != nil && cli != nil {
 				_server, _, _ := cli.Client().Server.GetByID(cli.Context, volume.Server.ID)
-				server = _server.Name
+				if _server != nil {
+					return _server.Name
+				}
 			}
 			return na(server)
 		})).
