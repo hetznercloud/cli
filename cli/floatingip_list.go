@@ -2,7 +2,6 @@ package cli
 
 import (
 	"fmt"
-	"strconv"
 	"strings"
 
 	"github.com/hetznercloud/hcloud-go/hcloud"
@@ -12,52 +11,7 @@ import (
 var floatingIPListTableOutput *tableOutput
 
 func init() {
-	floatingIPListTableOutput = newTableOutput().
-		AddAllowedFields(hcloud.FloatingIP{}).
-		AddFieldOutputFn("dns", fieldOutputFn(func(obj interface{}) string {
-			floatingIP := obj.(*hcloud.FloatingIP)
-			var dns string
-			if len(floatingIP.DNSPtr) == 1 {
-				for _, v := range floatingIP.DNSPtr {
-					dns = v
-				}
-			}
-			if len(floatingIP.DNSPtr) > 1 {
-				dns = fmt.Sprintf("%d entries", len(floatingIP.DNSPtr))
-			}
-			return na(dns)
-		})).
-		AddFieldOutputFn("server", fieldOutputFn(func(obj interface{}) string {
-			floatingIP := obj.(*hcloud.FloatingIP)
-			var server string
-			if floatingIP.Server != nil {
-				server = strconv.Itoa(floatingIP.Server.ID)
-			}
-			return na(server)
-		})).
-		AddFieldOutputFn("home", fieldOutputFn(func(obj interface{}) string {
-			floatingIP := obj.(*hcloud.FloatingIP)
-			return floatingIP.HomeLocation.Name
-		})).
-		AddFieldOutputFn("ip", fieldOutputFn(func(obj interface{}) string {
-			floatingIP := obj.(*hcloud.FloatingIP)
-			if floatingIP.Network != nil {
-				return floatingIP.Network.String()
-			}
-			return floatingIP.IP.String()
-		})).
-		AddFieldOutputFn("protection", fieldOutputFn(func(obj interface{}) string {
-			floatingIP := obj.(*hcloud.FloatingIP)
-			var protection []string
-			if floatingIP.Protection.Delete {
-				protection = append(protection, "delete")
-			}
-			return strings.Join(protection, ", ")
-		})).
-		AddFieldOutputFn("labels", fieldOutputFn(func(obj interface{}) string {
-			floatingIP := obj.(*hcloud.FloatingIP)
-			return labelsToString(floatingIP.Labels)
-		}))
+	floatingIPListTableOutput = describeFloatingIPListTableOutput(nil)
 }
 
 func newFloatingIPListCommand(cli *CLI) *cobra.Command {
@@ -98,7 +52,7 @@ func runFloatingIPList(cli *CLI, cmd *cobra.Command, args []string) error {
 		cols = outOpts["columns"]
 	}
 
-	tw := floatingIPListTableOutput
+	tw := describeFloatingIPListTableOutput(cli)
 	if err = tw.ValidateColumns(cols); err != nil {
 		return err
 	}
@@ -111,4 +65,54 @@ func runFloatingIPList(cli *CLI, cmd *cobra.Command, args []string) error {
 	}
 	tw.Flush()
 	return nil
+}
+
+func describeFloatingIPListTableOutput(cli *CLI) *tableOutput {
+	return newTableOutput().
+		AddAllowedFields(hcloud.FloatingIP{}).
+		AddFieldOutputFn("dns", fieldOutputFn(func(obj interface{}) string {
+			floatingIP := obj.(*hcloud.FloatingIP)
+			var dns string
+			if len(floatingIP.DNSPtr) == 1 {
+				for _, v := range floatingIP.DNSPtr {
+					dns = v
+				}
+			}
+			if len(floatingIP.DNSPtr) > 1 {
+				dns = fmt.Sprintf("%d entries", len(floatingIP.DNSPtr))
+			}
+			return na(dns)
+		})).
+		AddFieldOutputFn("server", fieldOutputFn(func(obj interface{}) string {
+			floatingIP := obj.(*hcloud.FloatingIP)
+			var server string
+			if floatingIP.Server != nil && cli != nil {
+				_server, _, _ := cli.Client().Server.GetByID(cli.Context, floatingIP.Server.ID)
+				server = _server.Name
+			}
+			return na(server)
+		})).
+		AddFieldOutputFn("home", fieldOutputFn(func(obj interface{}) string {
+			floatingIP := obj.(*hcloud.FloatingIP)
+			return floatingIP.HomeLocation.Name
+		})).
+		AddFieldOutputFn("ip", fieldOutputFn(func(obj interface{}) string {
+			floatingIP := obj.(*hcloud.FloatingIP)
+			if floatingIP.Network != nil {
+				return floatingIP.Network.String()
+			}
+			return floatingIP.IP.String()
+		})).
+		AddFieldOutputFn("protection", fieldOutputFn(func(obj interface{}) string {
+			floatingIP := obj.(*hcloud.FloatingIP)
+			var protection []string
+			if floatingIP.Protection.Delete {
+				protection = append(protection, "delete")
+			}
+			return strings.Join(protection, ", ")
+		})).
+		AddFieldOutputFn("labels", fieldOutputFn(func(obj interface{}) string {
+			floatingIP := obj.(*hcloud.FloatingIP)
+			return labelsToString(floatingIP.Labels)
+		}))
 }
