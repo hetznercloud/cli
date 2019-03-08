@@ -1,9 +1,15 @@
-sudo: false
 language: go
-go:
-  - "1.11"
 env:
   - GO111MODULE=on
+stages:
+  - test
+  - name: deploy
+    if: tag IS present
+
+go:
+  - 1.11
+  - 1.12
+
 before_script:
   - git clone --depth 1 https://github.com/sstephenson/bats.git
 script:
@@ -12,3 +18,23 @@ script:
   - ./script/build.bash linux amd64 `./script/git-version.bash`; mv dist/hcloud* cmd/hcloud/hcloud
   - PATH="./cmd/hcloud:$PATH" bats/bin/bats test
   - while read os arch _; do echo $os/$arch; GOOS=$os GOARCH=$arch go build ./cmd/hcloud; done < script/variants.txt
+
+jobs:
+  include:
+    - stage: deploy
+      if: tag IS present
+      go: "1.12"
+      before_deploy:
+        - ./script/packageall.bash ${TRAVIS_TAG}
+      deploy:
+        provider: releases
+        name: hcloud ${TRAVIS_TAG}
+        tag_name: ${TRAVIS_TAG}
+        api_key:
+          secure: "S+Z4A4LfCdux45LAjKH1gIZosOdIznrgCyr9LLRCU5usUbkNaa26OxBkpkRagJAYqJifWEARxPOBL41wtq38bKXchIKXaaUn7yHFWLgNI2MCWb4wojFUsAwGEyOeEiTN3PnZhcUCwha/ndeSd0HhqL2DVJdv2+E2pZZM/JQzRDBTp3bRxHdBU9b+ZDoPuerBkA8UjIB03Da5GKlOlIWvjKTbe+D2eZvwSFr5uekgoALnmU2Ssezz86/2ygpvhz0GGSvbDyEI4KkoeHLQaBgBhCuPU2gNS3ajdTkqkh4HqgYC/rqOzkzJp6FpRkhTQgs6+KaHAEacr47oTYg1k+saxJKb1bpipzkuZd36PhMfWw75KkwX6YqQMrS9byVxBSaAcSeJlEIPLqHtd31wYEk3ktNVo7maW3XwqeRH3+lMAbFHvAVL2y8840aKEFyec8Ey8GnPOyuKYhzCSVWKRJc9xsR4gVwu6fh0GW68DaVqFCSYD+raAsVscCTD5gwrsj40Ep+D2SCjSPvpgKbRvCNzz9UQzUovEqqEIPhk+T47JdaFO1zP0gDfXXtp8lnmyctmVw5I26E3qSX0H3aRkB0T+WuDBV+5sddIQaUcD9XcwP2d7BCgdyBL6grJDvKC9KyNII6GPJiS46t8CnX+6ohriiMPfuxJU3Q1gySmSSTzbEU="
+        file_glob: true
+        file: dist/*
+        skip_cleanup: true
+        draft: true
+        on:
+          tags: true
