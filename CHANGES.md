@@ -2,7 +2,7 @@
 
 ## master
 
-* Show the server name instead of the server id on `hcloud floating-ip|volume|image list`
+* Show server name instead of ID on `hcloud floating-ip|volume|image list`
 
 ## v1.12.0
 
