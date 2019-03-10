@@ -319,8 +319,8 @@ func runCompletionBash(out io.Writer, cmd *cobra.Command) error {
 }
 
 func runCompletionZsh(out io.Writer, cmd *cobra.Command) error {
-	zshInitialization := `
-#compdef hcloud
+	zshInitialization := 
+`#compdef hcloud
 
 __hcloud_bash_source() {
 	alias shopt=':'
