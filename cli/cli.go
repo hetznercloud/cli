@@ -34,10 +34,9 @@ type CLI struct {
 
 func NewCLI() *CLI {
 	cli := &CLI{
-		Context:     context.Background(),
-		Config:      &Config{},
-		ConfigPath:  DefaultConfigPath,
-		serverNames: map[int]string{},
+		Context:    context.Background(),
+		Config:     &Config{},
+		ConfigPath: DefaultConfigPath,
 	}
 	if s := os.Getenv("HCLOUD_CONFIG"); s != "" {
 		cli.ConfigPath = s
@@ -205,7 +204,8 @@ func (c *CLI) WaitForActions(ctx context.Context, actions []*hcloud.Action) erro
 }
 
 func (c *CLI) GetServerName(id int) string {
-	if len(c.serverNames) == 0 {
+	if c.serverNames == nil {
+		c.serverNames = map[int]string{}
 		servers, _ := c.Client().Server.All(c.Context)
 		for _, server := range servers {
 			c.serverNames[server.ID] = server.Name
