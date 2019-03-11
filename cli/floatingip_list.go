@@ -87,10 +87,7 @@ func describeFloatingIPListTableOutput(cli *CLI) *tableOutput {
 			floatingIP := obj.(*hcloud.FloatingIP)
 			var server string
 			if floatingIP.Server != nil && cli != nil {
-				_server, _, _ := cli.Client().Server.GetByID(cli.Context, floatingIP.Server.ID)
-				if _server != nil {
-					return _server.Name
-				}
+				return cli.GetServerName(floatingIP.Server.ID)
 			}
 			return na(server)
 		})).

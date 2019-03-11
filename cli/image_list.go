@@ -119,10 +119,7 @@ func describeImageListTableOutput(cli *CLI) *tableOutput {
 		AddFieldOutputFn("created_from", fieldOutputFn(func(obj interface{}) string {
 			image := obj.(*hcloud.Image)
 			if image.CreatedFrom != nil && cli != nil {
-				_server, _, _ := cli.Client().Server.GetByID(cli.Context, image.CreatedFrom.ID)
-				if _server != nil {
-					return _server.Name
-				}
+				return cli.GetServerName(image.CreatedFrom.ID)
 			}
 			return na("")
 		})).
