@@ -1,10 +1,9 @@
 package cli
 
 import (
-	"strconv"
 	"strings"
 
-	humanize "github.com/dustin/go-humanize"
+	"github.com/dustin/go-humanize"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
@@ -12,36 +11,7 @@ import (
 var volumeListTableOutput *tableOutput
 
 func init() {
-	volumeListTableOutput = newTableOutput().
-		AddAllowedFields(hcloud.Volume{}).
-		AddFieldOutputFn("server", fieldOutputFn(func(obj interface{}) string {
-			volume := obj.(*hcloud.Volume)
-			var server string
-			if volume.Server != nil {
-				server = strconv.Itoa(volume.Server.ID)
-			}
-			return na(server)
-		})).
-		AddFieldOutputFn("size", fieldOutputFn(func(obj interface{}) string {
-			volume := obj.(*hcloud.Volume)
-			return humanize.Bytes(uint64(volume.Size * humanize.GByte))
-		})).
-		AddFieldOutputFn("location", fieldOutputFn(func(obj interface{}) string {
-			volume := obj.(*hcloud.Volume)
-			return volume.Location.Name
-		})).
-		AddFieldOutputFn("protection", fieldOutputFn(func(obj interface{}) string {
-			volume := obj.(*hcloud.Volume)
-			var protection []string
-			if volume.Protection.Delete {
-				protection = append(protection, "delete")
-			}
-			return strings.Join(protection, ", ")
-		})).
-		AddFieldOutputFn("labels", fieldOutputFn(func(obj interface{}) string {
-			volume := obj.(*hcloud.Volume)
-			return labelsToString(volume.Labels)
-		}))
+	volumeListTableOutput = describeVolumeListTableOutput(nil)
 }
 
 func newVolumeListCommand(cli *CLI) *cobra.Command {
@@ -82,7 +52,7 @@ func runVolumeList(cli *CLI, cmd *cobra.Command, args []string) error {
 		cols = outOpts["columns"]
 	}
 
-	tw := volumeListTableOutput
+	tw := describeVolumeListTableOutput(cli)
 	if err = tw.ValidateColumns(cols); err != nil {
 		return err
 	}
@@ -95,4 +65,37 @@ func runVolumeList(cli *CLI, cmd *cobra.Command, args []string) error {
 	}
 	tw.Flush()
 	return nil
+}
+
+func describeVolumeListTableOutput(cli *CLI) *tableOutput {
+	return newTableOutput().
+		AddAllowedFields(hcloud.Volume{}).
+		AddFieldOutputFn("server", fieldOutputFn(func(obj interface{}) string {
+			volume := obj.(*hcloud.Volume)
+			var server string
+			if volume.Server != nil && cli != nil {
+				return cli.GetServerName(volume.Server.ID)
+			}
+			return na(server)
+		})).
+		AddFieldOutputFn("size", fieldOutputFn(func(obj interface{}) string {
+			volume := obj.(*hcloud.Volume)
+			return humanize.Bytes(uint64(volume.Size * humanize.GByte))
+		})).
+		AddFieldOutputFn("location", fieldOutputFn(func(obj interface{}) string {
+			volume := obj.(*hcloud.Volume)
+			return volume.Location.Name
+		})).
+		AddFieldOutputFn("protection", fieldOutputFn(func(obj interface{}) string {
+			volume := obj.(*hcloud.Volume)
+			var protection []string
+			if volume.Protection.Delete {
+				protection = append(protection, "delete")
+			}
+			return strings.Join(protection, ", ")
+		})).
+		AddFieldOutputFn("labels", fieldOutputFn(func(obj interface{}) string {
+			volume := obj.(*hcloud.Volume)
+			return labelsToString(volume.Labels)
+		}))
 }

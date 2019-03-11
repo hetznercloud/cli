@@ -2,6 +2,10 @@
 
 ## master
 
+* Show server name instead of ID on `hcloud floating-ip|volume|image list`
+
+## v1.12.0
+
 * Add support for executing commands via `hcloud server ssh <server> <command>`
 * Make overriding context via `HCLOUD_CONTEXT` work
 * Add support for JSON and Go template output
