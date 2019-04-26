@@ -26,7 +26,7 @@ is still the recommended install method.
 | ---------------- | ------------------------------------------------- |
 | Arch Linux       | `pacman -Syu hcloud`                              |
 | Void Linux       | `xbps-install -Syu hcloud`                        |
-| Gentoo           | `emerge hcloud`                                   |
+| Gentoo Linux     | `emerge hcloud`                                   |
  
 ### Build manually
 
