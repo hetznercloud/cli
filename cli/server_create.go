@@ -64,7 +64,7 @@ func newServerCreateCommand(cli *CLI) *cobra.Command {
 	cmd.Flag("volume").Annotations = map[string][]string{
 		cobra.BashCompCustom: {"__hcloud_volume_names"},
 	}
-
+	cmd.Flags().StringSlice("network", nil, "ID of network to attach the server to (can be specified multiple times)")
 	cmd.Flags().Bool("automount", false, "Automount volumes after attach (default: false)")
 	return cmd
 }
@@ -176,6 +176,7 @@ func optsFromFlags(cli *CLI, flags *pflag.FlagSet) (opts hcloud.ServerCreateOpts
 	startAfterCreate, _ := flags.GetBool("start-after-create")
 	sshKeys, _ := flags.GetStringSlice("ssh-key")
 	volumes, _ := flags.GetStringSlice("volume")
+	networks, _ := flags.GetStringSlice("network")
 	automount, _ := flags.GetBool("automount")
 
 	opts = hcloud.ServerCreateOpts{
@@ -241,6 +242,20 @@ func optsFromFlags(cli *CLI, flags *pflag.FlagSet) (opts hcloud.ServerCreateOpts
 		}
 		opts.Volumes = append(opts.Volumes, volume)
 	}
+	for _, networkID := range networks {
+		var network *hcloud.Network
+		network, _, err = cli.Client().Network.Get(cli.Context, networkID)
+		if err != nil {
+			return
+		}
+
+		if network == nil {
+			err = fmt.Errorf("network not found: %s", networkID)
+			return
+		}
+		opts.Networks = append(opts.Networks, network)
+	}
+
 	if datacenter != "" {
 		opts.Datacenter = &hcloud.Datacenter{Name: datacenter}
 	}

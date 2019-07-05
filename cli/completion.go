@@ -41,6 +41,13 @@ const (
 		fi
 	}
 
+	__hcloud_network_names() {
+		local ctl_output out
+		if ctl_output=$(hcloud network list -o noheader -o columns=name 2>/dev/null); then
+			COMPREPLY=($(echo "${ctl_output}"))
+		fi
+	}
+
 	__hcloud_iso_names() {
 		local ctl_output out
 		if ctl_output=$(hcloud iso list -o noheader -o columns=name 2>/dev/null); then
@@ -115,6 +122,14 @@ const (
 
 	__hcloud_rescue_types() {
 		COMPREPLY=($(echo "linux64 linux32 freebsd64"))
+	}
+
+	__hcloud_network_zones() {
+		COMPREPLY=($(echo "eu-central"))
+	}
+
+	__hcloud_network_subnet_types() {
+		COMPREPLY=($(echo "server"))
 	}
 
 	__custom_func() {

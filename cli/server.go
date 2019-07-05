@@ -38,6 +38,9 @@ func newServerCommand(cli *CLI) *cobra.Command {
 		newServerAddLabelCommand(cli),
 		newServerRemoveLabelCommand(cli),
 		newServerSetRDNSCommand(cli),
+		newServerAttachToNetworkCommand(cli),
+		newServerDetachFromNetworkCommand(cli),
+		newServerChangeAliasIPsCommand(cli),
 	)
 	return cmd
 }

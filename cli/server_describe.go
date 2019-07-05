@@ -82,6 +82,30 @@ func serverDescribeText(cli *CLI, server *hcloud.Server) error {
 	} else {
 		fmt.Printf("    No Floating IPs\n")
 	}
+
+	fmt.Printf("Private Net:\n")
+	if len(server.PrivateNet) > 0 {
+		for _, n := range server.PrivateNet {
+			network, _, err := cli.client.Network.GetByID(cli.Context, n.Network.ID)
+			if err != nil {
+				return fmt.Errorf("error fetching network: %v", err)
+			}
+			fmt.Printf("  - ID:\t\t\t%d\n", network.ID)
+			fmt.Printf("    Name:\t\t%s\n", network.Name)
+			fmt.Printf("    IP:\t\t\t%s\n", n.IP.String())
+			if len(n.Aliases) > 0 {
+				fmt.Printf("    Alias IPs:\n")
+				for _, a := range n.Aliases {
+					fmt.Printf("     -\t\t\t%s\n", a)
+				}
+			} else {
+				fmt.Printf("    Alias IPs:\t\t%s\n", na(""))
+			}
+		}
+	} else {
+		fmt.Printf("    No Private Networks\n")
+	}
+
 	fmt.Printf("Volumes:\n")
 	if len(server.Volumes) > 0 {
 		for _, v := range server.Volumes {

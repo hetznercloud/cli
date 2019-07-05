@@ -29,7 +29,8 @@ type CLI struct {
 
 	client *hcloud.Client
 
-	serverNames map[int]string
+	serverNames  map[int]string
+	networkNames map[int]string
 }
 
 func NewCLI() *CLI {
@@ -213,6 +214,20 @@ func (c *CLI) GetServerName(id int) string {
 	}
 	if serverName, ok := c.serverNames[id]; ok {
 		return serverName
+	}
+	return strconv.Itoa(id)
+}
+
+func (c *CLI) GetNetworkName(id int) string {
+	if c.networkNames == nil {
+		c.networkNames = map[int]string{}
+		networks, _ := c.Client().Network.All(c.Context)
+		for _, network := range networks {
+			c.networkNames[network.ID] = network.Name
+		}
+	}
+	if networkName, ok := c.networkNames[id]; ok {
+		return networkName
 	}
 	return strconv.Itoa(id)
 }

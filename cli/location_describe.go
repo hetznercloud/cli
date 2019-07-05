@@ -48,6 +48,7 @@ func locationDescribeText(cli *CLI, location *hcloud.Location) error {
 	fmt.Printf("ID:\t\t%d\n", location.ID)
 	fmt.Printf("Name:\t\t%s\n", location.Name)
 	fmt.Printf("Description:\t%s\n", location.Description)
+	fmt.Printf("Network Zone:\t%s\n", location.NetworkZone)
 	fmt.Printf("Country:\t%s\n", location.Country)
 	fmt.Printf("City:\t\t%s\n", location.City)
 	fmt.Printf("Latitude:\t%f\n", location.Latitude)

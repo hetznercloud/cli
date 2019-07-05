@@ -37,7 +37,7 @@ func runLocationList(cli *CLI, cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	cols := []string{"id", "name", "description", "country", "city"}
+	cols := []string{"id", "name", "description", "network_zone", "country", "city"}
 	if outOpts.IsSet("columns") {
 		cols = outOpts["columns"]
 	}

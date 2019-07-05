@@ -3,6 +3,7 @@
 ## master
 
 * Show server name instead of ID on `hcloud floating-ip|volume|image list`
+* Add support for networks
 
 ## v1.12.0
 
