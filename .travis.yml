@@ -7,7 +7,6 @@ stages:
     if: tag IS present
 
 go:
-  - 1.11
   - 1.12
 
 before_script:
