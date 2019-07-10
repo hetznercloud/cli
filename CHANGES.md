@@ -1,6 +1,6 @@
 # Changes
 
-## master
+## v1.13.0
 
 * Show server name instead of ID on `hcloud floating-ip|volume|image list`
 * Add support for networks
