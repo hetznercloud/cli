@@ -1,5 +1,9 @@
 # Changes
 
+## master
+
+* Expose `Mac Address` of network on `hcloud server describe` 
+
 ## v1.13.0
 
 * Show server name instead of ID on `hcloud floating-ip|volume|image list`

@@ -93,6 +93,7 @@ func serverDescribeText(cli *CLI, server *hcloud.Server) error {
 			fmt.Printf("  - ID:\t\t\t%d\n", network.ID)
 			fmt.Printf("    Name:\t\t%s\n", network.Name)
 			fmt.Printf("    IP:\t\t\t%s\n", n.IP.String())
+			fmt.Printf("    Mac Address:\t%s\n", n.MACAddress)
 			if len(n.Aliases) > 0 {
 				fmt.Printf("    Alias IPs:\n")
 				for _, a := range n.Aliases {
