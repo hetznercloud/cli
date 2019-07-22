@@ -2,7 +2,7 @@
 
 ## master
 
-* Expose `Mac Address` of network on `hcloud server describe` 
+* Expose server’s MAC address in networks on `hcloud server describe`
 
 ## v1.13.0
 
