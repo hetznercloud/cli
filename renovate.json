@@ -1,0 +1,10 @@
+{
+  "extends": ["config:base"],
+  "labels": ["dependencies"],
+  "prConcurrentLimit": 2,
+  "gomodTidy": true,
+  "vulnerabilityAlerts": {
+    "labels": ["security"],
+    "assignees": ["@thcyron","@LKaemmerling"]
+  }
+}
