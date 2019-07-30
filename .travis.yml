@@ -7,19 +7,19 @@ stages:
     if: tag IS present
 
 go:
-  - 1.12
+  - "1.12"
 
 before_script:
   - git clone --depth 1 https://github.com/sstephenson/bats.git
-script:
-  - diff -u <(echo -n) <(gofmt -d -s $(find . -type f -name '*.go'))
-  - go test ./cli/...
-  - ./script/build.bash linux amd64 `./script/git-version.bash`; mv dist/hcloud* cmd/hcloud/hcloud
-  - PATH="./cmd/hcloud:$PATH" bats/bin/bats test
-  - while read os arch _; do echo $os/$arch; GOOS=$os GOARCH=$arch go build ./cmd/hcloud; done < script/variants.txt
 
 jobs:
   include:
+    - script:
+      - diff -u <(echo -n) <(gofmt -d -s $(find . -type f -name '*.go'))
+      - go test ./cli/...
+      - ./script/build.bash linux amd64 `./script/git-version.bash`; mv dist/hcloud* cmd/hcloud/hcloud
+      - PATH="./cmd/hcloud:$PATH" bats/bin/bats test
+      - while read os arch _; do echo $os/$arch; GOOS=$os GOARCH=$arch go build ./cmd/hcloud; done < script/variants.txt
     - stage: deploy
       if: tag IS present
       go: "1.12"
