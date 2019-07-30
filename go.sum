@@ -26,8 +26,8 @@ github.com/thcyron/uiprogress v0.0.0-20171218165853-25e98ffb0e98 h1:BkoZ8p/ekbPN
 github.com/thcyron/uiprogress v0.0.0-20171218165853-25e98ffb0e98/go.mod h1:uuQQnEupm5tXsh0867uzOy2wlb7a35cilUIvd7r6amo=
 golang.org/x/crypto v0.0.0-20180411161317-d6449816ce06 h1:EOqG0JqGlLr+punVB69jvWCv/ErZKGlC7PMdyHfv+Bc=
 golang.org/x/crypto v0.0.0-20180411161317-d6449816ce06/go.mod h1:6SG95UA2DQfeDnfUPMdvaQW0Q7yPrPDi9nlGo2tz2b4=
-golang.org/x/sys v0.0.0-20180406135729-3b87a42e500a h1:DwI0ihryIiWlRUKL/ii7Snvn4LiL9TvMoVZq3qMbffg=
-golang.org/x/sys v0.0.0-20180406135729-3b87a42e500a/go.mod h1:STP8DvDyc/dI5b8T5hshtkjS+E42TnysNCUPdjciGhY=
+golang.org/x/sys v0.0.0-20190730123554-fc99dfbffb4e h1:JdwaurkNc58v73/VNcWLNOuEmF8v2iTzoVdhgNFnqtE=
+golang.org/x/sys v0.0.0-20190730123554-fc99dfbffb4e/go.mod h1:h1NjWce9XRLGQEsW7wpKNCjG9DtNlClVuFLEZdDNbEs=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405 h1:yhCVgyC4o1eVCa2tZl7eS0r+SDo693bJlVdllGtEeKM=
 gopkg.in/check.v1 v0.0.0-20161208181325-20d25e280405/go.mod h1:Co6ibVJAznAaIkqp8huTwlJQCZ016jof/cbN4VW5Yz0=
 gopkg.in/yaml.v2 v2.2.2 h1:ZCJp+EgiOT7lHqUV2J862kp8Qj64Jo6az82+3Td9dZw=

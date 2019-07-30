@@ -15,6 +15,6 @@ require (
 	github.com/spf13/pflag v1.0.1
 	github.com/thcyron/uiprogress v0.0.0-20171218165853-25e98ffb0e98
 	golang.org/x/crypto v0.0.0-20180411161317-d6449816ce06
-	golang.org/x/sys v0.0.0-20180406135729-3b87a42e500a // indirect
+	golang.org/x/sys v0.0.0-20190730123554-fc99dfbffb4e // indirect
 	gopkg.in/yaml.v2 v2.2.2 // indirect
 )
