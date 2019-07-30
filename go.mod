@@ -14,7 +14,6 @@ require (
 	github.com/spf13/cobra v0.0.0-20180412120829-615425954c3b
 	github.com/spf13/pflag v1.0.1
 	github.com/thcyron/uiprogress v0.0.0-20171218165853-25e98ffb0e98
-	golang.org/x/crypto v0.0.0-20180411161317-d6449816ce06
-	golang.org/x/sys v0.0.0-20180406135729-3b87a42e500a // indirect
+	golang.org/x/crypto v0.0.0-20190730125012-4def268fd1a4
 	gopkg.in/yaml.v2 v2.2.2 // indirect
 )
