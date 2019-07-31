@@ -1,7 +1,7 @@
 {
   "extends": ["config:base"],
   "labels": ["dependencies"],
-  "prConcurrentLimit": 2,
+  "prConcurrentLimit": 1,
   "gomodTidy": true,
   "vulnerabilityAlerts": {
     "labels": ["security"],
