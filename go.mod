@@ -6,7 +6,7 @@ require (
 	github.com/dustin/go-humanize v0.0.0-20171111073723-bb3d318650d4
 	github.com/fatih/structs v0.0.0-20180123065059-ebf56d35bba7
 	github.com/gosuri/uilive v0.0.0-20170323041506-ac356e6e42cd // indirect
-	github.com/gosuri/uiprogress v0.0.0-20170224063937-d0567a9d84a1 // indirect
+	github.com/gosuri/uiprogress v0.0.1 // indirect
 	github.com/hetznercloud/hcloud-go v1.15.1
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
 	github.com/mattn/go-isatty v0.0.3 // indirect
