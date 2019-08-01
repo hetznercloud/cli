@@ -9,7 +9,7 @@ require (
 	github.com/gosuri/uiprogress v0.0.1 // indirect
 	github.com/hetznercloud/hcloud-go v1.15.1
 	github.com/inconshreveable/mousetrap v1.0.0 // indirect
-	github.com/mattn/go-isatty v0.0.3 // indirect
+	github.com/mattn/go-isatty v0.0.8 // indirect
 	github.com/pelletier/go-toml v1.1.0
 	github.com/spf13/cobra v0.0.0-20180412120829-615425954c3b
 	github.com/spf13/pflag v1.0.1
