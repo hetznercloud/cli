@@ -1,7 +1,7 @@
 module github.com/hetznercloud/cli
 
 require (
-	github.com/dustin/go-humanize v0.0.0-20171111073723-bb3d318650d4
+	github.com/dustin/go-humanize v1.0.0
 	github.com/fatih/structs v0.0.0-20180123065059-ebf56d35bba7
 	github.com/gosuri/uilive v0.0.3 // indirect
 	github.com/gosuri/uiprogress v0.0.1 // indirect
