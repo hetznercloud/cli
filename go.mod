@@ -11,5 +11,5 @@ require (
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/pflag v1.0.3
 	github.com/thcyron/uiprogress v0.0.0-20171218165853-25e98ffb0e98
-	golang.org/x/crypto v0.0.0-20190730125012-4def268fd1a4
+	golang.org/x/crypto v0.0.0-20190829043050-9756ffdc2472
 )
