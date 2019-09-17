@@ -31,6 +31,6 @@ func runFloatingIPDelete(cli *CLI, cmd *cobra.Command, args []string) error {
 	if _, err := cli.Client().FloatingIP.Delete(cli.Context, floatingIP); err != nil {
 		return err
 	}
-	fmt.Printf("Floating IP %d deleted\n", idOrName)
+	fmt.Printf("Floating IP %v deleted\n", idOrName)
 	return nil
 }
