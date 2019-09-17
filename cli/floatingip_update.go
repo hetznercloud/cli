@@ -18,7 +18,7 @@ func newFloatingIPUpdateCommand(cli *CLI) *cobra.Command {
 	}
 
 	cmd.Flags().String("description", "", "Floating IP description")
-	cmd.Flags().String("name", "", "Floating IP Name")
+	cmd.Flags().String("name", "", "Floating IP name")
 
 	return cmd
 }
