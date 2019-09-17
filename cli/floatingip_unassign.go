@@ -1,11 +1,7 @@
 package cli
 
 import (
-	"errors"
 	"fmt"
-	"strconv"
-
-	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
 
@@ -23,11 +19,14 @@ func newFloatingIPUnassignCommand(cli *CLI) *cobra.Command {
 }
 
 func runFloatingIPUnassign(cli *CLI, cmd *cobra.Command, args []string) error {
-	floatingIPID, err := strconv.Atoi(args[0])
+	idOrName := args[0]
+	floatingIP, _, err := cli.Client().FloatingIP.Get(cli.Context, idOrName)
 	if err != nil {
-		return errors.New("invalid Floating IP ID")
+		return err
 	}
-	floatingIP := &hcloud.FloatingIP{ID: floatingIPID}
+	if floatingIP == nil {
+		return fmt.Errorf("Floating IP not found: %v", idOrName)
+	}
 
 	action, _, err := cli.Client().FloatingIP.Unassign(cli.Context, floatingIP)
 	if err != nil {

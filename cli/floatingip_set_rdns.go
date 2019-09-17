@@ -2,8 +2,6 @@ package cli
 
 import (
 	"fmt"
-	"strconv"
-
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
@@ -27,17 +25,13 @@ func newFloatingIPSetRDNSCommand(cli *CLI) *cobra.Command {
 }
 
 func runFloatingIPSetRDNS(cli *CLI, cmd *cobra.Command, args []string) error {
-	id, err := strconv.Atoi(args[0])
-	if err != nil {
-		return err
-	}
-
-	floatingIP, _, err := cli.Client().FloatingIP.GetByID(cli.Context, id)
+	idOrName := args[0]
+	floatingIP, _, err := cli.Client().FloatingIP.Get(cli.Context, idOrName)
 	if err != nil {
 		return err
 	}
 	if floatingIP == nil {
-		return fmt.Errorf("Floating IP not found: %d", id)
+		return fmt.Errorf("Floating IP not found: %v", idOrName)
 	}
 
 	ip, _ := cmd.Flags().GetString("ip")
