@@ -4,6 +4,7 @@
 
 * Expose server’s MAC address in networks on `hcloud server describe`
 * Add support for names to Floating IP commands
+* Make `--ip-range` on `hcloud network add-subnet` optional
  
 ## v1.13.0
 
