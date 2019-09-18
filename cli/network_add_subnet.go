@@ -32,7 +32,6 @@ func newNetworkAddSubnetCommand(cli *CLI) *cobra.Command {
 	cmd.MarkFlagRequired("network-zone")
 
 	cmd.Flags().IPNet("ip-range", net.IPNet{}, "Range to allocate IPs from")
-	cmd.MarkFlagRequired("ip-range")
 
 	return cmd
 }
@@ -50,13 +49,17 @@ func runNetworkAddSubnet(cli *CLI, cmd *cobra.Command, args []string) error {
 	if network == nil {
 		return fmt.Errorf("network not found: %s", idOrName)
 	}
+	subnet := hcloud.NetworkSubnet{
+		Type:        hcloud.NetworkSubnetType(subnetType),
+		NetworkZone: hcloud.NetworkZone(networkZone),
+	}
+
+	if ipRange.IP != nil && ipRange.Mask != nil {
+		subnet.IPRange = &ipRange
+	}
 
 	opts := hcloud.NetworkAddSubnetOpts{
-		Subnet: hcloud.NetworkSubnet{
-			Type:        hcloud.NetworkSubnetType(subnetType),
-			NetworkZone: hcloud.NetworkZone(networkZone),
-			IPRange:     &ipRange,
-		},
+		Subnet: subnet,
 	}
 	action, _, err := cli.Client().Network.AddSubnet(cli.Context, network, opts)
 	if err != nil {
