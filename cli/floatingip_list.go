@@ -47,7 +47,7 @@ func runFloatingIPList(cli *CLI, cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	cols := []string{"id", "type", "description", "ip", "home", "server", "dns"}
+	cols := []string{"id", "type", "name", "description", "ip", "home", "server", "dns"}
 	if outOpts.IsSet("columns") {
 		cols = outOpts["columns"]
 	}

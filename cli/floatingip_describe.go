@@ -2,10 +2,7 @@ package cli
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
-	"strconv"
-
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
@@ -27,17 +24,13 @@ func newFloatingIPDescribeCommand(cli *CLI) *cobra.Command {
 func runFloatingIPDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 	outputFlags := outputFlagsForCommand(cmd)
 
-	id, err := strconv.Atoi(args[0])
-	if err != nil {
-		return errors.New("invalid Floating IP ID")
-	}
-
-	floatingIP, resp, err := cli.Client().FloatingIP.GetByID(cli.Context, id)
+	idOrName := args[0]
+	floatingIP, resp, err := cli.Client().FloatingIP.Get(cli.Context, idOrName)
 	if err != nil {
 		return err
 	}
 	if floatingIP == nil {
-		return fmt.Errorf("Floating IP not found: %d", id)
+		return fmt.Errorf("Floating IP not found: %v", idOrName)
 	}
 
 	switch {
@@ -53,6 +46,7 @@ func runFloatingIPDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 func floatingIPDescribeText(cli *CLI, floatingIP *hcloud.FloatingIP) error {
 	fmt.Printf("ID:\t\t%d\n", floatingIP.ID)
 	fmt.Printf("Type:\t\t%s\n", floatingIP.Type)
+	fmt.Printf("Name:\t\t%s\n", floatingIP.Name)
 	fmt.Printf("Description:\t%s\n", na(floatingIP.Description))
 	if floatingIP.Network != nil {
 		fmt.Printf("IP:\t\t%s\n", floatingIP.Network.String())
@@ -105,6 +99,9 @@ func floatingIPDescribeJSON(resp *hcloud.Response) error {
 	}
 	if floatingIP, ok := data["floating_ip"]; ok {
 		return describeJSON(floatingIP)
+	}
+	if floatingIPs, ok := data["floating_ips"].([]interface{}); ok {
+		return describeJSON(floatingIPs[0])
 	}
 	return describeJSON(data)
 }

@@ -3,7 +3,8 @@
 ## master
 
 * Expose server’s MAC address in networks on `hcloud server describe`
-
+* Add support for names to Floating IP commands
+ 
 ## v1.13.0
 
 * Show server name instead of ID on `hcloud floating-ip|volume|image list`

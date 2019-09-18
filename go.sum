@@ -19,6 +19,8 @@ github.com/gosuri/uiprogress v0.0.1/go.mod h1:C1RTYn4Sc7iEyf6j8ft5dyoZ4212h8G1ol
 github.com/hashicorp/hcl v1.0.0/go.mod h1:E5yfLk+7swimpb2L/Alb/PJmXilQ/rhwaUYs4T20WEQ=
 github.com/hetznercloud/hcloud-go v1.15.1 h1:G8Q+xyAqQ5IUY7yq4HKZgkabFa0S/VXJXq3TGCeT8JM=
 github.com/hetznercloud/hcloud-go v1.15.1/go.mod h1:8lR3yHBHZWy2uGcUi9Ibt4UOoop2wrVdERJgCtxsF3Q=
+github.com/hetznercloud/hcloud-go v1.16.0 h1:5PbN3isoKFGQ2iMgGcbJUHqnk/utKAHVYt0uOuR9eRE=
+github.com/hetznercloud/hcloud-go v1.16.0/go.mod h1:8lR3yHBHZWy2uGcUi9Ibt4UOoop2wrVdERJgCtxsF3Q=
 github.com/inconshreveable/mousetrap v1.0.0 h1:Z8tu5sraLXCXIcARxBp/8cbvlwVa7Z1NHg9XEKhtSvM=
 github.com/inconshreveable/mousetrap v1.0.0/go.mod h1:PxqpIevigyE2G7u3NXJIT2ANytuPF1OarO4DADm73n8=
 github.com/magiconair/properties v1.8.0/go.mod h1:PppfXfuXeibc/6YijjN8zIbojt8czPbwD3XqdrwzmxQ=

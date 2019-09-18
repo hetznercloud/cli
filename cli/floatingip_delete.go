@@ -1,11 +1,7 @@
 package cli
 
 import (
-	"errors"
 	"fmt"
-	"strconv"
-
-	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
 
@@ -23,15 +19,18 @@ func newFloatingIPDeleteCommand(cli *CLI) *cobra.Command {
 }
 
 func runFloatingIPDelete(cli *CLI, cmd *cobra.Command, args []string) error {
-	id, err := strconv.Atoi(args[0])
+	idOrName := args[0]
+	floatingIP, _, err := cli.Client().FloatingIP.Get(cli.Context, idOrName)
 	if err != nil {
-		return errors.New("invalid Floating IP ID")
+		return err
 	}
-	floatingIP := &hcloud.FloatingIP{ID: id}
+	if floatingIP == nil {
+		return fmt.Errorf("Floating IP not found: %v", idOrName)
+	}
 
 	if _, err := cli.Client().FloatingIP.Delete(cli.Context, floatingIP); err != nil {
 		return err
 	}
-	fmt.Printf("Floating IP %d deleted\n", id)
+	fmt.Printf("Floating IP %v deleted\n", idOrName)
 	return nil
 }
