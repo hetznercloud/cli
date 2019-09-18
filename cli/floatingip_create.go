@@ -63,7 +63,9 @@ func runFloatingIPCreate(cli *CLI, cmd *cobra.Command, args []string) error {
 	opts := hcloud.FloatingIPCreateOpts{
 		Type:        hcloud.FloatingIPType(typ),
 		Description: &description,
-		Name:        &name,
+	}
+	if name != "" {
+		opts.Name = &name
 	}
 	if homeLocation != "" {
 		opts.HomeLocation = &hcloud.Location{Name: homeLocation}
