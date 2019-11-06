@@ -2,20 +2,21 @@ package cli
 
 import (
 	"fmt"
+
 	"github.com/spf13/cobra"
 )
 
 func newServerIPCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "ip SERVER FLAGS",
-		Short:                 "Get the IP from a server",
+		Short:                 "Print a server's IP address",
 		Args:                  cobra.ExactArgs(1),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runServerIP),
 	}
-	cmd.Flags().BoolP("ipv6", "6", false, "Return the first address of the IPv6 public server network")
+	cmd.Flags().BoolP("ipv6", "6", false, "Print the first address of the IPv6 public server network")
 	return cmd
 }
 
