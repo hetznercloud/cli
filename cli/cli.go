@@ -19,11 +19,13 @@ import (
 var ErrConfigPathUnknown = errors.New("config file path unknown")
 
 type CLI struct {
-	Token      string
-	Endpoint   string
-	Context    context.Context
-	Config     *Config
-	ConfigPath string
+	Token         string
+	Endpoint      string
+	Context       context.Context
+	Config        *Config
+	ConfigPath    string
+	Debug         bool
+	DebugFilePath string
 
 	RootCommand *cobra.Command
 
@@ -52,6 +54,12 @@ func (c *CLI) ReadEnv() {
 	}
 	if s := os.Getenv("HCLOUD_ENDPOINT"); s != "" {
 		c.Endpoint = s
+	}
+	if s := os.Getenv("HCLOUD_DEBUG"); s != "" {
+		c.Debug = true
+	}
+	if s := os.Getenv("HCLOUD_DEBUG_FILE"); s != "" {
+		c.DebugFilePath = s
 	}
 	if s := os.Getenv("HCLOUD_CONTEXT"); s != "" && c.Config != nil {
 		if context := c.Config.ContextByName(s); context != nil {
@@ -127,6 +135,14 @@ func (c *CLI) Client() *hcloud.Client {
 		}
 		if c.Endpoint != "" {
 			opts = append(opts, hcloud.WithEndpoint(c.Endpoint))
+		}
+		if c.Debug {
+			if c.DebugFilePath == "" {
+				opts = append(opts, hcloud.WithDebugWriter(os.Stdout))
+			} else {
+				writer, _ := os.Create(c.DebugFilePath)
+				opts = append(opts, hcloud.WithDebugWriter(writer))
+			}
 		}
 		pollInterval, _ := c.RootCommand.PersistentFlags().GetDuration("poll-interval")
 		if pollInterval > 0 {

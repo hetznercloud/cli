@@ -17,7 +17,7 @@ func newServerCreateImageCommand(cli *CLI) *cobra.Command {
 		PreRunE:               chainRunE(validateServerCreateImage, cli.ensureToken),
 		RunE:                  cli.wrap(runServerCreateImage),
 	}
-	cmd.Flags().String("type", "snapshot", "Image type")
+	cmd.Flags().String("type", "", "Image type")
 	cmd.Flag("type").Annotations = map[string][]string{
 		cobra.BashCompCustom: {"__hcloud_image_types_no_system"},
 	}
