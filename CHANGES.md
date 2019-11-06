@@ -5,7 +5,7 @@
 * Expose server’s MAC address in networks on `hcloud server describe`
 * Add support for names to Floating IP commands
 * Make `--ip-range` on `hcloud network add-subnet` optional
-* Added a debug mode for debugging commands (use `HCLOUD_DEBUG` and `HCLOUD_DEBUG_FILE`)
+* Add debug mode (use `HCLOUD_DEBUG` and `HCLOUD_DEBUG_FILE`)
 
 ## v1.13.0
 
