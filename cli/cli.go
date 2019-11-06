@@ -136,7 +136,7 @@ func (c *CLI) Client() *hcloud.Client {
 		if c.Endpoint != "" {
 			opts = append(opts, hcloud.WithEndpoint(c.Endpoint))
 		}
-		if c.Debug != false {
+		if c.Debug {
 			if c.DebugFilePath == "" {
 				opts = append(opts, hcloud.WithDebugWriter(os.Stdout))
 			} else {
