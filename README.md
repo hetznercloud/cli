@@ -15,6 +15,11 @@ On macOS, you can install `hcloud` via [Homebrew](https://brew.sh/):
 
     brew install hcloud
 
+On debian 11 (bullseye) or later and Ubuntu 19.04 (disco) or later, you can
+install `hcloud-cli` via APT:
+
+    sudo apt install hcloud-cli
+
 ### Third-party packages
 
 There are inofficial packages maintained by third-party users. Please note
