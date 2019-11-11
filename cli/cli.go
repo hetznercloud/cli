@@ -168,7 +168,7 @@ func (c *CLI) ActionProgress(ctx context.Context, action *hcloud.Action) error {
 
 	if c.Terminal() {
 		progress := pb.New(100)
-		progress.SetWidth(50) // width of progress bar is too large by default
+		progress.SetMaxWidth(50) // width of progress bar is too large by default
 		progress.SetTemplateString(progressBarTpl)
 		progress.Start()
 		defer progress.Finish()
