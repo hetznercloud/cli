@@ -47,6 +47,7 @@ func runVolumeDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 func volumeDescribeText(cli *CLI, volume *hcloud.Volume) error {
 	fmt.Printf("ID:\t\t%d\n", volume.ID)
 	fmt.Printf("Name:\t\t%s\n", volume.Name)
+	fmt.Printf("Created:\t%s (%s)\n", datetime(volume.Created), humanize.Time(volume.Created))
 	fmt.Printf("Size:\t\t%s\n", humanize.Bytes(uint64(volume.Size*humanize.GByte)))
 	fmt.Printf("Linux Device:\t%s\n", volume.LinuxDevice)
 	fmt.Printf("Location:\n")

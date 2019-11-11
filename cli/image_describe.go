@@ -50,6 +50,7 @@ func imageDescribeText(cli *CLI, image *hcloud.Image) error {
 	fmt.Printf("Type:\t\t%s\n", image.Type)
 	fmt.Printf("Status:\t\t%s\n", image.Status)
 	fmt.Printf("Name:\t\t%s\n", na(image.Name))
+	fmt.Printf("Created:\t%s (%s)\n", datetime(image.Created), humanize.Time(image.Created))
 	fmt.Printf("Description:\t%s\n", image.Description)
 	if image.ImageSize != 0 {
 		fmt.Printf("Image size:\t%.1f GB\n", image.ImageSize)

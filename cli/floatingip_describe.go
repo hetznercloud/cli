@@ -3,6 +3,7 @@ package cli
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/dustin/go-humanize"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
@@ -48,6 +49,7 @@ func floatingIPDescribeText(cli *CLI, floatingIP *hcloud.FloatingIP) error {
 	fmt.Printf("Type:\t\t%s\n", floatingIP.Type)
 	fmt.Printf("Name:\t\t%s\n", floatingIP.Name)
 	fmt.Printf("Description:\t%s\n", na(floatingIP.Description))
+	fmt.Printf("Created:\t%s (%s)\n", datetime(floatingIP.Created), humanize.Time(floatingIP.Created))
 	if floatingIP.Network != nil {
 		fmt.Printf("IP:\t\t%s\n", floatingIP.Network.String())
 	} else {

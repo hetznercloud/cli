@@ -5,7 +5,7 @@ require (
 	github.com/fatih/structs v1.1.0
 	github.com/gosuri/uilive v0.0.3 // indirect
 	github.com/gosuri/uiprogress v0.0.1 // indirect
-	github.com/hetznercloud/hcloud-go v1.16.0
+	github.com/hetznercloud/hcloud-go v1.17.0
 	github.com/mattn/go-isatty v0.0.9 // indirect
 	github.com/pelletier/go-toml v1.4.0
 	github.com/spf13/cobra v0.0.5
