@@ -22,12 +22,14 @@ that these packages aren’t supported nor maintained by Hetzner Cloud and
 may not always be up-to-date. Downloading the binary or building from source
 is still the recommended install method.
 
-| Operating System | Command                                           |
-| ---------------- | ------------------------------------------------- |
-| Arch Linux       | `pacman -Syu hcloud`                              |
-| Void Linux       | `xbps-install -Syu hcloud`                        |
-| Gentoo Linux     | `emerge hcloud`                                   |
- 
+| Operating System      | Command                                           |
+| --------------------- | ------------------------------------------------- |
+| Debian (>= bullseye)  | `apt install hcloud-cli`                          |
+| Ubuntu (>= 19.04)     | `apt install hcloud-cli`                          |
+| Arch Linux            | `pacman -Syu hcloud`                              |
+| Void Linux            | `xbps-install -Syu hcloud`                        |
+| Gentoo Linux          | `emerge hcloud`                                   |
+
 ### Build manually
 
 If you have Go installed, you can build and install the `hcloud` program with:
