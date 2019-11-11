@@ -10,13 +10,18 @@ import (
 	"path/filepath"
 	"strconv"
 
+	"github.com/cheggaaa/pb/v3"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
-	"github.com/thcyron/uiprogress"
 	"golang.org/x/crypto/ssh/terminal"
 )
 
 var ErrConfigPathUnknown = errors.New("config file path unknown")
+
+const (
+	progressCircleTpl = `{{ cycle . "↖" "↗" "↘" "↙" }}`
+	progressBarTpl    = `{{ etime . }} {{ bar . "" "=" }} {{ percent . }}`
+)
 
 type CLI struct {
 	Token         string
@@ -162,22 +167,21 @@ func (c *CLI) ActionProgress(ctx context.Context, action *hcloud.Action) error {
 	progressCh, errCh := c.Client().Action.WatchProgress(ctx, action)
 
 	if c.Terminal() {
-		progress := uiprogress.New()
-
+		progress := pb.New(100)
+		progress.SetWidth(50) // width of progress bar is too large by default
+		progress.SetTemplateString(progressBarTpl)
 		progress.Start()
-		bar := progress.AddBar(100).AppendCompleted().PrependElapsed()
-		bar.Empty = ' '
+		defer progress.Finish()
 
 		for {
 			select {
 			case err := <-errCh:
 				if err == nil {
-					bar.Set(100)
+					progress.SetCurrent(100)
 				}
-				progress.Stop()
 				return err
 			case p := <-progressCh:
-				bar.Set(p)
+				progress.SetCurrent(int64(p))
 			}
 		}
 	} else {
@@ -193,28 +197,49 @@ func (c *CLI) ensureToken(cmd *cobra.Command, args []string) error {
 }
 
 func (c *CLI) WaitForActions(ctx context.Context, actions []*hcloud.Action) error {
-	for _, action := range actions {
+	const (
+		done   = "done"
+		failed = "failed"
+	)
 
+	for _, action := range actions {
 		resources := make(map[string]int)
 		for _, resource := range action.Resources {
 			resources[string(resource.Type)] = resource.ID
 		}
 
+		var waitingFor string
 		switch action.Command {
 		default:
-			fmt.Printf("Waiting for action %s to have finished... ", action.Command)
+			waitingFor = fmt.Sprintf("Waiting for action %s to have finished... ", action.Command)
 		case "start_server":
-			fmt.Printf("Waiting for server %d to have started... ", resources["server"])
+			waitingFor = fmt.Sprintf("Waiting for server %d to have started... ", resources["server"])
 		case "attach_volume":
-			fmt.Printf("Waiting for volume %d to have been attached to server %d... ", resources["volume"], resources["server"])
+			waitingFor = fmt.Sprintf("Waiting for volume %d to have been attached to server %d... ", resources["volume"], resources["server"])
 		}
 
-		_, errCh := c.Client().Action.WatchProgress(ctx, action)
-		if err := <-errCh; err != nil {
-			fmt.Println("failed")
-			return err
+		if c.Terminal() {
+			progress := pb.New(1) // total progress of 1 will do since we use a circle here
+			progress.SetTemplateString(waitingFor + progressCircleTpl)
+			progress.Start()
+			defer progress.Finish()
+
+			_, errCh := c.Client().Action.WatchProgress(ctx, action)
+			if err := <-errCh; err != nil {
+				progress.SetTemplateString(waitingFor + failed)
+				return err
+			}
+			progress.SetTemplateString(waitingFor + done)
+		} else {
+			fmt.Print(waitingFor)
+
+			_, errCh := c.Client().Action.WatchProgress(ctx, action)
+			if err := <-errCh; err != nil {
+				fmt.Println(failed)
+				return err
+			}
+			fmt.Println(done)
 		}
-		fmt.Println("done")
 	}
 
 	return nil
