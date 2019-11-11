@@ -19,7 +19,7 @@ import (
 var ErrConfigPathUnknown = errors.New("config file path unknown")
 
 const (
-	progressCircleTpl = `{{ cycle . "↖" "↗" "↘" "↙" }}`
+	progressCircleTpl = `{{ cycle . " .  " "  . " "   ." "  . " }}`
 	progressBarTpl    = `{{ etime . }} {{ bar . "" "=" }} {{ percent . }}`
 )
 
@@ -198,8 +198,9 @@ func (c *CLI) ensureToken(cmd *cobra.Command, args []string) error {
 
 func (c *CLI) WaitForActions(ctx context.Context, actions []*hcloud.Action) error {
 	const (
-		done   = "done"
-		failed = "failed"
+		done     = "done"
+		failed   = "failed"
+		ellipsis = " ... "
 	)
 
 	for _, action := range actions {
@@ -211,27 +212,28 @@ func (c *CLI) WaitForActions(ctx context.Context, actions []*hcloud.Action) erro
 		var waitingFor string
 		switch action.Command {
 		default:
-			waitingFor = fmt.Sprintf("Waiting for action %s to have finished... ", action.Command)
+			waitingFor = fmt.Sprintf("Waiting for action %s to have finished", action.Command)
 		case "start_server":
-			waitingFor = fmt.Sprintf("Waiting for server %d to have started... ", resources["server"])
+			waitingFor = fmt.Sprintf("Waiting for server %d to have started", resources["server"])
 		case "attach_volume":
-			waitingFor = fmt.Sprintf("Waiting for volume %d to have been attached to server %d... ", resources["volume"], resources["server"])
+			waitingFor = fmt.Sprintf("Waiting for volume %d to have been attached to server %d", resources["volume"], resources["server"])
 		}
 
 		if c.Terminal() {
+			fmt.Println(waitingFor)
 			progress := pb.New(1) // total progress of 1 will do since we use a circle here
-			progress.SetTemplateString(waitingFor + progressCircleTpl)
+			progress.SetTemplateString(progressCircleTpl)
 			progress.Start()
 			defer progress.Finish()
 
 			_, errCh := c.Client().Action.WatchProgress(ctx, action)
 			if err := <-errCh; err != nil {
-				progress.SetTemplateString(waitingFor + failed)
+				progress.SetTemplateString(ellipsis + failed)
 				return err
 			}
-			progress.SetTemplateString(waitingFor + done)
+			progress.SetTemplateString(ellipsis + done)
 		} else {
-			fmt.Print(waitingFor)
+			fmt.Print(waitingFor + ellipsis)
 
 			_, errCh := c.Client().Action.WatchProgress(ctx, action)
 			if err := <-errCh; err != nil {
