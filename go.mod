@@ -13,3 +13,5 @@ require (
 	github.com/thcyron/uiprogress v0.0.0-20171218165853-25e98ffb0e98
 	golang.org/x/crypto v0.0.0-20190909091759-094676da4a83
 )
+
+go 1.13
