@@ -8,6 +8,7 @@
 * Add debug mode (use `HCLOUD_DEBUG` and `HCLOUD_DEBUG_FILE`)
 * Add `hcloud server ip` command
 * Expose `Created` on `hcloud floating-ip|image|ssh-key|volume describe`
+* Refactor progressbar and add loading animation for running actions
 
 ## v1.13.0
 
