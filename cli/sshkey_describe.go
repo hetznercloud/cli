@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/dustin/go-humanize"
+
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
@@ -47,9 +49,9 @@ func runSSHKeyDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 func sshKeyDescribeText(cli *CLI, sshKey *hcloud.SSHKey) error {
 	fmt.Printf("ID:\t\t%d\n", sshKey.ID)
 	fmt.Printf("Name:\t\t%s\n", sshKey.Name)
+	fmt.Printf("Created:\t%s (%s)\n", datetime(sshKey.Created), humanize.Time(sshKey.Created))
 	fmt.Printf("Fingerprint:\t%s\n", sshKey.Fingerprint)
 	fmt.Printf("Public Key:\n%s\n", strings.TrimSpace(sshKey.PublicKey))
-
 	fmt.Print("Labels:\n")
 	if len(sshKey.Labels) == 0 {
 		fmt.Print("  No labels\n")

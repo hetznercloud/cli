@@ -7,6 +7,7 @@
 * Make `--ip-range` on `hcloud network add-subnet` optional
 * Add debug mode (use `HCLOUD_DEBUG` and `HCLOUD_DEBUG_FILE`)
 * Add `hcloud server ip` command
+* Expose `Created` on `hcloud floating-ip|image|ssh-key|volume describe`
 
 ## v1.13.0
 
