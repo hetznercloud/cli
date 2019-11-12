@@ -1,6 +1,7 @@
 module github.com/hetznercloud/cli
 
 require (
+	github.com/cheggaaa/pb/v3 v3.0.2
 	github.com/dustin/go-humanize v1.0.0
 	github.com/fatih/structs v1.1.0
 	github.com/gosuri/uilive v0.0.3 // indirect
@@ -10,7 +11,6 @@ require (
 	github.com/pelletier/go-toml v1.4.0
 	github.com/spf13/cobra v0.0.5
 	github.com/spf13/pflag v1.0.3
-	github.com/thcyron/uiprogress v0.0.0-20171218165853-25e98ffb0e98
 	golang.org/x/crypto v0.0.0-20190909091759-094676da4a83
 )
 
