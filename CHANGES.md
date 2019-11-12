@@ -1,6 +1,6 @@
 # Changes
 
-## master
+## v1.14.0
 
 * Expose server’s MAC address in networks on `hcloud server describe`
 * Add support for names to Floating IP commands
