@@ -67,8 +67,8 @@ release:
   name_template: "{{.ProjectName}} v{{.Version}}"
 
 signs:
-  - artifacts: checksum
-    args: ["--batch", "-u", "lukas.kaemmerling@hetzner-cloud.de", "--pinentry-mode", "loopback", "--output", "${signature}", "--detach-sign", "${artifact}"]
+  - artifacts: all
+    args: ["--batch", "-u", "hetzner-cloud-bot_test@lukas-kaemmerling.de", "--pinentry-mode", "loopback", "--output", "${signature}", "--detach-sign", "${artifact}"]
 
 archives:
   - # ID of this archive.
