@@ -55,6 +55,6 @@ builds:
     # Those fields allow templates.
     # Default is both hooks empty.
 
-    before:
-      hooks:
-          - go mod tidy
+before:
+    hooks:
+        - go mod tidy
