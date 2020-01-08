@@ -68,11 +68,10 @@ release:
 
 signs:
   - artifacts: checksum
-    args: ["--batch", "-u", "lukas.kaemmerling@hetzner-cloud.de", "--output", "${signature}", "--detach-sign", "${artifact}"]
+    args: ["--batch", "-u", "lukas.kaemmerling@hetzner-cloud.de", "--pinentry-mode", "loopback", "--output", "${signature}", "--detach-sign", "${artifact}"]
 
 archives:
-  -
-    # ID of this archive.
+  - # ID of this archive.
     # Defaults to `default`.
     id: hcloud
 
