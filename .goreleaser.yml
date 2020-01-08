@@ -85,15 +85,7 @@ archives:
     #   - `{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}`
     # - if format is `binary`:
     #   - `{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}`
-    name_template: "{{ .ProjectName }}-{{ .Os }}-{{ .Arch }}-v{{ .Version }}"
-
-    # Set to true, if you want all files in the archive to be in a single directory.
-    # If set to true and you extract the archive 'goreleaser_Linux_arm64.tar.gz',
-    # you get a folder 'goreleaser_Linux_arm64'.
-    # If set to false, all files are extracted separately.
-    # You can also set it to a custom folder name (templating is supported).
-    # Default is false.
-    wrap_in_directory: "{{ .ProjectName }}-{{ .Os }}-{{ .Arch }}-v{{ .Version }}"
+    name_template: "{{ .Binary }}-{{ .Os }}-{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}-{{ .Version }}"
 
     # Can be used to change the archive formats for specific GOOSs.
     # Most common use case is to archive as zip on Windows.
