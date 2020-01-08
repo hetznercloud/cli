@@ -66,6 +66,10 @@ release:
   # Default is `{{.Tag}}`
   name_template: "{{.ProjectName}} v{{.Version}}"
 
+signs:
+  - artifacts: checksum
+    args: ["--batch", "-u", "lukas.kaemmerling@hetzner-cloud.de", "--output", "${signature}", "--detach-sign", "${artifact}"]
+
 archives:
   -
     # ID of this archive.
