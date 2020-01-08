@@ -54,7 +54,7 @@ builds:
     # for example, to run generators.
     # Those fields allow templates.
     # Default is both hooks empty.
-    hooks:
-      before:
-        hooks:
+
+    before:
+      hooks:
           - go mod tidy
