@@ -64,7 +64,7 @@ release:
   draft: true
   # You can change the name of the GitHub release.
   # Default is `{{.Tag}}`
-  name_template: "{{.Binary}} v{{.Version}}"
+  name_template: "hcloud v{{.Version}}"
 
 signs:
   - artifacts: all
