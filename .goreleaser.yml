@@ -1,10 +1,9 @@
 # .goreleaser.yml
 builds:
   # You can have multiple builds defined as a yaml list
-  -
-    # ID of the build.
+  - # ID of the build.
     # Defaults to the project name.
-    id: "my-build"
+    id: "hcloud"
 
     # Path to main.go file or main package.
     # Default is `.`.
@@ -18,7 +17,7 @@ builds:
     # Custom ldflags templates.
     # Default is `-s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}} -X main.builtBy=goreleaser`.
     ldflags:
-     - -w -X github.com/hetznercloud/cli/cli.Version={{.Version}}
+      - -w -X github.com/hetznercloud/cli/cli.Version={{.Version}}
 
     # Custom environment variables to be set during the builds.
     # Default is empty.
@@ -56,5 +55,9 @@ builds:
     # Default is both hooks empty.
 
 before:
-    hooks:
-        - go mod tidy
+  hooks:
+    - go mod tidy
+release:
+  # If set to true, will not auto-publish the release.
+  # Default is false.
+  draft: true
