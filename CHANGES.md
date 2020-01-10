@@ -1,5 +1,7 @@
 # Changes
 
+As of v1.15.0 
+
 ## v1.14.0
 
 * Expose server’s MAC address in networks on `hcloud server describe`

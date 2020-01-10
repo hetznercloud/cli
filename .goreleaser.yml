@@ -68,7 +68,7 @@ release:
 
 signs:
   - artifacts: all
-    args: ["--batch", "-u", "hetzner-cloud-bot_test@lukas-kaemmerling.de", "--pinentry-mode", "loopback", "--output", "${signature}", "--detach-sign", "${artifact}"]
+    args: ["--batch", "-u", "github-bot@hetzner-cloud.de", "--pinentry-mode", "loopback", "--output", "${signature}", "--detach-sign", "${artifact}"]
 
 archives:
   - # ID of this archive.
