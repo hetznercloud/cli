@@ -41,6 +41,8 @@ before:
 
 signs:
   - artifacts: all
+    ids:
+      - hcloud
     args: ["--batch", "-u", "github-bot@hetzner-cloud.de", "--pinentry-mode", "loopback", "--output", "${signature}", "--detach-sign", "${artifact}"]
   - signature: "./dist/${artifact}.dmg"
     ids:
