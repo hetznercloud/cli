@@ -1,102 +1,69 @@
-# .goreleaser.yml
 builds:
-  # You can have multiple builds defined as a yaml list
-  - # ID of the build.
-    # Defaults to the project name.
-    id: "hcloud"
-
-    # Path to main.go file or main package.
-    # Default is `.`.
+  - id: "hcloud"
     main: ./cmd/hcloud/main.go
-
-    # Binary name.
-    # Can be a path (e.g. `bin/app`) to wrap the binary in a directory.
-    # Default is the name of the project directory.
     binary: hcloud
-
-    # Custom ldflags templates.
-    # Default is `-s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}} -X main.builtBy=goreleaser`.
     ldflags:
       - -w -X github.com/hetznercloud/cli/cli.Version={{.Version}}
-
-    # Custom environment variables to be set during the builds.
-    # Default is empty.
     env:
       - CGO_ENABLED=0
-
-    # GOOS list to build for.
-    # For more info refer to: https://golang.org/doc/install/source#environment
-    # Defaults are darwin and linux.
     goos:
       - freebsd
       - windows
-      - darwin
       - linux
-
-    # GOARCH to build for.
-    # For more info refer to: https://golang.org/doc/install/source#environment
-    # Defaults are 386 and amd64.
     goarch:
       - amd64
       - arm
       - arm64
       - 386
-
-    # GOARM to build for when GOARCH is arm.
-    # For more info refer to: https://golang.org/doc/install/source#environment
-    # Default is only 6.
     goarm:
       - 6
       - 7
 
-    # Hooks can be used to customize the final binary,
-    # for example, to run generators.
-    # Those fields allow templates.
-    # Default is both hooks empty.
+  - id: "hcloud-macos"
+    main: ./cmd/hcloud/main.go
+    binary: hcloud
+    ldflags:
+      - -w -X github.com/hetznercloud/cli/cli.Version={{.Version}}
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+    goarch:
+      - amd64
 
 before:
   hooks:
     - go mod tidy
 
-release:
-  # If set to true, will not auto-publish the release.
-  # Default is false.
-  draft: true
-  # You can change the name of the GitHub release.
-  # Default is `{{.Tag}}`
-  name_template: "hcloud v{{.Version}}"
+#release:
+#  draft: true
+#  name_template: "hcloud v{{.Version}}"
 
 signs:
   - artifacts: all
     args: ["--batch", "-u", "github-bot@hetzner-cloud.de", "--pinentry-mode", "loopback", "--output", "${signature}", "--detach-sign", "${artifact}"]
+  - signature: "./dist/${artifact}.dmg"
+    ids:
+      - hcloud-macos
+    cmd: gon
+    args:
+      - gon.hcl
+    artifacts: all
 
 archives:
-  - # ID of this archive.
-    # Defaults to `default`.
-    id: hcloud
-
-    # Builds reference which build instances should be archived in this archive.
+  - id: hcloud
     builds:
       - hcloud
+      - hcloud-macos
 
-    # Archive name template.
-    # Defaults:
-    # - if format is `tar.gz`, `gz` or `zip`:
-    #   - `{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}`
-    # - if format is `binary`:
-    #   - `{{ .Binary }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}`
     name_template: "{{ .Binary }}-{{ .Os }}-{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}-{{ .Version }}"
 
-    # Can be used to change the archive formats for specific GOOSs.
-    # Most common use case is to archive as zip on Windows.
-    # Default is empty.
     format_overrides:
       - goos: windows
         format: zip
+      - goos: darwin
+        format: zip
 
-    # Additional files/globs you want to add to the archive.
-    # Defaults are any files matching `LICENCE*`, `LICENSE*`,
-    # `README*` and `CHANGELOG*` (case-insensitive).
     files:
       - LICENSE
       - CHANGES.md
