@@ -1,4 +1,4 @@
-source = ["./dist/hcloud-macos_darwin_amd64/hcloud"]
+source = ["./dist/hcloud-macos-build_darwin_amd64/hcloud"]
 bundle_id = "cloud.hetzner.cli"
 
 apple_id {
