@@ -14,6 +14,10 @@ jobs:
         uses: actions/setup-go@v1
         with:
           go-version: 1.13.x
+      - name: Decrypt Secrets
+        env:
+          SECRETS_PASSWORD: ${{ secrets.SECRETS_PASSWORD }}
+        run: bash script/decrypt_secrets.sh
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v1
         with:
