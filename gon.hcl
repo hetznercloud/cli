@@ -1,10 +1,5 @@
 source = ["./dist/hcloud-macos_darwin_amd64/hcloud"]
 bundle_id = "cloud.hetzner.cli"
-notarize {
-  path = "./dist/hcloud-darwin-amd64.zip"
-  staple = true
-  bundle_id = "cloud.hetzner.cli"
-}
 
 apple_id {
   username = "integrations@hetzner-cloud.de"

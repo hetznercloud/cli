@@ -50,9 +50,8 @@ signs:
       - hcloud-macos
     cmd: gon
     args:
-      - gon.hcl
-      - -log-level=info
       - -log-json
+      - gon.hcl
     artifacts: all
 
 archives:
@@ -63,8 +62,6 @@ archives:
 
     format_overrides:
       - goos: windows
-        format: zip
-      - goos: darwin
         format: zip
 
     files:
