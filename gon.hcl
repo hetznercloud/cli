@@ -1,9 +1,9 @@
 source = ["./dist/hcloud-macos_darwin_amd64/hcloud"]
-bundle_id = "com.hetzner-cloud.cli"
+bundle_id = "cloud.hetzner.cli"
 notarize {
-  path = "./dist/hetzner-cloud-cli.dmg"
+  path = "./dist/hcloud-darwin-amd64.zip"
   staple = true
-  bundle_id = "com.hetzner-cloud.cli"
+  bundle_id = "cloud.hetzner.cli"
 }
 
 apple_id {
@@ -11,7 +11,11 @@ apple_id {
   password = "@env:HC_APPLE_DEVELOPER_PASSWORD"
 }
 
+sign {
+  application_identity = "Developer ID Application: Hetzner Cloud GmbH (4PM38G6W5R)"
+}
+
 dmg {
-  volume_name = "hetzner-cloud-cli"
-  output_path = "./dist/hetzner-cloud-cli.dmg"
+  volume_name = "hcloud-cli"
+  output_path = "./dist/hcloud-cli.dmg"
 }

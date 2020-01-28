@@ -35,9 +35,10 @@ before:
   hooks:
     - go mod tidy
 
-#release:
-#  draft: true
-#  name_template: "hcloud v{{.Version}}"
+release:
+  draft: true
+  name_template: "hcloud v{{.Version}}"
+  disable: true
 
 signs:
   - artifacts: all
@@ -56,9 +57,7 @@ archives:
   - id: hcloud
     builds:
       - hcloud
-      - hcloud-macos
-
-    name_template: "{{ .Binary }}-{{ .Os }}-{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}-{{ .Version }}"
+    name_template: "{{ .Binary }}-{{ .Os }}-{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
 
     format_overrides:
       - goos: windows
