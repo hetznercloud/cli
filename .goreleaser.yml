@@ -51,6 +51,8 @@ signs:
     cmd: gon
     args:
       - gon.hcl
+      - -log-level=info
+      - -log-json
     artifacts: all
 
 archives:
