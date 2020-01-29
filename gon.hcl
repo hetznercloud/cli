@@ -2,7 +2,7 @@ source = ["./dist/hcloud-macos-build_darwin_amd64/hcloud"]
 bundle_id = "cloud.hetzner.cli"
 
 apple_id {
-  username = "@env:HC_APPLE_DEVELOPER_USER"
+  username = "integrations@hetzner-cloud.de"
   password = "@env:HC_APPLE_DEVELOPER_PASSWORD"
 }
 
