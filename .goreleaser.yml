@@ -38,10 +38,10 @@ before:
 release:
   draft: true
   name_template: "hcloud v{{.Version}}"
+  disable: true
 
 signs:
-  - signature: "./dist/${artifact}.zip"
-    ids:
+  - ids:
       - hcloud-macos-build
     cmd: gon
     args:
@@ -51,6 +51,7 @@ signs:
   - artifacts: all
     ids:
       - hcloud-build
+      - hcloud-macos-build
     args: ["--batch", "-u", "github-bot@hetzner-cloud.de", "--pinentry-mode", "loopback", "--output", "${signature}", "--detach-sign", "${artifact}"]
 
 archives:
