@@ -44,10 +44,8 @@ signs:
   - artifacts: all
     ids:
       - hcloud-build
-      - hcloud-macos-sign
     args: ["--batch", "-u", "hetzner-cloud-bot_test@lukas-kaemmerling.de", "--pinentry-mode", "loopback", "--output", "${signature}", "--detach-sign", "${artifact}"]
-  - signature: "./dist/${artifact}.dmg"
-    id: hcloud-macos-sign
+  - signature: "./dist/${artifact}.zip"
     ids:
       - hcloud-macos-build
     cmd: gon
