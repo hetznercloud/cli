@@ -1,0 +1,69 @@
+builds:
+  - id: "hcloud-build"
+    main: ./cmd/hcloud/main.go
+    binary: hcloud
+    ldflags:
+      - -w -X github.com/hetznercloud/cli/cli.Version=v{{.Version}}
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - freebsd
+      - windows
+      - linux
+    goarch:
+      - amd64
+      - arm
+      - arm64
+      - 386
+    goarm:
+      - 6
+      - 7
+
+  - id: "hcloud-macos-build"
+    main: ./cmd/hcloud/main.go
+    binary: hcloud
+    ldflags:
+      - -w -X github.com/hetznercloud/cli/cli.Version=v{{.Version}}
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+    goarch:
+      - amd64
+
+before:
+  hooks:
+    - go mod tidy
+
+release:
+  draft: true
+  name_template: "hcloud v{{.Version}}"
+
+signs:
+  - signature: "./dist/${artifact}.zip"
+    ids:
+      - hcloud-macos-build
+    cmd: gon
+    args:
+      - -log-json
+      - gon.hcl
+    artifacts: all
+  - artifacts: all
+    ids:
+      - hcloud-build
+    args: ["--batch", "-u", "github-bot@hetzner-cloud.de", "--pinentry-mode", "loopback", "--output", "${signature}", "--detach-sign", "${artifact}"]
+
+archives:
+  - id: hcloud-archive
+    builds:
+      - hcloud-build
+    name_template: "{{ .Binary }}-{{ .Os }}-{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
+
+    format_overrides:
+      - goos: windows
+        format: zip
+
+    files:
+      - LICENSE
+      - CHANGES.md
+      - README.md
