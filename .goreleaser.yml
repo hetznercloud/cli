@@ -3,7 +3,7 @@ builds:
     main: ./cmd/hcloud/main.go
     binary: hcloud
     ldflags:
-      - -w -X github.com/hetznercloud/cli/cli.Version={{.Version}}
+      - -w -X github.com/hetznercloud/cli/cli.Version=v{{.Version}}
     env:
       - CGO_ENABLED=0
     goos:
@@ -23,7 +23,7 @@ builds:
     main: ./cmd/hcloud/main.go
     binary: hcloud
     ldflags:
-      - -w -X github.com/hetznercloud/cli/cli.Version={{.Version}}
+      - -w -X github.com/hetznercloud/cli/cli.Version=v{{.Version}}
     env:
       - CGO_ENABLED=0
     goos:
@@ -41,10 +41,6 @@ release:
   disable: true
 
 signs:
-  - artifacts: all
-    ids:
-      - hcloud-build
-    args: ["--batch", "-u", "hetzner-cloud-bot_test@lukas-kaemmerling.de", "--pinentry-mode", "loopback", "--output", "${signature}", "--detach-sign", "${artifact}"]
   - signature: "./dist/${artifact}.zip"
     ids:
       - hcloud-macos-build
@@ -53,6 +49,10 @@ signs:
       - -log-json
       - gon.hcl
     artifacts: all
+  - artifacts: all
+      ids:
+        - hcloud-build
+      args: ["--batch", "-u", "hetzner-cloud-bot_test@lukas-kaemmerling.de", "--pinentry-mode", "loopback", "--output", "${signature}", "--detach-sign", "${artifact}"]
 
 archives:
   - id: hcloud-archive
