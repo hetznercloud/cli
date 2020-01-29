@@ -11,5 +11,5 @@ sign {
 }
 
 zip {
-  output_path = "./dist/hcloud-cli.zip"
+  output_path = "./dist/hcloud-macos-amd64.zip"
 }
