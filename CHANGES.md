@@ -1,6 +1,6 @@
 # Changes
 
-As of v1.15.0 
+As of v1.15.0 we expose the Changelog only in the [Github Releases section](https://github.com/hetznercloud/cli/releases). 
 
 ## v1.14.0
 
