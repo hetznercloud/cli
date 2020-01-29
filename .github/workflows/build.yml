@@ -16,16 +16,6 @@ jobs:
           go-version: 1.13.x
       - name: Print Go Version
         run: go version
-      - name: Decrypt Secrets
-        env:
-          SECRETS_PASSWORD: ${{ secrets.SECRETS_PASSWORD }}
-        run: bash script/decrypt_secrets.sh
-      - name: Install gon
-        run: |
-          wget https://github.com/mitchellh/gon/releases/download/v0.2.2/gon_0.2.2_macos.zip
-          unzip gon_0.2.2_macos.zip
-          mv gon /usr/local/bin/gon
-          chmod +x /usr/local/bin/gon
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v1
         with:
@@ -37,12 +27,16 @@ jobs:
       - uses: actions/upload-artifact@v1
         with:
           name: Upload macOS Build Artifact
-          path: dist/hcloud-macos-amd64.zip
+          path: dist/hcloud-macos-build_darwin_amd64/hcloud
       - uses: actions/upload-artifact@v1
         with:
           name: Upload Windows AMD64 Build Artifact
-          path: dist/hcloud-windows-amd64.zip
+          path: dist/hcloud-build-windows_amd64/hcloudp
       - uses: actions/upload-artifact@v1
         with:
           name: Upload Linux AMD64 Build Artifact
-          path: dist/hcloud-linux-amd64.tar.gz
+          path: dist/hcloud-build_linux_amd64/hcloud
+      - uses: actions/upload-artifact@v1
+        with:
+          name: Upload FreeBSD AMD64 Build Artifact
+          path: dist/hcloud-build_freebsd_amd64/hcloud
