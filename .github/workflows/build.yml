@@ -1,4 +1,4 @@
-name: Release CLI Version
+name: Build CLI Developer Snapshot
 
 on:
   pull_request:
