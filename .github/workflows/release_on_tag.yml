@@ -35,4 +35,6 @@ jobs:
           key: ${{ secrets.GPG_KEY }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HC_APPLE_DEVELOPER_USER: ${{ secrets.HC_APPLE_DEVELOPER_USER }}
           HC_APPLE_DEVELOPER_PASSWORD: ${{ secrets.HC_APPLE_DEVELOPER_PASSWORD }}
+          HC_APPLE_IDENTITY: ${{ secrets.HC_APPLE_IDENTITY }}
