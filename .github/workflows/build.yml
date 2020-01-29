@@ -3,6 +3,8 @@ name: Build CLI Developer Snapshot
 on:
   pull_request:
   push:
+    tags-ignore:
+      - 'v*.*.*'
 
 jobs:
   build-cli:
