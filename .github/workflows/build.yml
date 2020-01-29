@@ -31,7 +31,7 @@ jobs:
       - uses: actions/upload-artifact@v1
         with:
           name: Upload Windows AMD64 Build Artifact
-          path: dist/hcloud-build-windows_amd64/hcloudp
+          path: dist/hcloud-build-windows_amd64/hcloud
       - uses: actions/upload-artifact@v1
         with:
           name: Upload Linux AMD64 Build Artifact
