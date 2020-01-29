@@ -38,12 +38,12 @@ jobs:
       - uses: actions/upload-artifact@v1
         with:
           name: Upload macOS Build Artifact
-          path: hcloud-macos-amd64.zip
+          path: dist/hcloud-macos-amd64.zip
       - uses: actions/upload-artifact@v1
         with:
           name: Upload Windows AMD64 Build Artifact
-          path: hcloud-windows-amd64.zip
+          path: dist/hcloud-windows-amd64.zip
       - uses: actions/upload-artifact@v1
         with:
           name: Upload Linux Build Artifact
-          path: hcloud-linux-amd64.tar.gz
+          path: dist/hcloud-linux-amd64.tar.gz
