@@ -31,7 +31,7 @@ jobs:
         uses: goreleaser/goreleaser-action@v1
         with:
           version: latest
-          args: release --rm-dist --skip-validate
+          args: release --rm-dist --skip-validate --parallelism=1
           key: ${{ secrets.GPG_KEY }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
