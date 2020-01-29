@@ -43,7 +43,7 @@ signs:
   - signature: "./dist/${artifact}.zip"
     ids:
       - hcloud-macos-build
-    cmd: gon
+    cmd: sleep 2 && gon
     args:
       - -log-json
       - gon.hcl
