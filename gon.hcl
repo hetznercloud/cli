@@ -7,7 +7,7 @@ apple_id {
 }
 
 sign {
-  application_identity = "@env:HC_APPLE_IDENTITY"
+  application_identity = "Developer ID Application: Hetzner Cloud GmbH (4PM38G6W5R)"
 }
 
 zip {
