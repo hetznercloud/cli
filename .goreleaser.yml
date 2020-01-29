@@ -50,9 +50,9 @@ signs:
       - gon.hcl
     artifacts: all
   - artifacts: all
-      ids:
-        - hcloud-build
-      args: ["--batch", "-u", "hetzner-cloud-bot_test@lukas-kaemmerling.de", "--pinentry-mode", "loopback", "--output", "${signature}", "--detach-sign", "${artifact}"]
+    ids:
+      - hcloud-build
+    args: ["--batch", "-u", "hetzner-cloud-bot_test@lukas-kaemmerling.de", "--pinentry-mode", "loopback", "--output", "${signature}", "--detach-sign", "${artifact}"]
 
 archives:
   - id: hcloud-archive
