@@ -38,16 +38,26 @@ jobs:
           HC_APPLE_DEVELOPER_USER: ${{ secrets.HC_APPLE_DEVELOPER_USER }}
           HC_APPLE_DEVELOPER_PASSWORD: ${{ secrets.HC_APPLE_DEVELOPER_PASSWORD }}
           HC_APPLE_IDENTITY: ${{ secrets.HC_APPLE_IDENTITY }}
+
       - name: Create Release
-          id: create_release
-          uses: actions/create-release@v1.0.0
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          with:
-            tag_name: ${{ github.ref }}
-            release_name: hcloud ${{ github.ref }}
-            draft: true
-            prerelease: false
+        id: create_release
+        uses: actions/create-release@v1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: hcloud ${{ github.ref }}
+          draft: true
+          prerelease: false
+      - name: Upload Changelog File
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/CHANGELOG.md
+          asset_name: CHANGELOG.md
+          asset_content_type: text/plain
       - name: Upload Checksums File
         uses: actions/upload-release-asset@v1.0.1
         env:
@@ -74,6 +84,24 @@ jobs:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./dist/hcloud-freebsd-386.tar.gz
           asset_name: hcloud-freebsd-386.tar.gz
+          asset_content_type: application/gzip
+      - name: Upload FreeBSD armv6
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/hcloud-freebsd-armv6.tar.gz
+          asset_name: hcloud-freebsd-armv6.tar.gz
+          asset_content_type: application/gzip
+      - name: Upload FreeBSD armv7
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./dist/hcloud-freebsd-armv7.tar.gz
+          asset_name: hcloud-freebsd-armv7.tar.gz
           asset_content_type: application/gzip
       - name: Upload Linux 386
         uses: actions/upload-release-asset@v1.0.1
