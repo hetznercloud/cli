@@ -10,7 +10,6 @@ sign {
   application_identity = "Developer ID Application: Hetzner Cloud GmbH (4PM38G6W5R)"
 }
 
-dmg {
-  volume_name = "hcloud-cli"
-  output_path = "./dist/hcloud-cli.dmg"
+zip {
+  output_path = "./dist/hcloud-cli.zip"
 }
