@@ -1,4 +1,4 @@
-name: Release
+name: Release CLI Version
 
 on:
   pull_request:
@@ -14,6 +14,8 @@ jobs:
         uses: actions/setup-go@v1
         with:
           go-version: 1.13.x
+      - name: Print Go Version
+        run: go version
       - name: Decrypt Secrets
         env:
           SECRETS_PASSWORD: ${{ secrets.SECRETS_PASSWORD }}
@@ -33,3 +35,15 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HC_APPLE_DEVELOPER_PASSWORD: ${{ secrets.HC_APPLE_DEVELOPER_PASSWORD }}
+      - uses: actions/upload-artifact@v1
+        with:
+          name: Upload macOS Build Artifact
+          path: hcloud-macos-amd64.zip
+      - uses: actions/upload-artifact@v1
+        with:
+          name: Upload Windows AMD64 Build Artifact
+          path: hcloud-windows-amd64.zip
+      - uses: actions/upload-artifact@v1
+        with:
+          name: Upload Linux Build Artifact
+          path: hcloud-linux-amd64.tar.gz
