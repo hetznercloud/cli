@@ -35,10 +35,13 @@ before:
   hooks:
     - go mod tidy
 
+checksum:
+  name_template: "checksums.txt"
+  algorithm: sha256
+
 release:
   draft: true
   name_template: "hcloud v{{.Version}}"
-  disable: true
 
 signs:
   - ids:
@@ -48,10 +51,11 @@ signs:
       - -log-json
       - gon.hcl
     artifacts: all
+    signature: "hcloud-macos-amd64.zip"
   - artifacts: all
+    signature: "${artifact}.sig"
     ids:
       - hcloud-build
-      - hcloud-macos-build
     args: ["--batch", "-u", "github-bot@hetzner-cloud.de", "--pinentry-mode", "loopback", "--output", "${signature}", "--detach-sign", "${artifact}"]
 
 archives:
