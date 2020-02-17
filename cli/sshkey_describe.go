@@ -70,10 +70,10 @@ func sshKeyDescribeJSON(resp *hcloud.Response) error {
 		return err
 	}
 	if sshKey, ok := data["ssh_key"]; ok {
-		return describeJSON(sshKey)
+		return describeJSON(sshKey, true)
 	}
 	if sshKeys, ok := data["ssh_keys"].([]interface{}); ok {
-		return describeJSON(sshKeys[0])
+		return describeJSON(sshKeys[0], true)
 	}
-	return describeJSON(data)
+	return describeJSON(data, true)
 }

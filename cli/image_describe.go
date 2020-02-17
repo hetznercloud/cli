@@ -83,10 +83,10 @@ func imageDescribeJSON(resp *hcloud.Response) error {
 		return err
 	}
 	if image, ok := data["image"]; ok {
-		return describeJSON(image)
+		return describeJSON(image, true)
 	}
 	if images, ok := data["images"].([]interface{}); ok {
-		return describeJSON(images[0])
+		return describeJSON(images[0], true)
 	}
-	return describeJSON(data)
+	return describeJSON(data, true)
 }

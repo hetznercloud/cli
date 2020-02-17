@@ -62,10 +62,10 @@ func locationDescribeJSON(resp *hcloud.Response) error {
 		return err
 	}
 	if location, ok := data["location"]; ok {
-		return describeJSON(location)
+		return describeJSON(location, true)
 	}
 	if locations, ok := data["locations"].([]interface{}); ok {
-		return describeJSON(locations[0])
+		return describeJSON(locations[0], true)
 	}
-	return describeJSON(data)
+	return describeJSON(data, true)
 }

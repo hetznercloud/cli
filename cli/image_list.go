@@ -29,7 +29,7 @@ func newImageListCommand(cli *CLI) *cobra.Command {
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runImageList),
 	}
-	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(imageListTableOutput.Columns()))
+	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(imageListTableOutput.Columns()), outputOptionJSON())
 	cmd.Flags().StringVarP(&typeFilter, "type", "t", "", "Only show images of given type")
 	cmd.Flags().StringP("selector", "l", "", "Selector to filter by labels")
 	return cmd
@@ -58,6 +58,12 @@ func runImageList(cli *CLI, cmd *cobra.Command, args []string) error {
 		}
 		images = _images
 	}
+
+	if outOpts.IsSet("json") {
+		describeJSON(images, false)
+		return nil
+	}
+
 	cols := []string{"id", "type", "name", "description", "image_size", "disk_size", "created"}
 	if outOpts.IsSet("columns") {
 		cols = outOpts["columns"]

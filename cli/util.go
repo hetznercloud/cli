@@ -89,8 +89,10 @@ func describeFormat(object interface{}, format string) error {
 	return t.Execute(os.Stdout, object)
 }
 
-func describeJSON(object interface{}) error {
+func describeJSON(object interface{}, indent bool) error {
 	enc := json.NewEncoder(os.Stdout)
-	enc.SetIndent("", "  ")
+	if indent {
+		enc.SetIndent("", "  ")
+	}
 	return enc.Encode(object)
 }

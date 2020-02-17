@@ -27,7 +27,7 @@ func newVolumeListCommand(cli *CLI) *cobra.Command {
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runVolumeList),
 	}
-	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(volumeListTableOutput.Columns()))
+	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(volumeListTableOutput.Columns()), outputOptionJSON())
 	cmd.Flags().StringP("selector", "l", "", "Selector to filter by labels")
 	return cmd
 }
@@ -45,6 +45,11 @@ func runVolumeList(cli *CLI, cmd *cobra.Command, args []string) error {
 	sshKeys, err := cli.Client().Volume.AllWithOpts(cli.Context, opts)
 	if err != nil {
 		return err
+	}
+
+	if outOpts.IsSet("json") {
+		describeJSON(sshKeys, false)
+		return nil
 	}
 
 	cols := []string{"id", "name", "size", "server", "location"}

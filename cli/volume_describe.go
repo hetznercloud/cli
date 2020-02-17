@@ -92,10 +92,10 @@ func volumeDescribeJSON(resp *hcloud.Response) error {
 		return err
 	}
 	if volume, ok := data["volume"]; ok {
-		return describeJSON(volume)
+		return describeJSON(volume, true)
 	}
 	if volumes, ok := data["volumes"].([]interface{}); ok {
-		return describeJSON(volumes[0])
+		return describeJSON(volumes[0], true)
 	}
-	return describeJSON(data)
+	return describeJSON(data, true)
 }

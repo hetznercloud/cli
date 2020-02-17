@@ -27,7 +27,7 @@ func newServerListCommand(cli *CLI) *cobra.Command {
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runServerList),
 	}
-	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(serverListTableOutput.Columns()))
+	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(serverListTableOutput.Columns()), outputOptionJSON())
 	cmd.Flags().StringP("selector", "l", "", "Selector to filter by labels")
 	return cmd
 }
@@ -45,6 +45,11 @@ func runServerList(cli *CLI, cmd *cobra.Command, args []string) error {
 	servers, err := cli.Client().Server.AllWithOpts(cli.Context, opts)
 	if err != nil {
 		return err
+	}
+
+	if outOpts.IsSet("json") {
+		describeJSON(servers, false)
+		return nil
 	}
 
 	cols := []string{"id", "name", "status", "ipv4", "ipv6", "datacenter"}

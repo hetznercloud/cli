@@ -27,7 +27,7 @@ func newFloatingIPListCommand(cli *CLI) *cobra.Command {
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runFloatingIPList),
 	}
-	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(floatingIPListTableOutput.Columns()))
+	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(floatingIPListTableOutput.Columns()), outputOptionJSON())
 	cmd.Flags().StringP("selector", "l", "", "Selector to filter by labels")
 	return cmd
 }
@@ -45,6 +45,11 @@ func runFloatingIPList(cli *CLI, cmd *cobra.Command, args []string) error {
 	floatingIPs, err := cli.Client().FloatingIP.AllWithOpts(cli.Context, opts)
 	if err != nil {
 		return err
+	}
+
+	if outOpts.IsSet("json") {
+		describeJSON(floatingIPs, false)
+		return nil
 	}
 
 	cols := []string{"id", "type", "name", "description", "ip", "home", "server", "dns"}

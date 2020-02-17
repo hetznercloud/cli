@@ -27,7 +27,7 @@ func newNetworkListCommand(cli *CLI) *cobra.Command {
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runNetworkList),
 	}
-	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(networkListTableOutput.Columns()))
+	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(networkListTableOutput.Columns()), outputOptionJSON())
 	cmd.Flags().StringP("selector", "l", "", "Selector to filter by labels")
 	return cmd
 }
@@ -45,6 +45,11 @@ func runNetworkList(cli *CLI, cmd *cobra.Command, args []string) error {
 	networks, err := cli.Client().Network.AllWithOpts(cli.Context, opts)
 	if err != nil {
 		return err
+	}
+
+	if outOpts.IsSet("json") {
+		describeJSON(networks, false)
+		return nil
 	}
 
 	cols := []string{"id", "name", "ip_range", "servers"}

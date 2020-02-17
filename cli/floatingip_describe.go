@@ -101,10 +101,10 @@ func floatingIPDescribeJSON(resp *hcloud.Response) error {
 		return err
 	}
 	if floatingIP, ok := data["floating_ip"]; ok {
-		return describeJSON(floatingIP)
+		return describeJSON(floatingIP, true)
 	}
 	if floatingIPs, ok := data["floating_ips"].([]interface{}); ok {
-		return describeJSON(floatingIPs[0])
+		return describeJSON(floatingIPs[0], true)
 	}
-	return describeJSON(data)
+	return describeJSON(data, true)
 }

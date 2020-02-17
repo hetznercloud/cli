@@ -29,7 +29,7 @@ func newSSHKeyListCommand(cli *CLI) *cobra.Command {
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runSSHKeyList),
 	}
-	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(sshKeyListTableOutput.Columns()))
+	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(sshKeyListTableOutput.Columns()), outputOptionJSON())
 	cmd.Flags().StringP("selector", "l", "", "Selector to filter by labels")
 	return cmd
 }
@@ -47,6 +47,11 @@ func runSSHKeyList(cli *CLI, cmd *cobra.Command, args []string) error {
 	sshKeys, err := cli.Client().SSHKey.AllWithOpts(cli.Context, opts)
 	if err != nil {
 		return err
+	}
+
+	if outOpts.IsSet("json") {
+		describeJSON(sshKeys, false)
+		return nil
 	}
 
 	cols := []string{"id", "name", "fingerprint"}
