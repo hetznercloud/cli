@@ -3,6 +3,8 @@ package cli
 import (
 	"fmt"
 
+	"github.com/hetznercloud/hcloud-go/hcloud/schema"
+
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
@@ -36,7 +38,7 @@ func newServerTypeListCommand(cli *CLI) *cobra.Command {
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runServerTypeList),
 	}
-	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(serverTypeListTableOutput.Columns()))
+	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(serverTypeListTableOutput.Columns()), outputOptionJSON())
 	return cmd
 }
 
@@ -46,6 +48,14 @@ func runServerTypeList(cli *CLI, cmd *cobra.Command, args []string) error {
 	serverTypes, err := cli.Client().ServerType.All(cli.Context)
 	if err != nil {
 		return err
+	}
+
+	if outOpts.IsSet("json") {
+		var serverTypeSchemas []schema.ServerType
+		for _, serverType := range serverTypes {
+			serverTypeSchemas = append(serverTypeSchemas, serverTypeToSchema(*serverType))
+		}
+		return describeJSON(serverTypeSchemas)
 	}
 
 	cols := []string{"id", "name", "cores", "memory", "disk", "storage_type"}

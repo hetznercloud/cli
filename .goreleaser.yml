@@ -52,8 +52,10 @@ signs:
       - gon.hcl
     artifacts: all
     signature: "hcloud-macos-amd64.zip"
+    id: hcloud-macos-sign
   - artifacts: all
     signature: "${artifact}.sig"
+    id: hcloud-sign
     ids:
       - hcloud-build
     args: ["--batch", "-u", "github-bot@hetzner-cloud.de", "--pinentry-mode", "loopback", "--output", "${signature}", "--detach-sign", "${artifact}"]

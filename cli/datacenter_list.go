@@ -2,6 +2,7 @@ package cli
 
 import (
 	"github.com/hetznercloud/hcloud-go/hcloud"
+	"github.com/hetznercloud/hcloud-go/hcloud/schema"
 	"github.com/spf13/cobra"
 )
 
@@ -29,7 +30,7 @@ func newDatacenterListCommand(cli *CLI) *cobra.Command {
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runDatacenterList),
 	}
-	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(datacenterListTableOutput.Columns()))
+	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(datacenterListTableOutput.Columns()), outputOptionJSON())
 	return cmd
 }
 
@@ -37,6 +38,15 @@ func runDatacenterList(cli *CLI, cmd *cobra.Command, args []string) error {
 	outOpts := outputFlagsForCommand(cmd)
 
 	datacenters, err := cli.Client().Datacenter.All(cli.Context)
+
+	if outOpts.IsSet("json") {
+		var datacenterSchemas []schema.Datacenter
+		for _, datacenter := range datacenters {
+			datacenterSchemas = append(datacenterSchemas, datacenterToSchema(*datacenter))
+		}
+		return describeJSON(datacenterSchemas)
+	}
+
 	if err != nil {
 		return err
 	}

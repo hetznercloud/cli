@@ -4,6 +4,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/hetznercloud/hcloud-go/hcloud/schema"
+
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
@@ -27,7 +29,7 @@ func newServerListCommand(cli *CLI) *cobra.Command {
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runServerList),
 	}
-	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(serverListTableOutput.Columns()))
+	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(serverListTableOutput.Columns()), outputOptionJSON())
 	cmd.Flags().StringP("selector", "l", "", "Selector to filter by labels")
 	return cmd
 }
@@ -45,6 +47,62 @@ func runServerList(cli *CLI, cmd *cobra.Command, args []string) error {
 	servers, err := cli.Client().Server.AllWithOpts(cli.Context, opts)
 	if err != nil {
 		return err
+	}
+
+	if outOpts.IsSet("json") {
+		var serversSchema []schema.Server
+		for _, server := range servers {
+			serverSchema := schema.Server{
+				ID:         server.ID,
+				Name:       server.Name,
+				Status:     string(server.Status),
+				Created:    server.Created,
+				Datacenter: datacenterToSchema(*server.Datacenter),
+				ServerType: serverTypeToSchema(*server.ServerType),
+				PublicNet: schema.ServerPublicNet{
+					IPv4: schema.ServerPublicNetIPv4{
+						IP:      server.PublicNet.IPv4.IP.String(),
+						Blocked: server.PublicNet.IPv4.Blocked,
+						DNSPtr:  server.PublicNet.IPv4.DNSPtr,
+					},
+					IPv6: schema.ServerPublicNetIPv6{
+						IP:      server.PublicNet.IPv6.IP.String(),
+						Blocked: server.PublicNet.IPv6.Blocked,
+					},
+				},
+				RescueEnabled:   server.RescueEnabled,
+				BackupWindow:    hcloud.String(server.BackupWindow),
+				OutgoingTraffic: &server.OutgoingTraffic,
+				IngoingTraffic:  &server.IngoingTraffic,
+				IncludedTraffic: server.IncludedTraffic,
+				Protection: schema.ServerProtection{
+					Delete:  server.Protection.Delete,
+					Rebuild: server.Protection.Rebuild,
+				},
+			}
+			if server.Image != nil {
+				serverImage := imageToSchema(*server.Image)
+				serverSchema.Image = &serverImage
+			}
+			if server.ISO != nil {
+				serverISO := isoToSchema(*server.ISO)
+				serverSchema.ISO = &serverISO
+			}
+			for ip, dnsPTR := range server.PublicNet.IPv6.DNSPtr {
+				serverSchema.PublicNet.IPv6.DNSPtr = append(serverSchema.PublicNet.IPv6.DNSPtr, schema.ServerPublicNetIPv6DNSPtr{
+					IP:     ip,
+					DNSPtr: dnsPTR,
+				})
+			}
+			for _, floatingIP := range server.PublicNet.FloatingIPs {
+				serverSchema.PublicNet.FloatingIPs = append(serverSchema.PublicNet.FloatingIPs, floatingIP.ID)
+			}
+			for _, volume := range server.Volumes {
+				serverSchema.Volumes = append(serverSchema.Volumes, volume.ID)
+			}
+			serversSchema = append(serversSchema, serverSchema)
+		}
+		return describeJSON(serversSchema)
 	}
 
 	cols := []string{"id", "name", "status", "ipv4", "ipv6", "datacenter"}

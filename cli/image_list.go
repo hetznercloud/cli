@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/hetznercloud/hcloud-go/hcloud/schema"
+
 	humanize "github.com/dustin/go-humanize"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -29,7 +31,7 @@ func newImageListCommand(cli *CLI) *cobra.Command {
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runImageList),
 	}
-	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(imageListTableOutput.Columns()))
+	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(imageListTableOutput.Columns()), outputOptionJSON())
 	cmd.Flags().StringVarP(&typeFilter, "type", "t", "", "Only show images of given type")
 	cmd.Flags().StringP("selector", "l", "", "Selector to filter by labels")
 	return cmd
@@ -58,6 +60,15 @@ func runImageList(cli *CLI, cmd *cobra.Command, args []string) error {
 		}
 		images = _images
 	}
+
+	if outOpts.IsSet("json") {
+		var imageSchemas []schema.Image
+		for _, image := range images {
+			imageSchemas = append(imageSchemas, imageToSchema(*image))
+		}
+		return describeJSON(imageSchemas)
+	}
+
 	cols := []string{"id", "type", "name", "description", "image_size", "disk_size", "created"}
 	if outOpts.IsSet("columns") {
 		cols = outOpts["columns"]

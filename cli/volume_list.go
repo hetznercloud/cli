@@ -3,6 +3,8 @@ package cli
 import (
 	"strings"
 
+	"github.com/hetznercloud/hcloud-go/hcloud/schema"
+
 	humanize "github.com/dustin/go-humanize"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -27,7 +29,7 @@ func newVolumeListCommand(cli *CLI) *cobra.Command {
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runVolumeList),
 	}
-	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(volumeListTableOutput.Columns()))
+	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(volumeListTableOutput.Columns()), outputOptionJSON())
 	cmd.Flags().StringP("selector", "l", "", "Selector to filter by labels")
 	return cmd
 }
@@ -42,9 +44,30 @@ func runVolumeList(cli *CLI, cmd *cobra.Command, args []string) error {
 			PerPage:       50,
 		},
 	}
-	sshKeys, err := cli.Client().Volume.AllWithOpts(cli.Context, opts)
+	volumes, err := cli.Client().Volume.AllWithOpts(cli.Context, opts)
 	if err != nil {
 		return err
+	}
+
+	if outOpts.IsSet("json") {
+		var volumesSchema []schema.Volume
+		for _, volume := range volumes {
+			volumeSchema := schema.Volume{
+				ID:          volume.ID,
+				Name:        volume.Name,
+				Location:    locationToSchema(*volume.Location),
+				Size:        volume.Size,
+				LinuxDevice: volume.LinuxDevice,
+				Labels:      volume.Labels,
+				Created:     volume.Created,
+				Protection:  schema.VolumeProtection{Delete: volume.Protection.Delete},
+			}
+			if volume.Server != nil {
+				volumeSchema.Server = hcloud.Int(volume.Server.ID)
+			}
+			volumesSchema = append(volumesSchema, volumeSchema)
+		}
+		return describeJSON(volumesSchema)
 	}
 
 	cols := []string{"id", "name", "size", "server", "location"}
@@ -60,8 +83,8 @@ func runVolumeList(cli *CLI, cmd *cobra.Command, args []string) error {
 	if !outOpts.IsSet("noheader") {
 		tw.WriteHeader(cols)
 	}
-	for _, sshKey := range sshKeys {
-		tw.Write(cols, sshKey)
+	for _, volume := range volumes {
+		tw.Write(cols, volume)
 	}
 	tw.Flush()
 	return nil
