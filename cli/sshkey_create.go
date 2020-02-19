@@ -23,6 +23,7 @@ func newSSHKeyCreateCommand(cli *CLI) *cobra.Command {
 	cmd.Flags().String("name", "", "Key name")
 	cmd.Flags().String("public-key", "", "Public key")
 	cmd.Flags().String("public-key-from-file", "", "Path to file containing public key")
+	cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 	return cmd
 }
 
@@ -44,6 +45,7 @@ func runSSHKeyCreate(cli *CLI, cmd *cobra.Command, args []string) error {
 	name, _ := cmd.Flags().GetString("name")
 	publicKey, _ := cmd.Flags().GetString("public-key")
 	publicKeyFile, _ := cmd.Flags().GetString("public-key-from-file")
+	labels, _ := cmd.Flags().GetStringToString("label")
 
 	if publicKeyFile != "" {
 		var (
@@ -64,6 +66,7 @@ func runSSHKeyCreate(cli *CLI, cmd *cobra.Command, args []string) error {
 	opts := hcloud.SSHKeyCreateOpts{
 		Name:      name,
 		PublicKey: publicKey,
+		Labels:    labels,
 	}
 	sshKey, _, err := cli.Client().SSHKey.Create(cli.Context, opts)
 	if err != nil {

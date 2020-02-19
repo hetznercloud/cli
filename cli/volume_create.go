@@ -36,6 +36,9 @@ func newVolumeCreateCommand(cli *CLI) *cobra.Command {
 
 	cmd.Flags().Bool("automount", false, "Automount volume after attach (server must be provided)")
 	cmd.Flags().String("format", "", "Format volume after creation (automount must be enabled)")
+
+	cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
+
 	return cmd
 }
 
@@ -46,10 +49,12 @@ func runVolumeCreate(cli *CLI, cmd *cobra.Command, args []string) error {
 	location, _ := cmd.Flags().GetString("location")
 	automount, _ := cmd.Flags().GetBool("automount")
 	format, _ := cmd.Flags().GetString("format")
+	labels, _ := cmd.Flags().GetStringToString("label")
 
 	opts := hcloud.VolumeCreateOpts{
-		Name: name,
-		Size: size,
+		Name:   name,
+		Size:   size,
+		Labels: labels,
 	}
 
 	if location != "" {

@@ -24,6 +24,9 @@ func newServerCreateImageCommand(cli *CLI) *cobra.Command {
 	cmd.MarkFlagRequired("type")
 
 	cmd.Flags().String("description", "", "Image description")
+
+	cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
+
 	return cmd
 }
 
@@ -53,9 +56,12 @@ func runServerCreateImage(cli *CLI, cmd *cobra.Command, args []string) error {
 
 	description, _ := cmd.Flags().GetString("description")
 
+	labels, _ := cmd.Flags().GetStringToString("label")
+
 	opts := &hcloud.ServerCreateImageOpts{
 		Type:        hcloud.ImageType(imageType),
 		Description: hcloud.String(description),
+		Labels:      labels,
 	}
 	result, _, err := cli.Client().Server.CreateImage(cli.Context, server, opts)
 	if err != nil {
