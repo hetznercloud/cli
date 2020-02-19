@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"github.com/hetznercloud/hcloud-go/hcloud/schema"
 	"strings"
 
 	"github.com/hetznercloud/hcloud-go/hcloud"
@@ -48,8 +49,36 @@ func runNetworkList(cli *CLI, cmd *cobra.Command, args []string) error {
 	}
 
 	if outOpts.IsSet("json") {
-		describeJSON(networks, false)
-		return nil
+		var networkSchemas []schema.Network
+		for _, network := range networks {
+			networkSchema := schema.Network{
+				ID:         network.ID,
+				Name:       network.Name,
+				IPRange:    network.IPRange.String(),
+				Protection: schema.NetworkProtection{Delete: network.Protection.Delete},
+				Created:    network.Created,
+				Labels:     network.Labels,
+			}
+			for _, subnet := range network.Subnets {
+				networkSchema.Subnets = append(networkSchema.Subnets, schema.NetworkSubnet{
+					Type:        string(subnet.Type),
+					IPRange:     subnet.IPRange.String(),
+					NetworkZone: string(subnet.NetworkZone),
+					Gateway:     subnet.Gateway.String(),
+				})
+			}
+			for _, route := range network.Routes {
+				networkSchema.Routes = append(networkSchema.Routes, schema.NetworkRoute{
+					Destination: route.Destination.String(),
+					Gateway:     route.Gateway.String(),
+				})
+			}
+			for _, server := range network.Servers {
+				networkSchema.Servers = append(networkSchema.Servers, server.ID)
+			}
+			networkSchemas = append(networkSchemas, networkSchema)
+		}
+		return describeJSON(networkSchemas)
 	}
 
 	cols := []string{"id", "name", "ip_range", "servers"}

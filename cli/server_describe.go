@@ -204,10 +204,10 @@ func serverDescribeJSON(resp *hcloud.Response) error {
 		return err
 	}
 	if server, ok := data["server"]; ok {
-		return describeJSON(server, true)
+		return describeJSON(server)
 	}
 	if servers, ok := data["servers"].([]interface{}); ok {
-		return describeJSON(servers[0], true)
+		return describeJSON(servers[0])
 	}
-	return describeJSON(data, true)
+	return describeJSON(data)
 }

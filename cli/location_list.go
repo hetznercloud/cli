@@ -2,6 +2,7 @@ package cli
 
 import (
 	"github.com/hetznercloud/hcloud-go/hcloud"
+	"github.com/hetznercloud/hcloud-go/hcloud/schema"
 	"github.com/spf13/cobra"
 )
 
@@ -38,8 +39,11 @@ func runLocationList(cli *CLI, cmd *cobra.Command, args []string) error {
 	}
 
 	if outOpts.IsSet("json") {
-		describeJSON(locations, false)
-		return nil
+		var locationSchemas []schema.Location
+		for _, location := range locations {
+			locationSchemas = append(locationSchemas, locationToSchema(*location))
+		}
+		return describeJSON(locationSchemas)
 	}
 
 	cols := []string{"id", "name", "description", "network_zone", "country", "city"}

@@ -58,10 +58,10 @@ func isoDescribeJSON(resp *hcloud.Response) error {
 		return err
 	}
 	if iso, ok := data["iso"]; ok {
-		return describeJSON(iso, true)
+		return describeJSON(iso)
 	}
 	if isos, ok := data["isos"].([]interface{}); ok {
-		return describeJSON(isos[0], true)
+		return describeJSON(isos[0])
 	}
-	return describeJSON(data, true)
+	return describeJSON(data)
 }

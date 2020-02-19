@@ -103,10 +103,10 @@ func datacenterDescribeJSON(resp *hcloud.Response) error {
 		return err
 	}
 	if datacenter, ok := data["datacenter"]; ok {
-		return describeJSON(datacenter, true)
+		return describeJSON(datacenter)
 	}
 	if datacenters, ok := data["datacenters"].([]interface{}); ok {
-		return describeJSON(datacenters[0], true)
+		return describeJSON(datacenters[0])
 	}
-	return describeJSON(data, true)
+	return describeJSON(data)
 }

@@ -3,6 +3,8 @@ package cli
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/hetznercloud/hcloud-go/hcloud"
+	"github.com/hetznercloud/hcloud-go/hcloud/schema"
 	"os"
 	"strings"
 	"text/template"
@@ -89,10 +91,103 @@ func describeFormat(object interface{}, format string) error {
 	return t.Execute(os.Stdout, object)
 }
 
-func describeJSON(object interface{}, indent bool) error {
+func describeJSON(object interface{}) error {
 	enc := json.NewEncoder(os.Stdout)
-	if indent {
-		enc.SetIndent("", "  ")
-	}
 	return enc.Encode(object)
+}
+
+func locationToSchema(location hcloud.Location) schema.Location {
+	return schema.Location{
+		ID:          location.ID,
+		Name:        location.Name,
+		Description: location.Description,
+		Country:     location.Country,
+		City:        location.City,
+		Latitude:    location.Latitude,
+		Longitude:   location.Longitude,
+		NetworkZone: string(location.NetworkZone),
+	}
+}
+
+func datacenterToSchema(datacenter hcloud.Datacenter) schema.Datacenter {
+	datacenterSchema := schema.Datacenter{
+		ID:          datacenter.ID,
+		Name:        datacenter.Name,
+		Description: datacenter.Description,
+		Location:    locationToSchema(*datacenter.Location),
+	}
+	for _, st := range datacenter.ServerTypes.Supported {
+		datacenterSchema.ServerTypes.Supported = append(datacenterSchema.ServerTypes.Supported, st.ID)
+	}
+	for _, st := range datacenter.ServerTypes.Available {
+		datacenterSchema.ServerTypes.Available = append(datacenterSchema.ServerTypes.Available, st.ID)
+	}
+	return datacenterSchema
+}
+
+func serverTypeToSchema(serverType hcloud.ServerType) schema.ServerType {
+	serverTypeSchema := schema.ServerType{
+		ID:          serverType.ID,
+		Name:        serverType.Name,
+		Description: serverType.Description,
+		Cores:       serverType.Cores,
+		Memory:      serverType.Memory,
+		Disk:        serverType.Disk,
+		StorageType: string(serverType.StorageType),
+		CPUType:     string(serverType.CPUType),
+	}
+	for _, pricing := range serverType.Pricings {
+		serverTypeSchema.Prices = append(serverTypeSchema.Prices, schema.PricingServerTypePrice{
+			Location: pricing.Location.Name,
+			PriceHourly: schema.Price{
+				Net:   pricing.Hourly.Net,
+				Gross: pricing.Hourly.Gross,
+			},
+			PriceMonthly: schema.Price{
+				Net:   pricing.Monthly.Net,
+				Gross: pricing.Monthly.Gross,
+			},
+		})
+	}
+	return serverTypeSchema
+}
+
+func imageToSchema(image hcloud.Image) schema.Image {
+	imageSchema := schema.Image{
+		ID:          image.ID,
+		Name:        hcloud.String(image.Name),
+		Description: image.Description,
+		Status:      string(image.Status),
+		Type:        string(image.Type),
+		ImageSize:   &image.ImageSize,
+		DiskSize:    image.DiskSize,
+		Created:     image.Created,
+		OSFlavor:    image.OSFlavor,
+		OSVersion:   hcloud.String(image.OSVersion),
+		RapidDeploy: image.RapidDeploy,
+		Protection: schema.ImageProtection{
+			Delete: image.Protection.Delete,
+		},
+		Deprecated: image.Deprecated,
+		Labels:     image.Labels,
+	}
+	if image.CreatedFrom != nil {
+		imageSchema.CreatedFrom = &schema.ImageCreatedFrom{
+			ID:   image.CreatedFrom.ID,
+			Name: image.CreatedFrom.Name,
+		}
+	}
+	if image.BoundTo != nil {
+		imageSchema.BoundTo = hcloud.Int(image.BoundTo.ID)
+	}
+	return imageSchema
+}
+
+func isoToSchema(iso hcloud.ISO) schema.ISO {
+	return schema.ISO{
+		ID:          iso.ID,
+		Name:        iso.Name,
+		Description: iso.Description,
+		Deprecated:  iso.Deprecated,
+	}
 }

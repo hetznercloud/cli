@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"github.com/hetznercloud/hcloud-go/hcloud/schema"
 	"strings"
 
 	humanize "github.com/dustin/go-humanize"
@@ -60,8 +61,11 @@ func runImageList(cli *CLI, cmd *cobra.Command, args []string) error {
 	}
 
 	if outOpts.IsSet("json") {
-		describeJSON(images, false)
-		return nil
+		var imageSchemas []schema.Image
+		for _, image := range images {
+			imageSchemas = append(imageSchemas, imageToSchema(*image))
+		}
+		return describeJSON(imageSchemas)
 	}
 
 	cols := []string{"id", "type", "name", "description", "image_size", "disk_size", "created"}

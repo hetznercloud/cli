@@ -2,6 +2,7 @@ package cli
 
 import (
 	"github.com/hetznercloud/hcloud-go/hcloud"
+	"github.com/hetznercloud/hcloud-go/hcloud/schema"
 	"github.com/spf13/cobra"
 )
 
@@ -50,8 +51,19 @@ func runSSHKeyList(cli *CLI, cmd *cobra.Command, args []string) error {
 	}
 
 	if outOpts.IsSet("json") {
-		describeJSON(sshKeys, false)
-		return nil
+		var sshKeySchemas []schema.SSHKey
+		for _, sshKey := range sshKeys {
+			sshKeySchema := schema.SSHKey{
+				ID:          sshKey.ID,
+				Name:        sshKey.Name,
+				Fingerprint: sshKey.Fingerprint,
+				PublicKey:   sshKey.PublicKey,
+				Labels:      sshKey.Labels,
+				Created:     sshKey.Created,
+			}
+			sshKeySchemas = append(sshKeySchemas, sshKeySchema)
+		}
+		return describeJSON(sshKeySchemas)
 	}
 
 	cols := []string{"id", "name", "fingerprint"}

@@ -2,6 +2,7 @@ package cli
 
 import (
 	"github.com/hetznercloud/hcloud-go/hcloud"
+	"github.com/hetznercloud/hcloud-go/hcloud/schema"
 	"github.com/spf13/cobra"
 )
 
@@ -38,8 +39,11 @@ func runISOList(cli *CLI, cmd *cobra.Command, args []string) error {
 	}
 
 	if outOpts.IsSet("json") {
-		describeJSON(isos, false)
-		return nil
+		var isoSchemas []schema.ISO
+		for _, iso := range isos {
+			isoSchemas = append(isoSchemas, isoToSchema(*iso))
+		}
+		return describeJSON(isoSchemas)
 	}
 
 	cols := []string{"id", "name", "description", "type"}

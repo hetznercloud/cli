@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"github.com/hetznercloud/hcloud-go/hcloud/schema"
 	"strings"
 
 	"github.com/hetznercloud/hcloud-go/hcloud"
@@ -48,8 +49,32 @@ func runFloatingIPList(cli *CLI, cmd *cobra.Command, args []string) error {
 	}
 
 	if outOpts.IsSet("json") {
-		describeJSON(floatingIPs, false)
-		return nil
+		var floatingIPSchemas []schema.FloatingIP
+		for _, floatingIP := range floatingIPs {
+			floatingIPSchema := schema.FloatingIP{
+				ID:           floatingIP.ID,
+				Name:         floatingIP.Name,
+				Description:  hcloud.String(floatingIP.Description),
+				IP:           floatingIP.IP.String(),
+				Created:      floatingIP.Created,
+				Type:         string(floatingIP.Type),
+				HomeLocation: locationToSchema(*floatingIP.HomeLocation),
+				Blocked:      floatingIP.Blocked,
+				Protection:   schema.FloatingIPProtection{Delete: floatingIP.Protection.Delete},
+				Labels:       floatingIP.Labels,
+			}
+			for ip, dnsPtr := range floatingIP.DNSPtr {
+				floatingIPSchema.DNSPtr = append(floatingIPSchema.DNSPtr, schema.FloatingIPDNSPtr{
+					IP:     ip,
+					DNSPtr: dnsPtr,
+				})
+			}
+			if floatingIP.Server != nil {
+				floatingIPSchema.Server = hcloud.Int(floatingIP.Server.ID)
+			}
+			floatingIPSchemas = append(floatingIPSchemas, floatingIPSchema)
+		}
+		return describeJSON(floatingIPSchemas)
 	}
 
 	cols := []string{"id", "type", "name", "description", "ip", "home", "server", "dns"}

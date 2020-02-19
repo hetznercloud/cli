@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"github.com/hetznercloud/hcloud-go/hcloud/schema"
 
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -49,8 +50,11 @@ func runServerTypeList(cli *CLI, cmd *cobra.Command, args []string) error {
 	}
 
 	if outOpts.IsSet("json") {
-		describeJSON(serverTypes, false)
-		return nil
+		var serverTypeSchemas []schema.ServerType
+		for _, serverType := range serverTypes {
+			serverTypeSchemas = append(serverTypeSchemas, serverTypeToSchema(*serverType))
+		}
+		return describeJSON(serverTypeSchemas)
 	}
 
 	cols := []string{"id", "name", "cores", "memory", "disk", "storage_type"}
