@@ -1,9 +1,10 @@
 package cli
 
 import (
-	"github.com/hetznercloud/hcloud-go/hcloud/schema"
 	"strconv"
 	"strings"
+
+	"github.com/hetznercloud/hcloud-go/hcloud/schema"
 
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"

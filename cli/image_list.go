@@ -2,8 +2,9 @@ package cli
 
 import (
 	"fmt"
-	"github.com/hetznercloud/hcloud-go/hcloud/schema"
 	"strings"
+
+	"github.com/hetznercloud/hcloud-go/hcloud/schema"
 
 	humanize "github.com/dustin/go-humanize"
 	"github.com/hetznercloud/hcloud-go/hcloud"

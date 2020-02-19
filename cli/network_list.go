@@ -2,10 +2,10 @@ package cli
 
 import (
 	"fmt"
-	"github.com/hetznercloud/hcloud-go/hcloud/schema"
 	"strings"
 
 	"github.com/hetznercloud/hcloud-go/hcloud"
+	"github.com/hetznercloud/hcloud-go/hcloud/schema"
 	"github.com/spf13/cobra"
 )
 

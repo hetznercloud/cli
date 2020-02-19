@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+
 	"github.com/hetznercloud/hcloud-go/hcloud/schema"
 
 	"github.com/hetznercloud/hcloud-go/hcloud"
