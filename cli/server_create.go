@@ -56,6 +56,8 @@ func newServerCreateCommand(cli *CLI) *cobra.Command {
 		cobra.BashCompCustom: {"__hcloud_sshkey_names"},
 	}
 
+	cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
+
 	cmd.Flags().StringArray("user-data-from-file", []string{}, "Read user data from specified file (use - to read from stdin)")
 
 	cmd.Flags().Bool("start-after-create", true, "Start server right after creation (default: true)")
@@ -175,6 +177,7 @@ func optsFromFlags(cli *CLI, flags *pflag.FlagSet) (opts hcloud.ServerCreateOpts
 	userDataFiles, _ := flags.GetStringArray("user-data-from-file")
 	startAfterCreate, _ := flags.GetBool("start-after-create")
 	sshKeys, _ := flags.GetStringSlice("ssh-key")
+	labels, _ := flags.GetStringToString("label")
 	volumes, _ := flags.GetStringSlice("volume")
 	networks, _ := flags.GetStringSlice("network")
 	automount, _ := flags.GetBool("automount")
@@ -187,6 +190,7 @@ func optsFromFlags(cli *CLI, flags *pflag.FlagSet) (opts hcloud.ServerCreateOpts
 		Image: &hcloud.Image{
 			Name: image,
 		},
+		Labels:           labels,
 		StartAfterCreate: &startAfterCreate,
 		Automount:        &automount,
 	}

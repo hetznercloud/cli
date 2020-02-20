@@ -35,6 +35,9 @@ func newFloatingIPCreateCommand(cli *CLI) *cobra.Command {
 	cmd.Flag("server").Annotations = map[string][]string{
 		cobra.BashCompCustom: {"__hcloud_server_names"},
 	}
+
+	cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
+
 	return cmd
 }
 
@@ -59,10 +62,12 @@ func runFloatingIPCreate(cli *CLI, cmd *cobra.Command, args []string) error {
 	description, _ := cmd.Flags().GetString("description")
 	homeLocation, _ := cmd.Flags().GetString("home-location")
 	serverNameOrID, _ := cmd.Flags().GetString("server")
+	labels, _ := cmd.Flags().GetStringToString("label")
 
 	opts := hcloud.FloatingIPCreateOpts{
 		Type:        hcloud.FloatingIPType(typ),
 		Description: &description,
+		Labels:      labels,
 	}
 	if name != "" {
 		opts.Name = &name

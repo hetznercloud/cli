@@ -25,15 +25,20 @@ func newNetworkCreateCommand(cli *CLI) *cobra.Command {
 	cmd.Flags().IPNet("ip-range", net.IPNet{}, "Network IP range")
 	cmd.MarkFlagRequired("ip-range")
 
+	cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
+
 	return cmd
 }
 
 func runNetworkCreate(cli *CLI, cmd *cobra.Command, args []string) error {
 	name, _ := cmd.Flags().GetString("name")
 	ipRange, _ := cmd.Flags().GetIPNet("ip-range")
+	labels, _ := cmd.Flags().GetStringToString("label")
+
 	opts := hcloud.NetworkCreateOpts{
 		Name:    name,
 		IPRange: &ipRange,
+		Labels:  labels,
 	}
 
 	network, _, err := cli.Client().Network.Create(cli.Context, opts)
