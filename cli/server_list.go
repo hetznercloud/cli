@@ -100,6 +100,17 @@ func runServerList(cli *CLI, cmd *cobra.Command, args []string) error {
 			for _, volume := range server.Volumes {
 				serverSchema.Volumes = append(serverSchema.Volumes, volume.ID)
 			}
+			for _, privateNet := range server.PrivateNet {
+				privateNetSchema := schema.ServerPrivateNet{
+					Network:    privateNet.Network.ID,
+					IP:         privateNet.IP.String(),
+					MACAddress: privateNet.MACAddress,
+				}
+				for _, aliasIP := range privateNet.Aliases {
+					privateNetSchema.AliasIPs = append(privateNetSchema.AliasIPs, aliasIP.String())
+				}
+				serverSchema.PrivateNet = append(serverSchema.PrivateNet, privateNetSchema)
+			}
 			serversSchema = append(serversSchema, serverSchema)
 		}
 		return describeJSON(serversSchema)
