@@ -142,7 +142,8 @@ const (
 			hcloud_server_enable-rescue | hcloud_server_detach-iso | \
 			hcloud_server_update | hcloud_server_enable-backup | \
 			hcloud_server_disable-backup | hcloud_server_rebuild | \
-			hcloud_server_add-label | hcloud_server_remove-label )
+			hcloud_server_add-label | hcloud_server_remove-label | \
+			hcloud_server_ssh )
 				__hcloud_server_names
 				return
 				;;
