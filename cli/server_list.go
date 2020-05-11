@@ -193,5 +193,9 @@ func describeServerListTableOutput(cli *CLI) *tableOutput {
 				protection = append(protection, "rebuild")
 			}
 			return strings.Join(protection, ", ")
+		})).
+		AddFieldOutputFn("created", fieldOutputFn(func(obj interface{}) string {
+			server := obj.(*hcloud.Server)
+			return datetime(server.Created)
 		}))
 }

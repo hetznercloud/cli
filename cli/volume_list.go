@@ -120,5 +120,9 @@ func describeVolumeListTableOutput(cli *CLI) *tableOutput {
 		AddFieldOutputFn("labels", fieldOutputFn(func(obj interface{}) string {
 			volume := obj.(*hcloud.Volume)
 			return labelsToString(volume.Labels)
+		})).
+		AddFieldOutputFn("created", fieldOutputFn(func(obj interface{}) string {
+			volume := obj.(*hcloud.Volume)
+			return datetime(volume.Created)
 		}))
 }
