@@ -144,5 +144,9 @@ func describeImageListTableOutput(cli *CLI) *tableOutput {
 		AddFieldOutputFn("labels", fieldOutputFn(func(obj interface{}) string {
 			image := obj.(*hcloud.Image)
 			return labelsToString(image.Labels)
+		})).
+		AddFieldOutputFn("created", fieldOutputFn(func(obj interface{}) string {
+			image := obj.(*hcloud.Image)
+			return datetime(image.Created)
 		}))
 }

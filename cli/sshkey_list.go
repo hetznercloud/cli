@@ -14,6 +14,10 @@ func init() {
 		AddFieldOutputFn("labels", fieldOutputFn(func(obj interface{}) string {
 			sshKey := obj.(*hcloud.SSHKey)
 			return labelsToString(sshKey.Labels)
+		})).
+		AddFieldOutputFn("created", fieldOutputFn(func(obj interface{}) string {
+			sshKey := obj.(*hcloud.SSHKey)
+			return datetime(sshKey.Created)
 		}))
 }
 

@@ -127,5 +127,9 @@ func describeNetworkListTableOutput(cli *CLI) *tableOutput {
 				protection = append(protection, "delete")
 			}
 			return strings.Join(protection, ", ")
+		})).
+		AddFieldOutputFn("created", fieldOutputFn(func(obj interface{}) string {
+			network := obj.(*hcloud.Network)
+			return datetime(network.Created)
 		}))
 }

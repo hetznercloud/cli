@@ -144,5 +144,9 @@ func describeFloatingIPListTableOutput(cli *CLI) *tableOutput {
 		AddFieldOutputFn("labels", fieldOutputFn(func(obj interface{}) string {
 			floatingIP := obj.(*hcloud.FloatingIP)
 			return labelsToString(floatingIP.Labels)
+		})).
+		AddFieldOutputFn("created", fieldOutputFn(func(obj interface{}) string {
+			floatingIP := obj.(*hcloud.FloatingIP)
+			return datetime(floatingIP.Created)
 		}))
 }
