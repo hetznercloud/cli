@@ -192,14 +192,14 @@ func isoToSchema(iso hcloud.ISO) schema.ISO {
 	}
 }
 
-func loadBalancerTypeToSchema(loadBalancerType hcloud.LoadBalancerType) schema.LoadBalancerType{
+func loadBalancerTypeToSchema(loadBalancerType hcloud.LoadBalancerType) schema.LoadBalancerType {
 	loadBalancerTypeSchema := schema.LoadBalancerType{
-		ID:   loadBalancerType.ID,
-		Name: loadBalancerType.Name,
-		Description: loadBalancerType.Description,
-		MaxConnections: loadBalancerType.MaxConnections,
-		MaxServices: loadBalancerType.MaxServices,
-		MaxTargets: loadBalancerType.MaxTargets,
+		ID:                      loadBalancerType.ID,
+		Name:                    loadBalancerType.Name,
+		Description:             loadBalancerType.Description,
+		MaxConnections:          loadBalancerType.MaxConnections,
+		MaxServices:             loadBalancerType.MaxServices,
+		MaxTargets:              loadBalancerType.MaxTargets,
 		MaxAssignedCertificates: loadBalancerType.MaxAssignedCertificates,
 	}
 	for _, pricing := range loadBalancerType.Pricings {

@@ -105,7 +105,7 @@ func runLoadBalancerList(cli *CLI, cmd *cobra.Command, args []string) error {
 			}
 			for _, target := range loadBalancer.Targets {
 				targetSchema := schema.LoadBalancerTarget{
-					Type: string(target.Type),
+					Type:         string(target.Type),
 					UsePrivateIP: target.UsePrivateIP,
 				}
 				if target.Type == hcloud.LoadBalancerTargetTypeServer {

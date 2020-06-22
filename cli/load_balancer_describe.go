@@ -87,7 +87,7 @@ func loadBalancerDescribeText(cli *CLI, loadBalancer *hcloud.LoadBalancer) error
 			fmt.Printf("    Destination Port:\t\t%d\n", service.DestinationPort)
 			fmt.Printf("    Proxy Protocol:\t\t%s\n", yesno(service.Proxyprotocol))
 			if service.Protocol != hcloud.LoadBalancerServiceProtocolTCP {
-				fmt.Printf("    Sticky Sessions:\t\t%s\n",yesno(service.HTTP.StickySessions))
+				fmt.Printf("    Sticky Sessions:\t\t%s\n", yesno(service.HTTP.StickySessions))
 				if service.HTTP.StickySessions {
 					fmt.Printf("    Sticky Cookie Name:\t\t%s\n", service.HTTP.CookieName)
 					fmt.Printf("    Sticky Cookie Lifetime:\t%vs\n", service.HTTP.CookieLifetime.Seconds())

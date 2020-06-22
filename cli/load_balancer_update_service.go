@@ -155,7 +155,7 @@ func runLoadBalancerUpdateService(cli *CLI, cmd *cobra.Command, args []string) e
 		}
 	}
 
-	action, _, err := cli.Client().LoadBalancer.UpdateService(cli.Context, loadBalancer, listenPort,opts)
+	action, _, err := cli.Client().LoadBalancer.UpdateService(cli.Context, loadBalancer, listenPort, opts)
 	if err != nil {
 		return err
 	}
