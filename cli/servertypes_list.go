@@ -58,7 +58,7 @@ func runServerTypeList(cli *CLI, cmd *cobra.Command, args []string) error {
 		return describeJSON(serverTypeSchemas)
 	}
 
-	cols := []string{"id", "name", "cores", "memory", "disk", "storage_type"}
+	cols := []string{"id", "name", "cores", "cpu_type", "memory", "disk", "storage_type"}
 	if outOpts.IsSet("columns") {
 		cols = outOpts["columns"]
 	}

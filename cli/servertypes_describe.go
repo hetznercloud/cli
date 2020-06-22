@@ -49,6 +49,7 @@ func serverTypeDescribeText(cli *CLI, serverType *hcloud.ServerType) error {
 	fmt.Printf("Name:\t\t%s\n", serverType.Name)
 	fmt.Printf("Description:\t%s\n", serverType.Description)
 	fmt.Printf("Cores:\t\t%d\n", serverType.Cores)
+	fmt.Printf("CPU Type:\t%s\n", serverType.CPUType)
 	fmt.Printf("Memory:\t\t%.1f GB\n", serverType.Memory)
 	fmt.Printf("Disk:\t\t%d GB\n", serverType.Disk)
 	fmt.Printf("Storage Type:\t%s\n", serverType.StorageType)
