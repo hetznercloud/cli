@@ -191,3 +191,29 @@ func isoToSchema(iso hcloud.ISO) schema.ISO {
 		Deprecated:  iso.Deprecated,
 	}
 }
+
+func loadBalancerTypeToSchema(loadBalancerType hcloud.LoadBalancerType) schema.LoadBalancerType{
+	loadBalancerTypeSchema := schema.LoadBalancerType{
+		ID:   loadBalancerType.ID,
+		Name: loadBalancerType.Name,
+		Description: loadBalancerType.Description,
+		MaxConnections: loadBalancerType.MaxConnections,
+		MaxServices: loadBalancerType.MaxServices,
+		MaxTargets: loadBalancerType.MaxTargets,
+		MaxAssignedCertificates: loadBalancerType.MaxAssignedCertificates,
+	}
+	for _, pricing := range loadBalancerType.Pricings {
+		loadBalancerTypeSchema.Prices = append(loadBalancerTypeSchema.Prices, schema.PricingLoadBalancerTypePrice{
+			Location: pricing.Location.Name,
+			PriceHourly: schema.Price{
+				Net:   pricing.Hourly.Net,
+				Gross: pricing.Hourly.Gross,
+			},
+			PriceMonthly: schema.Price{
+				Net:   pricing.Monthly.Net,
+				Gross: pricing.Monthly.Gross,
+			},
+		})
+	}
+	return loadBalancerTypeSchema
+}
