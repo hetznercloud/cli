@@ -83,6 +83,20 @@ const (
 		fi
 	}
 
+	__hcloud_load_balancer_names() {
+		local ctl_output out
+		if ctl_output=$(hcloud load-balancer list -o noheader -o columns=name 2>/dev/null); then
+			COMPREPLY=($(echo "${ctl_output}"))
+		fi
+	}
+
+	__hcloud_load_balancer_type_names() {
+		local ctl_output out
+		if ctl_output=$(hcloud load-balancer-type list -o noheader -o columns=name 2>/dev/null); then
+			COMPREPLY=($(echo "${ctl_output}"))
+		fi
+	}
+
 	__hcloud_image_ids_no_system() {
 		local ctl_output out
 		if ctl_output=$(hcloud image list -o noheader 2>/dev/null); then
@@ -104,8 +118,19 @@ const (
 		fi
 	}
 
+	__hcloud_certificate_names() {
+		local ctl_output out
+		if ctl_output=$(hcloud certificate list -o noheader 2>/dev/null); then
+			COMPREPLY=($(echo "${ctl_output}" | awk '{print $2}'))
+		fi
+	}
+
 	__hcloud_image_types_no_system() {
 		COMPREPLY=($(echo "snapshot backup"))
+	}
+
+	__hcloud_load_balancer_algorithm_types() {
+		COMPREPLY=($(echo "round_robin least_connections"))
 	}
 
 	__hcloud_protection_levels() {
@@ -171,6 +196,49 @@ const (
 				;;
 			hcloud_server-type_describe )
 				__hcloud_servertype_names
+				return
+				;;
+			hcloud_load-balancer-type_describe )
+				__hcloud_load_balancer_type_names
+				return
+				;;
+			hcloud_load-balancer_delete | hcloud_load-balancer_describe | \
+			hcloud_load-balancer_update | hcloud_load-balancer_add-label | \
+			hcloud_load-balancer_remove-label | hcloud_load-balancer_enable-public-interface | \
+			hcloud_load-balancer_disable-public-interface )
+				__hcloud_load_balancer_names
+				return
+				;;
+			hcloud_load-balancer_enable-protection | hcloud_load-balancer_disable-protection )
+				if [[ ${#nouns[@]} -gt 1 ]]; then
+					return 1
+				fi
+				if [[ ${#nouns[@]} -eq 1 ]]; then
+					__hcloud_protection_levels
+					return
+				fi
+				__hcloud_load_balancer_names
+				return
+				;;
+			hcloud_load-balancer_change-algorithm )
+				if [[ ${#nouns[@]} -gt 1 ]]; then
+					return 1
+				fi
+				if [[ ${#nouns[@]} -eq 1 ]]; then
+					__hcloud_load_balancer_algorithm_types
+					return
+				fi
+				__hcloud_load_balancer_names
+				return
+				;;
+			hcloud_load-balancer_add-target | hcloud_load-balancer_update-service | \
+			hcloud_load-balancer_remove-target | hcloud_load-balancer_add-service | \
+			hcloud_load-balancer_delete-service | hcloud_load-balancer_update-health-check | \
+			hcloud_load-balancer_attach-to-network | hcloud_load-balancer_detach-from-network )
+				if [[ ${#nouns[@]} -gt 1 ]]; then
+					return 1
+				fi
+				__hcloud_load_balancer_names
 				return
 				;;
 			hcloud_image_describe | hcloud_image_add-label | hcloud_image_remove-label )
@@ -260,6 +328,10 @@ const (
 				__hcloud_iso_names
 				return
 				;;
+			hcloud_load-balancer_describe )
+				__hcloud_load_balancer_names
+				return
+				;;
 			hcloud_context_use | hcloud_context_delete )
 				__hcloud_context_names
 				return
@@ -267,6 +339,12 @@ const (
 			hcloud_ssh-key_delete | hcloud_ssh-key_describe | \
 			hcloud_ssh-key_add-label | hcloud_ssk-key_remove-label)
 				__hcloud_sshkey_names
+				return
+				;;
+			hcloud_certificate_describe | hcloud_certificate_update | \
+			hcloud_certificate_add-label | hcloud_certificate_remove-label | \
+			hcloud_certificate_delete )
+				__hcloud_certificate_names
 				return
 				;;
 			*)
