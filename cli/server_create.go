@@ -60,7 +60,7 @@ func newServerCreateCommand(cli *CLI) *cobra.Command {
 
 	cmd.Flags().StringArray("user-data-from-file", []string{}, "Read user data from specified file (use - to read from stdin)")
 
-	cmd.Flags().Bool("start-after-create", true, "Start server right after creation (default: true)")
+	cmd.Flags().Bool("start-after-create", true, "Start server right after creation")
 
 	cmd.Flags().StringSlice("volume", nil, "ID or name of volume to attach (can be specified multiple times)")
 	cmd.Flag("volume").Annotations = map[string][]string{

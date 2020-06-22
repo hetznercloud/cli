@@ -32,6 +32,9 @@ func NewRootCommand(cli *CLI) *cobra.Command {
 		newISOCommand(cli),
 		newVolumeCommand(cli),
 		newNetworkCommand(cli),
+		newLoadBalancerCommand(cli),
+		newLoadBalancerTypeCommand(cli),
+		newCertificatesCommand(cli),
 	)
 	cmd.PersistentFlags().Duration("poll-interval", 500*time.Millisecond, "Interval at which to poll information, for example action progress")
 	return cmd
