@@ -16,10 +16,12 @@ func newServerRequestConsoleCommand(cli *CLI) *cobra.Command {
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runServerRequestConsole),
 	}
+	addOutputFlag(cmd, outputOptionJSON())
 	return cmd
 }
 
 func runServerRequestConsole(cli *CLI, cmd *cobra.Command, args []string) error {
+	outOpts := outputFlagsForCommand(cmd)
 	idOrName := args[0]
 	server, _, err := cli.Client().Server.Get(cli.Context, idOrName)
 	if err != nil {
@@ -36,6 +38,16 @@ func runServerRequestConsole(cli *CLI, cmd *cobra.Command, args []string) error 
 
 	if err := cli.ActionProgress(cli.Context, result.Action); err != nil {
 		return err
+	}
+
+	if outOpts.IsSet("json") {
+		return describeJSON(struct {
+			WSSURL   string
+			Password string
+		}{
+			WSSURL:   result.WSSURL,
+			Password: result.Password,
+		})
 	}
 
 	fmt.Printf("Console for server %d:\n", server.ID)
