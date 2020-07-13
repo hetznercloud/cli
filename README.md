@@ -62,6 +62,17 @@ $ source <(hcloud completion bash)   # bash
 $ source <(hcloud completion zsh)    # zsh
 ```
 
+If you are using antigen with zsh and completion doesn't work with the above try adding
+
+```
+function _hcloud_completion {
+  source <(hcloud completion zsh)    # zsh  
+}
+compctl -K _hcloud_completion hcloud
+```
+instead.
+
+
 ## Output configuration
 
 You can control output via the `-o` option:
