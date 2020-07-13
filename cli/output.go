@@ -180,7 +180,7 @@ func (o *tableOutput) AddFieldOutputFn(field string, fn fieldOutputFn) *tableOut
 	return o
 }
 
-// AddAllowedFields reads all first level fieldnames of the struct and allowes them to be used.
+// AddAllowedFields reads all first level fieldnames of the struct and allows them to be used.
 func (o *tableOutput) AddAllowedFields(obj interface{}) *tableOutput {
 	v := reflect.ValueOf(obj)
 	if v.Kind() != reflect.Struct {
@@ -229,9 +229,9 @@ func (o *tableOutput) ValidateColumns(cols []string) error {
 }
 
 // WriteHeader writes the table header.
-func (o *tableOutput) WriteHeader(collumns []string) {
+func (o *tableOutput) WriteHeader(columns []string) {
 	var header []string
-	for _, col := range collumns {
+	for _, col := range columns {
 		if alias, ok := o.fieldAlias[col]; ok {
 			col = alias
 		}
@@ -245,7 +245,7 @@ func (o *tableOutput) Flush() error {
 }
 
 // Write writes a table line.
-func (o *tableOutput) Write(collumns []string, obj interface{}) {
+func (o *tableOutput) Write(columns []string, obj interface{}) {
 	data := structs.Map(obj)
 	dataL := map[string]interface{}{}
 	for key, value := range data {
@@ -253,7 +253,7 @@ func (o *tableOutput) Write(collumns []string, obj interface{}) {
 	}
 
 	var out []string
-	for _, col := range collumns {
+	for _, col := range columns {
 		colName := strings.ToLower(col)
 		if alias, ok := o.fieldAlias[colName]; ok {
 			if fn, ok := o.fieldMapping[alias]; ok {

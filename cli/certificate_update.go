@@ -9,7 +9,7 @@ import (
 
 func newCertificateUpdateCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   "update [FLAGS] CERTFICATE",
+		Use:                   "update [FLAGS] CERTIFICATE",
 		Short:                 "Update an existing Certificate",
 		Args:                  cobra.ExactArgs(1),
 		TraverseChildren:      true,

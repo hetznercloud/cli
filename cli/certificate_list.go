@@ -8,10 +8,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var certficateTableOutput *tableOutput
+var certificateTableOutput *tableOutput
 
 func init() {
-	certficateTableOutput = describeCertificatesTableOutput()
+	certificateTableOutput = describeCertificatesTableOutput()
 }
 
 func newCertificatesListCommand(cli *CLI) *cobra.Command {
@@ -20,7 +20,7 @@ func newCertificatesListCommand(cli *CLI) *cobra.Command {
 		Short: "List Certificates",
 		Long: listLongDescription(
 			"Displays a list of certificates",
-			certficateTableOutput.Columns(),
+			certificateTableOutput.Columns(),
 		),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
