@@ -17,7 +17,7 @@ On macOS, you can install `hcloud` via [Homebrew](https://brew.sh/):
 
 ### Third-party packages
 
-There are inofficial packages maintained by third-party users. Please note
+There are unofficial packages maintained by third-party users. Please note
 that these packages aren’t supported nor maintained by Hetzner Cloud and
 may not always be up-to-date. Downloading the binary or building from source
 is still the recommended install method.
