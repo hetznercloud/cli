@@ -16,7 +16,7 @@ func newLoadBalancerAddServiceCommand(cli *CLI) *cobra.Command {
 		PreRunE:               chainRunE(validateLoadBalancerAddService, cli.ensureToken),
 		RunE:                  cli.wrap(runLoadBalancerAddService),
 	}
-	cmd.Flags().String("protocol", "", "Protocol of the service")
+	cmd.Flags().String("protocol", "", "Protocol of the service (required)")
 	cmd.MarkFlagRequired("protocol")
 
 	cmd.Flags().Int("listen-port", 0, "Listen port of the service")

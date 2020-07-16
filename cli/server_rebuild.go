@@ -18,7 +18,7 @@ func newServerRebuildCommand(cli *CLI) *cobra.Command {
 		RunE:                  cli.wrap(runServerRebuild),
 	}
 
-	cmd.Flags().String("image", "", "ID or name of image to rebuild from")
+	cmd.Flags().String("image", "", "ID or name of image to rebuild from (required)")
 	cmd.Flag("image").Annotations = map[string][]string{
 		cobra.BashCompCustom: {"__hcloud_image_names"},
 	}

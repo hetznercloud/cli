@@ -19,13 +19,13 @@ func newCertificateCreateCommand(cli *CLI) *cobra.Command {
 		RunE:                  cli.wrap(runCertificateCreate),
 	}
 
-	cmd.Flags().String("name", "", "Certificate name")
+	cmd.Flags().String("name", "", "Certificate name (required)")
 	cmd.MarkFlagRequired("name")
 
-	cmd.Flags().String("cert-file", "", "File containing the PEM encoded certificate")
+	cmd.Flags().String("cert-file", "", "File containing the PEM encoded certificate (required)")
 	cmd.MarkFlagRequired("cert-file")
 
-	cmd.Flags().String("key-file", "", "File containing the PEM encoded private key for the certificate")
+	cmd.Flags().String("key-file", "", "File containing the PEM encoded private key for the certificate (required)")
 	cmd.MarkFlagRequired("key-file")
 
 	return cmd

@@ -17,7 +17,7 @@ func newLoadBalancerDeleteServiceCommand(cli *CLI) *cobra.Command {
 		RunE:                  cli.wrap(runLoadBalancerDeleteService),
 	}
 
-	cmd.Flags().Int("listen-port", 0, "The listen port of the service you want to delete")
+	cmd.Flags().Int("listen-port", 0, "The listen port of the service you want to delete (required)")
 	cmd.MarkFlagRequired("listen-port")
 	return cmd
 }

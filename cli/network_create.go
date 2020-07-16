@@ -19,10 +19,10 @@ func newNetworkCreateCommand(cli *CLI) *cobra.Command {
 		RunE:                  cli.wrap(runNetworkCreate),
 	}
 
-	cmd.Flags().String("name", "", "Network name")
+	cmd.Flags().String("name", "", "Network name (required)")
 	cmd.MarkFlagRequired("name")
 
-	cmd.Flags().IPNet("ip-range", net.IPNet{}, "Network IP range")
+	cmd.Flags().IPNet("ip-range", net.IPNet{}, "Network IP range (required)")
 	cmd.MarkFlagRequired("ip-range")
 
 	cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")

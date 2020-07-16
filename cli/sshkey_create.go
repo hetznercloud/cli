@@ -20,7 +20,7 @@ func newSSHKeyCreateCommand(cli *CLI) *cobra.Command {
 		PreRunE:               chainRunE(validateSSHKeyCreate, cli.ensureToken),
 		RunE:                  cli.wrap(runSSHKeyCreate),
 	}
-	cmd.Flags().String("name", "", "Key name")
+	cmd.Flags().String("name", "", "Key name (required)")
 	cmd.Flags().String("public-key", "", "Public key")
 	cmd.Flags().String("public-key-from-file", "", "Path to file containing public key")
 	cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")

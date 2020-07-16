@@ -19,7 +19,7 @@ func newNetworkChangeIPRangeCommand(cli *CLI) *cobra.Command {
 		RunE:                  cli.wrap(runNetworkChangeIPRange),
 	}
 
-	cmd.Flags().IPNet("ip-range", net.IPNet{}, "New IP range")
+	cmd.Flags().IPNet("ip-range", net.IPNet{}, "New IP range (required)")
 	cmd.MarkFlagRequired("ip-range")
 
 	return cmd

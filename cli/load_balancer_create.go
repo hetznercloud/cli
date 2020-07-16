@@ -18,10 +18,10 @@ func newLoadBalancerCreateCommand(cli *CLI) *cobra.Command {
 		RunE:                  cli.wrap(runLoadBalancerCreate),
 	}
 
-	cmd.Flags().String("name", "", "Load Balancer name")
+	cmd.Flags().String("name", "", "Load Balancer name (required)")
 	cmd.MarkFlagRequired("name")
 
-	cmd.Flags().String("type", "", "Load Balancer type (ID or name)")
+	cmd.Flags().String("type", "", "Load Balancer type (ID or name) (required)")
 	cmd.Flag("type").Annotations = map[string][]string{
 		cobra.BashCompCustom: {"__hcloud_load_balancer_type_names"},
 	}
