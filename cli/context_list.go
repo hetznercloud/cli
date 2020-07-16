@@ -57,7 +57,7 @@ func runContextList(cli *CLI, cmd *cobra.Command, args []string) error {
 			Token:  context.Token,
 			Active: " ",
 		}
-		if cli.Config.ActiveContext.Name == context.Name {
+		if cli.Config.ActiveContext != nil && cli.Config.ActiveContext.Name == context.Name {
 			presentation.Active = "*"
 		}
 
