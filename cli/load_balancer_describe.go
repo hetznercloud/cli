@@ -3,6 +3,7 @@ package cli
 import (
 	"encoding/json"
 	"fmt"
+
 	humanize "github.com/dustin/go-humanize"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -19,12 +20,13 @@ func newLoadBalancerDescribeCommand(cli *CLI) *cobra.Command {
 		RunE:                  cli.wrap(runLoadBalancerDescribe),
 	}
 	addOutputFlag(cmd, outputOptionJSON(), outputOptionFormat())
-	//cmd.Flags().Bool("expand-targets", false, "Expand all label_selector targets")
+	cmd.Flags().Bool("expand-targets", false, "Expand all label_selector targets")
 	return cmd
 }
 
 func runLoadBalancerDescribe(cli *CLI, cmd *cobra.Command, args []string) error {
 	outputFlags := outputFlagsForCommand(cmd)
+	withLabelSelectorTargets, _ := cmd.Flags().GetBool("expand-targets")
 	idOrName := args[0]
 	loadBalancer, resp, err := cli.Client().LoadBalancer.Get(cli.Context, idOrName)
 	if err != nil {
@@ -40,11 +42,11 @@ func runLoadBalancerDescribe(cli *CLI, cmd *cobra.Command, args []string) error 
 	case outputFlags.IsSet("format"):
 		return describeFormat(loadBalancer, outputFlags["format"][0])
 	default:
-		return loadBalancerDescribeText(cli, loadBalancer)
+		return loadBalancerDescribeText(cli, loadBalancer, withLabelSelectorTargets)
 	}
 }
 
-func loadBalancerDescribeText(cli *CLI, loadBalancer *hcloud.LoadBalancer) error {
+func loadBalancerDescribeText(cli *CLI, loadBalancer *hcloud.LoadBalancer, withLabelSelectorTargets bool) error {
 	fmt.Printf("ID:\t\t\t\t%d\n", loadBalancer.ID)
 	fmt.Printf("Name:\t\t\t\t%s\n", loadBalancer.Name)
 	fmt.Printf("Created:\t\t\t%s (%s)\n", datetime(loadBalancer.Created), humanize.Time(loadBalancer.Created))
@@ -119,26 +121,52 @@ func loadBalancerDescribeText(cli *CLI, loadBalancer *hcloud.LoadBalancer) error
 	fmt.Printf("Targets:\n")
 	if len(loadBalancer.Targets) == 0 {
 		fmt.Print("  No targets\n")
-	} else {
-		for _, target := range loadBalancer.Targets {
-			fmt.Printf("  - Type:\t\t\t%s\n", target.Type)
-			if target.Server != nil {
-				fmt.Printf("    Server:\n")
-				fmt.Printf("      ID:\t\t\t%d\n", target.Server.Server.ID)
-				fmt.Printf("      Name:\t\t\t%s\n", cli.GetServerName(target.Server.Server.ID))
-				fmt.Printf("    Use Private IP:\t\t%s\n", yesno(target.UsePrivateIP))
-				fmt.Printf("    Status:\n")
-				for _, healthStatus := range target.HealthStatus {
-					fmt.Printf("    - Service:\t\t\t%d\n", healthStatus.ListenPort)
-					fmt.Printf("      Status:\t\t\t%s\n", healthStatus.Status)
+	}
+	for _, target := range loadBalancer.Targets {
+		fmt.Printf("  - Type:\t\t\t%s\n", target.Type)
+		switch target.Type {
+		case hcloud.LoadBalancerTargetTypeServer:
+			fmt.Printf("    Server:\n")
+			fmt.Printf("      ID:\t\t\t%d\n", target.Server.Server.ID)
+			fmt.Printf("      Name:\t\t\t%s\n", cli.GetServerName(target.Server.Server.ID))
+			fmt.Printf("    Use Private IP:\t\t%s\n", yesno(target.UsePrivateIP))
+			fmt.Printf("    Status:\n")
+			for _, healthStatus := range target.HealthStatus {
+				fmt.Printf("    - Service:\t\t\t%d\n", healthStatus.ListenPort)
+				fmt.Printf("      Status:\t\t\t%s\n", healthStatus.Status)
+			}
+		case hcloud.LoadBalancerTargetTypeLabelSelector:
+			fmt.Printf("    Label Selector:\t\t%s\n", target.LabelSelector.Selector)
+			fmt.Printf("      Targets: (%d)\n", len(target.Targets))
+			if len(target.Targets) == 0 {
+				fmt.Print("      No targets\n")
+			}
+			if !withLabelSelectorTargets {
+				continue
+			}
+			for _, lbtarget := range target.Targets {
+				fmt.Printf("      - Type:\t\t\t\t%s\n", lbtarget.Type)
+				fmt.Printf("        Server ID:\t\t\t%d\n", lbtarget.Server.Server.ID)
+				fmt.Printf("        Status:\n")
+				for _, healthStatus := range lbtarget.HealthStatus {
+					fmt.Printf("          - Service:\t\t\t%d\n", healthStatus.ListenPort)
+					fmt.Printf("            Status:\t\t\t%s\n", healthStatus.Status)
 				}
+			}
+		case hcloud.LoadBalancerTargetTypeIP:
+			fmt.Printf("    IP:\t\t\t\t%s\n", target.IP.IP)
+			fmt.Printf("    Status:\n")
+			for _, healthStatus := range target.HealthStatus {
+				fmt.Printf("    - Service:\t\t\t%d\n", healthStatus.ListenPort)
+				fmt.Printf("      Status:\t\t\t%s\n", healthStatus.Status)
 			}
 		}
 	}
+
 	fmt.Printf("Traffic:\n")
-	fmt.Printf("  Outgoing:\t%v\n", humanize.Bytes(loadBalancer.OutgoingTraffic))
-	fmt.Printf("  Ingoing:\t%v\n", humanize.Bytes(loadBalancer.IngoingTraffic))
-	fmt.Printf("  Included:\t%v\n", humanize.Bytes(loadBalancer.IncludedTraffic))
+	fmt.Printf("  Outgoing:\t%v\n", humanize.IBytes(loadBalancer.OutgoingTraffic))
+	fmt.Printf("  Ingoing:\t%v\n", humanize.IBytes(loadBalancer.IngoingTraffic))
+	fmt.Printf("  Included:\t%v\n", humanize.IBytes(loadBalancer.IncludedTraffic))
 
 	fmt.Printf("Protection:\n")
 	fmt.Printf("  Delete:\t%s\n", yesno(loadBalancer.Protection.Delete))

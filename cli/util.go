@@ -3,12 +3,13 @@ package cli
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/hetznercloud/hcloud-go/hcloud"
-	"github.com/hetznercloud/hcloud-go/hcloud/schema"
 	"os"
 	"strings"
 	"text/template"
 	"time"
+
+	"github.com/hetznercloud/hcloud-go/hcloud"
+	"github.com/hetznercloud/hcloud-go/hcloud/schema"
 
 	"github.com/spf13/cobra"
 )
@@ -43,6 +44,17 @@ func chainRunE(fns ...func(cmd *cobra.Command, args []string) error) func(cmd *c
 		}
 		return nil
 	}
+}
+
+func exactlyOneSet(s string, ss ...string) bool {
+	set := s != ""
+	for _, s := range ss {
+		if set && s != "" {
+			return false
+		}
+		set = set || s != ""
+	}
+	return set
 }
 
 var outputDescription = `Output can be controlled with the -o flag. Use -o noheader to suppress the
