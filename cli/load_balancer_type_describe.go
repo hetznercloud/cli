@@ -52,6 +52,13 @@ func loadBalancerTypeDescribeText(cli *CLI, loadBalancerType *hcloud.LoadBalance
 	fmt.Printf("Max Connections:\t\t%d\n", loadBalancerType.MaxConnections)
 	fmt.Printf("Max Targets:\t\t\t%d\n", loadBalancerType.MaxTargets)
 	fmt.Printf("Max assigned Certificates:\t%d\n", loadBalancerType.MaxAssignedCertificates)
+
+	fmt.Printf("Pricings per Location:\n")
+	for _, price := range loadBalancerType.Pricings {
+		fmt.Printf("  - Location:\t%s:\n", price.Location.Name)
+		fmt.Printf("    Hourly:\t€ %s\n", price.Hourly.Gross)
+		fmt.Printf("    Monthly:\t€ %s\n", price.Monthly.Gross)
+	}
 	return nil
 }
 

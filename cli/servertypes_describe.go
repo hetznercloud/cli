@@ -53,6 +53,13 @@ func serverTypeDescribeText(cli *CLI, serverType *hcloud.ServerType) error {
 	fmt.Printf("Memory:\t\t%.1f GB\n", serverType.Memory)
 	fmt.Printf("Disk:\t\t%d GB\n", serverType.Disk)
 	fmt.Printf("Storage Type:\t%s\n", serverType.StorageType)
+
+	fmt.Printf("Pricings per Location:\n")
+	for _, price := range serverType.Pricings {
+		fmt.Printf("  - Location:\t%s:\n", price.Location.Name)
+		fmt.Printf("    Hourly:\t€ %s\n", price.Hourly.Gross)
+		fmt.Printf("    Monthly:\t€ %s\n", price.Monthly.Gross)
+	}
 	return nil
 }
 
