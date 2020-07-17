@@ -19,7 +19,7 @@ func newLoadBalancerUpdateServiceCommand(cli *CLI) *cobra.Command {
 		RunE:                  cli.wrap(runLoadBalancerUpdateService),
 	}
 
-	cmd.Flags().Int("listen-port", 0, "The listen port of the service that you want to update")
+	cmd.Flags().Int("listen-port", 0, "The listen port of the service that you want to update (required)")
 	cmd.MarkFlagRequired("listen-port")
 
 	cmd.Flags().Int("destination-port", 0, "Destination port of the service on the targets")

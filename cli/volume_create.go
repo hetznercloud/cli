@@ -18,7 +18,7 @@ func newVolumeCreateCommand(cli *CLI) *cobra.Command {
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runVolumeCreate),
 	}
-	cmd.Flags().String("name", "", "Volume name")
+	cmd.Flags().String("name", "", "Volume name (required)")
 	cmd.MarkFlagRequired("name")
 
 	cmd.Flags().String("server", "", "Server (ID or name)")
@@ -31,7 +31,7 @@ func newVolumeCreateCommand(cli *CLI) *cobra.Command {
 		cobra.BashCompCustom: {"__hcloud_location_names"},
 	}
 
-	cmd.Flags().Int("size", 0, "Size (GB)")
+	cmd.Flags().Int("size", 0, "Size (GB) (required)")
 	cmd.MarkFlagRequired("size")
 
 	cmd.Flags().Bool("automount", false, "Automount volume after attach (server must be provided)")

@@ -26,16 +26,16 @@ func newServerCreateCommand(cli *CLI) *cobra.Command {
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runServerCreate),
 	}
-	cmd.Flags().String("name", "", "Server name")
+	cmd.Flags().String("name", "", "Server name (required)")
 	cmd.MarkFlagRequired("name")
 
-	cmd.Flags().String("type", "", "Server type (ID or name)")
+	cmd.Flags().String("type", "", "Server type (ID or name) (required)")
 	cmd.Flag("type").Annotations = map[string][]string{
 		cobra.BashCompCustom: {"__hcloud_servertype_names"},
 	}
 	cmd.MarkFlagRequired("type")
 
-	cmd.Flags().String("image", "", "Image (ID or name)")
+	cmd.Flags().String("image", "", "Image (ID or name) (required)")
 	cmd.Flag("image").Annotations = map[string][]string{
 		cobra.BashCompCustom: {"__hcloud_image_names"},
 	}

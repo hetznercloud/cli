@@ -19,10 +19,10 @@ func newNetworkAddRouteCommand(cli *CLI) *cobra.Command {
 		RunE:                  cli.wrap(runNetworkAddRoute),
 	}
 
-	cmd.Flags().IPNet("destination", net.IPNet{}, "Destination network or host")
+	cmd.Flags().IPNet("destination", net.IPNet{}, "Destination network or host (required)")
 	cmd.MarkFlagRequired("destination")
 
-	cmd.Flags().IP("gateway", net.IP{}, "Gateway IP address")
+	cmd.Flags().IP("gateway", net.IP{}, "Gateway IP address (required)")
 	cmd.MarkFlagRequired("gateway")
 
 	return cmd

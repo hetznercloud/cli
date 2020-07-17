@@ -17,7 +17,7 @@ func newLoadBalancerAttachToNetworkCommand(cli *CLI) *cobra.Command {
 		RunE:                  cli.wrap(runLoadBalancerAttachToNetwork),
 	}
 
-	cmd.Flags().StringP("network", "n", "", "Network (ID or name)")
+	cmd.Flags().StringP("network", "n", "", "Network (ID or name) (required)")
 	cmd.Flag("network").Annotations = map[string][]string{
 		cobra.BashCompCustom: {"__hcloud_network_names"},
 	}

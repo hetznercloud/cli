@@ -18,7 +18,7 @@ func newNetworkRemoveSubnetCommand(cli *CLI) *cobra.Command {
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runNetworkRemoveSubnet),
 	}
-	cmd.Flags().IPNet("ip-range", net.IPNet{}, "Subnet IP range")
+	cmd.Flags().IPNet("ip-range", net.IPNet{}, "Subnet IP range (required)")
 	cmd.MarkFlagRequired("ip-range")
 	return cmd
 }

@@ -18,7 +18,7 @@ func newServerSetRDNSCommand(cli *CLI) *cobra.Command {
 		RunE:                  cli.wrap(runServerSetRDNS),
 	}
 
-	cmd.Flags().StringP("hostname", "r", "", "Hostname to set as a reverse DNS PTR entry")
+	cmd.Flags().StringP("hostname", "r", "", "Hostname to set as a reverse DNS PTR entry (required)")
 	cmd.MarkFlagRequired("hostname")
 
 	cmd.Flags().StringP("ip", "i", "", "IP address for which the reverse DNS entry should be set")

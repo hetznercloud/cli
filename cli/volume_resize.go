@@ -16,7 +16,7 @@ func newVolumeResizeCommand(cli *CLI) *cobra.Command {
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runVolumeResize),
 	}
-	cmd.Flags().Int("size", 0, "New size of the volume")
+	cmd.Flags().Int("size", 0, "New size (GB) of the volume (required)")
 	cmd.MarkFlagRequired("size")
 	return cmd
 }
@@ -41,5 +41,6 @@ func runVolumeResize(cli *CLI, cmd *cobra.Command, args []string) error {
 	}
 
 	fmt.Printf("Volume %d resized\n", volume.ID)
+	fmt.Printf("You might need to adjust the filesystem size on the server too\n")
 	return nil
 }
