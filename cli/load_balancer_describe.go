@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"encoding/json"
 	"fmt"
 	humanize "github.com/dustin/go-humanize"
 	"github.com/hetznercloud/hcloud-go/hcloud"
@@ -35,7 +36,7 @@ func runLoadBalancerDescribe(cli *CLI, cmd *cobra.Command, args []string) error 
 
 	switch {
 	case outputFlags.IsSet("json"):
-		return serverDescribeJSON(resp)
+		return loadBalancerDescribeJSON(resp)
 	case outputFlags.IsSet("format"):
 		return describeFormat(loadBalancer, outputFlags["format"][0])
 	default:
@@ -134,6 +135,10 @@ func loadBalancerDescribeText(cli *CLI, loadBalancer *hcloud.LoadBalancer) error
 			}
 		}
 	}
+	fmt.Printf("Traffic:\n")
+	fmt.Printf("  Outgoing:\t%v\n", humanize.Bytes(loadBalancer.OutgoingTraffic))
+	fmt.Printf("  Ingoing:\t%v\n", humanize.Bytes(loadBalancer.IngoingTraffic))
+	fmt.Printf("  Included:\t%v\n", humanize.Bytes(loadBalancer.IncludedTraffic))
 
 	fmt.Printf("Protection:\n")
 	fmt.Printf("  Delete:\t%s\n", yesno(loadBalancer.Protection.Delete))
@@ -148,4 +153,18 @@ func loadBalancerDescribeText(cli *CLI, loadBalancer *hcloud.LoadBalancer) error
 	}
 
 	return nil
+}
+
+func loadBalancerDescribeJSON(resp *hcloud.Response) error {
+	var data map[string]interface{}
+	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+		return err
+	}
+	if loadBalancer, ok := data["load_balancer"]; ok {
+		return describeJSON(loadBalancer)
+	}
+	if loadBalancers, ok := data["load_balancers"].([]interface{}); ok {
+		return describeJSON(loadBalancers[0])
+	}
+	return describeJSON(data)
 }
