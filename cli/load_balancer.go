@@ -31,6 +31,7 @@ func newLoadBalancerCommand(cli *CLI) *cobra.Command {
 		newLoadBalancerDetachFromNetworkCommand(cli),
 		newLoadBalancerEnablePublicInterface(cli),
 		newLoadBalancerDisablePublicInterface(cli),
+		newLoadBalancerChangeTypeCommand(cli),
 	)
 	return cmd
 }
