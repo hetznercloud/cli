@@ -65,6 +65,9 @@ func runLoadBalancerList(cli *CLI, cmd *cobra.Command, args []string) error {
 				Labels:           loadBalancer.Labels,
 				LoadBalancerType: loadBalancerTypeToSchema(*loadBalancer.LoadBalancerType),
 				Location:         locationToSchema(*loadBalancer.Location),
+				IncludedTraffic:  loadBalancer.IncludedTraffic,
+				OutgoingTraffic:  &loadBalancer.OutgoingTraffic,
+				IngoingTraffic:   &loadBalancer.IngoingTraffic,
 				Protection: schema.LoadBalancerProtection{
 					Delete: loadBalancer.Protection.Delete,
 				},
