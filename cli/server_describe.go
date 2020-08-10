@@ -157,9 +157,9 @@ func serverDescribeText(cli *CLI, server *hcloud.Server) error {
 	fmt.Printf("    Longitude:\t\t%f\n", server.Datacenter.Location.Longitude)
 
 	fmt.Printf("Traffic:\n")
-	fmt.Printf("  Outgoing:\t%v\n", humanize.Bytes(server.OutgoingTraffic))
-	fmt.Printf("  Ingoing:\t%v\n", humanize.Bytes(server.IngoingTraffic))
-	fmt.Printf("  Included:\t%v\n", humanize.Bytes(server.IncludedTraffic))
+	fmt.Printf("  Outgoing:\t%v\n", humanize.IBytes(server.OutgoingTraffic))
+	fmt.Printf("  Ingoing:\t%v\n", humanize.IBytes(server.IngoingTraffic))
+	fmt.Printf("  Included:\t%v\n", humanize.IBytes(server.IncludedTraffic))
 
 	if server.BackupWindow != "" {
 		fmt.Printf("Backup Window:\t%s\n", server.BackupWindow)
