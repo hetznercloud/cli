@@ -2,6 +2,8 @@ package cli
 
 import (
 	"fmt"
+	"net"
+
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
@@ -21,15 +23,25 @@ func newLoadBalancerRemoveTargetCommand(cli *CLI) *cobra.Command {
 	cmd.Flag("server").Annotations = map[string][]string{
 		cobra.BashCompCustom: {"__hcloud_server_names"},
 	}
-
+	cmd.Flags().String("label-selector", "", "Label Selector")
+	cmd.Flags().String("ip", "", "IP address of an IP target")
 	return cmd
 }
 
 func runLoadBalancerRemoveTarget(cli *CLI, cmd *cobra.Command, args []string) error {
-	serverIdOrName, _ := cmd.Flags().GetString("server")
+	var (
+		action       *hcloud.Action
+		loadBalancer *hcloud.LoadBalancer
+		err          error
+	)
+
+	serverIDOrName, _ := cmd.Flags().GetString("server")
+	labelSelector, _ := cmd.Flags().GetString("label-selector")
+	ipAddr, _ := cmd.Flags().GetString("ip")
+
 	idOrName := args[0]
 
-	loadBalancer, _, err := cli.Client().LoadBalancer.Get(cli.Context, idOrName)
+	loadBalancer, _, err = cli.Client().LoadBalancer.Get(cli.Context, idOrName)
 	if err != nil {
 		return err
 	}
@@ -37,21 +49,37 @@ func runLoadBalancerRemoveTarget(cli *CLI, cmd *cobra.Command, args []string) er
 		return fmt.Errorf("Load Balancer not found: %s", idOrName)
 	}
 
-	var action *hcloud.Action
-	if serverIdOrName == "" {
-		return fmt.Errorf("specify a server")
-	} else if serverIdOrName != "" {
-		server, _, err := cli.Client().Server.Get(cli.Context, serverIdOrName)
+	if !exactlyOneSet(serverIDOrName, labelSelector, ipAddr) {
+		return fmt.Errorf("--server, --label-selector, and --ip are mutually exclusive")
+	}
+	switch {
+	case serverIDOrName != "":
+		server, _, err := cli.Client().Server.Get(cli.Context, serverIDOrName)
 		if err != nil {
 			return err
 		}
 		if server == nil {
-			return fmt.Errorf("server not found: %s", serverIdOrName)
+			return fmt.Errorf("server not found: %s", serverIDOrName)
 		}
 		action, _, err = cli.Client().LoadBalancer.RemoveServerTarget(cli.Context, loadBalancer, server)
 		if err != nil {
 			return err
 		}
+	case labelSelector != "":
+		action, _, err = cli.Client().LoadBalancer.RemoveLabelSelectorTarget(cli.Context, loadBalancer, labelSelector)
+		if err != nil {
+			return err
+		}
+	case ipAddr != "":
+		ip := net.ParseIP(ipAddr)
+		if ip == nil {
+			return fmt.Errorf("invalid ip provided")
+		}
+		if action, _, err = cli.Client().LoadBalancer.RemoveIPTarget(cli.Context, loadBalancer, ip); err != nil {
+			return err
+		}
+	default:
+		return fmt.Errorf("specify one of --server, --label-selector, or --ip")
 	}
 
 	if err := cli.ActionProgress(cli.Context, action); err != nil {

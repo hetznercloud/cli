@@ -2,6 +2,8 @@ package cli
 
 import (
 	"fmt"
+	"net"
+
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
@@ -21,31 +23,43 @@ func newLoadBalancerAddTargetCommand(cli *CLI) *cobra.Command {
 	cmd.Flag("server").Annotations = map[string][]string{
 		cobra.BashCompCustom: {"__hcloud_server_names"},
 	}
+	cmd.Flags().String("label-selector", "", "Label Selector")
 	cmd.Flags().Bool("use-private-ip", false, "Determine if the Load Balancer should connect to the target via the network")
+	cmd.Flags().String("ip", "", "Use the passed IP address as target")
 	return cmd
 }
 
 func runLoadBalancerAddTarget(cli *CLI, cmd *cobra.Command, args []string) error {
-	serverIdOrName, _ := cmd.Flags().GetString("server")
+	var (
+		action       *hcloud.Action
+		loadBalancer *hcloud.LoadBalancer
+		err          error
+	)
+
 	idOrName := args[0]
 	usePrivateIP, _ := cmd.Flags().GetBool("use-private-ip")
+	serverIDOrName, _ := cmd.Flags().GetString("server")
+	labelSelector, _ := cmd.Flags().GetString("label-selector")
+	ipAddr, _ := cmd.Flags().GetString("ip")
 
-	loadBalancer, _, err := cli.Client().LoadBalancer.Get(cli.Context, idOrName)
-	if err != nil {
+	if !exactlyOneSet(serverIDOrName, labelSelector, ipAddr) {
+		return fmt.Errorf("--server, --label-selector, and --ip are mutually exclusive")
+	}
+	if loadBalancer, _, err = cli.Client().LoadBalancer.Get(cli.Context, idOrName); err != nil {
 		return err
 	}
 	if loadBalancer == nil {
 		return fmt.Errorf("Load Balancer not found: %s", idOrName)
 	}
 
-	var action *hcloud.Action
-	if serverIdOrName != "" {
-		server, _, err := cli.Client().Server.Get(cli.Context, serverIdOrName)
+	switch {
+	case serverIDOrName != "":
+		server, _, err := cli.Client().Server.Get(cli.Context, serverIDOrName)
 		if err != nil {
 			return err
 		}
 		if server == nil {
-			return fmt.Errorf("server not found: %s", serverIdOrName)
+			return fmt.Errorf("server not found: %s", serverIDOrName)
 		}
 		action, _, err = cli.Client().LoadBalancer.AddServerTarget(cli.Context, loadBalancer, hcloud.LoadBalancerAddServerTargetOpts{
 			Server:       server,
@@ -54,8 +68,27 @@ func runLoadBalancerAddTarget(cli *CLI, cmd *cobra.Command, args []string) error
 		if err != nil {
 			return err
 		}
-	} else {
-		return fmt.Errorf("specify one of server")
+	case labelSelector != "":
+		action, _, err = cli.Client().LoadBalancer.AddLabelSelectorTarget(cli.Context, loadBalancer, hcloud.LoadBalancerAddLabelSelectorTargetOpts{
+			Selector:     labelSelector,
+			UsePrivateIP: hcloud.Bool(usePrivateIP),
+		})
+		if err != nil {
+			return err
+		}
+	case ipAddr != "":
+		ip := net.ParseIP(ipAddr)
+		if ip == nil {
+			return fmt.Errorf("invalid ip provided")
+		}
+		action, _, err = cli.Client().LoadBalancer.AddIPTarget(cli.Context, loadBalancer, hcloud.LoadBalancerAddIPTargetOpts{
+			IP: ip,
+		})
+		if err != nil {
+			return err
+		}
+	default:
+		return fmt.Errorf("specify one of --server, --label-selector, or --ip")
 	}
 
 	if err := cli.ActionProgress(cli.Context, action); err != nil {

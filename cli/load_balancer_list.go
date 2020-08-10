@@ -114,6 +114,12 @@ func runLoadBalancerList(cli *CLI, cmd *cobra.Command, args []string) error {
 				if target.Type == hcloud.LoadBalancerTargetTypeServer {
 					targetSchema.Server = &schema.LoadBalancerTargetServer{ID: target.Server.Server.ID}
 				}
+				if target.Type == hcloud.LoadBalancerTargetTypeLabelSelector {
+					targetSchema.LabelSelector = &schema.LoadBalancerTargetLabelSelector{Selector: target.LabelSelector.Selector}
+				}
+				if target.Type == hcloud.LoadBalancerTargetTypeIP {
+					targetSchema.IP = &schema.LoadBalancerTargetIP{IP: target.IP.IP}
+				}
 				for _, healthStatus := range target.HealthStatus {
 					targetSchema.HealthStatus = append(targetSchema.HealthStatus, schema.LoadBalancerTargetHealthStatus{
 						ListenPort: healthStatus.ListenPort,
