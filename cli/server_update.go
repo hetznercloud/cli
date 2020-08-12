@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
@@ -13,6 +14,7 @@ func newServerUpdateCommand(cli *CLI) *cobra.Command {
 		Use:                   "update [FLAGS] SERVER",
 		Short:                 "Update a server",
 		Args:                  cobra.ExactArgs(1),
+		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.ServerNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.ensureToken,

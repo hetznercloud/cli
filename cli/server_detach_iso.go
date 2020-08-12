@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/spf13/cobra"
 )
 
@@ -11,6 +12,7 @@ func newServerDetachISOCommand(cli *CLI) *cobra.Command {
 		Use:                   "detach-iso [FLAGS] SERVER",
 		Short:                 "Detach an ISO from a server",
 		Args:                  cobra.ExactArgs(1),
+		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.ServerNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.ensureToken,

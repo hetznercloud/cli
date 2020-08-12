@@ -4,15 +4,25 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
 
 func newImageRemoveLabelCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   "remove-label [FLAGS] IMAGE LABELKEY",
-		Short:                 "Remove a label from an image",
-		Args:                  cobra.RangeArgs(1, 2),
+		Use:   "remove-label [FLAGS] IMAGE LABELKEY",
+		Short: "Remove a label from an image",
+		Args:  cobra.RangeArgs(1, 2),
+		ValidArgsFunction: cmpl.SuggestArgs(
+			cmpl.SuggestCandidatesF(cli.ImageNames),
+			cmpl.SuggestCandidatesCtx(func(_ *cobra.Command, args []string) []string {
+				if len(args) != 1 {
+					return nil
+				}
+				return cli.ImageLabelKeys(args[0])
+			}),
+		),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               chainRunE(validateImageRemoveLabel, cli.ensureToken),

@@ -4,15 +4,20 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
 
 func newNetworkDisableProtectionCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   "disable-protection [FLAGS] NETWORK PROTECTIONLEVEL [PROTECTIONLEVEL...]",
-		Short:                 "Disable resource protection for a network",
-		Args:                  cobra.MinimumNArgs(2),
+		Use:   "disable-protection [FLAGS] NETWORK PROTECTIONLEVEL [PROTECTIONLEVEL...]",
+		Short: "Disable resource protection for a network",
+		Args:  cobra.MinimumNArgs(2),
+		ValidArgsFunction: cmpl.SuggestArgs(
+			cmpl.SuggestCandidatesF(cli.NetworkNames),
+			cmpl.SuggestCandidates("delete"),
+		),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.ensureToken,

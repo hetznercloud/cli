@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/spf13/cobra"
 )
 
@@ -11,6 +12,7 @@ func newFloatingIPUnassignCommand(cli *CLI) *cobra.Command {
 		Use:                   "unassign [FLAGS] FLOATINGIP",
 		Short:                 "Unassign a Floating IP",
 		Args:                  cobra.ExactArgs(1),
+		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.FloatingIPNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.ensureToken,

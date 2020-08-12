@@ -3,14 +3,16 @@ package cli
 import (
 	"fmt"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/spf13/cobra"
 )
 
 func newServerDeleteCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   "delete [FLAGS] SERVER",
+		Use:                   "delete SERVER",
 		Short:                 "Delete a server",
 		Args:                  cobra.ExactArgs(1),
+		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.ServerNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.ensureToken,

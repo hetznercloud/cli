@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
@@ -13,6 +14,7 @@ func newNetworkAddSubnetCommand(cli *CLI) *cobra.Command {
 		Use:                   "add-subnet NETWORK FLAGS",
 		Short:                 "Add a subnet to a network",
 		Args:                  cobra.ExactArgs(1),
+		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.NetworkNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.ensureToken,
@@ -20,15 +22,11 @@ func newNetworkAddSubnetCommand(cli *CLI) *cobra.Command {
 	}
 
 	cmd.Flags().String("type", "", "Type of subnet")
-	cmd.Flag("type").Annotations = map[string][]string{
-		cobra.BashCompCustom: {"__hcloud_network_subnet_types"},
-	}
+	cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("cloud", "server"))
 	cmd.MarkFlagRequired("type")
 
 	cmd.Flags().String("network-zone", "", "Name of network zone")
-	cmd.Flag("network-zone").Annotations = map[string][]string{
-		cobra.BashCompCustom: {"__hcloud_network_zones"},
-	}
+	cmd.RegisterFlagCompletionFunc("network-zone", cmpl.SuggestCandidates("eu-central"))
 	cmd.MarkFlagRequired("network-zone")
 
 	cmd.Flags().IPNet("ip-range", net.IPNet{}, "Range to allocate IPs from")

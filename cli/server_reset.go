@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/spf13/cobra"
 )
 
@@ -11,6 +12,7 @@ func newServerResetCommand(cli *CLI) *cobra.Command {
 		Use:                   "reset [FLAGS] SERVER",
 		Short:                 "Reset a server",
 		Args:                  cobra.ExactArgs(1),
+		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.ServerNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.ensureToken,

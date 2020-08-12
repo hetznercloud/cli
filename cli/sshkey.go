@@ -9,7 +9,6 @@ func newSSHKeyCommand(cli *CLI) *cobra.Command {
 		Args:                  cobra.NoArgs,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE:                  cli.wrap(runSSHKey),
 	}
 	cmd.AddCommand(
 		newSSHKeyListCommand(cli),
@@ -21,8 +20,4 @@ func newSSHKeyCommand(cli *CLI) *cobra.Command {
 		newSSHKeyRemoveLabelCommand(cli),
 	)
 	return cmd
-}
-
-func runSSHKey(cli *CLI, cmd *cobra.Command, args []string) error {
-	return cmd.Usage()
 }

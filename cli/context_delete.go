@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/spf13/cobra"
 )
 
@@ -11,6 +12,7 @@ func newContextDeleteCommand(cli *CLI) *cobra.Command {
 		Use:                   "delete [FLAGS] NAME",
 		Short:                 "Delete a context",
 		Args:                  cobra.ExactArgs(1),
+		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.Config.ContextNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		RunE:                  cli.wrap(runContextDelete),

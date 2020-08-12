@@ -97,7 +97,7 @@ func describeVolumeListTableOutput(cli *CLI) *tableOutput {
 			volume := obj.(*hcloud.Volume)
 			var server string
 			if volume.Server != nil && cli != nil {
-				return cli.GetServerName(volume.Server.ID)
+				return cli.ServerName(volume.Server.ID)
 			}
 			return na(server)
 		})).

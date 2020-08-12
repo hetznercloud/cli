@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 
 	"github.com/spf13/cobra"
@@ -13,15 +14,14 @@ func newLoadBalancerDetachFromNetworkCommand(cli *CLI) *cobra.Command {
 		Use:                   "detach-from-network [FLAGS] LOADBALANCER",
 		Short:                 "Detach a Load Balancer from a Network",
 		Args:                  cobra.ExactArgs(1),
+		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.LoadBalancerNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runLoadBalancerDetachFromNetwork),
 	}
 	cmd.Flags().StringP("network", "n", "", "Network (ID or name) (required)")
-	cmd.Flag("network").Annotations = map[string][]string{
-		cobra.BashCompCustom: {"__hcloud_network_names"},
-	}
+	cmd.RegisterFlagCompletionFunc("network", cmpl.SuggestCandidatesF(cli.NetworkNames))
 	cmd.MarkFlagRequired("network")
 	return cmd
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
@@ -13,6 +14,7 @@ func newLoadBalancerRemoveTargetCommand(cli *CLI) *cobra.Command {
 		Use:                   "remove-target LOADBALANCER FLAGS",
 		Short:                 "Remove a target to a Load Balancer",
 		Args:                  cobra.ExactArgs(1),
+		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.LoadBalancerNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.ensureToken,
@@ -20,11 +22,12 @@ func newLoadBalancerRemoveTargetCommand(cli *CLI) *cobra.Command {
 	}
 
 	cmd.Flags().String("server", "", "Name or ID of the server")
-	cmd.Flag("server").Annotations = map[string][]string{
-		cobra.BashCompCustom: {"__hcloud_server_names"},
-	}
+	cmd.RegisterFlagCompletionFunc("server", cmpl.SuggestCandidatesF(cli.ServerNames))
+
 	cmd.Flags().String("label-selector", "", "Label Selector")
+
 	cmd.Flags().String("ip", "", "IP address of an IP target")
+
 	return cmd
 }
 

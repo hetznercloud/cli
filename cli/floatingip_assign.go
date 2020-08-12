@@ -3,14 +3,19 @@ package cli
 import (
 	"fmt"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/spf13/cobra"
 )
 
 func newFloatingIPAssignCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   "assign [FLAGS] FLOATINGIP SERVER",
-		Short:                 "Assign a Floating IP to a server",
-		Args:                  cobra.ExactArgs(2),
+		Use:   "assign [FLAGS] FLOATINGIP SERVER",
+		Short: "Assign a Floating IP to a server",
+		Args:  cobra.ExactArgs(2),
+		ValidArgsFunction: cmpl.SuggestArgs(
+			cmpl.SuggestCandidatesF(cli.FloatingIPNames),
+			cmpl.SuggestCandidatesF(cli.ServerNames),
+		),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.ensureToken,

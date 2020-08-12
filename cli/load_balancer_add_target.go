@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
@@ -13,6 +14,7 @@ func newLoadBalancerAddTargetCommand(cli *CLI) *cobra.Command {
 		Use:                   "add-target LOADBALANCER FLAGS",
 		Short:                 "Add a target to a Load Balancer",
 		Args:                  cobra.ExactArgs(1),
+		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.LoadBalancerNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.ensureToken,
@@ -20,10 +22,10 @@ func newLoadBalancerAddTargetCommand(cli *CLI) *cobra.Command {
 	}
 
 	cmd.Flags().String("server", "", "Name or ID of the server")
-	cmd.Flag("server").Annotations = map[string][]string{
-		cobra.BashCompCustom: {"__hcloud_server_names"},
-	}
+	cmd.RegisterFlagCompletionFunc("server", cmpl.SuggestCandidatesF(cli.ServerNames))
+
 	cmd.Flags().String("label-selector", "", "Label Selector")
+
 	cmd.Flags().Bool("use-private-ip", false, "Determine if the Load Balancer should connect to the target via the network")
 	cmd.Flags().String("ip", "", "Use the passed IP address as target")
 	return cmd

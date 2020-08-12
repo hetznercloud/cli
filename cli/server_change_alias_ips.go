@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
@@ -13,6 +14,7 @@ func newServerChangeAliasIPsCommand(cli *CLI) *cobra.Command {
 		Use:                   "change-alias-ips [FLAGS] SERVER",
 		Short:                 "Change a server's alias IPs in a network",
 		Args:                  cobra.ExactArgs(1),
+		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.ServerNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.ensureToken,
@@ -20,9 +22,7 @@ func newServerChangeAliasIPsCommand(cli *CLI) *cobra.Command {
 	}
 
 	cmd.Flags().StringP("network", "n", "", "Network (ID or name) (required)")
-	cmd.Flag("network").Annotations = map[string][]string{
-		cobra.BashCompCustom: {"__hcloud_network_names"},
-	}
+	cmd.RegisterFlagCompletionFunc("network", cmpl.SuggestCandidatesF(cli.NetworkNames))
 	cmd.MarkFlagRequired("network")
 
 	cmd.Flags().StringSlice("alias-ips", nil, "New alias IPs")

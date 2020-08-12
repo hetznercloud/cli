@@ -178,7 +178,7 @@ func describeServerListTableOutput(cli *CLI) *tableOutput {
 			var networks []string
 			if cli != nil {
 				for _, network := range server.PrivateNet {
-					networks = append(networks, cli.GetNetworkName(network.Network.ID))
+					networks = append(networks, cli.NetworkName(network.Network.ID))
 				}
 			}
 			return na(strings.Join(networks, ", "))

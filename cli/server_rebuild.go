@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
@@ -12,6 +13,7 @@ func newServerRebuildCommand(cli *CLI) *cobra.Command {
 		Use:                   "rebuild [FLAGS] SERVER",
 		Short:                 "Rebuild a server",
 		Args:                  cobra.ExactArgs(1),
+		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.ServerNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.ensureToken,
@@ -19,9 +21,7 @@ func newServerRebuildCommand(cli *CLI) *cobra.Command {
 	}
 
 	cmd.Flags().String("image", "", "ID or name of image to rebuild from (required)")
-	cmd.Flag("image").Annotations = map[string][]string{
-		cobra.BashCompCustom: {"__hcloud_image_names"},
-	}
+	cmd.RegisterFlagCompletionFunc("image", cmpl.SuggestCandidatesF(cli.ImageNames))
 	cmd.MarkFlagRequired("image")
 
 	return cmd

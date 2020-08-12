@@ -9,7 +9,6 @@ func newLoadBalancerCommand(cli *CLI) *cobra.Command {
 		Args:                  cobra.NoArgs,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE:                  cli.wrap(runLoadBalancer),
 	}
 	cmd.AddCommand(
 		newLoadBalancerCreateCommand(cli),
@@ -34,8 +33,4 @@ func newLoadBalancerCommand(cli *CLI) *cobra.Command {
 		newLoadBalancerChangeTypeCommand(cli),
 	)
 	return cmd
-}
-
-func runLoadBalancer(cli *CLI, cmd *cobra.Command, args []string) error {
-	return cmd.Usage()
 }

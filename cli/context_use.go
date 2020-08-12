@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/spf13/cobra"
 )
 
@@ -11,6 +12,7 @@ func newContextUseCommand(cli *CLI) *cobra.Command {
 		Use:                   "use [FLAGS] NAME",
 		Short:                 "Use a context",
 		Args:                  cobra.ExactArgs(1),
+		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.Config.ContextNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		RunE:                  cli.wrap(runContextUse),

@@ -9,7 +9,6 @@ func newNetworkCommand(cli *CLI) *cobra.Command {
 		Args:                  cobra.NoArgs,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE:                  cli.wrap(runNetwork),
 	}
 	cmd.AddCommand(
 		newNetworkListCommand(cli),
@@ -28,8 +27,4 @@ func newNetworkCommand(cli *CLI) *cobra.Command {
 		newNetworkDisableProtectionCommand(cli),
 	)
 	return cmd
-}
-
-func runNetwork(cli *CLI, cmd *cobra.Command, args []string) error {
-	return cmd.Usage()
 }

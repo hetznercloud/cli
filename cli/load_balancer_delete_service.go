@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/spf13/cobra"
 )
 
@@ -10,6 +11,7 @@ func newLoadBalancerDeleteServiceCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "delete-service [FLAGS] LOADBALANCER",
 		Short:                 "Deletes a service from a Load Balancer",
+		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.LoadBalancerNames)),
 		Args:                  cobra.RangeArgs(1, 2),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,

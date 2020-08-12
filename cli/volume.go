@@ -9,7 +9,6 @@ func newVolumeCommand(cli *CLI) *cobra.Command {
 		Args:                  cobra.NoArgs,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE:                  cli.wrap(runVolume),
 	}
 	cmd.AddCommand(
 		newVolumeListCommand(cli),
@@ -26,8 +25,4 @@ func newVolumeCommand(cli *CLI) *cobra.Command {
 		newVolumeDisableProtectionCommand(cli),
 	)
 	return cmd
-}
-
-func runVolume(cli *CLI, cmd *cobra.Command, args []string) error {
-	return cmd.Usage()
 }

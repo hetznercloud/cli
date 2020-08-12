@@ -4,15 +4,20 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
 
 func newVolumeDisableProtectionCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   "disable-protection [FLAGS] VOLUME PROTECTIONLEVEL [PROTECTIONLEVEL...]",
-		Short:                 "Disable resource protection for a volume",
-		Args:                  cobra.MinimumNArgs(2),
+		Use:   "disable-protection [FLAGS] VOLUME PROTECTIONLEVEL [PROTECTIONLEVEL...]",
+		Short: "Disable resource protection for a volume",
+		Args:  cobra.MinimumNArgs(2),
+		ValidArgsFunction: cmpl.SuggestArgs(
+			cmpl.SuggestCandidatesF(cli.VolumeNames),
+			cmpl.SuggestCandidates("delete"),
+		),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.ensureToken,

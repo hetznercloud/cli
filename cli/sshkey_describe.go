@@ -7,6 +7,7 @@ import (
 
 	"github.com/dustin/go-humanize"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
@@ -16,6 +17,7 @@ func newSSHKeyDescribeCommand(cli *CLI) *cobra.Command {
 		Use:                   "describe [FLAGS] SSHKEY",
 		Short:                 "Describe a SSH key",
 		Args:                  cobra.ExactArgs(1),
+		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.SSHKeyNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.ensureToken,

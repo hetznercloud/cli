@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
@@ -12,6 +13,7 @@ func newFloatingIPAddLabelCommand(cli *CLI) *cobra.Command {
 		Use:                   "add-label [FLAGS] FLOATINGIP LABEL",
 		Short:                 "Add a label to a Floating IP",
 		Args:                  cobra.ExactArgs(2),
+		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.FloatingIPNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               chainRunE(validateFloatingIPAddLabel, cli.ensureToken),

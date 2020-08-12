@@ -4,15 +4,24 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
 
 func newFloatingIPRemoveLabelCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   "remove-label [FLAGS] FLOATINGIP LABELKEY",
-		Short:                 "Remove a label from a Floating IP",
-		Args:                  cobra.RangeArgs(1, 2),
+		Use:   "remove-label [FLAGS] FLOATINGIP LABELKEY",
+		Short: "Remove a label from a Floating IP",
+		Args:  cobra.RangeArgs(1, 2),
+		ValidArgsFunction: cmpl.SuggestArgs(
+			cmpl.SuggestCandidatesF(cli.FloatingIPNames),
+			cmpl.SuggestCandidatesCtx(func(_ *cobra.Command, args []string) []string {
+				if len(args) != 1 {
+					return nil
+				}
+				return cli.FloatingIPLabelKeys(args[0])
+			})),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               chainRunE(validateFloatingIPRemoveLabel, cli.ensureToken),

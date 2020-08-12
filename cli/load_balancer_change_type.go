@@ -3,15 +3,20 @@ package cli
 import (
 	"fmt"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
 
 func newLoadBalancerChangeTypeCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   "change-type [FLAGS] LOADBALANCER LOADBALANCERTYPE",
-		Short:                 "Change type of a Load Balancer",
-		Args:                  cobra.ExactArgs(2),
+		Use:   "change-type [FLAGS] LOADBALANCER LOADBALANCERTYPE",
+		Short: "Change type of a Load Balancer",
+		Args:  cobra.ExactArgs(2),
+		ValidArgsFunction: cmpl.SuggestArgs(
+			cmpl.SuggestCandidatesF(cli.LoadBalancerNames),
+			cmpl.SuggestCandidatesF(cli.LoadBalancerTypeNames),
+		),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.ensureToken,

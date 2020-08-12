@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
@@ -12,6 +13,7 @@ func newImageUpdateCommand(cli *CLI) *cobra.Command {
 		Use:                   "update [FLAGS] IMAGE",
 		Short:                 "Update an image",
 		Args:                  cobra.ExactArgs(1),
+		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.ImageNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.ensureToken,
@@ -21,9 +23,7 @@ func newImageUpdateCommand(cli *CLI) *cobra.Command {
 	cmd.Flags().String("description", "", "Image description")
 
 	cmd.Flags().String("type", "", "Image type")
-	cmd.Flag("type").Annotations = map[string][]string{
-		cobra.BashCompCustom: {"__hcloud_image_types_no_system"},
-	}
+	cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("backup", "snapshot"))
 
 	return cmd
 }

@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	humanize "github.com/dustin/go-humanize"
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
@@ -14,6 +15,7 @@ func newCertificateDescribeCommand(cli *CLI) *cobra.Command {
 		Use:                   "describe [FLAGS] CERTIFICATE",
 		Short:                 "Describe a certificate",
 		Args:                  cobra.ExactArgs(1),
+		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.CertificateNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.ensureToken,

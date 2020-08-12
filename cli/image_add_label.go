@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
@@ -12,6 +13,7 @@ func newImageAddLabelCommand(cli *CLI) *cobra.Command {
 		Use:                   "add-label [FLAGS] IMAGE LABEL",
 		Short:                 "Add a label to an image",
 		Args:                  cobra.ExactArgs(2),
+		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.ImageNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               chainRunE(validateImageAddLabel, cli.ensureToken),

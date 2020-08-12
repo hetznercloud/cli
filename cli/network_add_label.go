@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
@@ -12,6 +13,7 @@ func newNetworkAddLabelCommand(cli *CLI) *cobra.Command {
 		Use:                   "add-label [FLAGS] NETWORK LABEL",
 		Short:                 "Add a label to a network",
 		Args:                  cobra.ExactArgs(2),
+		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.NetworkNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               chainRunE(validateNetworkAddLabel, cli.ensureToken),

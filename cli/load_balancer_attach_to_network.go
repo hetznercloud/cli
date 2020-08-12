@@ -2,6 +2,8 @@ package cli
 
 import (
 	"fmt"
+
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
@@ -11,6 +13,7 @@ func newLoadBalancerAttachToNetworkCommand(cli *CLI) *cobra.Command {
 		Use:                   "attach-to-network [FLAGS] LOADBALANCER",
 		Short:                 "Attach a Load Balancer to a Network",
 		Args:                  cobra.ExactArgs(1),
+		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.LoadBalancerNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.ensureToken,
@@ -18,9 +21,7 @@ func newLoadBalancerAttachToNetworkCommand(cli *CLI) *cobra.Command {
 	}
 
 	cmd.Flags().StringP("network", "n", "", "Network (ID or name) (required)")
-	cmd.Flag("network").Annotations = map[string][]string{
-		cobra.BashCompCustom: {"__hcloud_network_names"},
-	}
+	cmd.RegisterFlagCompletionFunc("network", cmpl.SuggestCandidatesF(cli.NetworkNames))
 	cmd.MarkFlagRequired("network")
 
 	cmd.Flags().IP("ip", nil, "IP address to assign to the Load Balancer (auto-assigned if omitted)")

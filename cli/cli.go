@@ -8,9 +8,9 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"strconv"
 
 	"github.com/cheggaaa/pb/v3"
+	"github.com/hetznercloud/cli/internal/hcapi"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 	"golang.org/x/crypto/ssh/terminal"
@@ -34,10 +34,18 @@ type CLI struct {
 
 	RootCommand *cobra.Command
 
-	client *hcloud.Client
-
-	serverNames  map[int]string
-	networkNames map[int]string
+	client             *hcloud.Client
+	isoClient          *hcapi.ISOClient
+	imageClient        *hcapi.ImageClient
+	locationClient     *hcapi.LocationClient
+	dataCenterClient   *hcapi.DataCenterClient
+	sshKeyClient       *hcapi.SSHKeyClient
+	volumeClient       *hcapi.VolumeClient
+	certificateClient  *hcapi.CertificateClient
+	floatingIPClient   *hcapi.FloatingIPClient
+	networkClient      *hcapi.NetworkClient
+	loadBalancerClient *hcapi.LoadBalancerClient
+	serverClient       *hcapi.ServerClient
 }
 
 func NewCLI() *CLI {
@@ -158,6 +166,110 @@ func (c *CLI) Client() *hcloud.Client {
 	return c.client
 }
 
+func (c *CLI) CertificateNames() []string {
+	if c.certificateClient == nil {
+		client := c.Client()
+		c.certificateClient = &hcapi.CertificateClient{CertificateClient: &client.Certificate}
+	}
+	return c.certificateClient.CertificateNames()
+}
+
+func (c *CLI) CertificateLabelKeys(idOrName string) []string {
+	if c.certificateClient == nil {
+		client := c.Client()
+		c.certificateClient = &hcapi.CertificateClient{CertificateClient: &client.Certificate}
+	}
+	return c.certificateClient.CertificateLabelKeys(idOrName)
+}
+
+func (c *CLI) FloatingIPNames() []string {
+	if c.floatingIPClient == nil {
+		client := c.Client()
+		c.floatingIPClient = &hcapi.FloatingIPClient{FloatingIPClient: &client.FloatingIP}
+	}
+	return c.floatingIPClient.FloatingIPNames()
+}
+
+func (c *CLI) FloatingIPLabelKeys(idOrName string) []string {
+	if c.floatingIPClient == nil {
+		client := c.Client()
+		c.floatingIPClient = &hcapi.FloatingIPClient{FloatingIPClient: &client.FloatingIP}
+	}
+	return c.floatingIPClient.FloatingIPLabelKeys(idOrName)
+}
+
+func (c *CLI) ISONames() []string {
+	if c.isoClient == nil {
+		client := c.Client()
+		c.isoClient = &hcapi.ISOClient{ISOClient: &client.ISO}
+	}
+	return c.isoClient.ISONames()
+}
+
+func (c *CLI) ImageNames() []string {
+	if c.imageClient == nil {
+		client := c.Client()
+		c.imageClient = &hcapi.ImageClient{ImageClient: &client.Image}
+	}
+	return c.isoClient.ISONames()
+}
+
+func (c *CLI) ImageLabelKeys(idOrName string) []string {
+	if c.imageClient == nil {
+		client := c.Client()
+		c.imageClient = &hcapi.ImageClient{ImageClient: &client.Image}
+	}
+	return c.imageClient.ImageLabelKeys(idOrName)
+}
+
+func (c *CLI) LocationNames() []string {
+	if c.locationClient == nil {
+		client := c.Client()
+		c.locationClient = &hcapi.LocationClient{LocationClient: &client.Location}
+	}
+	return c.locationClient.LocationNames()
+}
+
+func (c *CLI) DataCenterNames() []string {
+	if c.dataCenterClient == nil {
+		client := c.Client()
+		c.dataCenterClient = &hcapi.DataCenterClient{DatacenterClient: &client.Datacenter}
+	}
+	return c.dataCenterClient.DataCenterNames()
+}
+
+func (c *CLI) SSHKeyNames() []string {
+	if c.sshKeyClient == nil {
+		client := c.Client()
+		c.sshKeyClient = &hcapi.SSHKeyClient{SSHKeyClient: &client.SSHKey}
+	}
+	return c.sshKeyClient.SSHKeyNames()
+}
+
+func (c *CLI) SSHKeyLabelKeys(idOrName string) []string {
+	if c.sshKeyClient == nil {
+		client := c.Client()
+		c.sshKeyClient = &hcapi.SSHKeyClient{SSHKeyClient: &client.SSHKey}
+	}
+	return c.sshKeyClient.SSHKeyLabelKeys(idOrName)
+}
+
+func (c *CLI) VolumeNames() []string {
+	if c.volumeClient == nil {
+		client := c.Client()
+		c.volumeClient = &hcapi.VolumeClient{VolumeClient: &client.Volume}
+	}
+	return c.volumeClient.VolumeNames()
+}
+
+func (c *CLI) VolumeLabelKeys(idOrName string) []string {
+	if c.volumeClient == nil {
+		client := c.Client()
+		c.volumeClient = &hcapi.VolumeClient{VolumeClient: &client.Volume}
+	}
+	return c.volumeClient.VolumeLabelKeys(idOrName)
+}
+
 // Terminal returns whether the CLI is run in a terminal.
 func (c *CLI) Terminal() bool {
 	return terminal.IsTerminal(int(os.Stdout.Fd()))
@@ -247,30 +359,103 @@ func (c *CLI) WaitForActions(ctx context.Context, actions []*hcloud.Action) erro
 	return nil
 }
 
-func (c *CLI) GetServerName(id int) string {
-	if c.serverNames == nil {
-		c.serverNames = map[int]string{}
-		servers, _ := c.Client().Server.All(c.Context)
-		for _, server := range servers {
-			c.serverNames[server.ID] = server.Name
+func (c *CLI) ServerTypeNames() []string {
+	if c.serverClient == nil {
+		client := c.Client()
+		c.serverClient = &hcapi.ServerClient{
+			ServerClient: &client.Server,
+			ServerTypes:  &client.ServerType,
 		}
 	}
-	if serverName, ok := c.serverNames[id]; ok {
-		return serverName
-	}
-	return strconv.Itoa(id)
+	return c.serverClient.ServerTypeNames()
 }
 
-func (c *CLI) GetNetworkName(id int) string {
-	if c.networkNames == nil {
-		c.networkNames = map[int]string{}
-		networks, _ := c.Client().Network.All(c.Context)
-		for _, network := range networks {
-			c.networkNames[network.ID] = network.Name
+func (c *CLI) ServerNames() []string {
+	if c.serverClient == nil {
+		client := c.Client()
+		c.serverClient = &hcapi.ServerClient{
+			ServerClient: &client.Server,
+			ServerTypes:  &client.ServerType,
 		}
 	}
-	if networkName, ok := c.networkNames[id]; ok {
-		return networkName
+	return c.serverClient.ServerNames()
+}
+
+func (c *CLI) ServerLabelKeys(idOrName string) []string {
+	if c.serverClient == nil {
+		client := c.Client()
+		c.serverClient = &hcapi.ServerClient{
+			ServerClient: &client.Server,
+			ServerTypes:  &client.ServerType,
+		}
 	}
-	return strconv.Itoa(id)
+	return c.serverClient.ServerLabelKeys(idOrName)
+}
+
+func (c *CLI) ServerName(id int) string {
+	if c.serverClient == nil {
+		client := c.Client()
+		c.serverClient = &hcapi.ServerClient{
+			ServerClient: &client.Server,
+			ServerTypes:  &client.ServerType,
+		}
+	}
+	return c.serverClient.ServerName(id)
+}
+
+func (c *CLI) NetworkNames() []string {
+	if c.networkClient == nil {
+		client := c.Client()
+		c.networkClient = &hcapi.NetworkClient{NetworkClient: &client.Network}
+	}
+	return c.networkClient.NetworkNames()
+}
+
+func (c *CLI) NetworkName(id int) string {
+	if c.networkClient == nil {
+		client := c.Client()
+		c.networkClient = &hcapi.NetworkClient{NetworkClient: &client.Network}
+	}
+	return c.networkClient.NetworkName(id)
+}
+
+func (c *CLI) NetworkLabelKeys(idOrName string) []string {
+	if c.networkClient == nil {
+		client := c.Client()
+		c.networkClient = &hcapi.NetworkClient{NetworkClient: &client.Network}
+	}
+	return c.networkClient.NetworkLabelKeys(idOrName)
+}
+
+func (c *CLI) LoadBalancerNames() []string {
+	if c.loadBalancerClient == nil {
+		client := c.Client()
+		c.loadBalancerClient = &hcapi.LoadBalancerClient{
+			LoadBalancerClient: &client.LoadBalancer,
+			TypeClient:         &client.LoadBalancerType,
+		}
+	}
+	return c.loadBalancerClient.LoadBalancerNames()
+}
+
+func (c *CLI) LoadBalancerLabelKeys(idOrName string) []string {
+	if c.loadBalancerClient == nil {
+		client := c.Client()
+		c.loadBalancerClient = &hcapi.LoadBalancerClient{
+			LoadBalancerClient: &client.LoadBalancer,
+			TypeClient:         &client.LoadBalancerType,
+		}
+	}
+	return c.loadBalancerClient.LoadBalancerLabelKeys(idOrName)
+}
+
+func (c *CLI) LoadBalancerTypeNames() []string {
+	if c.loadBalancerClient == nil {
+		client := c.Client()
+		c.loadBalancerClient = &hcapi.LoadBalancerClient{
+			LoadBalancerClient: &client.LoadBalancer,
+			TypeClient:         &client.LoadBalancerType,
+		}
+	}
+	return c.loadBalancerClient.LoadBalancerTypeNames()
 }

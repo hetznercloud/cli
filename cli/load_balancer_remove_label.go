@@ -4,15 +4,25 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
 
 func newLoadBalancerRemoveLabelCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   "remove-label [FLAGS] LOADBALANCER LABELKEY",
-		Short:                 "Remove a label from a Load Balancer",
-		Args:                  cobra.RangeArgs(1, 2),
+		Use:   "remove-label [FLAGS] LOADBALANCER LABELKEY",
+		Short: "Remove a label from a Load Balancer",
+		Args:  cobra.RangeArgs(1, 2),
+		ValidArgsFunction: cmpl.SuggestArgs(
+			cmpl.SuggestCandidatesF(cli.LoadBalancerNames),
+			cmpl.SuggestCandidatesCtx(func(_ *cobra.Command, args []string) []string {
+				if len(args) != 1 {
+					return nil
+				}
+				return cli.LoadBalancerLabelKeys(args[0])
+			}),
+		),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               chainRunE(validateLoadBalancerRemoveLabel, cli.ensureToken),

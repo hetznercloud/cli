@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
@@ -13,6 +14,7 @@ func newNetworkChangeIPRangeCommand(cli *CLI) *cobra.Command {
 		Use:                   "change-ip-range [FLAGS] NETWORK",
 		Short:                 "Change the IP range of a network",
 		Args:                  cobra.ExactArgs(1),
+		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.NetworkNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.ensureToken,
