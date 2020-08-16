@@ -123,6 +123,22 @@ $ hcloud server create --name test --image debian-9 --type cx11 --ssh-key demo
 Server 325211 created
 ```
 
+### Protect a server
+
+```
+$ hcloud server enable-protection test delete rebuild
+1s [=====================================] 100.00%
+Resource protection enabled for server 325211
+```
+
+### Protect a load-balancer
+
+```
+$ Hcloud load-balancer enable-protection test delete
+0s [=====================================] 100.00%
+Resource protection enabled Load Balancer 1337
+```
+
 ## License
 
 MIT license
