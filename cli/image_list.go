@@ -46,6 +46,7 @@ func runImageList(cli *CLI, cmd *cobra.Command, args []string) error {
 			LabelSelector: labelSelector,
 			PerPage:       50,
 		},
+		IncludeDeprecated: true,
 	}
 	images, err := cli.Client().Image.AllWithOpts(cli.Context, opts)
 	if err != nil {
@@ -69,7 +70,7 @@ func runImageList(cli *CLI, cmd *cobra.Command, args []string) error {
 		return describeJSON(imageSchemas)
 	}
 
-	cols := []string{"id", "type", "name", "description", "image_size", "disk_size", "created"}
+	cols := []string{"id", "type", "name", "description", "image_size", "disk_size", "created", "deprecated"}
 	if outOpts.IsSet("columns") {
 		cols = outOpts["columns"]
 	}
@@ -148,5 +149,12 @@ func describeImageListTableOutput(cli *CLI) *tableOutput {
 		AddFieldOutputFn("created", fieldOutputFn(func(obj interface{}) string {
 			image := obj.(*hcloud.Image)
 			return datetime(image.Created)
+		})).
+		AddFieldOutputFn("deprecated", fieldOutputFn(func(obj interface{}) string {
+			image := obj.(*hcloud.Image)
+			if image.Deprecated.IsZero() {
+				return "-"
+			}
+			return datetime(image.Deprecated)
 		}))
 }
