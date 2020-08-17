@@ -60,6 +60,7 @@ func newServerCreateCommand(cli *CLI) *cobra.Command {
 	cmd.RegisterFlagCompletionFunc("network", cmpl.SuggestCandidatesF(cli.NetworkNames))
 
 	cmd.Flags().Bool("automount", false, "Automount volumes after attach (default: false)")
+	cmd.Flags().Bool("use-deprecated-image", false, "Enable the use of deprecated images (default: false)")
 	return cmd
 }
 
@@ -173,15 +174,33 @@ func optsFromFlags(cli *CLI, flags *pflag.FlagSet) (opts hcloud.ServerCreateOpts
 	volumes, _ := flags.GetStringSlice("volume")
 	networks, _ := flags.GetStringSlice("network")
 	automount, _ := flags.GetBool("automount")
+	useDeprecatedImage, _ := flags.GetBool("use-deprecated-image")
 
+	hcloudImage, _, err := cli.Client().Image.Get(cli.Context, image)
+	if err != nil {
+		return
+	}
+	if hcloudImage == nil {
+		hcloudImages, err := cli.Client().Image.AllWithOpts(cli.Context, hcloud.ImageListOpts{Name: image, IncludeDeprecated: true})
+		if err != nil {
+			return opts, err
+		}
+		if len(hcloudImages) == 0 {
+			err = fmt.Errorf("image not found: %s", image)
+			return opts, err
+		}
+		hcloudImage = hcloudImages[0]
+	}
+	if !hcloudImage.Deprecated.IsZero() && !useDeprecatedImage {
+		err = fmt.Errorf("image %s is deprecated, please use --use-deprecated-image to create a server with this image. Keep in mind that this image will be removed in the future", image)
+		return
+	}
 	opts = hcloud.ServerCreateOpts{
 		Name: name,
 		ServerType: &hcloud.ServerType{
 			Name: serverType,
 		},
-		Image: &hcloud.Image{
-			Name: image,
-		},
+		Image:            hcloudImage,
 		Labels:           labels,
 		StartAfterCreate: &startAfterCreate,
 		Automount:        &automount,
