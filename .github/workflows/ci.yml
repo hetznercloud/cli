@@ -6,14 +6,14 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        go-version: [1.14]
+        go-version: [1.15]
     steps:
       - name: Set up Go ${{ matrix.go-version }}
-        uses: actions/setup-go@v1
+        uses: actions/setup-go@v2
         with:
           go-version: ${{ matrix.go-version }}
       - name: Check out code into the Go module directory
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
       - name: Get dependencies
         run: |
           go get -u golang.org/x/lint/golint
@@ -21,7 +21,7 @@ jobs:
       - name: Run go fmt
         run: diff -u <(echo -n) <(gofmt -d -s .)
       - name: Build test version
-        run: ./script/build.bash linux amd64 `./script/git-version.bash`; mv dist/hcloud* cmd/hcloud/hcloud
+        run: ./script/build.bash linux amd64 test-build; mv dist/hcloud* cmd/hcloud/hcloud
       - name: Run bats
         run: |
           git clone --depth 1 https://github.com/sstephenson/bats.git
