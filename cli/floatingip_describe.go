@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/dustin/go-humanize"
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
@@ -14,6 +15,7 @@ func newFloatingIPDescribeCommand(cli *CLI) *cobra.Command {
 		Use:                   "describe [FLAGS] FLOATINGIP",
 		Short:                 "Describe a Floating IP",
 		Args:                  cobra.ExactArgs(1),
+		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.FloatingIPNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.ensureToken,

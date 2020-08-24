@@ -9,15 +9,10 @@ func newISOCommand(cli *CLI) *cobra.Command {
 		Args:                  cobra.NoArgs,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE:                  cli.wrap(runServer),
 	}
 	cmd.AddCommand(
 		newISOListCommand(cli),
 		newISODescribeCommand(cli),
 	)
 	return cmd
-}
-
-func runISO(cli *CLI, cmd *cobra.Command, args []string) error {
-	return cmd.Usage()
 }

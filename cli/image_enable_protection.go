@@ -6,15 +6,20 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
 
 func newImageEnableProtectionCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   "enable-protection [FLAGS] IMAGE PROTECTIONLEVEL [PROTECTIONLEVEL...]",
-		Short:                 "Enable resource protection for an image",
-		Args:                  cobra.MinimumNArgs(2),
+		Use:   "enable-protection [FLAGS] IMAGE PROTECTIONLEVEL [PROTECTIONLEVEL...]",
+		Short: "Enable resource protection for an image",
+		Args:  cobra.MinimumNArgs(2),
+		ValidArgsFunction: cmpl.SuggestArgs(
+			cmpl.SuggestCandidatesF(cli.ImageNames),
+			cmpl.SuggestCandidates("delete"),
+		),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.ensureToken,

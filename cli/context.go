@@ -9,7 +9,6 @@ func newContextCommand(cli *CLI) *cobra.Command {
 		Args:                  cobra.NoArgs,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE:                  cli.wrap(runContext),
 	}
 	cmd.AddCommand(
 		newContextCreateCommand(cli),
@@ -19,8 +18,4 @@ func newContextCommand(cli *CLI) *cobra.Command {
 		newContextListCommand(cli),
 	)
 	return cmd
-}
-
-func runContext(cli *CLI, cmd *cobra.Command, args []string) error {
-	return cmd.Usage()
 }

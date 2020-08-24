@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"syscall"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/spf13/cobra"
 )
 
@@ -15,6 +16,7 @@ func newServerSSHCommand(cli *CLI) *cobra.Command {
 		Use:                   "ssh [FLAGS] SERVER [COMMAND...]",
 		Short:                 "Spawn an SSH connection for the server",
 		Args:                  cobra.MinimumNArgs(1),
+		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.ServerNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.ensureToken,

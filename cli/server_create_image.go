@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
@@ -18,9 +19,7 @@ func newServerCreateImageCommand(cli *CLI) *cobra.Command {
 		RunE:                  cli.wrap(runServerCreateImage),
 	}
 	cmd.Flags().String("type", "", "Image type (required)")
-	cmd.Flag("type").Annotations = map[string][]string{
-		cobra.BashCompCustom: {"__hcloud_image_types_no_system"},
-	}
+	cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("backup", "snapshot"))
 	cmd.MarkFlagRequired("type")
 
 	cmd.Flags().String("description", "", "Image description")

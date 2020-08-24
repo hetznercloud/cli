@@ -9,15 +9,10 @@ func newLocationCommand(cli *CLI) *cobra.Command {
 		Args:                  cobra.NoArgs,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE:                  cli.wrap(runServer),
 	}
 	cmd.AddCommand(
 		newLocationListCommand(cli),
 		newLocationDescribeCommand(cli),
 	)
 	return cmd
-}
-
-func runLocation(cli *CLI, cmd *cobra.Command, args []string) error {
-	return cmd.Usage()
 }

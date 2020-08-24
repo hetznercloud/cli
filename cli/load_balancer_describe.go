@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	humanize "github.com/dustin/go-humanize"
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
@@ -14,6 +15,7 @@ func newLoadBalancerDescribeCommand(cli *CLI) *cobra.Command {
 		Use:                   "describe [FLAGS] LOADBALANCER",
 		Short:                 "Describe a Load Balancer",
 		Args:                  cobra.ExactArgs(1),
+		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.LoadBalancerNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.ensureToken,
@@ -128,7 +130,7 @@ func loadBalancerDescribeText(cli *CLI, loadBalancer *hcloud.LoadBalancer, withL
 		case hcloud.LoadBalancerTargetTypeServer:
 			fmt.Printf("    Server:\n")
 			fmt.Printf("      ID:\t\t\t%d\n", target.Server.Server.ID)
-			fmt.Printf("      Name:\t\t\t%s\n", cli.GetServerName(target.Server.Server.ID))
+			fmt.Printf("      Name:\t\t\t%s\n", cli.ServerName(target.Server.Server.ID))
 			fmt.Printf("    Use Private IP:\t\t%s\n", yesno(target.UsePrivateIP))
 			fmt.Printf("    Status:\n")
 			for _, healthStatus := range target.HealthStatus {

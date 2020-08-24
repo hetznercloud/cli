@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
@@ -19,22 +20,18 @@ func newFloatingIPCreateCommand(cli *CLI) *cobra.Command {
 		RunE:                  cli.wrap(runFloatingIPCreate),
 	}
 	cmd.Flags().String("type", "", "Type (ipv4 or ipv6) (required)")
-	cmd.Flag("type").Annotations = map[string][]string{
-		cobra.BashCompCustom: {"__hcloud_floatingip_types"},
-	}
+	cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("ipv4", "ipv6"))
 	cmd.MarkFlagRequired("type")
 
 	cmd.Flags().String("description", "", "Description")
+
 	cmd.Flags().String("name", "", "Name")
+
 	cmd.Flags().String("home-location", "", "Home location")
-	cmd.Flag("home-location").Annotations = map[string][]string{
-		cobra.BashCompCustom: {"__hcloud_location_names"},
-	}
+	cmd.RegisterFlagCompletionFunc("home-location", cmpl.SuggestCandidatesF(cli.LocationNames))
 
 	cmd.Flags().String("server", "", "Server to assign Floating IP to")
-	cmd.Flag("server").Annotations = map[string][]string{
-		cobra.BashCompCustom: {"__hcloud_server_names"},
-	}
+	cmd.RegisterFlagCompletionFunc("server", cmpl.SuggestCandidatesF(cli.ServerNames))
 
 	cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 

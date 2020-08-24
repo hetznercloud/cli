@@ -9,7 +9,6 @@ func newFloatingIPCommand(cli *CLI) *cobra.Command {
 		Args:                  cobra.NoArgs,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE:                  cli.wrap(runFloatingIP),
 	}
 	cmd.AddCommand(
 		newFloatingIPUpdateCommand(cli),
@@ -26,8 +25,4 @@ func newFloatingIPCommand(cli *CLI) *cobra.Command {
 		newFloatingIPSetRDNSCommand(cli),
 	)
 	return cmd
-}
-
-func runFloatingIP(cli *CLI, cmd *cobra.Command, args []string) error {
-	return cmd.Usage()
 }

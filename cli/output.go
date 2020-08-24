@@ -11,8 +11,11 @@ import (
 	"unicode"
 
 	"github.com/fatih/structs"
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/spf13/cobra"
 )
+
+const flagName = "output"
 
 type outputOption struct {
 	Name   string
@@ -36,20 +39,25 @@ func outputOptionColumns(columns []string) outputOption {
 }
 
 func addOutputFlag(cmd *cobra.Command, options ...outputOption) {
-	var names []string
+	var (
+		names  []string
+		values []string
+	)
 	for _, option := range options {
+		name := option.Name
 		if option.Values != nil {
-			names = append(names, option.Name+"=...")
-		} else {
-			names = append(names, option.Name)
+			name += "=..."
+			values = append(values, option.Values...)
 		}
+		names = append(names, name)
 	}
 	cmd.Flags().StringArrayP(
-		"output",
+		flagName,
 		"o",
 		[]string{},
 		fmt.Sprintf("output options: %s", strings.Join(names, "|")),
 	)
+	cmd.RegisterFlagCompletionFunc(flagName, cmpl.SuggestCandidates(values...))
 	cmd.PreRunE = chainRunE(cmd.PreRunE, validateOutputFlag(options))
 }
 
@@ -69,7 +77,7 @@ func validateOutputFlag(options []outputOption) func(cmd *cobra.Command, args []
 			}
 		}
 
-		flagValues, err := cmd.Flags().GetStringArray("output")
+		flagValues, err := cmd.Flags().GetStringArray(flagName)
 		if err != nil {
 			return err
 		}
@@ -92,7 +100,7 @@ func validateOutputFlag(options []outputOption) func(cmd *cobra.Command, args []
 }
 
 func outputFlagsForCommand(cmd *cobra.Command) outputOpts {
-	opts, _ := cmd.Flags().GetStringArray("output")
+	opts, _ := cmd.Flags().GetStringArray(flagName)
 	return parseOutputFlags(opts)
 }
 

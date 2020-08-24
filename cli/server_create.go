@@ -10,6 +10,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -30,31 +31,21 @@ func newServerCreateCommand(cli *CLI) *cobra.Command {
 	cmd.MarkFlagRequired("name")
 
 	cmd.Flags().String("type", "", "Server type (ID or name) (required)")
-	cmd.Flag("type").Annotations = map[string][]string{
-		cobra.BashCompCustom: {"__hcloud_servertype_names"},
-	}
+	cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidatesF(cli.ServerTypeNames))
 	cmd.MarkFlagRequired("type")
 
 	cmd.Flags().String("image", "", "Image (ID or name) (required)")
-	cmd.Flag("image").Annotations = map[string][]string{
-		cobra.BashCompCustom: {"__hcloud_image_names"},
-	}
+	cmd.RegisterFlagCompletionFunc("image", cmpl.SuggestCandidatesF(cli.ImageNames))
 	cmd.MarkFlagRequired("image")
 
 	cmd.Flags().String("location", "", "Location (ID or name)")
-	cmd.Flag("location").Annotations = map[string][]string{
-		cobra.BashCompCustom: {"__hcloud_location_names"},
-	}
+	cmd.RegisterFlagCompletionFunc("location", cmpl.SuggestCandidatesF(cli.LocationNames))
 
 	cmd.Flags().String("datacenter", "", "Datacenter (ID or name)")
-	cmd.Flag("datacenter").Annotations = map[string][]string{
-		cobra.BashCompCustom: {"__hcloud_datacenter_names"},
-	}
+	cmd.RegisterFlagCompletionFunc("datacenter", cmpl.SuggestCandidatesF(cli.DataCenterNames))
 
 	cmd.Flags().StringSlice("ssh-key", nil, "ID or name of SSH key to inject (can be specified multiple times)")
-	cmd.Flag("ssh-key").Annotations = map[string][]string{
-		cobra.BashCompCustom: {"__hcloud_sshkey_names"},
-	}
+	cmd.RegisterFlagCompletionFunc("ssh-key", cmpl.SuggestCandidatesF(cli.SSHKeyNames))
 
 	cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 
@@ -63,10 +54,11 @@ func newServerCreateCommand(cli *CLI) *cobra.Command {
 	cmd.Flags().Bool("start-after-create", true, "Start server right after creation")
 
 	cmd.Flags().StringSlice("volume", nil, "ID or name of volume to attach (can be specified multiple times)")
-	cmd.Flag("volume").Annotations = map[string][]string{
-		cobra.BashCompCustom: {"__hcloud_volume_names"},
-	}
+	cmd.RegisterFlagCompletionFunc("volume", cmpl.SuggestCandidatesF(cli.VolumeNames))
+
 	cmd.Flags().StringSlice("network", nil, "ID of network to attach the server to (can be specified multiple times)")
+	cmd.RegisterFlagCompletionFunc("network", cmpl.SuggestCandidatesF(cli.NetworkNames))
+
 	cmd.Flags().Bool("automount", false, "Automount volumes after attach (default: false)")
 	return cmd
 }

@@ -4,15 +4,20 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
 
 func newServerEnableProtectionCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   "enable-protection [FLAGS] SERVER PROTECTIONLEVEL [PROTECTIONLEVEL...]",
-		Short:                 "Enable resource protection for a server",
-		Args:                  cobra.MinimumNArgs(2),
+		Use:   "enable-protection [FLAGS] SERVER PROTECTIONLEVEL [PROTECTIONLEVEL...]",
+		Short: "Enable resource protection for a server",
+		Args:  cobra.MinimumNArgs(2),
+		ValidArgsFunction: cmpl.SuggestArgs(
+			cmpl.SuggestCandidatesF(cli.ServerNames),
+			cmpl.SuggestCandidates("delete", "rebuild"),
+		),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.ensureToken,

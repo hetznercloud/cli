@@ -118,7 +118,7 @@ func describeFloatingIPListTableOutput(cli *CLI) *tableOutput {
 			floatingIP := obj.(*hcloud.FloatingIP)
 			var server string
 			if floatingIP.Server != nil && cli != nil {
-				return cli.GetServerName(floatingIP.Server.ID)
+				return cli.ServerName(floatingIP.Server.ID)
 			}
 			return na(server)
 		})).

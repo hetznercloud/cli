@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
@@ -12,6 +13,7 @@ func newServerAddLabelCommand(cli *CLI) *cobra.Command {
 		Use:                   "add-label [FLAGS] SERVER LABEL",
 		Short:                 "Add a label to a server",
 		Args:                  cobra.ExactArgs(2),
+		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.ServerNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               chainRunE(validateServerAddLabel, cli.ensureToken),

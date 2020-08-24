@@ -3,15 +3,20 @@ package cli
 import (
 	"fmt"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/spf13/cobra"
 )
 
 func newServerAttachISOCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   "attach-iso [FLAGS] SERVER ISO",
-		Short:                 "Attach an ISO to a server",
-		Args:                  cobra.ExactArgs(2),
-		TraverseChildren:      true,
+		Use:              "attach-iso [FLAGS] SERVER ISO",
+		Short:            "Attach an ISO to a server",
+		Args:             cobra.ExactArgs(2),
+		TraverseChildren: true,
+		ValidArgsFunction: cmpl.SuggestArgs(
+			cmpl.SuggestCandidatesF(cli.ServerNames),
+			cmpl.SuggestCandidatesF(cli.ISONames),
+		),
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runServerAttachISO),

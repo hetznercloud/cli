@@ -4,15 +4,25 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
 
 func newCertificateRemoveLabelCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   "remove-label [FLAGS] CERTIFICATE LABELKEY",
-		Short:                 "Remove a label from a certificate",
-		Args:                  cobra.RangeArgs(1, 2),
+		Use:   "remove-label [FLAGS] CERTIFICATE LABELKEY",
+		Short: "Remove a label from a certificate",
+		Args:  cobra.RangeArgs(1, 2),
+		ValidArgsFunction: cmpl.SuggestArgs(
+			cmpl.SuggestCandidatesF(cli.CertificateNames),
+			cmpl.SuggestCandidatesCtx(func(_ *cobra.Command, args []string) []string {
+				if len(args) != 1 {
+					return nil
+				}
+				return cli.CertificateLabelKeys(args[0])
+			}),
+		),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               chainRunE(validateCertificateRemoveLabel, cli.ensureToken),

@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
@@ -22,25 +23,19 @@ func newLoadBalancerCreateCommand(cli *CLI) *cobra.Command {
 	cmd.MarkFlagRequired("name")
 
 	cmd.Flags().String("type", "", "Load Balancer type (ID or name) (required)")
-	cmd.Flag("type").Annotations = map[string][]string{
-		cobra.BashCompCustom: {"__hcloud_load_balancer_type_names"},
-	}
+	cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidatesF(cli.LoadBalancerTypeNames))
 	cmd.MarkFlagRequired("type")
 
 	cmd.Flags().String("algorithm-type", "", "Algorithm Type name (round_robin or least_connections)")
-
-	cmd.Flag("algorithm-type").Annotations = map[string][]string{
-		cobra.BashCompCustom: {"__hcloud_load_balancer_algorithm_types"},
-	}
+	cmd.RegisterFlagCompletionFunc("algorithm-type", cmpl.SuggestCandidates(
+		string(hcloud.LoadBalancerAlgorithmTypeLeastConnections),
+		string(hcloud.LoadBalancerAlgorithmTypeRoundRobin),
+	))
 	cmd.Flags().String("location", "", "Location (ID or name)")
-	cmd.Flag("location").Annotations = map[string][]string{
-		cobra.BashCompCustom: {"__hcloud_location_names"},
-	}
+	cmd.RegisterFlagCompletionFunc("location", cmpl.SuggestCandidatesF(cli.LocationNames))
 
 	cmd.Flags().String("network-zone", "", "Network Zone")
-	cmd.Flag("network-zone").Annotations = map[string][]string{
-		cobra.BashCompCustom: {"__hcloud_network_zones"},
-	}
+	cmd.RegisterFlagCompletionFunc("network-zone", cmpl.SuggestCandidates("eu-central"))
 
 	cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 

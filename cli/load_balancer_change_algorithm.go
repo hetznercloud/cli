@@ -2,6 +2,8 @@ package cli
 
 import (
 	"fmt"
+
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
@@ -11,6 +13,7 @@ func newLoadBalancerChangeAlgorithmCommand(cli *CLI) *cobra.Command {
 		Use:                   "change-algorithm LOADBALANCER FLAGS",
 		Short:                 "Changes the algorithm of a Load Balancer",
 		Args:                  cobra.ExactArgs(1),
+		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.LoadBalancerNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.ensureToken,
@@ -18,10 +21,12 @@ func newLoadBalancerChangeAlgorithmCommand(cli *CLI) *cobra.Command {
 	}
 
 	cmd.Flags().String("algorithm-type", "", "The new algorithm of the Load Balancer")
-	cmd.Flag("algorithm-type").Annotations = map[string][]string{
-		cobra.BashCompCustom: {"__hcloud_load_balancer_algorithm_types"},
-	}
+	cmd.RegisterFlagCompletionFunc("algorithm-type", cmpl.SuggestCandidates(
+		string(hcloud.LoadBalancerAlgorithmTypeRoundRobin),
+		string(hcloud.LoadBalancerAlgorithmTypeRoundRobin),
+	))
 	cmd.MarkFlagRequired("algorithm-type")
+
 	return cmd
 }
 

@@ -19,6 +19,17 @@ type ConfigContext struct {
 	Token string
 }
 
+func (config *Config) ContextNames() []string {
+	if len(config.Contexts) == 0 {
+		return nil
+	}
+	names := make([]string, len(config.Contexts))
+	for i, ctx := range config.Contexts {
+		names[i] = ctx.Name
+	}
+	return names
+}
+
 func (config *Config) ContextByName(name string) *ConfigContext {
 	for _, c := range config.Contexts {
 		if c.Name == name {

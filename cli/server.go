@@ -9,7 +9,6 @@ func newServerCommand(cli *CLI) *cobra.Command {
 		Args:                  cobra.NoArgs,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE:                  cli.wrap(runServer),
 	}
 	cmd.AddCommand(
 		newServerListCommand(cli),
@@ -45,8 +44,4 @@ func newServerCommand(cli *CLI) *cobra.Command {
 		newServerRequestConsoleCommand(cli),
 	)
 	return cmd
-}
-
-func runServer(cli *CLI, cmd *cobra.Command, args []string) error {
-	return cmd.Usage()
 }

@@ -122,14 +122,14 @@ func describeImageListTableOutput(cli *CLI) *tableOutput {
 		AddFieldOutputFn("bound_to", fieldOutputFn(func(obj interface{}) string {
 			image := obj.(*hcloud.Image)
 			if image.BoundTo != nil && cli != nil {
-				return cli.GetServerName(image.BoundTo.ID)
+				return cli.ServerName(image.BoundTo.ID)
 			}
 			return na("")
 		})).
 		AddFieldOutputFn("created_from", fieldOutputFn(func(obj interface{}) string {
 			image := obj.(*hcloud.Image)
 			if image.CreatedFrom != nil && cli != nil {
-				return cli.GetServerName(image.CreatedFrom.ID)
+				return cli.ServerName(image.CreatedFrom.ID)
 			}
 			return na("")
 		})).

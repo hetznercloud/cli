@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
@@ -12,15 +13,14 @@ func newVolumeAttachCommand(cli *CLI) *cobra.Command {
 		Use:                   "attach [FLAGS] VOLUME",
 		Short:                 "Attach a volume to a server",
 		Args:                  cobra.ExactArgs(1),
+		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.VolumeNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.ensureToken,
 		RunE:                  cli.wrap(runVolumeAttach),
 	}
 	cmd.Flags().String("server", "", "Server (ID or name) (required)")
-	cmd.Flag("server").Annotations = map[string][]string{
-		cobra.BashCompCustom: {"__hcloud_server_names"},
-	}
+	cmd.RegisterFlagCompletionFunc("server", cmpl.SuggestCandidatesF(cli.ServerNames))
 	cmd.MarkFlagRequired("server")
 	cmd.Flags().Bool("automount", false, "Automount volume after attach")
 

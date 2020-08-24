@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
@@ -13,6 +14,7 @@ func newLoadBalancerUpdateServiceCommand(cli *CLI) *cobra.Command {
 		Use:                   "update-service LOADBALANCER FLAGS",
 		Short:                 "Updates a service from a Load Balancer",
 		Args:                  cobra.ExactArgs(1),
+		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.LoadBalancerNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.ensureToken,

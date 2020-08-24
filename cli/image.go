@@ -9,7 +9,6 @@ func newImageCommand(cli *CLI) *cobra.Command {
 		Args:                  cobra.NoArgs,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE:                  cli.wrap(runImage),
 	}
 	cmd.AddCommand(
 		newImageListCommand(cli),
@@ -22,8 +21,4 @@ func newImageCommand(cli *CLI) *cobra.Command {
 		newImageRemoveLabelCommand(cli),
 	)
 	return cmd
-}
-
-func runImage(cli *CLI, cmd *cobra.Command, args []string) error {
-	return cmd.Usage()
 }

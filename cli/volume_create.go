@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
@@ -22,14 +23,10 @@ func newVolumeCreateCommand(cli *CLI) *cobra.Command {
 	cmd.MarkFlagRequired("name")
 
 	cmd.Flags().String("server", "", "Server (ID or name)")
-	cmd.Flag("server").Annotations = map[string][]string{
-		cobra.BashCompCustom: {"__hcloud_server_names"},
-	}
+	cmd.RegisterFlagCompletionFunc("server", cmpl.SuggestCandidatesF(cli.ServerNames))
 
 	cmd.Flags().String("location", "", "Location (ID or name)")
-	cmd.Flag("location").Annotations = map[string][]string{
-		cobra.BashCompCustom: {"__hcloud_location_names"},
-	}
+	cmd.RegisterFlagCompletionFunc("location", cmpl.SuggestCandidatesF(cli.LocationNames))
 
 	cmd.Flags().Int("size", 0, "Size (GB) (required)")
 	cmd.MarkFlagRequired("size")
