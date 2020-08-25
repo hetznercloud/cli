@@ -82,7 +82,7 @@ func (c *ServerClient) ServerLabelKeys(idOrName string) []string {
 // ServerTypeNames returns a slice of all available server types.
 func (c *ServerClient) ServerTypeNames() []string {
 	sts, err := c.ServerTypes.All(context.Background())
-	if err == nil || len(sts) == 0 {
+	if err != nil || len(sts) == 0 {
 		return nil
 	}
 	names := make([]string, len(sts))
