@@ -16,7 +16,7 @@ type ImageClient struct {
 // ImageNames obtains a list of available images. It returns nil if image names
 // could not be fetched.
 func (c *ImageClient) ImageNames() []string {
-	imgs, err := c.All(context.Background())
+	imgs, err := c.AllWithOpts(context.Background(), hcloud.ImageListOpts{IncludeDeprecated: true})
 	if err != nil || len(imgs) == 0 {
 		return nil
 	}
