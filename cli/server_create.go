@@ -4,17 +4,16 @@ import (
 	"bytes"
 	"encoding/base64"
 	"fmt"
-	"io/ioutil"
-	"mime/multipart"
-	"net/textproto"
-	"os"
-	"strings"
-
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"golang.org/x/crypto/ssh"
+	"io/ioutil"
+	"mime/multipart"
+	"net/textproto"
+	"os"
+	"strings"
 )
 
 func newServerCreateCommand(cli *CLI) *cobra.Command {
@@ -60,6 +59,7 @@ func newServerCreateCommand(cli *CLI) *cobra.Command {
 	cmd.RegisterFlagCompletionFunc("network", cmpl.SuggestCandidatesF(cli.NetworkNames))
 
 	cmd.Flags().Bool("automount", false, "Automount volumes after attach (default: false)")
+	cmd.Flags().Bool("allow-deprecated-image", false, "Enable the use of deprecated images (default: false)")
 	return cmd
 }
 
@@ -163,7 +163,7 @@ func buildUserData(files []string) (string, error) {
 func optsFromFlags(cli *CLI, flags *pflag.FlagSet) (opts hcloud.ServerCreateOpts, err error) {
 	name, _ := flags.GetString("name")
 	serverType, _ := flags.GetString("type")
-	image, _ := flags.GetString("image")
+	imageIDorName, _ := flags.GetString("imageIDorName")
 	location, _ := flags.GetString("location")
 	datacenter, _ := flags.GetString("datacenter")
 	userDataFiles, _ := flags.GetStringArray("user-data-from-file")
@@ -173,15 +173,37 @@ func optsFromFlags(cli *CLI, flags *pflag.FlagSet) (opts hcloud.ServerCreateOpts
 	volumes, _ := flags.GetStringSlice("volume")
 	networks, _ := flags.GetStringSlice("network")
 	automount, _ := flags.GetBool("automount")
+	allowDeprecatedImage, _ := flags.GetBool("allow-deprecated-image")
 
+	image, _, err := cli.Client().Image.Get(cli.Context, imageIDorName)
+	if err != nil {
+		return
+	}
+	if image == nil {
+		images, err := cli.Client().Image.AllWithOpts(cli.Context, hcloud.ImageListOpts{Name: imageIDorName, IncludeDeprecated: true})
+		if err != nil {
+			return opts, err
+		}
+		if len(images) == 0 {
+			err = fmt.Errorf("image not found: %s", imageIDorName)
+			return opts, err
+		}
+		image = images[0]
+	}
+	if !image.Deprecated.IsZero() {
+		if allowDeprecatedImage {
+			fmt.Printf("Attention: image %s is deprecated. It will continue to be available until %s.\n", image.Name, image.Deprecated.AddDate(0, 3, 0).Format("2006-01-02"))
+		} else {
+			err = fmt.Errorf("image %s is deprecated, please use --allow-deprecated-image to create a server with this image. It will continue to be available until %s", image.Name, image.Deprecated.AddDate(0, 3, 0).Format("2006-01-02"))
+			return
+		}
+	}
 	opts = hcloud.ServerCreateOpts{
 		Name: name,
 		ServerType: &hcloud.ServerType{
 			Name: serverType,
 		},
-		Image: &hcloud.Image{
-			Name: image,
-		},
+		Image:            image,
 		Labels:           labels,
 		StartAfterCreate: &startAfterCreate,
 		Automount:        &automount,

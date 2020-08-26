@@ -53,6 +53,9 @@ func imageDescribeText(cli *CLI, image *hcloud.Image) error {
 	fmt.Printf("Status:\t\t%s\n", image.Status)
 	fmt.Printf("Name:\t\t%s\n", na(image.Name))
 	fmt.Printf("Created:\t%s (%s)\n", datetime(image.Created), humanize.Time(image.Created))
+	if !image.Deprecated.IsZero() {
+		fmt.Printf("Deprecated:\t%s (%s)\n", datetime(image.Deprecated), humanize.Time(image.Deprecated))
+	}
 	fmt.Printf("Description:\t%s\n", image.Description)
 	if image.ImageSize != 0 {
 		fmt.Printf("Image size:\t%.1f GB\n", image.ImageSize)
@@ -60,7 +63,6 @@ func imageDescribeText(cli *CLI, image *hcloud.Image) error {
 		fmt.Printf("Image size:\t%s\n", na(""))
 	}
 	fmt.Printf("Disk size:\t%.0f GB\n", image.DiskSize)
-	fmt.Printf("Created:\t%s (%s)\n", datetime(image.Created), humanize.Time(image.Created))
 	fmt.Printf("OS flavor:\t%s\n", image.OSFlavor)
 	fmt.Printf("OS version:\t%s\n", na(image.OSVersion))
 	fmt.Printf("Rapid deploy:\t%s\n", yesno(image.RapidDeploy))
@@ -76,6 +78,9 @@ func imageDescribeText(cli *CLI, image *hcloud.Image) error {
 		}
 	}
 
+	if !image.Deprecated.IsZero() {
+		fmt.Printf("\nAttention: This image is deprecated and will be removed in the future.\n")
+	}
 	return nil
 }
 

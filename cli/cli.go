@@ -211,7 +211,7 @@ func (c *CLI) ImageNames() []string {
 		client := c.Client()
 		c.imageClient = &hcapi.ImageClient{ImageClient: &client.Image}
 	}
-	return c.isoClient.ISONames()
+	return c.imageClient.ImageNames()
 }
 
 func (c *CLI) ImageLabelKeys(idOrName string) []string {
