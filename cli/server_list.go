@@ -79,7 +79,8 @@ func runServerList(cli *CLI, cmd *cobra.Command, args []string) error {
 					Delete:  server.Protection.Delete,
 					Rebuild: server.Protection.Rebuild,
 				},
-				Labels: server.Labels,
+				Labels:          server.Labels,
+				PrimaryDiskSize: server.PrimaryDiskSize,
 			}
 			if server.Image != nil {
 				serverImage := imageToSchema(*server.Image)
