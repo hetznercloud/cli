@@ -53,25 +53,39 @@ If you have Go installed, you can build and install the `hcloud` program with:
 See `hcloud help` for a list of commands.
 
 ## Shell Completion
+To load completions:
 
-To enable shell completion, run one of the following commands (or better,
-add it to your `.bashrc` or `.zshrc`):
-
+**Bash:**
 ```
-$ source <(hcloud completion bash)   # bash
-$ source <(hcloud completion zsh)    # zsh
+$ source <(hcloud completion bash)
+
+# To load completions for each session, execute once:
+Linux:
+  $ hcloud completion bash > /etc/bash_completion.d/hcloud
+MacOS:
+  $ hcloud completion bash > /usr/local/etc/bash_completion.d/hcloud
 ```
 
-If you are using antigen with zsh and completion doesn't work with the above try adding
-
+**Zsh:**
 ```
-function _hcloud_completion {
-  source <(hcloud completion zsh)    # zsh  
-}
-compctl -K _hcloud_completion hcloud
-```
-instead.
+# If shell completion is not already enabled in your environment you will need
+# to enable it.  You can execute the following once:
 
+$ echo "autoload -U compinit; compinit" >> ~/.zshrc
+
+# To load completions for each session, execute once:
+$ hcloud completion zsh > "${fpath[1]}/_hcloud"
+
+# You will need to start a new shell for this setup to take effect.
+```
+
+**Fish:**
+```
+$ hcloud completion fish | source
+
+# To load completions for each session, execute once:
+$ hcloud completion fish > ~/.config/fish/completions/hcloud.fish
+```
 
 ## Output configuration
 
