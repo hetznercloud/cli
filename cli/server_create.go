@@ -163,7 +163,7 @@ func buildUserData(files []string) (string, error) {
 func optsFromFlags(cli *CLI, flags *pflag.FlagSet) (opts hcloud.ServerCreateOpts, err error) {
 	name, _ := flags.GetString("name")
 	serverType, _ := flags.GetString("type")
-	imageIDorName, _ := flags.GetString("imageIDorName")
+	imageIDorName, _ := flags.GetString("image")
 	location, _ := flags.GetString("location")
 	datacenter, _ := flags.GetString("datacenter")
 	userDataFiles, _ := flags.GetStringArray("user-data-from-file")
