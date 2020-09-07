@@ -35,34 +35,51 @@ func newCompletionCommand(cli *CLI) *cobra.Command {
 		Short: "Output shell completion code for the specified shell",
 		Long: `To load completions:
 
-Bash:
+### Bash
 
-$ source <(hcloud completion bash)
+To load completions into the current shell execute:
 
-# To load completions for each session, execute once:
-Linux:
-  $ hcloud completion bash > /etc/bash_completion.d/hcloud
-MacOS:
-  $ hcloud completion bash > /usr/local/etc/bash_completion.d/hcloud
+    source <(hcloud completion bash)
 
-Zsh:
+In order to make the completions permanent, append the line above to
+your .bashrc.
 
-# If shell completion is not already enabled in your environment you will need
-# to enable it.  You can execute the following once:
+### Zsh
 
-$ echo "autoload -U compinit; compinit" >> ~/.zshrc
+If shell completions are not already enabled for your environment need
+to enable them. Add the following line to your ~/.zshrc file:
 
-# To load completions for each session, execute once:
-$ hcloud completion zsh > "${fpath[1]}/_hcloud"
+    autoload -Uz compinit; compinit
 
-# You will need to start a new shell for this setup to take effect.
+To load completions for each session execute the following commands:
 
-Fish:
+    mkdir -p ~/.config/hcloud/completion/zsh
+    hcloud completion zsh > ~/.config/hcloud/completion/zsh/_hcloud
 
-$ hcloud completion fish | source
+Finally add the following line to your ~/.zshrc file, *before* you
+call the compinit function:
 
-# To load completions for each session, execute once:
-$ hcloud completion fish > ~/.config/fish/completions/hcloud.fish
+    fpath+=(~/.config/hcloud/completion/zsh)
+
+In the end your ~/.zshrc file should contain the following two lines
+in the order given here.
+
+    fpath+=(~/.config/hcloud/completion/zsh)
+    #  ... anything else that needs to be done before compinit
+    autoload -Uz compinit; compinit
+    # ...
+
+You will need to start a new shell for this setup to take effect.
+
+### Fish
+
+To load completions into the current shell execute:
+
+    hcloud completion fish | source
+
+In order to make the completions permanent execute once:
+
+     hcloud completion fish > ~/.config/fish/completions/hcloud.fish
 `,
 		Args:                  cobra.ExactArgs(1),
 		ValidArgs:             []string{"bash", "fish", "zsh"},
