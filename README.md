@@ -42,50 +42,65 @@ If you have Go installed, you can build and install the `hcloud` program with:
     select your project, and create a new API token.
 
 2.  Configure the `hcloud` program to use your token:
-    
+
         hcloud context create my-project
 
 3.  You’re ready to use the program. For example, to get a list of available server
     types, run:
-    
+
         hcloud server-type list
 
 See `hcloud help` for a list of commands.
 
 ## Shell Completion
-To load completions:
 
-**Bash:**
-```
-$ source <(hcloud completion bash)
+`hcloud` provides completions for various shells.
 
-# To load completions for each session, execute once:
-Linux:
-  $ hcloud completion bash > /etc/bash_completion.d/hcloud
-MacOS:
-  $ hcloud completion bash > /usr/local/etc/bash_completion.d/hcloud
-```
+### Bash
 
-**Zsh:**
-```
-# If shell completion is not already enabled in your environment you will need
-# to enable it.  You can execute the following once:
+To load completions into the current shell execute:
 
-$ echo "autoload -U compinit; compinit" >> ~/.zshrc
+    source <(hcloud completion bash)
 
-# To load completions for each session, execute once:
-$ hcloud completion zsh > "${fpath[1]}/_hcloud"
+In order to make the completions permanent, append the line above to
+your `.bashrc`.
 
-# You will need to start a new shell for this setup to take effect.
-```
+### Zsh
 
-**Fish:**
-```
-$ hcloud completion fish | source
+If shell completions are not already enabled for your environment need
+to enable them. Add the following line to your `~/.zshrc` file:
 
-# To load completions for each session, execute once:
-$ hcloud completion fish > ~/.config/fish/completions/hcloud.fish
-```
+    autoload -Uz compinit; compinit
+
+To load completions for each session execute the following commands:
+
+    mkdir -p ~/.config/hcloud/completion/zsh
+    hcloud completion zsh > ~/.config/hcloud/completion/zsh/_hcloud
+
+Finally add the following line to your `~/.zshrc` file, *before* you
+call the `compinit` function:
+
+    fpath+=(~/.config/hcloud/completion/zsh)
+
+In the end your `~/.zshrc` file should contain the following two lines
+in the order given here.
+
+    fpath+=(~/.config/hcloud/completion/zsh)
+    #  ... anything else that needs to be done before compinit
+    autoload -Uz compinit; compinit
+    # ...
+
+You will need to start a new shell for this setup to take effect.
+
+### Fish
+
+To load completions into the current shell execute:
+
+    hcloud completion fish | source
+
+In order to make the completions permanent execute once:
+
+     hcloud completion fish > ~/.config/fish/completions/hcloud.fish
 
 ## Output configuration
 
@@ -123,7 +138,7 @@ can configure a per-directory context by setting `HCLOUD_CONTEXT=my-context` via
 ### List all servers
 
 ```
-$ hcloud server list            
+$ hcloud server list
 ID       NAME                    STATUS    IPV4
 210216   test1                   running   78.46.122.12
 210729   ubuntu-8gb-nbg1-dc3-1   running   94.130.177.158
