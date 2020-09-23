@@ -100,7 +100,7 @@ To load completions into the current shell execute:
 
 In order to make the completions permanent execute once:
 
-     hcloud completion fish > ~/.config/fish/completions/hcloud.fish
+    hcloud completion fish > ~/.config/fish/completions/hcloud.fish
 
 ## Output configuration
 

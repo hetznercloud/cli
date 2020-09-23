@@ -2,3 +2,5 @@
 /dist
 /bats
 /cmd/hcloud/hcloud
+
+.idea/
