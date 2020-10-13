@@ -76,12 +76,11 @@ func MarshalConfig(c *Config) ([]byte, error) {
 	return toml.Marshal(raw)
 }
 
-func UnmarshalConfig(data []byte) (*Config, error) {
+func UnmarshalConfig(config *Config, data []byte) error {
 	var raw RawConfig
 	if err := toml.Unmarshal(data, &raw); err != nil {
-		return nil, err
+		return err
 	}
-	config := &Config{}
 	for _, rawContext := range raw.Contexts {
 		config.Contexts = append(config.Contexts, &ConfigContext{
 			Name:  rawContext.Name,
@@ -96,8 +95,8 @@ func UnmarshalConfig(data []byte) (*Config, error) {
 			}
 		}
 		if config.ActiveContext == nil {
-			return config, fmt.Errorf("active context %q not found", raw.ActiveContext)
+			return fmt.Errorf("active context %s not found", raw.ActiveContext)
 		}
 	}
-	return config, nil
+	return nil
 }

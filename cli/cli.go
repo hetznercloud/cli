@@ -75,9 +75,9 @@ func (c *CLI) ReadEnv() {
 		c.DebugFilePath = s
 	}
 	if s := os.Getenv("HCLOUD_CONTEXT"); s != "" && c.Config != nil {
-		if context := c.Config.ContextByName(s); context != nil {
-			c.Config.ActiveContext = context
-			c.Token = context.Token
+		if cfgCtx := c.Config.ContextByName(s); cfgCtx != nil {
+			c.Config.ActiveContext = cfgCtx
+			c.Token = cfgCtx.Token
 		} else {
 			log.Printf("warning: context %q specified in HCLOUD_CONTEXT does not exist\n", s)
 		}
@@ -94,20 +94,15 @@ func (c *CLI) ReadConfig() error {
 		return err
 	}
 
-	config, err := UnmarshalConfig(data)
-	if err != nil {
+	if err = UnmarshalConfig(c.Config, data); err != nil {
 		return err
 	}
-	if config == nil {
-		return nil
-	}
-	c.Config = config
 
-	if config.ActiveContext != nil {
-		c.Token = config.ActiveContext.Token
+	if c.Config.ActiveContext != nil {
+		c.Token = c.Config.ActiveContext.Token
 	}
-	if config.Endpoint != "" {
-		c.Endpoint = config.Endpoint
+	if c.Config.Endpoint != "" {
+		c.Endpoint = c.Config.Endpoint
 	}
 
 	return nil
