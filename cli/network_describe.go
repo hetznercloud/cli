@@ -61,6 +61,9 @@ func networkDescribeText(cli *CLI, network *hcloud.Network) error {
 			fmt.Printf("    Network Zone:\t%s\n", subnet.NetworkZone)
 			fmt.Printf("    IP Range:\t\t%s\n", subnet.IPRange.String())
 			fmt.Printf("    Gateway:\t\t%s\n", subnet.Gateway.String())
+			if subnet.Type == hcloud.NetworkSubnetTypeVSwitch {
+				fmt.Printf("    vSwitch ID:\t\t%d\n", subnet.VSwitchID)
+			}
 		}
 	}
 
