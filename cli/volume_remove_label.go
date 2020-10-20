@@ -20,7 +20,7 @@ func newVolumeRemoveLabelCommand(cli *CLI) *cobra.Command {
 				if len(args) != 1 {
 					return nil
 				}
-				return cli.VolumeLabelKeys(args[1])
+				return cli.VolumeLabelKeys(args[0])
 			}),
 		),
 		TraverseChildren:      true,

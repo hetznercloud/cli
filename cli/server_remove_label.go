@@ -20,7 +20,7 @@ func newServerRemoveLabelCommand(cli *CLI) *cobra.Command {
 				if len(args) != 1 {
 					return nil
 				}
-				return cli.ServerLabelKeys(args[1])
+				return cli.ServerLabelKeys(args[0])
 			}),
 		),
 		TraverseChildren:      true,
