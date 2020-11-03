@@ -21,16 +21,17 @@ func newNetworkAddSubnetCommand(cli *CLI) *cobra.Command {
 		RunE:                  cli.wrap(runNetworkAddSubnet),
 	}
 
-	cmd.Flags().String("type", "", "Type of subnet")
-	cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("cloud", "server"))
+	cmd.Flags().String("type", "", "Type of subnet (required)")
+	cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("cloud", "server", "vswitch"))
 	cmd.MarkFlagRequired("type")
 
-	cmd.Flags().String("network-zone", "", "Name of network zone")
+	cmd.Flags().String("network-zone", "", "Name of network zone (required)")
 	cmd.RegisterFlagCompletionFunc("network-zone", cmpl.SuggestCandidates("eu-central"))
 	cmd.MarkFlagRequired("network-zone")
 
 	cmd.Flags().IPNet("ip-range", net.IPNet{}, "Range to allocate IPs from")
 
+	cmd.Flags().Int("vswitch-id", 0, "ID of the vSwitch")
 	return cmd
 }
 
@@ -38,6 +39,7 @@ func runNetworkAddSubnet(cli *CLI, cmd *cobra.Command, args []string) error {
 	subnetType, _ := cmd.Flags().GetString("type")
 	networkZone, _ := cmd.Flags().GetString("network-zone")
 	ipRange, _ := cmd.Flags().GetIPNet("ip-range")
+	vSwitchID, _ := cmd.Flags().GetInt("vswitch-id")
 	idOrName := args[0]
 
 	network, _, err := cli.Client().Network.Get(cli.Context, idOrName)
@@ -54,6 +56,9 @@ func runNetworkAddSubnet(cli *CLI, cmd *cobra.Command, args []string) error {
 
 	if ipRange.IP != nil && ipRange.Mask != nil {
 		subnet.IPRange = &ipRange
+	}
+	if subnetType == "vswitch" {
+		subnet.VSwitchID = vSwitchID
 	}
 
 	opts := hcloud.NetworkAddSubnetOpts{
