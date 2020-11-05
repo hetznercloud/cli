@@ -24,5 +24,5 @@ jobs:
         run: ./script/build.bash linux amd64 test-build; mv dist/hcloud* cmd/hcloud/hcloud
       - name: Run bats
         run: |
-          git clone --depth 1 https://github.com/sstephenson/bats.git
+          git clone --depth 1 https://github.com/bats-core/bats-core.git bats
           PATH="./cmd/hcloud:$PATH" bats/bin/bats test
