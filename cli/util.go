@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"sort"
 	"strings"
 	"text/template"
 	"time"
@@ -82,7 +83,13 @@ func splitLabel(label string) []string {
 
 func labelsToString(labels map[string]string) string {
 	var labelsString []string
-	for key, value := range labels {
+	keys := make([]string, 0, len(labels))
+	for key := range labels {
+		keys = append(keys, key)
+	}
+	sort.Strings(keys)
+	for _, key := range keys {
+		value := labels[key]
 		if value == "" {
 			labelsString = append(labelsString, key)
 		} else {
