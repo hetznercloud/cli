@@ -25,8 +25,10 @@ func newServerMetricsCommand(cli *CLI) *cobra.Command {
 		RunE:                  cli.wrap(runServerMetrics),
 	}
 
-	cmd.Flags().String("type", "", "Fancy Graphs")
+	cmd.Flags().String("type", "", "Type of metrics you want to show")
 	cmd.MarkFlagRequired("type")
+	cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("cpu", "disk", "network"))
+
 	cmd.Flags().String("start", "", "ISO 8601 timestamp")
 	cmd.Flags().String("end", "", "ISO 8601 timestamp")
 

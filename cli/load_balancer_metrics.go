@@ -16,7 +16,7 @@ import (
 func newLoadBalancerMetricsCommand(cli *CLI) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "metrics [FLAGS] LOADBALANCER",
-		Short:                 "[ALPHA] Metrics from a LoadBalancer",
+		Short:                 "[ALPHA] Metrics from a Load Balancer",
 		Args:                  cobra.ExactArgs(1),
 		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.LoadBalancerNames)),
 		TraverseChildren:      true,
@@ -25,8 +25,10 @@ func newLoadBalancerMetricsCommand(cli *CLI) *cobra.Command {
 		RunE:                  cli.wrap(runLoadBalancerMetrics),
 	}
 
-	cmd.Flags().String("type", "", "Fancy Graphs")
+	cmd.Flags().String("type", "", "Type of metrics you want to show")
 	cmd.MarkFlagRequired("type")
+	cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("open_connections", "connections_per_second", "requests_per_second", "bandwidth"))
+
 	cmd.Flags().String("start", "", "ISO 8601 timestamp")
 	cmd.Flags().String("end", "", "ISO 8601 timestamp")
 
