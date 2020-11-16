@@ -42,6 +42,7 @@ func newServerCommand(cli *CLI) *cobra.Command {
 		newServerChangeAliasIPsCommand(cli),
 		newServerIPCommand(cli),
 		newServerRequestConsoleCommand(cli),
+		newServerMetricsCommand(cli),
 	)
 	return cmd
 }
