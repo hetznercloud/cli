@@ -69,7 +69,7 @@ signs:
     cmd: gon
     args:
       - -log-json
-      - gon.hcl
+      - gon_arm64.hcl
     artifacts: all
     signature: "hcloud-macos-arm64.zip"
     id: hcloud-macos-sign-arm64

@@ -7,6 +7,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/completion"
 	"github.com/hetznercloud/cli/internal/cmd/context"
 	"github.com/hetznercloud/cli/internal/cmd/datacenter"
+	"github.com/hetznercloud/cli/internal/cmd/firewall"
 	"github.com/hetznercloud/cli/internal/cmd/floatingip"
 	"github.com/hetznercloud/cli/internal/cmd/image"
 	"github.com/hetznercloud/cli/internal/cmd/iso"
@@ -50,6 +51,7 @@ func NewRootCommand(state *state.State) *cobra.Command {
 		loadbalancer.NewCommand(state),
 		loadbalancertype.NewCommand(state),
 		certificate.NewCommand(state),
+		firewall.NewCommand(state),
 	)
 	cmd.PersistentFlags().Duration("poll-interval", 500*time.Millisecond, "Interval at which to poll information, for example action progress")
 	return cmd

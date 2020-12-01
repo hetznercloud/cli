@@ -46,6 +46,8 @@ func NewCommand(cli *state.State) *cobra.Command {
 		newIPCommand(cli),
 		newRequestConsoleCommand(cli),
 		newMetricsCommand(cli),
+		//newApplyFirewallCommand(cli),
+		//newRemoveFirewallCommand(cli),
 	)
 	return cmd
 }
