@@ -133,7 +133,7 @@ func serverDescribeText(cli *CLI, server *hcloud.Server) error {
 		fmt.Printf("  Name:\t\t%s\n", na(image.Name))
 		fmt.Printf("  Description:\t%s\n", image.Description)
 		if image.ImageSize != 0 {
-			fmt.Printf("  Image size:\t%.1f GB\n", image.ImageSize)
+			fmt.Printf("  Image size:\t%.2f GB\n", image.ImageSize)
 		} else {
 			fmt.Printf("  Image size:\t%s\n", na(""))
 		}
