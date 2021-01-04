@@ -110,7 +110,7 @@ func describeImageListTableOutput(cli *CLI) *tableOutput {
 			if image.ImageSize == 0 {
 				return na("")
 			}
-			return fmt.Sprintf("%.1f GB", image.ImageSize)
+			return fmt.Sprintf("%.2f GB", image.ImageSize)
 		})).
 		AddFieldOutputFn("disk_size", fieldOutputFn(func(obj interface{}) string {
 			image := obj.(*hcloud.Image)
