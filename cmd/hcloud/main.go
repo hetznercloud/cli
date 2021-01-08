@@ -4,7 +4,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/hetznercloud/cli/cli"
+	"github.com/hetznercloud/cli/internal/cli"
 )
 
 func init() {
@@ -16,21 +16,21 @@ func init() {
 func main() {
 	c := cli.NewCLI()
 
-	if c.ConfigPath != "" {
-		_, err := os.Stat(c.ConfigPath)
+	if c.State.ConfigPath != "" {
+		_, err := os.Stat(c.State.ConfigPath)
 		switch {
 		case err == nil:
-			if err := c.ReadConfig(); err != nil {
-				log.Fatalf("unable to read config file %q: %s\n", c.ConfigPath, err)
+			if err := c.State.ReadConfig(); err != nil {
+				log.Fatalf("unable to read config file %q: %s\n", c.State.ConfigPath, err)
 			}
 		case os.IsNotExist(err):
 			break
 		default:
-			log.Fatalf("unable to read config file %q: %s\n", c.ConfigPath, err)
+			log.Fatalf("unable to read config file %q: %s\n", c.State.ConfigPath, err)
 		}
 	}
 
-	c.ReadEnv()
+	c.State.ReadEnv()
 
 	if err := c.RootCommand.Execute(); err != nil {
 		log.Fatalln(err)
