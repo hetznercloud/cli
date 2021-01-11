@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -17,7 +18,7 @@ func newNetworkAddLabelCommand(cli *state.State) *cobra.Command {
 		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.NetworkNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		PreRunE:               chainRunE(validateNetworkAddLabel, cli.EnsureToken),
+		PreRunE:               util.ChainRunE(validateNetworkAddLabel, cli.EnsureToken),
 		RunE:                  cli.Wrap(runNetworkAddLabel),
 	}
 
@@ -26,7 +27,7 @@ func newNetworkAddLabelCommand(cli *state.State) *cobra.Command {
 }
 
 func validateNetworkAddLabel(cmd *cobra.Command, args []string) error {
-	label := splitLabel(args[1])
+	label := util.SplitLabel(args[1])
 	if len(label) != 2 {
 		return fmt.Errorf("invalid label: %s", args[1])
 	}
@@ -44,7 +45,7 @@ func runNetworkAddLabel(cli *state.State, cmd *cobra.Command, args []string) err
 	if network == nil {
 		return fmt.Errorf("network not found: %s", idOrName)
 	}
-	label := splitLabel(args[1])
+	label := util.SplitLabel(args[1])
 
 	if _, ok := network.Labels[label[0]]; ok && !overwrite {
 		return fmt.Errorf("label %s on network %d already exists", label[0], network.ID)

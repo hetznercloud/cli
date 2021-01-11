@@ -5,6 +5,7 @@ import (
 	"net"
 
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -53,7 +54,7 @@ func runLoadBalancerRemoveTarget(cli *state.State, cmd *cobra.Command, args []st
 		return fmt.Errorf("Load Balancer not found: %s", idOrName)
 	}
 
-	if !exactlyOneSet(serverIDOrName, labelSelector, ipAddr) {
+	if !util.ExactlyOneSet(serverIDOrName, labelSelector, ipAddr) {
 		return fmt.Errorf("--server, --label-selector, and --ip are mutually exclusive")
 	}
 	switch {

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/spf13/cobra"
 )
@@ -16,7 +17,7 @@ func newLoadBalancerDeleteServiceCommand(cli *state.State) *cobra.Command {
 		Args:                  cobra.RangeArgs(1, 2),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		PreRunE:               chainRunE(cli.EnsureToken),
+		PreRunE:               util.ChainRunE(cli.EnsureToken),
 		RunE:                  cli.Wrap(runLoadBalancerDeleteService),
 	}
 

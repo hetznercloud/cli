@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -17,7 +18,7 @@ func newCertificateAddLabelCommand(cli *state.State) *cobra.Command {
 		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.CertificateNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		PreRunE:               chainRunE(validateCertificateAddLabel, cli.EnsureToken),
+		PreRunE:               util.ChainRunE(validateCertificateAddLabel, cli.EnsureToken),
 		RunE:                  cli.Wrap(runCertificateAddLabel),
 	}
 
@@ -26,7 +27,7 @@ func newCertificateAddLabelCommand(cli *state.State) *cobra.Command {
 }
 
 func validateCertificateAddLabel(cmd *cobra.Command, args []string) error {
-	label := splitLabel(args[1])
+	label := util.SplitLabel(args[1])
 	if len(label) != 2 {
 		return fmt.Errorf("invalid label: %s", args[1])
 	}
@@ -46,7 +47,7 @@ func runCertificateAddLabel(cli *state.State, cmd *cobra.Command, args []string)
 	if cert == nil {
 		return fmt.Errorf("Certificate not found: %s", idOrName)
 	}
-	label := splitLabel(args[1])
+	label := util.SplitLabel(args[1])
 	if _, ok := cert.Labels[label[0]]; ok && !overwrite {
 		return fmt.Errorf("Label %s on certificate %d already exists", label[0], cert.ID)
 	}

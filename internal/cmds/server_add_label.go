@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -17,7 +18,7 @@ func newServerAddLabelCommand(cli *state.State) *cobra.Command {
 		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.ServerNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		PreRunE:               chainRunE(validateServerAddLabel, cli.EnsureToken),
+		PreRunE:               util.ChainRunE(validateServerAddLabel, cli.EnsureToken),
 		RunE:                  cli.Wrap(runServerAddLabel),
 	}
 
@@ -26,7 +27,7 @@ func newServerAddLabelCommand(cli *state.State) *cobra.Command {
 }
 
 func validateServerAddLabel(cmd *cobra.Command, args []string) error {
-	label := splitLabel(args[1])
+	label := util.SplitLabel(args[1])
 	if len(label) != 2 {
 		return fmt.Errorf("invalid label: %s", args[1])
 	}
@@ -44,7 +45,7 @@ func runServerAddLabel(cli *state.State, cmd *cobra.Command, args []string) erro
 	if server == nil {
 		return fmt.Errorf("server not found: %s", idOrName)
 	}
-	label := splitLabel(args[1])
+	label := util.SplitLabel(args[1])
 
 	if _, ok := server.Labels[label[0]]; ok && !overwrite {
 		return fmt.Errorf("label %s on server %d already exists", label[0], server.ID)

@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -17,7 +18,7 @@ func newImageAddLabelCommand(cli *state.State) *cobra.Command {
 		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.ImageNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		PreRunE:               chainRunE(validateImageAddLabel, cli.EnsureToken),
+		PreRunE:               util.ChainRunE(validateImageAddLabel, cli.EnsureToken),
 		RunE:                  cli.Wrap(runImageAddLabel),
 	}
 
@@ -26,7 +27,7 @@ func newImageAddLabelCommand(cli *state.State) *cobra.Command {
 }
 
 func validateImageAddLabel(cmd *cobra.Command, args []string) error {
-	label := splitLabel(args[1])
+	label := util.SplitLabel(args[1])
 	if len(label) != 2 {
 		return fmt.Errorf("invalid label: %s", args[1])
 	}
@@ -44,7 +45,7 @@ func runImageAddLabel(cli *state.State, cmd *cobra.Command, args []string) error
 	if image == nil {
 		return fmt.Errorf("image not found: %s", idOrName)
 	}
-	label := splitLabel(args[1])
+	label := util.SplitLabel(args[1])
 
 	if _, ok := image.Labels[label[0]]; ok && !overwrite {
 		return fmt.Errorf("label %s on image %d already exists", label[0], image.ID)

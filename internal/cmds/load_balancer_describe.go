@@ -6,6 +6,7 @@ import (
 
 	humanize "github.com/dustin/go-humanize"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -43,7 +44,7 @@ func runLoadBalancerDescribe(cli *state.State, cmd *cobra.Command, args []string
 	case outputFlags.IsSet("json"):
 		return loadBalancerDescribeJSON(resp)
 	case outputFlags.IsSet("format"):
-		return describeFormat(loadBalancer, outputFlags["format"][0])
+		return util.DescribeFormat(loadBalancer, outputFlags["format"][0])
 	default:
 		return loadBalancerDescribeText(cli, loadBalancer, withLabelSelectorTargets)
 	}
@@ -52,9 +53,9 @@ func runLoadBalancerDescribe(cli *state.State, cmd *cobra.Command, args []string
 func loadBalancerDescribeText(cli *state.State, loadBalancer *hcloud.LoadBalancer, withLabelSelectorTargets bool) error {
 	fmt.Printf("ID:\t\t\t\t%d\n", loadBalancer.ID)
 	fmt.Printf("Name:\t\t\t\t%s\n", loadBalancer.Name)
-	fmt.Printf("Created:\t\t\t%s (%s)\n", datetime(loadBalancer.Created), humanize.Time(loadBalancer.Created))
+	fmt.Printf("Created:\t\t\t%s (%s)\n", util.Datetime(loadBalancer.Created), humanize.Time(loadBalancer.Created))
 	fmt.Printf("Public Net:\n")
-	fmt.Printf("  Enabled:\t\t\t%s\n", yesno(loadBalancer.PublicNet.Enabled))
+	fmt.Printf("  Enabled:\t\t\t%s\n", util.YesNo(loadBalancer.PublicNet.Enabled))
 	fmt.Printf("  IPv4:\t\t\t\t%s\n", loadBalancer.PublicNet.IPv4.IP.String())
 	fmt.Printf("  IPv6:\t\t\t\t%s\n", loadBalancer.PublicNet.IPv6.IP.String())
 
@@ -91,9 +92,9 @@ func loadBalancerDescribeText(cli *state.State, loadBalancer *hcloud.LoadBalance
 			fmt.Printf("  - Protocol:\t\t\t%s\n", service.Protocol)
 			fmt.Printf("    Listen Port:\t\t%d\n", service.ListenPort)
 			fmt.Printf("    Destination Port:\t\t%d\n", service.DestinationPort)
-			fmt.Printf("    Proxy Protocol:\t\t%s\n", yesno(service.Proxyprotocol))
+			fmt.Printf("    Proxy Protocol:\t\t%s\n", util.YesNo(service.Proxyprotocol))
 			if service.Protocol != hcloud.LoadBalancerServiceProtocolTCP {
-				fmt.Printf("    Sticky Sessions:\t\t%s\n", yesno(service.HTTP.StickySessions))
+				fmt.Printf("    Sticky Sessions:\t\t%s\n", util.YesNo(service.HTTP.StickySessions))
 				if service.HTTP.StickySessions {
 					fmt.Printf("    Sticky Cookie Name:\t\t%s\n", service.HTTP.CookieName)
 					fmt.Printf("    Sticky Cookie Lifetime:\t%vs\n", service.HTTP.CookieLifetime.Seconds())
@@ -115,7 +116,7 @@ func loadBalancerDescribeText(cli *state.State, loadBalancer *hcloud.LoadBalance
 				fmt.Printf("      HTTP Domain:\t\t%s\n", service.HealthCheck.HTTP.Domain)
 				fmt.Printf("      HTTP Path:\t\t%s\n", service.HealthCheck.HTTP.Path)
 				fmt.Printf("      Response:\t\t%s\n", service.HealthCheck.HTTP.Response)
-				fmt.Printf("      TLS:\t\t\t%s\n", yesno(service.HealthCheck.HTTP.TLS))
+				fmt.Printf("      TLS:\t\t\t%s\n", util.YesNo(service.HealthCheck.HTTP.TLS))
 				fmt.Printf("      Status Codes:\t\t%v\n", service.HealthCheck.HTTP.StatusCodes)
 			}
 		}
@@ -132,7 +133,7 @@ func loadBalancerDescribeText(cli *state.State, loadBalancer *hcloud.LoadBalance
 			fmt.Printf("    Server:\n")
 			fmt.Printf("      ID:\t\t\t%d\n", target.Server.Server.ID)
 			fmt.Printf("      Name:\t\t\t%s\n", cli.ServerName(target.Server.Server.ID))
-			fmt.Printf("    Use Private IP:\t\t%s\n", yesno(target.UsePrivateIP))
+			fmt.Printf("    Use Private IP:\t\t%s\n", util.YesNo(target.UsePrivateIP))
 			fmt.Printf("    Status:\n")
 			for _, healthStatus := range target.HealthStatus {
 				fmt.Printf("    - Service:\t\t\t%d\n", healthStatus.ListenPort)
@@ -172,7 +173,7 @@ func loadBalancerDescribeText(cli *state.State, loadBalancer *hcloud.LoadBalance
 	fmt.Printf("  Included:\t%v\n", humanize.IBytes(loadBalancer.IncludedTraffic))
 
 	fmt.Printf("Protection:\n")
-	fmt.Printf("  Delete:\t%s\n", yesno(loadBalancer.Protection.Delete))
+	fmt.Printf("  Delete:\t%s\n", util.YesNo(loadBalancer.Protection.Delete))
 
 	fmt.Print("Labels:\n")
 	if len(loadBalancer.Labels) == 0 {
@@ -192,10 +193,10 @@ func loadBalancerDescribeJSON(resp *hcloud.Response) error {
 		return err
 	}
 	if loadBalancer, ok := data["load_balancer"]; ok {
-		return describeJSON(loadBalancer)
+		return util.DescribeJSON(loadBalancer)
 	}
 	if loadBalancers, ok := data["load_balancers"].([]interface{}); ok {
-		return describeJSON(loadBalancers[0])
+		return util.DescribeJSON(loadBalancers[0])
 	}
-	return describeJSON(data)
+	return util.DescribeJSON(data)
 }

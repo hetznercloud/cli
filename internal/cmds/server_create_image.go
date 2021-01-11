@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -16,7 +17,7 @@ func newServerCreateImageCommand(cli *state.State) *cobra.Command {
 		Args:                  cobra.ExactArgs(1),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		PreRunE:               chainRunE(validateServerCreateImage, cli.EnsureToken),
+		PreRunE:               util.ChainRunE(validateServerCreateImage, cli.EnsureToken),
 		RunE:                  cli.Wrap(runServerCreateImage),
 	}
 	cmd.Flags().String("type", "", "Image type (required)")

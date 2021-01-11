@@ -3,6 +3,7 @@ package cmds
 import (
 	"strings"
 
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud/schema"
 
@@ -21,7 +22,7 @@ func newVolumeListCommand(cli *state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list [FLAGS]",
 		Short: "List volumes",
-		Long: listLongDescription(
+		Long: util.ListLongDescription(
 			"Displays a list of volumes.",
 			volumeListTableOutput.Columns(),
 		),
@@ -56,7 +57,7 @@ func runVolumeList(cli *state.State, cmd *cobra.Command, args []string) error {
 			volumeSchema := schema.Volume{
 				ID:          volume.ID,
 				Name:        volume.Name,
-				Location:    locationToSchema(*volume.Location),
+				Location:    util.LocationToSchema(*volume.Location),
 				Size:        volume.Size,
 				LinuxDevice: volume.LinuxDevice,
 				Labels:      volume.Labels,
@@ -68,7 +69,7 @@ func runVolumeList(cli *state.State, cmd *cobra.Command, args []string) error {
 			}
 			volumesSchema = append(volumesSchema, volumeSchema)
 		}
-		return describeJSON(volumesSchema)
+		return util.DescribeJSON(volumesSchema)
 	}
 
 	cols := []string{"id", "name", "size", "server", "location"}
@@ -100,7 +101,7 @@ func describeVolumeListTableOutput(cli *state.State) *tableOutput {
 			if volume.Server != nil && cli != nil {
 				return cli.ServerName(volume.Server.ID)
 			}
-			return na(server)
+			return util.NA(server)
 		})).
 		AddFieldOutputFn("size", fieldOutputFn(func(obj interface{}) string {
 			volume := obj.(*hcloud.Volume)
@@ -120,10 +121,10 @@ func describeVolumeListTableOutput(cli *state.State) *tableOutput {
 		})).
 		AddFieldOutputFn("labels", fieldOutputFn(func(obj interface{}) string {
 			volume := obj.(*hcloud.Volume)
-			return labelsToString(volume.Labels)
+			return util.LabelsToString(volume.Labels)
 		})).
 		AddFieldOutputFn("created", fieldOutputFn(func(obj interface{}) string {
 			volume := obj.(*hcloud.Volume)
-			return datetime(volume.Created)
+			return util.Datetime(volume.Created)
 		}))
 }

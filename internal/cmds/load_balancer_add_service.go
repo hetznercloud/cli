@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -17,7 +18,7 @@ func newLoadBalancerAddServiceCommand(cli *state.State) *cobra.Command {
 		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.LoadBalancerNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		PreRunE:               chainRunE(validateLoadBalancerAddService, cli.EnsureToken),
+		PreRunE:               util.ChainRunE(validateLoadBalancerAddService, cli.EnsureToken),
 		RunE:                  cli.Wrap(runLoadBalancerAddService),
 	}
 	cmd.Flags().String("protocol", "", "Protocol of the service (required)")

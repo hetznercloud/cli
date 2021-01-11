@@ -3,6 +3,7 @@ package cmds
 import (
 	"strings"
 
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud/schema"
 
@@ -20,7 +21,7 @@ func newLoadBalancerListCommand(cli *state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list [FLAGS]",
 		Short: "List Load Balancers",
-		Long: listLongDescription(
+		Long: util.ListLongDescription(
 			"Displays a list of Load Balancers.",
 			loadBalancerListTableOutput.Columns(),
 		),
@@ -65,8 +66,8 @@ func runLoadBalancerList(cli *state.State, cmd *cobra.Command, args []string) er
 				},
 				Created:          loadBalancer.Created,
 				Labels:           loadBalancer.Labels,
-				LoadBalancerType: loadBalancerTypeToSchema(*loadBalancer.LoadBalancerType),
-				Location:         locationToSchema(*loadBalancer.Location),
+				LoadBalancerType: util.LoadBalancerTypeToSchema(*loadBalancer.LoadBalancerType),
+				Location:         util.LocationToSchema(*loadBalancer.Location),
 				IncludedTraffic:  loadBalancer.IncludedTraffic,
 				OutgoingTraffic:  &loadBalancer.OutgoingTraffic,
 				IngoingTraffic:   &loadBalancer.IngoingTraffic,
@@ -133,7 +134,7 @@ func runLoadBalancerList(cli *state.State, cmd *cobra.Command, args []string) er
 
 			loadBalancerSchemas = append(loadBalancerSchemas, loadBalancerSchema)
 		}
-		return describeJSON(loadBalancerSchemas)
+		return util.DescribeJSON(loadBalancerSchemas)
 	}
 	cols := []string{"id", "name", "ipv4", "ipv6", "type", "location", "network_zone"}
 	if outOpts.IsSet("columns") {
@@ -180,7 +181,7 @@ func describeLoadBalancerListTableOutput(cli *state.State) *tableOutput {
 		})).
 		AddFieldOutputFn("labels", fieldOutputFn(func(obj interface{}) string {
 			loadBalancer := obj.(*hcloud.LoadBalancer)
-			return labelsToString(loadBalancer.Labels)
+			return util.LabelsToString(loadBalancer.Labels)
 		})).
 		AddFieldOutputFn("protection", fieldOutputFn(func(obj interface{}) string {
 			loadBalancer := obj.(*hcloud.LoadBalancer)
@@ -192,6 +193,6 @@ func describeLoadBalancerListTableOutput(cli *state.State) *tableOutput {
 		})).
 		AddFieldOutputFn("created", fieldOutputFn(func(obj interface{}) string {
 			loadBalancer := obj.(*hcloud.LoadBalancer)
-			return datetime(loadBalancer.Created)
+			return util.Datetime(loadBalancer.Created)
 		}))
 }

@@ -3,6 +3,7 @@ package cmds
 import (
 	"fmt"
 
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud/schema"
 
@@ -30,7 +31,7 @@ func newServerTypeListCommand(cli *state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list [FLAGS]",
 		Short: "List server types",
-		Long: listLongDescription(
+		Long: util.ListLongDescription(
 			"Displays a list of server types.",
 			serverTypeListTableOutput.Columns(),
 		),
@@ -54,9 +55,9 @@ func runServerTypeList(cli *state.State, cmd *cobra.Command, args []string) erro
 	if outOpts.IsSet("json") {
 		var serverTypeSchemas []schema.ServerType
 		for _, serverType := range serverTypes {
-			serverTypeSchemas = append(serverTypeSchemas, serverTypeToSchema(*serverType))
+			serverTypeSchemas = append(serverTypeSchemas, util.ServerTypeToSchema(*serverType))
 		}
-		return describeJSON(serverTypeSchemas)
+		return util.DescribeJSON(serverTypeSchemas)
 	}
 
 	cols := []string{"id", "name", "cores", "cpu_type", "memory", "disk", "storage_type"}

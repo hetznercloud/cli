@@ -10,6 +10,7 @@ import (
 	"github.com/guptarohit/asciigraph"
 
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -111,5 +112,5 @@ func serverMetricsJSON(resp *hcloud.Response) error {
 	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
 		return err
 	}
-	return describeJSON(data)
+	return util.DescribeJSON(data)
 }

@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud/schema"
 
@@ -21,7 +22,7 @@ func newFloatingIPListCommand(cli *state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list [FLAGS]",
 		Short: "List Floating IPs",
-		Long: listLongDescription(
+		Long: util.ListLongDescription(
 			"Displays a list of Floating IPs.",
 			floatingIPListTableOutput.Columns(),
 		),
@@ -60,7 +61,7 @@ func runFloatingIPList(cli *state.State, cmd *cobra.Command, args []string) erro
 				IP:           floatingIP.IP.String(),
 				Created:      floatingIP.Created,
 				Type:         string(floatingIP.Type),
-				HomeLocation: locationToSchema(*floatingIP.HomeLocation),
+				HomeLocation: util.LocationToSchema(*floatingIP.HomeLocation),
 				Blocked:      floatingIP.Blocked,
 				Protection:   schema.FloatingIPProtection{Delete: floatingIP.Protection.Delete},
 				Labels:       floatingIP.Labels,
@@ -76,7 +77,7 @@ func runFloatingIPList(cli *state.State, cmd *cobra.Command, args []string) erro
 			}
 			floatingIPSchemas = append(floatingIPSchemas, floatingIPSchema)
 		}
-		return describeJSON(floatingIPSchemas)
+		return util.DescribeJSON(floatingIPSchemas)
 	}
 
 	cols := []string{"id", "type", "name", "description", "ip", "home", "server", "dns"}
@@ -113,7 +114,7 @@ func describeFloatingIPListTableOutput(cli *state.State) *tableOutput {
 			if len(floatingIP.DNSPtr) > 1 {
 				dns = fmt.Sprintf("%d entries", len(floatingIP.DNSPtr))
 			}
-			return na(dns)
+			return util.NA(dns)
 		})).
 		AddFieldOutputFn("server", fieldOutputFn(func(obj interface{}) string {
 			floatingIP := obj.(*hcloud.FloatingIP)
@@ -121,7 +122,7 @@ func describeFloatingIPListTableOutput(cli *state.State) *tableOutput {
 			if floatingIP.Server != nil && cli != nil {
 				return cli.ServerName(floatingIP.Server.ID)
 			}
-			return na(server)
+			return util.NA(server)
 		})).
 		AddFieldOutputFn("home", fieldOutputFn(func(obj interface{}) string {
 			floatingIP := obj.(*hcloud.FloatingIP)
@@ -144,10 +145,10 @@ func describeFloatingIPListTableOutput(cli *state.State) *tableOutput {
 		})).
 		AddFieldOutputFn("labels", fieldOutputFn(func(obj interface{}) string {
 			floatingIP := obj.(*hcloud.FloatingIP)
-			return labelsToString(floatingIP.Labels)
+			return util.LabelsToString(floatingIP.Labels)
 		})).
 		AddFieldOutputFn("created", fieldOutputFn(func(obj interface{}) string {
 			floatingIP := obj.(*hcloud.FloatingIP)
-			return datetime(floatingIP.Created)
+			return util.Datetime(floatingIP.Created)
 		}))
 }

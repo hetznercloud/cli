@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -26,7 +27,7 @@ func newSSHKeyRemoveLabelCommand(cli *state.State) *cobra.Command {
 		),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		PreRunE:               chainRunE(validateSSHKeyRemoveLabel, cli.EnsureToken),
+		PreRunE:               util.ChainRunE(validateSSHKeyRemoveLabel, cli.EnsureToken),
 		RunE:                  cli.Wrap(runSSHKeyRemoveLabel),
 	}
 

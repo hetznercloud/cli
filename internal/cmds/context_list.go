@@ -1,6 +1,7 @@
 package cmds
 
 import (
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/spf13/cobra"
 )
@@ -23,7 +24,7 @@ func newContextListCommand(cli *state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list [FLAGS]",
 		Short: "List contexts",
-		Long: listLongDescription(
+		Long: util.ListLongDescription(
 			"Displays a list of contexts.",
 			contextListTableOutput.Columns(),
 		),

@@ -1,6 +1,7 @@
 package cmds
 
 import (
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/hetznercloud/hcloud-go/hcloud/schema"
@@ -18,7 +19,7 @@ func newLoadBalancerTypeListCommand(cli *state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list [FLAGS]",
 		Short: "List Load Balancer types",
-		Long: listLongDescription(
+		Long: util.ListLongDescription(
 			"Displays a list of Load Balancer types.",
 			loadBalancerTypeListTableOutput.Columns(),
 		),
@@ -42,9 +43,9 @@ func runLoadBalancerTypeList(cli *state.State, cmd *cobra.Command, args []string
 	if outOpts.IsSet("json") {
 		var loadBalancerTypeSchemas []schema.LoadBalancerType
 		for _, loadBalancerType := range loadBalancerTypes {
-			loadBalancerTypeSchemas = append(loadBalancerTypeSchemas, loadBalancerTypeToSchema(*loadBalancerType))
+			loadBalancerTypeSchemas = append(loadBalancerTypeSchemas, util.LoadBalancerTypeToSchema(*loadBalancerType))
 		}
-		return describeJSON(loadBalancerTypeSchemas)
+		return util.DescribeJSON(loadBalancerTypeSchemas)
 	}
 
 	cols := []string{"id", "name", "description", "max_services", "max_connections", "max_targets"}

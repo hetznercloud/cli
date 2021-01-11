@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -41,7 +42,7 @@ func runDatacenterDescribe(cli *state.State, cmd *cobra.Command, args []string) 
 	case outputFlags.IsSet("json"):
 		return datacenterDescribeJSON(resp)
 	case outputFlags.IsSet("format"):
-		return describeFormat(datacenter, outputFlags["format"][0])
+		return util.DescribeFormat(datacenter, outputFlags["format"][0])
 	default:
 		return datacenterDescribeText(cli, datacenter)
 	}
@@ -106,10 +107,10 @@ func datacenterDescribeJSON(resp *hcloud.Response) error {
 		return err
 	}
 	if datacenter, ok := data["datacenter"]; ok {
-		return describeJSON(datacenter)
+		return util.DescribeJSON(datacenter)
 	}
 	if datacenters, ok := data["datacenters"].([]interface{}); ok {
-		return describeJSON(datacenters[0])
+		return util.DescribeJSON(datacenters[0])
 	}
-	return describeJSON(data)
+	return util.DescribeJSON(data)
 }

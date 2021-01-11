@@ -8,6 +8,7 @@ import (
 	"github.com/dustin/go-humanize"
 
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -43,7 +44,7 @@ func runSSHKeyDescribe(cli *state.State, cmd *cobra.Command, args []string) erro
 	case outputFlags.IsSet("json"):
 		return sshKeyDescribeJSON(resp)
 	case outputFlags.IsSet("format"):
-		return describeFormat(sshKey, outputFlags["format"][0])
+		return util.DescribeFormat(sshKey, outputFlags["format"][0])
 	default:
 		return sshKeyDescribeText(cli, sshKey)
 	}
@@ -52,7 +53,7 @@ func runSSHKeyDescribe(cli *state.State, cmd *cobra.Command, args []string) erro
 func sshKeyDescribeText(cli *state.State, sshKey *hcloud.SSHKey) error {
 	fmt.Printf("ID:\t\t%d\n", sshKey.ID)
 	fmt.Printf("Name:\t\t%s\n", sshKey.Name)
-	fmt.Printf("Created:\t%s (%s)\n", datetime(sshKey.Created), humanize.Time(sshKey.Created))
+	fmt.Printf("Created:\t%s (%s)\n", util.Datetime(sshKey.Created), humanize.Time(sshKey.Created))
 	fmt.Printf("Fingerprint:\t%s\n", sshKey.Fingerprint)
 	fmt.Printf("Public Key:\n%s\n", strings.TrimSpace(sshKey.PublicKey))
 	fmt.Print("Labels:\n")
@@ -73,10 +74,10 @@ func sshKeyDescribeJSON(resp *hcloud.Response) error {
 		return err
 	}
 	if sshKey, ok := data["ssh_key"]; ok {
-		return describeJSON(sshKey)
+		return util.DescribeJSON(sshKey)
 	}
 	if sshKeys, ok := data["ssh_keys"].([]interface{}); ok {
-		return describeJSON(sshKeys[0])
+		return util.DescribeJSON(sshKeys[0])
 	}
-	return describeJSON(data)
+	return util.DescribeJSON(data)
 }

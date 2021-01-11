@@ -6,6 +6,7 @@ import (
 
 	humanize "github.com/dustin/go-humanize"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -41,7 +42,7 @@ func runVolumeDescribe(cli *state.State, cmd *cobra.Command, args []string) erro
 	case outputFlags.IsSet("json"):
 		return volumeDescribeJSON(resp)
 	case outputFlags.IsSet("format"):
-		return describeFormat(volume, outputFlags["format"][0])
+		return util.DescribeFormat(volume, outputFlags["format"][0])
 	default:
 		return volumeDescribeText(cli, volume)
 	}
@@ -50,7 +51,7 @@ func runVolumeDescribe(cli *state.State, cmd *cobra.Command, args []string) erro
 func volumeDescribeText(cli *state.State, volume *hcloud.Volume) error {
 	fmt.Printf("ID:\t\t%d\n", volume.ID)
 	fmt.Printf("Name:\t\t%s\n", volume.Name)
-	fmt.Printf("Created:\t%s (%s)\n", datetime(volume.Created), humanize.Time(volume.Created))
+	fmt.Printf("Created:\t%s (%s)\n", util.Datetime(volume.Created), humanize.Time(volume.Created))
 	fmt.Printf("Size:\t\t%s\n", humanize.Bytes(uint64(volume.Size*humanize.GByte)))
 	fmt.Printf("Linux Device:\t%s\n", volume.LinuxDevice)
 	fmt.Printf("Location:\n")
@@ -75,7 +76,7 @@ func volumeDescribeText(cli *state.State, volume *hcloud.Volume) error {
 		fmt.Print("Server:\n  Not attached\n")
 	}
 	fmt.Printf("Protection:\n")
-	fmt.Printf("  Delete:\t%s\n", yesno(volume.Protection.Delete))
+	fmt.Printf("  Delete:\t%s\n", util.YesNo(volume.Protection.Delete))
 
 	fmt.Print("Labels:\n")
 	if len(volume.Labels) == 0 {
@@ -95,10 +96,10 @@ func volumeDescribeJSON(resp *hcloud.Response) error {
 		return err
 	}
 	if volume, ok := data["volume"]; ok {
-		return describeJSON(volume)
+		return util.DescribeJSON(volume)
 	}
 	if volumes, ok := data["volumes"].([]interface{}); ok {
-		return describeJSON(volumes[0])
+		return util.DescribeJSON(volumes[0])
 	}
-	return describeJSON(data)
+	return util.DescribeJSON(data)
 }

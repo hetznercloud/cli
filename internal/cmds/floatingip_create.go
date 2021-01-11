@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -17,7 +18,7 @@ func newFloatingIPCreateCommand(cli *state.State) *cobra.Command {
 		Args:                  cobra.NoArgs,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		PreRunE:               chainRunE(validateFloatingIPCreate, cli.EnsureToken),
+		PreRunE:               util.ChainRunE(validateFloatingIPCreate, cli.EnsureToken),
 		RunE:                  cli.Wrap(runFloatingIPCreate),
 	}
 	cmd.Flags().String("type", "", "Type (ipv4 or ipv6) (required)")

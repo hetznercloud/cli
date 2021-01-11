@@ -1,4 +1,4 @@
-package cmds
+package util
 
 import (
 	"encoding/json"
@@ -15,25 +15,25 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func yesno(b bool) string {
+func YesNo(b bool) string {
 	if b {
 		return "yes"
 	}
 	return "no"
 }
 
-func na(s string) string {
+func NA(s string) string {
 	if s == "" {
 		return "-"
 	}
 	return s
 }
 
-func datetime(t time.Time) string {
+func Datetime(t time.Time) string {
 	return t.Local().Format(time.UnixDate)
 }
 
-func chainRunE(fns ...func(cmd *cobra.Command, args []string) error) func(cmd *cobra.Command, args []string) error {
+func ChainRunE(fns ...func(cmd *cobra.Command, args []string) error) func(cmd *cobra.Command, args []string) error {
 	return func(cmd *cobra.Command, args []string) error {
 		for _, fn := range fns {
 			if fn == nil {
@@ -47,7 +47,7 @@ func chainRunE(fns ...func(cmd *cobra.Command, args []string) error) func(cmd *c
 	}
 }
 
-func exactlyOneSet(s string, ss ...string) bool {
+func ExactlyOneSet(s string, ss ...string) bool {
 	set := s != ""
 	for _, s := range ss {
 		if set && s != "" {
@@ -62,7 +62,7 @@ var outputDescription = `Output can be controlled with the -o flag. Use -o nohea
 table header. Displayed columns and their order can be set with
 -o columns=%s (see available columns below).`
 
-func listLongDescription(intro string, columns []string) string {
+func ListLongDescription(intro string, columns []string) string {
 	var colExample []string
 	if len(columns) > 2 {
 		colExample = columns[0:2]
@@ -77,11 +77,11 @@ func listLongDescription(intro string, columns []string) string {
 	)
 }
 
-func splitLabel(label string) []string {
+func SplitLabel(label string) []string {
 	return strings.SplitN(label, "=", 2)
 }
 
-func labelsToString(labels map[string]string) string {
+func LabelsToString(labels map[string]string) string {
 	var labelsString []string
 	keys := make([]string, 0, len(labels))
 	for key := range labels {
@@ -99,7 +99,7 @@ func labelsToString(labels map[string]string) string {
 	return strings.Join(labelsString, ", ")
 }
 
-func describeFormat(object interface{}, format string) error {
+func DescribeFormat(object interface{}, format string) error {
 	if !strings.HasSuffix(format, "\n") {
 		format = format + "\n"
 	}
@@ -110,12 +110,12 @@ func describeFormat(object interface{}, format string) error {
 	return t.Execute(os.Stdout, object)
 }
 
-func describeJSON(object interface{}) error {
+func DescribeJSON(object interface{}) error {
 	enc := json.NewEncoder(os.Stdout)
 	return enc.Encode(object)
 }
 
-func locationToSchema(location hcloud.Location) schema.Location {
+func LocationToSchema(location hcloud.Location) schema.Location {
 	return schema.Location{
 		ID:          location.ID,
 		Name:        location.Name,
@@ -128,12 +128,12 @@ func locationToSchema(location hcloud.Location) schema.Location {
 	}
 }
 
-func datacenterToSchema(datacenter hcloud.Datacenter) schema.Datacenter {
+func DatacenterToSchema(datacenter hcloud.Datacenter) schema.Datacenter {
 	datacenterSchema := schema.Datacenter{
 		ID:          datacenter.ID,
 		Name:        datacenter.Name,
 		Description: datacenter.Description,
-		Location:    locationToSchema(*datacenter.Location),
+		Location:    LocationToSchema(*datacenter.Location),
 	}
 	for _, st := range datacenter.ServerTypes.Supported {
 		datacenterSchema.ServerTypes.Supported = append(datacenterSchema.ServerTypes.Supported, st.ID)
@@ -144,7 +144,7 @@ func datacenterToSchema(datacenter hcloud.Datacenter) schema.Datacenter {
 	return datacenterSchema
 }
 
-func serverTypeToSchema(serverType hcloud.ServerType) schema.ServerType {
+func ServerTypeToSchema(serverType hcloud.ServerType) schema.ServerType {
 	serverTypeSchema := schema.ServerType{
 		ID:          serverType.ID,
 		Name:        serverType.Name,
@@ -171,7 +171,7 @@ func serverTypeToSchema(serverType hcloud.ServerType) schema.ServerType {
 	return serverTypeSchema
 }
 
-func imageToSchema(image hcloud.Image) schema.Image {
+func ImageToSchema(image hcloud.Image) schema.Image {
 	imageSchema := schema.Image{
 		ID:          image.ID,
 		Name:        hcloud.String(image.Name),
@@ -202,7 +202,7 @@ func imageToSchema(image hcloud.Image) schema.Image {
 	return imageSchema
 }
 
-func isoToSchema(iso hcloud.ISO) schema.ISO {
+func ISOToSchema(iso hcloud.ISO) schema.ISO {
 	return schema.ISO{
 		ID:          iso.ID,
 		Name:        iso.Name,
@@ -211,7 +211,7 @@ func isoToSchema(iso hcloud.ISO) schema.ISO {
 	}
 }
 
-func loadBalancerTypeToSchema(loadBalancerType hcloud.LoadBalancerType) schema.LoadBalancerType {
+func LoadBalancerTypeToSchema(loadBalancerType hcloud.LoadBalancerType) schema.LoadBalancerType {
 	loadBalancerTypeSchema := schema.LoadBalancerType{
 		ID:                      loadBalancerType.ID,
 		Name:                    loadBalancerType.Name,

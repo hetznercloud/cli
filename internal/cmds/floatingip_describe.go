@@ -6,6 +6,7 @@ import (
 
 	"github.com/dustin/go-humanize"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -42,7 +43,7 @@ func runFloatingIPDescribe(cli *state.State, cmd *cobra.Command, args []string) 
 	case outputFlags.IsSet("json"):
 		return floatingIPDescribeJSON(resp)
 	case outputFlags.IsSet("format"):
-		return describeFormat(floatingIP, outputFlags["format"][0])
+		return util.DescribeFormat(floatingIP, outputFlags["format"][0])
 	default:
 		return floatingIPDescribeText(cli, floatingIP)
 	}
@@ -52,14 +53,14 @@ func floatingIPDescribeText(cli *state.State, floatingIP *hcloud.FloatingIP) err
 	fmt.Printf("ID:\t\t%d\n", floatingIP.ID)
 	fmt.Printf("Type:\t\t%s\n", floatingIP.Type)
 	fmt.Printf("Name:\t\t%s\n", floatingIP.Name)
-	fmt.Printf("Description:\t%s\n", na(floatingIP.Description))
-	fmt.Printf("Created:\t%s (%s)\n", datetime(floatingIP.Created), humanize.Time(floatingIP.Created))
+	fmt.Printf("Description:\t%s\n", util.NA(floatingIP.Description))
+	fmt.Printf("Created:\t%s (%s)\n", util.Datetime(floatingIP.Created), humanize.Time(floatingIP.Created))
 	if floatingIP.Network != nil {
 		fmt.Printf("IP:\t\t%s\n", floatingIP.Network.String())
 	} else {
 		fmt.Printf("IP:\t\t%s\n", floatingIP.IP.String())
 	}
-	fmt.Printf("Blocked:\t%s\n", yesno(floatingIP.Blocked))
+	fmt.Printf("Blocked:\t%s\n", util.YesNo(floatingIP.Blocked))
 	fmt.Printf("Home Location:\t%s\n", floatingIP.HomeLocation.Name)
 	if floatingIP.Server != nil {
 		server, _, err := cli.Client().Server.GetByID(cli.Context, floatingIP.Server.ID)
@@ -85,7 +86,7 @@ func floatingIPDescribeText(cli *state.State, floatingIP *hcloud.FloatingIP) err
 	}
 
 	fmt.Printf("Protection:\n")
-	fmt.Printf("  Delete:\t%s\n", yesno(floatingIP.Protection.Delete))
+	fmt.Printf("  Delete:\t%s\n", util.YesNo(floatingIP.Protection.Delete))
 
 	fmt.Print("Labels:\n")
 	if len(floatingIP.Labels) == 0 {
@@ -104,10 +105,10 @@ func floatingIPDescribeJSON(resp *hcloud.Response) error {
 		return err
 	}
 	if floatingIP, ok := data["floating_ip"]; ok {
-		return describeJSON(floatingIP)
+		return util.DescribeJSON(floatingIP)
 	}
 	if floatingIPs, ok := data["floating_ips"].([]interface{}); ok {
-		return describeJSON(floatingIPs[0])
+		return util.DescribeJSON(floatingIPs[0])
 	}
-	return describeJSON(data)
+	return util.DescribeJSON(data)
 }

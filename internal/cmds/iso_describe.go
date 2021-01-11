@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -41,7 +42,7 @@ func runISODescribe(cli *state.State, cmd *cobra.Command, args []string) error {
 	case outputFlags.IsSet("json"):
 		return isoDescribeJSON(resp)
 	case outputFlags.IsSet("format"):
-		return describeFormat(iso, outputFlags["format"][0])
+		return util.DescribeFormat(iso, outputFlags["format"][0])
 	default:
 		return isoDescribeText(iso)
 	}
@@ -61,10 +62,10 @@ func isoDescribeJSON(resp *hcloud.Response) error {
 		return err
 	}
 	if iso, ok := data["iso"]; ok {
-		return describeJSON(iso)
+		return util.DescribeJSON(iso)
 	}
 	if isos, ok := data["isos"].([]interface{}); ok {
-		return describeJSON(isos[0])
+		return util.DescribeJSON(isos[0])
 	}
-	return describeJSON(data)
+	return util.DescribeJSON(data)
 }

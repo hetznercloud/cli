@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -41,7 +42,7 @@ func runLoadBalancerTypeDescribe(cli *state.State, cmd *cobra.Command, args []st
 	case outputFlags.IsSet("json"):
 		return loadBalancerTypeDescribeJSON(resp)
 	case outputFlags.IsSet("format"):
-		return describeFormat(loadBalancerType, outputFlags["format"][0])
+		return util.DescribeFormat(loadBalancerType, outputFlags["format"][0])
 	default:
 		return loadBalancerTypeDescribeText(cli, loadBalancerType)
 	}
@@ -71,10 +72,10 @@ func loadBalancerTypeDescribeJSON(resp *hcloud.Response) error {
 		return err
 	}
 	if loadBalancerType, ok := data["loadBalancerType"]; ok {
-		return describeJSON(loadBalancerType)
+		return util.DescribeJSON(loadBalancerType)
 	}
 	if loadBalancerTypes, ok := data["loadBalancerTypes"].([]interface{}); ok {
-		return describeJSON(loadBalancerTypes[0])
+		return util.DescribeJSON(loadBalancerTypes[0])
 	}
-	return describeJSON(data)
+	return util.DescribeJSON(data)
 }

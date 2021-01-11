@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -18,7 +19,7 @@ func newSSHKeyCreateCommand(cli *state.State) *cobra.Command {
 		Args:                  cobra.NoArgs,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		PreRunE:               chainRunE(validateSSHKeyCreate, cli.EnsureToken),
+		PreRunE:               util.ChainRunE(validateSSHKeyCreate, cli.EnsureToken),
 		RunE:                  cli.Wrap(runSSHKeyCreate),
 	}
 	cmd.Flags().String("name", "", "Key name (required)")

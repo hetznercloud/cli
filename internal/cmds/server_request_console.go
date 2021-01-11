@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/spf13/cobra"
 )
@@ -44,7 +45,7 @@ func runServerRequestConsole(cli *state.State, cmd *cobra.Command, args []string
 	}
 
 	if outOpts.IsSet("json") {
-		return describeJSON(struct {
+		return util.DescribeJSON(struct {
 			WSSURL   string
 			Password string
 		}{
