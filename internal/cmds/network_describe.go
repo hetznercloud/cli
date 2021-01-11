@@ -1,6 +1,7 @@
 package cmds
 
 import (
+	"encoding/json"
 	"fmt"
 
 	humanize "github.com/dustin/go-humanize"
@@ -41,7 +42,7 @@ func runNetworkDescribe(cli *state.State, cmd *cobra.Command, args []string) err
 
 	switch {
 	case outputFlags.IsSet("json"):
-		return serverDescribeJSON(resp)
+		return networkDescribeJSON(resp)
 	case outputFlags.IsSet("format"):
 		return util.DescribeFormat(network, outputFlags["format"][0])
 	default:
@@ -93,4 +94,18 @@ func networkDescribeText(cli *state.State, network *hcloud.Network) error {
 	}
 
 	return nil
+}
+
+func networkDescribeJSON(resp *hcloud.Response) error {
+	var data map[string]interface{}
+	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+		return err
+	}
+	if network, ok := data["network"]; ok {
+		return util.DescribeJSON(network)
+	}
+	if networks, ok := data["networks"].([]interface{}); ok {
+		return util.DescribeJSON(networks[0])
+	}
+	return util.DescribeJSON(data)
 }
