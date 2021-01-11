@@ -6,6 +6,7 @@ import (
 
 	"github.com/dustin/go-humanize"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
@@ -23,12 +24,12 @@ func newFloatingIPDescribeCommand(cli *state.State) *cobra.Command {
 		PreRunE:               cli.EnsureToken,
 		RunE:                  cli.Wrap(runFloatingIPDescribe),
 	}
-	addOutputFlag(cmd, outputOptionJSON(), outputOptionFormat())
+	output.AddFlag(cmd, output.OptionJSON(), output.OptionFormat())
 	return cmd
 }
 
 func runFloatingIPDescribe(cli *state.State, cmd *cobra.Command, args []string) error {
-	outputFlags := outputFlagsForCommand(cmd)
+	outputFlags := output.FlagsForCommand(cmd)
 
 	idOrName := args[0]
 	floatingIP, resp, err := cli.Client().FloatingIP.Get(cli.Context, idOrName)

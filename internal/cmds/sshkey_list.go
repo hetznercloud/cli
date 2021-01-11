@@ -1,6 +1,7 @@
 package cmds
 
 import (
+	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
@@ -8,16 +9,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var sshKeyListTableOutput *tableOutput
+var sshKeyListTableOutput *output.Table
 
 func init() {
-	sshKeyListTableOutput = newTableOutput().
+	sshKeyListTableOutput = output.NewTable().
 		AddAllowedFields(hcloud.SSHKey{}).
-		AddFieldOutputFn("labels", fieldOutputFn(func(obj interface{}) string {
+		AddFieldFn("labels", output.FieldFn(func(obj interface{}) string {
 			sshKey := obj.(*hcloud.SSHKey)
 			return util.LabelsToString(sshKey.Labels)
 		})).
-		AddFieldOutputFn("created", fieldOutputFn(func(obj interface{}) string {
+		AddFieldFn("created", output.FieldFn(func(obj interface{}) string {
 			sshKey := obj.(*hcloud.SSHKey)
 			return util.Datetime(sshKey.Created)
 		}))
@@ -36,13 +37,13 @@ func newSSHKeyListCommand(cli *state.State) *cobra.Command {
 		PreRunE:               cli.EnsureToken,
 		RunE:                  cli.Wrap(runSSHKeyList),
 	}
-	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(sshKeyListTableOutput.Columns()), outputOptionJSON())
+	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(sshKeyListTableOutput.Columns()), output.OptionJSON())
 	cmd.Flags().StringP("selector", "l", "", "Selector to filter by labels")
 	return cmd
 }
 
 func runSSHKeyList(cli *state.State, cmd *cobra.Command, args []string) error {
-	outOpts := outputFlagsForCommand(cmd)
+	outOpts := output.FlagsForCommand(cmd)
 
 	labelSelector, _ := cmd.Flags().GetString("selector")
 	opts := hcloud.SSHKeyListOpts{

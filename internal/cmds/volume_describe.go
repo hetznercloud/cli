@@ -6,6 +6,7 @@ import (
 
 	humanize "github.com/dustin/go-humanize"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
@@ -23,12 +24,12 @@ func newVolumeDescribeCommand(cli *state.State) *cobra.Command {
 		PreRunE:               cli.EnsureToken,
 		RunE:                  cli.Wrap(runVolumeDescribe),
 	}
-	addOutputFlag(cmd, outputOptionJSON(), outputOptionFormat())
+	output.AddFlag(cmd, output.OptionJSON(), output.OptionFormat())
 	return cmd
 }
 
 func runVolumeDescribe(cli *state.State, cmd *cobra.Command, args []string) error {
-	outputFlags := outputFlagsForCommand(cmd)
+	outputFlags := output.FlagsForCommand(cmd)
 
 	volume, resp, err := cli.Client().Volume.Get(cli.Context, args[0])
 	if err != nil {

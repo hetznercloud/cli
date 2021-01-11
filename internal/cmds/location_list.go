@@ -1,6 +1,7 @@
 package cmds
 
 import (
+	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
@@ -8,10 +9,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var locationListTableOutput *tableOutput
+var locationListTableOutput *output.Table
 
 func init() {
-	locationListTableOutput = newTableOutput().
+	locationListTableOutput = output.NewTable().
 		AddAllowedFields(hcloud.Location{})
 }
 
@@ -28,12 +29,12 @@ func newLocationListCommand(cli *state.State) *cobra.Command {
 		PreRunE:               cli.EnsureToken,
 		RunE:                  cli.Wrap(runLocationList),
 	}
-	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(locationListTableOutput.Columns()), outputOptionJSON())
+	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(locationListTableOutput.Columns()), output.OptionJSON())
 	return cmd
 }
 
 func runLocationList(cli *state.State, cmd *cobra.Command, args []string) error {
-	outOpts := outputFlagsForCommand(cmd)
+	outOpts := output.FlagsForCommand(cmd)
 
 	locations, err := cli.Client().Location.All(cli.Context)
 	if err != nil {

@@ -5,6 +5,7 @@ import (
 
 	humanize "github.com/dustin/go-humanize"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
@@ -22,12 +23,12 @@ func newNetworkDescribeCommand(cli *state.State) *cobra.Command {
 		PreRunE:               cli.EnsureToken,
 		RunE:                  cli.Wrap(runNetworkDescribe),
 	}
-	addOutputFlag(cmd, outputOptionJSON(), outputOptionFormat())
+	output.AddFlag(cmd, output.OptionJSON(), output.OptionFormat())
 	return cmd
 }
 
 func runNetworkDescribe(cli *state.State, cmd *cobra.Command, args []string) error {
-	outputFlags := outputFlagsForCommand(cmd)
+	outputFlags := output.FlagsForCommand(cmd)
 
 	idOrName := args[0]
 	network, resp, err := cli.Client().Network.Get(cli.Context, idOrName)

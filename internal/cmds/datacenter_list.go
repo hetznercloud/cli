@@ -1,6 +1,7 @@
 package cmds
 
 import (
+	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
@@ -8,12 +9,12 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var datacenterListTableOutput *tableOutput
+var datacenterListTableOutput *output.Table
 
 func init() {
-	datacenterListTableOutput = newTableOutput().
+	datacenterListTableOutput = output.NewTable().
 		AddAllowedFields(hcloud.Datacenter{}).
-		AddFieldOutputFn("location", fieldOutputFn(func(obj interface{}) string {
+		AddFieldFn("location", output.FieldFn(func(obj interface{}) string {
 			datacenter := obj.(*hcloud.Datacenter)
 			return datacenter.Location.Name
 		}))
@@ -32,12 +33,12 @@ func newDatacenterListCommand(cli *state.State) *cobra.Command {
 		PreRunE:               cli.EnsureToken,
 		RunE:                  cli.Wrap(runDatacenterList),
 	}
-	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(datacenterListTableOutput.Columns()), outputOptionJSON())
+	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(datacenterListTableOutput.Columns()), output.OptionJSON())
 	return cmd
 }
 
 func runDatacenterList(cli *state.State, cmd *cobra.Command, args []string) error {
-	outOpts := outputFlagsForCommand(cmd)
+	outOpts := output.FlagsForCommand(cmd)
 
 	datacenters, err := cli.Client().Datacenter.All(cli.Context)
 

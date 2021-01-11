@@ -1,6 +1,7 @@
 package cmds
 
 import (
+	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
@@ -8,10 +9,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var loadBalancerTypeListTableOutput *tableOutput
+var loadBalancerTypeListTableOutput *output.Table
 
 func init() {
-	loadBalancerTypeListTableOutput = newTableOutput().
+	loadBalancerTypeListTableOutput = output.NewTable().
 		AddAllowedFields(hcloud.LoadBalancerType{})
 }
 
@@ -28,12 +29,12 @@ func newLoadBalancerTypeListCommand(cli *state.State) *cobra.Command {
 		PreRunE:               cli.EnsureToken,
 		RunE:                  cli.Wrap(runLoadBalancerTypeList),
 	}
-	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(loadBalancerTypeListTableOutput.Columns()), outputOptionJSON())
+	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(loadBalancerTypeListTableOutput.Columns()), output.OptionJSON())
 	return cmd
 }
 
 func runLoadBalancerTypeList(cli *state.State, cmd *cobra.Command, args []string) error {
-	outOpts := outputFlagsForCommand(cmd)
+	outOpts := output.FlagsForCommand(cmd)
 
 	loadBalancerTypes, err := cli.Client().LoadBalancerType.All(cli.Context)
 	if err != nil {

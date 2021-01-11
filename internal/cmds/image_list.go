@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud/schema"
@@ -13,7 +14,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var imageListTableOutput *tableOutput
+var imageListTableOutput *output.Table
 var typeFilter string
 
 func init() {
@@ -33,14 +34,14 @@ func newImageListCommand(cli *state.State) *cobra.Command {
 		PreRunE:               cli.EnsureToken,
 		RunE:                  cli.Wrap(runImageList),
 	}
-	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(imageListTableOutput.Columns()), outputOptionJSON())
+	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(imageListTableOutput.Columns()), output.OptionJSON())
 	cmd.Flags().StringVarP(&typeFilter, "type", "t", "", "Only show images of given type")
 	cmd.Flags().StringP("selector", "l", "", "Selector to filter by labels")
 	return cmd
 }
 
 func runImageList(cli *state.State, cmd *cobra.Command, args []string) error {
-	outOpts := outputFlagsForCommand(cmd)
+	outOpts := output.FlagsForCommand(cmd)
 
 	labelSelector, _ := cmd.Flags().GetString("selector")
 	opts := hcloud.ImageListOpts{
@@ -93,8 +94,8 @@ func runImageList(cli *state.State, cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func describeImageListTableOutput(cli *state.State) *tableOutput {
-	return newTableOutput().
+func describeImageListTableOutput(cli *state.State) *output.Table {
+	return output.NewTable().
 		AddAllowedFields(hcloud.Image{}).
 		AddFieldAlias("imagesize", "image size").
 		AddFieldAlias("disksize", "disk size").
@@ -103,40 +104,40 @@ func describeImageListTableOutput(cli *state.State) *tableOutput {
 		AddFieldAlias("rapiddeploy", "rapid deploy").
 		AddFieldAlias("createdfrom", "created from").
 		AddFieldAlias("boundto", "bound to").
-		AddFieldOutputFn("name", fieldOutputFn(func(obj interface{}) string {
+		AddFieldFn("name", output.FieldFn(func(obj interface{}) string {
 			image := obj.(*hcloud.Image)
 			return util.NA(image.Name)
 		})).
-		AddFieldOutputFn("image_size", fieldOutputFn(func(obj interface{}) string {
+		AddFieldFn("image_size", output.FieldFn(func(obj interface{}) string {
 			image := obj.(*hcloud.Image)
 			if image.ImageSize == 0 {
 				return util.NA("")
 			}
 			return fmt.Sprintf("%.2f GB", image.ImageSize)
 		})).
-		AddFieldOutputFn("disk_size", fieldOutputFn(func(obj interface{}) string {
+		AddFieldFn("disk_size", output.FieldFn(func(obj interface{}) string {
 			image := obj.(*hcloud.Image)
 			return fmt.Sprintf("%.0f GB", image.DiskSize)
 		})).
-		AddFieldOutputFn("created", fieldOutputFn(func(obj interface{}) string {
+		AddFieldFn("created", output.FieldFn(func(obj interface{}) string {
 			image := obj.(*hcloud.Image)
 			return humanize.Time(image.Created)
 		})).
-		AddFieldOutputFn("bound_to", fieldOutputFn(func(obj interface{}) string {
+		AddFieldFn("bound_to", output.FieldFn(func(obj interface{}) string {
 			image := obj.(*hcloud.Image)
 			if image.BoundTo != nil && cli != nil {
 				return cli.ServerName(image.BoundTo.ID)
 			}
 			return util.NA("")
 		})).
-		AddFieldOutputFn("created_from", fieldOutputFn(func(obj interface{}) string {
+		AddFieldFn("created_from", output.FieldFn(func(obj interface{}) string {
 			image := obj.(*hcloud.Image)
 			if image.CreatedFrom != nil && cli != nil {
 				return cli.ServerName(image.CreatedFrom.ID)
 			}
 			return util.NA("")
 		})).
-		AddFieldOutputFn("protection", fieldOutputFn(func(obj interface{}) string {
+		AddFieldFn("protection", output.FieldFn(func(obj interface{}) string {
 			image := obj.(*hcloud.Image)
 			var protection []string
 			if image.Protection.Delete {
@@ -144,15 +145,15 @@ func describeImageListTableOutput(cli *state.State) *tableOutput {
 			}
 			return strings.Join(protection, ", ")
 		})).
-		AddFieldOutputFn("labels", fieldOutputFn(func(obj interface{}) string {
+		AddFieldFn("labels", output.FieldFn(func(obj interface{}) string {
 			image := obj.(*hcloud.Image)
 			return util.LabelsToString(image.Labels)
 		})).
-		AddFieldOutputFn("created", fieldOutputFn(func(obj interface{}) string {
+		AddFieldFn("created", output.FieldFn(func(obj interface{}) string {
 			image := obj.(*hcloud.Image)
 			return util.Datetime(image.Created)
 		})).
-		AddFieldOutputFn("deprecated", fieldOutputFn(func(obj interface{}) string {
+		AddFieldFn("deprecated", output.FieldFn(func(obj interface{}) string {
 			image := obj.(*hcloud.Image)
 			if image.Deprecated.IsZero() {
 				return "-"

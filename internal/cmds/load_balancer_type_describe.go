@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
@@ -22,12 +23,12 @@ func newLoadBalancerTypenDescribeCommand(cli *state.State) *cobra.Command {
 		PreRunE:               cli.EnsureToken,
 		RunE:                  cli.Wrap(runLoadBalancerTypeDescribe),
 	}
-	addOutputFlag(cmd, outputOptionJSON(), outputOptionFormat())
+	output.AddFlag(cmd, output.OptionJSON(), output.OptionFormat())
 	return cmd
 }
 
 func runLoadBalancerTypeDescribe(cli *state.State, cmd *cobra.Command, args []string) error {
-	outputFlags := outputFlagsForCommand(cmd)
+	outputFlags := output.FlagsForCommand(cmd)
 
 	idOrName := args[0]
 	loadBalancerType, resp, err := cli.Client().LoadBalancerType.Get(cli.Context, idOrName)

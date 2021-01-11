@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
@@ -11,7 +12,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var networkListTableOutput *tableOutput
+var networkListTableOutput *output.Table
 
 func init() {
 	networkListTableOutput = describeNetworkListTableOutput(nil)
@@ -30,13 +31,13 @@ func newNetworkListCommand(cli *state.State) *cobra.Command {
 		PreRunE:               cli.EnsureToken,
 		RunE:                  cli.Wrap(runNetworkList),
 	}
-	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(networkListTableOutput.Columns()), outputOptionJSON())
+	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(networkListTableOutput.Columns()), output.OptionJSON())
 	cmd.Flags().StringP("selector", "l", "", "Selector to filter by labels")
 	return cmd
 }
 
 func runNetworkList(cli *state.State, cmd *cobra.Command, args []string) error {
-	outOpts := outputFlagsForCommand(cmd)
+	outOpts := output.FlagsForCommand(cmd)
 
 	labelSelector, _ := cmd.Flags().GetString("selector")
 	opts := hcloud.NetworkListOpts{
@@ -103,10 +104,10 @@ func runNetworkList(cli *state.State, cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func describeNetworkListTableOutput(cli *state.State) *tableOutput {
-	return newTableOutput().
+func describeNetworkListTableOutput(cli *state.State) *output.Table {
+	return output.NewTable().
 		AddAllowedFields(hcloud.Network{}).
-		AddFieldOutputFn("servers", fieldOutputFn(func(obj interface{}) string {
+		AddFieldFn("servers", output.FieldFn(func(obj interface{}) string {
 			network := obj.(*hcloud.Network)
 			serverCount := len(network.Servers)
 			if serverCount <= 1 {
@@ -114,15 +115,15 @@ func describeNetworkListTableOutput(cli *state.State) *tableOutput {
 			}
 			return fmt.Sprintf("%v servers", serverCount)
 		})).
-		AddFieldOutputFn("ip_range", fieldOutputFn(func(obj interface{}) string {
+		AddFieldFn("ip_range", output.FieldFn(func(obj interface{}) string {
 			network := obj.(*hcloud.Network)
 			return network.IPRange.String()
 		})).
-		AddFieldOutputFn("labels", fieldOutputFn(func(obj interface{}) string {
+		AddFieldFn("labels", output.FieldFn(func(obj interface{}) string {
 			network := obj.(*hcloud.Network)
 			return util.LabelsToString(network.Labels)
 		})).
-		AddFieldOutputFn("protection", fieldOutputFn(func(obj interface{}) string {
+		AddFieldFn("protection", output.FieldFn(func(obj interface{}) string {
 			network := obj.(*hcloud.Network)
 			var protection []string
 			if network.Protection.Delete {
@@ -130,7 +131,7 @@ func describeNetworkListTableOutput(cli *state.State) *tableOutput {
 			}
 			return strings.Join(protection, ", ")
 		})).
-		AddFieldOutputFn("created", fieldOutputFn(func(obj interface{}) string {
+		AddFieldFn("created", output.FieldFn(func(obj interface{}) string {
 			network := obj.(*hcloud.Network)
 			return util.Datetime(network.Created)
 		}))

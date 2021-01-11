@@ -6,6 +6,7 @@ import (
 
 	humanize "github.com/dustin/go-humanize"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
@@ -23,12 +24,12 @@ func newImageDescribeCommand(cli *state.State) *cobra.Command {
 		PreRunE:               cli.EnsureToken,
 		RunE:                  cli.Wrap(runImageDescribe),
 	}
-	addOutputFlag(cmd, outputOptionJSON(), outputOptionFormat())
+	output.AddFlag(cmd, output.OptionJSON(), output.OptionFormat())
 	return cmd
 }
 
 func runImageDescribe(cli *state.State, cmd *cobra.Command, args []string) error {
-	outputFlags := outputFlagsForCommand(cmd)
+	outputFlags := output.FlagsForCommand(cmd)
 
 	idOrName := args[0]
 	image, resp, err := cli.Client().Image.Get(cli.Context, idOrName)

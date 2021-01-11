@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/spf13/cobra"
@@ -20,12 +21,12 @@ func newServerRequestConsoleCommand(cli *state.State) *cobra.Command {
 		PreRunE:               cli.EnsureToken,
 		RunE:                  cli.Wrap(runServerRequestConsole),
 	}
-	addOutputFlag(cmd, outputOptionJSON())
+	output.AddFlag(cmd, output.OptionJSON())
 	return cmd
 }
 
 func runServerRequestConsole(cli *state.State, cmd *cobra.Command, args []string) error {
-	outOpts := outputFlagsForCommand(cmd)
+	outOpts := output.FlagsForCommand(cmd)
 	idOrName := args[0]
 	server, _, err := cli.Client().Server.Get(cli.Context, idOrName)
 	if err != nil {

@@ -1,6 +1,7 @@
 package cmds
 
 import (
+	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
@@ -8,10 +9,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var isoListTableOutput *tableOutput
+var isoListTableOutput *output.Table
 
 func init() {
-	isoListTableOutput = newTableOutput().
+	isoListTableOutput = output.NewTable().
 		AddAllowedFields(hcloud.ISO{})
 }
 
@@ -28,12 +29,12 @@ func newISOListCommand(cli *state.State) *cobra.Command {
 		PreRunE:               cli.EnsureToken,
 		RunE:                  cli.Wrap(runISOList),
 	}
-	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(isoListTableOutput.Columns()), outputOptionJSON())
+	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(isoListTableOutput.Columns()), output.OptionJSON())
 	return cmd
 }
 
 func runISOList(cli *state.State, cmd *cobra.Command, args []string) error {
-	outOpts := outputFlagsForCommand(cmd)
+	outOpts := output.FlagsForCommand(cmd)
 
 	isos, err := cli.Client().ISO.All(cli.Context)
 	if err != nil {

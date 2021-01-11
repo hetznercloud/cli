@@ -1,4 +1,4 @@
-package cmds
+package output
 
 import (
 	"bytes"
@@ -21,7 +21,7 @@ type testFieldsStruct struct {
 
 func TestTableOutput(t *testing.T) {
 	var wfs writerFlusherStub
-	to := newTableOutput()
+	to := NewTable()
 	to.w = &wfs
 
 	t.Run("AddAllowedFields", func(t *testing.T) {
@@ -37,7 +37,7 @@ func TestTableOutput(t *testing.T) {
 		}
 	})
 	t.Run("AddFieldOutputFn", func(t *testing.T) {
-		to.AddFieldOutputFn("leeroy jenkins", fieldOutputFn(func(obj interface{}) string {
+		to.AddFieldFn("leeroy jenkins", FieldFn(func(obj interface{}) string {
 			return "LEEROY JENKINS!!!"
 		}))
 		if _, ok := to.fieldMapping["leeroy jenkins"]; !ok {
