@@ -8,10 +8,12 @@ import (
 	"time"
 
 	"github.com/cheggaaa/pb/v3"
-	"github.com/hetznercloud/cli/internal/hcapi"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 	"golang.org/x/crypto/ssh/terminal"
+
+	"github.com/hetznercloud/cli/internal/hcapi"
+	"github.com/hetznercloud/cli/internal/version"
 )
 
 const (
@@ -29,7 +31,7 @@ func (c *State) Client() *hcloud.Client {
 	if c.client == nil {
 		opts := []hcloud.ClientOption{
 			hcloud.WithToken(c.Token),
-			hcloud.WithApplication("hcloud-cli", Version),
+			hcloud.WithApplication("hcloud-cli", version.Version),
 		}
 		if c.Endpoint != "" {
 			opts = append(opts, hcloud.WithEndpoint(c.Endpoint))

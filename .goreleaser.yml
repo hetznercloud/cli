@@ -3,7 +3,7 @@ builds:
     main: ./cmd/hcloud/main.go
     binary: hcloud
     ldflags:
-      - -w -X github.com/hetznercloud/cli/cli.Version={{.Version}}
+      - -w -X github.com/hetznercloud/cli/internal/version.Version={{.Version}}
     env:
       - CGO_ENABLED=0
     goos:
@@ -23,7 +23,7 @@ builds:
     main: ./cmd/hcloud/main.go
     binary: hcloud
     ldflags:
-      - -w -X github.com/hetznercloud/cli/cli.Version={{.Version}}
+      - -w -X github.com/hetznercloud/cli/internal/version.Version={{.Version}}
     env:
       - CGO_ENABLED=0
     goos:

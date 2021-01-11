@@ -3,12 +3,11 @@ package version
 import (
 	"fmt"
 
-	"github.com/hetznercloud/cli/internal/state"
 	"github.com/spf13/cobra"
-)
 
-// Version is set via compiler flags (see script/build.bash)
-var Version = "was not built properly"
+	"github.com/hetznercloud/cli/internal/state"
+	"github.com/hetznercloud/cli/internal/version"
+)
 
 func NewCommand(cli *state.State) *cobra.Command {
 	cmd := &cobra.Command{
@@ -22,6 +21,6 @@ func NewCommand(cli *state.State) *cobra.Command {
 }
 
 func runVersion(cli *state.State, cmd *cobra.Command, args []string) error {
-	fmt.Printf("hcloud %s\n", Version)
+	fmt.Printf("hcloud %s\n", version.Version)
 	return nil
 }
