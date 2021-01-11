@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -17,7 +18,7 @@ func newSSHKeyAddLabelCommand(cli *state.State) *cobra.Command {
 		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.SSHKeyNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		PreRunE:               chainRunE(validateSSHKeyAddLabel, cli.EnsureToken),
+		PreRunE:               util.ChainRunE(validateSSHKeyAddLabel, cli.EnsureToken),
 		RunE:                  cli.Wrap(runSSHKeyAddLabel),
 	}
 
@@ -26,7 +27,7 @@ func newSSHKeyAddLabelCommand(cli *state.State) *cobra.Command {
 }
 
 func validateSSHKeyAddLabel(cmd *cobra.Command, args []string) error {
-	label := splitLabel(args[1])
+	label := util.SplitLabel(args[1])
 	if len(label) != 2 {
 		return fmt.Errorf("invalid label: %s", args[1])
 	}
@@ -44,7 +45,7 @@ func runSSHKeyAddLabel(cli *state.State, cmd *cobra.Command, args []string) erro
 	if sshKey == nil {
 		return fmt.Errorf("SSH key not found: %s", idOrName)
 	}
-	label := splitLabel(args[1])
+	label := util.SplitLabel(args[1])
 
 	if _, ok := sshKey.Labels[label[0]]; ok && !overwrite {
 		return fmt.Errorf("label %s on SSH key %d already exists", label[0], sshKey.ID)

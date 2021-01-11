@@ -3,6 +3,7 @@ package cmds
 import (
 	"strings"
 
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/hetznercloud/hcloud-go/hcloud/schema"
@@ -19,7 +20,7 @@ func newCertificatesListCommand(cli *state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list [FLAGS]",
 		Short: "List Certificates",
-		Long: listLongDescription(
+		Long: util.ListLongDescription(
 			"Displays a list of certificates",
 			certificateTableOutput.Columns(),
 		),
@@ -67,7 +68,7 @@ func runCertificatesList(cli *state.State, cmd *cobra.Command, args []string) er
 			certSchemas = append(certSchemas, certSchema)
 		}
 
-		return describeJSON(certSchemas)
+		return util.DescribeJSON(certSchemas)
 	}
 
 	cols := []string{"id", "name", "domain_names", "not_valid_after"}
@@ -93,15 +94,15 @@ func describeCertificatesTableOutput() *tableOutput {
 		RemoveAllowedField("certificate", "chain").
 		AddFieldOutputFn("labels", fieldOutputFn(func(obj interface{}) string {
 			cert := obj.(*hcloud.Certificate)
-			return labelsToString(cert.Labels)
+			return util.LabelsToString(cert.Labels)
 		})).
 		AddFieldOutputFn("not_valid_before", func(obj interface{}) string {
 			cert := obj.(*hcloud.Certificate)
-			return datetime(cert.NotValidBefore)
+			return util.Datetime(cert.NotValidBefore)
 		}).
 		AddFieldOutputFn("not_valid_after", func(obj interface{}) string {
 			cert := obj.(*hcloud.Certificate)
-			return datetime(cert.NotValidAfter)
+			return util.Datetime(cert.NotValidAfter)
 		}).
 		AddFieldOutputFn("domain_names", func(obj interface{}) string {
 			cert := obj.(*hcloud.Certificate)
@@ -109,6 +110,6 @@ func describeCertificatesTableOutput() *tableOutput {
 		}).
 		AddFieldOutputFn("created", fieldOutputFn(func(obj interface{}) string {
 			cert := obj.(*hcloud.Certificate)
-			return datetime(cert.Created)
+			return util.Datetime(cert.Created)
 		}))
 }

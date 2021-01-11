@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -17,7 +18,7 @@ func newVolumeAddLabelCommand(cli *state.State) *cobra.Command {
 		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.VolumeNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		PreRunE:               chainRunE(validateVolumeAddLabel, cli.EnsureToken),
+		PreRunE:               util.ChainRunE(validateVolumeAddLabel, cli.EnsureToken),
 		RunE:                  cli.Wrap(runVolumeAddLabel),
 	}
 
@@ -26,7 +27,7 @@ func newVolumeAddLabelCommand(cli *state.State) *cobra.Command {
 }
 
 func validateVolumeAddLabel(cmd *cobra.Command, args []string) error {
-	label := splitLabel(args[1])
+	label := util.SplitLabel(args[1])
 	if len(label) != 2 {
 		return fmt.Errorf("invalid label: %s", args[1])
 	}
@@ -43,7 +44,7 @@ func runVolumeAddLabel(cli *state.State, cmd *cobra.Command, args []string) erro
 	if volume == nil {
 		return fmt.Errorf("volume not found: %s", args[0])
 	}
-	label := splitLabel(args[1])
+	label := util.SplitLabel(args[1])
 
 	if _, ok := volume.Labels[label[0]]; ok && !overwrite {
 		return fmt.Errorf("label %s on volume %d already exists", label[0], volume.ID)

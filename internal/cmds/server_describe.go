@@ -6,6 +6,7 @@ import (
 
 	humanize "github.com/dustin/go-humanize"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -42,7 +43,7 @@ func runServerDescribe(cli *state.State, cmd *cobra.Command, args []string) erro
 	case outputFlags.IsSet("json"):
 		return serverDescribeJSON(resp)
 	case outputFlags.IsSet("format"):
-		return describeFormat(server, outputFlags["format"][0])
+		return util.DescribeFormat(server, outputFlags["format"][0])
 	default:
 		return serverDescribeText(cli, server)
 	}
@@ -52,7 +53,7 @@ func serverDescribeText(cli *state.State, server *hcloud.Server) error {
 	fmt.Printf("ID:\t\t%d\n", server.ID)
 	fmt.Printf("Name:\t\t%s\n", server.Name)
 	fmt.Printf("Status:\t\t%s\n", server.Status)
-	fmt.Printf("Created:\t%s (%s)\n", datetime(server.Created), humanize.Time(server.Created))
+	fmt.Printf("Created:\t%s (%s)\n", util.Datetime(server.Created), humanize.Time(server.Created))
 
 	fmt.Printf("Server Type:\t%s (ID: %d)\n", server.ServerType.Name, server.ServerType.ID)
 	fmt.Printf("  ID:\t\t%d\n", server.ServerType.ID)
@@ -67,11 +68,11 @@ func serverDescribeText(cli *state.State, server *hcloud.Server) error {
 	fmt.Printf("Public Net:\n")
 	fmt.Printf("  IPv4:\n")
 	fmt.Printf("    IP:\t\t%s\n", server.PublicNet.IPv4.IP)
-	fmt.Printf("    Blocked:\t%s\n", yesno(server.PublicNet.IPv4.Blocked))
+	fmt.Printf("    Blocked:\t%s\n", util.YesNo(server.PublicNet.IPv4.Blocked))
 	fmt.Printf("    DNS:\t%s\n", server.PublicNet.IPv4.DNSPtr)
 	fmt.Printf("  IPv6:\n")
 	fmt.Printf("    IP:\t\t%s\n", server.PublicNet.IPv6.Network.String())
-	fmt.Printf("    Blocked:\t%s\n", yesno(server.PublicNet.IPv6.Blocked))
+	fmt.Printf("    Blocked:\t%s\n", util.YesNo(server.PublicNet.IPv6.Blocked))
 	fmt.Printf("  Floating IPs:\n")
 	if len(server.PublicNet.FloatingIPs) > 0 {
 		for _, f := range server.PublicNet.FloatingIPs {
@@ -80,7 +81,7 @@ func serverDescribeText(cli *state.State, server *hcloud.Server) error {
 				return fmt.Errorf("error fetching Floating IP: %v", err)
 			}
 			fmt.Printf("  - ID:\t\t\t%d\n", floatingIP.ID)
-			fmt.Printf("    Description:\t%s\n", na(floatingIP.Description))
+			fmt.Printf("    Description:\t%s\n", util.NA(floatingIP.Description))
 			fmt.Printf("    IP:\t\t\t%s\n", floatingIP.IP)
 		}
 	} else {
@@ -104,7 +105,7 @@ func serverDescribeText(cli *state.State, server *hcloud.Server) error {
 					fmt.Printf("     -\t\t\t%s\n", a)
 				}
 			} else {
-				fmt.Printf("    Alias IPs:\t\t%s\n", na(""))
+				fmt.Printf("    Alias IPs:\t\t%s\n", util.NA(""))
 			}
 		}
 	} else {
@@ -131,18 +132,18 @@ func serverDescribeText(cli *state.State, server *hcloud.Server) error {
 		fmt.Printf("  ID:\t\t%d\n", image.ID)
 		fmt.Printf("  Type:\t\t%s\n", image.Type)
 		fmt.Printf("  Status:\t%s\n", image.Status)
-		fmt.Printf("  Name:\t\t%s\n", na(image.Name))
+		fmt.Printf("  Name:\t\t%s\n", util.NA(image.Name))
 		fmt.Printf("  Description:\t%s\n", image.Description)
 		if image.ImageSize != 0 {
 			fmt.Printf("  Image size:\t%.2f GB\n", image.ImageSize)
 		} else {
-			fmt.Printf("  Image size:\t%s\n", na(""))
+			fmt.Printf("  Image size:\t%s\n", util.NA(""))
 		}
 		fmt.Printf("  Disk size:\t%.0f GB\n", image.DiskSize)
-		fmt.Printf("  Created:\t%s (%s)\n", datetime(image.Created), humanize.Time(image.Created))
+		fmt.Printf("  Created:\t%s (%s)\n", util.Datetime(image.Created), humanize.Time(image.Created))
 		fmt.Printf("  OS flavor:\t%s\n", image.OSFlavor)
-		fmt.Printf("  OS version:\t%s\n", na(image.OSVersion))
-		fmt.Printf("  Rapid deploy:\t%s\n", yesno(image.RapidDeploy))
+		fmt.Printf("  OS version:\t%s\n", util.NA(image.OSVersion))
+		fmt.Printf("  Rapid deploy:\t%s\n", util.YesNo(image.RapidDeploy))
 	} else {
 		fmt.Printf("  No Image\n")
 	}
@@ -187,8 +188,8 @@ func serverDescribeText(cli *state.State, server *hcloud.Server) error {
 	}
 
 	fmt.Printf("Protection:\n")
-	fmt.Printf("  Delete:\t%s\n", yesno(server.Protection.Delete))
-	fmt.Printf("  Rebuild:\t%s\n", yesno(server.Protection.Rebuild))
+	fmt.Printf("  Delete:\t%s\n", util.YesNo(server.Protection.Delete))
+	fmt.Printf("  Rebuild:\t%s\n", util.YesNo(server.Protection.Rebuild))
 
 	fmt.Print("Labels:\n")
 	if len(server.Labels) == 0 {
@@ -208,10 +209,10 @@ func serverDescribeJSON(resp *hcloud.Response) error {
 		return err
 	}
 	if server, ok := data["server"]; ok {
-		return describeJSON(server)
+		return util.DescribeJSON(server)
 	}
 	if servers, ok := data["servers"].([]interface{}); ok {
-		return describeJSON(servers[0])
+		return util.DescribeJSON(servers[0])
 	}
-	return describeJSON(data)
+	return util.DescribeJSON(data)
 }

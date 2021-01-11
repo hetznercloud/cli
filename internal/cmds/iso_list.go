@@ -1,6 +1,7 @@
 package cmds
 
 import (
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/hetznercloud/hcloud-go/hcloud/schema"
@@ -18,7 +19,7 @@ func newISOListCommand(cli *state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list [FLAGS]",
 		Short: "List ISOs",
-		Long: listLongDescription(
+		Long: util.ListLongDescription(
 			"Displays a list of ISOs.",
 			isoListTableOutput.Columns(),
 		),
@@ -42,9 +43,9 @@ func runISOList(cli *state.State, cmd *cobra.Command, args []string) error {
 	if outOpts.IsSet("json") {
 		var isoSchemas []schema.ISO
 		for _, iso := range isos {
-			isoSchemas = append(isoSchemas, isoToSchema(*iso))
+			isoSchemas = append(isoSchemas, util.ISOToSchema(*iso))
 		}
-		return describeJSON(isoSchemas)
+		return util.DescribeJSON(isoSchemas)
 	}
 
 	cols := []string{"id", "name", "description", "type"}

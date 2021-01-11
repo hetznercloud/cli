@@ -1,6 +1,7 @@
 package cmds
 
 import (
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/hetznercloud/hcloud-go/hcloud/schema"
@@ -18,7 +19,7 @@ func newLocationListCommand(cli *state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list [FLAGS]",
 		Short: "List locations",
-		Long: listLongDescription(
+		Long: util.ListLongDescription(
 			"Displays a list of locations.",
 			locationListTableOutput.Columns(),
 		),
@@ -42,9 +43,9 @@ func runLocationList(cli *state.State, cmd *cobra.Command, args []string) error 
 	if outOpts.IsSet("json") {
 		var locationSchemas []schema.Location
 		for _, location := range locations {
-			locationSchemas = append(locationSchemas, locationToSchema(*location))
+			locationSchemas = append(locationSchemas, util.LocationToSchema(*location))
 		}
-		return describeJSON(locationSchemas)
+		return util.DescribeJSON(locationSchemas)
 	}
 
 	cols := []string{"id", "name", "description", "network_zone", "country", "city"}

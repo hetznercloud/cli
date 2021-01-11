@@ -1,6 +1,7 @@
 package cmds
 
 import (
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/hetznercloud/hcloud-go/hcloud/schema"
@@ -22,7 +23,7 @@ func newDatacenterListCommand(cli *state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list [FLAGS]",
 		Short: "List datacenters",
-		Long: listLongDescription(
+		Long: util.ListLongDescription(
 			"Displays a list of datacenters.",
 			datacenterListTableOutput.Columns(),
 		),
@@ -43,9 +44,9 @@ func runDatacenterList(cli *state.State, cmd *cobra.Command, args []string) erro
 	if outOpts.IsSet("json") {
 		var datacenterSchemas []schema.Datacenter
 		for _, datacenter := range datacenters {
-			datacenterSchemas = append(datacenterSchemas, datacenterToSchema(*datacenter))
+			datacenterSchemas = append(datacenterSchemas, util.DatacenterToSchema(*datacenter))
 		}
-		return describeJSON(datacenterSchemas)
+		return util.DescribeJSON(datacenterSchemas)
 	}
 
 	if err != nil {

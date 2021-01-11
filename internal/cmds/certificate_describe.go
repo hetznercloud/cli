@@ -6,6 +6,7 @@ import (
 
 	humanize "github.com/dustin/go-humanize"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -42,7 +43,7 @@ func runCertificateDescribe(cli *state.State, cmd *cobra.Command, args []string)
 	case outputFlags.IsSet("json"):
 		return certificateDescribeJSON(resp)
 	case outputFlags.IsSet("format"):
-		return describeFormat(cert, outputFlags["format"][0])
+		return util.DescribeFormat(cert, outputFlags["format"][0])
 	default:
 		return certificateDescribeText(cli, cert)
 	}
@@ -54,21 +55,21 @@ func certificateDescribeJSON(resp *hcloud.Response) error {
 		return err
 	}
 	if server, ok := data["certificate"]; ok {
-		return describeJSON(server)
+		return util.DescribeJSON(server)
 	}
 	if servers, ok := data["certificates"].([]interface{}); ok {
-		return describeJSON(servers[0])
+		return util.DescribeJSON(servers[0])
 	}
-	return describeJSON(data)
+	return util.DescribeJSON(data)
 }
 
 func certificateDescribeText(cli *state.State, cert *hcloud.Certificate) error {
 	fmt.Printf("ID:\t\t\t%d\n", cert.ID)
 	fmt.Printf("Name:\t\t\t%s\n", cert.Name)
 	fmt.Printf("Fingerprint:\t\t%s\n", cert.Fingerprint)
-	fmt.Printf("Created:\t\t%s (%s)\n", datetime(cert.Created), humanize.Time(cert.Created))
-	fmt.Printf("Not valid before:\t%s (%s)\n", datetime(cert.NotValidBefore), humanize.Time(cert.NotValidBefore))
-	fmt.Printf("Not valid after:\t%s (%s)\n", datetime(cert.NotValidAfter), humanize.Time(cert.NotValidAfter))
+	fmt.Printf("Created:\t\t%s (%s)\n", util.Datetime(cert.Created), humanize.Time(cert.Created))
+	fmt.Printf("Not valid before:\t%s (%s)\n", util.Datetime(cert.NotValidBefore), humanize.Time(cert.NotValidBefore))
+	fmt.Printf("Not valid after:\t%s (%s)\n", util.Datetime(cert.NotValidAfter), humanize.Time(cert.NotValidAfter))
 	fmt.Printf("Domain names:\n")
 	for _, domainName := range cert.DomainNames {
 		fmt.Printf("  - %s\n", domainName)

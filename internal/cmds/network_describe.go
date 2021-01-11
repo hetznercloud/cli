@@ -5,6 +5,7 @@ import (
 
 	humanize "github.com/dustin/go-humanize"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -41,7 +42,7 @@ func runNetworkDescribe(cli *state.State, cmd *cobra.Command, args []string) err
 	case outputFlags.IsSet("json"):
 		return serverDescribeJSON(resp)
 	case outputFlags.IsSet("format"):
-		return describeFormat(network, outputFlags["format"][0])
+		return util.DescribeFormat(network, outputFlags["format"][0])
 	default:
 		return networkDescribeText(cli, network)
 	}
@@ -50,7 +51,7 @@ func runNetworkDescribe(cli *state.State, cmd *cobra.Command, args []string) err
 func networkDescribeText(cli *state.State, network *hcloud.Network) error {
 	fmt.Printf("ID:\t\t%d\n", network.ID)
 	fmt.Printf("Name:\t\t%s\n", network.Name)
-	fmt.Printf("Created:\t%s (%s)\n", datetime(network.Created), humanize.Time(network.Created))
+	fmt.Printf("Created:\t%s (%s)\n", util.Datetime(network.Created), humanize.Time(network.Created))
 	fmt.Printf("IP Range:\t%s\n", network.IPRange.String())
 
 	fmt.Printf("Subnets:\n")
@@ -79,7 +80,7 @@ func networkDescribeText(cli *state.State, network *hcloud.Network) error {
 	}
 
 	fmt.Printf("Protection:\n")
-	fmt.Printf("  Delete:\t%s\n", yesno(network.Protection.Delete))
+	fmt.Printf("  Delete:\t%s\n", util.YesNo(network.Protection.Delete))
 
 	fmt.Print("Labels:\n")
 	if len(network.Labels) == 0 {

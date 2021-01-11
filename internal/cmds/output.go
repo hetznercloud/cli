@@ -12,6 +12,7 @@ import (
 
 	"github.com/fatih/structs"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/spf13/cobra"
 )
 
@@ -58,7 +59,7 @@ func addOutputFlag(cmd *cobra.Command, options ...outputOption) {
 		fmt.Sprintf("output options: %s", strings.Join(names, "|")),
 	)
 	cmd.RegisterFlagCompletionFunc(flagName, cmpl.SuggestCandidates(values...))
-	cmd.PreRunE = chainRunE(cmd.PreRunE, validateOutputFlag(options))
+	cmd.PreRunE = util.ChainRunE(cmd.PreRunE, validateOutputFlag(options))
 }
 
 func validateOutputFlag(options []outputOption) func(cmd *cobra.Command, args []string) error {
@@ -275,15 +276,15 @@ func (o *tableOutput) Write(columns []string, obj interface{}) {
 		}
 		if value, ok := dataL[strings.Replace(colName, "_", "", -1)]; ok {
 			if value == nil {
-				out = append(out, na(""))
+				out = append(out, util.NA(""))
 				continue
 			}
 			if b, ok := value.(bool); ok {
-				out = append(out, yesno(b))
+				out = append(out, util.YesNo(b))
 				continue
 			}
 			if s, ok := value.(string); ok {
-				out = append(out, na(s))
+				out = append(out, util.NA(s))
 				continue
 			}
 			out = append(out, fmt.Sprintf("%v", value))

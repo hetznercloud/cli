@@ -1,6 +1,7 @@
 package cmds
 
 import (
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/hetznercloud/hcloud-go/hcloud/schema"
@@ -14,11 +15,11 @@ func init() {
 		AddAllowedFields(hcloud.SSHKey{}).
 		AddFieldOutputFn("labels", fieldOutputFn(func(obj interface{}) string {
 			sshKey := obj.(*hcloud.SSHKey)
-			return labelsToString(sshKey.Labels)
+			return util.LabelsToString(sshKey.Labels)
 		})).
 		AddFieldOutputFn("created", fieldOutputFn(func(obj interface{}) string {
 			sshKey := obj.(*hcloud.SSHKey)
-			return datetime(sshKey.Created)
+			return util.Datetime(sshKey.Created)
 		}))
 }
 
@@ -26,7 +27,7 @@ func newSSHKeyListCommand(cli *state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list [FLAGS]",
 		Short: "List SSH keys",
-		Long: listLongDescription(
+		Long: util.ListLongDescription(
 			"Displays a list of SSH keys.",
 			sshKeyListTableOutput.Columns(),
 		),
@@ -68,7 +69,7 @@ func runSSHKeyList(cli *state.State, cmd *cobra.Command, args []string) error {
 			}
 			sshKeySchemas = append(sshKeySchemas, sshKeySchema)
 		}
-		return describeJSON(sshKeySchemas)
+		return util.DescribeJSON(sshKeySchemas)
 	}
 
 	cols := []string{"id", "name", "fingerprint"}

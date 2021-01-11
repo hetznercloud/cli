@@ -5,6 +5,7 @@ import (
 	"net"
 
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -45,7 +46,7 @@ func runLoadBalancerAddTarget(cli *state.State, cmd *cobra.Command, args []strin
 	labelSelector, _ := cmd.Flags().GetString("label-selector")
 	ipAddr, _ := cmd.Flags().GetString("ip")
 
-	if !exactlyOneSet(serverIDOrName, labelSelector, ipAddr) {
+	if !util.ExactlyOneSet(serverIDOrName, labelSelector, ipAddr) {
 		return fmt.Errorf("--server, --label-selector, and --ip are mutually exclusive")
 	}
 	if loadBalancer, _, err = cli.Client().LoadBalancer.Get(cli.Context, idOrName); err != nil {

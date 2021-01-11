@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -41,7 +42,7 @@ func runServerTypeDescribe(cli *state.State, cmd *cobra.Command, args []string) 
 	case outputFlags.IsSet("json"):
 		return serverTypeDescribeJSON(resp)
 	case outputFlags.IsSet("format"):
-		return describeFormat(serverType, outputFlags["format"][0])
+		return util.DescribeFormat(serverType, outputFlags["format"][0])
 	default:
 		return serverTypeDescribeText(cli, serverType)
 	}
@@ -72,10 +73,10 @@ func serverTypeDescribeJSON(resp *hcloud.Response) error {
 		return err
 	}
 	if serverType, ok := data["server_type"]; ok {
-		return describeJSON(serverType)
+		return util.DescribeJSON(serverType)
 	}
 	if serverTypes, ok := data["server_types"].([]interface{}); ok {
-		return describeJSON(serverTypes[0])
+		return util.DescribeJSON(serverTypes[0])
 	}
-	return describeJSON(data)
+	return util.DescribeJSON(data)
 }

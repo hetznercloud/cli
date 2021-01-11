@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/hetznercloud/hcloud-go/hcloud/schema"
@@ -20,7 +21,7 @@ func newNetworkListCommand(cli *state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list [FLAGS]",
 		Short: "List networks",
-		Long: listLongDescription(
+		Long: util.ListLongDescription(
 			"Displays a list of networks.",
 			networkListTableOutput.Columns(),
 		),
@@ -79,7 +80,7 @@ func runNetworkList(cli *state.State, cmd *cobra.Command, args []string) error {
 			}
 			networkSchemas = append(networkSchemas, networkSchema)
 		}
-		return describeJSON(networkSchemas)
+		return util.DescribeJSON(networkSchemas)
 	}
 
 	cols := []string{"id", "name", "ip_range", "servers"}
@@ -119,7 +120,7 @@ func describeNetworkListTableOutput(cli *state.State) *tableOutput {
 		})).
 		AddFieldOutputFn("labels", fieldOutputFn(func(obj interface{}) string {
 			network := obj.(*hcloud.Network)
-			return labelsToString(network.Labels)
+			return util.LabelsToString(network.Labels)
 		})).
 		AddFieldOutputFn("protection", fieldOutputFn(func(obj interface{}) string {
 			network := obj.(*hcloud.Network)
@@ -131,6 +132,6 @@ func describeNetworkListTableOutput(cli *state.State) *tableOutput {
 		})).
 		AddFieldOutputFn("created", fieldOutputFn(func(obj interface{}) string {
 			network := obj.(*hcloud.Network)
-			return datetime(network.Created)
+			return util.Datetime(network.Created)
 		}))
 }

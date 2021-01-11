@@ -6,6 +6,7 @@ import (
 
 	humanize "github.com/dustin/go-humanize"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -42,7 +43,7 @@ func runImageDescribe(cli *state.State, cmd *cobra.Command, args []string) error
 	case outputFlags.IsSet("json"):
 		return imageDescribeJSON(resp)
 	case outputFlags.IsSet("format"):
-		return describeFormat(image, outputFlags["format"][0])
+		return util.DescribeFormat(image, outputFlags["format"][0])
 	default:
 		return imageDescribeText(cli, image)
 	}
@@ -52,23 +53,23 @@ func imageDescribeText(cli *state.State, image *hcloud.Image) error {
 	fmt.Printf("ID:\t\t%d\n", image.ID)
 	fmt.Printf("Type:\t\t%s\n", image.Type)
 	fmt.Printf("Status:\t\t%s\n", image.Status)
-	fmt.Printf("Name:\t\t%s\n", na(image.Name))
-	fmt.Printf("Created:\t%s (%s)\n", datetime(image.Created), humanize.Time(image.Created))
+	fmt.Printf("Name:\t\t%s\n", util.NA(image.Name))
+	fmt.Printf("Created:\t%s (%s)\n", util.Datetime(image.Created), humanize.Time(image.Created))
 	if !image.Deprecated.IsZero() {
-		fmt.Printf("Deprecated:\t%s (%s)\n", datetime(image.Deprecated), humanize.Time(image.Deprecated))
+		fmt.Printf("Deprecated:\t%s (%s)\n", util.Datetime(image.Deprecated), humanize.Time(image.Deprecated))
 	}
 	fmt.Printf("Description:\t%s\n", image.Description)
 	if image.ImageSize != 0 {
 		fmt.Printf("Image size:\t%.2f GB\n", image.ImageSize)
 	} else {
-		fmt.Printf("Image size:\t%s\n", na(""))
+		fmt.Printf("Image size:\t%s\n", util.NA(""))
 	}
 	fmt.Printf("Disk size:\t%.0f GB\n", image.DiskSize)
 	fmt.Printf("OS flavor:\t%s\n", image.OSFlavor)
-	fmt.Printf("OS version:\t%s\n", na(image.OSVersion))
-	fmt.Printf("Rapid deploy:\t%s\n", yesno(image.RapidDeploy))
+	fmt.Printf("OS version:\t%s\n", util.NA(image.OSVersion))
+	fmt.Printf("Rapid deploy:\t%s\n", util.YesNo(image.RapidDeploy))
 	fmt.Printf("Protection:\n")
-	fmt.Printf("  Delete:\t%s\n", yesno(image.Protection.Delete))
+	fmt.Printf("  Delete:\t%s\n", util.YesNo(image.Protection.Delete))
 
 	fmt.Print("Labels:\n")
 	if len(image.Labels) == 0 {
@@ -91,10 +92,10 @@ func imageDescribeJSON(resp *hcloud.Response) error {
 		return err
 	}
 	if image, ok := data["image"]; ok {
-		return describeJSON(image)
+		return util.DescribeJSON(image)
 	}
 	if images, ok := data["images"].([]interface{}); ok {
-		return describeJSON(images[0])
+		return util.DescribeJSON(images[0])
 	}
-	return describeJSON(data)
+	return util.DescribeJSON(data)
 }

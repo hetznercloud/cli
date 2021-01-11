@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -41,7 +42,7 @@ func runLocationDescribe(cli *state.State, cmd *cobra.Command, args []string) er
 	case outputFlags.IsSet("json"):
 		return locationDescribeJSON(resp)
 	case outputFlags.IsSet("format"):
-		return describeFormat(location, outputFlags["format"][0])
+		return util.DescribeFormat(location, outputFlags["format"][0])
 	default:
 		return locationDescribeText(cli, location)
 	}
@@ -65,10 +66,10 @@ func locationDescribeJSON(resp *hcloud.Response) error {
 		return err
 	}
 	if location, ok := data["location"]; ok {
-		return describeJSON(location)
+		return util.DescribeJSON(location)
 	}
 	if locations, ok := data["locations"].([]interface{}); ok {
-		return describeJSON(locations[0])
+		return util.DescribeJSON(locations[0])
 	}
-	return describeJSON(data)
+	return util.DescribeJSON(data)
 }

@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -25,7 +26,7 @@ func newFloatingIPRemoveLabelCommand(cli *state.State) *cobra.Command {
 			})),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		PreRunE:               chainRunE(validateFloatingIPRemoveLabel, cli.EnsureToken),
+		PreRunE:               util.ChainRunE(validateFloatingIPRemoveLabel, cli.EnsureToken),
 		RunE:                  cli.Wrap(runFloatingIPRemoveLabel),
 	}
 
