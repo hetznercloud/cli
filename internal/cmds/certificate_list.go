@@ -30,7 +30,7 @@ func newCertificatesListCommand(cli *state.State) *cobra.Command {
 		PreRunE:               cli.EnsureToken,
 		RunE:                  cli.Wrap(runCertificatesList),
 	}
-	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(serverListTableOutput.Columns()), output.OptionJSON())
+	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(certificateTableOutput.Columns()), output.OptionJSON())
 	return cmd
 }
 
