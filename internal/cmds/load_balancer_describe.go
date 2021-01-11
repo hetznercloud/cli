@@ -6,6 +6,7 @@ import (
 
 	humanize "github.com/dustin/go-humanize"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
@@ -23,13 +24,13 @@ func newLoadBalancerDescribeCommand(cli *state.State) *cobra.Command {
 		PreRunE:               cli.EnsureToken,
 		RunE:                  cli.Wrap(runLoadBalancerDescribe),
 	}
-	addOutputFlag(cmd, outputOptionJSON(), outputOptionFormat())
+	output.AddFlag(cmd, output.OptionJSON(), output.OptionFormat())
 	cmd.Flags().Bool("expand-targets", false, "Expand all label_selector targets")
 	return cmd
 }
 
 func runLoadBalancerDescribe(cli *state.State, cmd *cobra.Command, args []string) error {
-	outputFlags := outputFlagsForCommand(cmd)
+	outputFlags := output.FlagsForCommand(cmd)
 	withLabelSelectorTargets, _ := cmd.Flags().GetBool("expand-targets")
 	idOrName := args[0]
 	loadBalancer, resp, err := cli.Client().LoadBalancer.Get(cli.Context, idOrName)

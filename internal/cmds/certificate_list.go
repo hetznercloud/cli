@@ -3,6 +3,7 @@ package cmds
 import (
 	"strings"
 
+	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
@@ -10,7 +11,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var certificateTableOutput *tableOutput
+var certificateTableOutput *output.Table
 
 func init() {
 	certificateTableOutput = describeCertificatesTableOutput()
@@ -29,12 +30,12 @@ func newCertificatesListCommand(cli *state.State) *cobra.Command {
 		PreRunE:               cli.EnsureToken,
 		RunE:                  cli.Wrap(runCertificatesList),
 	}
-	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(serverListTableOutput.Columns()), outputOptionJSON())
+	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(serverListTableOutput.Columns()), output.OptionJSON())
 	return cmd
 }
 
 func runCertificatesList(cli *state.State, cmd *cobra.Command, args []string) error {
-	outOpts := outputFlagsForCommand(cmd)
+	outOpts := output.FlagsForCommand(cmd)
 
 	labelSelector, _ := cmd.Flags().GetString("selector")
 
@@ -88,27 +89,27 @@ func runCertificatesList(cli *state.State, cmd *cobra.Command, args []string) er
 	return tw.Flush()
 }
 
-func describeCertificatesTableOutput() *tableOutput {
-	return newTableOutput().
+func describeCertificatesTableOutput() *output.Table {
+	return output.NewTable().
 		AddAllowedFields(hcloud.Certificate{}).
 		RemoveAllowedField("certificate", "chain").
-		AddFieldOutputFn("labels", fieldOutputFn(func(obj interface{}) string {
+		AddFieldFn("labels", output.FieldFn(func(obj interface{}) string {
 			cert := obj.(*hcloud.Certificate)
 			return util.LabelsToString(cert.Labels)
 		})).
-		AddFieldOutputFn("not_valid_before", func(obj interface{}) string {
+		AddFieldFn("not_valid_before", func(obj interface{}) string {
 			cert := obj.(*hcloud.Certificate)
 			return util.Datetime(cert.NotValidBefore)
 		}).
-		AddFieldOutputFn("not_valid_after", func(obj interface{}) string {
+		AddFieldFn("not_valid_after", func(obj interface{}) string {
 			cert := obj.(*hcloud.Certificate)
 			return util.Datetime(cert.NotValidAfter)
 		}).
-		AddFieldOutputFn("domain_names", func(obj interface{}) string {
+		AddFieldFn("domain_names", func(obj interface{}) string {
 			cert := obj.(*hcloud.Certificate)
 			return strings.Join(cert.DomainNames, ", ")
 		}).
-		AddFieldOutputFn("created", fieldOutputFn(func(obj interface{}) string {
+		AddFieldFn("created", output.FieldFn(func(obj interface{}) string {
 			cert := obj.(*hcloud.Certificate)
 			return util.Datetime(cert.Created)
 		}))

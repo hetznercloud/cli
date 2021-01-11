@@ -1,4 +1,4 @@
-package cmds
+package output
 
 import (
 	"fmt"
@@ -23,23 +23,23 @@ type outputOption struct {
 	Values []string
 }
 
-func outputOptionNoHeader() outputOption {
+func OptionNoHeader() outputOption {
 	return outputOption{Name: "noheader"}
 }
 
-func outputOptionJSON() outputOption {
+func OptionJSON() outputOption {
 	return outputOption{Name: "json"}
 }
 
-func outputOptionFormat() outputOption {
+func OptionFormat() outputOption {
 	return outputOption{Name: "format"}
 }
 
-func outputOptionColumns(columns []string) outputOption {
+func OptionColumns(columns []string) outputOption {
 	return outputOption{Name: "columns", Values: columns}
 }
 
-func addOutputFlag(cmd *cobra.Command, options ...outputOption) {
+func AddFlag(cmd *cobra.Command, options ...outputOption) {
 	var (
 		names  []string
 		values []string
@@ -100,7 +100,7 @@ func validateOutputFlag(options []outputOption) func(cmd *cobra.Command, args []
 	}
 }
 
-func outputFlagsForCommand(cmd *cobra.Command) outputOpts {
+func FlagsForCommand(cmd *cobra.Command) outputOpts {
 	opts, _ := cmd.Flags().GetStringArray(flagName)
 	return parseOutputFlags(opts)
 }
@@ -139,35 +139,35 @@ func parseOutputFlags(in []string) outputOpts {
 	return o
 }
 
-// newTableOutput creates a new tableOutput.
-func newTableOutput() *tableOutput {
-	return &tableOutput{
+// NewTable creates a new Table.
+func NewTable() *Table {
+	return &Table{
 		w:             tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', 0),
 		columns:       map[string]bool{},
-		fieldMapping:  map[string]fieldOutputFn{},
+		fieldMapping:  map[string]FieldFn{},
 		fieldAlias:    map[string]string{},
 		allowedFields: map[string]bool{},
 	}
 }
 
-type fieldOutputFn func(obj interface{}) string
+type FieldFn func(obj interface{}) string
 
 type writerFlusher interface {
 	io.Writer
 	Flush() error
 }
 
-// tableOutput is a generic way to format object as a table.
-type tableOutput struct {
+// Table is a generic way to format object as a table.
+type Table struct {
 	w             writerFlusher
 	columns       map[string]bool
-	fieldMapping  map[string]fieldOutputFn
+	fieldMapping  map[string]FieldFn
 	fieldAlias    map[string]string
 	allowedFields map[string]bool
 }
 
 // Columns returns a list of known output columns.
-func (o *tableOutput) Columns() (cols []string) {
+func (o *Table) Columns() (cols []string) {
 	for c := range o.columns {
 		cols = append(cols, c)
 	}
@@ -176,13 +176,13 @@ func (o *tableOutput) Columns() (cols []string) {
 }
 
 // AddFieldAlias overrides the field name to allow custom column headers.
-func (o *tableOutput) AddFieldAlias(field, alias string) *tableOutput {
+func (o *Table) AddFieldAlias(field, alias string) *Table {
 	o.fieldAlias[field] = alias
 	return o
 }
 
-// AddFieldOutputFn adds a function which handles the output of the specified field.
-func (o *tableOutput) AddFieldOutputFn(field string, fn fieldOutputFn) *tableOutput {
+// AddFieldFn adds a function which handles the output of the specified field.
+func (o *Table) AddFieldFn(field string, fn FieldFn) *Table {
 	o.fieldMapping[field] = fn
 	o.allowedFields[field] = true
 	o.columns[field] = true
@@ -190,7 +190,7 @@ func (o *tableOutput) AddFieldOutputFn(field string, fn fieldOutputFn) *tableOut
 }
 
 // AddAllowedFields reads all first level fieldnames of the struct and allows them to be used.
-func (o *tableOutput) AddAllowedFields(obj interface{}) *tableOutput {
+func (o *Table) AddAllowedFields(obj interface{}) *Table {
 	v := reflect.ValueOf(obj)
 	if v.Kind() != reflect.Struct {
 		panic("AddAllowedFields input must be a struct")
@@ -204,7 +204,7 @@ func (o *tableOutput) AddAllowedFields(obj interface{}) *tableOutput {
 			k != reflect.String &&
 			k != reflect.Int {
 			// only allow simple values
-			// complex values need to be mapped via a fieldOutputFn
+			// complex values need to be mapped via a FieldFn
 			continue
 		}
 		o.allowedFields[strings.ToLower(t.Field(i).Name)] = true
@@ -215,7 +215,7 @@ func (o *tableOutput) AddAllowedFields(obj interface{}) *tableOutput {
 }
 
 // RemoveAllowedField removes fields from the allowed list.
-func (o *tableOutput) RemoveAllowedField(fields ...string) *tableOutput {
+func (o *Table) RemoveAllowedField(fields ...string) *Table {
 	for _, field := range fields {
 		delete(o.allowedFields, field)
 		delete(o.columns, field)
@@ -224,7 +224,7 @@ func (o *tableOutput) RemoveAllowedField(fields ...string) *tableOutput {
 }
 
 // ValidateColumns returns an error if invalid columns are specified.
-func (o *tableOutput) ValidateColumns(cols []string) error {
+func (o *Table) ValidateColumns(cols []string) error {
 	var invalidCols []string
 	for _, col := range cols {
 		if _, ok := o.allowedFields[strings.ToLower(col)]; !ok {
@@ -238,7 +238,7 @@ func (o *tableOutput) ValidateColumns(cols []string) error {
 }
 
 // WriteHeader writes the table header.
-func (o *tableOutput) WriteHeader(columns []string) {
+func (o *Table) WriteHeader(columns []string) {
 	var header []string
 	for _, col := range columns {
 		if alias, ok := o.fieldAlias[col]; ok {
@@ -249,12 +249,12 @@ func (o *tableOutput) WriteHeader(columns []string) {
 	fmt.Fprintln(o.w, strings.Join(header, "\t"))
 }
 
-func (o *tableOutput) Flush() error {
+func (o *Table) Flush() error {
 	return o.w.Flush()
 }
 
 // Write writes a table line.
-func (o *tableOutput) Write(columns []string, obj interface{}) {
+func (o *Table) Write(columns []string, obj interface{}) {
 	data := structs.Map(obj)
 	dataL := map[string]interface{}{}
 	for key, value := range data {

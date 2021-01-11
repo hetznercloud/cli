@@ -1,12 +1,13 @@
 package cmds
 
 import (
+	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/spf13/cobra"
 )
 
-var contextListTableOutput *tableOutput
+var contextListTableOutput *output.Table
 
 type ContextPresentation struct {
 	Name   string
@@ -15,7 +16,7 @@ type ContextPresentation struct {
 }
 
 func init() {
-	contextListTableOutput = newTableOutput().
+	contextListTableOutput = output.NewTable().
 		AddAllowedFields(ContextPresentation{}).
 		RemoveAllowedField("token")
 }
@@ -33,12 +34,12 @@ func newContextListCommand(cli *state.State) *cobra.Command {
 		DisableFlagsInUseLine: true,
 		RunE:                  cli.Wrap(runContextList),
 	}
-	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(contextListTableOutput.Columns()))
+	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(contextListTableOutput.Columns()))
 	return cmd
 }
 
 func runContextList(cli *state.State, cmd *cobra.Command, args []string) error {
-	outOpts := outputFlagsForCommand(cmd)
+	outOpts := output.FlagsForCommand(cmd)
 
 	cols := []string{"active", "name"}
 	if outOpts.IsSet("columns") {

@@ -4,6 +4,7 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud/schema"
@@ -12,7 +13,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var serverListTableOutput *tableOutput
+var serverListTableOutput *output.Table
 
 func init() {
 	serverListTableOutput = describeServerListTableOutput(nil)
@@ -31,13 +32,13 @@ func newServerListCommand(cli *state.State) *cobra.Command {
 		PreRunE:               cli.EnsureToken,
 		RunE:                  cli.Wrap(runServerList),
 	}
-	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(serverListTableOutput.Columns()), outputOptionJSON())
+	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(serverListTableOutput.Columns()), output.OptionJSON())
 	cmd.Flags().StringP("selector", "l", "", "Selector to filter by labels")
 	return cmd
 }
 
 func runServerList(cli *state.State, cmd *cobra.Command, args []string) error {
-	outOpts := outputFlagsForCommand(cmd)
+	outOpts := output.FlagsForCommand(cmd)
 
 	labelSelector, _ := cmd.Flags().GetString("selector")
 	opts := hcloud.ServerListOpts{
@@ -140,34 +141,34 @@ func runServerList(cli *state.State, cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func describeServerListTableOutput(cli *state.State) *tableOutput {
-	return newTableOutput().
+func describeServerListTableOutput(cli *state.State) *output.Table {
+	return output.NewTable().
 		AddAllowedFields(hcloud.Server{}).
-		AddFieldOutputFn("ipv4", fieldOutputFn(func(obj interface{}) string {
+		AddFieldFn("ipv4", output.FieldFn(func(obj interface{}) string {
 			server := obj.(*hcloud.Server)
 			return server.PublicNet.IPv4.IP.String()
 		})).
-		AddFieldOutputFn("ipv6", fieldOutputFn(func(obj interface{}) string {
+		AddFieldFn("ipv6", output.FieldFn(func(obj interface{}) string {
 			server := obj.(*hcloud.Server)
 			return server.PublicNet.IPv6.Network.String()
 		})).
-		AddFieldOutputFn("datacenter", fieldOutputFn(func(obj interface{}) string {
+		AddFieldFn("datacenter", output.FieldFn(func(obj interface{}) string {
 			server := obj.(*hcloud.Server)
 			return server.Datacenter.Name
 		})).
-		AddFieldOutputFn("location", fieldOutputFn(func(obj interface{}) string {
+		AddFieldFn("location", output.FieldFn(func(obj interface{}) string {
 			server := obj.(*hcloud.Server)
 			return server.Datacenter.Location.Name
 		})).
-		AddFieldOutputFn("labels", fieldOutputFn(func(obj interface{}) string {
+		AddFieldFn("labels", output.FieldFn(func(obj interface{}) string {
 			server := obj.(*hcloud.Server)
 			return util.LabelsToString(server.Labels)
 		})).
-		AddFieldOutputFn("type", fieldOutputFn(func(obj interface{}) string {
+		AddFieldFn("type", output.FieldFn(func(obj interface{}) string {
 			server := obj.(*hcloud.Server)
 			return server.ServerType.Name
 		})).
-		AddFieldOutputFn("volumes", fieldOutputFn(func(obj interface{}) string {
+		AddFieldFn("volumes", output.FieldFn(func(obj interface{}) string {
 			server := obj.(*hcloud.Server)
 			var volumes []string
 			for _, volume := range server.Volumes {
@@ -176,7 +177,7 @@ func describeServerListTableOutput(cli *state.State) *tableOutput {
 			}
 			return strings.Join(volumes, ", ")
 		})).
-		AddFieldOutputFn("private_net", fieldOutputFn(func(obj interface{}) string {
+		AddFieldFn("private_net", output.FieldFn(func(obj interface{}) string {
 			server := obj.(*hcloud.Server)
 			var networks []string
 			if cli != nil {
@@ -186,7 +187,7 @@ func describeServerListTableOutput(cli *state.State) *tableOutput {
 			}
 			return util.NA(strings.Join(networks, ", "))
 		})).
-		AddFieldOutputFn("protection", fieldOutputFn(func(obj interface{}) string {
+		AddFieldFn("protection", output.FieldFn(func(obj interface{}) string {
 			server := obj.(*hcloud.Server)
 			var protection []string
 			if server.Protection.Delete {
@@ -197,7 +198,7 @@ func describeServerListTableOutput(cli *state.State) *tableOutput {
 			}
 			return strings.Join(protection, ", ")
 		})).
-		AddFieldOutputFn("created", fieldOutputFn(func(obj interface{}) string {
+		AddFieldFn("created", output.FieldFn(func(obj interface{}) string {
 			server := obj.(*hcloud.Server)
 			return util.Datetime(server.Created)
 		}))

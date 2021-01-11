@@ -3,6 +3,7 @@ package cmds
 import (
 	"strings"
 
+	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud/schema"
@@ -12,7 +13,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var volumeListTableOutput *tableOutput
+var volumeListTableOutput *output.Table
 
 func init() {
 	volumeListTableOutput = describeVolumeListTableOutput(nil)
@@ -31,13 +32,13 @@ func newVolumeListCommand(cli *state.State) *cobra.Command {
 		PreRunE:               cli.EnsureToken,
 		RunE:                  cli.Wrap(runVolumeList),
 	}
-	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(volumeListTableOutput.Columns()), outputOptionJSON())
+	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(volumeListTableOutput.Columns()), output.OptionJSON())
 	cmd.Flags().StringP("selector", "l", "", "Selector to filter by labels")
 	return cmd
 }
 
 func runVolumeList(cli *state.State, cmd *cobra.Command, args []string) error {
-	outOpts := outputFlagsForCommand(cmd)
+	outOpts := output.FlagsForCommand(cmd)
 
 	labelSelector, _ := cmd.Flags().GetString("selector")
 	opts := hcloud.VolumeListOpts{
@@ -92,10 +93,10 @@ func runVolumeList(cli *state.State, cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func describeVolumeListTableOutput(cli *state.State) *tableOutput {
-	return newTableOutput().
+func describeVolumeListTableOutput(cli *state.State) *output.Table {
+	return output.NewTable().
 		AddAllowedFields(hcloud.Volume{}).
-		AddFieldOutputFn("server", fieldOutputFn(func(obj interface{}) string {
+		AddFieldFn("server", output.FieldFn(func(obj interface{}) string {
 			volume := obj.(*hcloud.Volume)
 			var server string
 			if volume.Server != nil && cli != nil {
@@ -103,15 +104,15 @@ func describeVolumeListTableOutput(cli *state.State) *tableOutput {
 			}
 			return util.NA(server)
 		})).
-		AddFieldOutputFn("size", fieldOutputFn(func(obj interface{}) string {
+		AddFieldFn("size", output.FieldFn(func(obj interface{}) string {
 			volume := obj.(*hcloud.Volume)
 			return humanize.Bytes(uint64(volume.Size * humanize.GByte))
 		})).
-		AddFieldOutputFn("location", fieldOutputFn(func(obj interface{}) string {
+		AddFieldFn("location", output.FieldFn(func(obj interface{}) string {
 			volume := obj.(*hcloud.Volume)
 			return volume.Location.Name
 		})).
-		AddFieldOutputFn("protection", fieldOutputFn(func(obj interface{}) string {
+		AddFieldFn("protection", output.FieldFn(func(obj interface{}) string {
 			volume := obj.(*hcloud.Volume)
 			var protection []string
 			if volume.Protection.Delete {
@@ -119,11 +120,11 @@ func describeVolumeListTableOutput(cli *state.State) *tableOutput {
 			}
 			return strings.Join(protection, ", ")
 		})).
-		AddFieldOutputFn("labels", fieldOutputFn(func(obj interface{}) string {
+		AddFieldFn("labels", output.FieldFn(func(obj interface{}) string {
 			volume := obj.(*hcloud.Volume)
 			return util.LabelsToString(volume.Labels)
 		})).
-		AddFieldOutputFn("created", fieldOutputFn(func(obj interface{}) string {
+		AddFieldFn("created", output.FieldFn(func(obj interface{}) string {
 			volume := obj.(*hcloud.Volume)
 			return util.Datetime(volume.Created)
 		}))

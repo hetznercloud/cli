@@ -3,6 +3,7 @@ package cmds
 import (
 	"fmt"
 
+	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud/schema"
@@ -11,17 +12,17 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var serverTypeListTableOutput *tableOutput
+var serverTypeListTableOutput *output.Table
 
 func init() {
-	serverTypeListTableOutput = newTableOutput().
+	serverTypeListTableOutput = output.NewTable().
 		AddAllowedFields(hcloud.ServerType{}).
 		AddFieldAlias("storagetype", "storage type").
-		AddFieldOutputFn("memory", fieldOutputFn(func(obj interface{}) string {
+		AddFieldFn("memory", output.FieldFn(func(obj interface{}) string {
 			serverType := obj.(*hcloud.ServerType)
 			return fmt.Sprintf("%.1f GB", serverType.Memory)
 		})).
-		AddFieldOutputFn("disk", fieldOutputFn(func(obj interface{}) string {
+		AddFieldFn("disk", output.FieldFn(func(obj interface{}) string {
 			serverType := obj.(*hcloud.ServerType)
 			return fmt.Sprintf("%d GB", serverType.Disk)
 		}))
@@ -40,12 +41,12 @@ func newServerTypeListCommand(cli *state.State) *cobra.Command {
 		PreRunE:               cli.EnsureToken,
 		RunE:                  cli.Wrap(runServerTypeList),
 	}
-	addOutputFlag(cmd, outputOptionNoHeader(), outputOptionColumns(serverTypeListTableOutput.Columns()), outputOptionJSON())
+	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(serverTypeListTableOutput.Columns()), output.OptionJSON())
 	return cmd
 }
 
 func runServerTypeList(cli *state.State, cmd *cobra.Command, args []string) error {
-	outOpts := outputFlagsForCommand(cmd)
+	outOpts := output.FlagsForCommand(cmd)
 
 	serverTypes, err := cli.Client().ServerType.All(cli.Context)
 	if err != nil {

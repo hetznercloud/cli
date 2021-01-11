@@ -10,6 +10,7 @@ import (
 	"github.com/guptarohit/asciigraph"
 
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
@@ -35,12 +36,12 @@ func newServerMetricsCommand(cli *state.State) *cobra.Command {
 	cmd.Flags().String("start", "", "ISO 8601 timestamp")
 	cmd.Flags().String("end", "", "ISO 8601 timestamp")
 
-	addOutputFlag(cmd, outputOptionJSON())
+	output.AddFlag(cmd, output.OptionJSON())
 	return cmd
 }
 
 func runServerMetrics(cli *state.State, cmd *cobra.Command, args []string) error {
-	outputFlags := outputFlagsForCommand(cmd)
+	outputFlags := output.FlagsForCommand(cmd)
 
 	idOrName := args[0]
 	server, _, err := cli.Client().Server.Get(cli.Context, idOrName)
