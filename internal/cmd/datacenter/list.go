@@ -9,10 +9,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var datacenterListTableOutput *output.Table
+var listTableOutput *output.Table
 
 func init() {
-	datacenterListTableOutput = output.NewTable().
+	listTableOutput = output.NewTable().
 		AddAllowedFields(hcloud.Datacenter{}).
 		AddFieldFn("location", output.FieldFn(func(obj interface{}) string {
 			datacenter := obj.(*hcloud.Datacenter)
@@ -26,18 +26,18 @@ func newListCommand(cli *state.State) *cobra.Command {
 		Short: "List datacenters",
 		Long: util.ListLongDescription(
 			"Displays a list of datacenters.",
-			datacenterListTableOutput.Columns(),
+			listTableOutput.Columns(),
 		),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runDatacenterList),
+		RunE:                  cli.Wrap(runList),
 	}
-	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(datacenterListTableOutput.Columns()), output.OptionJSON())
+	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(listTableOutput.Columns()), output.OptionJSON())
 	return cmd
 }
 
-func runDatacenterList(cli *state.State, cmd *cobra.Command, args []string) error {
+func runList(cli *state.State, cmd *cobra.Command, args []string) error {
 	outOpts := output.FlagsForCommand(cmd)
 
 	datacenters, err := cli.Client().Datacenter.All(cli.Context)
@@ -59,7 +59,7 @@ func runDatacenterList(cli *state.State, cmd *cobra.Command, args []string) erro
 		cols = outOpts["columns"]
 	}
 
-	tw := datacenterListTableOutput
+	tw := listTableOutput
 	if err = tw.ValidateColumns(cols); err != nil {
 		return err
 	}

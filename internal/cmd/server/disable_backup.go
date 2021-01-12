@@ -17,12 +17,12 @@ func newDisableBackupCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runServerDisableBackup),
+		RunE:                  cli.Wrap(runDisableBackup),
 	}
 	return cmd
 }
 
-func runServerDisableBackup(cli *state.State, cmd *cobra.Command, args []string) error {
+func runDisableBackup(cli *state.State, cmd *cobra.Command, args []string) error {
 	idOrName := args[0]
 	server, _, err := cli.Client().Server.Get(cli.Context, idOrName)
 	if err != nil {

@@ -21,13 +21,13 @@ func newDescribeCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runISODescribe),
+		RunE:                  cli.Wrap(runDescribe),
 	}
 	output.AddFlag(cmd, output.OptionJSON(), output.OptionFormat())
 	return cmd
 }
 
-func runISODescribe(cli *state.State, cmd *cobra.Command, args []string) error {
+func runDescribe(cli *state.State, cmd *cobra.Command, args []string) error {
 	outputFlags := output.FlagsForCommand(cmd)
 
 	idOrName := args[0]
@@ -41,15 +41,15 @@ func runISODescribe(cli *state.State, cmd *cobra.Command, args []string) error {
 
 	switch {
 	case outputFlags.IsSet("json"):
-		return isoDescribeJSON(resp)
+		return describeJSON(resp)
 	case outputFlags.IsSet("format"):
 		return util.DescribeFormat(iso, outputFlags["format"][0])
 	default:
-		return isoDescribeText(iso)
+		return describeText(iso)
 	}
 }
 
-func isoDescribeText(iso *hcloud.ISO) error {
+func describeText(iso *hcloud.ISO) error {
 	fmt.Printf("ID:\t\t%d\n", iso.ID)
 	fmt.Printf("Name:\t\t%s\n", iso.Name)
 	fmt.Printf("Description:\t%s\n", iso.Description)
@@ -57,7 +57,7 @@ func isoDescribeText(iso *hcloud.ISO) error {
 	return nil
 }
 
-func isoDescribeJSON(resp *hcloud.Response) error {
+func describeJSON(resp *hcloud.Response) error {
 	var data map[string]interface{}
 	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
 		return err

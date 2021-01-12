@@ -18,7 +18,7 @@ func newCreateCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runVolumeCreate),
+		RunE:                  cli.Wrap(runCreate),
 	}
 	cmd.Flags().String("name", "", "Volume name (required)")
 	cmd.MarkFlagRequired("name")
@@ -40,7 +40,7 @@ func newCreateCommand(cli *state.State) *cobra.Command {
 	return cmd
 }
 
-func runVolumeCreate(cli *state.State, cmd *cobra.Command, args []string) error {
+func runCreate(cli *state.State, cmd *cobra.Command, args []string) error {
 	name, _ := cmd.Flags().GetString("name")
 	serverIDOrName, _ := cmd.Flags().GetString("server")
 	size, _ := cmd.Flags().GetInt("size")

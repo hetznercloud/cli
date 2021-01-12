@@ -11,30 +11,30 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var certificateTableOutput *output.Table
+var listTableOutput *output.Table
 
 func init() {
-	certificateTableOutput = describeCertificatesTableOutput()
+	listTableOutput = describeTableOutput()
 }
 
-func newsListCommand(cli *state.State) *cobra.Command {
+func newListCommand(cli *state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list [FLAGS]",
 		Short: "List Certificates",
 		Long: util.ListLongDescription(
 			"Displays a list of certificates",
-			certificateTableOutput.Columns(),
+			listTableOutput.Columns(),
 		),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runCertificatesList),
+		RunE:                  cli.Wrap(runList),
 	}
-	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(certificateTableOutput.Columns()), output.OptionJSON())
+	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(listTableOutput.Columns()), output.OptionJSON())
 	return cmd
 }
 
-func runCertificatesList(cli *state.State, cmd *cobra.Command, args []string) error {
+func runList(cli *state.State, cmd *cobra.Command, args []string) error {
 	outOpts := output.FlagsForCommand(cmd)
 
 	labelSelector, _ := cmd.Flags().GetString("selector")
@@ -76,7 +76,7 @@ func runCertificatesList(cli *state.State, cmd *cobra.Command, args []string) er
 	if outOpts.IsSet("columns") {
 		cols = outOpts["columns"]
 	}
-	tw := describeCertificatesTableOutput()
+	tw := describeTableOutput()
 	if err := tw.ValidateColumns(cols); err != nil {
 		return nil
 	}
@@ -89,7 +89,7 @@ func runCertificatesList(cli *state.State, cmd *cobra.Command, args []string) er
 	return tw.Flush()
 }
 
-func describeCertificatesTableOutput() *output.Table {
+func describeTableOutput() *output.Table {
 	return output.NewTable().
 		AddAllowedFields(hcloud.Certificate{}).
 		RemoveAllowedField("certificate", "chain").

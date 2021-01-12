@@ -19,7 +19,7 @@ func newDetachFromNetworkCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runLoadBalancerDetachFromNetwork),
+		RunE:                  cli.Wrap(runDetachFromNetwork),
 	}
 	cmd.Flags().StringP("network", "n", "", "Network (ID or name) (required)")
 	cmd.RegisterFlagCompletionFunc("network", cmpl.SuggestCandidatesF(cli.NetworkNames))
@@ -27,7 +27,7 @@ func newDetachFromNetworkCommand(cli *state.State) *cobra.Command {
 	return cmd
 }
 
-func runLoadBalancerDetachFromNetwork(cli *state.State, cmd *cobra.Command, args []string) error {
+func runDetachFromNetwork(cli *state.State, cmd *cobra.Command, args []string) error {
 	idOrName := args[0]
 	loadBalancer, _, err := cli.Client().LoadBalancer.Get(cli.Context, idOrName)
 	if err != nil {

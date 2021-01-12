@@ -7,7 +7,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var contextListTableOutput *output.Table
+var listTableOutput *output.Table
 
 type ContextPresentation struct {
 	Name   string
@@ -16,7 +16,7 @@ type ContextPresentation struct {
 }
 
 func init() {
-	contextListTableOutput = output.NewTable().
+	listTableOutput = output.NewTable().
 		AddAllowedFields(ContextPresentation{}).
 		RemoveAllowedField("token")
 }
@@ -27,18 +27,18 @@ func newListCommand(cli *state.State) *cobra.Command {
 		Short: "List contexts",
 		Long: util.ListLongDescription(
 			"Displays a list of contexts.",
-			contextListTableOutput.Columns(),
+			listTableOutput.Columns(),
 		),
 		Args:                  cobra.NoArgs,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE:                  cli.Wrap(runContextList),
+		RunE:                  cli.Wrap(runList),
 	}
-	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(contextListTableOutput.Columns()))
+	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(listTableOutput.Columns()))
 	return cmd
 }
 
-func runContextList(cli *state.State, cmd *cobra.Command, args []string) error {
+func runList(cli *state.State, cmd *cobra.Command, args []string) error {
 	outOpts := output.FlagsForCommand(cmd)
 
 	cols := []string{"active", "name"}
@@ -46,7 +46,7 @@ func runContextList(cli *state.State, cmd *cobra.Command, args []string) error {
 		cols = outOpts["columns"]
 	}
 
-	tw := contextListTableOutput
+	tw := listTableOutput
 	if err := tw.ValidateColumns(cols); err != nil {
 		return err
 	}

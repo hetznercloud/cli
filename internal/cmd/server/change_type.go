@@ -21,14 +21,14 @@ func newChangeTypeCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runServerChangeType),
+		RunE:                  cli.Wrap(runChangeType),
 	}
 
 	cmd.Flags().Bool("keep-disk", false, "Keep disk size of current server type. This enables downgrading the server.")
 	return cmd
 }
 
-func runServerChangeType(cli *state.State, cmd *cobra.Command, args []string) error {
+func runChangeType(cli *state.State, cmd *cobra.Command, args []string) error {
 	idOrName := args[0]
 	server, _, err := cli.Client().Server.Get(cli.Context, idOrName)
 	if err != nil {

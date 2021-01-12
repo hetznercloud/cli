@@ -18,7 +18,7 @@ func newRebuildCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runServerRebuild),
+		RunE:                  cli.Wrap(runRebuild),
 	}
 
 	cmd.Flags().String("image", "", "ID or name of image to rebuild from (required)")
@@ -28,7 +28,7 @@ func newRebuildCommand(cli *state.State) *cobra.Command {
 	return cmd
 }
 
-func runServerRebuild(cli *state.State, cmd *cobra.Command, args []string) error {
+func runRebuild(cli *state.State, cmd *cobra.Command, args []string) error {
 	serverIDOrName := args[0]
 	server, _, err := cli.Client().Server.Get(cli.Context, serverIDOrName)
 	if err != nil {

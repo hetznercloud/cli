@@ -19,7 +19,7 @@ func newAddSubnetCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runNetworkAddSubnet),
+		RunE:                  cli.Wrap(runAddSubnet),
 	}
 
 	cmd.Flags().String("type", "", "Type of subnet (required)")
@@ -36,7 +36,7 @@ func newAddSubnetCommand(cli *state.State) *cobra.Command {
 	return cmd
 }
 
-func runNetworkAddSubnet(cli *state.State, cmd *cobra.Command, args []string) error {
+func runAddSubnet(cli *state.State, cmd *cobra.Command, args []string) error {
 	subnetType, _ := cmd.Flags().GetString("type")
 	networkZone, _ := cmd.Flags().GetString("network-zone")
 	ipRange, _ := cmd.Flags().GetIPNet("ip-range")

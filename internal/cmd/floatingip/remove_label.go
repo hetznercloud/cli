@@ -26,15 +26,15 @@ func newRemoveLabelCommand(cli *state.State) *cobra.Command {
 			})),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		PreRunE:               util.ChainRunE(validateFloatingIPRemoveLabel, cli.EnsureToken),
-		RunE:                  cli.Wrap(runFloatingIPRemoveLabel),
+		PreRunE:               util.ChainRunE(validateRemoveLabel, cli.EnsureToken),
+		RunE:                  cli.Wrap(runRemoveLabel),
 	}
 
 	cmd.Flags().BoolP("all", "a", false, "Remove all labels")
 	return cmd
 }
 
-func validateFloatingIPRemoveLabel(cmd *cobra.Command, args []string) error {
+func validateRemoveLabel(cmd *cobra.Command, args []string) error {
 	all, _ := cmd.Flags().GetBool("all")
 
 	if all && len(args) == 2 {
@@ -47,7 +47,7 @@ func validateFloatingIPRemoveLabel(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func runFloatingIPRemoveLabel(cli *state.State, cmd *cobra.Command, args []string) error {
+func runRemoveLabel(cli *state.State, cmd *cobra.Command, args []string) error {
 	all, _ := cmd.Flags().GetBool("all")
 
 	idOrName := args[0]

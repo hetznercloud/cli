@@ -22,13 +22,13 @@ func newDescribeCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runCertificateDescribe),
+		RunE:                  cli.Wrap(runDescribe),
 	}
 	output.AddFlag(cmd, output.OptionJSON(), output.OptionFormat())
 	return cmd
 }
 
-func runCertificateDescribe(cli *state.State, cmd *cobra.Command, args []string) error {
+func runDescribe(cli *state.State, cmd *cobra.Command, args []string) error {
 	outputFlags := output.FlagsForCommand(cmd)
 
 	idOrName := args[0]
@@ -42,15 +42,15 @@ func runCertificateDescribe(cli *state.State, cmd *cobra.Command, args []string)
 
 	switch {
 	case outputFlags.IsSet("json"):
-		return certificateDescribeJSON(resp)
+		return describeJSON(resp)
 	case outputFlags.IsSet("format"):
 		return util.DescribeFormat(cert, outputFlags["format"][0])
 	default:
-		return certificateDescribeText(cli, cert)
+		return describeText(cli, cert)
 	}
 }
 
-func certificateDescribeJSON(resp *hcloud.Response) error {
+func describeJSON(resp *hcloud.Response) error {
 	var data map[string]interface{}
 	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
 		return err
@@ -64,7 +64,7 @@ func certificateDescribeJSON(resp *hcloud.Response) error {
 	return util.DescribeJSON(data)
 }
 
-func certificateDescribeText(cli *state.State, cert *hcloud.Certificate) error {
+func describeText(cli *state.State, cert *hcloud.Certificate) error {
 	fmt.Printf("ID:\t\t\t%d\n", cert.ID)
 	fmt.Printf("Name:\t\t\t%s\n", cert.Name)
 	fmt.Printf("Fingerprint:\t\t%s\n", cert.Fingerprint)

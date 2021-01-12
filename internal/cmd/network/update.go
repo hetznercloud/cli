@@ -19,7 +19,7 @@ func newUpdateCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runNetworkUpdate),
+		RunE:                  cli.Wrap(runUpdate),
 	}
 
 	cmd.Flags().String("name", "", "Network name")
@@ -27,7 +27,7 @@ func newUpdateCommand(cli *state.State) *cobra.Command {
 	return cmd
 }
 
-func runNetworkUpdate(cli *state.State, cmd *cobra.Command, args []string) error {
+func runUpdate(cli *state.State, cmd *cobra.Command, args []string) error {
 	idOrName := args[0]
 	network, _, err := cli.Client().Network.Get(cli.Context, idOrName)
 	if err != nil {

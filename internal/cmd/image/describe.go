@@ -22,13 +22,13 @@ func newDescribeCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runImageDescribe),
+		RunE:                  cli.Wrap(runDescribe),
 	}
 	output.AddFlag(cmd, output.OptionJSON(), output.OptionFormat())
 	return cmd
 }
 
-func runImageDescribe(cli *state.State, cmd *cobra.Command, args []string) error {
+func runDescribe(cli *state.State, cmd *cobra.Command, args []string) error {
 	outputFlags := output.FlagsForCommand(cmd)
 
 	idOrName := args[0]
@@ -42,15 +42,15 @@ func runImageDescribe(cli *state.State, cmd *cobra.Command, args []string) error
 
 	switch {
 	case outputFlags.IsSet("json"):
-		return imageDescribeJSON(resp)
+		return describeJSON(resp)
 	case outputFlags.IsSet("format"):
 		return util.DescribeFormat(image, outputFlags["format"][0])
 	default:
-		return imageDescribeText(cli, image)
+		return describeText(cli, image)
 	}
 }
 
-func imageDescribeText(cli *state.State, image *hcloud.Image) error {
+func describeText(cli *state.State, image *hcloud.Image) error {
 	fmt.Printf("ID:\t\t%d\n", image.ID)
 	fmt.Printf("Type:\t\t%s\n", image.Type)
 	fmt.Printf("Status:\t\t%s\n", image.Status)
@@ -87,7 +87,7 @@ func imageDescribeText(cli *state.State, image *hcloud.Image) error {
 	return nil
 }
 
-func imageDescribeJSON(resp *hcloud.Response) error {
+func describeJSON(resp *hcloud.Response) error {
 	var data map[string]interface{}
 	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
 		return err

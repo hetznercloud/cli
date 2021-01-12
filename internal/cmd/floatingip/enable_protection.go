@@ -22,12 +22,12 @@ func newEnableProtectionCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runFloatingIPEnableProtection),
+		RunE:                  cli.Wrap(runEnableProtection),
 	}
 	return cmd
 }
 
-func runFloatingIPEnableProtection(cli *state.State, cmd *cobra.Command, args []string) error {
+func runEnableProtection(cli *state.State, cmd *cobra.Command, args []string) error {
 	idOrName := args[0]
 	floatingIP, _, err := cli.Client().FloatingIP.Get(cli.Context, idOrName)
 	if err != nil {

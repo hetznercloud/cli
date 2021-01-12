@@ -17,7 +17,7 @@ func newCreateCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runNetworkCreate),
+		RunE:                  cli.Wrap(runCreate),
 	}
 
 	cmd.Flags().String("name", "", "Network name (required)")
@@ -31,7 +31,7 @@ func newCreateCommand(cli *state.State) *cobra.Command {
 	return cmd
 }
 
-func runNetworkCreate(cli *state.State, cmd *cobra.Command, args []string) error {
+func runCreate(cli *state.State, cmd *cobra.Command, args []string) error {
 	name, _ := cmd.Flags().GetString("name")
 	ipRange, _ := cmd.Flags().GetIPNet("ip-range")
 	labels, _ := cmd.Flags().GetStringToString("label")

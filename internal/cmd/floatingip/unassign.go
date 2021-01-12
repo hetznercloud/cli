@@ -17,12 +17,12 @@ func newUnassignCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runFloatingIPUnassign),
+		RunE:                  cli.Wrap(runUnassign),
 	}
 	return cmd
 }
 
-func runFloatingIPUnassign(cli *state.State, cmd *cobra.Command, args []string) error {
+func runUnassign(cli *state.State, cmd *cobra.Command, args []string) error {
 	idOrName := args[0]
 	floatingIP, _, err := cli.Client().FloatingIP.Get(cli.Context, idOrName)
 	if err != nil {

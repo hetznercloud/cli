@@ -17,12 +17,12 @@ func newDetachCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runVolumeDetach),
+		RunE:                  cli.Wrap(runDetach),
 	}
 	return cmd
 }
 
-func runVolumeDetach(cli *state.State, cmd *cobra.Command, args []string) error {
+func runDetach(cli *state.State, cmd *cobra.Command, args []string) error {
 	volume, _, err := cli.Client().Volume.Get(cli.Context, args[0])
 	if err != nil {
 		return err

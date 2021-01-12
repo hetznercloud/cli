@@ -13,10 +13,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var floatingIPListTableOutput *output.Table
+var listTableOutput *output.Table
 
 func init() {
-	floatingIPListTableOutput = describeFloatingIPListTableOutput(nil)
+	listTableOutput = describeListTableOutput(nil)
 }
 
 func newListCommand(cli *state.State) *cobra.Command {
@@ -25,19 +25,19 @@ func newListCommand(cli *state.State) *cobra.Command {
 		Short: "List Floating IPs",
 		Long: util.ListLongDescription(
 			"Displays a list of Floating IPs.",
-			floatingIPListTableOutput.Columns(),
+			listTableOutput.Columns(),
 		),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runFloatingIPList),
+		RunE:                  cli.Wrap(runList),
 	}
-	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(floatingIPListTableOutput.Columns()), output.OptionJSON())
+	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(listTableOutput.Columns()), output.OptionJSON())
 	cmd.Flags().StringP("selector", "l", "", "Selector to filter by labels")
 	return cmd
 }
 
-func runFloatingIPList(cli *state.State, cmd *cobra.Command, args []string) error {
+func runList(cli *state.State, cmd *cobra.Command, args []string) error {
 	outOpts := output.FlagsForCommand(cmd)
 
 	labelSelector, _ := cmd.Flags().GetString("selector")
@@ -86,7 +86,7 @@ func runFloatingIPList(cli *state.State, cmd *cobra.Command, args []string) erro
 		cols = outOpts["columns"]
 	}
 
-	tw := describeFloatingIPListTableOutput(cli)
+	tw := describeListTableOutput(cli)
 	if err = tw.ValidateColumns(cols); err != nil {
 		return err
 	}
@@ -101,7 +101,7 @@ func runFloatingIPList(cli *state.State, cmd *cobra.Command, args []string) erro
 	return nil
 }
 
-func describeFloatingIPListTableOutput(cli *state.State) *output.Table {
+func describeListTableOutput(cli *state.State) *output.Table {
 	return output.NewTable().
 		AddAllowedFields(hcloud.FloatingIP{}).
 		AddFieldFn("dns", output.FieldFn(func(obj interface{}) string {

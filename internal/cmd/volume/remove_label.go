@@ -27,15 +27,15 @@ func newRemoveLabelCommand(cli *state.State) *cobra.Command {
 		),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		PreRunE:               util.ChainRunE(validateVolumeRemoveLabel, cli.EnsureToken),
-		RunE:                  cli.Wrap(runVolumeRemoveLabel),
+		PreRunE:               util.ChainRunE(validateRemoveLabel, cli.EnsureToken),
+		RunE:                  cli.Wrap(runRemoveLabel),
 	}
 
 	cmd.Flags().BoolP("all", "a", false, "Remove all labels")
 	return cmd
 }
 
-func validateVolumeRemoveLabel(cmd *cobra.Command, args []string) error {
+func validateRemoveLabel(cmd *cobra.Command, args []string) error {
 	all, _ := cmd.Flags().GetBool("all")
 
 	if all && len(args) == 2 {
@@ -48,7 +48,7 @@ func validateVolumeRemoveLabel(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func runVolumeRemoveLabel(cli *state.State, cmd *cobra.Command, args []string) error {
+func runRemoveLabel(cli *state.State, cmd *cobra.Command, args []string) error {
 	all, _ := cmd.Flags().GetBool("all")
 	volume, _, err := cli.Client().Volume.Get(cli.Context, args[0])
 	if err != nil {

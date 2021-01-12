@@ -17,13 +17,13 @@ func newDisablePublicInterfaceCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runLoadBalancerDisablePublicInterface),
+		RunE:                  cli.Wrap(runDisablePublicInterface),
 	}
 
 	return cmd
 }
 
-func runLoadBalancerDisablePublicInterface(cli *state.State, cmd *cobra.Command, args []string) error {
+func runDisablePublicInterface(cli *state.State, cmd *cobra.Command, args []string) error {
 	idOrName := args[0]
 	loadBalancer, _, err := cli.Client().LoadBalancer.Get(cli.Context, idOrName)
 	if err != nil {

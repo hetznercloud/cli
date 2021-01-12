@@ -18,14 +18,14 @@ func newUpdateCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runCertificateUpdate),
+		RunE:                  cli.Wrap(runUpdate),
 	}
 
 	cmd.Flags().String("name", "", "Certificate name")
 	return cmd
 }
 
-func runCertificateUpdate(cli *state.State, cmd *cobra.Command, args []string) error {
+func runUpdate(cli *state.State, cmd *cobra.Command, args []string) error {
 	idOrName := args[0]
 	cert, _, err := cli.Client().Certificate.Get(cli.Context, idOrName)
 	if err != nil {

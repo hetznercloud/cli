@@ -19,13 +19,13 @@ func newRequestConsoleCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runServerRequestConsole),
+		RunE:                  cli.Wrap(runRequestConsole),
 	}
 	output.AddFlag(cmd, output.OptionJSON())
 	return cmd
 }
 
-func runServerRequestConsole(cli *state.State, cmd *cobra.Command, args []string) error {
+func runRequestConsole(cli *state.State, cmd *cobra.Command, args []string) error {
 	outOpts := output.FlagsForCommand(cmd)
 	idOrName := args[0]
 	server, _, err := cli.Client().Server.Get(cli.Context, idOrName)

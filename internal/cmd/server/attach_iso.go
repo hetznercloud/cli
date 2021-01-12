@@ -20,13 +20,13 @@ func newAttachISOCommand(cli *state.State) *cobra.Command {
 		),
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runServerAttachISO),
+		RunE:                  cli.Wrap(runAttachISO),
 	}
 
 	return cmd
 }
 
-func runServerAttachISO(cli *state.State, cmd *cobra.Command, args []string) error {
+func runAttachISO(cli *state.State, cmd *cobra.Command, args []string) error {
 	idOrName := args[0]
 	server, _, err := cli.Client().Server.Get(cli.Context, idOrName)
 	if err != nil {

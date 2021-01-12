@@ -18,7 +18,7 @@ func newAttachToNetworkCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runLoadBalancerAttachToNetwork),
+		RunE:                  cli.Wrap(runAttachToNetwork),
 	}
 
 	cmd.Flags().StringP("network", "n", "", "Network (ID or name) (required)")
@@ -30,7 +30,7 @@ func newAttachToNetworkCommand(cli *state.State) *cobra.Command {
 	return cmd
 }
 
-func runLoadBalancerAttachToNetwork(cli *state.State, cmd *cobra.Command, args []string) error {
+func runAttachToNetwork(cli *state.State, cmd *cobra.Command, args []string) error {
 	idOrName := args[0]
 	loadBalancer, _, err := cli.Client().LoadBalancer.Get(cli.Context, idOrName)
 	if err != nil {

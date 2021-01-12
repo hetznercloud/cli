@@ -26,7 +26,7 @@ func newCreateCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runServerCreate),
+		RunE:                  cli.Wrap(runCreate),
 	}
 	cmd.Flags().String("name", "", "Server name (required)")
 	cmd.MarkFlagRequired("name")
@@ -65,7 +65,7 @@ func newCreateCommand(cli *state.State) *cobra.Command {
 	return cmd
 }
 
-func runServerCreate(cli *state.State, cmd *cobra.Command, args []string) error {
+func runCreate(cli *state.State, cmd *cobra.Command, args []string) error {
 	opts, err := optsFromFlags(cli, cmd.Flags())
 	if err != nil {
 		return err

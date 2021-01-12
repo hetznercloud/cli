@@ -18,15 +18,15 @@ func newAddLabelCommand(cli *state.State) *cobra.Command {
 		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.NetworkNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		PreRunE:               util.ChainRunE(validateNetworkAddLabel, cli.EnsureToken),
-		RunE:                  cli.Wrap(runNetworkAddLabel),
+		PreRunE:               util.ChainRunE(validateAddLabel, cli.EnsureToken),
+		RunE:                  cli.Wrap(runAddLabel),
 	}
 
 	cmd.Flags().BoolP("overwrite", "o", false, "Overwrite label if it exists already")
 	return cmd
 }
 
-func validateNetworkAddLabel(cmd *cobra.Command, args []string) error {
+func validateAddLabel(cmd *cobra.Command, args []string) error {
 	label := util.SplitLabel(args[1])
 	if len(label) != 2 {
 		return fmt.Errorf("invalid label: %s", args[1])
@@ -35,7 +35,7 @@ func validateNetworkAddLabel(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func runNetworkAddLabel(cli *state.State, cmd *cobra.Command, args []string) error {
+func runAddLabel(cli *state.State, cmd *cobra.Command, args []string) error {
 	overwrite, _ := cmd.Flags().GetBool("overwrite")
 	idOrName := args[0]
 	network, _, err := cli.Client().Network.Get(cli.Context, idOrName)

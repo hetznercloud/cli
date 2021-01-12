@@ -18,7 +18,7 @@ func newSetRDNSCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runServerSetRDNS),
+		RunE:                  cli.Wrap(runSetRDNS),
 	}
 
 	cmd.Flags().StringP("hostname", "r", "", "Hostname to set as a reverse DNS PTR entry (required)")
@@ -29,7 +29,7 @@ func newSetRDNSCommand(cli *state.State) *cobra.Command {
 	return cmd
 }
 
-func runServerSetRDNS(cli *state.State, cmd *cobra.Command, args []string) error {
+func runSetRDNS(cli *state.State, cmd *cobra.Command, args []string) error {
 	idOrName := args[0]
 	server, _, err := cli.Client().Server.Get(cli.Context, idOrName)
 	if err != nil {

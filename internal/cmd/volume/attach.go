@@ -18,7 +18,7 @@ func newAttachCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runVolumeAttach),
+		RunE:                  cli.Wrap(runAttach),
 	}
 	cmd.Flags().String("server", "", "Server (ID or name) (required)")
 	cmd.RegisterFlagCompletionFunc("server", cmpl.SuggestCandidatesF(cli.ServerNames))
@@ -28,7 +28,7 @@ func newAttachCommand(cli *state.State) *cobra.Command {
 	return cmd
 }
 
-func runVolumeAttach(cli *state.State, cmd *cobra.Command, args []string) error {
+func runAttach(cli *state.State, cmd *cobra.Command, args []string) error {
 	volume, _, err := cli.Client().Volume.Get(cli.Context, args[0])
 	if err != nil {
 		return err

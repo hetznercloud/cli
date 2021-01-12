@@ -17,13 +17,13 @@ func newIPCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runServerIP),
+		RunE:                  cli.Wrap(runIP),
 	}
 	cmd.Flags().BoolP("ipv6", "6", false, "Print the first address of the IPv6 public server network")
 	return cmd
 }
 
-func runServerIP(cli *state.State, cmd *cobra.Command, args []string) error {
+func runIP(cli *state.State, cmd *cobra.Command, args []string) error {
 	ipv6, err := cmd.Flags().GetBool("ipv6")
 	idOrName := args[0]
 	server, _, err := cli.Client().Server.Get(cli.Context, idOrName)

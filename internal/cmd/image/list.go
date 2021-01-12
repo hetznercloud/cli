@@ -14,11 +14,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var imageListTableOutput *output.Table
+var listTableOutput *output.Table
 var typeFilter string
 
 func init() {
-	imageListTableOutput = describeImageListTableOutput(nil)
+	listTableOutput = describeListTableOutput(nil)
 }
 
 func newListCommand(cli *state.State) *cobra.Command {
@@ -27,20 +27,20 @@ func newListCommand(cli *state.State) *cobra.Command {
 		Short: "List images",
 		Long: util.ListLongDescription(
 			"Displays a list of images.",
-			imageListTableOutput.Columns(),
+			listTableOutput.Columns(),
 		),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runImageList),
+		RunE:                  cli.Wrap(runList),
 	}
-	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(imageListTableOutput.Columns()), output.OptionJSON())
+	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(listTableOutput.Columns()), output.OptionJSON())
 	cmd.Flags().StringVarP(&typeFilter, "type", "t", "", "Only show images of given type")
 	cmd.Flags().StringP("selector", "l", "", "Selector to filter by labels")
 	return cmd
 }
 
-func runImageList(cli *state.State, cmd *cobra.Command, args []string) error {
+func runList(cli *state.State, cmd *cobra.Command, args []string) error {
 	outOpts := output.FlagsForCommand(cmd)
 
 	labelSelector, _ := cmd.Flags().GetString("selector")
@@ -78,7 +78,7 @@ func runImageList(cli *state.State, cmd *cobra.Command, args []string) error {
 		cols = outOpts["columns"]
 	}
 
-	tw := describeImageListTableOutput(cli)
+	tw := describeListTableOutput(cli)
 	if err = tw.ValidateColumns(cols); err != nil {
 		return err
 	}
@@ -94,7 +94,7 @@ func runImageList(cli *state.State, cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func describeImageListTableOutput(cli *state.State) *output.Table {
+func describeListTableOutput(cli *state.State) *output.Table {
 	return output.NewTable().
 		AddAllowedFields(hcloud.Image{}).
 		AddFieldAlias("imagesize", "image size").

@@ -17,14 +17,14 @@ func newResizeCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runVolumeResize),
+		RunE:                  cli.Wrap(runResize),
 	}
 	cmd.Flags().Int("size", 0, "New size (GB) of the volume (required)")
 	cmd.MarkFlagRequired("size")
 	return cmd
 }
 
-func runVolumeResize(cli *state.State, cmd *cobra.Command, args []string) error {
+func runResize(cli *state.State, cmd *cobra.Command, args []string) error {
 	volume, _, err := cli.Client().Volume.Get(cli.Context, args[0])
 	if err != nil {
 		return err

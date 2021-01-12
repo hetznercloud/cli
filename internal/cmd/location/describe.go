@@ -21,13 +21,13 @@ func newDescribeCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runLocationDescribe),
+		RunE:                  cli.Wrap(runDescribe),
 	}
 	output.AddFlag(cmd, output.OptionJSON(), output.OptionFormat())
 	return cmd
 }
 
-func runLocationDescribe(cli *state.State, cmd *cobra.Command, args []string) error {
+func runDescribe(cli *state.State, cmd *cobra.Command, args []string) error {
 	outputFlags := output.FlagsForCommand(cmd)
 
 	idOrName := args[0]
@@ -41,15 +41,15 @@ func runLocationDescribe(cli *state.State, cmd *cobra.Command, args []string) er
 
 	switch {
 	case outputFlags.IsSet("json"):
-		return locationDescribeJSON(resp)
+		return describeJSON(resp)
 	case outputFlags.IsSet("format"):
 		return util.DescribeFormat(location, outputFlags["format"][0])
 	default:
-		return locationDescribeText(cli, location)
+		return describeText(cli, location)
 	}
 }
 
-func locationDescribeText(cli *state.State, location *hcloud.Location) error {
+func describeText(cli *state.State, location *hcloud.Location) error {
 	fmt.Printf("ID:\t\t%d\n", location.ID)
 	fmt.Printf("Name:\t\t%s\n", location.Name)
 	fmt.Printf("Description:\t%s\n", location.Description)
@@ -61,7 +61,7 @@ func locationDescribeText(cli *state.State, location *hcloud.Location) error {
 	return nil
 }
 
-func locationDescribeJSON(resp *hcloud.Response) error {
+func describeJSON(resp *hcloud.Response) error {
 	var data map[string]interface{}
 	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
 		return err

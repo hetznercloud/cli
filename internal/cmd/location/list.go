@@ -9,10 +9,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var locationListTableOutput *output.Table
+var listTableOutput *output.Table
 
 func init() {
-	locationListTableOutput = output.NewTable().
+	listTableOutput = output.NewTable().
 		AddAllowedFields(hcloud.Location{})
 }
 
@@ -22,18 +22,18 @@ func newListCommand(cli *state.State) *cobra.Command {
 		Short: "List locations",
 		Long: util.ListLongDescription(
 			"Displays a list of locations.",
-			locationListTableOutput.Columns(),
+			listTableOutput.Columns(),
 		),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runLocationList),
+		RunE:                  cli.Wrap(runList),
 	}
-	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(locationListTableOutput.Columns()), output.OptionJSON())
+	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(listTableOutput.Columns()), output.OptionJSON())
 	return cmd
 }
 
-func runLocationList(cli *state.State, cmd *cobra.Command, args []string) error {
+func runList(cli *state.State, cmd *cobra.Command, args []string) error {
 	outOpts := output.FlagsForCommand(cmd)
 
 	locations, err := cli.Client().Location.All(cli.Context)
@@ -54,7 +54,7 @@ func runLocationList(cli *state.State, cmd *cobra.Command, args []string) error 
 		cols = outOpts["columns"]
 	}
 
-	tw := locationListTableOutput
+	tw := listTableOutput
 	if err = tw.ValidateColumns(cols); err != nil {
 		return err
 	}

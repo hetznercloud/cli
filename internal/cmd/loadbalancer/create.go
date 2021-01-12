@@ -17,7 +17,7 @@ func newCreateCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runLoadBalancerCreate),
+		RunE:                  cli.Wrap(runCreate),
 	}
 
 	cmd.Flags().String("name", "", "Load Balancer name (required)")
@@ -43,7 +43,7 @@ func newCreateCommand(cli *state.State) *cobra.Command {
 	return cmd
 }
 
-func runLoadBalancerCreate(cli *state.State, cmd *cobra.Command, args []string) error {
+func runCreate(cli *state.State, cmd *cobra.Command, args []string) error {
 	name, _ := cmd.Flags().GetString("name")
 	serverType, _ := cmd.Flags().GetString("type")
 	algorithmType, _ := cmd.Flags().GetString("algorithm-type")

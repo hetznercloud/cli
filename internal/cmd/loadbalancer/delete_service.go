@@ -18,7 +18,7 @@ func newDeleteServiceCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               util.ChainRunE(cli.EnsureToken),
-		RunE:                  cli.Wrap(runLoadBalancerDeleteService),
+		RunE:                  cli.Wrap(runDeleteService),
 	}
 
 	cmd.Flags().Int("listen-port", 0, "The listen port of the service you want to delete (required)")
@@ -26,7 +26,7 @@ func newDeleteServiceCommand(cli *state.State) *cobra.Command {
 	return cmd
 }
 
-func runLoadBalancerDeleteService(cli *state.State, cmd *cobra.Command, args []string) error {
+func runDeleteService(cli *state.State, cmd *cobra.Command, args []string) error {
 	listenPort, _ := cmd.Flags().GetInt("listen-port")
 	idOrName := args[0]
 	loadBalancer, _, err := cli.Client().LoadBalancer.Get(cli.Context, idOrName)

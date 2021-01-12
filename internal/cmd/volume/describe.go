@@ -22,13 +22,13 @@ func newDescribeCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runVolumeDescribe),
+		RunE:                  cli.Wrap(runDescribe),
 	}
 	output.AddFlag(cmd, output.OptionJSON(), output.OptionFormat())
 	return cmd
 }
 
-func runVolumeDescribe(cli *state.State, cmd *cobra.Command, args []string) error {
+func runDescribe(cli *state.State, cmd *cobra.Command, args []string) error {
 	outputFlags := output.FlagsForCommand(cmd)
 
 	volume, resp, err := cli.Client().Volume.Get(cli.Context, args[0])
@@ -41,15 +41,15 @@ func runVolumeDescribe(cli *state.State, cmd *cobra.Command, args []string) erro
 
 	switch {
 	case outputFlags.IsSet("json"):
-		return volumeDescribeJSON(resp)
+		return describeJSON(resp)
 	case outputFlags.IsSet("format"):
 		return util.DescribeFormat(volume, outputFlags["format"][0])
 	default:
-		return volumeDescribeText(cli, volume)
+		return describeText(cli, volume)
 	}
 }
 
-func volumeDescribeText(cli *state.State, volume *hcloud.Volume) error {
+func describeText(cli *state.State, volume *hcloud.Volume) error {
 	fmt.Printf("ID:\t\t%d\n", volume.ID)
 	fmt.Printf("Name:\t\t%s\n", volume.Name)
 	fmt.Printf("Created:\t%s (%s)\n", util.Datetime(volume.Created), humanize.Time(volume.Created))
@@ -91,7 +91,7 @@ func volumeDescribeText(cli *state.State, volume *hcloud.Volume) error {
 	return nil
 }
 
-func volumeDescribeJSON(resp *hcloud.Response) error {
+func describeJSON(resp *hcloud.Response) error {
 	var data map[string]interface{}
 	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
 		return err

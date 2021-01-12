@@ -12,7 +12,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func newnDescribeCommand(cli *state.State) *cobra.Command {
+func newDescribeCommand(cli *state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "describe [FLAGS] LOADBALANCERTYPE",
 		Short:                 "Describe a Load Balancer type",
@@ -21,13 +21,13 @@ func newnDescribeCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runLoadBalancerTypeDescribe),
+		RunE:                  cli.Wrap(runDescribe),
 	}
 	output.AddFlag(cmd, output.OptionJSON(), output.OptionFormat())
 	return cmd
 }
 
-func runLoadBalancerTypeDescribe(cli *state.State, cmd *cobra.Command, args []string) error {
+func runDescribe(cli *state.State, cmd *cobra.Command, args []string) error {
 	outputFlags := output.FlagsForCommand(cmd)
 
 	idOrName := args[0]
@@ -41,15 +41,15 @@ func runLoadBalancerTypeDescribe(cli *state.State, cmd *cobra.Command, args []st
 
 	switch {
 	case outputFlags.IsSet("json"):
-		return loadBalancerTypeDescribeJSON(resp)
+		return describeJSON(resp)
 	case outputFlags.IsSet("format"):
 		return util.DescribeFormat(loadBalancerType, outputFlags["format"][0])
 	default:
-		return loadBalancerTypeDescribeText(cli, loadBalancerType)
+		return describeText(cli, loadBalancerType)
 	}
 }
 
-func loadBalancerTypeDescribeText(cli *state.State, loadBalancerType *hcloud.LoadBalancerType) error {
+func describeText(cli *state.State, loadBalancerType *hcloud.LoadBalancerType) error {
 	fmt.Printf("ID:\t\t\t\t%d\n", loadBalancerType.ID)
 	fmt.Printf("Name:\t\t\t\t%s\n", loadBalancerType.Name)
 	fmt.Printf("Description:\t\t\t%s\n", loadBalancerType.Description)
@@ -67,7 +67,7 @@ func loadBalancerTypeDescribeText(cli *state.State, loadBalancerType *hcloud.Loa
 	return nil
 }
 
-func loadBalancerTypeDescribeJSON(resp *hcloud.Response) error {
+func describeJSON(resp *hcloud.Response) error {
 	var data map[string]interface{}
 	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
 		return err

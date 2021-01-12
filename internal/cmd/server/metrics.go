@@ -26,7 +26,7 @@ func newMetricsCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runServerMetrics),
+		RunE:                  cli.Wrap(runMetrics),
 	}
 
 	cmd.Flags().String("type", "", "Type of metrics you want to show")
@@ -40,7 +40,7 @@ func newMetricsCommand(cli *state.State) *cobra.Command {
 	return cmd
 }
 
-func runServerMetrics(cli *state.State, cmd *cobra.Command, args []string) error {
+func runMetrics(cli *state.State, cmd *cobra.Command, args []string) error {
 	outputFlags := output.FlagsForCommand(cmd)
 
 	idOrName := args[0]
@@ -82,7 +82,7 @@ func runServerMetrics(cli *state.State, cmd *cobra.Command, args []string) error
 	}
 	switch {
 	case outputFlags.IsSet("json"):
-		return serverMetricsJSON(resp)
+		return metricsJSON(resp)
 	default:
 		var keys []string
 		for k := range m.TimeSeries {
@@ -108,7 +108,7 @@ func runServerMetrics(cli *state.State, cmd *cobra.Command, args []string) error
 	return nil
 }
 
-func serverMetricsJSON(resp *hcloud.Response) error {
+func metricsJSON(resp *hcloud.Response) error {
 	var data map[string]interface{}
 	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
 		return err

@@ -18,15 +18,15 @@ func newAddLabelCommand(cli *state.State) *cobra.Command {
 		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.CertificateNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		PreRunE:               util.ChainRunE(validateCertificateAddLabel, cli.EnsureToken),
-		RunE:                  cli.Wrap(runCertificateAddLabel),
+		PreRunE:               util.ChainRunE(validateAddLabel, cli.EnsureToken),
+		RunE:                  cli.Wrap(runAddLabel),
 	}
 
 	cmd.Flags().BoolP("overwrite", "o", false, "Overwrite label if it exists already")
 	return cmd
 }
 
-func validateCertificateAddLabel(cmd *cobra.Command, args []string) error {
+func validateAddLabel(cmd *cobra.Command, args []string) error {
 	label := util.SplitLabel(args[1])
 	if len(label) != 2 {
 		return fmt.Errorf("invalid label: %s", args[1])
@@ -34,7 +34,7 @@ func validateCertificateAddLabel(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func runCertificateAddLabel(cli *state.State, cmd *cobra.Command, args []string) error {
+func runAddLabel(cli *state.State, cmd *cobra.Command, args []string) error {
 	overwrite, err := cmd.Flags().GetBool("overwrite")
 	if err != nil {
 		return err

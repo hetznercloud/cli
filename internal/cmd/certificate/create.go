@@ -17,7 +17,7 @@ func newCreateCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runCertificateCreate),
+		RunE:                  cli.Wrap(runCreate),
 	}
 
 	cmd.Flags().String("name", "", "Certificate name (required)")
@@ -32,7 +32,7 @@ func newCreateCommand(cli *state.State) *cobra.Command {
 	return cmd
 }
 
-func runCertificateCreate(cli *state.State, cmd *cobra.Command, args []string) error {
+func runCreate(cli *state.State, cmd *cobra.Command, args []string) error {
 	var (
 		name string
 

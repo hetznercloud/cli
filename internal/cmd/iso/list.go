@@ -9,10 +9,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var isoListTableOutput *output.Table
+var listTableOutput *output.Table
 
 func init() {
-	isoListTableOutput = output.NewTable().
+	listTableOutput = output.NewTable().
 		AddAllowedFields(hcloud.ISO{})
 }
 
@@ -22,18 +22,18 @@ func newListCommand(cli *state.State) *cobra.Command {
 		Short: "List ISOs",
 		Long: util.ListLongDescription(
 			"Displays a list of ISOs.",
-			isoListTableOutput.Columns(),
+			listTableOutput.Columns(),
 		),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runISOList),
+		RunE:                  cli.Wrap(runList),
 	}
-	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(isoListTableOutput.Columns()), output.OptionJSON())
+	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(listTableOutput.Columns()), output.OptionJSON())
 	return cmd
 }
 
-func runISOList(cli *state.State, cmd *cobra.Command, args []string) error {
+func runList(cli *state.State, cmd *cobra.Command, args []string) error {
 	outOpts := output.FlagsForCommand(cmd)
 
 	isos, err := cli.Client().ISO.All(cli.Context)
@@ -54,7 +54,7 @@ func runISOList(cli *state.State, cmd *cobra.Command, args []string) error {
 		cols = outOpts["columns"]
 	}
 
-	tw := isoListTableOutput
+	tw := listTableOutput
 	if err = tw.ValidateColumns(cols); err != nil {
 		return err
 	}

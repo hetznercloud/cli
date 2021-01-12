@@ -21,7 +21,7 @@ func newSSHCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runServerSSH),
+		RunE:                  cli.Wrap(runSSH),
 	}
 	cmd.Flags().SetInterspersed(false) // To make "hcloud server ssh <server> uname -a" execute "uname -a"
 	cmd.Flags().Bool("ipv6", false, "Establish SSH connection to IPv6 address")
@@ -30,7 +30,7 @@ func newSSHCommand(cli *state.State) *cobra.Command {
 	return cmd
 }
 
-func runServerSSH(cli *state.State, cmd *cobra.Command, args []string) error {
+func runSSH(cli *state.State, cmd *cobra.Command, args []string) error {
 	idOrName := args[0]
 	server, _, err := cli.Client().Server.Get(cli.Context, idOrName)
 	if err != nil {

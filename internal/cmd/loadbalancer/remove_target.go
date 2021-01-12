@@ -20,7 +20,7 @@ func newRemoveTargetCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runLoadBalancerRemoveTarget),
+		RunE:                  cli.Wrap(runRemoveTarget),
 	}
 
 	cmd.Flags().String("server", "", "Name or ID of the server")
@@ -33,7 +33,7 @@ func newRemoveTargetCommand(cli *state.State) *cobra.Command {
 	return cmd
 }
 
-func runLoadBalancerRemoveTarget(cli *state.State, cmd *cobra.Command, args []string) error {
+func runRemoveTarget(cli *state.State, cmd *cobra.Command, args []string) error {
 	var (
 		action       *hcloud.Action
 		loadBalancer *hcloud.LoadBalancer

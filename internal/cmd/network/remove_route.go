@@ -19,7 +19,7 @@ func newRemoveRouteCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runNetworkRemoveRoute),
+		RunE:                  cli.Wrap(runRemoveRoute),
 	}
 
 	cmd.Flags().IPNet("destination", net.IPNet{}, "Destination network or host (required)")
@@ -31,7 +31,7 @@ func newRemoveRouteCommand(cli *state.State) *cobra.Command {
 	return cmd
 }
 
-func runNetworkRemoveRoute(cli *state.State, cmd *cobra.Command, args []string) error {
+func runRemoveRoute(cli *state.State, cmd *cobra.Command, args []string) error {
 	gateway, _ := cmd.Flags().GetIP("gateway")
 	destination, _ := cmd.Flags().GetIPNet("destination")
 	idOrName := args[0]
