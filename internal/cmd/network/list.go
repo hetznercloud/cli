@@ -12,10 +12,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var networkListTableOutput *output.Table
+var listTableOutput *output.Table
 
 func init() {
-	networkListTableOutput = describeNetworkListTableOutput(nil)
+	listTableOutput = describelistTableOutput(nil)
 }
 
 func newListCommand(cli *state.State) *cobra.Command {
@@ -24,19 +24,19 @@ func newListCommand(cli *state.State) *cobra.Command {
 		Short: "List networks",
 		Long: util.ListLongDescription(
 			"Displays a list of networks.",
-			networkListTableOutput.Columns(),
+			listTableOutput.Columns(),
 		),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runNetworkList),
+		RunE:                  cli.Wrap(runList),
 	}
-	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(networkListTableOutput.Columns()), output.OptionJSON())
+	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(listTableOutput.Columns()), output.OptionJSON())
 	cmd.Flags().StringP("selector", "l", "", "Selector to filter by labels")
 	return cmd
 }
 
-func runNetworkList(cli *state.State, cmd *cobra.Command, args []string) error {
+func runList(cli *state.State, cmd *cobra.Command, args []string) error {
 	outOpts := output.FlagsForCommand(cmd)
 
 	labelSelector, _ := cmd.Flags().GetString("selector")
@@ -89,7 +89,7 @@ func runNetworkList(cli *state.State, cmd *cobra.Command, args []string) error {
 		cols = outOpts["columns"]
 	}
 
-	tw := describeNetworkListTableOutput(cli)
+	tw := describelistTableOutput(cli)
 	if err = tw.ValidateColumns(cols); err != nil {
 		return err
 	}
@@ -104,7 +104,7 @@ func runNetworkList(cli *state.State, cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func describeNetworkListTableOutput(cli *state.State) *output.Table {
+func describelistTableOutput(cli *state.State) *output.Table {
 	return output.NewTable().
 		AddAllowedFields(hcloud.Network{}).
 		AddFieldFn("servers", output.FieldFn(func(obj interface{}) string {

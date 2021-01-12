@@ -17,12 +17,12 @@ func newDeleteCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runNetworkDelete),
+		RunE:                  cli.Wrap(runDelete),
 	}
 	return cmd
 }
 
-func runNetworkDelete(cli *state.State, cmd *cobra.Command, args []string) error {
+func runDelete(cli *state.State, cmd *cobra.Command, args []string) error {
 	idOrName := args[0]
 	network, _, err := cli.Client().Network.Get(cli.Context, idOrName)
 	if err != nil {

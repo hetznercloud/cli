@@ -17,12 +17,12 @@ func newDisableRescueCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runServerDisableRescue),
+		RunE:                  cli.Wrap(runDisableRescue),
 	}
 	return cmd
 }
 
-func runServerDisableRescue(cli *state.State, cmd *cobra.Command, args []string) error {
+func runDisableRescue(cli *state.State, cmd *cobra.Command, args []string) error {
 	idOrName := args[0]
 	server, _, err := cli.Client().Server.Get(cli.Context, idOrName)
 	if err != nil {

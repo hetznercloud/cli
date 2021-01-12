@@ -18,8 +18,8 @@ func newAddServiceCommand(cli *state.State) *cobra.Command {
 		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.LoadBalancerNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		PreRunE:               util.ChainRunE(validateLoadBalancerAddService, cli.EnsureToken),
-		RunE:                  cli.Wrap(runLoadBalancerAddService),
+		PreRunE:               util.ChainRunE(validateAddService, cli.EnsureToken),
+		RunE:                  cli.Wrap(runAddService),
 	}
 	cmd.Flags().String("protocol", "", "Protocol of the service (required)")
 	cmd.MarkFlagRequired("protocol")
@@ -37,7 +37,7 @@ func newAddServiceCommand(cli *state.State) *cobra.Command {
 	return cmd
 }
 
-func validateLoadBalancerAddService(cmd *cobra.Command, args []string) error {
+func validateAddService(cmd *cobra.Command, args []string) error {
 	protocol, _ := cmd.Flags().GetString("protocol")
 	listenPort, _ := cmd.Flags().GetInt("listen-port")
 	destinationPort, _ := cmd.Flags().GetInt("destination-port")
@@ -76,7 +76,7 @@ func validateLoadBalancerAddService(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func runLoadBalancerAddService(cli *state.State, cmd *cobra.Command, args []string) error {
+func runAddService(cli *state.State, cmd *cobra.Command, args []string) error {
 	idOrName := args[0]
 	protocol, _ := cmd.Flags().GetString("protocol")
 	listenPort, _ := cmd.Flags().GetInt("listen-port")

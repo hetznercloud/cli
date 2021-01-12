@@ -19,7 +19,7 @@ func newAttachToNetworkCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runServerAttachToNetwork),
+		RunE:                  cli.Wrap(runAttachToNetwork),
 	}
 
 	cmd.Flags().StringP("network", "n", "", "Network (ID or name) (required)")
@@ -32,7 +32,7 @@ func newAttachToNetworkCommand(cli *state.State) *cobra.Command {
 	return cmd
 }
 
-func runServerAttachToNetwork(cli *state.State, cmd *cobra.Command, args []string) error {
+func runAttachToNetwork(cli *state.State, cmd *cobra.Command, args []string) error {
 	idOrName := args[0]
 	server, _, err := cli.Client().Server.Get(cli.Context, idOrName)
 	if err != nil {

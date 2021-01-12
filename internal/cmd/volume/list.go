@@ -13,10 +13,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var volumeListTableOutput *output.Table
+var listTableOutput *output.Table
 
 func init() {
-	volumeListTableOutput = describeVolumeListTableOutput(nil)
+	listTableOutput = describeListTableOutput(nil)
 }
 
 func newListCommand(cli *state.State) *cobra.Command {
@@ -25,19 +25,19 @@ func newListCommand(cli *state.State) *cobra.Command {
 		Short: "List volumes",
 		Long: util.ListLongDescription(
 			"Displays a list of volumes.",
-			volumeListTableOutput.Columns(),
+			listTableOutput.Columns(),
 		),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runVolumeList),
+		RunE:                  cli.Wrap(runList),
 	}
-	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(volumeListTableOutput.Columns()), output.OptionJSON())
+	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(listTableOutput.Columns()), output.OptionJSON())
 	cmd.Flags().StringP("selector", "l", "", "Selector to filter by labels")
 	return cmd
 }
 
-func runVolumeList(cli *state.State, cmd *cobra.Command, args []string) error {
+func runList(cli *state.State, cmd *cobra.Command, args []string) error {
 	outOpts := output.FlagsForCommand(cmd)
 
 	labelSelector, _ := cmd.Flags().GetString("selector")
@@ -78,7 +78,7 @@ func runVolumeList(cli *state.State, cmd *cobra.Command, args []string) error {
 		cols = outOpts["columns"]
 	}
 
-	tw := describeVolumeListTableOutput(cli)
+	tw := describeListTableOutput(cli)
 	if err = tw.ValidateColumns(cols); err != nil {
 		return err
 	}
@@ -93,7 +93,7 @@ func runVolumeList(cli *state.State, cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func describeVolumeListTableOutput(cli *state.State) *output.Table {
+func describeListTableOutput(cli *state.State) *output.Table {
 	return output.NewTable().
 		AddAllowedFields(hcloud.Volume{}).
 		AddFieldFn("server", output.FieldFn(func(obj interface{}) string {

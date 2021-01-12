@@ -20,13 +20,13 @@ func newAssignCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runFloatingIPAssign),
+		RunE:                  cli.Wrap(runAssign),
 	}
 	cmd.MarkFlagRequired("server")
 	return cmd
 }
 
-func runFloatingIPAssign(cli *state.State, cmd *cobra.Command, args []string) error {
+func runAssign(cli *state.State, cmd *cobra.Command, args []string) error {
 	idOrName := args[0]
 	floatingIP, _, err := cli.Client().FloatingIP.Get(cli.Context, idOrName)
 	if err != nil {

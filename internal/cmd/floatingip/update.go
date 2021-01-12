@@ -18,7 +18,7 @@ func newUpdateCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runFloatingIPUpdate),
+		RunE:                  cli.Wrap(runUpdate),
 	}
 
 	cmd.Flags().String("description", "", "Floating IP description")
@@ -27,7 +27,7 @@ func newUpdateCommand(cli *state.State) *cobra.Command {
 	return cmd
 }
 
-func runFloatingIPUpdate(cli *state.State, cmd *cobra.Command, args []string) error {
+func runUpdate(cli *state.State, cmd *cobra.Command, args []string) error {
 	idOrName := args[0]
 	floatingIP, _, err := cli.Client().FloatingIP.Get(cli.Context, idOrName)
 	if err != nil {

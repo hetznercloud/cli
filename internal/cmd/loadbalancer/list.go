@@ -12,10 +12,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var loadBalancerListTableOutput *output.Table
+var listTableOutput *output.Table
 
 func init() {
-	loadBalancerListTableOutput = describeLoadBalancerListTableOutput(nil)
+	listTableOutput = describeListTableOutput(nil)
 }
 
 func newListCommand(cli *state.State) *cobra.Command {
@@ -24,19 +24,19 @@ func newListCommand(cli *state.State) *cobra.Command {
 		Short: "List Load Balancers",
 		Long: util.ListLongDescription(
 			"Displays a list of Load Balancers.",
-			loadBalancerListTableOutput.Columns(),
+			listTableOutput.Columns(),
 		),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runLoadBalancerList),
+		RunE:                  cli.Wrap(runList),
 	}
-	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(loadBalancerListTableOutput.Columns()), output.OptionJSON())
+	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(listTableOutput.Columns()), output.OptionJSON())
 	cmd.Flags().StringP("selector", "l", "", "Selector to filter by labels")
 	return cmd
 }
 
-func runLoadBalancerList(cli *state.State, cmd *cobra.Command, args []string) error {
+func runList(cli *state.State, cmd *cobra.Command, args []string) error {
 	outOpts := output.FlagsForCommand(cmd)
 
 	labelSelector, _ := cmd.Flags().GetString("selector")
@@ -142,7 +142,7 @@ func runLoadBalancerList(cli *state.State, cmd *cobra.Command, args []string) er
 		cols = outOpts["columns"]
 	}
 
-	tw := describeLoadBalancerListTableOutput(cli)
+	tw := describeListTableOutput(cli)
 	if err = tw.ValidateColumns(cols); err != nil {
 		return err
 	}
@@ -157,7 +157,7 @@ func runLoadBalancerList(cli *state.State, cmd *cobra.Command, args []string) er
 	return nil
 }
 
-func describeLoadBalancerListTableOutput(cli *state.State) *output.Table {
+func describeListTableOutput(cli *state.State) *output.Table {
 	return output.NewTable().
 		AddAllowedFields(hcloud.LoadBalancer{}).
 		AddFieldFn("ipv4", output.FieldFn(func(obj interface{}) string {

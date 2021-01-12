@@ -9,10 +9,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var loadBalancerTypeListTableOutput *output.Table
+var listTableOutput *output.Table
 
 func init() {
-	loadBalancerTypeListTableOutput = output.NewTable().
+	listTableOutput = output.NewTable().
 		AddAllowedFields(hcloud.LoadBalancerType{})
 }
 
@@ -22,18 +22,18 @@ func newListCommand(cli *state.State) *cobra.Command {
 		Short: "List Load Balancer types",
 		Long: util.ListLongDescription(
 			"Displays a list of Load Balancer types.",
-			loadBalancerTypeListTableOutput.Columns(),
+			listTableOutput.Columns(),
 		),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runLoadBalancerTypeList),
+		RunE:                  cli.Wrap(runList),
 	}
-	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(loadBalancerTypeListTableOutput.Columns()), output.OptionJSON())
+	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(listTableOutput.Columns()), output.OptionJSON())
 	return cmd
 }
 
-func runLoadBalancerTypeList(cli *state.State, cmd *cobra.Command, args []string) error {
+func runList(cli *state.State, cmd *cobra.Command, args []string) error {
 	outOpts := output.FlagsForCommand(cmd)
 
 	loadBalancerTypes, err := cli.Client().LoadBalancerType.All(cli.Context)
@@ -54,7 +54,7 @@ func runLoadBalancerTypeList(cli *state.State, cmd *cobra.Command, args []string
 		cols = outOpts["columns"]
 	}
 
-	tw := loadBalancerTypeListTableOutput
+	tw := listTableOutput
 	if err = tw.ValidateColumns(cols); err != nil {
 		return err
 	}

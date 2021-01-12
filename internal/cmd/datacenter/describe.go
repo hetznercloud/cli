@@ -21,13 +21,13 @@ func newDescribeCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runDatacenterDescribe),
+		RunE:                  cli.Wrap(runDescribe),
 	}
 	output.AddFlag(cmd, output.OptionJSON(), output.OptionFormat())
 	return cmd
 }
 
-func runDatacenterDescribe(cli *state.State, cmd *cobra.Command, args []string) error {
+func runDescribe(cli *state.State, cmd *cobra.Command, args []string) error {
 	outputFlags := output.FlagsForCommand(cmd)
 
 	idOrName := args[0]
@@ -41,15 +41,15 @@ func runDatacenterDescribe(cli *state.State, cmd *cobra.Command, args []string) 
 
 	switch {
 	case outputFlags.IsSet("json"):
-		return datacenterDescribeJSON(resp)
+		return describeJSON(resp)
 	case outputFlags.IsSet("format"):
 		return util.DescribeFormat(datacenter, outputFlags["format"][0])
 	default:
-		return datacenterDescribeText(cli, datacenter)
+		return describeText(cli, datacenter)
 	}
 }
 
-func datacenterDescribeText(cli *state.State, datacenter *hcloud.Datacenter) error {
+func describeText(cli *state.State, datacenter *hcloud.Datacenter) error {
 	fmt.Printf("ID:\t\t%d\n", datacenter.ID)
 	fmt.Printf("Name:\t\t%s\n", datacenter.Name)
 	fmt.Printf("Description:\t%s\n", datacenter.Description)
@@ -102,7 +102,7 @@ func datacenterDescribeText(cli *state.State, datacenter *hcloud.Datacenter) err
 	return nil
 }
 
-func datacenterDescribeJSON(resp *hcloud.Response) error {
+func describeJSON(resp *hcloud.Response) error {
 	var data map[string]interface{}
 	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
 		return err

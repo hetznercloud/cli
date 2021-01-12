@@ -17,12 +17,12 @@ func newPoweronCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runServerPoweron),
+		RunE:                  cli.Wrap(runPoweron),
 	}
 	return cmd
 }
 
-func runServerPoweron(cli *state.State, cmd *cobra.Command, args []string) error {
+func runPoweron(cli *state.State, cmd *cobra.Command, args []string) error {
 	idOrName := args[0]
 	server, _, err := cli.Client().Server.Get(cli.Context, idOrName)
 	if err != nil {

@@ -17,13 +17,13 @@ func newDetachISOCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runServerDetachISO),
+		RunE:                  cli.Wrap(runDetachISO),
 	}
 
 	return cmd
 }
 
-func runServerDetachISO(cli *state.State, cmd *cobra.Command, args []string) error {
+func runDetachISO(cli *state.State, cmd *cobra.Command, args []string) error {
 	idOrName := args[0]
 	server, _, err := cli.Client().Server.Get(cli.Context, idOrName)
 	if err != nil {

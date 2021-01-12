@@ -17,12 +17,12 @@ func newRebootCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runServerReboot),
+		RunE:                  cli.Wrap(runReboot),
 	}
 	return cmd
 }
 
-func runServerReboot(cli *state.State, cmd *cobra.Command, args []string) error {
+func runReboot(cli *state.State, cmd *cobra.Command, args []string) error {
 	idOrName := args[0]
 	server, _, err := cli.Client().Server.Get(cli.Context, idOrName)
 	if err != nil {

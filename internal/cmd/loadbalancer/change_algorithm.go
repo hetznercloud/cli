@@ -18,7 +18,7 @@ func newChangeAlgorithmCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runLoadBalancerChangeAlgorithm),
+		RunE:                  cli.Wrap(runChangeAlgorithm),
 	}
 
 	cmd.Flags().String("algorithm-type", "", "The new algorithm of the Load Balancer")
@@ -31,7 +31,7 @@ func newChangeAlgorithmCommand(cli *state.State) *cobra.Command {
 	return cmd
 }
 
-func runLoadBalancerChangeAlgorithm(cli *state.State, cmd *cobra.Command, args []string) error {
+func runChangeAlgorithm(cli *state.State, cmd *cobra.Command, args []string) error {
 	idOrName := args[0]
 	algorithm, _ := cmd.Flags().GetString("algorithm-type")
 	loadBalancer, _, err := cli.Client().LoadBalancer.Get(cli.Context, idOrName)

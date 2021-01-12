@@ -28,7 +28,7 @@ func newRemoveLabelCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               util.ChainRunE(validateImageRemoveLabel, cli.EnsureToken),
-		RunE:                  cli.Wrap(runImageRemoveLabel),
+		RunE:                  cli.Wrap(runRemoveLabel),
 	}
 
 	cmd.Flags().BoolP("all", "a", false, "Remove all labels")
@@ -48,7 +48,7 @@ func validateImageRemoveLabel(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func runImageRemoveLabel(cli *state.State, cmd *cobra.Command, args []string) error {
+func runRemoveLabel(cli *state.State, cmd *cobra.Command, args []string) error {
 	all, _ := cmd.Flags().GetBool("all")
 	idOrName := args[0]
 	image, _, err := cli.Client().Image.Get(cli.Context, idOrName)

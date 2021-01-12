@@ -14,12 +14,12 @@ func newActiveCommand(cli *state.State) *cobra.Command {
 		Args:                  cobra.NoArgs,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE:                  cli.Wrap(runContextActive),
+		RunE:                  cli.Wrap(runActive),
 	}
 	return cmd
 }
 
-func runContextActive(cli *state.State, cmd *cobra.Command, args []string) error {
+func runActive(cli *state.State, cmd *cobra.Command, args []string) error {
 	if cli.Config.ActiveContext != nil {
 		fmt.Println(cli.Config.ActiveContext.Name)
 	}

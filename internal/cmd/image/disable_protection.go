@@ -24,12 +24,12 @@ func newDisableProtectionCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runImageDisableProtection),
+		RunE:                  cli.Wrap(runDisableProtection),
 	}
 	return cmd
 }
 
-func runImageDisableProtection(cli *state.State, cmd *cobra.Command, args []string) error {
+func runDisableProtection(cli *state.State, cmd *cobra.Command, args []string) error {
 	imageID, err := strconv.Atoi(args[0])
 	if err != nil {
 		return errors.New("invalid image ID")

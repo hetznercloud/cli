@@ -16,12 +16,12 @@ func newUseCommand(cli *state.State) *cobra.Command {
 		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.Config.ContextNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE:                  cli.Wrap(runContextUse),
+		RunE:                  cli.Wrap(runUse),
 	}
 	return cmd
 }
 
-func runContextUse(cli *state.State, cmd *cobra.Command, args []string) error {
+func runUse(cli *state.State, cmd *cobra.Command, args []string) error {
 	name := args[0]
 	context := cli.Config.ContextByName(name)
 	if context == nil {

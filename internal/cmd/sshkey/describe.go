@@ -24,13 +24,13 @@ func newDescribeCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runSSHKeyDescribe),
+		RunE:                  cli.Wrap(runDescribe),
 	}
 	output.AddFlag(cmd, output.OptionJSON(), output.OptionFormat())
 	return cmd
 }
 
-func runSSHKeyDescribe(cli *state.State, cmd *cobra.Command, args []string) error {
+func runDescribe(cli *state.State, cmd *cobra.Command, args []string) error {
 	outputFlags := output.FlagsForCommand(cmd)
 
 	sshKey, resp, err := cli.Client().SSHKey.Get(cli.Context, args[0])
@@ -43,15 +43,15 @@ func runSSHKeyDescribe(cli *state.State, cmd *cobra.Command, args []string) erro
 
 	switch {
 	case outputFlags.IsSet("json"):
-		return sshKeyDescribeJSON(resp)
+		return describeJSON(resp)
 	case outputFlags.IsSet("format"):
 		return util.DescribeFormat(sshKey, outputFlags["format"][0])
 	default:
-		return sshKeyDescribeText(cli, sshKey)
+		return describeText(cli, sshKey)
 	}
 }
 
-func sshKeyDescribeText(cli *state.State, sshKey *hcloud.SSHKey) error {
+func describeText(cli *state.State, sshKey *hcloud.SSHKey) error {
 	fmt.Printf("ID:\t\t%d\n", sshKey.ID)
 	fmt.Printf("Name:\t\t%s\n", sshKey.Name)
 	fmt.Printf("Created:\t%s (%s)\n", util.Datetime(sshKey.Created), humanize.Time(sshKey.Created))
@@ -69,7 +69,7 @@ func sshKeyDescribeText(cli *state.State, sshKey *hcloud.SSHKey) error {
 	return nil
 }
 
-func sshKeyDescribeJSON(resp *hcloud.Response) error {
+func describeJSON(resp *hcloud.Response) error {
 	var data map[string]interface{}
 	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
 		return err

@@ -19,7 +19,7 @@ func newUpdateServiceCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runLoadBalancerUpdateService),
+		RunE:                  cli.Wrap(runUpdateService),
 	}
 
 	cmd.Flags().Int("listen-port", 0, "The listen port of the service that you want to update (required)")
@@ -51,7 +51,7 @@ func newUpdateServiceCommand(cli *state.State) *cobra.Command {
 	return cmd
 }
 
-func runLoadBalancerUpdateService(cli *state.State, cmd *cobra.Command, args []string) error {
+func runUpdateService(cli *state.State, cmd *cobra.Command, args []string) error {
 	idOrName := args[0]
 	listenPort, _ := cmd.Flags().GetInt("listen-port")
 

@@ -18,8 +18,8 @@ func newCreateCommand(cli *state.State) *cobra.Command {
 		Args:                  cobra.NoArgs,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		PreRunE:               util.ChainRunE(validateFloatingIPCreate, cli.EnsureToken),
-		RunE:                  cli.Wrap(runFloatingIPCreate),
+		PreRunE:               util.ChainRunE(validateCreate, cli.EnsureToken),
+		RunE:                  cli.Wrap(runCreate),
 	}
 	cmd.Flags().String("type", "", "Type (ipv4 or ipv6) (required)")
 	cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("ipv4", "ipv6"))
@@ -40,7 +40,7 @@ func newCreateCommand(cli *state.State) *cobra.Command {
 	return cmd
 }
 
-func validateFloatingIPCreate(cmd *cobra.Command, args []string) error {
+func validateCreate(cmd *cobra.Command, args []string) error {
 	typ, _ := cmd.Flags().GetString("type")
 	if typ == "" {
 		return errors.New("type is required")
@@ -55,7 +55,7 @@ func validateFloatingIPCreate(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func runFloatingIPCreate(cli *state.State, cmd *cobra.Command, args []string) error {
+func runCreate(cli *state.State, cmd *cobra.Command, args []string) error {
 	typ, _ := cmd.Flags().GetString("type")
 	name, _ := cmd.Flags().GetString("name")
 	description, _ := cmd.Flags().GetString("description")

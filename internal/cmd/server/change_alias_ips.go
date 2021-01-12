@@ -19,7 +19,7 @@ func newChangeAliasIPsCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runServerChangeAliasIPsk),
+		RunE:                  cli.Wrap(runChangeAliasIPsk),
 	}
 
 	cmd.Flags().StringP("network", "n", "", "Network (ID or name) (required)")
@@ -32,7 +32,7 @@ func newChangeAliasIPsCommand(cli *state.State) *cobra.Command {
 	return cmd
 }
 
-func runServerChangeAliasIPsk(cli *state.State, cmd *cobra.Command, args []string) error {
+func runChangeAliasIPsk(cli *state.State, cmd *cobra.Command, args []string) error {
 	clear, _ := cmd.Flags().GetBool("clear")
 	idOrName := args[0]
 	server, _, err := cli.Client().Server.Get(cli.Context, idOrName)

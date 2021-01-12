@@ -27,14 +27,14 @@ func newRemoveLabelCommand(cli *state.State) *cobra.Command {
 		),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		PreRunE:               util.ChainRunE(validateCertificateRemoveLabel, cli.EnsureToken),
-		RunE:                  cli.Wrap(runCertificateRemoveLabel),
+		PreRunE:               util.ChainRunE(validateRemoveLabel, cli.EnsureToken),
+		RunE:                  cli.Wrap(runRemoveLabel),
 	}
 	cmd.Flags().BoolP("all", "a", false, "Remove all labels")
 	return cmd
 }
 
-func validateCertificateRemoveLabel(cmd *cobra.Command, args []string) error {
+func validateRemoveLabel(cmd *cobra.Command, args []string) error {
 	all, err := cmd.Flags().GetBool("all")
 	if err != nil {
 		return err
@@ -48,7 +48,7 @@ func validateCertificateRemoveLabel(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func runCertificateRemoveLabel(cli *state.State, cmd *cobra.Command, args []string) error {
+func runRemoveLabel(cli *state.State, cmd *cobra.Command, args []string) error {
 	// We ensured the all flag is a valid boolean in
 	// validateCertificateRemoveLabel. No need to handle the error again here.
 	all, _ := cmd.Flags().GetBool("all")

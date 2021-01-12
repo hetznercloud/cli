@@ -17,12 +17,12 @@ func newPoweroffCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runServerPoweroff),
+		RunE:                  cli.Wrap(runPoweroff),
 	}
 	return cmd
 }
 
-func runServerPoweroff(cli *state.State, cmd *cobra.Command, args []string) error {
+func runPoweroff(cli *state.State, cmd *cobra.Command, args []string) error {
 	idOrName := args[0]
 	server, _, err := cli.Client().Server.Get(cli.Context, idOrName)
 	if err != nil {

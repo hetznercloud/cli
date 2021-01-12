@@ -17,12 +17,12 @@ func newResetCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runServerReset),
+		RunE:                  cli.Wrap(runReset),
 	}
 	return cmd
 }
 
-func runServerReset(cli *state.State, cmd *cobra.Command, args []string) error {
+func runReset(cli *state.State, cmd *cobra.Command, args []string) error {
 	idOrName := args[0]
 	server, _, err := cli.Client().Server.Get(cli.Context, idOrName)
 	if err != nil {

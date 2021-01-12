@@ -27,15 +27,15 @@ func newRemoveLabelCommand(cli *state.State) *cobra.Command {
 		),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		PreRunE:               util.ChainRunE(validateNetworkRemoveLabel, cli.EnsureToken),
-		RunE:                  cli.Wrap(runNetworkRemoveLabel),
+		PreRunE:               util.ChainRunE(validateRemoveLabel, cli.EnsureToken),
+		RunE:                  cli.Wrap(runRemoveLabel),
 	}
 
 	cmd.Flags().BoolP("all", "a", false, "Remove all labels")
 	return cmd
 }
 
-func validateNetworkRemoveLabel(cmd *cobra.Command, args []string) error {
+func validateRemoveLabel(cmd *cobra.Command, args []string) error {
 	all, _ := cmd.Flags().GetBool("all")
 
 	if all && len(args) == 2 {
@@ -48,7 +48,7 @@ func validateNetworkRemoveLabel(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func runNetworkRemoveLabel(cli *state.State, cmd *cobra.Command, args []string) error {
+func runRemoveLabel(cli *state.State, cmd *cobra.Command, args []string) error {
 	all, _ := cmd.Flags().GetBool("all")
 	idOrName := args[0]
 	network, _, err := cli.Client().Network.Get(cli.Context, idOrName)

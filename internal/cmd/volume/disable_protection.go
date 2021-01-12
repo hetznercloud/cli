@@ -22,12 +22,12 @@ func newDisableProtectionCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runVolumeDisableProtection),
+		RunE:                  cli.Wrap(runDisableProtection),
 	}
 	return cmd
 }
 
-func runVolumeDisableProtection(cli *state.State, cmd *cobra.Command, args []string) error {
+func runDisableProtection(cli *state.State, cmd *cobra.Command, args []string) error {
 	volume, _, err := cli.Client().Volume.Get(cli.Context, args[0])
 	if err != nil {
 		return err

@@ -22,13 +22,13 @@ func newDescribeCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runFloatingIPDescribe),
+		RunE:                  cli.Wrap(runDescribe),
 	}
 	output.AddFlag(cmd, output.OptionJSON(), output.OptionFormat())
 	return cmd
 }
 
-func runFloatingIPDescribe(cli *state.State, cmd *cobra.Command, args []string) error {
+func runDescribe(cli *state.State, cmd *cobra.Command, args []string) error {
 	outputFlags := output.FlagsForCommand(cmd)
 
 	idOrName := args[0]
@@ -42,15 +42,15 @@ func runFloatingIPDescribe(cli *state.State, cmd *cobra.Command, args []string) 
 
 	switch {
 	case outputFlags.IsSet("json"):
-		return floatingIPDescribeJSON(resp)
+		return describeJSON(resp)
 	case outputFlags.IsSet("format"):
 		return util.DescribeFormat(floatingIP, outputFlags["format"][0])
 	default:
-		return floatingIPDescribeText(cli, floatingIP)
+		return describeText(cli, floatingIP)
 	}
 }
 
-func floatingIPDescribeText(cli *state.State, floatingIP *hcloud.FloatingIP) error {
+func describeText(cli *state.State, floatingIP *hcloud.FloatingIP) error {
 	fmt.Printf("ID:\t\t%d\n", floatingIP.ID)
 	fmt.Printf("Type:\t\t%s\n", floatingIP.Type)
 	fmt.Printf("Name:\t\t%s\n", floatingIP.Name)
@@ -100,7 +100,7 @@ func floatingIPDescribeText(cli *state.State, floatingIP *hcloud.FloatingIP) err
 	return nil
 }
 
-func floatingIPDescribeJSON(resp *hcloud.Response) error {
+func describeJSON(resp *hcloud.Response) error {
 	var data map[string]interface{}
 	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
 		return err

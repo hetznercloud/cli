@@ -21,13 +21,13 @@ func newChangeTypeCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runLoadBalancerChangeType),
+		RunE:                  cli.Wrap(runChangeType),
 	}
 
 	return cmd
 }
 
-func runLoadBalancerChangeType(cli *state.State, cmd *cobra.Command, args []string) error {
+func runChangeType(cli *state.State, cmd *cobra.Command, args []string) error {
 	idOrName := args[0]
 	loadBalancer, _, err := cli.Client().LoadBalancer.Get(cli.Context, idOrName)
 	if err != nil {

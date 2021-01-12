@@ -22,12 +22,12 @@ func newDisableProtectionCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runNetworkDisableProtection),
+		RunE:                  cli.Wrap(runDisableProtection),
 	}
 	return cmd
 }
 
-func runNetworkDisableProtection(cli *state.State, cmd *cobra.Command, args []string) error {
+func runDisableProtection(cli *state.State, cmd *cobra.Command, args []string) error {
 	idOrName := args[0]
 	network, _, err := cli.Client().Network.Get(cli.Context, idOrName)
 	if err != nil {

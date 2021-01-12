@@ -19,14 +19,14 @@ func newRemoveSubnetCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runNetworkRemoveSubnet),
+		RunE:                  cli.Wrap(runRemoveSubnet),
 	}
 	cmd.Flags().IPNet("ip-range", net.IPNet{}, "Subnet IP range (required)")
 	cmd.MarkFlagRequired("ip-range")
 	return cmd
 }
 
-func runNetworkRemoveSubnet(cli *state.State, cmd *cobra.Command, args []string) error {
+func runRemoveSubnet(cli *state.State, cmd *cobra.Command, args []string) error {
 
 	ipRange, _ := cmd.Flags().GetIPNet("ip-range")
 	idOrName := args[0]

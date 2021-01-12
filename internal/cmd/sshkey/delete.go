@@ -17,12 +17,12 @@ func newDeleteCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runSSHKeyDelete),
+		RunE:                  cli.Wrap(runDelete),
 	}
 	return cmd
 }
 
-func runSSHKeyDelete(cli *state.State, cmd *cobra.Command, args []string) error {
+func runDelete(cli *state.State, cmd *cobra.Command, args []string) error {
 	sshKey, _, err := cli.Client().SSHKey.Get(cli.Context, args[0])
 	if err != nil {
 		return err

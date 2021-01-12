@@ -19,8 +19,8 @@ func newCreateCommand(cli *state.State) *cobra.Command {
 		Args:                  cobra.NoArgs,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		PreRunE:               util.ChainRunE(validateSSHKeyCreate, cli.EnsureToken),
-		RunE:                  cli.Wrap(runSSHKeyCreate),
+		PreRunE:               util.ChainRunE(validateCreate, cli.EnsureToken),
+		RunE:                  cli.Wrap(runCreate),
 	}
 	cmd.Flags().String("name", "", "Key name (required)")
 	cmd.Flags().String("public-key", "", "Public key")
@@ -29,7 +29,7 @@ func newCreateCommand(cli *state.State) *cobra.Command {
 	return cmd
 }
 
-func validateSSHKeyCreate(cmd *cobra.Command, args []string) error {
+func validateCreate(cmd *cobra.Command, args []string) error {
 	if name, _ := cmd.Flags().GetString("name"); name == "" {
 		return errors.New("flag --name is required")
 	}
@@ -43,7 +43,7 @@ func validateSSHKeyCreate(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func runSSHKeyCreate(cli *state.State, cmd *cobra.Command, args []string) error {
+func runCreate(cli *state.State, cmd *cobra.Command, args []string) error {
 	name, _ := cmd.Flags().GetString("name")
 	publicKey, _ := cmd.Flags().GetString("public-key")
 	publicKeyFile, _ := cmd.Flags().GetString("public-key-from-file")

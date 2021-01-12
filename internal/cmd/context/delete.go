@@ -16,12 +16,12 @@ func newDeleteCommand(cli *state.State) *cobra.Command {
 		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.Config.ContextNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE:                  cli.Wrap(runContextDelete),
+		RunE:                  cli.Wrap(runDelete),
 	}
 	return cmd
 }
 
-func runContextDelete(cli *state.State, cmd *cobra.Command, args []string) error {
+func runDelete(cli *state.State, cmd *cobra.Command, args []string) error {
 	name := args[0]
 	context := cli.Config.ContextByName(name)
 	if context == nil {

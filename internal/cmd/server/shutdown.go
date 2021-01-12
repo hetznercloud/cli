@@ -17,12 +17,12 @@ func newShutdownCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runServerShutdown),
+		RunE:                  cli.Wrap(runShutdown),
 	}
 	return cmd
 }
 
-func runServerShutdown(cli *state.State, cmd *cobra.Command, args []string) error {
+func runShutdown(cli *state.State, cmd *cobra.Command, args []string) error {
 	idOrName := args[0]
 	server, _, err := cli.Client().Server.Get(cli.Context, idOrName)
 	if err != nil {

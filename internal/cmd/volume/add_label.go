@@ -18,15 +18,15 @@ func newAddLabelCommand(cli *state.State) *cobra.Command {
 		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.VolumeNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		PreRunE:               util.ChainRunE(validateVolumeAddLabel, cli.EnsureToken),
-		RunE:                  cli.Wrap(runVolumeAddLabel),
+		PreRunE:               util.ChainRunE(validateAddLabel, cli.EnsureToken),
+		RunE:                  cli.Wrap(runAddLabel),
 	}
 
 	cmd.Flags().BoolP("overwrite", "o", false, "Overwrite label if it exists already")
 	return cmd
 }
 
-func validateVolumeAddLabel(cmd *cobra.Command, args []string) error {
+func validateAddLabel(cmd *cobra.Command, args []string) error {
 	label := util.SplitLabel(args[1])
 	if len(label) != 2 {
 		return fmt.Errorf("invalid label: %s", args[1])
@@ -35,7 +35,7 @@ func validateVolumeAddLabel(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func runVolumeAddLabel(cli *state.State, cmd *cobra.Command, args []string) error {
+func runAddLabel(cli *state.State, cmd *cobra.Command, args []string) error {
 	overwrite, _ := cmd.Flags().GetBool("overwrite")
 	volume, _, err := cli.Client().Volume.Get(cli.Context, args[0])
 	if err != nil {

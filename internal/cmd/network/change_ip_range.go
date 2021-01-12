@@ -19,7 +19,7 @@ func newChangeIPRangeCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runNetworkChangeIPRange),
+		RunE:                  cli.Wrap(runChangeIPRange),
 	}
 
 	cmd.Flags().IPNet("ip-range", net.IPNet{}, "New IP range (required)")
@@ -28,7 +28,7 @@ func newChangeIPRangeCommand(cli *state.State) *cobra.Command {
 	return cmd
 }
 
-func runNetworkChangeIPRange(cli *state.State, cmd *cobra.Command, args []string) error {
+func runChangeIPRange(cli *state.State, cmd *cobra.Command, args []string) error {
 	idOrName := args[0]
 	network, _, err := cli.Client().Network.Get(cli.Context, idOrName)
 	if err != nil {

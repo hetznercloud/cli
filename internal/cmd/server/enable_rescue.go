@@ -18,7 +18,7 @@ func newEnableRescueCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runServerEnableRescue),
+		RunE:                  cli.Wrap(runEnableRescue),
 	}
 	cmd.Flags().String("type", "linux64", "Rescue type")
 	cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("linux64", "linux32", "freebsd64"))
@@ -28,7 +28,7 @@ func newEnableRescueCommand(cli *state.State) *cobra.Command {
 	return cmd
 }
 
-func runServerEnableRescue(cli *state.State, cmd *cobra.Command, args []string) error {
+func runEnableRescue(cli *state.State, cmd *cobra.Command, args []string) error {
 	idOrName := args[0]
 	server, _, err := cli.Client().Server.Get(cli.Context, idOrName)
 	if err != nil {

@@ -22,13 +22,13 @@ func newDescribeCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runNetworkDescribe),
+		RunE:                  cli.Wrap(runDescribe),
 	}
 	output.AddFlag(cmd, output.OptionJSON(), output.OptionFormat())
 	return cmd
 }
 
-func runNetworkDescribe(cli *state.State, cmd *cobra.Command, args []string) error {
+func runDescribe(cli *state.State, cmd *cobra.Command, args []string) error {
 	outputFlags := output.FlagsForCommand(cmd)
 
 	idOrName := args[0]
@@ -42,15 +42,15 @@ func runNetworkDescribe(cli *state.State, cmd *cobra.Command, args []string) err
 
 	switch {
 	case outputFlags.IsSet("json"):
-		return networkDescribeJSON(resp)
+		return describeJSON(resp)
 	case outputFlags.IsSet("format"):
 		return util.DescribeFormat(network, outputFlags["format"][0])
 	default:
-		return networkDescribeText(cli, network)
+		return describeText(cli, network)
 	}
 }
 
-func networkDescribeText(cli *state.State, network *hcloud.Network) error {
+func describeText(cli *state.State, network *hcloud.Network) error {
 	fmt.Printf("ID:\t\t%d\n", network.ID)
 	fmt.Printf("Name:\t\t%s\n", network.Name)
 	fmt.Printf("Created:\t%s (%s)\n", util.Datetime(network.Created), humanize.Time(network.Created))
@@ -96,7 +96,7 @@ func networkDescribeText(cli *state.State, network *hcloud.Network) error {
 	return nil
 }
 
-func networkDescribeJSON(resp *hcloud.Response) error {
+func describeJSON(resp *hcloud.Response) error {
 	var data map[string]interface{}
 	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
 		return err

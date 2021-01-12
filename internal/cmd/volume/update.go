@@ -19,7 +19,7 @@ func newUpdateCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runVolumeUpdate),
+		RunE:                  cli.Wrap(runUpdate),
 	}
 
 	cmd.Flags().String("name", "", "Volume name")
@@ -27,7 +27,7 @@ func newUpdateCommand(cli *state.State) *cobra.Command {
 	return cmd
 }
 
-func runVolumeUpdate(cli *state.State, cmd *cobra.Command, args []string) error {
+func runUpdate(cli *state.State, cmd *cobra.Command, args []string) error {
 	idOrName := args[0]
 	volume, _, err := cli.Client().Volume.Get(cli.Context, idOrName)
 	if err != nil {

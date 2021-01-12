@@ -22,14 +22,14 @@ func newDescribeCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runLoadBalancerDescribe),
+		RunE:                  cli.Wrap(runDescribe),
 	}
 	output.AddFlag(cmd, output.OptionJSON(), output.OptionFormat())
 	cmd.Flags().Bool("expand-targets", false, "Expand all label_selector targets")
 	return cmd
 }
 
-func runLoadBalancerDescribe(cli *state.State, cmd *cobra.Command, args []string) error {
+func runDescribe(cli *state.State, cmd *cobra.Command, args []string) error {
 	outputFlags := output.FlagsForCommand(cmd)
 	withLabelSelectorTargets, _ := cmd.Flags().GetBool("expand-targets")
 	idOrName := args[0]
@@ -43,15 +43,15 @@ func runLoadBalancerDescribe(cli *state.State, cmd *cobra.Command, args []string
 
 	switch {
 	case outputFlags.IsSet("json"):
-		return loadBalancerDescribeJSON(resp)
+		return describeJSON(resp)
 	case outputFlags.IsSet("format"):
 		return util.DescribeFormat(loadBalancer, outputFlags["format"][0])
 	default:
-		return loadBalancerDescribeText(cli, loadBalancer, withLabelSelectorTargets)
+		return describeText(cli, loadBalancer, withLabelSelectorTargets)
 	}
 }
 
-func loadBalancerDescribeText(cli *state.State, loadBalancer *hcloud.LoadBalancer, withLabelSelectorTargets bool) error {
+func describeText(cli *state.State, loadBalancer *hcloud.LoadBalancer, withLabelSelectorTargets bool) error {
 	fmt.Printf("ID:\t\t\t\t%d\n", loadBalancer.ID)
 	fmt.Printf("Name:\t\t\t\t%s\n", loadBalancer.Name)
 	fmt.Printf("Created:\t\t\t%s (%s)\n", util.Datetime(loadBalancer.Created), humanize.Time(loadBalancer.Created))
@@ -188,7 +188,7 @@ func loadBalancerDescribeText(cli *state.State, loadBalancer *hcloud.LoadBalance
 	return nil
 }
 
-func loadBalancerDescribeJSON(resp *hcloud.Response) error {
+func describeJSON(resp *hcloud.Response) error {
 	var data map[string]interface{}
 	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
 		return err

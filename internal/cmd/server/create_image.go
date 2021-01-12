@@ -17,8 +17,8 @@ func newCreateImageCommand(cli *state.State) *cobra.Command {
 		Args:                  cobra.ExactArgs(1),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		PreRunE:               util.ChainRunE(validateServerCreateImage, cli.EnsureToken),
-		RunE:                  cli.Wrap(runServerCreateImage),
+		PreRunE:               util.ChainRunE(validateCreateImage, cli.EnsureToken),
+		RunE:                  cli.Wrap(runCreateImage),
 	}
 	cmd.Flags().String("type", "", "Image type (required)")
 	cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("backup", "snapshot"))
@@ -31,7 +31,7 @@ func newCreateImageCommand(cli *state.State) *cobra.Command {
 	return cmd
 }
 
-func validateServerCreateImage(cmd *cobra.Command, args []string) error {
+func validateCreateImage(cmd *cobra.Command, args []string) error {
 	imageType, _ := cmd.Flags().GetString("type")
 	switch hcloud.ImageType(imageType) {
 	case hcloud.ImageTypeBackup, hcloud.ImageTypeSnapshot:
@@ -43,7 +43,7 @@ func validateServerCreateImage(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func runServerCreateImage(cli *state.State, cmd *cobra.Command, args []string) error {
+func runCreateImage(cli *state.State, cmd *cobra.Command, args []string) error {
 	idOrName := args[0]
 	server, _, err := cli.Client().Server.Get(cli.Context, idOrName)
 	if err != nil {

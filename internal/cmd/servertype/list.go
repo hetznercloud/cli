@@ -12,10 +12,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var serverTypeListTableOutput *output.Table
+var listTableOutput *output.Table
 
 func init() {
-	serverTypeListTableOutput = output.NewTable().
+	listTableOutput = output.NewTable().
 		AddAllowedFields(hcloud.ServerType{}).
 		AddFieldAlias("storagetype", "storage type").
 		AddFieldFn("memory", output.FieldFn(func(obj interface{}) string {
@@ -34,18 +34,18 @@ func newListCommand(cli *state.State) *cobra.Command {
 		Short: "List server types",
 		Long: util.ListLongDescription(
 			"Displays a list of server types.",
-			serverTypeListTableOutput.Columns(),
+			listTableOutput.Columns(),
 		),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runServerTypeList),
+		RunE:                  cli.Wrap(runList),
 	}
-	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(serverTypeListTableOutput.Columns()), output.OptionJSON())
+	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(listTableOutput.Columns()), output.OptionJSON())
 	return cmd
 }
 
-func runServerTypeList(cli *state.State, cmd *cobra.Command, args []string) error {
+func runList(cli *state.State, cmd *cobra.Command, args []string) error {
 	outOpts := output.FlagsForCommand(cmd)
 
 	serverTypes, err := cli.Client().ServerType.All(cli.Context)
@@ -66,7 +66,7 @@ func runServerTypeList(cli *state.State, cmd *cobra.Command, args []string) erro
 		cols = outOpts["columns"]
 	}
 
-	tw := serverTypeListTableOutput
+	tw := listTableOutput
 	if err = tw.ValidateColumns(cols); err != nil {
 		return err
 	}

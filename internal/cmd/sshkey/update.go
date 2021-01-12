@@ -19,7 +19,7 @@ func newUpdateCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runSSHKeyUpdate),
+		RunE:                  cli.Wrap(runUpdate),
 	}
 
 	cmd.Flags().String("name", "", "SSH key name")
@@ -27,7 +27,7 @@ func newUpdateCommand(cli *state.State) *cobra.Command {
 	return cmd
 }
 
-func runSSHKeyUpdate(cli *state.State, cmd *cobra.Command, args []string) error {
+func runUpdate(cli *state.State, cmd *cobra.Command, args []string) error {
 	idOrName := args[0]
 	sshKey, _, err := cli.Client().SSHKey.Get(cli.Context, idOrName)
 	if err != nil {

@@ -22,12 +22,12 @@ func newEnableProtectionCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runLoadBalancerEnableProtection),
+		RunE:                  cli.Wrap(runEnableProtection),
 	}
 	return cmd
 }
 
-func runLoadBalancerEnableProtection(cli *state.State, cmd *cobra.Command, args []string) error {
+func runEnableProtection(cli *state.State, cmd *cobra.Command, args []string) error {
 	idOrName := args[0]
 	LoadBalancer, _, err := cli.Client().LoadBalancer.Get(cli.Context, idOrName)
 	if err != nil {

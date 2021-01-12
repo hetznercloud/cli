@@ -18,15 +18,15 @@ func newAddLabelCommand(cli *state.State) *cobra.Command {
 		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.FloatingIPNames)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		PreRunE:               util.ChainRunE(validateFloatingIPAddLabel, cli.EnsureToken),
-		RunE:                  cli.Wrap(runFloatingIPAddLabel),
+		PreRunE:               util.ChainRunE(validateAddLabel, cli.EnsureToken),
+		RunE:                  cli.Wrap(runAddLabel),
 	}
 
 	cmd.Flags().BoolP("overwrite", "o", false, "Overwrite label if it exists already")
 	return cmd
 }
 
-func validateFloatingIPAddLabel(cmd *cobra.Command, args []string) error {
+func validateAddLabel(cmd *cobra.Command, args []string) error {
 	label := util.SplitLabel(args[1])
 	if len(label) != 2 {
 		return fmt.Errorf("invalid label: %s", args[1])
@@ -35,7 +35,7 @@ func validateFloatingIPAddLabel(cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func runFloatingIPAddLabel(cli *state.State, cmd *cobra.Command, args []string) error {
+func runAddLabel(cli *state.State, cmd *cobra.Command, args []string) error {
 	overwrite, _ := cmd.Flags().GetBool("overwrite")
 
 	idOrName := args[0]

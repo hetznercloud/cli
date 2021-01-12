@@ -17,12 +17,12 @@ func newDeleteCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runServerDelete),
+		RunE:                  cli.Wrap(runDelete),
 	}
 	return cmd
 }
 
-func runServerDelete(cli *state.State, cmd *cobra.Command, args []string) error {
+func runDelete(cli *state.State, cmd *cobra.Command, args []string) error {
 	idOrName := args[0]
 	server, _, err := cli.Client().Server.Get(cli.Context, idOrName)
 	if err != nil {

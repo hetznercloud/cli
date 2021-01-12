@@ -19,12 +19,12 @@ func newCreateCommand(cli *state.State) *cobra.Command {
 		Args:                  cobra.ExactArgs(1),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE:                  cli.Wrap(runContextCreate),
+		RunE:                  cli.Wrap(runCreate),
 	}
 	return cmd
 }
 
-func runContextCreate(cli *state.State, cmd *cobra.Command, args []string) error {
+func runCreate(cli *state.State, cmd *cobra.Command, args []string) error {
 	if !cli.Terminal() {
 		return errors.New("context create is an interactive command")
 	}

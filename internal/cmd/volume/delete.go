@@ -17,12 +17,12 @@ func newDeleteCommand(cli *state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runVolumeDelete),
+		RunE:                  cli.Wrap(runDelete),
 	}
 	return cmd
 }
 
-func runVolumeDelete(cli *state.State, cmd *cobra.Command, args []string) error {
+func runDelete(cli *state.State, cmd *cobra.Command, args []string) error {
 	volume, _, err := cli.Client().Volume.Get(cli.Context, args[0])
 	if err != nil {
 		return err
