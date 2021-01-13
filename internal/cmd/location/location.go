@@ -1,6 +1,7 @@
 package location
 
 import (
+	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/spf13/cobra"
 )
@@ -15,7 +16,7 @@ func NewCommand(cli *state.State) *cobra.Command {
 	}
 	cmd.AddCommand(
 		newListCommand(cli),
-		newDescribeCommand(cli),
+		newDescribeCommand(cli.Context, hcapi2.NewClient(cli.Client()), cli, cli),
 	)
 	return cmd
 }

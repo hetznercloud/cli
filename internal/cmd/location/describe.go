@@ -1,37 +1,52 @@
 package location
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
+	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
 
-func newDescribeCommand(cli *state.State) *cobra.Command {
+type describer struct {
+	client hcapi2.Client
+}
+
+func newDescribeCommand(
+	ctx context.Context,
+	client hcapi2.Client,
+	tokenEnsurer state.TokenEnsurer,
+	actionWaiter state.ActionWaiter,
+) *cobra.Command {
+	d := describer{
+		client: client,
+	}
+
 	cmd := &cobra.Command{
 		Use:                   "describe [FLAGS] LOCATION",
 		Short:                 "Describe a location",
 		Args:                  cobra.ExactArgs(1),
-		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.LocationNames)),
+		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Location().Names)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runDescribe),
+		PreRunE:               tokenEnsurer.EnsureToken,
+		RunE:                  state.WrapCtx(ctx, d.describe),
 	}
 	output.AddFlag(cmd, output.OptionJSON(), output.OptionFormat())
 	return cmd
 }
 
-func runDescribe(cli *state.State, cmd *cobra.Command, args []string) error {
+func (d *describer) describe(ctx context.Context, cmd *cobra.Command, args []string) error {
 	outputFlags := output.FlagsForCommand(cmd)
 
 	idOrName := args[0]
-	location, resp, err := cli.Client().Location.Get(cli.Context, idOrName)
+	location, resp, err := d.client.Location().Get(ctx, idOrName)
 	if err != nil {
 		return err
 	}
@@ -45,11 +60,11 @@ func runDescribe(cli *state.State, cmd *cobra.Command, args []string) error {
 	case outputFlags.IsSet("format"):
 		return util.DescribeFormat(location, outputFlags["format"][0])
 	default:
-		return describeText(cli, location)
+		return describeText(location)
 	}
 }
 
-func describeText(cli *state.State, location *hcloud.Location) error {
+func describeText(location *hcloud.Location) error {
 	fmt.Printf("ID:\t\t%d\n", location.ID)
 	fmt.Printf("Name:\t\t%s\n", location.Name)
 	fmt.Printf("Description:\t%s\n", location.Description)

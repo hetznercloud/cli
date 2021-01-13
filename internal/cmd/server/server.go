@@ -1,6 +1,7 @@
 package server
 
 import (
+	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/spf13/cobra"
 )
@@ -16,7 +17,7 @@ func NewCommand(cli *state.State) *cobra.Command {
 	cmd.AddCommand(
 		newListCommand(cli),
 		newDescribeCommand(cli),
-		newCreateCommand(cli),
+		newCreateCommand(cli.Context, hcapi2.NewClient(cli.Client()), cli, cli),
 		newDeleteCommand(cli),
 		newRebootCommand(cli),
 		newPoweronCommand(cli),
