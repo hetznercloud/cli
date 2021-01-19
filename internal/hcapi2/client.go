@@ -1,6 +1,7 @@
 package hcapi2
 
 import (
+	"github.com/golang/mock/gomock"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 )
 
@@ -60,4 +61,66 @@ func (c *client) SSHKey() SSHKeyClient {
 
 func (c *client) Volume() VolumeClient {
 	return NewVolumeClient(&c.client.Volume)
+}
+
+type MockClient struct {
+	DatacenterClient *MockDatacenterClient
+	FirewallClient   *MockFirewallClient
+	ImageClient      *MockImageClient
+	LocationClient   *MockLocationClient
+	NetworkClient    *MockNetworkClient
+	ServerClient     *MockServerClient
+	ServerTypeClient *MockServerTypeClient
+	SSHKeyClient     *MockSSHKeyClient
+	VolumeClient     *MockVolumeClient
+}
+
+func NewMockClient(ctrl *gomock.Controller) *MockClient {
+	return &MockClient{
+		DatacenterClient: NewMockDatacenterClient(ctrl),
+		FirewallClient:   NewMockFirewallClient(ctrl),
+		ImageClient:      NewMockImageClient(ctrl),
+		LocationClient:   NewMockLocationClient(ctrl),
+		NetworkClient:    NewMockNetworkClient(ctrl),
+		ServerClient:     NewMockServerClient(ctrl),
+		ServerTypeClient: NewMockServerTypeClient(ctrl),
+		SSHKeyClient:     NewMockSSHKeyClient(ctrl),
+		VolumeClient:     NewMockVolumeClient(ctrl),
+	}
+}
+
+func (c *MockClient) Datacenter() DatacenterClient {
+	return c.DatacenterClient
+}
+
+func (c *MockClient) Firewall() FirewallClient {
+	return c.FirewallClient
+}
+
+func (c *MockClient) Image() ImageClient {
+	return c.ImageClient
+}
+
+func (c *MockClient) Location() LocationClient {
+	return c.LocationClient
+}
+
+func (c *MockClient) Network() NetworkClient {
+	return c.NetworkClient
+}
+
+func (c *MockClient) Server() ServerClient {
+	return c.ServerClient
+}
+
+func (c *MockClient) ServerType() ServerTypeClient {
+	return c.ServerTypeClient
+}
+
+func (c *MockClient) SSHKey() SSHKeyClient {
+	return c.SSHKeyClient
+}
+
+func (c *MockClient) Volume() VolumeClient {
+	return c.VolumeClient
 }
