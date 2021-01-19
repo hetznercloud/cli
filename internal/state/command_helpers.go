@@ -7,6 +7,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+//go:generate mockgen -package state -destination command_helper_mocks.go . ActionWaiter,TokenEnsurer
+
 type ActionWaiter interface {
 	ActionProgress(context.Context, *hcloud.Action) error
 	WaitForActions(context.Context, []*hcloud.Action) error

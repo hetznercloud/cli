@@ -4,6 +4,7 @@ require (
 	github.com/cheggaaa/pb/v3 v3.0.7
 	github.com/dustin/go-humanize v1.0.0
 	github.com/fatih/structs v1.1.0
+	github.com/golang/mock v1.5.0
 	github.com/google/go-cmp v0.5.2 // indirect
 	github.com/guptarohit/asciigraph v0.5.1
 	github.com/hetznercloud/hcloud-go v1.25.0
