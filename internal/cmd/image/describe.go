@@ -53,7 +53,7 @@ func runDescribe(cli *state.State, cmd *cobra.Command, args []string) error {
 func describeText(cli *state.State, image *hcloud.Image) error {
 	fmt.Printf("ID:\t\t%d\n", image.ID)
 	fmt.Printf("Type:\t\t%s\n", image.Type)
-	fmt.Printf("Status:\t\t%s\n", image.Status)
+	fmt.Printf("Status:\t%s\n", image.Status)
 	fmt.Printf("Name:\t\t%s\n", util.NA(image.Name))
 	fmt.Printf("Created:\t%s (%s)\n", util.Datetime(image.Created), humanize.Time(image.Created))
 	if !image.Deprecated.IsZero() {
