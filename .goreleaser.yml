@@ -30,6 +30,17 @@ builds:
       - darwin
     goarch:
       - amd64
+  - id: "hcloud-macos-arm-build"
+    main: ./cmd/hcloud/main.go
+    binary: hcloud
+    ldflags:
+      - -w -X github.com/hetznercloud/cli/internal/version.Version={{.Version}}
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - darwin
+    goarch:
+      - arm64
 
 before:
   hooks:
@@ -53,6 +64,15 @@ signs:
     artifacts: all
     signature: "hcloud-macos-amd64.zip"
     id: hcloud-macos-sign
+  - ids:
+      - hcloud-macos-build-arm64
+    cmd: gon
+    args:
+      - -log-json
+      - gon.hcl
+    artifacts: all
+    signature: "hcloud-macos-arm64.zip"
+    id: hcloud-macos-sign-arm64
   - artifacts: all
     signature: "${artifact}.sig"
     id: hcloud-sign

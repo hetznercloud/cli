@@ -15,21 +15,29 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.15.x
+          go-version: 1.16.x
       - name: Print Go Version
         run: go version
+      - name: Import GPG key
+        id: import_gpg
+        uses: crazy-max/ghaction-import-gpg@v3
+        with:
+          gpg-private-key: ${{ secrets.GPG_KEY }}
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v1
+        uses: goreleaser/goreleaser-action@v2
         with:
           version: latest
           args: release --rm-dist --skip-publish --skip-sign
-          key: ${{ secrets.GPG_KEY }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/upload-artifact@v2
         with:
-          name: Upload macOS Build Artifact
+          name: Upload macOS (amd64) Build Artifact
           path: dist/hcloud-macos-build_darwin_amd64/hcloud
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Upload macOS (arm64) Build Artifact
+          path: dist/hcloud-macos-arm-build_darwin_arm64/hcloud
       - uses: actions/upload-artifact@v1
         with:
           name: Upload Windows AMD64 Build Artifact
