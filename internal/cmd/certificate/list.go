@@ -63,8 +63,15 @@ func runList(cli *state.State, cmd *cobra.Command, args []string) error {
 				Fingerprint:    cert.Fingerprint,
 				Labels:         cert.Labels,
 				Name:           cert.Name,
+				Type:           cert.Type,
 				NotValidAfter:  cert.NotValidAfter,
 				NotValidBefore: cert.NotValidBefore,
+			}
+			if len(cert.UsedBy) > 0 {
+				certSchema.UsedBy = make([]schema.CertificateUsedByRef, len(cert.UsedBy))
+				for i, ub := range cert.UsedBy {
+					certSchema.UsedBy[i] = schema.CertificateUsedByRef{ID: ub.ID, Type: ub.Type}
+				}
 			}
 			certSchemas = append(certSchemas, certSchema)
 		}
@@ -72,7 +79,7 @@ func runList(cli *state.State, cmd *cobra.Command, args []string) error {
 		return util.DescribeJSON(certSchemas)
 	}
 
-	cols := []string{"id", "name", "domain_names", "not_valid_after"}
+	cols := []string{"id", "name", "type", "domain_names", "not_valid_after"}
 	if outOpts.IsSet("columns") {
 		cols = outOpts["columns"]
 	}

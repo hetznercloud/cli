@@ -347,6 +347,17 @@ func (c *State) LoadBalancerNames() []string {
 	return c.loadBalancerClient.LoadBalancerNames()
 }
 
+func (c *State) LoadBalancerName(id int) string {
+	if c.loadBalancerClient == nil {
+		client := c.Client()
+		c.loadBalancerClient = &hcapi.LoadBalancerClient{
+			LoadBalancerClient: &client.LoadBalancer,
+			TypeClient:         &client.LoadBalancerType,
+		}
+	}
+	return c.loadBalancerClient.LoadBalancerName(id)
+}
+
 func (c *State) LoadBalancerLabelKeys(idOrName string) []string {
 	if c.loadBalancerClient == nil {
 		client := c.Client()
