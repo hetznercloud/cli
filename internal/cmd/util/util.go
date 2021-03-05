@@ -13,6 +13,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/hcloud/schema"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 )
 
 func YesNo(b bool) string {
@@ -235,4 +236,25 @@ func LoadBalancerTypeToSchema(loadBalancerType hcloud.LoadBalancerType) schema.L
 		})
 	}
 	return loadBalancerTypeSchema
+}
+
+// ValidateRequiredFlags ensures that flags has values for all flags with
+// the passed names.
+//
+// This function duplicates the functionality cobra provides when calling
+// MarkFlagRequired. However, in some cases a flag cannot be marked as required
+// in cobra, for example when it depends on other flags. In those cases this
+// function comes in handy.
+func ValidateRequiredFlags(flags *pflag.FlagSet, names ...string) error {
+	var missingFlags []string
+
+	for _, name := range names {
+		if !flags.Changed(name) {
+			missingFlags = append(missingFlags, `"`+name+`"`)
+		}
+	}
+	if len(missingFlags) > 0 {
+		return fmt.Errorf("hcloud: required flag(s) %s not set", strings.Join(missingFlags, ", "))
+	}
+	return nil
 }

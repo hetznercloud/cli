@@ -67,10 +67,19 @@ func describeJSON(resp *hcloud.Response) error {
 func describeText(cli *state.State, cert *hcloud.Certificate) error {
 	fmt.Printf("ID:\t\t\t%d\n", cert.ID)
 	fmt.Printf("Name:\t\t\t%s\n", cert.Name)
+	fmt.Printf("Type:\t\t\t%s\n", cert.Type)
 	fmt.Printf("Fingerprint:\t\t%s\n", cert.Fingerprint)
 	fmt.Printf("Created:\t\t%s (%s)\n", util.Datetime(cert.Created), humanize.Time(cert.Created))
 	fmt.Printf("Not valid before:\t%s (%s)\n", util.Datetime(cert.NotValidBefore), humanize.Time(cert.NotValidBefore))
 	fmt.Printf("Not valid after:\t%s (%s)\n", util.Datetime(cert.NotValidAfter), humanize.Time(cert.NotValidAfter))
+	if cert.Status != nil {
+		fmt.Printf("Status:\n")
+		fmt.Printf("  Issuance: %s\n", cert.Status.Issuance)
+		fmt.Printf("  Renewal: %s\n", cert.Status.Renewal)
+		if cert.Status.IsFailed() {
+			fmt.Printf("  Failure reason: %s\n", cert.Status.FailureReason)
+		}
+	}
 	fmt.Printf("Domain names:\n")
 	for _, domainName := range cert.DomainNames {
 		fmt.Printf("  - %s\n", domainName)
@@ -81,6 +90,22 @@ func describeText(cli *state.State, cert *hcloud.Certificate) error {
 	} else {
 		for key, value := range cert.Labels {
 			fmt.Printf("  %s:\t%s\n", key, value)
+		}
+	}
+	fmt.Println("Used By:")
+	if len(cert.UsedBy) == 0 {
+		fmt.Println("  Certificate unused")
+	} else {
+		for _, ub := range cert.UsedBy {
+			fmt.Printf("  - Type: %s", ub.Type)
+			// Currently certificates can be only attached to load balancers.
+			// If we ever get something that is not a load balancer fall back
+			// to printing the ID.
+			if ub.Type != "load_balancer" {
+				fmt.Printf("  - ID: %d", ub.ID)
+				continue
+			}
+			fmt.Printf("  - Name: %s", cli.LoadBalancerName(ub.ID))
 		}
 	}
 	return nil

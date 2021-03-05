@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"io/ioutil"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
@@ -23,16 +25,38 @@ func newCreateCommand(cli *state.State) *cobra.Command {
 	cmd.Flags().String("name", "", "Certificate name (required)")
 	cmd.MarkFlagRequired("name")
 
-	cmd.Flags().String("cert-file", "", "File containing the PEM encoded certificate (required)")
-	cmd.MarkFlagRequired("cert-file")
+	cmd.Flags().StringP("type", "t", string(hcloud.CertificateTypeUploaded),
+		fmt.Sprintf("Type of certificate to create. Valid choices: %v, %v",
+			hcloud.CertificateTypeUploaded, hcloud.CertificateTypeManaged))
+	cmd.RegisterFlagCompletionFunc(
+		"type",
+		cmpl.SuggestCandidates(string(hcloud.CertificateTypeUploaded), string(hcloud.CertificateTypeManaged)),
+	)
 
-	cmd.Flags().String("key-file", "", "File containing the PEM encoded private key for the certificate (required)")
-	cmd.MarkFlagRequired("key-file")
+	cmd.Flags().String("cert-file", "", "File containing the PEM encoded certificate (required if type is uploaded)")
+	cmd.Flags().String("key-file", "",
+		"File containing the PEM encoded private key for the certificate (required if type is uploaded)")
+	cmd.Flags().StringSlice("domain", nil, "One or more domains the certificate is valid for.")
 
 	return cmd
 }
 
 func runCreate(cli *state.State, cmd *cobra.Command, args []string) error {
+	certType, err := cmd.Flags().GetString("type")
+	if err != nil {
+		return err
+	}
+	switch hcloud.CertificateType(certType) {
+	case hcloud.CertificateTypeUploaded:
+		return createUploaded(cli, cmd, args)
+	case hcloud.CertificateTypeManaged:
+		return createManaged(cli, cmd, args)
+	default:
+		return createUploaded(cli, cmd, args)
+	}
+}
+
+func createUploaded(cli *state.State, cmd *cobra.Command, args []string) error {
 	var (
 		name string
 
@@ -42,6 +66,10 @@ func runCreate(cli *state.State, cmd *cobra.Command, args []string) error {
 
 		err error
 	)
+
+	if err = util.ValidateRequiredFlags(cmd.Flags(), "cert-file", "key-file"); err != nil {
+		return err
+	}
 	if name, err = cmd.Flags().GetString("name"); err != nil {
 		return err
 	}
@@ -60,13 +88,47 @@ func runCreate(cli *state.State, cmd *cobra.Command, args []string) error {
 	}
 
 	createOpts := hcloud.CertificateCreateOpts{
-		Certificate: string(certPEM),
 		Name:        name,
+		Type:        hcloud.CertificateTypeUploaded,
+		Certificate: string(certPEM),
 		PrivateKey:  string(keyPEM),
 	}
 	if cert, _, err = cli.Client().Certificate.Create(cli.Context, createOpts); err != nil {
 		return err
 	}
 	fmt.Printf("Certificate %d created\n", cert.ID)
+	return nil
+}
+
+func createManaged(cli *state.State, cmd *cobra.Command, args []string) error {
+	var (
+		name    string
+		domains []string
+		res     hcloud.CertificateCreateResult
+		err     error
+	)
+
+	if name, err = cmd.Flags().GetString("name"); err != nil {
+		return nil
+	}
+	if err = util.ValidateRequiredFlags(cmd.Flags(), "domain"); err != nil {
+		return err
+	}
+	if domains, err = cmd.Flags().GetStringSlice("domain"); err != nil {
+		return nil
+	}
+
+	createOpts := hcloud.CertificateCreateOpts{
+		Name:        name,
+		Type:        hcloud.CertificateTypeManaged,
+		DomainNames: domains,
+	}
+	if res, _, err = cli.Client().Certificate.CreateCertificate(cli.Context, createOpts); err != nil {
+		return err
+	}
+	if err := cli.ActionProgress(cli.Context, res.Action); err != nil {
+		return err
+	}
+	fmt.Printf("Certificate %d created\n", res.Certificate.ID)
 	return nil
 }
