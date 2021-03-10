@@ -71,6 +71,22 @@ func (c *State) CertificateLabelKeys(idOrName string) []string {
 	return c.certificateClient.CertificateLabelKeys(idOrName)
 }
 
+func (c *State) FirewallNames() []string {
+	if c.firewallClient == nil {
+		client := c.Client()
+		c.firewallClient = &hcapi.FirewallClient{FirewallClient: &client.Firewall}
+	}
+	return c.firewallClient.FirewallNames()
+}
+
+func (c *State) FirewallLabelKeys(idOrName string) []string {
+	if c.firewallClient == nil {
+		client := c.Client()
+		c.firewallClient = &hcapi.FirewallClient{FirewallClient: &client.Firewall}
+	}
+	return c.firewallClient.FirewallLabelKeys(idOrName)
+}
+
 func (c *State) FloatingIPNames() []string {
 	if c.floatingIPClient == nil {
 		client := c.Client()
@@ -165,7 +181,11 @@ func (c *State) Terminal() bool {
 }
 
 func (c *State) ActionProgress(ctx context.Context, action *hcloud.Action) error {
-	progressCh, errCh := c.Client().Action.WatchProgress(ctx, action)
+	return c.ActionsProgresses(ctx, []*hcloud.Action{action})
+}
+
+func (c *State) ActionsProgresses(ctx context.Context, actions []*hcloud.Action) error {
+	progressCh, errCh := c.Client().Action.WatchOverallProgress(ctx, actions)
 
 	if c.Terminal() {
 		progress := pb.New(100)
