@@ -8,6 +8,7 @@ on:
 jobs:
   release-cli:
     runs-on: macos-latest
+    timeout-minutes: 360
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -34,9 +35,10 @@ jobs:
           gpg-private-key: ${{ secrets.GPG_KEY }}
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
+        timeout-minutes: 340
         with:
           version: latest
-          args: release --rm-dist --skip-validate --parallelism=1
+          args: release --rm-dist --skip-validate --parallelism=2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HC_APPLE_DEVELOPER_USER: ${{ secrets.HC_APPLE_DEVELOPER_USER }}
