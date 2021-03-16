@@ -81,7 +81,7 @@ func runAddRule(cli *state.State, cmd *cobra.Command, args []string) error {
 			if err != nil {
 				return fmt.Errorf("invalid CIDR on index %d : %s", i, err)
 			}
-			rule.DestinationIPs[i] = *n
+			rule.DestinationIPs = append(rule.DestinationIPs, *n)
 		}
 	case hcloud.FirewallRuleDirectionIn:
 		rule.SourceIPs = make([]net.IPNet, 0, len(sourceIPs))
@@ -90,7 +90,7 @@ func runAddRule(cli *state.State, cmd *cobra.Command, args []string) error {
 			if err != nil {
 				return fmt.Errorf("invalid CIDR on index %d : %s", i, err)
 			}
-			rule.SourceIPs[i] = *n
+			rule.SourceIPs = append(rule.SourceIPs, *n)
 		}
 	}
 
