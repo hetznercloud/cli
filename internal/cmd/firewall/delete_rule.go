@@ -56,14 +56,6 @@ func runDeleteRule(cli *state.State, cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("Firewall not found: %v", idOrName)
 	}
 
-	var sourceNets []net.IPNet
-	for i, sourceIP := range sourceIPs {
-		_, sourceNet, err := net.ParseCIDR(sourceIP)
-		if err != nil {
-			return fmt.Errorf("invalid CIDR on index %d : %s", i, err)
-		}
-		sourceNets = append(sourceNets, *sourceNet)
-	}
 	d := hcloud.FirewallRuleDirection(direction)
 	rule := hcloud.FirewallRule{
 		Direction: d,
@@ -74,20 +66,20 @@ func runDeleteRule(cli *state.State, cmd *cobra.Command, args []string) error {
 	}
 	switch d {
 	case hcloud.FirewallRuleDirectionOut:
-		rule.DestinationIPs = make([]net.IPNet, 0, len(destinationIPs))
+		rule.DestinationIPs = make([]net.IPNet, len(destinationIPs))
 		for i, ip := range destinationIPs {
-			_, n, err := net.ParseCIDR(ip)
+			n, err := validateFirewallIP(ip)
 			if err != nil {
-				return fmt.Errorf("invalid CIDR on index %d : %s", i, err)
+				return fmt.Errorf("destination ips error on index %d: %s", i, err)
 			}
 			rule.DestinationIPs[i] = *n
 		}
 	case hcloud.FirewallRuleDirectionIn:
-		rule.SourceIPs = make([]net.IPNet, 0, len(sourceIPs))
+		rule.SourceIPs = make([]net.IPNet, len(sourceIPs))
 		for i, ip := range sourceIPs {
-			_, n, err := net.ParseCIDR(ip)
+			n, err := validateFirewallIP(ip)
 			if err != nil {
-				return fmt.Errorf("invalid CIDR on index %d : %s", i, err)
+				return fmt.Errorf("source ips error on index %d: %s", i, err)
 			}
 			rule.SourceIPs[i] = *n
 		}
