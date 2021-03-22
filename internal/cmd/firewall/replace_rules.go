@@ -69,7 +69,7 @@ func runFirewallReplaceRules(cli *state.State, cmd *cobra.Command, args []string
 		}
 		switch d {
 		case hcloud.FirewallRuleDirectionOut:
-			r.DestinationIPs = make([]net.IPNet, 0, len(rule.DestinationIPs))
+			r.DestinationIPs = make([]net.IPNet, len(rule.DestinationIPs))
 			for i, ip := range rule.DestinationIPs {
 				_, n, err := net.ParseCIDR(ip)
 				if err != nil {
@@ -78,7 +78,7 @@ func runFirewallReplaceRules(cli *state.State, cmd *cobra.Command, args []string
 				r.DestinationIPs[i] = *n
 			}
 		case hcloud.FirewallRuleDirectionIn:
-			r.SourceIPs = make([]net.IPNet, 0, len(rule.SourceIPs))
+			r.SourceIPs = make([]net.IPNet, len(rule.SourceIPs))
 			for i, ip := range rule.SourceIPs {
 				_, n, err := net.ParseCIDR(ip)
 				if err != nil {
