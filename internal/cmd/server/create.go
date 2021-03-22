@@ -57,8 +57,11 @@ func newCreateCommand(cli *state.State) *cobra.Command {
 	cmd.Flags().StringSlice("volume", nil, "ID or name of volume to attach (can be specified multiple times)")
 	cmd.RegisterFlagCompletionFunc("volume", cmpl.SuggestCandidatesF(cli.VolumeNames))
 
-	cmd.Flags().StringSlice("network", nil, "ID of network to attach the server to (can be specified multiple times)")
+	cmd.Flags().StringSlice("network", nil, "ID or name of network to attach the server to (can be specified multiple times)")
 	cmd.RegisterFlagCompletionFunc("network", cmpl.SuggestCandidatesF(cli.NetworkNames))
+
+	cmd.Flags().StringSlice("firewall", nil, "ID or name of Firewall to attach the server to (can be specified multiple times)")
+	cmd.RegisterFlagCompletionFunc("firewall", cmpl.SuggestCandidatesF(cli.FirewallNames))
 
 	cmd.Flags().Bool("automount", false, "Automount volumes after attach (default: false)")
 	cmd.Flags().Bool("allow-deprecated-image", false, "Enable the use of deprecated images (default: false)")
@@ -174,6 +177,7 @@ func optsFromFlags(cli *state.State, flags *pflag.FlagSet) (opts hcloud.ServerCr
 	labels, _ := flags.GetStringToString("label")
 	volumes, _ := flags.GetStringSlice("volume")
 	networks, _ := flags.GetStringSlice("network")
+	firewalls, _ := flags.GetStringSlice("firewall")
 	automount, _ := flags.GetBool("automount")
 	allowDeprecatedImage, _ := flags.GetBool("allow-deprecated-image")
 
@@ -262,18 +266,31 @@ func optsFromFlags(cli *state.State, flags *pflag.FlagSet) (opts hcloud.ServerCr
 		}
 		opts.Volumes = append(opts.Volumes, volume)
 	}
-	for _, networkID := range networks {
+	for _, networkIDOrName := range networks {
 		var network *hcloud.Network
-		network, _, err = cli.Client().Network.Get(cli.Context, networkID)
+		network, _, err = cli.Client().Network.Get(cli.Context, networkIDOrName)
 		if err != nil {
 			return
 		}
 
 		if network == nil {
-			err = fmt.Errorf("network not found: %s", networkID)
+			err = fmt.Errorf("network not found: %s", networkIDOrName)
 			return
 		}
 		opts.Networks = append(opts.Networks, network)
+	}
+	for _, firewallIDOrName := range firewalls {
+		var firewall *hcloud.Firewall
+		firewall, _, err = cli.Client().Firewall.Get(cli.Context, firewallIDOrName)
+		if err != nil {
+			return
+		}
+
+		if firewall == nil {
+			err = fmt.Errorf("firewall not found: %s", firewallIDOrName)
+			return
+		}
+		opts.Firewalls = append(opts.Firewalls, &hcloud.ServerCreateFirewall{Firewall: *firewall})
 	}
 
 	if datacenter != "" {
