@@ -15,6 +15,11 @@ On macOS, you can install `hcloud` via [Homebrew](https://brew.sh/):
 
     brew install hcloud
 
+
+On Windows, you can install `hcloud` via [Scoop](https://scoop.sh/)
+
+    scoop install hcloud
+
 ### Third-party packages
 
 There are unofficial packages maintained by third-party users. Please note
