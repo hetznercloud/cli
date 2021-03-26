@@ -63,7 +63,7 @@ func runList(cli *state.State, cmd *cobra.Command, args []string) error {
 				Fingerprint:    cert.Fingerprint,
 				Labels:         cert.Labels,
 				Name:           cert.Name,
-				Type:           cert.Type,
+				Type:           string(cert.Type),
 				NotValidAfter:  cert.NotValidAfter,
 				NotValidBefore: cert.NotValidBefore,
 			}
@@ -111,6 +111,21 @@ func describeTableOutput() *output.Table {
 		AddFieldFn("not_valid_after", func(obj interface{}) string {
 			cert := obj.(*hcloud.Certificate)
 			return util.Datetime(cert.NotValidAfter)
+		}).
+		AddFieldFn("issuance_status", func(obj interface{}) string {
+			cert := obj.(*hcloud.Certificate)
+			if cert.Type != hcloud.CertificateTypeManaged {
+				return "n/a"
+			}
+			return string(cert.Status.Issuance)
+		}).
+		AddFieldFn("renewal_status", func(obj interface{}) string {
+			cert := obj.(*hcloud.Certificate)
+			if cert.Type != hcloud.CertificateTypeManaged ||
+				cert.Status.Renewal == hcloud.CertificateStatusTypeUnavailable {
+				return "n/a"
+			}
+			return string(cert.Status.Renewal)
 		}).
 		AddFieldFn("domain_names", func(obj interface{}) string {
 			cert := obj.(*hcloud.Certificate)

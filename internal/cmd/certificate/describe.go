@@ -77,7 +77,7 @@ func describeText(cli *state.State, cert *hcloud.Certificate) error {
 		fmt.Printf("  Issuance: %s\n", cert.Status.Issuance)
 		fmt.Printf("  Renewal: %s\n", cert.Status.Renewal)
 		if cert.Status.IsFailed() {
-			fmt.Printf("  Failure reason: %s\n", cert.Status.FailureReason)
+			fmt.Printf("  Failure reason: %s\n", cert.Status.Error.Message)
 		}
 	}
 	fmt.Printf("Domain names:\n")
