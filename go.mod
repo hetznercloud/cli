@@ -19,6 +19,6 @@ require (
 	golang.org/x/crypto v0.0.0-20210322153248-0c34fe9e7dc2
 )
 
-replace github.com/hetznercloud/hcloud-go => hetzner.cloud/integrations/hcloud-go v1.25.0-rc.3 // TODO: Remove before release
+replace github.com/hetznercloud/hcloud-go => hetzner.cloud/integrations/hcloud-go v1.25.0-rc.4 // TODO: Remove before release
 
 go 1.16
