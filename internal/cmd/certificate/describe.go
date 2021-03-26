@@ -101,7 +101,7 @@ func describeText(cli *state.State, cert *hcloud.Certificate) error {
 			// Currently certificates can be only attached to load balancers.
 			// If we ever get something that is not a load balancer fall back
 			// to printing the ID.
-			if ub.Type != "load_balancer" {
+			if ub.Type != hcloud.CertificateUsedByRefTypeLoadBalancer {
 				fmt.Printf("  - ID: %d", ub.ID)
 				continue
 			}

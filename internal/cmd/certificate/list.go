@@ -70,7 +70,10 @@ func runList(cli *state.State, cmd *cobra.Command, args []string) error {
 			if len(cert.UsedBy) > 0 {
 				certSchema.UsedBy = make([]schema.CertificateUsedByRef, len(cert.UsedBy))
 				for i, ub := range cert.UsedBy {
-					certSchema.UsedBy[i] = schema.CertificateUsedByRef{ID: ub.ID, Type: ub.Type}
+					certSchema.UsedBy[i] = schema.CertificateUsedByRef{
+						ID:   ub.ID,
+						Type: string(ub.Type),
+					}
 				}
 			}
 			certSchemas = append(certSchemas, certSchema)
