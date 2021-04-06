@@ -81,9 +81,20 @@ To load completions into the current shell execute:
 In order to make the completions permanent execute once:
 
      hcloud completion fish > ~/.config/fish/completions/hcloud.fish
+
+### PowerShell:
+
+To load completions into the current shell execute:
+
+  PS> hcloud completion powershell | Out-String | Invoke-Expression
+
+To load completions for every new session, run 
+and source this file from your PowerShell profile.
+
+  PS> hcloud completion powershell > hcloud.ps1
 `,
 		Args:                  cobra.ExactArgs(1),
-		ValidArgs:             []string{"bash", "fish", "zsh"},
+		ValidArgs:             []string{"bash", "fish", "zsh", "powershell"},
 		DisableFlagsInUseLine: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var err error
@@ -95,6 +106,8 @@ In order to make the completions permanent execute once:
 				err = cmd.Root().GenFishCompletion(os.Stdout, true)
 			case "zsh":
 				err = cmd.Root().GenZshCompletion(os.Stdout)
+			case "powershell":
+				err = cmd.Root().GenPowerShellCompletion(os.Stdout)
 			default:
 				err = fmt.Errorf("Unsupported shell: %s", args[0])
 			}

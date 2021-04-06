@@ -82,7 +82,7 @@ To load completions for each session execute the following commands:
     mkdir -p ~/.config/hcloud/completion/zsh
     hcloud completion zsh > ~/.config/hcloud/completion/zsh/_hcloud
 
-Finally add the following line to your `~/.zshrc` file, *before* you
+Finally, add the following line to your `~/.zshrc` file, *before* you
 call the `compinit` function:
 
     fpath+=(~/.config/hcloud/completion/zsh)
@@ -106,6 +106,17 @@ To load completions into the current shell execute:
 In order to make the completions permanent execute once:
 
      hcloud completion fish > ~/.config/fish/completions/hcloud.fish
+
+### PowerShell:
+
+To load completions into the current shell execute:
+
+    PS> hcloud completion powershell | Out-String | Invoke-Expression
+
+To load completions for every new session, run
+and source this file from your PowerShell profile.
+
+    PS> hcloud completion powershell > hcloud.ps1
 
 ## Output configuration
 
