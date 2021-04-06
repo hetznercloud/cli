@@ -85,7 +85,7 @@ func validateOutputFlag(options []outputOption) func(cmd *cobra.Command, args []
 
 		for _, flagValue := range flagValues {
 			parts := strings.SplitN(flagValue, "=", 2)
-			if len(parts) != 2 {
+			if strings.HasPrefix(parts[0], "columns") && len(parts) != 2 {
 				return fmt.Errorf("invalid output option format")
 			}
 			if _, ok := validOptions[parts[0]]; !ok {
