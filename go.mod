@@ -1,6 +1,7 @@
 module github.com/hetznercloud/cli
 
 require (
+	github.com/boumenot/gocover-cobertura v1.1.0
 	github.com/cheggaaa/pb/v3 v3.0.7
 	github.com/dustin/go-humanize v1.0.0
 	github.com/fatih/structs v1.1.0
