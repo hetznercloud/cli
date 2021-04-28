@@ -20,7 +20,7 @@ func TestList(t *testing.T) {
 	client := hcapi2.NewMockClient(ctrl)
 	tokenEnsurer := state.NewMockTokenEnsurer(ctrl)
 
-	cmd := newListCommand(context.Background(), client, tokenEnsurer)
+	cmd := ListCmd.CobraCommand(context.Background(), client, tokenEnsurer)
 
 	tokenEnsurer.EXPECT().EnsureToken(gomock.Any(), gomock.Any()).Return(nil)
 	client.NetworkClient.EXPECT().

@@ -13,6 +13,7 @@ import (
 type NetworkClient interface {
 	NetworkClientBase
 	Names() []string
+	Name(int) string
 }
 
 func NewNetworkClient(client NetworkClientBase) NetworkClient {
@@ -33,7 +34,7 @@ type networkClient struct {
 
 // NetworkName obtains the name of the network with id. If the name could not
 // be fetched it returns the value id converted to a string.
-func (c *networkClient) NetworkName(id int) string {
+func (c *networkClient) Name(id int) string {
 	if err := c.init(); err != nil {
 		return strconv.Itoa(id)
 	}
