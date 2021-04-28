@@ -1,0 +1,30 @@
+include:
+  - project: "hc/backend/deploy-tools"
+    file: "ci/test/golang.yml"
+
+variables:
+  GIT_SUBMODULE_STRATEGY: normal
+  GOPROXY: goproxy.prodext.hcinfra.de
+  GONOSUMDB: hetzner.cloud
+  COVERAGE_FILE: .testCoverage.txt
+
+test:tests:
+  stage: test
+  image: golang:1.16
+  script:
+    - |
+      go test -v \
+              -race \
+              -coverprofile=$COVERAGE_FILE \
+              ./...
+    - go tool cover -func=$COVERAGE_FILE | tail -n1
+    - GOBIN="$CI_PROJECT_DIR/bin" script/install_tools.sh
+    - '"$CI_PROJECT_DIR/bin/gocover-cobertura" < $COVERAGE_FILE > coverage.xml'
+  except:
+    - tags
+    - master
+  tags:
+    - hc-bladerunner
+  artifacts:
+    reports:
+      cobertura: coverage.xml
