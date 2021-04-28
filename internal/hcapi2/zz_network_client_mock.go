@@ -256,6 +256,20 @@ func (mr *MockNetworkClientMockRecorder) List(arg0, arg1 interface{}) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockNetworkClient)(nil).List), arg0, arg1)
 }
 
+// Name mocks base method.
+func (m *MockNetworkClient) Name(arg0 int) string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Name", arg0)
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// Name indicates an expected call of Name.
+func (mr *MockNetworkClientMockRecorder) Name(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Name", reflect.TypeOf((*MockNetworkClient)(nil).Name), arg0)
+}
+
 // Names mocks base method.
 func (m *MockNetworkClient) Names() []string {
 	m.ctrl.T.Helper()

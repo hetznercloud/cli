@@ -5,68 +5,66 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
-	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/hetznercloud/hcloud-go/hcloud/schema"
-	"github.com/spf13/cobra"
 )
 
-var listTableOutput *output.Table
+var ListCmd = base.ListCmd{
+	ResourceNamePlural: "networks",
+	DefaultColumns:     []string{"id", "name", "ip_range", "servers"},
 
-func init() {
-	listTableOutput = describelistTableOutput()
-}
+	Fetch: func(ctx context.Context, client hcapi2.Client, listOpts hcloud.ListOpts) ([]interface{}, error) {
+		networks, err := client.Network().AllWithOpts(ctx, hcloud.NetworkListOpts{ListOpts: listOpts})
 
-type lister struct {
-	client hcapi2.Client
-}
+		var resources []interface{}
+		for _, n := range networks {
+			resources = append(resources, n)
+		}
+		return resources, err
+	},
 
-func newListCommand(
-	ctx context.Context,
-	client hcapi2.Client,
-	tokenEnsurer state.TokenEnsurer,
-) *cobra.Command {
-	l := &lister{
-		client: client,
-	}
-	cmd := &cobra.Command{
-		Use:   "list [FLAGS]",
-		Short: "List networks",
-		Long: util.ListLongDescription(
-			"Displays a list of networks.",
-			listTableOutput.Columns(),
-		),
-		TraverseChildren:      true,
-		DisableFlagsInUseLine: true,
-		PreRunE:               tokenEnsurer.EnsureToken,
-		RunE:                  state.WrapCtx(ctx, l.list),
-	}
-	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(listTableOutput.Columns()), output.OptionJSON())
-	cmd.Flags().StringP("selector", "l", "", "Selector to filter by labels")
-	return cmd
-}
+	OutputTable: func(_ hcapi2.Client) *output.Table {
+		return output.NewTable().
+			AddAllowedFields(hcloud.Network{}).
+			AddFieldFn("servers", output.FieldFn(func(obj interface{}) string {
+				network := obj.(*hcloud.Network)
+				serverCount := len(network.Servers)
+				if serverCount <= 1 {
+					return fmt.Sprintf("%v server", serverCount)
+				}
+				return fmt.Sprintf("%v servers", serverCount)
+			})).
+			AddFieldFn("ip_range", output.FieldFn(func(obj interface{}) string {
+				network := obj.(*hcloud.Network)
+				return network.IPRange.String()
+			})).
+			AddFieldFn("labels", output.FieldFn(func(obj interface{}) string {
+				network := obj.(*hcloud.Network)
+				return util.LabelsToString(network.Labels)
+			})).
+			AddFieldFn("protection", output.FieldFn(func(obj interface{}) string {
+				network := obj.(*hcloud.Network)
+				var protection []string
+				if network.Protection.Delete {
+					protection = append(protection, "delete")
+				}
+				return strings.Join(protection, ", ")
+			})).
+			AddFieldFn("created", output.FieldFn(func(obj interface{}) string {
+				network := obj.(*hcloud.Network)
+				return util.Datetime(network.Created)
+			}))
+	},
 
-func (l *lister) list(ctx context.Context, cmd *cobra.Command, args []string) error {
-	outOpts := output.FlagsForCommand(cmd)
-
-	labelSelector, _ := cmd.Flags().GetString("selector")
-	opts := hcloud.NetworkListOpts{
-		ListOpts: hcloud.ListOpts{
-			LabelSelector: labelSelector,
-			PerPage:       50,
-		},
-	}
-	networks, err := l.client.Network().AllWithOpts(ctx, opts)
-	if err != nil {
-		return err
-	}
-
-	if outOpts.IsSet("json") {
+	JSONSchema: func(resources []interface{}) interface{} {
 		var networkSchemas []schema.Network
-		for _, network := range networks {
+		for _, resource := range resources {
+			network := resource.(*hcloud.Network)
+
 			networkSchema := schema.Network{
 				ID:         network.ID,
 				Name:       network.Name,
@@ -94,58 +92,6 @@ func (l *lister) list(ctx context.Context, cmd *cobra.Command, args []string) er
 			}
 			networkSchemas = append(networkSchemas, networkSchema)
 		}
-		return util.DescribeJSON(networkSchemas)
-	}
-
-	cols := []string{"id", "name", "ip_range", "servers"}
-	if outOpts.IsSet("columns") {
-		cols = outOpts["columns"]
-	}
-
-	tw := describelistTableOutput()
-	if err = tw.ValidateColumns(cols); err != nil {
-		return err
-	}
-
-	if !outOpts.IsSet("noheader") {
-		tw.WriteHeader(cols)
-	}
-	for _, network := range networks {
-		tw.Write(cols, network)
-	}
-	tw.Flush()
-	return nil
-}
-
-func describelistTableOutput() *output.Table {
-	return output.NewTable().
-		AddAllowedFields(hcloud.Network{}).
-		AddFieldFn("servers", output.FieldFn(func(obj interface{}) string {
-			network := obj.(*hcloud.Network)
-			serverCount := len(network.Servers)
-			if serverCount <= 1 {
-				return fmt.Sprintf("%v server", serverCount)
-			}
-			return fmt.Sprintf("%v servers", serverCount)
-		})).
-		AddFieldFn("ip_range", output.FieldFn(func(obj interface{}) string {
-			network := obj.(*hcloud.Network)
-			return network.IPRange.String()
-		})).
-		AddFieldFn("labels", output.FieldFn(func(obj interface{}) string {
-			network := obj.(*hcloud.Network)
-			return util.LabelsToString(network.Labels)
-		})).
-		AddFieldFn("protection", output.FieldFn(func(obj interface{}) string {
-			network := obj.(*hcloud.Network)
-			var protection []string
-			if network.Protection.Delete {
-				protection = append(protection, "delete")
-			}
-			return strings.Join(protection, ", ")
-		})).
-		AddFieldFn("created", output.FieldFn(func(obj interface{}) string {
-			network := obj.(*hcloud.Network)
-			return util.Datetime(network.Created)
-		}))
+		return networkSchemas
+	},
 }
