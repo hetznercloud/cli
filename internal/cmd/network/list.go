@@ -1,11 +1,13 @@
 package network
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
 	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
+	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/hetznercloud/hcloud-go/hcloud/schema"
@@ -15,10 +17,21 @@ import (
 var listTableOutput *output.Table
 
 func init() {
-	listTableOutput = describelistTableOutput(nil)
+	listTableOutput = describelistTableOutput()
 }
 
-func newListCommand(cli *state.State) *cobra.Command {
+type lister struct {
+	client hcapi2.Client
+}
+
+func newListCommand(
+	ctx context.Context,
+	client hcapi2.Client,
+	tokenEnsurer state.TokenEnsurer,
+) *cobra.Command {
+	l := &lister{
+		client: client,
+	}
 	cmd := &cobra.Command{
 		Use:   "list [FLAGS]",
 		Short: "List networks",
@@ -28,15 +41,15 @@ func newListCommand(cli *state.State) *cobra.Command {
 		),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runList),
+		PreRunE:               tokenEnsurer.EnsureToken,
+		RunE:                  state.WrapCtx(ctx, l.list),
 	}
 	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(listTableOutput.Columns()), output.OptionJSON())
 	cmd.Flags().StringP("selector", "l", "", "Selector to filter by labels")
 	return cmd
 }
 
-func runList(cli *state.State, cmd *cobra.Command, args []string) error {
+func (l *lister) list(ctx context.Context, cmd *cobra.Command, args []string) error {
 	outOpts := output.FlagsForCommand(cmd)
 
 	labelSelector, _ := cmd.Flags().GetString("selector")
@@ -46,7 +59,7 @@ func runList(cli *state.State, cmd *cobra.Command, args []string) error {
 			PerPage:       50,
 		},
 	}
-	networks, err := cli.Client().Network.AllWithOpts(cli.Context, opts)
+	networks, err := l.client.Network().AllWithOpts(ctx, opts)
 	if err != nil {
 		return err
 	}
@@ -89,7 +102,7 @@ func runList(cli *state.State, cmd *cobra.Command, args []string) error {
 		cols = outOpts["columns"]
 	}
 
-	tw := describelistTableOutput(cli)
+	tw := describelistTableOutput()
 	if err = tw.ValidateColumns(cols); err != nil {
 		return err
 	}
@@ -104,7 +117,7 @@ func runList(cli *state.State, cmd *cobra.Command, args []string) error {
 	return nil
 }
 
-func describelistTableOutput(cli *state.State) *output.Table {
+func describelistTableOutput() *output.Table {
 	return output.NewTable().
 		AddAllowedFields(hcloud.Network{}).
 		AddFieldFn("servers", output.FieldFn(func(obj interface{}) string {
