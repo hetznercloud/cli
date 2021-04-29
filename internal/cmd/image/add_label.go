@@ -1,65 +1,33 @@
 package image
 
 import (
+	"context"
 	"fmt"
 
-	"github.com/hetznercloud/cli/internal/cmd/cmpl"
-	"github.com/hetznercloud/cli/internal/cmd/util"
-	"github.com/hetznercloud/cli/internal/state"
+	"github.com/hetznercloud/cli/internal/cmd/base"
+	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/hcloud-go/hcloud"
-	"github.com/spf13/cobra"
 )
 
-func newAddLabelCommand(cli *state.State) *cobra.Command {
-	cmd := &cobra.Command{
-		Use:                   "add-label [FLAGS] IMAGE LABEL",
-		Short:                 "Add a label to an image",
-		Args:                  cobra.ExactArgs(2),
-		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.ImageNames)),
-		TraverseChildren:      true,
-		DisableFlagsInUseLine: true,
-		PreRunE:               util.ChainRunE(validateAddLabel, cli.EnsureToken),
-		RunE:                  cli.Wrap(runAddLabel),
-	}
-
-	cmd.Flags().BoolP("overwrite", "o", false, "Overwrite label if it exists already")
-	return cmd
-}
-
-func validateAddLabel(cmd *cobra.Command, args []string) error {
-	label := util.SplitLabel(args[1])
-	if len(label) != 2 {
-		return fmt.Errorf("invalid label: %s", args[1])
-	}
-
-	return nil
-}
-
-func runAddLabel(cli *state.State, cmd *cobra.Command, args []string) error {
-	overwrite, _ := cmd.Flags().GetBool("overwrite")
-	idOrName := args[0]
-	image, _, err := cli.Client().Image.Get(cli.Context, idOrName)
-	if err != nil {
+var addLabelCmd = base.AddLabelCmd{
+	ResourceNameSingular: "image",
+	ShortDescription:     "Add a label to an image",
+	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Image().Names },
+	FetchLabels: func(ctx context.Context, client hcapi2.Client, idOrName string) (map[string]string, int, error) {
+		image, _, err := client.Image().Get(ctx, idOrName)
+		if err != nil {
+			return nil, 0, err
+		}
+		if image == nil {
+			return nil, 0, fmt.Errorf("image not found: %s", idOrName)
+		}
+		return image.Labels, image.ID, nil
+	},
+	SetLabels: func(ctx context.Context, client hcapi2.Client, id int, labels map[string]string) error {
+		opts := hcloud.ImageUpdateOpts{
+			Labels: labels,
+		}
+		_, _, err := client.Image().Update(ctx, &hcloud.Image{ID: id}, opts)
 		return err
-	}
-	if image == nil {
-		return fmt.Errorf("image not found: %s", idOrName)
-	}
-	label := util.SplitLabel(args[1])
-
-	if _, ok := image.Labels[label[0]]; ok && !overwrite {
-		return fmt.Errorf("label %s on image %d already exists", label[0], image.ID)
-	}
-	labels := image.Labels
-	labels[label[0]] = label[1]
-	opts := hcloud.ImageUpdateOpts{
-		Labels: labels,
-	}
-	_, _, err = cli.Client().Image.Update(cli.Context, image, opts)
-	if err != nil {
-		return err
-	}
-	fmt.Printf("Label %s added to image %d\n", label[0], image.ID)
-
-	return nil
+	},
 }

@@ -1,6 +1,7 @@
 package image
 
 import (
+	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/spf13/cobra"
 )
@@ -20,7 +21,7 @@ func NewCommand(cli *state.State) *cobra.Command {
 		newUpdateCommand(cli),
 		newEnableProtectionCommand(cli),
 		newDisableProtectionCommand(cli),
-		newAddLabelCommand(cli),
+		addLabelCmd.CobraCommand(cli.Context, hcapi2.NewClient(cli.Client()), cli),
 		newRemoveLabelCommand(cli),
 	)
 	return cmd

@@ -10,6 +10,7 @@ import (
 
 type ServerClient interface {
 	ServerClientBase
+	Names() []string
 }
 
 func NewServerClient(client *hcloud.ServerClient) ServerClient {
@@ -48,7 +49,7 @@ func (c *serverClient) ServerName(id int) string {
 
 // ServerNames obtains a list of available servers. It returns nil if the
 // server names could not be fetched or if there are no servers.
-func (c *serverClient) ServerNames() []string {
+func (c *serverClient) Names() []string {
 	if err := c.init(); err != nil || len(c.srvByID) == 0 {
 		return nil
 	}

@@ -384,6 +384,20 @@ func (mr *MockServerClientMockRecorder) List(arg0, arg1 interface{}) *gomock.Cal
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockServerClient)(nil).List), arg0, arg1)
 }
 
+// Names mocks base method.
+func (m *MockServerClient) Names() []string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Names")
+	ret0, _ := ret[0].([]string)
+	return ret0
+}
+
+// Names indicates an expected call of Names.
+func (mr *MockServerClientMockRecorder) Names() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockServerClient)(nil).Names))
+}
+
 // Poweroff mocks base method.
 func (m *MockServerClient) Poweroff(arg0 context.Context, arg1 *hcloud.Server) (*hcloud.Action, *hcloud.Response, error) {
 	m.ctrl.T.Helper()

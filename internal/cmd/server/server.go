@@ -38,7 +38,7 @@ func NewCommand(cli *state.State) *cobra.Command {
 		newEnableProtectionCommand(cli),
 		newDisableProtectionCommand(cli),
 		newSSHCommand(cli),
-		newAddLabelCommand(cli),
+		addLabelCmd.CobraCommand(cli.Context, hcapi2.NewClient(cli.Client()), cli),
 		newRemoveLabelCommand(cli),
 		newSetRDNSCommand(cli),
 		newAttachToNetworkCommand(cli),

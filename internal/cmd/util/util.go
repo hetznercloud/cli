@@ -82,6 +82,17 @@ func SplitLabel(label string) []string {
 	return strings.SplitN(label, "=", 2)
 }
 
+// SplitLabelVars splits up label into key and value and returns them as separate return values.
+// If label doesn't contain the `=` separator, SplitLabelVars returns the original string as key,
+// with an empty value.
+func SplitLabelVars(label string) (string, string) {
+	parts := strings.SplitN(label, "=", 2)
+	if len(parts) != 2 {
+		return label, ""
+	}
+	return parts[0], parts[1]
+}
+
 func LabelsToString(labels map[string]string) string {
 	var labelsString []string
 	keys := make([]string, 0, len(labels))
