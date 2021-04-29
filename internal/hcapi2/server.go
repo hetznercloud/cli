@@ -11,6 +11,7 @@ import (
 type ServerClient interface {
 	ServerClientBase
 	Names() []string
+	LabelKeys(idOrName string) []string
 }
 
 func NewServerClient(client *hcloud.ServerClient) ServerClient {
@@ -66,9 +67,9 @@ func (c *serverClient) Names() []string {
 	return names
 }
 
-// ServerLabelKeys returns a slice containing the keys of all labels assigned
+// LabelKeys returns a slice containing the keys of all labels assigned
 // to the Server with the passed idOrName.
-func (c *serverClient) ServerLabelKeys(idOrName string) []string {
+func (c *serverClient) LabelKeys(idOrName string) []string {
 	var srv *hcloud.Server
 
 	if err := c.init(); err != nil || len(c.srvByID) == 0 {
