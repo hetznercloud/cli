@@ -21,7 +21,7 @@ func TestCreate(t *testing.T) {
 	actionWaiter := state.NewMockActionWaiter(ctrl)
 	tokenEnsurer := state.NewMockTokenEnsurer(ctrl)
 
-	cmd := newCreateCommand(
+	cmd := createCmd.CobraCommand(
 		context.Background(),
 		client,
 		tokenEnsurer,

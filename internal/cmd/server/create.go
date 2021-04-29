@@ -11,6 +11,7 @@ import (
 	"os"
 	"strings"
 
+	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
@@ -20,100 +21,82 @@ import (
 	"golang.org/x/crypto/ssh"
 )
 
-type creator struct {
-	client       hcapi2.Client
-	actionWaiter state.ActionWaiter
-}
+var createCmd = base.Cmd{
+	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
+		cmd := &cobra.Command{
+			Use:   "create FLAGS",
+			Short: "Create a server",
+		}
 
-func newCreateCommand(
-	ctx context.Context,
-	client hcapi2.Client,
-	tokenEnsurer state.TokenEnsurer,
-	actionWaiter state.ActionWaiter,
-) *cobra.Command {
-	c := &creator{
-		client:       client,
-		actionWaiter: actionWaiter,
-	}
+		cmd.Flags().String("name", "", "Server name (required)")
+		cmd.MarkFlagRequired("name")
 
-	cmd := &cobra.Command{
-		Use:                   "create FLAGS",
-		Short:                 "Create a server",
-		Args:                  cobra.NoArgs,
-		TraverseChildren:      true,
-		DisableFlagsInUseLine: true,
-		PreRunE:               tokenEnsurer.EnsureToken,
-		RunE:                  state.WrapCtx(ctx, c.create),
-	}
+		cmd.Flags().String("type", "", "Server type (ID or name) (required)")
+		cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidatesF(client.ServerType().Names))
+		cmd.MarkFlagRequired("type")
 
-	cmd.Flags().String("name", "", "Server name (required)")
-	cmd.MarkFlagRequired("name")
+		cmd.Flags().String("image", "", "Image (ID or name) (required)")
+		cmd.RegisterFlagCompletionFunc("image", cmpl.SuggestCandidatesF(client.Image().Names))
+		cmd.MarkFlagRequired("image")
 
-	cmd.Flags().String("type", "", "Server type (ID or name) (required)")
-	cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidatesF(client.ServerType().Names))
-	cmd.MarkFlagRequired("type")
+		cmd.Flags().String("location", "", "Location (ID or name)")
+		cmd.RegisterFlagCompletionFunc("location", cmpl.SuggestCandidatesF(client.Location().Names))
 
-	cmd.Flags().String("image", "", "Image (ID or name) (required)")
-	cmd.RegisterFlagCompletionFunc("image", cmpl.SuggestCandidatesF(client.Image().Names))
-	cmd.MarkFlagRequired("image")
+		cmd.Flags().String("datacenter", "", "Datacenter (ID or name)")
+		cmd.RegisterFlagCompletionFunc("datacenter", cmpl.SuggestCandidatesF(client.Datacenter().Names))
 
-	cmd.Flags().String("location", "", "Location (ID or name)")
-	cmd.RegisterFlagCompletionFunc("location", cmpl.SuggestCandidatesF(client.Location().Names))
+		cmd.Flags().StringSlice("ssh-key", nil, "ID or name of SSH key to inject (can be specified multiple times)")
+		cmd.RegisterFlagCompletionFunc("ssh-key", cmpl.SuggestCandidatesF(client.SSHKey().Names))
 
-	cmd.Flags().String("datacenter", "", "Datacenter (ID or name)")
-	cmd.RegisterFlagCompletionFunc("datacenter", cmpl.SuggestCandidatesF(client.Datacenter().Names))
+		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 
-	cmd.Flags().StringSlice("ssh-key", nil, "ID or name of SSH key to inject (can be specified multiple times)")
-	cmd.RegisterFlagCompletionFunc("ssh-key", cmpl.SuggestCandidatesF(client.SSHKey().Names))
+		cmd.Flags().StringArray("user-data-from-file", []string{}, "Read user data from specified file (use - to read from stdin)")
 
-	cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
+		cmd.Flags().Bool("start-after-create", true, "Start server right after creation")
 
-	cmd.Flags().StringArray("user-data-from-file", []string{}, "Read user data from specified file (use - to read from stdin)")
+		cmd.Flags().StringSlice("volume", nil, "ID or name of volume to attach (can be specified multiple times)")
+		cmd.RegisterFlagCompletionFunc("volume", cmpl.SuggestCandidatesF(client.Volume().Names))
 
-	cmd.Flags().Bool("start-after-create", true, "Start server right after creation")
+		cmd.Flags().StringSlice("network", nil, "ID or name of network to attach the server to (can be specified multiple times)")
+		cmd.RegisterFlagCompletionFunc("network", cmpl.SuggestCandidatesF(client.Network().Names))
 
-	cmd.Flags().StringSlice("volume", nil, "ID or name of volume to attach (can be specified multiple times)")
-	cmd.RegisterFlagCompletionFunc("volume", cmpl.SuggestCandidatesF(client.Volume().Names))
+		cmd.Flags().StringSlice("firewall", nil, "ID or name of Firewall to attach the server to (can be specified multiple times)")
+		cmd.RegisterFlagCompletionFunc("firewall", cmpl.SuggestCandidatesF(client.Firewall().Names))
 
-	cmd.Flags().StringSlice("network", nil, "ID or name of network to attach the server to (can be specified multiple times)")
-	cmd.RegisterFlagCompletionFunc("network", cmpl.SuggestCandidatesF(client.Network().Names))
+		cmd.Flags().Bool("automount", false, "Automount volumes after attach (default: false)")
+		cmd.Flags().Bool("allow-deprecated-image", false, "Enable the use of deprecated images (default: false)")
+		return cmd
+	},
 
-	cmd.Flags().StringSlice("firewall", nil, "ID or name of Firewall to attach the server to (can be specified multiple times)")
-	cmd.RegisterFlagCompletionFunc("firewall", cmpl.SuggestCandidatesF(client.Firewall().Names))
+	Run: func(ctx context.Context, client hcapi2.Client, actionWaiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+		opts, err := createOptsFromFlags(ctx, client, cmd.Flags())
+		if err != nil {
+			return err
+		}
 
-	cmd.Flags().Bool("automount", false, "Automount volumes after attach (default: false)")
-	cmd.Flags().Bool("allow-deprecated-image", false, "Enable the use of deprecated images (default: false)")
-	return cmd
-}
+		result, _, err := client.Server().Create(ctx, opts)
+		if err != nil {
+			return err
+		}
 
-func (c *creator) create(ctx context.Context, cmd *cobra.Command, args []string) error {
-	opts, err := c.optsFromFlags(ctx, cmd.Flags())
-	if err != nil {
-		return err
-	}
+		if err := actionWaiter.ActionProgress(ctx, result.Action); err != nil {
+			return err
+		}
+		if err := actionWaiter.WaitForActions(ctx, result.NextActions); err != nil {
+			return err
+		}
 
-	result, _, err := c.client.Server().Create(ctx, opts)
-	if err != nil {
-		return err
-	}
+		fmt.Printf("Server %d created\n", result.Server.ID)
+		fmt.Printf("IPv4: %s\n", result.Server.PublicNet.IPv4.IP.String())
 
-	if err := c.actionWaiter.ActionProgress(ctx, result.Action); err != nil {
-		return err
-	}
-	if err := c.actionWaiter.WaitForActions(ctx, result.NextActions); err != nil {
-		return err
-	}
+		// Only print the root password if it's not empty,
+		// which is only the case if it wasn't created with an SSH key.
+		if result.RootPassword != "" {
+			fmt.Printf("Root password: %s\n", result.RootPassword)
+		}
 
-	fmt.Printf("Server %d created\n", result.Server.ID)
-	fmt.Printf("IPv4: %s\n", result.Server.PublicNet.IPv4.IP.String())
-
-	// Only print the root password if it's not empty,
-	// which is only the case if it wasn't created with an SSH key.
-	if result.RootPassword != "" {
-		fmt.Printf("Root password: %s\n", result.RootPassword)
-	}
-
-	return nil
+		return nil
+	},
 }
 
 var userDataContentTypes = map[string]string{
@@ -183,8 +166,8 @@ func buildUserData(files []string) (string, error) {
 	return buf.String(), nil
 }
 
-func (c *creator) optsFromFlags(
-	ctx context.Context, flags *pflag.FlagSet,
+func createOptsFromFlags(
+	ctx context.Context, client hcapi2.Client, flags *pflag.FlagSet,
 ) (opts hcloud.ServerCreateOpts, err error) {
 	name, _ := flags.GetString("name")
 	serverType, _ := flags.GetString("type")
@@ -201,12 +184,12 @@ func (c *creator) optsFromFlags(
 	automount, _ := flags.GetBool("automount")
 	allowDeprecatedImage, _ := flags.GetBool("allow-deprecated-image")
 
-	image, _, err := c.client.Image().Get(ctx, imageIDorName)
+	image, _, err := client.Image().Get(ctx, imageIDorName)
 	if err != nil {
 		return
 	}
 	if image == nil {
-		images, err := c.client.Image().AllWithOpts(ctx, hcloud.ImageListOpts{Name: imageIDorName, IncludeDeprecated: true})
+		images, err := client.Image().AllWithOpts(ctx, hcloud.ImageListOpts{Name: imageIDorName, IncludeDeprecated: true})
 		if err != nil {
 			return opts, err
 		}
@@ -255,13 +238,13 @@ func (c *creator) optsFromFlags(
 
 	for _, sshKeyIDOrName := range sshKeys {
 		var sshKey *hcloud.SSHKey
-		sshKey, _, err = c.client.SSHKey().Get(ctx, sshKeyIDOrName)
+		sshKey, _, err = client.SSHKey().Get(ctx, sshKeyIDOrName)
 		if err != nil {
 			return
 		}
 
 		if sshKey == nil {
-			sshKey, err = c.getSSHKeyForFingerprint(ctx, sshKeyIDOrName)
+			sshKey, err = getSSHKeyForFingerprint(ctx, client, sshKeyIDOrName)
 			if err != nil {
 				return
 			}
@@ -275,7 +258,7 @@ func (c *creator) optsFromFlags(
 	}
 	for _, volumeIDOrName := range volumes {
 		var volume *hcloud.Volume
-		volume, _, err = c.client.Volume().Get(ctx, volumeIDOrName)
+		volume, _, err = client.Volume().Get(ctx, volumeIDOrName)
 		if err != nil {
 			return
 		}
@@ -288,7 +271,7 @@ func (c *creator) optsFromFlags(
 	}
 	for _, networkIDOrName := range networks {
 		var network *hcloud.Network
-		network, _, err = c.client.Network().Get(ctx, networkIDOrName)
+		network, _, err = client.Network().Get(ctx, networkIDOrName)
 		if err != nil {
 			return
 		}
@@ -301,7 +284,7 @@ func (c *creator) optsFromFlags(
 	}
 	for _, firewallIDOrName := range firewalls {
 		var firewall *hcloud.Firewall
-		firewall, _, err = c.client.Firewall().Get(ctx, firewallIDOrName)
+		firewall, _, err = client.Firewall().Get(ctx, firewallIDOrName)
 		if err != nil {
 			return
 		}
@@ -323,8 +306,8 @@ func (c *creator) optsFromFlags(
 	return
 }
 
-func (c *creator) getSSHKeyForFingerprint(
-	ctx context.Context, file string,
+func getSSHKeyForFingerprint(
+	ctx context.Context, client hcapi2.Client, file string,
 ) (sshKey *hcloud.SSHKey, err error) {
 	var (
 		fileContent []byte
@@ -343,7 +326,7 @@ func (c *creator) getSSHKeyForFingerprint(
 		err = fmt.Errorf("lookup SSH key by fingerprint: %v", err)
 		return
 	}
-	sshKey, _, err = c.client.SSHKey().GetByFingerprint(ctx, ssh.FingerprintLegacyMD5(publicKey))
+	sshKey, _, err = client.SSHKey().GetByFingerprint(ctx, ssh.FingerprintLegacyMD5(publicKey))
 	if err != nil {
 		err = fmt.Errorf("lookup SSH key by fingerprint: %v", err)
 		return
