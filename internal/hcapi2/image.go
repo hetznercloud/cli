@@ -12,6 +12,7 @@ import (
 type ImageClient interface {
 	ImageClientBase
 	Names() []string
+	LabelKeys(string) []string
 }
 
 func NewImageClient(client ImageClientBase) ImageClient {
@@ -44,7 +45,7 @@ func (c *imageClient) Names() []string {
 
 // ImageLabelKeys returns a slice containing the keys of all labels assigned to
 // the Image with the passed idOrName.
-func (c *imageClient) ImageLabelKeys(idOrName string) []string {
+func (c *imageClient) LabelKeys(idOrName string) []string {
 	img, _, err := c.Get(context.Background(), idOrName)
 	if err != nil || img == nil || len(img.Labels) == 0 {
 		return nil

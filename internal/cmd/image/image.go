@@ -22,7 +22,7 @@ func NewCommand(cli *state.State) *cobra.Command {
 		newEnableProtectionCommand(cli),
 		newDisableProtectionCommand(cli),
 		addLabelCmd.CobraCommand(cli.Context, hcapi2.NewClient(cli.Client()), cli),
-		newRemoveLabelCommand(cli),
+		removeLabelCmd.CobraCommand(cli.Context, hcapi2.NewClient(cli.Client()), cli),
 	)
 	return cmd
 }
