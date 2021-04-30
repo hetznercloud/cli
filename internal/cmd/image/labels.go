@@ -9,11 +9,12 @@ import (
 	"github.com/hetznercloud/hcloud-go/hcloud"
 )
 
-var removeLabelCmd = base.RemoveLabelCmd{
-	ResourceNameSingular: "image",
-	ShortDescription:     "Remove a label from an image",
-	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Image().Names },
-	LabelKeySuggestions:  func(c hcapi2.Client) func(idOrName string) []string { return c.Image().LabelKeys },
+var labelCmds = base.LabelCmds{
+	ResourceNameSingular:   "image",
+	ShortDescriptionAdd:    "Add a label to an image",
+	ShortDescriptionRemove: "Remove a label from an image",
+	NameSuggestions:        func(c hcapi2.Client) func() []string { return c.Image().Names },
+	LabelKeySuggestions:    func(c hcapi2.Client) func(idOrName string) []string { return c.Image().LabelKeys },
 	FetchLabels: func(ctx context.Context, client hcapi2.Client, idOrName string) (map[string]string, int, error) {
 		image, _, err := client.Image().Get(ctx, idOrName)
 		if err != nil {
