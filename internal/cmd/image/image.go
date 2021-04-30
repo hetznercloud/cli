@@ -21,8 +21,8 @@ func NewCommand(cli *state.State) *cobra.Command {
 		newUpdateCommand(cli),
 		newEnableProtectionCommand(cli),
 		newDisableProtectionCommand(cli),
-		addLabelCmd.CobraCommand(cli.Context, hcapi2.NewClient(cli.Client()), cli),
-		removeLabelCmd.CobraCommand(cli.Context, hcapi2.NewClient(cli.Client()), cli),
+		labelCmds.AddCobraCommand(cli.Context, hcapi2.NewClient(cli.Client()), cli),
+		labelCmds.RemoveCobraCommand(cli.Context, hcapi2.NewClient(cli.Client()), cli),
 	)
 	return cmd
 }

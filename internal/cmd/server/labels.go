@@ -9,11 +9,12 @@ import (
 	"github.com/hetznercloud/hcloud-go/hcloud"
 )
 
-var removeLabelCmd = base.RemoveLabelCmd{
-	ResourceNameSingular: "server",
-	ShortDescription:     "Remove a label from a server",
-	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Server().Names },
-	LabelKeySuggestions:  func(c hcapi2.Client) func(idOrName string) []string { return c.Server().LabelKeys },
+var labelCmds = base.LabelCmds{
+	ResourceNameSingular:   "server",
+	ShortDescriptionAdd:    "Add a label to a server",
+	ShortDescriptionRemove: "Remove a label from a server",
+	NameSuggestions:        func(c hcapi2.Client) func() []string { return c.Server().Names },
+	LabelKeySuggestions:    func(c hcapi2.Client) func(idOrName string) []string { return c.Server().LabelKeys },
 	FetchLabels: func(ctx context.Context, client hcapi2.Client, idOrName string) (map[string]string, int, error) {
 		server, _, err := client.Server().Get(ctx, idOrName)
 		if err != nil {
