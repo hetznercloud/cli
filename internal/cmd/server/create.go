@@ -21,7 +21,8 @@ import (
 	"golang.org/x/crypto/ssh"
 )
 
-var createCmd = base.Cmd{
+// CreateCmd defines a command for creating a server.
+var CreateCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:   "create FLAGS",
