@@ -18,7 +18,7 @@ type describer struct {
 	client hcapi2.Client
 }
 
-func newDescribeCommand(
+func NewDescribeCommand(
 	ctx context.Context,
 	client hcapi2.Client,
 	tokenEnsurer state.TokenEnsurer,

@@ -1,4 +1,4 @@
-package network
+package network_test
 
 import (
 	"context"
@@ -6,24 +6,20 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
-	"github.com/hetznercloud/cli/internal/hcapi2"
-	"github.com/hetznercloud/cli/internal/state"
+	"github.com/hetznercloud/cli/internal/cmd/network"
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestList(t *testing.T) {
-	ctrl := gomock.NewController(t)
-	defer ctrl.Finish()
+	fx := testutil.NewFixture(t)
+	defer fx.Finish()
 
-	client := hcapi2.NewMockClient(ctrl)
-	tokenEnsurer := state.NewMockTokenEnsurer(ctrl)
+	cmd := network.ListCmd.CobraCommand(context.Background(), fx.Client, fx.TokenEnsurer)
 
-	cmd := ListCmd.CobraCommand(context.Background(), client, tokenEnsurer)
-
-	tokenEnsurer.EXPECT().EnsureToken(gomock.Any(), gomock.Any()).Return(nil)
-	client.NetworkClient.EXPECT().
+	fx.ExpectEnsureToken()
+	fx.Client.NetworkClient.EXPECT().
 		AllWithOpts(
 			gomock.Any(),
 			hcloud.NetworkListOpts{
@@ -43,10 +39,7 @@ func TestList(t *testing.T) {
 		},
 			nil)
 
-	args := []string{"--selector", "foo=bar"}
-	cmd.SetArgs(args)
-
-	out, err := testutil.CaptureStdout(cmd.Execute)
+	out, err := fx.Run(cmd, []string{"--selector", "foo=bar"})
 
 	expOut := `ID    NAME       IP RANGE       SERVERS
 123   test-net   192.0.2.1/24   1 server
