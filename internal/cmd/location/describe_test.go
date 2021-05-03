@@ -15,11 +15,10 @@ func TestDescribe(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := location.NewDescribeCommand(
+	cmd := location.DescribeCmd.CobraCommand(
 		context.Background(),
 		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter)
+		fx.TokenEnsurer)
 	fx.ExpectEnsureToken()
 
 	fx.Client.LocationClient.EXPECT().
