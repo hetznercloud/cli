@@ -73,6 +73,7 @@ func runDeleteRule(cli *state.State, cmd *cobra.Command, args []string) error {
 				return fmt.Errorf("destination ips error on index %d: %s", i, err)
 			}
 			rule.DestinationIPs[i] = *n
+			rule.SourceIPs = make([]net.IPNet, 0)
 		}
 	case hcloud.FirewallRuleDirectionIn:
 		rule.SourceIPs = make([]net.IPNet, len(sourceIPs))
@@ -81,6 +82,7 @@ func runDeleteRule(cli *state.State, cmd *cobra.Command, args []string) error {
 			if err != nil {
 				return fmt.Errorf("source ips error on index %d: %s", i, err)
 			}
+			rule.DestinationIPs = make([]net.IPNet, 0)
 			rule.SourceIPs[i] = *n
 		}
 	}
