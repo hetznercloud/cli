@@ -5,6 +5,7 @@ import (
 	"strconv"
 	"strings"
 
+	humanize "github.com/dustin/go-humanize"
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
@@ -39,6 +40,18 @@ var ListCmd = base.ListCmd{
 			AddFieldFn("ipv6", output.FieldFn(func(obj interface{}) string {
 				server := obj.(*hcloud.Server)
 				return server.PublicNet.IPv6.Network.String()
+			})).
+			AddFieldFn("included_traffic", output.FieldFn(func(obj interface{}) string {
+				server := obj.(*hcloud.Server)
+				return humanize.IBytes(server.IncludedTraffic)
+			})).
+			AddFieldFn("ingoing_traffic", output.FieldFn(func(obj interface{}) string {
+				server := obj.(*hcloud.Server)
+				return humanize.IBytes(server.IngoingTraffic)
+			})).
+			AddFieldFn("outgoing_traffic", output.FieldFn(func(obj interface{}) string {
+				server := obj.(*hcloud.Server)
+				return humanize.IBytes(server.OutgoingTraffic)
 			})).
 			AddFieldFn("datacenter", output.FieldFn(func(obj interface{}) string {
 				server := obj.(*hcloud.Server)
