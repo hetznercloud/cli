@@ -30,13 +30,20 @@ func newListCommand(cli *state.State) *cobra.Command {
 		RunE:                  cli.Wrap(runList),
 	}
 	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(listTableOutput.Columns()), output.OptionJSON())
+	cmd.Flags().StringP("selector", "l", "", "Selector to filter by labels")
 	return cmd
 }
 
 func runList(cli *state.State, cmd *cobra.Command, args []string) error {
 	outOpts := output.FlagsForCommand(cmd)
-
-	firewalls, err := cli.Client().Firewall.All(cli.Context)
+	labelSelector, _ := cmd.Flags().GetString("selector")
+	opts := hcloud.FirewallListOpts{
+		ListOpts: hcloud.ListOpts{
+			LabelSelector: labelSelector,
+			PerPage:       50,
+		},
+	}
+	firewalls, err := cli.Client().Firewall.AllWithOpts(cli.Context, opts)
 	if err != nil {
 		return err
 	}
