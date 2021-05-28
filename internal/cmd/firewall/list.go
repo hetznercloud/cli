@@ -81,7 +81,10 @@ func runList(cli *state.State, cmd *cobra.Command, args []string) error {
 				switch AppliedTo.Type {
 				case hcloud.FirewallResourceTypeServer:
 					s.Server = &schema.FirewallResourceServer{ID: AppliedTo.Server.ID}
+				case hcloud.FirewallResourceTypeLabelSelector:
+					s.LabelSelector = &schema.FirewallResourceLabelSelector{Selector: AppliedTo.LabelSelector.Selector}
 				}
+
 				firewallSchema.AppliedTo = append(firewallSchema.AppliedTo, s)
 			}
 
