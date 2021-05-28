@@ -91,7 +91,21 @@ func describeText(cli *state.State, firewall *hcloud.Firewall) error {
 			}
 		}
 	}
-
+	fmt.Print("Applied To:\n")
+	if len(firewall.AppliedTo) == 0 {
+		fmt.Print("  Not applied\n")
+	} else {
+		for _, resource := range firewall.AppliedTo {
+			fmt.Printf("  - Type:\t\t%s\n", resource.Type)
+			switch resource.Type {
+			case hcloud.FirewallResourceTypeServer:
+				fmt.Printf("    Server ID:\t\t%d\n", resource.Server.ID)
+				fmt.Printf("    Server Name:\t%s\n", cli.ServerName(resource.Server.ID))
+			case hcloud.FirewallResourceTypeLabelSelector:
+				fmt.Printf("    Label Selector:\t%s\n", resource.LabelSelector.Selector)
+			}
+		}
+	}
 	return nil
 }
 

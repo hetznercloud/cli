@@ -22,22 +22,28 @@ func newApplyToResourceCommand(cli *state.State) *cobra.Command {
 		RunE:                  cli.Wrap(runApplyToResource),
 	}
 	cmd.Flags().String("type", "", "Resource Type (server) (required)")
-	cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("server"))
+	cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("server", "label_selector"))
 	cmd.MarkFlagRequired("type")
 
 	cmd.Flags().String("server", "", "Server name of ID (required when type is server)")
 	cmd.RegisterFlagCompletionFunc("server", cmpl.SuggestCandidatesF(cli.ServerNames))
 
+	cmd.Flags().StringP("label-selector", "l", "", "Label Selector")
 	return cmd
 }
 func validateApplyToResource(cmd *cobra.Command, args []string) error {
 	resourceType, _ := cmd.Flags().GetString("type")
 
 	switch resourceType {
-	case "server":
+	case string(hcloud.FirewallResourceTypeServer):
 		server, _ := cmd.Flags().GetString("server")
 		if server == "" {
 			return fmt.Errorf("type %s need a --server specific", resourceType)
+		}
+	case string(hcloud.FirewallResourceTypeLabelSelector):
+		labelSelector, _ := cmd.Flags().GetString("label-selector")
+		if labelSelector == "" {
+			return fmt.Errorf("type %s need a --label-selector specific", resourceType)
 		}
 	default:
 		return fmt.Errorf("unknown type %s", resourceType)
@@ -48,7 +54,7 @@ func validateApplyToResource(cmd *cobra.Command, args []string) error {
 func runApplyToResource(cli *state.State, cmd *cobra.Command, args []string) error {
 	resourceType, _ := cmd.Flags().GetString("type")
 	serverIdOrName, _ := cmd.Flags().GetString("server")
-
+	labelSelector, _ := cmd.Flags().GetString("label-selector")
 	idOrName := args[0]
 	firewall, _, err := cli.Client().Firewall.Get(cli.Context, idOrName)
 	if err != nil {
@@ -57,22 +63,22 @@ func runApplyToResource(cli *state.State, cmd *cobra.Command, args []string) err
 	if firewall == nil {
 		return fmt.Errorf("Firewall not found: %v", idOrName)
 	}
-
-	server, _, err := cli.Client().Server.Get(cli.Context, serverIdOrName)
-	if err != nil {
-		return err
-	}
-	if server == nil {
-		return fmt.Errorf("Server not found: %v", serverIdOrName)
-	}
-
 	opts := hcloud.FirewallResource{Type: hcloud.FirewallResourceType(resourceType)}
 
 	switch opts.Type {
 	case hcloud.FirewallResourceTypeServer:
+		server, _, err := cli.Client().Server.Get(cli.Context, serverIdOrName)
+		if err != nil {
+			return err
+		}
+		if server == nil {
+			return fmt.Errorf("Server not found: %v", serverIdOrName)
+		}
 		opts.Server = &hcloud.FirewallResourceServer{ID: server.ID}
+	case hcloud.FirewallResourceTypeLabelSelector:
+		opts.LabelSelector = &hcloud.FirewallResourceLabelSelector{Selector: labelSelector}
 	default:
-		return fmt.Errorf("unkown type %s", resourceType)
+		return fmt.Errorf("unknown type %s", opts.Type)
 	}
 
 	actions, _, err := cli.Client().Firewall.ApplyResources(cli.Context, firewall, []hcloud.FirewallResource{opts})
