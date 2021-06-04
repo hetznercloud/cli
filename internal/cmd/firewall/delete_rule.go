@@ -64,6 +64,19 @@ func runDeleteRule(cli *state.State, cmd *cobra.Command, args []string) error {
 	if port != "" {
 		rule.Port = hcloud.String(port)
 	}
+
+	switch rule.Protocol {
+	case hcloud.FirewallRuleProtocolTCP:
+	case hcloud.FirewallRuleProtocolUDP:
+		if port == "" {
+			return fmt.Errorf("port is required")
+		}
+	default:
+		if port != "" {
+			return fmt.Errorf("port is not allowed for this protocol")
+		}
+	}
+
 	switch d {
 	case hcloud.FirewallRuleDirectionOut:
 		rule.DestinationIPs = make([]net.IPNet, len(destinationIPs))
