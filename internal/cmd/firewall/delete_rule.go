@@ -28,8 +28,8 @@ func newDeleteRuleCommand(cli *state.State) *cobra.Command {
 	cmd.RegisterFlagCompletionFunc("direction", cmpl.SuggestCandidates("in", "out"))
 	cmd.MarkFlagRequired("direction")
 
-	cmd.Flags().String("protocol", "", "Protocol (icmp, udp or tcp) (required)")
-	cmd.RegisterFlagCompletionFunc("protocol", cmpl.SuggestCandidates("icmp", "udp", "tcp"))
+	cmd.Flags().String("protocol", "", "Protocol (icmp, esp, gre, udp or tcp) (required)")
+	cmd.RegisterFlagCompletionFunc("protocol", cmpl.SuggestCandidates("icmp", "udp", "tcp", "esp", "gre"))
 	cmd.MarkFlagRequired("protocol")
 
 	cmd.Flags().StringArray("source-ips", []string{}, "Source IPs (CIDR Notation) (required when direction is in)")
