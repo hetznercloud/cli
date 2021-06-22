@@ -10,6 +10,7 @@ import (
 
 type ServerClient interface {
 	ServerClientBase
+	ServerName(id int) string
 	Names() []string
 	LabelKeys(idOrName string) []string
 }

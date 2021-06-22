@@ -524,6 +524,20 @@ func (mr *MockServerClientMockRecorder) ResetPassword(arg0, arg1 interface{}) *g
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResetPassword", reflect.TypeOf((*MockServerClient)(nil).ResetPassword), arg0, arg1)
 }
 
+// ServerName mocks base method.
+func (m *MockServerClient) ServerName(arg0 int) string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ServerName", arg0)
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// ServerName indicates an expected call of ServerName.
+func (mr *MockServerClientMockRecorder) ServerName(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ServerName", reflect.TypeOf((*MockServerClient)(nil).ServerName), arg0)
+}
+
 // Shutdown mocks base method.
 func (m *MockServerClient) Shutdown(arg0 context.Context, arg1 *hcloud.Server) (*hcloud.Action, *hcloud.Response, error) {
 	m.ctrl.T.Helper()
