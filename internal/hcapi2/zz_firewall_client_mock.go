@@ -160,6 +160,20 @@ func (mr *MockFirewallClientMockRecorder) GetByName(arg0, arg1 interface{}) *gom
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByName", reflect.TypeOf((*MockFirewallClient)(nil).GetByName), arg0, arg1)
 }
 
+// LabelKeys mocks base method.
+func (m *MockFirewallClient) LabelKeys(arg0 string) []string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "LabelKeys", arg0)
+	ret0, _ := ret[0].([]string)
+	return ret0
+}
+
+// LabelKeys indicates an expected call of LabelKeys.
+func (mr *MockFirewallClientMockRecorder) LabelKeys(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LabelKeys", reflect.TypeOf((*MockFirewallClient)(nil).LabelKeys), arg0)
+}
+
 // List mocks base method.
 func (m *MockFirewallClient) List(arg0 context.Context, arg1 hcloud.FirewallListOpts) ([]*hcloud.Firewall, *hcloud.Response, error) {
 	m.ctrl.T.Helper()

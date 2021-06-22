@@ -8,6 +8,7 @@ import (
 type FirewallClient interface {
 	FirewallClientBase
 	Names() []string
+	LabelKeys(string) []string
 }
 
 func NewFirewallClient(client FirewallClientBase) FirewallClient {
