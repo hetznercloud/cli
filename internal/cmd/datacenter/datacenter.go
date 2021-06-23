@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewCommand(cli *state.State) *cobra.Command {
+func NewCommand(cli *state.State, client hcapi2.Client) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "datacenter",
 		Short:                 "Manage datacenters",
@@ -15,8 +15,8 @@ func NewCommand(cli *state.State) *cobra.Command {
 		DisableFlagsInUseLine: true,
 	}
 	cmd.AddCommand(
-		listCmd.CobraCommand(cli.Context, hcapi2.NewClient(cli.Client()), cli),
-		describeCmd.CobraCommand(cli.Context, hcapi2.NewClient(cli.Client()), cli),
+		listCmd.CobraCommand(cli.Context, client, cli),
+		describeCmd.CobraCommand(cli.Context, client, cli),
 	)
 	return cmd
 }
