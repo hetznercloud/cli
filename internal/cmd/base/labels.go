@@ -53,11 +53,17 @@ func (lc *LabelCmds) RunAdd(ctx context.Context, client hcapi2.Client, cmd *cobr
 	if err != nil {
 		return err
 	}
+
+	if labels == nil {
+		labels = map[string]string{}
+	}
+
 	key, val := util.SplitLabelVars(args[1])
 
 	if _, ok := labels[key]; ok && !overwrite {
 		return fmt.Errorf("label %s on %s %d already exists", key, lc.ResourceNameSingular, id)
 	}
+
 	labels[key] = val
 
 	if err := lc.SetLabels(ctx, client, id, labels); err != nil {

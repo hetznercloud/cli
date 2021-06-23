@@ -1,39 +1,25 @@
 package certificate
 
 import (
-	"fmt"
+	"context"
 
-	"github.com/hetznercloud/cli/internal/cmd/cmpl"
-	"github.com/hetznercloud/cli/internal/state"
-	"github.com/spf13/cobra"
+	"github.com/hetznercloud/cli/internal/cmd/base"
+	"github.com/hetznercloud/cli/internal/hcapi2"
+	"github.com/hetznercloud/hcloud-go/hcloud"
 )
 
-func newDeleteCommand(cli *state.State) *cobra.Command {
-	return &cobra.Command{
-		Use:                   "delete CERTIFICATE",
-		Short:                 "Delete a certificate",
-		Args:                  cobra.ExactArgs(1),
-		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.CertificateNames)),
-		TraverseChildren:      true,
-		DisableFlagsInUseLine: true,
-		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runDelete),
-	}
-}
-
-func runDelete(cli *state.State, cmd *cobra.Command, args []string) error {
-	idOrName := args[0]
-	cert, _, err := cli.Client().Certificate.Get(cli.Context, idOrName)
-	if err != nil {
-		return err
-	}
-	if cert == nil {
-		return fmt.Errorf("Certificate %s not found", idOrName)
-	}
-	_, err = cli.Client().Certificate.Delete(cli.Context, cert)
-	if err != nil {
-		return err
-	}
-	fmt.Printf("Certificate %d deleted\n", cert.ID)
-	return nil
+var deleteCmd = base.DeleteCmd{
+	ResourceNameSingular: "certificate",
+	ShortDescription:     "Delete a certificate",
+	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Firewall().Names },
+	Fetch: func(ctx context.Context, client hcapi2.Client, idOrName string) (interface{}, *hcloud.Response, error) {
+		return client.Certificate().Get(ctx, idOrName)
+	},
+	Delete: func(ctx context.Context, client hcapi2.Client, resource interface{}) error {
+		certificate := resource.(*hcloud.Certificate)
+		if _, err := client.Certificate().Delete(ctx, certificate); err != nil {
+			return err
+		}
+		return nil
+	},
 }

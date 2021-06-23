@@ -23,7 +23,7 @@ type firewallClient struct {
 	FirewallClientBase
 }
 
-// FirewallNames obtains a list of available firewalls. It returns nil if
+// Names obtains a list of available firewalls. It returns nil if
 // the firewall names could not be fetched or there were no firewalls.
 func (c *firewallClient) Names() []string {
 	firewalls, err := c.All(context.Background())
@@ -41,7 +41,7 @@ func (c *firewallClient) Names() []string {
 	return names
 }
 
-// FirewallLabelKeys returns a slice containing the keys of all labels
+// LabelKeys returns a slice containing the keys of all labels
 // assigned to the firewall with the passed idOrName.
 func (c *firewallClient) LabelKeys(idOrName string) []string {
 	firewall, _, err := c.Get(context.Background(), idOrName)

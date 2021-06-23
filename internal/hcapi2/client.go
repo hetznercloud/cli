@@ -17,6 +17,8 @@ type Client interface {
 	ServerType() ServerTypeClient
 	SSHKey() SSHKeyClient
 	Volume() VolumeClient
+	Certificate() CertificateClient
+	LoadBalancer() LoadBalancerClient
 }
 
 type client struct {
@@ -28,6 +30,9 @@ func NewClient(c *hcloud.Client) Client {
 	return &client{
 		client: c,
 	}
+}
+func (c *client) Certificate() CertificateClient {
+	return NewCertificateClient(&c.client.Certificate)
 }
 
 func (c *client) Datacenter() DatacenterClient {
@@ -48,6 +53,10 @@ func (c *client) Image() ImageClient {
 
 func (c *client) Location() LocationClient {
 	return NewLocationClient(&c.client.Location)
+}
+
+func (c *client) LoadBalancer() LoadBalancerClient {
+	return NewLoadBalancerClient(&c.client.LoadBalancer)
 }
 
 func (c *client) Network() NetworkClient {
@@ -71,33 +80,39 @@ func (c *client) Volume() VolumeClient {
 }
 
 type MockClient struct {
-	DatacenterClient *MockDatacenterClient
-	FirewallClient   *MockFirewallClient
-	FloatingIPClient *MockFloatingIPClient
-	ImageClient      *MockImageClient
-	LocationClient   *MockLocationClient
-	NetworkClient    *MockNetworkClient
-	ServerClient     *MockServerClient
-	ServerTypeClient *MockServerTypeClient
-	SSHKeyClient     *MockSSHKeyClient
-	VolumeClient     *MockVolumeClient
+	CertificateClient  *MockCertificateClient
+	DatacenterClient   *MockDatacenterClient
+	FirewallClient     *MockFirewallClient
+	FloatingIPClient   *MockFloatingIPClient
+	ImageClient        *MockImageClient
+	LocationClient     *MockLocationClient
+	LoadBalancerClient *MockLoadBalancerClient
+	NetworkClient      *MockNetworkClient
+	ServerClient       *MockServerClient
+	ServerTypeClient   *MockServerTypeClient
+	SSHKeyClient       *MockSSHKeyClient
+	VolumeClient       *MockVolumeClient
 }
 
 func NewMockClient(ctrl *gomock.Controller) *MockClient {
 	return &MockClient{
-		DatacenterClient: NewMockDatacenterClient(ctrl),
-		FirewallClient:   NewMockFirewallClient(ctrl),
-		FloatingIPClient: NewMockFloatingIPClient(ctrl),
-		ImageClient:      NewMockImageClient(ctrl),
-		LocationClient:   NewMockLocationClient(ctrl),
-		NetworkClient:    NewMockNetworkClient(ctrl),
-		ServerClient:     NewMockServerClient(ctrl),
-		ServerTypeClient: NewMockServerTypeClient(ctrl),
-		SSHKeyClient:     NewMockSSHKeyClient(ctrl),
-		VolumeClient:     NewMockVolumeClient(ctrl),
+		CertificateClient:  NewMockCertificateClient(ctrl),
+		DatacenterClient:   NewMockDatacenterClient(ctrl),
+		FirewallClient:     NewMockFirewallClient(ctrl),
+		FloatingIPClient:   NewMockFloatingIPClient(ctrl),
+		ImageClient:        NewMockImageClient(ctrl),
+		LocationClient:     NewMockLocationClient(ctrl),
+		LoadBalancerClient: NewMockLoadBalancerClient(ctrl),
+		NetworkClient:      NewMockNetworkClient(ctrl),
+		ServerClient:       NewMockServerClient(ctrl),
+		ServerTypeClient:   NewMockServerTypeClient(ctrl),
+		SSHKeyClient:       NewMockSSHKeyClient(ctrl),
+		VolumeClient:       NewMockVolumeClient(ctrl),
 	}
 }
-
+func (c *MockClient) Certificate() CertificateClient {
+	return c.CertificateClient
+}
 func (c *MockClient) Datacenter() DatacenterClient {
 	return c.DatacenterClient
 }
@@ -116,6 +131,10 @@ func (c *MockClient) Image() ImageClient {
 
 func (c *MockClient) Location() LocationClient {
 	return c.LocationClient
+}
+
+func (c *MockClient) LoadBalancer() LoadBalancerClient {
+	return c.LoadBalancerClient
 }
 
 func (c *MockClient) Network() NetworkClient {
