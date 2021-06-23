@@ -22,7 +22,8 @@ type Client interface {
 }
 
 type client struct {
-	client *hcloud.Client
+	client           *hcloud.Client
+	serverTypeClient ServerTypeClient
 }
 
 // NewClient creates a new CLI API client extending hcloud.Client.
@@ -68,7 +69,10 @@ func (c *client) Server() ServerClient {
 }
 
 func (c *client) ServerType() ServerTypeClient {
-	return NewServerTypeClient(&c.client.ServerType)
+	if c.serverTypeClient == nil {
+		c.serverTypeClient = NewServerTypeClient(&c.client.ServerType)
+	}
+	return c.serverTypeClient
 }
 
 func (c *client) SSHKey() SSHKeyClient {

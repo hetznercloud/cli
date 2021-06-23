@@ -34,24 +34,23 @@ var describeCmd = base.DescribeCmd{
 		fmt.Printf("  Longitude:\t%f\n", datacenter.Location.Longitude)
 		fmt.Printf("Server Types:\n")
 
-		printServerTypes := func(list []*hcloud.ServerType, client hcapi2.ServerTypeClient) {
+		printServerTypes := func(list []*hcloud.ServerType) {
 			for _, t := range list {
 				fmt.Printf("  - ID:\t\t %d\n", t.ID)
-				fmt.Printf("    Name:\t %s\n", client.ServerTypeName(t.ID))
-				fmt.Printf("    Description: %s\n", client.ServerTypeDescription(t.ID))
+				fmt.Printf("    Name:\t %s\n", client.ServerType().ServerTypeName(t.ID))
+				fmt.Printf("    Description: %s\n", client.ServerType().ServerTypeDescription(t.ID))
 			}
 		}
 
 		fmt.Printf("  Available:\n")
-		serverTypeClient := client.ServerType()
 		if len(datacenter.ServerTypes.Available) > 0 {
-			printServerTypes(datacenter.ServerTypes.Available, serverTypeClient)
+			printServerTypes(datacenter.ServerTypes.Available)
 		} else {
 			fmt.Printf("    No available server types\n")
 		}
 		fmt.Printf("  Supported:\n")
 		if len(datacenter.ServerTypes.Supported) > 0 {
-			printServerTypes(datacenter.ServerTypes.Supported, serverTypeClient)
+			printServerTypes(datacenter.ServerTypes.Supported)
 		} else {
 			fmt.Printf("    No supported server types\n")
 		}
