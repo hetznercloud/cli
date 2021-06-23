@@ -1,117 +1,60 @@
 package datacenter
 
 import (
-	"encoding/json"
+	"context"
 	"fmt"
 
-	"github.com/hetznercloud/cli/internal/cmd/cmpl"
-	"github.com/hetznercloud/cli/internal/cmd/output"
-	"github.com/hetznercloud/cli/internal/cmd/util"
-	"github.com/hetznercloud/cli/internal/state"
+	"github.com/hetznercloud/cli/internal/cmd/base"
+	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/hcloud-go/hcloud"
-	"github.com/spf13/cobra"
 )
 
-func newDescribeCommand(cli *state.State) *cobra.Command {
-	cmd := &cobra.Command{
-		Use:                   "describe [FLAGS] DATACENTER",
-		Short:                 "Describe a datacenter",
-		Args:                  cobra.ExactArgs(1),
-		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.DataCenterNames)),
-		TraverseChildren:      true,
-		DisableFlagsInUseLine: true,
-		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runDescribe),
-	}
-	output.AddFlag(cmd, output.OptionJSON(), output.OptionFormat())
-	return cmd
-}
+var describeCmd = base.DescribeCmd{
+	ResourceNameSingular: "datacenter",
+	ShortDescription:     "Describe an datacenter",
+	JSONKeyGetByID:       "datacenter",
+	JSONKeyGetByName:     "datacenters",
+	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Datacenter().Names },
+	Fetch: func(ctx context.Context, client hcapi2.Client, idOrName string) (interface{}, *hcloud.Response, error) {
+		return client.Datacenter().Get(ctx, idOrName)
+	},
+	PrintText: func(ctx context.Context, client hcapi2.Client, resource interface{}) error {
+		datacenter := resource.(*hcloud.Datacenter)
 
-func runDescribe(cli *state.State, cmd *cobra.Command, args []string) error {
-	outputFlags := output.FlagsForCommand(cmd)
+		fmt.Printf("ID:\t\t%d\n", datacenter.ID)
+		fmt.Printf("ID:\t\t%d\n", datacenter.ID)
+		fmt.Printf("Name:\t\t%s\n", datacenter.Name)
+		fmt.Printf("Description:\t%s\n", datacenter.Description)
+		fmt.Printf("Location:\n")
+		fmt.Printf("  Name:\t\t%s\n", datacenter.Location.Name)
+		fmt.Printf("  Description:\t%s\n", datacenter.Location.Description)
+		fmt.Printf("  Country:\t%s\n", datacenter.Location.Country)
+		fmt.Printf("  City:\t\t%s\n", datacenter.Location.City)
+		fmt.Printf("  Latitude:\t%f\n", datacenter.Location.Latitude)
+		fmt.Printf("  Longitude:\t%f\n", datacenter.Location.Longitude)
+		fmt.Printf("Server Types:\n")
 
-	idOrName := args[0]
-	datacenter, resp, err := cli.Client().Datacenter.Get(cli.Context, idOrName)
-	if err != nil {
-		return err
-	}
-	if datacenter == nil {
-		return fmt.Errorf("datacenter not found: %s", idOrName)
-	}
-
-	switch {
-	case outputFlags.IsSet("json"):
-		return describeJSON(resp)
-	case outputFlags.IsSet("format"):
-		return util.DescribeFormat(datacenter, outputFlags["format"][0])
-	default:
-		return describeText(cli, datacenter)
-	}
-}
-
-func describeText(cli *state.State, datacenter *hcloud.Datacenter) error {
-	fmt.Printf("ID:\t\t%d\n", datacenter.ID)
-	fmt.Printf("Name:\t\t%s\n", datacenter.Name)
-	fmt.Printf("Description:\t%s\n", datacenter.Description)
-	fmt.Printf("Location:\n")
-	fmt.Printf("  Name:\t\t%s\n", datacenter.Location.Name)
-	fmt.Printf("  Description:\t%s\n", datacenter.Location.Description)
-	fmt.Printf("  Country:\t%s\n", datacenter.Location.Country)
-	fmt.Printf("  City:\t\t%s\n", datacenter.Location.City)
-	fmt.Printf("  Latitude:\t%f\n", datacenter.Location.Latitude)
-	fmt.Printf("  Longitude:\t%f\n", datacenter.Location.Longitude)
-	fmt.Printf("Server Types:\n")
-
-	serverTypesMap := map[int]*hcloud.ServerType{}
-	for _, t := range datacenter.ServerTypes.Available {
-		serverTypesMap[t.ID] = t
-	}
-	for _, t := range datacenter.ServerTypes.Supported {
-		serverTypesMap[t.ID] = t
-	}
-	for id := range serverTypesMap {
-		var err error
-		serverTypesMap[id], _, err = cli.Client().ServerType.GetByID(cli.Context, id)
-		if err != nil {
-			return fmt.Errorf("error fetching server type: %v", err)
+		printServerTypes := func(list []*hcloud.ServerType) {
+			for _, t := range list {
+				fmt.Printf("  - ID:\t\t %d\n", t.ID)
+				fmt.Printf("    Name:\t %s\n", client.ServerType().ServerTypeName(t.ID))
+				fmt.Printf("    Description: %s\n", client.ServerType().ServerTypeDescription(t.ID))
+			}
 		}
-	}
 
-	printServerTypes := func(list []*hcloud.ServerType, dataMap map[int]*hcloud.ServerType) {
-		for _, t := range list {
-			st := dataMap[t.ID]
-			fmt.Printf("  - ID:\t\t %d\n", st.ID)
-			fmt.Printf("    Name:\t %s\n", st.Name)
-			fmt.Printf("    Description: %s\n", st.Description)
+		fmt.Printf("  Available:\n")
+		if len(datacenter.ServerTypes.Available) > 0 {
+			printServerTypes(datacenter.ServerTypes.Available)
+		} else {
+			fmt.Printf("    No available server types\n")
 		}
-	}
+		fmt.Printf("  Supported:\n")
+		if len(datacenter.ServerTypes.Supported) > 0 {
+			printServerTypes(datacenter.ServerTypes.Supported)
+		} else {
+			fmt.Printf("    No supported server types\n")
+		}
 
-	fmt.Printf("  Available:\n")
-	if len(datacenter.ServerTypes.Available) > 0 {
-		printServerTypes(datacenter.ServerTypes.Available, serverTypesMap)
-	} else {
-		fmt.Printf("    No available server types\n")
-	}
-	fmt.Printf("  Supported:\n")
-	if len(datacenter.ServerTypes.Supported) > 0 {
-		printServerTypes(datacenter.ServerTypes.Supported, serverTypesMap)
-	} else {
-		fmt.Printf("    No supported server types\n")
-	}
-
-	return nil
-}
-
-func describeJSON(resp *hcloud.Response) error {
-	var data map[string]interface{}
-	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
-		return err
-	}
-	if datacenter, ok := data["datacenter"]; ok {
-		return util.DescribeJSON(datacenter)
-	}
-	if datacenters, ok := data["datacenters"].([]interface{}); ok {
-		return util.DescribeJSON(datacenters[0])
-	}
-	return util.DescribeJSON(data)
+		return nil
+	},
 }

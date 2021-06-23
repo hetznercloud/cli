@@ -1,6 +1,8 @@
 package hcapi2
 
 import (
+	"sync"
+
 	"github.com/golang/mock/gomock"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 )
@@ -22,7 +24,10 @@ type Client interface {
 }
 
 type client struct {
-	client *hcloud.Client
+	client           *hcloud.Client
+	serverTypeClient ServerTypeClient
+
+	mu sync.Mutex
 }
 
 // NewClient creates a new CLI API client extending hcloud.Client.
@@ -68,7 +73,12 @@ func (c *client) Server() ServerClient {
 }
 
 func (c *client) ServerType() ServerTypeClient {
-	return NewServerTypeClient(&c.client.ServerType)
+	c.mu.Lock()
+	if c.serverTypeClient == nil {
+		c.serverTypeClient = NewServerTypeClient(&c.client.ServerType)
+	}
+	defer c.mu.Unlock()
+	return c.serverTypeClient
 }
 
 func (c *client) SSHKey() SSHKeyClient {

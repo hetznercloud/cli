@@ -20,11 +20,12 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/sshkey"
 	"github.com/hetznercloud/cli/internal/cmd/version"
 	"github.com/hetznercloud/cli/internal/cmd/volume"
+	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/spf13/cobra"
 )
 
-func NewRootCommand(state *state.State) *cobra.Command {
+func NewRootCommand(state *state.State, client hcapi2.Client) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "hcloud",
 		Short:                 "Hetzner Cloud CLI",
@@ -43,7 +44,7 @@ func NewRootCommand(state *state.State) *cobra.Command {
 		completion.NewCommand(state),
 		servertype.NewCommand(state),
 		context.NewCommand(state),
-		datacenter.NewCommand(state),
+		datacenter.NewCommand(state, client),
 		location.NewCommand(state),
 		iso.NewCommand(state),
 		volume.NewCommand(state),
