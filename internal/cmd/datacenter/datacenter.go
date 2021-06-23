@@ -1,6 +1,7 @@
 package datacenter
 
 import (
+	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/spf13/cobra"
 )
@@ -14,8 +15,8 @@ func NewCommand(cli *state.State) *cobra.Command {
 		DisableFlagsInUseLine: true,
 	}
 	cmd.AddCommand(
-		newListCommand(cli),
-		newDescribeCommand(cli),
+		listCmd.CobraCommand(cli.Context, hcapi2.NewClient(cli.Client()), cli),
+		describeCmd.CobraCommand(cli.Context, hcapi2.NewClient(cli.Client()), cli),
 	)
 	return cmd
 }

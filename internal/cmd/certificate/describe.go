@@ -54,6 +54,7 @@ var describeCmd = base.DescribeCmd{
 		if len(cert.UsedBy) == 0 {
 			fmt.Println("  Certificate unused")
 		} else {
+			lbClient := client.LoadBalancer()
 			for _, ub := range cert.UsedBy {
 				fmt.Printf("  - Type: %s", ub.Type)
 				// Currently certificates can be only attached to load balancers.
@@ -63,7 +64,7 @@ var describeCmd = base.DescribeCmd{
 					fmt.Printf("  - ID: %d", ub.ID)
 					continue
 				}
-				fmt.Printf("  - Name: %s", client.LoadBalancer().LoadBalancerName(ub.ID))
+				fmt.Printf("  - Name: %s", lbClient.LoadBalancerName(ub.ID))
 			}
 		}
 		return nil

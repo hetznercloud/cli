@@ -1,75 +1,46 @@
 package datacenter
 
 import (
+	"context"
+
+	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
-	"github.com/hetznercloud/cli/internal/state"
+	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/hetznercloud/hcloud-go/hcloud/schema"
-	"github.com/spf13/cobra"
 )
 
-var listTableOutput *output.Table
+var listCmd = base.ListCmd{
+	ResourceNamePlural: "datacenters",
+	DefaultColumns:     []string{"id", "name", "description", "location"},
 
-func init() {
-	listTableOutput = output.NewTable().
-		AddAllowedFields(hcloud.Datacenter{}).
-		AddFieldFn("location", output.FieldFn(func(obj interface{}) string {
-			datacenter := obj.(*hcloud.Datacenter)
-			return datacenter.Location.Name
-		}))
-}
+	Fetch: func(ctx context.Context, client hcapi2.Client, listOpts hcloud.ListOpts) ([]interface{}, error) {
+		datacenters, _, err := client.Datacenter().List(ctx, hcloud.DatacenterListOpts{ListOpts: listOpts})
 
-func newListCommand(cli *state.State) *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "list [FLAGS]",
-		Short: "List datacenters",
-		Long: util.ListLongDescription(
-			"Displays a list of datacenters.",
-			listTableOutput.Columns(),
-		),
-		TraverseChildren:      true,
-		DisableFlagsInUseLine: true,
-		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runList),
-	}
-	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(listTableOutput.Columns()), output.OptionJSON())
-	return cmd
-}
-
-func runList(cli *state.State, cmd *cobra.Command, args []string) error {
-	outOpts := output.FlagsForCommand(cmd)
-
-	datacenters, err := cli.Client().Datacenter.All(cli.Context)
-
-	if outOpts.IsSet("json") {
-		var datacenterSchemas []schema.Datacenter
-		for _, datacenter := range datacenters {
-			datacenterSchemas = append(datacenterSchemas, util.DatacenterToSchema(*datacenter))
+		var resources []interface{}
+		for _, n := range datacenters {
+			resources = append(resources, n)
 		}
-		return util.DescribeJSON(datacenterSchemas)
-	}
+		return resources, err
+	},
 
-	if err != nil {
-		return err
-	}
+	OutputTable: func(_ hcapi2.Client) *output.Table {
+		return output.NewTable().
+			AddAllowedFields(hcloud.Datacenter{}).
+			AddFieldFn("location", output.FieldFn(func(obj interface{}) string {
+				datacenter := obj.(*hcloud.Datacenter)
+				return datacenter.Location.Name
+			}))
+	},
 
-	cols := []string{"id", "name", "description", "location"}
-	if outOpts.IsSet("columns") {
-		cols = outOpts["columns"]
-	}
+	JSONSchema: func(resources []interface{}) interface{} {
+		var certSchemas []schema.Datacenter
+		for _, resource := range resources {
+			cert := resource.(*hcloud.Datacenter)
+			certSchemas = append(certSchemas, util.DatacenterToSchema(*cert))
+		}
 
-	tw := listTableOutput
-	if err = tw.ValidateColumns(cols); err != nil {
-		return err
-	}
-
-	if !outOpts.IsSet("noheader") {
-		tw.WriteHeader(cols)
-	}
-	for _, datacenter := range datacenters {
-		tw.Write(cols, datacenter)
-	}
-	tw.Flush()
-	return nil
+		return util.DescribeJSON(certSchemas)
+	},
 }

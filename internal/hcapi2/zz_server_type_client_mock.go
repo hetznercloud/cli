@@ -127,3 +127,31 @@ func (mr *MockServerTypeClientMockRecorder) Names() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockServerTypeClient)(nil).Names))
 }
+
+// ServerTypeDescription mocks base method.
+func (m *MockServerTypeClient) ServerTypeDescription(arg0 int) string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ServerTypeDescription", arg0)
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// ServerTypeDescription indicates an expected call of ServerTypeDescription.
+func (mr *MockServerTypeClientMockRecorder) ServerTypeDescription(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ServerTypeDescription", reflect.TypeOf((*MockServerTypeClient)(nil).ServerTypeDescription), arg0)
+}
+
+// ServerTypeName mocks base method.
+func (m *MockServerTypeClient) ServerTypeName(arg0 int) string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ServerTypeName", arg0)
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// ServerTypeName indicates an expected call of ServerTypeName.
+func (mr *MockServerTypeClientMockRecorder) ServerTypeName(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ServerTypeName", reflect.TypeOf((*MockServerTypeClient)(nil).ServerTypeName), arg0)
+}
