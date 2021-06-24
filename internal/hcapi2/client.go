@@ -24,8 +24,19 @@ type Client interface {
 }
 
 type client struct {
-	client           *hcloud.Client
-	serverTypeClient ServerTypeClient
+	client             *hcloud.Client
+	certificateClient  CertificateClient
+	datacenterClient   DatacenterClient
+	serverClient       ServerClient
+	serverTypeClient   ServerTypeClient
+	locationClient     LocationClient
+	loadBalancerClient LoadBalancerClient
+	networkClient      NetworkClient
+	firewallClient     FirewallClient
+	floatingIPClient   FloatingIPClient
+	imageClient        ImageClient
+	sshKeyClient       SSHKeyClient
+	volumeClient       VolumeClient
 
 	mu sync.Mutex
 }
@@ -37,39 +48,84 @@ func NewClient(c *hcloud.Client) Client {
 	}
 }
 func (c *client) Certificate() CertificateClient {
-	return NewCertificateClient(&c.client.Certificate)
+	c.mu.Lock()
+	if c.certificateClient == nil {
+		c.certificateClient = NewCertificateClient(&c.client.Certificate)
+	}
+	defer c.mu.Unlock()
+	return c.certificateClient
 }
 
 func (c *client) Datacenter() DatacenterClient {
-	return NewDatacenterClient(&c.client.Datacenter)
+	c.mu.Lock()
+	if c.datacenterClient == nil {
+		c.datacenterClient = NewDatacenterClient(&c.client.Datacenter)
+	}
+	defer c.mu.Unlock()
+	return c.datacenterClient
 }
 
 func (c *client) Firewall() FirewallClient {
-	return NewFirewallClient(&c.client.Firewall)
+	c.mu.Lock()
+	if c.firewallClient == nil {
+		c.firewallClient = NewFirewallClient(&c.client.Firewall)
+	}
+	defer c.mu.Unlock()
+	return c.firewallClient
 }
 
 func (c *client) FloatingIP() FloatingIPClient {
-	return NewFloatingIPClient(&c.client.FloatingIP)
+	c.mu.Lock()
+	if c.floatingIPClient == nil {
+		c.floatingIPClient = NewFloatingIPClient(&c.client.FloatingIP)
+	}
+	defer c.mu.Unlock()
+	return c.floatingIPClient
 }
 
 func (c *client) Image() ImageClient {
-	return NewImageClient(&c.client.Image)
+	c.mu.Lock()
+	if c.imageClient == nil {
+		c.imageClient = NewImageClient(&c.client.Image)
+	}
+	defer c.mu.Unlock()
+	return c.imageClient
 }
 
 func (c *client) Location() LocationClient {
-	return NewLocationClient(&c.client.Location)
+	c.mu.Lock()
+	if c.locationClient == nil {
+		c.locationClient = NewLocationClient(&c.client.Location)
+	}
+	defer c.mu.Unlock()
+	return c.locationClient
 }
 
 func (c *client) LoadBalancer() LoadBalancerClient {
-	return NewLoadBalancerClient(&c.client.LoadBalancer)
+	c.mu.Lock()
+	if c.loadBalancerClient == nil {
+		c.loadBalancerClient = NewLoadBalancerClient(&c.client.LoadBalancer)
+	}
+	defer c.mu.Unlock()
+	return c.loadBalancerClient
 }
 
 func (c *client) Network() NetworkClient {
-	return NewNetworkClient(&c.client.Network)
+	c.mu.Lock()
+	if c.networkClient == nil {
+		c.networkClient = NewNetworkClient(&c.client.Network)
+	}
+	defer c.mu.Unlock()
+	return c.networkClient
 }
 
 func (c *client) Server() ServerClient {
-	return NewServerClient(&c.client.Server)
+	c.mu.Lock()
+	if c.serverClient == nil {
+		c.serverClient = NewServerClient(&c.client.Server)
+	}
+	defer c.mu.Unlock()
+	return c.serverClient
 }
 
 func (c *client) ServerType() ServerTypeClient {
@@ -82,11 +138,21 @@ func (c *client) ServerType() ServerTypeClient {
 }
 
 func (c *client) SSHKey() SSHKeyClient {
-	return NewSSHKeyClient(&c.client.SSHKey)
+	c.mu.Lock()
+	if c.sshKeyClient == nil {
+		c.sshKeyClient = NewSSHKeyClient(&c.client.SSHKey)
+	}
+	defer c.mu.Unlock()
+	return c.sshKeyClient
 }
 
 func (c *client) Volume() VolumeClient {
-	return NewVolumeClient(&c.client.Volume)
+	c.mu.Lock()
+	if c.volumeClient == nil {
+		c.volumeClient = NewVolumeClient(&c.client.Volume)
+	}
+	defer c.mu.Unlock()
+	return c.volumeClient
 }
 
 type MockClient struct {

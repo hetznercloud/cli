@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewCommand(cli *state.State) *cobra.Command {
+func NewCommand(cli *state.State, client hcapi2.Client) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "image",
 		Short:                 "Manage images",
@@ -17,12 +17,12 @@ func NewCommand(cli *state.State) *cobra.Command {
 	cmd.AddCommand(
 		newListCommand(cli),
 		newDeleteCommand(cli),
-		describeCmd.CobraCommand(cli.Context, hcapi2.NewClient(cli.Client()), cli),
+		describeCmd.CobraCommand(cli.Context, client, cli),
 		newUpdateCommand(cli),
 		newEnableProtectionCommand(cli),
 		newDisableProtectionCommand(cli),
-		labelCmds.AddCobraCommand(cli.Context, hcapi2.NewClient(cli.Client()), cli),
-		labelCmds.RemoveCobraCommand(cli.Context, hcapi2.NewClient(cli.Client()), cli),
+		labelCmds.AddCobraCommand(cli.Context, client, cli),
+		labelCmds.RemoveCobraCommand(cli.Context, client, cli),
 	)
 	return cmd
 }

@@ -37,7 +37,7 @@ func NewRootCommand(state *state.State, client hcapi2.Client) *cobra.Command {
 	}
 	cmd.AddCommand(
 		floatingip.NewCommand(state),
-		image.NewCommand(state),
+		image.NewCommand(state, client),
 		server.NewCommand(state),
 		sshkey.NewCommand(state),
 		version.NewCommand(state),
@@ -48,11 +48,11 @@ func NewRootCommand(state *state.State, client hcapi2.Client) *cobra.Command {
 		location.NewCommand(state),
 		iso.NewCommand(state),
 		volume.NewCommand(state),
-		network.NewCommand(state),
+		network.NewCommand(state, client),
 		loadbalancer.NewCommand(state),
 		loadbalancertype.NewCommand(state),
-		certificate.NewCommand(state),
-		firewall.NewCommand(state),
+		certificate.NewCommand(state, client),
+		firewall.NewCommand(state, client),
 	)
 	cmd.PersistentFlags().Duration("poll-interval", 500*time.Millisecond, "Interval at which to poll information, for example action progress")
 	return cmd

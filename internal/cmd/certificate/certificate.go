@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewCommand(cli *state.State) *cobra.Command {
+func NewCommand(cli *state.State, client hcapi2.Client) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "certificate",
 		Short:                 "Manage certificates",
@@ -15,13 +15,13 @@ func NewCommand(cli *state.State) *cobra.Command {
 		DisableFlagsInUseLine: true,
 	}
 	cmd.AddCommand(
-		listCmd.CobraCommand(cli.Context, hcapi2.NewClient(cli.Client()), cli),
+		listCmd.CobraCommand(cli.Context, client, cli),
 		newCreateCommand(cli),
 		newUpdateCommand(cli),
-		labelCmds.AddCobraCommand(cli.Context, hcapi2.NewClient(cli.Client()), cli),
-		labelCmds.RemoveCobraCommand(cli.Context, hcapi2.NewClient(cli.Client()), cli),
-		deleteCmd.CobraCommand(cli.Context, hcapi2.NewClient(cli.Client()), cli),
-		describeCmd.CobraCommand(cli.Context, hcapi2.NewClient(cli.Client()), cli),
+		labelCmds.AddCobraCommand(cli.Context, client, cli),
+		labelCmds.RemoveCobraCommand(cli.Context, client, cli),
+		deleteCmd.CobraCommand(cli.Context, client, cli),
+		describeCmd.CobraCommand(cli.Context, client, cli),
 	)
 
 	return cmd
