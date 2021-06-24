@@ -3,6 +3,7 @@ package hcapi2
 //go:generate mockgen -package hcapi2 -destination zz_certificate_client_mock.go . CertificateClient
 //go:generate mockgen -package hcapi2 -destination zz_datacenter_client_mock.go . DatacenterClient
 //go:generate mockgen -package hcapi2 -destination zz_image_client_mock.go . ImageClient
+//go:generate mockgen -package hcapi2 -destination zz_iso_client_mock.go . ISOClient
 //go:generate mockgen -package hcapi2 -destination zz_firewall_client_mock.go . FirewallClient
 //go:generate mockgen -package hcapi2 -destination zz_floating_ip_client_mock.go . FloatingIPClient
 //go:generate mockgen -package hcapi2 -destination zz_location_client_mock.go . LocationClient

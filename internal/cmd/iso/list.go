@@ -1,71 +1,40 @@
 package iso
 
 import (
+	"context"
+
+	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
-	"github.com/hetznercloud/cli/internal/state"
+	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/hetznercloud/hcloud-go/hcloud/schema"
-	"github.com/spf13/cobra"
 )
 
-var listTableOutput *output.Table
+var listCmd = base.ListCmd{
+	ResourceNamePlural: "isos",
+	DefaultColumns:     []string{"id", "name", "description", "type"},
 
-func init() {
-	listTableOutput = output.NewTable().
-		AddAllowedFields(hcloud.ISO{})
-}
+	Fetch: func(ctx context.Context, client hcapi2.Client, listOpts hcloud.ListOpts) ([]interface{}, error) {
+		isos, _, err := client.ISO().List(ctx, hcloud.ISOListOpts{ListOpts: listOpts})
 
-func newListCommand(cli *state.State) *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "list [FLAGS]",
-		Short: "List ISOs",
-		Long: util.ListLongDescription(
-			"Displays a list of ISOs.",
-			listTableOutput.Columns(),
-		),
-		TraverseChildren:      true,
-		DisableFlagsInUseLine: true,
-		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runList),
-	}
-	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(listTableOutput.Columns()), output.OptionJSON())
-	return cmd
-}
-
-func runList(cli *state.State, cmd *cobra.Command, args []string) error {
-	outOpts := output.FlagsForCommand(cmd)
-
-	isos, err := cli.Client().ISO.All(cli.Context)
-	if err != nil {
-		return err
-	}
-
-	if outOpts.IsSet("json") {
-		var isoSchemas []schema.ISO
-		for _, iso := range isos {
-			isoSchemas = append(isoSchemas, util.ISOToSchema(*iso))
+		var resources []interface{}
+		for _, n := range isos {
+			resources = append(resources, n)
 		}
-		return util.DescribeJSON(isoSchemas)
-	}
+		return resources, err
+	},
 
-	cols := []string{"id", "name", "description", "type"}
-	if outOpts.IsSet("columns") {
-		cols = outOpts["columns"]
-	}
+	OutputTable: func(_ hcapi2.Client) *output.Table {
+		return output.NewTable().
+			AddAllowedFields(hcloud.Location{})
+	},
 
-	tw := listTableOutput
-	if err = tw.ValidateColumns(cols); err != nil {
-		return err
-	}
-
-	if !outOpts.IsSet("noheader") {
-		tw.WriteHeader(cols)
-	}
-	for _, iso := range isos {
-		tw.Write(cols, iso)
-	}
-	tw.Flush()
-
-	return nil
+	JSONSchema: func(resources []interface{}) interface{} {
+		var isoSchemas []schema.ISO
+		for _, resource := range resources {
+			isoSchemas = append(isoSchemas, util.ISOToSchema(resource.(hcloud.ISO)))
+		}
+		return isoSchemas
+	},
 }

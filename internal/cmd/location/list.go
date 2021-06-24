@@ -1,71 +1,40 @@
 package location
 
 import (
+	"context"
+
+	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
-	"github.com/hetznercloud/cli/internal/state"
+	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/hetznercloud/hcloud-go/hcloud/schema"
-	"github.com/spf13/cobra"
 )
 
-var listTableOutput *output.Table
+var listCmd = base.ListCmd{
+	ResourceNamePlural: "locations",
+	DefaultColumns:     []string{"id", "name", "description", "network_zone", "country", "city"},
 
-func init() {
-	listTableOutput = output.NewTable().
-		AddAllowedFields(hcloud.Location{})
-}
+	Fetch: func(ctx context.Context, client hcapi2.Client, listOpts hcloud.ListOpts) ([]interface{}, error) {
+		locations, _, err := client.Location().List(ctx, hcloud.LocationListOpts{ListOpts: listOpts})
 
-func newListCommand(cli *state.State) *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "list [FLAGS]",
-		Short: "List locations",
-		Long: util.ListLongDescription(
-			"Displays a list of locations.",
-			listTableOutput.Columns(),
-		),
-		TraverseChildren:      true,
-		DisableFlagsInUseLine: true,
-		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runList),
-	}
-	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(listTableOutput.Columns()), output.OptionJSON())
-	return cmd
-}
-
-func runList(cli *state.State, cmd *cobra.Command, args []string) error {
-	outOpts := output.FlagsForCommand(cmd)
-
-	locations, err := cli.Client().Location.All(cli.Context)
-	if err != nil {
-		return err
-	}
-
-	if outOpts.IsSet("json") {
-		var locationSchemas []schema.Location
-		for _, location := range locations {
-			locationSchemas = append(locationSchemas, util.LocationToSchema(*location))
+		var resources []interface{}
+		for _, n := range locations {
+			resources = append(resources, n)
 		}
-		return util.DescribeJSON(locationSchemas)
-	}
+		return resources, err
+	},
 
-	cols := []string{"id", "name", "description", "network_zone", "country", "city"}
-	if outOpts.IsSet("columns") {
-		cols = outOpts["columns"]
-	}
+	OutputTable: func(_ hcapi2.Client) *output.Table {
+		return output.NewTable().
+			AddAllowedFields(hcloud.Location{})
+	},
 
-	tw := listTableOutput
-	if err = tw.ValidateColumns(cols); err != nil {
-		return err
-	}
-
-	if !outOpts.IsSet("noheader") {
-		tw.WriteHeader(cols)
-	}
-	for _, location := range locations {
-		tw.Write(cols, location)
-	}
-	tw.Flush()
-
-	return nil
+	JSONSchema: func(resources []interface{}) interface{} {
+		var locationSchemas []schema.Location
+		for _, resource := range resources {
+			locationSchemas = append(locationSchemas, util.LocationToSchema(resource.(hcloud.Location)))
+		}
+		return locationSchemas
+	},
 }

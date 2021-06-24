@@ -3,6 +3,7 @@ package hcapi2
 //go:generate interfacer -for github.com/hetznercloud/hcloud-go/hcloud.CertificateClient -as hcapi2.CertificateClientBase -o zz_certificate_client_base.go
 //go:generate interfacer -for github.com/hetznercloud/hcloud-go/hcloud.DatacenterClient -as hcapi2.DatacenterClientBase -o zz_datacenter_client_base.go
 //go:generate interfacer -for github.com/hetznercloud/hcloud-go/hcloud.ImageClient -as hcapi2.ImageClientBase -o zz_image_client_base.go
+//go:generate interfacer -for github.com/hetznercloud/hcloud-go/hcloud.ISOClient -as hcapi2.ISOClientBase -o zz_iso_client_base.go
 //go:generate interfacer -for github.com/hetznercloud/hcloud-go/hcloud.FirewallClient -as hcapi2.FirewallClientBase -o zz_firewall_client_base.go
 //go:generate interfacer -for github.com/hetznercloud/hcloud-go/hcloud.FloatingIPClient -as hcapi2.FloatingIPClientBase -o zz_floating_ip_client_base.go
 //go:generate interfacer -for github.com/hetznercloud/hcloud-go/hcloud.LocationClient -as hcapi2.LocationClientBase -o zz_location_client_base.go

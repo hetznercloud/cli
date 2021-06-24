@@ -21,6 +21,7 @@ type Client interface {
 	Volume() VolumeClient
 	Certificate() CertificateClient
 	LoadBalancer() LoadBalancerClient
+	ISO() ISOClient
 }
 
 type client struct {
@@ -35,6 +36,7 @@ type client struct {
 	firewallClient     FirewallClient
 	floatingIPClient   FloatingIPClient
 	imageClient        ImageClient
+	isoClient          ISOClient
 	sshKeyClient       SSHKeyClient
 	volumeClient       VolumeClient
 
@@ -90,6 +92,15 @@ func (c *client) Image() ImageClient {
 	}
 	defer c.mu.Unlock()
 	return c.imageClient
+}
+
+func (c *client) ISO() ISOClient {
+	c.mu.Lock()
+	if c.isoClient == nil {
+		c.isoClient = NewISOClient(&c.client.ISO)
+	}
+	defer c.mu.Unlock()
+	return c.isoClient
 }
 
 func (c *client) Location() LocationClient {
@@ -168,6 +179,7 @@ type MockClient struct {
 	ServerTypeClient   *MockServerTypeClient
 	SSHKeyClient       *MockSSHKeyClient
 	VolumeClient       *MockVolumeClient
+	ISOClient          *MockISOClient
 }
 
 func NewMockClient(ctrl *gomock.Controller) *MockClient {
@@ -184,6 +196,7 @@ func NewMockClient(ctrl *gomock.Controller) *MockClient {
 		ServerTypeClient:   NewMockServerTypeClient(ctrl),
 		SSHKeyClient:       NewMockSSHKeyClient(ctrl),
 		VolumeClient:       NewMockVolumeClient(ctrl),
+		ISOClient:          NewMockISOClient(ctrl),
 	}
 }
 func (c *MockClient) Certificate() CertificateClient {
@@ -203,6 +216,10 @@ func (c *MockClient) FloatingIP() FloatingIPClient {
 
 func (c *MockClient) Image() ImageClient {
 	return c.ImageClient
+}
+
+func (c *MockClient) ISO() ISOClient {
+	return c.ISOClient
 }
 
 func (c *MockClient) Location() LocationClient {
