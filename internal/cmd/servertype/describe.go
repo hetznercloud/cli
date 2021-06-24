@@ -1,83 +1,42 @@
 package servertype
 
 import (
-	"encoding/json"
+	"context"
 	"fmt"
 
-	"github.com/hetznercloud/cli/internal/cmd/cmpl"
-	"github.com/hetznercloud/cli/internal/cmd/output"
-	"github.com/hetznercloud/cli/internal/cmd/util"
-	"github.com/hetznercloud/cli/internal/state"
+	"github.com/hetznercloud/cli/internal/cmd/base"
+	"github.com/hetznercloud/cli/internal/hcapi2"
+
 	"github.com/hetznercloud/hcloud-go/hcloud"
-	"github.com/spf13/cobra"
 )
 
-func newDescribeCommand(cli *state.State) *cobra.Command {
-	cmd := &cobra.Command{
-		Use:                   "describe [FLAGS] SERVERTYPE",
-		Short:                 "Describe a server type",
-		Args:                  cobra.ExactArgs(1),
-		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.ServerTypeNames)),
-		TraverseChildren:      true,
-		DisableFlagsInUseLine: true,
-		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runDescribe),
-	}
-	output.AddFlag(cmd, output.OptionJSON(), output.OptionFormat())
-	return cmd
-}
+var describeCmd = base.DescribeCmd{
+	ResourceNameSingular: "serverType",
+	ShortDescription:     "Describe a server type",
+	JSONKeyGetByID:       "server_type",
+	JSONKeyGetByName:     "server_types",
+	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Image().Names },
+	Fetch: func(ctx context.Context, client hcapi2.Client, idOrName string) (interface{}, *hcloud.Response, error) {
+		return client.ServerType().Get(ctx, idOrName)
+	},
+	PrintText: func(_ context.Context, _ hcapi2.Client, resource interface{}) error {
+		serverType := resource.(*hcloud.ServerType)
 
-func runDescribe(cli *state.State, cmd *cobra.Command, args []string) error {
-	outputFlags := output.FlagsForCommand(cmd)
+		fmt.Printf("ID:\t\t%d\n", serverType.ID)
+		fmt.Printf("Name:\t\t%s\n", serverType.Name)
+		fmt.Printf("Description:\t%s\n", serverType.Description)
+		fmt.Printf("Cores:\t\t%d\n", serverType.Cores)
+		fmt.Printf("CPU Type:\t%s\n", serverType.CPUType)
+		fmt.Printf("Memory:\t\t%.1f GB\n", serverType.Memory)
+		fmt.Printf("Disk:\t\t%d GB\n", serverType.Disk)
+		fmt.Printf("Storage Type:\t%s\n", serverType.StorageType)
 
-	idOrName := args[0]
-	serverType, resp, err := cli.Client().ServerType.Get(cli.Context, idOrName)
-	if err != nil {
-		return err
-	}
-	if serverType == nil {
-		return fmt.Errorf("server type not found: %s", idOrName)
-	}
-
-	switch {
-	case outputFlags.IsSet("json"):
-		return describeJSON(resp)
-	case outputFlags.IsSet("format"):
-		return util.DescribeFormat(serverType, outputFlags["format"][0])
-	default:
-		return describeText(cli, serverType)
-	}
-}
-
-func describeText(cli *state.State, serverType *hcloud.ServerType) error {
-	fmt.Printf("ID:\t\t%d\n", serverType.ID)
-	fmt.Printf("Name:\t\t%s\n", serverType.Name)
-	fmt.Printf("Description:\t%s\n", serverType.Description)
-	fmt.Printf("Cores:\t\t%d\n", serverType.Cores)
-	fmt.Printf("CPU Type:\t%s\n", serverType.CPUType)
-	fmt.Printf("Memory:\t\t%.1f GB\n", serverType.Memory)
-	fmt.Printf("Disk:\t\t%d GB\n", serverType.Disk)
-	fmt.Printf("Storage Type:\t%s\n", serverType.StorageType)
-
-	fmt.Printf("Pricings per Location:\n")
-	for _, price := range serverType.Pricings {
-		fmt.Printf("  - Location:\t%s:\n", price.Location.Name)
-		fmt.Printf("    Hourly:\t€ %s\n", price.Hourly.Gross)
-		fmt.Printf("    Monthly:\t€ %s\n", price.Monthly.Gross)
-	}
-	return nil
-}
-
-func describeJSON(resp *hcloud.Response) error {
-	var data map[string]interface{}
-	if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
-		return err
-	}
-	if serverType, ok := data["server_type"]; ok {
-		return util.DescribeJSON(serverType)
-	}
-	if serverTypes, ok := data["server_types"].([]interface{}); ok {
-		return util.DescribeJSON(serverTypes[0])
-	}
-	return util.DescribeJSON(data)
+		fmt.Printf("Pricings per Location:\n")
+		for _, price := range serverType.Pricings {
+			fmt.Printf("  - Location:\t%s:\n", price.Location.Name)
+			fmt.Printf("    Hourly:\t€ %s\n", price.Hourly.Gross)
+			fmt.Printf("    Monthly:\t€ %s\n", price.Monthly.Gross)
+		}
+		return nil
+	},
 }

@@ -2,9 +2,10 @@ package hcapi2
 
 import (
 	"context"
-	"github.com/hetznercloud/hcloud-go/hcloud"
 	"strconv"
 	"sync"
+
+	"github.com/hetznercloud/hcloud-go/hcloud"
 )
 
 type ServerTypeClient interface {
