@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewCommand(cli *state.State) *cobra.Command {
+func NewCommand(cli *state.State, client hcapi2.Client) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "firewall",
 		Short:                 "Manage Firewalls",
@@ -16,17 +16,17 @@ func NewCommand(cli *state.State) *cobra.Command {
 	}
 	cmd.AddCommand(
 		newListCommand(cli),
-		describeCmd.CobraCommand(cli.Context, hcapi2.NewClient(cli.Client()), cli),
+		describeCmd.CobraCommand(cli.Context, client, cli),
 		newCreateCommand(cli),
 		newUpdateCommand(cli),
 		newReplaceRulesCommand(cli),
-		deleteCmd.CobraCommand(cli.Context, hcapi2.NewClient(cli.Client()), cli),
+		deleteCmd.CobraCommand(cli.Context, client, cli),
 		newAddRuleCommand(cli),
 		newDeleteRuleCommand(cli),
 		newApplyToResourceCommand(cli),
 		newRemoveFromResourceCommand(cli),
-		labelCmds.AddCobraCommand(cli.Context, hcapi2.NewClient(cli.Client()), cli),
-		labelCmds.RemoveCobraCommand(cli.Context, hcapi2.NewClient(cli.Client()), cli),
+		labelCmds.AddCobraCommand(cli.Context, client, cli),
+		labelCmds.RemoveCobraCommand(cli.Context, client, cli),
 	)
 	return cmd
 }
