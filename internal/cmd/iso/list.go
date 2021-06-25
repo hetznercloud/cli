@@ -9,13 +9,14 @@ import (
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/hetznercloud/hcloud-go/hcloud/schema"
+	"github.com/spf13/cobra"
 )
 
 var listCmd = base.ListCmd{
 	ResourceNamePlural: "isos",
 	DefaultColumns:     []string{"id", "name", "description", "type"},
 
-	Fetch: func(ctx context.Context, client hcapi2.Client, listOpts hcloud.ListOpts) ([]interface{}, error) {
+	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts) ([]interface{}, error) {
 		isos, _, err := client.ISO().List(ctx, hcloud.ISOListOpts{ListOpts: listOpts})
 
 		var resources []interface{}

@@ -9,13 +9,14 @@ import (
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/hetznercloud/hcloud-go/hcloud/schema"
+	"github.com/spf13/cobra"
 )
 
 var listCmd = base.ListCmd{
 	ResourceNamePlural: "Firewalls",
 	DefaultColumns:     []string{"id", "name", "rules_count", "applied_to_count"},
 
-	Fetch: func(ctx context.Context, client hcapi2.Client, listOpts hcloud.ListOpts) ([]interface{}, error) {
+	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts) ([]interface{}, error) {
 		firewalls, _, err := client.Firewall().List(ctx, hcloud.FirewallListOpts{ListOpts: listOpts})
 
 		var resources []interface{}

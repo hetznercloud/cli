@@ -1,42 +1,27 @@
 package network
 
 import (
-	"fmt"
+	"context"
 
-	"github.com/hetznercloud/cli/internal/cmd/cmpl"
-	"github.com/hetznercloud/cli/internal/state"
+	"github.com/hetznercloud/cli/internal/cmd/base"
+	"github.com/hetznercloud/cli/internal/hcapi2"
+	"github.com/hetznercloud/hcloud-go/hcloud"
+
 	"github.com/spf13/cobra"
 )
 
-func newDeleteCommand(cli *state.State) *cobra.Command {
-	cmd := &cobra.Command{
-		Use:                   "delete [FLAGS] NETWORK",
-		Short:                 "Delete a network",
-		Args:                  cobra.ExactArgs(1),
-		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.NetworkNames)),
-		TraverseChildren:      true,
-		DisableFlagsInUseLine: true,
-		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runDelete),
-	}
-	return cmd
-}
-
-func runDelete(cli *state.State, cmd *cobra.Command, args []string) error {
-	idOrName := args[0]
-	network, _, err := cli.Client().Network.Get(cli.Context, idOrName)
-	if err != nil {
-		return err
-	}
-	if network == nil {
-		return fmt.Errorf("network not found: %s", idOrName)
-	}
-
-	_, err = cli.Client().Network.Delete(cli.Context, network)
-	if err != nil {
-		return err
-	}
-
-	fmt.Printf("Network %d deleted\n", network.ID)
-	return nil
+var deleteCmd = base.DeleteCmd{
+	ResourceNameSingular: "Network",
+	ShortDescription:     "Delete a network",
+	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Network().Names },
+	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
+		return client.Network().Get(ctx, idOrName)
+	},
+	Delete: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}) error {
+		network := resource.(*hcloud.Network)
+		if _, err := client.Network().Delete(ctx, network); err != nil {
+			return err
+		}
+		return nil
+	},
 }

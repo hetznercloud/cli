@@ -240,6 +240,20 @@ func (mr *MockNetworkClientMockRecorder) GetByName(arg0, arg1 interface{}) *gomo
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByName", reflect.TypeOf((*MockNetworkClient)(nil).GetByName), arg0, arg1)
 }
 
+// LabelKeys mocks base method.
+func (m *MockNetworkClient) LabelKeys(arg0 string) []string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "LabelKeys", arg0)
+	ret0, _ := ret[0].([]string)
+	return ret0
+}
+
+// LabelKeys indicates an expected call of LabelKeys.
+func (mr *MockNetworkClientMockRecorder) LabelKeys(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LabelKeys", reflect.TypeOf((*MockNetworkClient)(nil).LabelKeys), arg0)
+}
+
 // List mocks base method.
 func (m *MockNetworkClient) List(arg0 context.Context, arg1 hcloud.NetworkListOpts) ([]*hcloud.Network, *hcloud.Response, error) {
 	m.ctrl.T.Helper()

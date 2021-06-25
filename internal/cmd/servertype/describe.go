@@ -6,6 +6,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/hcapi2"
+	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/hcloud-go/hcloud"
 )
@@ -16,10 +17,10 @@ var describeCmd = base.DescribeCmd{
 	JSONKeyGetByID:       "server_type",
 	JSONKeyGetByName:     "server_types",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Image().Names },
-	Fetch: func(ctx context.Context, client hcapi2.Client, idOrName string) (interface{}, *hcloud.Response, error) {
+	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
 		return client.ServerType().Get(ctx, idOrName)
 	},
-	PrintText: func(_ context.Context, _ hcapi2.Client, resource interface{}) error {
+	PrintText: func(_ context.Context, _ hcapi2.Client, _ *cobra.Command, resource interface{}) error {
 		serverType := resource.(*hcloud.ServerType)
 
 		fmt.Printf("ID:\t\t%d\n", serverType.ID)

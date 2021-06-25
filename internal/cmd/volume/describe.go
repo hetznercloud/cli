@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 
@@ -18,10 +20,10 @@ var describeCmd = base.DescribeCmd{
 	JSONKeyGetByID:       "volume",
 	JSONKeyGetByName:     "volumes",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Volume().Names },
-	Fetch: func(ctx context.Context, client hcapi2.Client, idOrName string) (interface{}, *hcloud.Response, error) {
+	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
 		return client.Volume().Get(ctx, idOrName)
 	},
-	PrintText: func(_ context.Context, client hcapi2.Client, resource interface{}) error {
+	PrintText: func(_ context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}) error {
 		volume := resource.(*hcloud.Volume)
 
 		fmt.Printf("ID:\t\t%d\n", volume.ID)

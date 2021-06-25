@@ -1,58 +1,78 @@
 package loadbalancer
 
 import (
+	"context"
 	"strings"
 
+	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
-	"github.com/hetznercloud/cli/internal/state"
+	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/hcloud-go/hcloud/schema"
+	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/hcloud-go/hcloud"
-	"github.com/spf13/cobra"
 )
 
-var listTableOutput *output.Table
+var ListCmd = base.ListCmd{
+	ResourceNamePlural: "Load Balancer",
 
-func init() {
-	listTableOutput = describeListTableOutput(nil)
-}
+	DefaultColumns: []string{"id", "name", "ipv4", "ipv6", "type", "location", "network_zone"},
+	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts) ([]interface{}, error) {
+		loadBalancers, _, err := client.LoadBalancer().List(ctx, hcloud.LoadBalancerListOpts{ListOpts: listOpts})
 
-func newListCommand(cli *state.State) *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "list [FLAGS]",
-		Short: "List Load Balancers",
-		Long: util.ListLongDescription(
-			"Displays a list of Load Balancers.",
-			listTableOutput.Columns(),
-		),
-		TraverseChildren:      true,
-		DisableFlagsInUseLine: true,
-		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runList),
-	}
-	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(listTableOutput.Columns()), output.OptionJSON())
-	cmd.Flags().StringP("selector", "l", "", "Selector to filter by labels")
-	return cmd
-}
+		var resources []interface{}
+		for _, r := range loadBalancers {
+			resources = append(resources, r)
+		}
+		return resources, err
+	},
 
-func runList(cli *state.State, cmd *cobra.Command, args []string) error {
-	outOpts := output.FlagsForCommand(cmd)
+	OutputTable: func(client hcapi2.Client) *output.Table {
+		return output.NewTable().
+			AddAllowedFields(hcloud.LoadBalancer{}).
+			AddFieldFn("ipv4", output.FieldFn(func(obj interface{}) string {
+				loadbalancer := obj.(*hcloud.LoadBalancer)
+				return loadbalancer.PublicNet.IPv4.IP.String()
+			})).
+			AddFieldFn("ipv6", output.FieldFn(func(obj interface{}) string {
+				loadbalancer := obj.(*hcloud.LoadBalancer)
+				return loadbalancer.PublicNet.IPv6.IP.String()
+			})).
+			AddFieldFn("type", output.FieldFn(func(obj interface{}) string {
+				loadbalancer := obj.(*hcloud.LoadBalancer)
+				return loadbalancer.LoadBalancerType.Name
+			})).
+			AddFieldFn("location", output.FieldFn(func(obj interface{}) string {
+				loadbalancer := obj.(*hcloud.LoadBalancer)
+				return loadbalancer.Location.Name
+			})).
+			AddFieldFn("network_zone", output.FieldFn(func(obj interface{}) string {
+				loadbalancer := obj.(*hcloud.LoadBalancer)
+				return string(loadbalancer.Location.NetworkZone)
+			})).
+			AddFieldFn("labels", output.FieldFn(func(obj interface{}) string {
+				loadBalancer := obj.(*hcloud.LoadBalancer)
+				return util.LabelsToString(loadBalancer.Labels)
+			})).
+			AddFieldFn("protection", output.FieldFn(func(obj interface{}) string {
+				loadBalancer := obj.(*hcloud.LoadBalancer)
+				var protection []string
+				if loadBalancer.Protection.Delete {
+					protection = append(protection, "delete")
+				}
+				return strings.Join(protection, ", ")
+			})).
+			AddFieldFn("created", output.FieldFn(func(obj interface{}) string {
+				loadBalancer := obj.(*hcloud.LoadBalancer)
+				return util.Datetime(loadBalancer.Created)
+			}))
+	},
 
-	labelSelector, _ := cmd.Flags().GetString("selector")
-	opts := hcloud.LoadBalancerListOpts{
-		ListOpts: hcloud.ListOpts{
-			LabelSelector: labelSelector,
-			PerPage:       50,
-		},
-	}
-	loadBalancers, err := cli.Client().LoadBalancer.AllWithOpts(cli.Context, opts)
-	if err != nil {
-		return err
-	}
-	if outOpts.IsSet("json") {
+	JSONSchema: func(resources []interface{}) interface{} {
 		var loadBalancerSchemas []schema.LoadBalancer
-		for _, loadBalancer := range loadBalancers {
+		for _, resource := range resources {
+			loadBalancer := resource.(*hcloud.LoadBalancer)
 			loadBalancerSchema := schema.LoadBalancer{
 				ID:   loadBalancer.ID,
 				Name: loadBalancer.Name,
@@ -135,65 +155,6 @@ func runList(cli *state.State, cmd *cobra.Command, args []string) error {
 
 			loadBalancerSchemas = append(loadBalancerSchemas, loadBalancerSchema)
 		}
-		return util.DescribeJSON(loadBalancerSchemas)
-	}
-	cols := []string{"id", "name", "ipv4", "ipv6", "type", "location", "network_zone"}
-	if outOpts.IsSet("columns") {
-		cols = outOpts["columns"]
-	}
-
-	tw := describeListTableOutput(cli)
-	if err = tw.ValidateColumns(cols); err != nil {
-		return err
-	}
-
-	if !outOpts.IsSet("noheader") {
-		tw.WriteHeader(cols)
-	}
-	for _, loadBalancer := range loadBalancers {
-		tw.Write(cols, loadBalancer)
-	}
-	tw.Flush()
-	return nil
-}
-
-func describeListTableOutput(cli *state.State) *output.Table {
-	return output.NewTable().
-		AddAllowedFields(hcloud.LoadBalancer{}).
-		AddFieldFn("ipv4", output.FieldFn(func(obj interface{}) string {
-			loadbalancer := obj.(*hcloud.LoadBalancer)
-			return loadbalancer.PublicNet.IPv4.IP.String()
-		})).
-		AddFieldFn("ipv6", output.FieldFn(func(obj interface{}) string {
-			loadbalancer := obj.(*hcloud.LoadBalancer)
-			return loadbalancer.PublicNet.IPv6.IP.String()
-		})).
-		AddFieldFn("type", output.FieldFn(func(obj interface{}) string {
-			loadbalancer := obj.(*hcloud.LoadBalancer)
-			return loadbalancer.LoadBalancerType.Name
-		})).
-		AddFieldFn("location", output.FieldFn(func(obj interface{}) string {
-			loadbalancer := obj.(*hcloud.LoadBalancer)
-			return loadbalancer.Location.Name
-		})).
-		AddFieldFn("network_zone", output.FieldFn(func(obj interface{}) string {
-			loadbalancer := obj.(*hcloud.LoadBalancer)
-			return string(loadbalancer.Location.NetworkZone)
-		})).
-		AddFieldFn("labels", output.FieldFn(func(obj interface{}) string {
-			loadBalancer := obj.(*hcloud.LoadBalancer)
-			return util.LabelsToString(loadBalancer.Labels)
-		})).
-		AddFieldFn("protection", output.FieldFn(func(obj interface{}) string {
-			loadBalancer := obj.(*hcloud.LoadBalancer)
-			var protection []string
-			if loadBalancer.Protection.Delete {
-				protection = append(protection, "delete")
-			}
-			return strings.Join(protection, ", ")
-		})).
-		AddFieldFn("created", output.FieldFn(func(obj interface{}) string {
-			loadBalancer := obj.(*hcloud.LoadBalancer)
-			return util.Datetime(loadBalancer.Created)
-		}))
+		return loadBalancerSchemas
+	},
 }

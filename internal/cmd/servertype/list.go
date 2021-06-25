@@ -9,6 +9,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/hcloud-go/hcloud/schema"
+	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/hcloud-go/hcloud"
 )
@@ -18,7 +19,7 @@ var ListCmd = base.ListCmd{
 
 	DefaultColumns: []string{"id", "name", "cores", "cpu_type", "memory", "disk", "storage_type"},
 
-	Fetch: func(ctx context.Context, client hcapi2.Client, listOpts hcloud.ListOpts) ([]interface{}, error) {
+	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts) ([]interface{}, error) {
 		servers, _, err := client.ServerType().List(ctx, hcloud.ServerTypeListOpts{ListOpts: listOpts})
 
 		var resources []interface{}

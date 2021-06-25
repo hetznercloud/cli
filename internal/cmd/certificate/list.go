@@ -6,6 +6,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/hcapi2"
+	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
@@ -17,7 +18,7 @@ var listCmd = base.ListCmd{
 	ResourceNamePlural: "certificates",
 	DefaultColumns:     []string{"id", "name", "type", "domain_names", "not_valid_after"},
 
-	Fetch: func(ctx context.Context, client hcapi2.Client, listOpts hcloud.ListOpts) ([]interface{}, error) {
+	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts) ([]interface{}, error) {
 		certficates, err := client.Certificate().AllWithOpts(ctx, hcloud.CertificateListOpts{ListOpts: listOpts})
 
 		var resources []interface{}

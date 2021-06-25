@@ -16,12 +16,12 @@ func NewCommand(cli *state.State, client hcapi2.Client) *cobra.Command {
 	}
 	cmd.AddCommand(
 		newCreateCommand(cli),
-		newListCommand(cli),
-		newDescribeCommand(cli),
-		newDeleteCommand(cli),
+		ListCmd.CobraCommand(cli.Context, client, cli),
+		DescribeCmd.CobraCommand(cli.Context, client, cli),
+		deleteCmd.CobraCommand(cli.Context, client, cli),
 		newUpdateCommand(cli),
-		newAddLabelCommand(cli),
-		newRemoveLabelCommand(cli),
+		labelCmds.AddCobraCommand(cli.Context, client, cli),
+		labelCmds.RemoveCobraCommand(cli.Context, client, cli),
 		newAddTargetCommand(cli),
 		newRemoveTargetCommand(cli),
 		newChangeAlgorithmCommand(cli),
