@@ -14,6 +14,7 @@ type NetworkClient interface {
 	NetworkClientBase
 	Names() []string
 	Name(int) string
+	LabelKeys(string) []string
 }
 
 func NewNetworkClient(client NetworkClientBase) NetworkClient {
@@ -65,9 +66,9 @@ func (c *networkClient) Names() []string {
 	return names
 }
 
-// NetworkLabelKeys returns a slice containing the keys of all labels assigned
+// LabelKeys returns a slice containing the keys of all labels assigned
 // to the Network with the passed idOrName.
-func (c *networkClient) NetworkLabelKeys(idOrName string) []string {
+func (c *networkClient) LabelKeys(idOrName string) []string {
 	var net *hcloud.Network
 
 	if err := c.init(); err != nil || len(c.netsByID) == 0 {

@@ -6,6 +6,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/hcapi2"
+	"github.com/spf13/cobra"
 
 	"github.com/dustin/go-humanize"
 	"github.com/hetznercloud/cli/internal/cmd/util"
@@ -18,10 +19,10 @@ var describeCmd = base.DescribeCmd{
 	JSONKeyGetByID:       "certificate",
 	JSONKeyGetByName:     "certificates",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Certificate().Names },
-	Fetch: func(ctx context.Context, client hcapi2.Client, idOrName string) (interface{}, *hcloud.Response, error) {
+	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
 		return client.Certificate().Get(ctx, idOrName)
 	},
-	PrintText: func(_ context.Context, client hcapi2.Client, resource interface{}) error {
+	PrintText: func(_ context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}) error {
 		cert := resource.(*hcloud.Certificate)
 		fmt.Printf("ID:\t\t\t%d\n", cert.ID)
 		fmt.Printf("Name:\t\t\t%s\n", cert.Name)

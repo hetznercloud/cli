@@ -11,13 +11,14 @@ import (
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/hetznercloud/hcloud-go/hcloud/schema"
+	"github.com/spf13/cobra"
 )
 
 var ListCmd = base.ListCmd{
 	ResourceNamePlural: "networks",
 	DefaultColumns:     []string{"id", "name", "ip_range", "servers"},
 
-	Fetch: func(ctx context.Context, client hcapi2.Client, listOpts hcloud.ListOpts) ([]interface{}, error) {
+	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts) ([]interface{}, error) {
 		networks, err := client.Network().AllWithOpts(ctx, hcloud.NetworkListOpts{ListOpts: listOpts})
 
 		var resources []interface{}

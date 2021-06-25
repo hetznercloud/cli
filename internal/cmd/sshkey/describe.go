@@ -7,6 +7,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/hcapi2"
+	"github.com/spf13/cobra"
 
 	"github.com/dustin/go-humanize"
 
@@ -20,10 +21,10 @@ var describeCmd = base.DescribeCmd{
 	JSONKeyGetByID:       "ssh_key",
 	JSONKeyGetByName:     "ssh_keys",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.SSHKey().Names },
-	Fetch: func(ctx context.Context, client hcapi2.Client, idOrName string) (interface{}, *hcloud.Response, error) {
+	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
 		return client.SSHKey().Get(ctx, idOrName)
 	},
-	PrintText: func(_ context.Context, _ hcapi2.Client, resource interface{}) error {
+	PrintText: func(_ context.Context, _ hcapi2.Client, _ *cobra.Command, resource interface{}) error {
 		sshKey := resource.(*hcloud.SSHKey)
 		fmt.Printf("ID:\t\t%d\n", sshKey.ID)
 		fmt.Printf("Name:\t\t%s\n", sshKey.Name)

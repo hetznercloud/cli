@@ -19,8 +19,9 @@ type DeleteCmd struct {
 	ResourceNameSingular string // e.g. "server"
 	ShortDescription     string
 	NameSuggestions      func(client hcapi2.Client) func() []string
-	Fetch                func(ctx context.Context, client hcapi2.Client, idOrName string) (interface{}, *hcloud.Response, error)
-	Delete               func(ctx context.Context, client hcapi2.Client, resource interface{}) error
+	AdditionalFlags      func(*cobra.Command)
+	Fetch                func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error)
+	Delete               func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}) error
 }
 
 // CobraCommand creates a command that can be registered with cobra.
@@ -46,7 +47,7 @@ func (dc *DeleteCmd) CobraCommand(
 func (dc *DeleteCmd) Run(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, args []string) error {
 
 	idOrName := args[0]
-	resource, _, err := dc.Fetch(ctx, client, idOrName)
+	resource, _, err := dc.Fetch(ctx, client, cmd, idOrName)
 	if err != nil {
 		return err
 	}
@@ -57,7 +58,7 @@ func (dc *DeleteCmd) Run(ctx context.Context, client hcapi2.Client, cmd *cobra.C
 		return fmt.Errorf("%s not found: %s", dc.ResourceNameSingular, idOrName)
 	}
 
-	if err := dc.Delete(ctx, client, resource); err != nil {
+	if err := dc.Delete(ctx, client, cmd, resource); err != nil {
 		return fmt.Errorf("deleting %s %s failed: %s", dc.ResourceNameSingular, idOrName, err)
 	}
 	fmt.Printf("%s %v deleted\n", dc.ResourceNameSingular, idOrName)

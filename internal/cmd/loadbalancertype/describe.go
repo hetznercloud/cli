@@ -6,6 +6,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/hcapi2"
+	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/hcloud-go/hcloud"
 )
@@ -16,10 +17,10 @@ var describeCmd = base.DescribeCmd{
 	JSONKeyGetByID:       "load_balancer_type",
 	JSONKeyGetByName:     "load_balancer_types",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.LoadBalancerType().Names },
-	Fetch: func(ctx context.Context, client hcapi2.Client, idOrName string) (interface{}, *hcloud.Response, error) {
+	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
 		return client.LoadBalancerType().Get(ctx, idOrName)
 	},
-	PrintText: func(_ context.Context, _ hcapi2.Client, resource interface{}) error {
+	PrintText: func(_ context.Context, _ hcapi2.Client, _ *cobra.Command, resource interface{}) error {
 		loadBalancerType := resource.(*hcloud.LoadBalancerType)
 
 		fmt.Printf("ID:\t\t\t\t%d\n", loadBalancerType.ID)

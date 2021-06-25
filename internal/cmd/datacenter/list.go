@@ -3,6 +3,8 @@ package datacenter
 import (
 	"context"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
@@ -15,7 +17,7 @@ var listCmd = base.ListCmd{
 	ResourceNamePlural: "datacenters",
 	DefaultColumns:     []string{"id", "name", "description", "location"},
 
-	Fetch: func(ctx context.Context, client hcapi2.Client, listOpts hcloud.ListOpts) ([]interface{}, error) {
+	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts) ([]interface{}, error) {
 		datacenters, _, err := client.Datacenter().List(ctx, hcloud.DatacenterListOpts{ListOpts: listOpts})
 
 		var resources []interface{}

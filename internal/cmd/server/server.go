@@ -18,7 +18,7 @@ func NewCommand(cli *state.State, client hcapi2.Client) *cobra.Command {
 		ListCmd.CobraCommand(cli.Context, client, cli),
 		describeCmd.CobraCommand(cli.Context, client, cli),
 		CreateCmd.CobraCommand(cli.Context, client, cli, cli),
-		newDeleteCommand(cli),
+		deleteCmd.CobraCommand(cli.Context, client, cli),
 		newRebootCommand(cli),
 		newPoweronCommand(cli),
 		newPoweroffCommand(cli),
@@ -47,8 +47,6 @@ func NewCommand(cli *state.State, client hcapi2.Client) *cobra.Command {
 		newIPCommand(cli),
 		newRequestConsoleCommand(cli),
 		newMetricsCommand(cli),
-		//newApplyFirewallCommand(cli),
-		//newRemoveFirewallCommand(cli),
 	)
 	return cmd
 }

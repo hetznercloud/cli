@@ -1,42 +1,27 @@
 package server
 
 import (
-	"fmt"
+	"context"
 
-	"github.com/hetznercloud/cli/internal/cmd/cmpl"
-	"github.com/hetznercloud/cli/internal/state"
+	"github.com/hetznercloud/cli/internal/cmd/base"
+	"github.com/hetznercloud/cli/internal/hcapi2"
+	"github.com/hetznercloud/hcloud-go/hcloud"
+
 	"github.com/spf13/cobra"
 )
 
-func newDeleteCommand(cli *state.State) *cobra.Command {
-	cmd := &cobra.Command{
-		Use:                   "delete SERVER",
-		Short:                 "Delete a server",
-		Args:                  cobra.ExactArgs(1),
-		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.ServerNames)),
-		TraverseChildren:      true,
-		DisableFlagsInUseLine: true,
-		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runDelete),
-	}
-	return cmd
-}
-
-func runDelete(cli *state.State, cmd *cobra.Command, args []string) error {
-	idOrName := args[0]
-	server, _, err := cli.Client().Server.Get(cli.Context, idOrName)
-	if err != nil {
-		return err
-	}
-	if server == nil {
-		return fmt.Errorf("server not found: %s", idOrName)
-	}
-
-	_, err = cli.Client().Server.Delete(cli.Context, server)
-	if err != nil {
-		return err
-	}
-
-	fmt.Printf("Server %d deleted\n", server.ID)
-	return nil
+var deleteCmd = base.DeleteCmd{
+	ResourceNameSingular: "Server",
+	ShortDescription:     "Delete a server",
+	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Server().Names },
+	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
+		return client.Server().Get(ctx, idOrName)
+	},
+	Delete: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}) error {
+		server := resource.(*hcloud.Server)
+		if _, err := client.Server().Delete(ctx, server); err != nil {
+			return err
+		}
+		return nil
+	},
 }

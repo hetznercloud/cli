@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 
@@ -19,7 +21,7 @@ var listCmd = base.ListCmd{
 	ResourceNamePlural: "Floating IPs",
 	DefaultColumns:     []string{"id", "type", "name", "description", "ip", "home", "server", "dns"},
 
-	Fetch: func(ctx context.Context, client hcapi2.Client, listOpts hcloud.ListOpts) ([]interface{}, error) {
+	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts) ([]interface{}, error) {
 		floatingips, _, err := client.FloatingIP().List(ctx, hcloud.FloatingIPListOpts{ListOpts: listOpts})
 
 		var resources []interface{}

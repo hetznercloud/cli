@@ -4,6 +4,8 @@ import (
 	"context"
 	"strings"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 
@@ -19,7 +21,7 @@ var listCmd = base.ListCmd{
 	ResourceNamePlural: "volumes",
 	DefaultColumns:     []string{"id", "name", "size", "server", "location"},
 
-	Fetch: func(ctx context.Context, client hcapi2.Client, listOpts hcloud.ListOpts) ([]interface{}, error) {
+	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts) ([]interface{}, error) {
 		volumes, _, err := client.Volume().List(ctx, hcloud.VolumeListOpts{ListOpts: listOpts})
 
 		var resources []interface{}

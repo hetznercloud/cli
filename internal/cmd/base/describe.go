@@ -25,8 +25,9 @@ type DescribeCmd struct {
 	JSONKeyGetByID   string // e.g. "server"
 	JSONKeyGetByName string // e.g. "servers"
 	NameSuggestions  func(client hcapi2.Client) func() []string
-	Fetch            func(ctx context.Context, client hcapi2.Client, idOrName string) (interface{}, *hcloud.Response, error)
-	PrintText        func(ctx context.Context, client hcapi2.Client, resource interface{}) error
+	AdditionalFlags  func(*cobra.Command)
+	Fetch            func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error)
+	PrintText        func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}) error
 }
 
 // CobraCommand creates a command that can be registered with cobra.
@@ -46,6 +47,9 @@ func (dc *DescribeCmd) CobraCommand(
 		},
 	}
 	output.AddFlag(cmd, output.OptionJSON(), output.OptionFormat())
+	if dc.AdditionalFlags != nil {
+		dc.AdditionalFlags(cmd)
+	}
 	return cmd
 }
 
@@ -54,7 +58,7 @@ func (dc *DescribeCmd) Run(ctx context.Context, client hcapi2.Client, cmd *cobra
 	outputFlags := output.FlagsForCommand(cmd)
 
 	idOrName := args[0]
-	resource, resp, err := dc.Fetch(ctx, client, idOrName)
+	resource, resp, err := dc.Fetch(ctx, client, cmd, idOrName)
 	if err != nil {
 		return err
 	}
@@ -71,7 +75,7 @@ func (dc *DescribeCmd) Run(ctx context.Context, client hcapi2.Client, cmd *cobra
 	case outputFlags.IsSet("format"):
 		return util.DescribeFormat(resource, outputFlags["format"][0])
 	default:
-		return dc.PrintText(ctx, client, resource)
+		return dc.PrintText(ctx, client, cmd, resource)
 	}
 }
 
