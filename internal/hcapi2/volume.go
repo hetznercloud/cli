@@ -10,6 +10,7 @@ import (
 type VolumeClient interface {
 	VolumeClientBase
 	Names() []string
+	LabelKeys(idOrName string) []string
 }
 
 func NewVolumeClient(client VolumeClientBase) VolumeClient {
@@ -41,9 +42,9 @@ func (c *volumeClient) Names() []string {
 	return names
 }
 
-// VolumeLabelKeys returns a slice containing the keys of all labels assigned
+// LabelKeys returns a slice containing the keys of all labels assigned
 // to the Volume with the passed idOrName.
-func (c *volumeClient) VolumeLabelKeys(idOrName string) []string {
+func (c *volumeClient) LabelKeys(idOrName string) []string {
 	vol, _, err := c.Get(context.Background(), idOrName)
 	if err != nil || vol == nil || len(vol.Labels) == 0 {
 		return nil

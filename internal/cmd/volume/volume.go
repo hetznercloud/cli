@@ -15,18 +15,18 @@ func NewCommand(cli *state.State, client hcapi2.Client) *cobra.Command {
 		DisableFlagsInUseLine: true,
 	}
 	cmd.AddCommand(
-		newListCommand(cli),
+		listCmd.CobraCommand(cli.Context, client, cli),
 		newCreateCommand(cli),
 		newUpdateCommand(cli),
-		newDeleteCommand(cli),
-		newDescribeCommand(cli),
+		deleteCmd.CobraCommand(cli.Context, client, cli),
+		describeCmd.CobraCommand(cli.Context, client, cli),
 		newAttachCommand(cli),
 		newDetachCommand(cli),
 		newResizeCommand(cli),
-		newAddLabelCommand(cli),
-		newRemoveLabelCommand(cli),
 		newEnableProtectionCommand(cli),
 		newDisableProtectionCommand(cli),
+		labelCmds.AddCobraCommand(cli.Context, client, cli),
+		labelCmds.RemoveCobraCommand(cli.Context, client, cli),
 	)
 	return cmd
 }

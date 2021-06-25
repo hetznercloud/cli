@@ -21,24 +21,26 @@ type Client interface {
 	Volume() VolumeClient
 	Certificate() CertificateClient
 	LoadBalancer() LoadBalancerClient
+	LoadBalancerType() LoadBalancerTypeClient
 	ISO() ISOClient
 }
 
 type client struct {
-	client             *hcloud.Client
-	certificateClient  CertificateClient
-	datacenterClient   DatacenterClient
-	serverClient       ServerClient
-	serverTypeClient   ServerTypeClient
-	locationClient     LocationClient
-	loadBalancerClient LoadBalancerClient
-	networkClient      NetworkClient
-	firewallClient     FirewallClient
-	floatingIPClient   FloatingIPClient
-	imageClient        ImageClient
-	isoClient          ISOClient
-	sshKeyClient       SSHKeyClient
-	volumeClient       VolumeClient
+	client                 *hcloud.Client
+	certificateClient      CertificateClient
+	datacenterClient       DatacenterClient
+	serverClient           ServerClient
+	serverTypeClient       ServerTypeClient
+	locationClient         LocationClient
+	loadBalancerClient     LoadBalancerClient
+	loadBalancerTypeClient LoadBalancerTypeClient
+	networkClient          NetworkClient
+	firewallClient         FirewallClient
+	floatingIPClient       FloatingIPClient
+	imageClient            ImageClient
+	isoClient              ISOClient
+	sshKeyClient           SSHKeyClient
+	volumeClient           VolumeClient
 
 	mu sync.Mutex
 }
@@ -120,7 +122,14 @@ func (c *client) LoadBalancer() LoadBalancerClient {
 	defer c.mu.Unlock()
 	return c.loadBalancerClient
 }
-
+func (c *client) LoadBalancerType() LoadBalancerTypeClient {
+	c.mu.Lock()
+	if c.loadBalancerTypeClient == nil {
+		c.loadBalancerTypeClient = NewLoadBalancerTypeClient(&c.client.LoadBalancerType)
+	}
+	defer c.mu.Unlock()
+	return c.loadBalancerTypeClient
+}
 func (c *client) Network() NetworkClient {
 	c.mu.Lock()
 	if c.networkClient == nil {
@@ -167,36 +176,38 @@ func (c *client) Volume() VolumeClient {
 }
 
 type MockClient struct {
-	CertificateClient  *MockCertificateClient
-	DatacenterClient   *MockDatacenterClient
-	FirewallClient     *MockFirewallClient
-	FloatingIPClient   *MockFloatingIPClient
-	ImageClient        *MockImageClient
-	LocationClient     *MockLocationClient
-	LoadBalancerClient *MockLoadBalancerClient
-	NetworkClient      *MockNetworkClient
-	ServerClient       *MockServerClient
-	ServerTypeClient   *MockServerTypeClient
-	SSHKeyClient       *MockSSHKeyClient
-	VolumeClient       *MockVolumeClient
-	ISOClient          *MockISOClient
+	CertificateClient      *MockCertificateClient
+	DatacenterClient       *MockDatacenterClient
+	FirewallClient         *MockFirewallClient
+	FloatingIPClient       *MockFloatingIPClient
+	ImageClient            *MockImageClient
+	LocationClient         *MockLocationClient
+	LoadBalancerClient     *MockLoadBalancerClient
+	LoadBalancerTypeClient *MockLoadBalancerTypeClient
+	NetworkClient          *MockNetworkClient
+	ServerClient           *MockServerClient
+	ServerTypeClient       *MockServerTypeClient
+	SSHKeyClient           *MockSSHKeyClient
+	VolumeClient           *MockVolumeClient
+	ISOClient              *MockISOClient
 }
 
 func NewMockClient(ctrl *gomock.Controller) *MockClient {
 	return &MockClient{
-		CertificateClient:  NewMockCertificateClient(ctrl),
-		DatacenterClient:   NewMockDatacenterClient(ctrl),
-		FirewallClient:     NewMockFirewallClient(ctrl),
-		FloatingIPClient:   NewMockFloatingIPClient(ctrl),
-		ImageClient:        NewMockImageClient(ctrl),
-		LocationClient:     NewMockLocationClient(ctrl),
-		LoadBalancerClient: NewMockLoadBalancerClient(ctrl),
-		NetworkClient:      NewMockNetworkClient(ctrl),
-		ServerClient:       NewMockServerClient(ctrl),
-		ServerTypeClient:   NewMockServerTypeClient(ctrl),
-		SSHKeyClient:       NewMockSSHKeyClient(ctrl),
-		VolumeClient:       NewMockVolumeClient(ctrl),
-		ISOClient:          NewMockISOClient(ctrl),
+		CertificateClient:      NewMockCertificateClient(ctrl),
+		DatacenterClient:       NewMockDatacenterClient(ctrl),
+		FirewallClient:         NewMockFirewallClient(ctrl),
+		FloatingIPClient:       NewMockFloatingIPClient(ctrl),
+		ImageClient:            NewMockImageClient(ctrl),
+		LocationClient:         NewMockLocationClient(ctrl),
+		LoadBalancerClient:     NewMockLoadBalancerClient(ctrl),
+		LoadBalancerTypeClient: NewMockLoadBalancerTypeClient(ctrl),
+		NetworkClient:          NewMockNetworkClient(ctrl),
+		ServerClient:           NewMockServerClient(ctrl),
+		ServerTypeClient:       NewMockServerTypeClient(ctrl),
+		SSHKeyClient:           NewMockSSHKeyClient(ctrl),
+		VolumeClient:           NewMockVolumeClient(ctrl),
+		ISOClient:              NewMockISOClient(ctrl),
 	}
 }
 func (c *MockClient) Certificate() CertificateClient {
@@ -228,6 +239,10 @@ func (c *MockClient) Location() LocationClient {
 
 func (c *MockClient) LoadBalancer() LoadBalancerClient {
 	return c.LoadBalancerClient
+}
+
+func (c *MockClient) LoadBalancerType() LoadBalancerTypeClient {
+	return c.LoadBalancerTypeClient
 }
 
 func (c *MockClient) Network() NetworkClient {
