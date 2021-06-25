@@ -40,6 +40,9 @@ func (dc *DeleteCmd) CobraCommand(
 			return dc.Run(ctx, client, cmd, args)
 		},
 	}
+	if dc.AdditionalFlags != nil {
+		dc.AdditionalFlags(cmd)
+	}
 	return cmd
 }
 

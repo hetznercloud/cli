@@ -1,54 +1,38 @@
 package image
 
 import (
-	"fmt"
+	"context"
 
+	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
-	"github.com/hetznercloud/cli/internal/state"
+	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 )
 
-func newUpdateCommand(cli *state.State) *cobra.Command {
-	cmd := &cobra.Command{
-		Use:                   "update [FLAGS] IMAGE",
-		Short:                 "Update an image",
-		Args:                  cobra.ExactArgs(1),
-		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.ImageNames)),
-		TraverseChildren:      true,
-		DisableFlagsInUseLine: true,
-		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runUpdate),
-	}
-
-	cmd.Flags().String("description", "", "Image description")
-
-	cmd.Flags().String("type", "", "Image type")
-	cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("backup", "snapshot"))
-
-	return cmd
-}
-
-func runUpdate(cli *state.State, cmd *cobra.Command, args []string) error {
-	idOrName := args[0]
-	image, _, err := cli.Client().Image.Get(cli.Context, idOrName)
-	if err != nil {
-		return err
-	}
-	if image == nil {
-		return fmt.Errorf("image not found: %s", idOrName)
-	}
-
-	description, _ := cmd.Flags().GetString("description")
-	t, _ := cmd.Flags().GetString("type")
-	opts := hcloud.ImageUpdateOpts{
-		Description: hcloud.String(description),
-		Type:        hcloud.ImageType(t),
-	}
-	_, _, err = cli.Client().Image.Update(cli.Context, image, opts)
-	if err != nil {
-		return err
-	}
-	fmt.Printf("Image %d updated\n", image.ID)
-	return nil
+var updateCmd = base.UpdateCmd{
+	ResourceNameSingular: "Image",
+	ShortDescription:     "Update a Image",
+	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Image().Names },
+	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
+		return client.Image().Get(ctx, idOrName)
+	},
+	DefineFlags: func(cmd *cobra.Command) {
+		cmd.Flags().String("description", "", "Image description")
+		cmd.Flags().String("type", "", "Image type")
+		cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("backup", "snapshot"))
+	},
+	Update: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}, flags map[string]pflag.Value) error {
+		image := resource.(*hcloud.Image)
+		updOpts := hcloud.ImageUpdateOpts{
+			Description: hcloud.String(flags["description"].String()),
+			Type:        hcloud.ImageType(flags["type"].String()),
+		}
+		_, _, err := client.Image().Update(ctx, image, updOpts)
+		if err != nil {
+			return err
+		}
+		return nil
+	},
 }

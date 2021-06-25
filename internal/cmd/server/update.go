@@ -1,54 +1,34 @@
 package server
 
 import (
-	"errors"
-	"fmt"
+	"context"
 
-	"github.com/hetznercloud/cli/internal/cmd/cmpl"
-	"github.com/hetznercloud/cli/internal/state"
+	"github.com/hetznercloud/cli/internal/cmd/base"
+	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 )
 
-func newUpdateCommand(cli *state.State) *cobra.Command {
-	cmd := &cobra.Command{
-		Use:                   "update [FLAGS] SERVER",
-		Short:                 "Update a server",
-		Args:                  cobra.ExactArgs(1),
-		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.ServerNames)),
-		TraverseChildren:      true,
-		DisableFlagsInUseLine: true,
-		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runUpdate),
-	}
-
-	cmd.Flags().String("name", "", "Server name")
-
-	return cmd
-}
-
-func runUpdate(cli *state.State, cmd *cobra.Command, args []string) error {
-	idOrName := args[0]
-	server, _, err := cli.Client().Server.Get(cli.Context, idOrName)
-	if err != nil {
-		return err
-	}
-	if server == nil {
-		return fmt.Errorf("server not found: %s", idOrName)
-	}
-
-	name, _ := cmd.Flags().GetString("name")
-	opts := hcloud.ServerUpdateOpts{
-		Name: name,
-	}
-	if opts.Name == "" {
-		return errors.New("no updates")
-	}
-
-	_, _, err = cli.Client().Server.Update(cli.Context, server, opts)
-	if err != nil {
-		return err
-	}
-	fmt.Printf("Server %d updated\n", server.ID)
-	return nil
+var updateCmd = base.UpdateCmd{
+	ResourceNameSingular: "Server",
+	ShortDescription:     "Update a Server",
+	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Server().Names },
+	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
+		return client.Server().Get(ctx, idOrName)
+	},
+	DefineFlags: func(cmd *cobra.Command) {
+		cmd.Flags().String("name", "", "Server name")
+	},
+	Update: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}, flags map[string]pflag.Value) error {
+		floatingIP := resource.(*hcloud.Server)
+		updOpts := hcloud.ServerUpdateOpts{
+			Name: flags["name"].String(),
+		}
+		_, _, err := client.Server().Update(ctx, floatingIP, updOpts)
+		if err != nil {
+			return err
+		}
+		return nil
+	},
 }

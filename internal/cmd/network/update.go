@@ -1,54 +1,34 @@
 package network
 
 import (
-	"errors"
-	"fmt"
+	"context"
 
-	"github.com/hetznercloud/cli/internal/cmd/cmpl"
-	"github.com/hetznercloud/cli/internal/state"
+	"github.com/hetznercloud/cli/internal/cmd/base"
+	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 )
 
-func newUpdateCommand(cli *state.State) *cobra.Command {
-	cmd := &cobra.Command{
-		Use:                   "update [FLAGS] NETWORK",
-		Short:                 "Update a network",
-		Args:                  cobra.ExactArgs(1),
-		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.NetworkNames)),
-		TraverseChildren:      true,
-		DisableFlagsInUseLine: true,
-		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runUpdate),
-	}
-
-	cmd.Flags().String("name", "", "Network name")
-
-	return cmd
-}
-
-func runUpdate(cli *state.State, cmd *cobra.Command, args []string) error {
-	idOrName := args[0]
-	network, _, err := cli.Client().Network.Get(cli.Context, idOrName)
-	if err != nil {
-		return err
-	}
-	if network == nil {
-		return fmt.Errorf("network not found: %s", idOrName)
-	}
-
-	name, _ := cmd.Flags().GetString("name")
-	opts := hcloud.NetworkUpdateOpts{
-		Name: name,
-	}
-	if opts.Name == "" {
-		return errors.New("no updates")
-	}
-
-	_, _, err = cli.Client().Network.Update(cli.Context, network, opts)
-	if err != nil {
-		return err
-	}
-	fmt.Printf("Network %d updated\n", network.ID)
-	return nil
+var updateCmd = base.UpdateCmd{
+	ResourceNameSingular: "Network",
+	ShortDescription:     "Update a Network",
+	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Network().Names },
+	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
+		return client.Network().Get(ctx, idOrName)
+	},
+	DefineFlags: func(cmd *cobra.Command) {
+		cmd.Flags().String("name", "", "Network name")
+	},
+	Update: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}, flags map[string]pflag.Value) error {
+		floatingIP := resource.(*hcloud.Network)
+		updOpts := hcloud.NetworkUpdateOpts{
+			Name: flags["name"].String(),
+		}
+		_, _, err := client.Network().Update(ctx, floatingIP, updOpts)
+		if err != nil {
+			return err
+		}
+		return nil
+	},
 }
