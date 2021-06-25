@@ -15,8 +15,8 @@ func NewCommand(cli *state.State, client hcapi2.Client) *cobra.Command {
 		DisableFlagsInUseLine: true,
 	}
 	cmd.AddCommand(
-		newDescribeCommand(cli),
-		newListCommand(cli),
+		describeCmd.CobraCommand(cli.Context, client, cli),
+		ListCmd.CobraCommand(cli.Context, client, cli),
 	)
 	return cmd
 }

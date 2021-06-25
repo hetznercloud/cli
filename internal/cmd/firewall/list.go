@@ -1,56 +1,68 @@
 package firewall
 
 import (
+	"context"
+	"fmt"
+
+	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/output"
-	"github.com/hetznercloud/cli/internal/cmd/util"
-	"github.com/hetznercloud/cli/internal/state"
+	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/hetznercloud/hcloud-go/hcloud/schema"
-	"github.com/spf13/cobra"
 )
 
-var listTableOutput *output.Table
+var listCmd = base.ListCmd{
+	ResourceNamePlural: "Firewalls",
+	DefaultColumns:     []string{"id", "name", "rules_count", "applied_to_count"},
 
-func init() {
-	listTableOutput = output.NewTable().
-		AddAllowedFields(hcloud.Firewall{})
-}
+	Fetch: func(ctx context.Context, client hcapi2.Client, listOpts hcloud.ListOpts) ([]interface{}, error) {
+		firewalls, _, err := client.Firewall().List(ctx, hcloud.FirewallListOpts{ListOpts: listOpts})
 
-func newListCommand(cli *state.State) *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "list [FLAGS]",
-		Short: "List Firewalls",
-		Long: util.ListLongDescription(
-			"Displays a list of Firewalls.",
-			listTableOutput.Columns(),
-		),
-		TraverseChildren:      true,
-		DisableFlagsInUseLine: true,
-		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runList),
-	}
-	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(listTableOutput.Columns()), output.OptionJSON())
-	cmd.Flags().StringP("selector", "l", "", "Selector to filter by labels")
-	return cmd
-}
+		var resources []interface{}
+		for _, n := range firewalls {
+			resources = append(resources, n)
+		}
+		return resources, err
+	},
 
-func runList(cli *state.State, cmd *cobra.Command, args []string) error {
-	outOpts := output.FlagsForCommand(cmd)
-	labelSelector, _ := cmd.Flags().GetString("selector")
-	opts := hcloud.FirewallListOpts{
-		ListOpts: hcloud.ListOpts{
-			LabelSelector: labelSelector,
-			PerPage:       50,
-		},
-	}
-	firewalls, err := cli.Client().Firewall.AllWithOpts(cli.Context, opts)
-	if err != nil {
-		return err
-	}
+	OutputTable: func(client hcapi2.Client) *output.Table {
+		return output.NewTable().
+			AddAllowedFields(hcloud.Firewall{}).
+			AddFieldFn("rules_count", output.FieldFn(func(obj interface{}) string {
+				firewall := obj.(*hcloud.Firewall)
+				count := len(firewall.Rules)
+				if count == 1 {
+					return fmt.Sprintf("%d Rule", count)
+				}
+				return fmt.Sprintf("%d Rules", count)
+			})).
+			AddFieldFn("applied_to_count", output.FieldFn(func(obj interface{}) string {
+				firewall := obj.(*hcloud.Firewall)
+				servers := 0
+				labelSelectors := 0
+				for _, r := range firewall.AppliedTo {
+					if r.Type == hcloud.FirewallResourceTypeLabelSelector {
+						labelSelectors++
+						continue
+					}
+					servers++
+				}
+				serversText := "Servers"
+				if servers == 1 {
+					serversText = "Server"
+				}
+				labelSelectorsText := "Label Selectors"
+				if labelSelectors == 1 {
+					labelSelectorsText = "Label Selector"
+				}
+				return fmt.Sprintf("%d %s | %d %s", servers, serversText, labelSelectors, labelSelectorsText)
+			}))
+	},
 
-	if outOpts.IsSet("json") {
+	JSONSchema: func(resources []interface{}) interface{} {
 		var firewallSchemas []schema.Firewall
-		for _, firewall := range firewalls {
+		for _, resource := range resources {
+			firewall := resource.(*hcloud.Firewall)
 			firewallSchema := schema.Firewall{
 				ID:      firewall.ID,
 				Name:    firewall.Name,
@@ -90,26 +102,6 @@ func runList(cli *state.State, cmd *cobra.Command, args []string) error {
 
 			firewallSchemas = append(firewallSchemas, firewallSchema)
 		}
-		return util.DescribeJSON(firewallSchemas)
-	}
-
-	cols := []string{"id", "name"}
-	if outOpts.IsSet("columns") {
-		cols = outOpts["columns"]
-	}
-
-	tw := listTableOutput
-	if err = tw.ValidateColumns(cols); err != nil {
-		return err
-	}
-
-	if !outOpts.IsSet("noheader") {
-		tw.WriteHeader(cols)
-	}
-	for _, firewall := range firewalls {
-		tw.Write(cols, firewall)
-	}
-	tw.Flush()
-
-	return nil
+		return firewallSchemas
+	},
 }

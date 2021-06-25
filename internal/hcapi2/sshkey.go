@@ -10,6 +10,7 @@ import (
 type SSHKeyClient interface {
 	SSHKeyClientBase
 	Names() []string
+	LabelKeys(idOrName string) []string
 }
 
 func NewSSHKeyClient(client SSHKeyClientBase) SSHKeyClient {
@@ -40,9 +41,9 @@ func (c *sshKeyClient) Names() []string {
 	return names
 }
 
-// SSHKeyLabelKeys returns a slice containing the keys of all labels
+// LabelKeys returns a slice containing the keys of all labels
 // assigned to the SSH Key with the passed idOrName.
-func (c *sshKeyClient) SSHKeyLabelKeys(idOrName string) []string {
+func (c *sshKeyClient) LabelKeys(idOrName string) []string {
 	sshKey, _, err := c.Get(context.Background(), idOrName)
 	if err != nil || sshKey == nil || len(sshKey.Labels) == 0 {
 		return nil

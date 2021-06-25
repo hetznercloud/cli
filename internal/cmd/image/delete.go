@@ -1,42 +1,25 @@
 package image
 
 import (
-	"fmt"
+	"context"
 
-	"github.com/hetznercloud/cli/internal/cmd/cmpl"
-	"github.com/hetznercloud/cli/internal/state"
-	"github.com/spf13/cobra"
+	"github.com/hetznercloud/cli/internal/cmd/base"
+	"github.com/hetznercloud/cli/internal/hcapi2"
+	"github.com/hetznercloud/hcloud-go/hcloud"
 )
 
-func newDeleteCommand(cli *state.State) *cobra.Command {
-	cmd := &cobra.Command{
-		Use:                   "delete [FLAGS] IMAGE",
-		Short:                 "Delete an image",
-		Args:                  cobra.ExactArgs(1),
-		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.ImageNames)),
-		TraverseChildren:      true,
-		DisableFlagsInUseLine: true,
-		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runDelete),
-	}
-	return cmd
-}
-
-func runDelete(cli *state.State, cmd *cobra.Command, args []string) error {
-	idOrName := args[0]
-	image, _, err := cli.Client().Image.Get(cli.Context, idOrName)
-	if err != nil {
-		return err
-	}
-	if image == nil {
-		return fmt.Errorf("image not found: %s", idOrName)
-	}
-
-	_, err = cli.Client().Image.Delete(cli.Context, image)
-	if err != nil {
-		return err
-	}
-
-	fmt.Printf("Image %d deleted\n", image.ID)
-	return nil
+var deleteCmd = base.DeleteCmd{
+	ResourceNameSingular: "image",
+	ShortDescription:     "Delete a image",
+	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Image().Names },
+	Fetch: func(ctx context.Context, client hcapi2.Client, idOrName string) (interface{}, *hcloud.Response, error) {
+		return client.Image().Get(ctx, idOrName)
+	},
+	Delete: func(ctx context.Context, client hcapi2.Client, resource interface{}) error {
+		image := resource.(*hcloud.Image)
+		if _, err := client.Image().Delete(ctx, image); err != nil {
+			return err
+		}
+		return nil
+	},
 }

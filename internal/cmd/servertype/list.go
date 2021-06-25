@@ -14,7 +14,7 @@ import (
 )
 
 var ListCmd = base.ListCmd{
-	ResourceNamePlural: "servers",
+	ResourceNamePlural: "Server Types",
 
 	DefaultColumns: []string{"id", "name", "cores", "cpu_type", "memory", "disk", "storage_type"},
 
@@ -48,6 +48,6 @@ var ListCmd = base.ListCmd{
 			serverType := resource.(*hcloud.ServerType)
 			serverTypeSchemas = append(serverTypeSchemas, util.ServerTypeToSchema(*serverType))
 		}
-		return util.DescribeJSON(serverTypeSchemas)
+		return serverTypeSchemas
 	},
 }

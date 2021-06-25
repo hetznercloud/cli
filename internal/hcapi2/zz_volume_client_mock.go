@@ -208,6 +208,20 @@ func (mr *MockVolumeClientMockRecorder) GetByName(arg0, arg1 interface{}) *gomoc
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByName", reflect.TypeOf((*MockVolumeClient)(nil).GetByName), arg0, arg1)
 }
 
+// LabelKeys mocks base method.
+func (m *MockVolumeClient) LabelKeys(arg0 string) []string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "LabelKeys", arg0)
+	ret0, _ := ret[0].([]string)
+	return ret0
+}
+
+// LabelKeys indicates an expected call of LabelKeys.
+func (mr *MockVolumeClientMockRecorder) LabelKeys(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LabelKeys", reflect.TypeOf((*MockVolumeClient)(nil).LabelKeys), arg0)
+}
+
 // List mocks base method.
 func (m *MockVolumeClient) List(arg0 context.Context, arg1 hcloud.VolumeListOpts) ([]*hcloud.Volume, *hcloud.Response, error) {
 	m.ctrl.T.Helper()

@@ -1,41 +1,25 @@
 package volume
 
 import (
-	"fmt"
+	"context"
 
-	"github.com/hetznercloud/cli/internal/cmd/cmpl"
-	"github.com/hetznercloud/cli/internal/state"
-	"github.com/spf13/cobra"
+	"github.com/hetznercloud/cli/internal/cmd/base"
+	"github.com/hetznercloud/cli/internal/hcapi2"
+	"github.com/hetznercloud/hcloud-go/hcloud"
 )
 
-func newDeleteCommand(cli *state.State) *cobra.Command {
-	cmd := &cobra.Command{
-		Use:                   "delete [FLAGS] VOLUME",
-		Short:                 "Delete a volume",
-		Args:                  cobra.ExactArgs(1),
-		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.VolumeNames)),
-		TraverseChildren:      true,
-		DisableFlagsInUseLine: true,
-		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runDelete),
-	}
-	return cmd
-}
-
-func runDelete(cli *state.State, cmd *cobra.Command, args []string) error {
-	volume, _, err := cli.Client().Volume.Get(cli.Context, args[0])
-	if err != nil {
-		return err
-	}
-	if volume == nil {
-		return fmt.Errorf("volume not found: %s", args[0])
-	}
-
-	_, err = cli.Client().Volume.Delete(cli.Context, volume)
-	if err != nil {
-		return err
-	}
-
-	fmt.Printf("Volume %d deleted\n", volume.ID)
-	return nil
+var deleteCmd = base.DeleteCmd{
+	ResourceNameSingular: "Volume",
+	ShortDescription:     "Delete a Volume",
+	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Volume().Names },
+	Fetch: func(ctx context.Context, client hcapi2.Client, idOrName string) (interface{}, *hcloud.Response, error) {
+		return client.Volume().Get(ctx, idOrName)
+	},
+	Delete: func(ctx context.Context, client hcapi2.Client, resource interface{}) error {
+		volume := resource.(*hcloud.Volume)
+		if _, err := client.Volume().Delete(ctx, volume); err != nil {
+			return err
+		}
+		return nil
+	},
 }

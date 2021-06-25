@@ -8,6 +8,7 @@ package hcapi2
 //go:generate mockgen -package hcapi2 -destination zz_floating_ip_client_mock.go . FloatingIPClient
 //go:generate mockgen -package hcapi2 -destination zz_location_client_mock.go . LocationClient
 //go:generate mockgen -package hcapi2 -destination zz_loadbalancer_client_mock.go . LoadBalancerClient
+//go:generate mockgen -package hcapi2 -destination zz_loadbalancer_type_client_mock.go . LoadBalancerTypeClient
 //go:generate mockgen -package hcapi2 -destination zz_network_client_mock.go . NetworkClient
 //go:generate mockgen -package hcapi2 -destination zz_server_client_mock.go . ServerClient
 //go:generate mockgen -package hcapi2 -destination zz_server_type_client_mock.go . ServerTypeClient

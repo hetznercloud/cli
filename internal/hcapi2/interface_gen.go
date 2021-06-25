@@ -8,6 +8,7 @@ package hcapi2
 //go:generate interfacer -for github.com/hetznercloud/hcloud-go/hcloud.FloatingIPClient -as hcapi2.FloatingIPClientBase -o zz_floating_ip_client_base.go
 //go:generate interfacer -for github.com/hetznercloud/hcloud-go/hcloud.LocationClient -as hcapi2.LocationClientBase -o zz_location_client_base.go
 //go:generate interfacer -for github.com/hetznercloud/hcloud-go/hcloud.LoadBalancerClient -as hcapi2.LoadBalancerClientBase -o zz_loadbalancer_client_base.go
+//go:generate interfacer -for github.com/hetznercloud/hcloud-go/hcloud.LoadBalancerTypeClient -as hcapi2.LoadBalancerTypeClientBase -o zz_loadbalancer_type_client_base.go
 //go:generate interfacer -for github.com/hetznercloud/hcloud-go/hcloud.NetworkClient -as hcapi2.NetworkClientBase -o zz_network_client_base.go
 //go:generate interfacer -for github.com/hetznercloud/hcloud-go/hcloud.ServerClient -as hcapi2.ServerClientBase -o zz_server_client_base.go
 //go:generate interfacer -for github.com/hetznercloud/hcloud-go/hcloud.ServerTypeClient -as hcapi2.ServerTypeClientBase -o zz_server_type_client_base.go
