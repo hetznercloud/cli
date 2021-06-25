@@ -1,52 +1,36 @@
 package floatingip
 
 import (
-	"fmt"
+	"context"
 
-	"github.com/hetznercloud/cli/internal/cmd/cmpl"
-	"github.com/hetznercloud/cli/internal/state"
+	"github.com/hetznercloud/cli/internal/cmd/base"
+	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 )
 
-func newUpdateCommand(cli *state.State) *cobra.Command {
-	cmd := &cobra.Command{
-		Use:                   "update [FLAGS] FLOATINGIP",
-		Short:                 "Update a Floating IP",
-		Args:                  cobra.ExactArgs(1),
-		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.FloatingIPNames)),
-		TraverseChildren:      true,
-		DisableFlagsInUseLine: true,
-		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runUpdate),
-	}
-
-	cmd.Flags().String("description", "", "Floating IP description")
-	cmd.Flags().String("name", "", "Floating IP name")
-
-	return cmd
-}
-
-func runUpdate(cli *state.State, cmd *cobra.Command, args []string) error {
-	idOrName := args[0]
-	floatingIP, _, err := cli.Client().FloatingIP.Get(cli.Context, idOrName)
-	if err != nil {
-		return err
-	}
-	if floatingIP == nil {
-		return fmt.Errorf("Floating IP not found: %s", idOrName)
-	}
-
-	description, _ := cmd.Flags().GetString("description")
-	name, _ := cmd.Flags().GetString("name")
-	opts := hcloud.FloatingIPUpdateOpts{
-		Description: description,
-		Name:        name,
-	}
-	_, _, err = cli.Client().FloatingIP.Update(cli.Context, floatingIP, opts)
-	if err != nil {
-		return err
-	}
-	fmt.Printf("Floating IP %d updated\n", floatingIP.ID)
-	return nil
+var updateCmd = base.UpdateCmd{
+	ResourceNameSingular: "Floating IP",
+	ShortDescription:     "Update a Floating IP",
+	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.FloatingIP().Names },
+	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
+		return client.FloatingIP().Get(ctx, idOrName)
+	},
+	DefineFlags: func(cmd *cobra.Command) {
+		cmd.Flags().String("name", "", "Floating IP name")
+		cmd.Flags().String("description", "", "Floating IP description")
+	},
+	Update: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}, flags map[string]pflag.Value) error {
+		floatingIP := resource.(*hcloud.FloatingIP)
+		updOpts := hcloud.FloatingIPUpdateOpts{
+			Name:        flags["name"].String(),
+			Description: flags["description"].String(),
+		}
+		_, _, err := client.FloatingIP().Update(ctx, floatingIP, updOpts)
+		if err != nil {
+			return err
+		}
+		return nil
+	},
 }

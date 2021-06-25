@@ -1,50 +1,35 @@
 package certificate
 
 import (
-	"fmt"
+	"context"
 
-	"github.com/hetznercloud/cli/internal/cmd/cmpl"
-	"github.com/hetznercloud/cli/internal/state"
+	"github.com/hetznercloud/cli/internal/cmd/base"
+	"github.com/hetznercloud/cli/internal/hcapi2"
+	"github.com/spf13/pflag"
+
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
 
-func newUpdateCommand(cli *state.State) *cobra.Command {
-	cmd := &cobra.Command{
-		Use:                   "update [FLAGS] CERTIFICATE",
-		Short:                 "Update an existing Certificate",
-		Args:                  cobra.ExactArgs(1),
-		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.CertificateNames)),
-		TraverseChildren:      true,
-		DisableFlagsInUseLine: true,
-		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runUpdate),
-	}
-
-	cmd.Flags().String("name", "", "Certificate name")
-	return cmd
-}
-
-func runUpdate(cli *state.State, cmd *cobra.Command, args []string) error {
-	idOrName := args[0]
-	cert, _, err := cli.Client().Certificate.Get(cli.Context, idOrName)
-	if err != nil {
-		return err
-	}
-	if cert == nil {
-		return fmt.Errorf("Certificate %s not found", idOrName)
-	}
-	name, err := cmd.Flags().GetString("name")
-	if err != nil {
-		return err
-	}
-	updOpts := hcloud.CertificateUpdateOpts{
-		Name: name,
-	}
-	_, _, err = cli.Client().Certificate.Update(cli.Context, cert, updOpts)
-	if err != nil {
-		return err
-	}
-	fmt.Printf("Certificate %d updated\n", cert.ID)
-	return nil
+var updateCmd = base.UpdateCmd{
+	ResourceNameSingular: "certificate",
+	ShortDescription:     "Update a certificate",
+	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Firewall().Names },
+	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
+		return client.Certificate().Get(ctx, idOrName)
+	},
+	DefineFlags: func(cmd *cobra.Command) {
+		cmd.Flags().String("name", "", "Certificate Name")
+	},
+	Update: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}, flags map[string]pflag.Value) error {
+		certificate := resource.(*hcloud.Certificate)
+		updOpts := hcloud.CertificateUpdateOpts{
+			Name: flags["name"].String(),
+		}
+		_, _, err := client.Certificate().Update(ctx, certificate, updOpts)
+		if err != nil {
+			return err
+		}
+		return nil
+	},
 }
