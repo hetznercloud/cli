@@ -23,7 +23,7 @@ var listCmd = base.ListCmd{
 	DefaultColumns:     []string{"id", "type", "name", "description", "image_size", "disk_size", "created", "deprecated"},
 	AdditionalFlags: func(cmd *cobra.Command) {
 		cmd.Flags().StringP("type", "t", "", "Only show images of given type")
-		cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("backup", "snapshot", "system"))
+		cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("backup", "snapshot", "system", "app"))
 	},
 	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts) ([]interface{}, error) {
 		images, err := client.Image().AllWithOpts(ctx, hcloud.ImageListOpts{ListOpts: listOpts, IncludeDeprecated: true})
