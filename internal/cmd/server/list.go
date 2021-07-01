@@ -172,6 +172,6 @@ var ListCmd = base.ListCmd{
 			}
 			serversSchema = append(serversSchema, serverSchema)
 		}
-		return util.DescribeJSON(serversSchema)
+		return serversSchema
 	},
 }

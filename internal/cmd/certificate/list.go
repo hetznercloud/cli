@@ -97,6 +97,6 @@ var listCmd = base.ListCmd{
 			certSchemas = append(certSchemas, certSchema)
 		}
 
-		return util.DescribeJSON(certSchemas)
+		return certSchemas
 	},
 }
