@@ -4,7 +4,6 @@ package hcapi2
 
 import (
 	"context"
-
 	"github.com/hetznercloud/hcloud-go/hcloud"
 )
 

@@ -36,6 +36,8 @@ func newAddRuleCommand(cli *state.State) *cobra.Command {
 	cmd.Flags().StringArray("destination-ips", []string{}, "Destination IPs (CIDR Notation) (required when direction is out)")
 
 	cmd.Flags().String("port", "", "Port to which traffic will be allowed, only applicable for protocols TCP and UDP, you can specify port ranges, sample: 80-85")
+
+	cmd.Flags().String("description", "", "Description of the firewall rule")
 	return cmd
 }
 
@@ -45,6 +47,7 @@ func runAddRule(cli *state.State, cmd *cobra.Command, args []string) error {
 	sourceIPs, _ := cmd.Flags().GetStringArray("source-ips")
 	destinationIPs, _ := cmd.Flags().GetStringArray("destination-ips")
 	port, _ := cmd.Flags().GetString("port")
+	description, _ := cmd.Flags().GetString("description")
 
 	idOrName := args[0]
 	firewall, _, err := cli.Client().Firewall.Get(cli.Context, idOrName)
@@ -63,6 +66,10 @@ func runAddRule(cli *state.State, cmd *cobra.Command, args []string) error {
 
 	if port != "" {
 		rule.Port = hcloud.String(port)
+	}
+
+	if description != "" {
+		rule.Description = hcloud.String(description)
 	}
 
 	switch rule.Protocol {

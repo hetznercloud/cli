@@ -44,6 +44,10 @@ var describeCmd = base.DescribeCmd{
 			fmt.Print("  No rules\n")
 		} else {
 			for _, rule := range firewall.Rules {
+				if rule.Description != nil {
+					fmt.Printf("    Description:\t\t%s\n", *rule.Description)
+				}
+
 				fmt.Printf("  - Direction:\t\t%s\n", rule.Direction)
 				fmt.Printf("    Protocol:\t\t%s\n", rule.Protocol)
 				if rule.Port != nil {
