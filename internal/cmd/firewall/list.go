@@ -85,6 +85,7 @@ var listCmd = base.ListCmd{
 					DestinationIPs: destinationNets,
 					Protocol:       string(rule.Protocol),
 					Port:           rule.Port,
+					Description:    rule.Description,
 				})
 			}
 			for _, AppliedTo := range firewall.AppliedTo {

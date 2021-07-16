@@ -63,9 +63,10 @@ func runFirewallReplaceRules(cli *state.State, cmd *cobra.Command, args []string
 	for _, rule := range rules {
 		d := hcloud.FirewallRuleDirection(rule.Direction)
 		r := hcloud.FirewallRule{
-			Direction: d,
-			Protocol:  hcloud.FirewallRuleProtocol(rule.Protocol),
-			Port:      rule.Port,
+			Direction:   d,
+			Protocol:    hcloud.FirewallRuleProtocol(rule.Protocol),
+			Port:        rule.Port,
+			Description: rule.Description,
 		}
 		switch d {
 		case hcloud.FirewallRuleDirectionOut:

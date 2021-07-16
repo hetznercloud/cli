@@ -71,10 +71,11 @@ func runFirewallCreate(cli *state.State, cmd *cobra.Command, args []string) erro
 				sourceNets = append(sourceNets, *sourceNet)
 			}
 			opts.Rules = append(opts.Rules, hcloud.FirewallRule{
-				Direction: hcloud.FirewallRuleDirection(rule.Direction),
-				SourceIPs: sourceNets,
-				Protocol:  hcloud.FirewallRuleProtocol(rule.Protocol),
-				Port:      rule.Port,
+				Direction:   hcloud.FirewallRuleDirection(rule.Direction),
+				SourceIPs:   sourceNets,
+				Protocol:    hcloud.FirewallRuleProtocol(rule.Protocol),
+				Port:        rule.Port,
+				Description: rule.Description,
 			})
 		}
 	}
