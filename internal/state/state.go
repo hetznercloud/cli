@@ -21,19 +21,20 @@ type State struct {
 	Debug         bool
 	DebugFilePath string
 
-	client             *hcloud.Client
-	isoClient          *hcapi.ISOClient
-	imageClient        *hcapi.ImageClient
-	locationClient     *hcapi.LocationClient
-	dataCenterClient   *hcapi.DataCenterClient
-	sshKeyClient       *hcapi.SSHKeyClient
-	volumeClient       *hcapi.VolumeClient
-	certificateClient  *hcapi.CertificateClient
-	floatingIPClient   *hcapi.FloatingIPClient
-	networkClient      *hcapi.NetworkClient
-	loadBalancerClient *hcapi.LoadBalancerClient
-	serverClient       *hcapi.ServerClient
-	firewallClient     *hcapi.FirewallClient
+	client               *hcloud.Client
+	isoClient            *hcapi.ISOClient
+	imageClient          *hcapi.ImageClient
+	locationClient       *hcapi.LocationClient
+	dataCenterClient     *hcapi.DataCenterClient
+	sshKeyClient         *hcapi.SSHKeyClient
+	volumeClient         *hcapi.VolumeClient
+	certificateClient    *hcapi.CertificateClient
+	floatingIPClient     *hcapi.FloatingIPClient
+	networkClient        *hcapi.NetworkClient
+	loadBalancerClient   *hcapi.LoadBalancerClient
+	serverClient         *hcapi.ServerClient
+	firewallClient       *hcapi.FirewallClient
+	placementGroupClient *hcapi.PlacementGroupClient
 }
 
 func New() *State {

@@ -14,3 +14,4 @@ package hcapi2
 //go:generate interfacer -for github.com/hetznercloud/hcloud-go/hcloud.ServerTypeClient -as hcapi2.ServerTypeClientBase -o zz_server_type_client_base.go
 //go:generate interfacer -for github.com/hetznercloud/hcloud-go/hcloud.SSHKeyClient -as hcapi2.SSHKeyClientBase -o zz_ssh_key_client_base.go
 //go:generate interfacer -for github.com/hetznercloud/hcloud-go/hcloud.VolumeClient -as hcapi2.VolumeClientBase -o zz_volume_client_base.go
+//go:generate interfacer -for github.com/hetznercloud/hcloud-go/hcloud.PlacementGroupClient -as hcapi2.PlacementGroupClientBase -o zz_placement_group_client_base.go

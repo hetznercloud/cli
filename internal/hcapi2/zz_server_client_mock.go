@@ -35,6 +35,22 @@ func (m *MockServerClient) EXPECT() *MockServerClientMockRecorder {
 	return m.recorder
 }
 
+// AddToPlacementGroup mocks base method.
+func (m *MockServerClient) AddToPlacementGroup(arg0 context.Context, arg1 *hcloud.Server, arg2 string) (*hcloud.Action, *hcloud.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AddToPlacementGroup", arg0, arg1, arg2)
+	ret0, _ := ret[0].(*hcloud.Action)
+	ret1, _ := ret[1].(*hcloud.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// AddToPlacementGroup indicates an expected call of AddToPlacementGroup.
+func (mr *MockServerClientMockRecorder) AddToPlacementGroup(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AddToPlacementGroup", reflect.TypeOf((*MockServerClient)(nil).AddToPlacementGroup), arg0, arg1, arg2)
+}
+
 // All mocks base method.
 func (m *MockServerClient) All(arg0 context.Context) ([]*hcloud.Server, error) {
 	m.ctrl.T.Helper()
@@ -474,6 +490,22 @@ func (m *MockServerClient) Rebuild(arg0 context.Context, arg1 *hcloud.Server, ar
 func (mr *MockServerClientMockRecorder) Rebuild(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Rebuild", reflect.TypeOf((*MockServerClient)(nil).Rebuild), arg0, arg1, arg2)
+}
+
+// RemoveFromPlacementGroup mocks base method.
+func (m *MockServerClient) RemoveFromPlacementGroup(arg0 context.Context, arg1 *hcloud.Server) (*hcloud.Action, *hcloud.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RemoveFromPlacementGroup", arg0, arg1)
+	ret0, _ := ret[0].(*hcloud.Action)
+	ret1, _ := ret[1].(*hcloud.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// RemoveFromPlacementGroup indicates an expected call of RemoveFromPlacementGroup.
+func (mr *MockServerClientMockRecorder) RemoveFromPlacementGroup(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveFromPlacementGroup", reflect.TypeOf((*MockServerClient)(nil).RemoveFromPlacementGroup), arg0, arg1)
 }
 
 // RequestConsole mocks base method.
