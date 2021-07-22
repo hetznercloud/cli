@@ -20,9 +20,9 @@ func newAddToPlacementGroupCommand(cli *state.State) *cobra.Command {
 		RunE:                  cli.Wrap(runAddToPlacementGroup),
 	}
 
-	cmd.Flags().StringP("placement_group", "g", "", "Placement Group (ID or name) (required)")
-	cmd.RegisterFlagCompletionFunc("placement_group", cmpl.SuggestCandidatesF(cli.PlacementGroupNames))
-	cmd.MarkFlagRequired(("placement_group"))
+	cmd.Flags().StringP("placement-group", "g", "", "Placement Group (ID or name) (required)")
+	cmd.RegisterFlagCompletionFunc("placement-group", cmpl.SuggestCandidatesF(cli.PlacementGroupNames))
+	cmd.MarkFlagRequired(("placement-group"))
 
 	return cmd
 }
@@ -38,7 +38,15 @@ func runAddToPlacementGroup(cli *state.State, cmd *cobra.Command, args []string)
 	}
 
 	placementGroupIDOrName, _ := cmd.Flags().GetString("placement_group")
-	action, _, err := cli.Client().Server.AddToPlacementGroup(cli.Context, server, placementGroupIDOrName)
+	placementGroup, _, err := cli.Client().PlacementGroup.Get(cli.Context, placementGroupIDOrName)
+	if err != nil {
+		return err
+	}
+	if placementGroup == nil {
+		return fmt.Errorf("placement group not found %s", placementGroupIDOrName)
+	}
+
+	action, _, err := cli.Client().Server.AddToPlacementGroup(cli.Context, server, placementGroup)
 	if err != nil {
 		return err
 	}

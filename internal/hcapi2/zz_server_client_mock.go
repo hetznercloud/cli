@@ -36,7 +36,7 @@ func (m *MockServerClient) EXPECT() *MockServerClientMockRecorder {
 }
 
 // AddToPlacementGroup mocks base method.
-func (m *MockServerClient) AddToPlacementGroup(arg0 context.Context, arg1 *hcloud.Server, arg2 string) (*hcloud.Action, *hcloud.Response, error) {
+func (m *MockServerClient) AddToPlacementGroup(arg0 context.Context, arg1 *hcloud.Server, arg2 *hcloud.PlacementGroup) (*hcloud.Action, *hcloud.Response, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "AddToPlacementGroup", arg0, arg1, arg2)
 	ret0, _ := ret[0].(*hcloud.Action)

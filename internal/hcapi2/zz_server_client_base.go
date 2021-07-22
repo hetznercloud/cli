@@ -9,7 +9,7 @@ import (
 
 // ServerClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/hcloud.ServerClient".
 type ServerClientBase interface {
-	AddToPlacementGroup(context.Context, *hcloud.Server, string) (*hcloud.Action, *hcloud.Response, error)
+	AddToPlacementGroup(context.Context, *hcloud.Server, *hcloud.PlacementGroup) (*hcloud.Action, *hcloud.Response, error)
 	All(context.Context) ([]*hcloud.Server, error)
 	AllWithOpts(context.Context, hcloud.ServerListOpts) ([]*hcloud.Server, error)
 	AttachISO(context.Context, *hcloud.Server, *hcloud.ISO) (*hcloud.Action, *hcloud.Response, error)
