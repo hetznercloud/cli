@@ -12,7 +12,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var describeCmd = base.DescribeCmd{
+var DescribeCmd = base.DescribeCmd{
 	ResourceNameSingular: "placement group",
 	ShortDescription:     "Describe a placement group",
 	JSONKeyGetByID:       "placement group",
@@ -39,7 +39,7 @@ var describeCmd = base.DescribeCmd{
 
 		fmt.Print("Servers:\n")
 		for _, serverID := range placementGroup.Servers {
-			fmt.Printf("    Server ID:\t\t%d\n", serverID)
+			fmt.Printf("  - Server ID:\t\t%d\n", serverID)
 			fmt.Printf("    Server Name:\t%s\n", client.Server().ServerName(serverID))
 		}
 

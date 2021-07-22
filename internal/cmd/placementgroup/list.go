@@ -12,9 +12,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var listCmd = base.ListCmd{
+var ListCmd = base.ListCmd{
 	ResourceNamePlural: "placement groups",
-	DefaultColumns:     []string{"id", "name", "servers_count", "type"},
+	DefaultColumns:     []string{"id", "name", "servers", "type"},
 
 	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts) ([]interface{}, error) {
 		placementGroups, _, err := client.PlacementGroup().List(ctx, hcloud.PlacementGroupListOpts{ListOpts: listOpts})
@@ -29,13 +29,13 @@ var listCmd = base.ListCmd{
 	OutputTable: func(client hcapi2.Client) *output.Table {
 		return output.NewTable().
 			AddAllowedFields(hcloud.PlacementGroup{}).
-			AddFieldFn("servers_count", output.FieldFn(func(obj interface{}) string {
+			AddFieldFn("servers", output.FieldFn(func(obj interface{}) string {
 				placementGroup := obj.(*hcloud.PlacementGroup)
 				count := len(placementGroup.Servers)
 				if count == 1 {
-					return fmt.Sprintf("%d Server", count)
+					return fmt.Sprintf("%d server", count)
 				}
-				return fmt.Sprintf("%d Servers", count)
+				return fmt.Sprintf("%d servers", count)
 			}))
 	},
 
