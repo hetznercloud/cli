@@ -11,7 +11,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var updateCmd = base.UpdateCmd{
+var UpdateCmd = base.UpdateCmd{
 	ResourceNameSingular: "placement group",
 	ShortDescription:     "Update a placement group",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.PlacementGroup().Names },

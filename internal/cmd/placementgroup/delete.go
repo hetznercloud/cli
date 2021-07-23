@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var deleteCmd = base.DeleteCmd{
+var DeleteCmd = base.DeleteCmd{
 	ResourceNameSingular: "placement group",
 	ShortDescription:     "Delete a placement group",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.PlacementGroup().Names },

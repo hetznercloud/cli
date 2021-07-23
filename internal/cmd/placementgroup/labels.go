@@ -9,7 +9,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/hcloud"
 )
 
-var labelCmds = base.LabelCmds{
+var LabelCmds = base.LabelCmds{
 	ResourceNameSingular:   "placement group",
 	ShortDescriptionAdd:    "Add a label to a placement group",
 	ShortDescriptionRemove: "Remove a label from a placement group",

@@ -55,6 +55,6 @@ func runAddToPlacementGroup(cli *state.State, cmd *cobra.Command, args []string)
 		return err
 	}
 
-	fmt.Printf("Server %d added to placement group %v", server.ID, placementGroupIDOrName)
+	fmt.Printf("Server %d added to placement group %s", server.ID, placementGroupIDOrName)
 	return nil
 }
