@@ -48,7 +48,7 @@ func NewCommand(cli *state.State, client hcapi2.Client) *cobra.Command {
 		newRequestConsoleCommand(cli),
 		newMetricsCommand(cli),
 		AddToPlacementGroupCommand.CobraCommand(cli.Context, client, cli, cli),
-		newRemoveFromPlacementGroupCommand(cli),
+		RemoveFromPlacementGroup.CobraCommand(cli.Context, client, cli, cli),
 	)
 	return cmd
 }
