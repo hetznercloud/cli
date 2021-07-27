@@ -17,10 +17,10 @@ func (c *PlacementGroupClient) PlacementGroupNames() []string {
 		return nil
 	}
 	names := make([]string, len(placementGroups))
-	for i, firewall := range placementGroups {
-		name := firewall.Name
+	for i, placementGroup := range placementGroups {
+		name := placementGroup.Name
 		if name == "" {
-			name = strconv.Itoa(firewall.ID)
+			name = strconv.Itoa(placementGroup.ID)
 		}
 		names[i] = name
 	}

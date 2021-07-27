@@ -34,7 +34,6 @@ func TestCreate(t *testing.T) {
 		Name:    opts.Name,
 		Created: time.Now(),
 		Labels:  opts.Labels,
-		Servers: []int{},
 		Type:    opts.Type,
 	}
 
