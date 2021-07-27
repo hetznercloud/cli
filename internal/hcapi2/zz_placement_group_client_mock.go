@@ -65,6 +65,22 @@ func (mr *MockPlacementGroupClientMockRecorder) AllWithOpts(arg0, arg1 interface
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AllWithOpts", reflect.TypeOf((*MockPlacementGroupClient)(nil).AllWithOpts), arg0, arg1)
 }
 
+// Create mocks base method.
+func (m *MockPlacementGroupClient) Create(arg0 context.Context, arg1 hcloud.PlacementGroupCreateOpts) (hcloud.PlacementGroupCreateResult, *hcloud.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Create", arg0, arg1)
+	ret0, _ := ret[0].(hcloud.PlacementGroupCreateResult)
+	ret1, _ := ret[1].(*hcloud.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// Create indicates an expected call of Create.
+func (mr *MockPlacementGroupClientMockRecorder) Create(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockPlacementGroupClient)(nil).Create), arg0, arg1)
+}
+
 // Delete mocks base method.
 func (m *MockPlacementGroupClient) Delete(arg0 context.Context, arg1 *hcloud.PlacementGroup) (*hcloud.Response, error) {
 	m.ctrl.T.Helper()
