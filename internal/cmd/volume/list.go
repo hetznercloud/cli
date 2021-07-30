@@ -22,7 +22,7 @@ var listCmd = base.ListCmd{
 	DefaultColumns:     []string{"id", "name", "size", "server", "location"},
 
 	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts) ([]interface{}, error) {
-		volumes, _, err := client.Volume().List(ctx, hcloud.VolumeListOpts{ListOpts: listOpts})
+		volumes, err := client.Volume().AllWithOpts(ctx, hcloud.VolumeListOpts{ListOpts: listOpts})
 
 		var resources []interface{}
 		for _, n := range volumes {
