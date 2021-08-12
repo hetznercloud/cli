@@ -101,6 +101,13 @@ var ListCmd = base.ListCmd{
 			AddFieldFn("created", output.FieldFn(func(obj interface{}) string {
 				server := obj.(*hcloud.Server)
 				return util.Datetime(server.Created)
+			})).
+			AddFieldFn("placement_group", output.FieldFn(func(obj interface{}) string {
+				server := obj.(*hcloud.Server)
+				if server.PlacementGroup == nil {
+					return "-"
+				}
+				return server.PlacementGroup.Name
 			}))
 	},
 
