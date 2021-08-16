@@ -22,7 +22,8 @@ var CreateCmd = base.Cmd{
 
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 
-		cmd.Flags().String("type", "spread", "Type of the placement group")
+		cmd.Flags().String("type", "", "Type of the placement group")
+		cmd.MarkFlagRequired("type")
 		return cmd
 	},
 	Run: func(ctx context.Context, client hcapi2.Client, actionWaiter state.ActionWaiter, cmd *cobra.Command, args []string) error {

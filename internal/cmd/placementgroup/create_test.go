@@ -41,7 +41,7 @@ func TestCreate(t *testing.T) {
 		Create(gomock.Any(), opts).
 		Return(hcloud.PlacementGroupCreateResult{PlacementGroup: &placementGroup, Action: nil}, nil, nil)
 
-	out, err := fx.Run(cmd, []string{"--name", placementGroup.Name})
+	out, err := fx.Run(cmd, []string{"--name", placementGroup.Name, "--type", string(placementGroup.Type)})
 
 	expOut := `Placement group 897 created
 `
