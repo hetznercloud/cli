@@ -23,6 +23,7 @@ type Client interface {
 	LoadBalancer() LoadBalancerClient
 	LoadBalancerType() LoadBalancerTypeClient
 	ISO() ISOClient
+	PlacementGroup() PlacementGroupClient
 }
 
 type client struct {
@@ -41,6 +42,7 @@ type client struct {
 	isoClient              ISOClient
 	sshKeyClient           SSHKeyClient
 	volumeClient           VolumeClient
+	placementGroupClient   PlacementGroupClient
 
 	mu sync.Mutex
 }
@@ -175,6 +177,15 @@ func (c *client) Volume() VolumeClient {
 	return c.volumeClient
 }
 
+func (c *client) PlacementGroup() PlacementGroupClient {
+	c.mu.Lock()
+	if c.placementGroupClient == nil {
+		c.placementGroupClient = NewPlacementGroupClient(&c.client.PlacementGroup)
+	}
+	defer c.mu.Unlock()
+	return c.placementGroupClient
+}
+
 type MockClient struct {
 	CertificateClient      *MockCertificateClient
 	DatacenterClient       *MockDatacenterClient
@@ -190,6 +201,7 @@ type MockClient struct {
 	SSHKeyClient           *MockSSHKeyClient
 	VolumeClient           *MockVolumeClient
 	ISOClient              *MockISOClient
+	PlacementGroupClient   *MockPlacementGroupClient
 }
 
 func NewMockClient(ctrl *gomock.Controller) *MockClient {
@@ -208,6 +220,7 @@ func NewMockClient(ctrl *gomock.Controller) *MockClient {
 		SSHKeyClient:           NewMockSSHKeyClient(ctrl),
 		VolumeClient:           NewMockVolumeClient(ctrl),
 		ISOClient:              NewMockISOClient(ctrl),
+		PlacementGroupClient:   NewMockPlacementGroupClient(ctrl),
 	}
 }
 func (c *MockClient) Certificate() CertificateClient {
@@ -263,4 +276,8 @@ func (c *MockClient) SSHKey() SSHKeyClient {
 
 func (c *MockClient) Volume() VolumeClient {
 	return c.VolumeClient
+}
+
+func (c *MockClient) PlacementGroup() PlacementGroupClient {
+	return c.PlacementGroupClient
 }

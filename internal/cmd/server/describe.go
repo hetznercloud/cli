@@ -174,6 +174,15 @@ var describeCmd = base.DescribeCmd{
 			}
 		}
 
+		fmt.Print("Placement Group:\n")
+		if server.PlacementGroup != nil {
+			fmt.Printf("  ID:\t\t%d\n", server.PlacementGroup.ID)
+			fmt.Printf("  Name:\t\t%s\n", server.PlacementGroup.Name)
+			fmt.Printf("  Type:\t\t%s\n", server.PlacementGroup.Type)
+		} else {
+			fmt.Print("  No Placement Group set")
+		}
+
 		return nil
 	},
 }

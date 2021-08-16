@@ -379,3 +379,11 @@ func (c *State) LoadBalancerTypeNames() []string {
 	}
 	return c.loadBalancerClient.LoadBalancerTypeNames()
 }
+
+func (c *State) PlacementGroupNames() []string {
+	if c.placementGroupClient == nil {
+		client := c.Client()
+		c.placementGroupClient = &hcapi.PlacementGroupClient{PlacementGroupClient: &client.PlacementGroup}
+	}
+	return c.placementGroupClient.PlacementGroupNames()
+}

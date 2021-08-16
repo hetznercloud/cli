@@ -9,6 +9,7 @@ import (
 
 // ServerClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/hcloud.ServerClient".
 type ServerClientBase interface {
+	AddToPlacementGroup(context.Context, *hcloud.Server, *hcloud.PlacementGroup) (*hcloud.Action, *hcloud.Response, error)
 	All(context.Context) ([]*hcloud.Server, error)
 	AllWithOpts(context.Context, hcloud.ServerListOpts) ([]*hcloud.Server, error)
 	AttachISO(context.Context, *hcloud.Server, *hcloud.ISO) (*hcloud.Action, *hcloud.Response, error)
@@ -35,6 +36,7 @@ type ServerClientBase interface {
 	Poweron(context.Context, *hcloud.Server) (*hcloud.Action, *hcloud.Response, error)
 	Reboot(context.Context, *hcloud.Server) (*hcloud.Action, *hcloud.Response, error)
 	Rebuild(context.Context, *hcloud.Server, hcloud.ServerRebuildOpts) (*hcloud.Action, *hcloud.Response, error)
+	RemoveFromPlacementGroup(context.Context, *hcloud.Server) (*hcloud.Action, *hcloud.Response, error)
 	RequestConsole(context.Context, *hcloud.Server) (hcloud.ServerRequestConsoleResult, *hcloud.Response, error)
 	Reset(context.Context, *hcloud.Server) (*hcloud.Action, *hcloud.Response, error)
 	ResetPassword(context.Context, *hcloud.Server) (hcloud.ServerResetPasswordResult, *hcloud.Response, error)

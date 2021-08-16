@@ -66,6 +66,9 @@ var CreateCmd = base.Cmd{
 
 		cmd.Flags().Bool("automount", false, "Automount volumes after attach (default: false)")
 		cmd.Flags().Bool("allow-deprecated-image", false, "Enable the use of deprecated images (default: false)")
+
+		cmd.Flags().String("placement-group", "", "Placement Group (ID of name")
+		cmd.RegisterFlagCompletionFunc("placement-group", cmpl.SuggestCandidatesF(client.PlacementGroup().Names))
 		return cmd
 	},
 
@@ -184,6 +187,7 @@ func createOptsFromFlags(
 	firewalls, _ := flags.GetStringSlice("firewall")
 	automount, _ := flags.GetBool("automount")
 	allowDeprecatedImage, _ := flags.GetBool("allow-deprecated-image")
+	placementGroupIDorName, _ := flags.GetString("placement-group")
 
 	image, _, err := client.Image().Get(ctx, imageIDorName)
 	if err != nil {
@@ -302,6 +306,18 @@ func createOptsFromFlags(
 	}
 	if location != "" {
 		opts.Location = &hcloud.Location{Name: location}
+	}
+	if placementGroupIDorName != "" {
+		var placementGroup *hcloud.PlacementGroup
+		placementGroup, _, err = client.PlacementGroup().Get(ctx, placementGroupIDorName)
+		if err != nil {
+			return
+		}
+		if placementGroup == nil {
+			err = fmt.Errorf("placement group not found: %s", placementGroupIDorName)
+			return
+		}
+		opts.PlacementGroup = placementGroup
 	}
 
 	return
