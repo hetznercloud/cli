@@ -35,7 +35,9 @@ var DescribeCmd = base.DescribeCmd{
 		fmt.Printf("Public Net:\n")
 		fmt.Printf("  Enabled:\t\t\t%s\n", util.YesNo(loadBalancer.PublicNet.Enabled))
 		fmt.Printf("  IPv4:\t\t\t\t%s\n", loadBalancer.PublicNet.IPv4.IP.String())
+		fmt.Printf("  IPv4 DNS PTR:\t\t\t%s\n", loadBalancer.PublicNet.IPv4.DNSPtr)
 		fmt.Printf("  IPv6:\t\t\t\t%s\n", loadBalancer.PublicNet.IPv6.IP.String())
+		fmt.Printf("  IPv6 DNS PTR:\t\t\t%s\n", loadBalancer.PublicNet.IPv6.DNSPtr)
 
 		fmt.Printf("Private Net:\n")
 		if len(loadBalancer.PrivateNet) > 0 {
