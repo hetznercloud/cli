@@ -10,7 +10,7 @@ variables:
 
 test:tests:
   stage: test
-  image: golang:1.16
+  image: golang:1.17
   script:
     - |
       go test -v \
