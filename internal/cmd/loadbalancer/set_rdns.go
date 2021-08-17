@@ -24,7 +24,7 @@ func newSetRDNSCommand(cli *state.State) *cobra.Command {
 	cmd.Flags().StringP("hostname", "r", "", "Hostname to set as a reverse DNS PTR entry (required)")
 	cmd.MarkFlagRequired("hostname")
 
-	cmd.Flags().StringP("ip", "i", "", "IP address for which the reverse DNS entry should be set")
+	cmd.Flags().StringP("ip", "i", "", "IP address for which the reverse DNS entry should be set (required)")
 	cmd.MarkFlagRequired("ip")
 	return cmd
 }
