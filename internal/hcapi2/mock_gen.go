@@ -15,3 +15,4 @@ package hcapi2
 //go:generate mockgen -package hcapi2 -destination zz_ssh_key_client_mock.go . SSHKeyClient
 //go:generate mockgen -package hcapi2 -destination zz_volume_client_mock.go . VolumeClient
 //go:generate mockgen -package hcapi2 -destination zz_placement_group_client_mock.go . PlacementGroupClient
+//go:generate mockgen -package hcapi2 -destination zz_rdns_client_mock.go . RDNSClient

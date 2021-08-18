@@ -18,6 +18,7 @@ type LoadBalancerClientBase interface {
 	AllWithOpts(context.Context, hcloud.LoadBalancerListOpts) ([]*hcloud.LoadBalancer, error)
 	AttachToNetwork(context.Context, *hcloud.LoadBalancer, hcloud.LoadBalancerAttachToNetworkOpts) (*hcloud.Action, *hcloud.Response, error)
 	ChangeAlgorithm(context.Context, *hcloud.LoadBalancer, hcloud.LoadBalancerChangeAlgorithmOpts) (*hcloud.Action, *hcloud.Response, error)
+	ChangeDNSPtr(context.Context, *hcloud.LoadBalancer, string, *string) (*hcloud.Action, *hcloud.Response, error)
 	ChangeProtection(context.Context, *hcloud.LoadBalancer, hcloud.LoadBalancerChangeProtectionOpts) (*hcloud.Action, *hcloud.Response, error)
 	ChangeType(context.Context, *hcloud.LoadBalancer, hcloud.LoadBalancerChangeTypeOpts) (*hcloud.Action, *hcloud.Response, error)
 	Create(context.Context, hcloud.LoadBalancerCreateOpts) (hcloud.LoadBalancerCreateResult, *hcloud.Response, error)
