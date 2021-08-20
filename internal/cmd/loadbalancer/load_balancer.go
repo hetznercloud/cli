@@ -36,7 +36,7 @@ func NewCommand(cli *state.State, client hcapi2.Client) *cobra.Command {
 		newDisablePublicInterfaceCommand(cli),
 		newChangeTypeCommand(cli),
 		newMetricsCommand(cli),
-		newSetRDNSCommand(cli),
+		setRDNSCmd.CobraCommand(cli.Context, client, cli, cli),
 	)
 	return cmd
 }
