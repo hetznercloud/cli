@@ -13,7 +13,7 @@ import (
 var setRDNSCmd = base.SetRdnsCmd{
 	ResourceNameSingular: "Server",
 	ShortDescription:     "Change reverse DNS of a Server",
-	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.FloatingIP().Names },
+	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Server().Names },
 	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
 		return client.Server().Get(ctx, idOrName)
 	},
