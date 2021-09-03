@@ -34,7 +34,8 @@ var listCmd = base.ListCmd{
 	JSONSchema: func(resources []interface{}) interface{} {
 		var locationSchemas []schema.Location
 		for _, resource := range resources {
-			locationSchemas = append(locationSchemas, util.LocationToSchema(resource.(hcloud.Location)))
+			location := resource.(*hcloud.Location)
+			locationSchemas = append(locationSchemas, util.LocationToSchema(*location))
 		}
 		return locationSchemas
 	},

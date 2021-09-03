@@ -37,12 +37,12 @@ var listCmd = base.ListCmd{
 	},
 
 	JSONSchema: func(resources []interface{}) interface{} {
-		var certSchemas []schema.Datacenter
+		var dcSchemas []schema.Datacenter
 		for _, resource := range resources {
-			cert := resource.(*hcloud.Datacenter)
-			certSchemas = append(certSchemas, util.DatacenterToSchema(*cert))
+			dc := resource.(*hcloud.Datacenter)
+			dcSchemas = append(dcSchemas, util.DatacenterToSchema(*dc))
 		}
 
-		return certSchemas
+		return dcSchemas
 	},
 }
