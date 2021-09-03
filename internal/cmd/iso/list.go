@@ -34,7 +34,8 @@ var listCmd = base.ListCmd{
 	JSONSchema: func(resources []interface{}) interface{} {
 		var isoSchemas []schema.ISO
 		for _, resource := range resources {
-			isoSchemas = append(isoSchemas, util.ISOToSchema(resource.(hcloud.ISO)))
+			iso := resource.(*hcloud.ISO)
+			isoSchemas = append(isoSchemas, util.ISOToSchema(*iso))
 		}
 		return isoSchemas
 	},
