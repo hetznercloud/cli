@@ -26,7 +26,12 @@ var listCmd = base.ListCmd{
 		cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("backup", "snapshot", "system", "app"))
 	},
 	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts) ([]interface{}, error) {
-		images, err := client.Image().AllWithOpts(ctx, hcloud.ImageListOpts{ListOpts: listOpts, IncludeDeprecated: true})
+		opts := hcloud.ImageListOpts{ListOpts: listOpts, IncludeDeprecated: true}
+		imageType, _ := cmd.Flags().GetString("type")
+		if len(imageType) > 0 {
+			opts.Type = []hcloud.ImageType{hcloud.ImageType(imageType)}
+		}
+		images, err := client.Image().AllWithOpts(ctx, opts)
 
 		var resources []interface{}
 		for _, n := range images {
