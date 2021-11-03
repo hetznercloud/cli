@@ -8,7 +8,7 @@ on:
 jobs:
   release-cli:
     runs-on: macos-latest
-    timeout-minutes: 360
+    timeout-minutes: 720
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -17,7 +17,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
-          go-version: 1.16
+          go-version: 1.17
       - name: Print Go Version
         run: go version
       - name: Decrypt Secrets
@@ -37,7 +37,7 @@ jobs:
           gpg-private-key: ${{ secrets.GPG_KEY }}
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
-        timeout-minutes: 340
+        timeout-minutes: 720
         with:
           version: latest
           args: release --rm-dist --skip-validate --parallelism=2
