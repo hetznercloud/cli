@@ -37,9 +37,10 @@ is still the recommended install method.
 
 ### Build manually
 
-If you have Go installed, you can build and install the `hcloud` program with:
+If you have Go installed, you can build and install the latest version of
+`hcloud` with:
 
-    go get -u github.com/hetznercloud/cli/cmd/hcloud
+    go install github.com/hetznercloud/cli/cmd/hcloud@latest
 
 ## Getting Started
 
