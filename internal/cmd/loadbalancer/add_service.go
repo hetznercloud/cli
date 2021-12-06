@@ -32,7 +32,7 @@ func newAddServiceCommand(cli *state.State) *cobra.Command {
 	cmd.Flags().String("http-cookie-name", "", "Sticky Sessions: Cookie Name we set")
 	cmd.Flags().Duration("http-cookie-lifetime", 0, "Sticky Sessions: Lifetime of the cookie")
 	cmd.Flags().IntSlice("http-certificates", []int{}, "ID of Certificates which are attached to this Load Balancer")
-	cmd.Flags().Bool("http-redirect-http", false, "Redirect all traffic on port 80 to port 443")
+	cmd.Flags().Bool("http-redirect-https", false, "Redirect all traffic on port 80 to port 443")
 
 	return cmd
 }
@@ -87,7 +87,7 @@ func runAddService(cli *state.State, cmd *cobra.Command, args []string) error {
 	httpCookieName, _ := cmd.Flags().GetString("http-cookie-name")
 	httpCookieLifetime, _ := cmd.Flags().GetDuration("http-cookie-lifetime")
 	httpCertificates, _ := cmd.Flags().GetIntSlice("http-certificates")
-	httpRedirect, _ := cmd.Flags().GetBool("http-redirect-http")
+	httpRedirect, _ := cmd.Flags().GetBool("http-redirect-https")
 
 	loadBalancer, _, err := cli.Client().LoadBalancer.Get(cli.Context, idOrName)
 	if err != nil {

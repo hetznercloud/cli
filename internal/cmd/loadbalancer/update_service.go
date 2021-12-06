@@ -29,7 +29,7 @@ func newUpdateServiceCommand(cli *state.State) *cobra.Command {
 
 	cmd.Flags().String("protocol", "", "The protocol the health check is performed over")
 	cmd.Flags().Bool("proxy-protocol", false, "Enable or disable (with --proxy-protocol=false) Proxy Protocol")
-	cmd.Flags().Bool("http-redirect-http", false, "Enable or disable redirect all traffic on port 80 to port 443")
+	cmd.Flags().Bool("http-redirect-https", false, "Enable or disable redirect all traffic on port 80 to port 443")
 
 	cmd.Flags().Bool("http-sticky-sessions", false, "Enable or disable (with --http-sticky-sessions=false) Sticky Sessions")
 	cmd.Flags().String("http-cookie-name", "", "Sticky Sessions: Cookie Name which will be set")
@@ -87,8 +87,8 @@ func runUpdateService(cli *state.State, cmd *cobra.Command, args []string) error
 		opts.Proxyprotocol = hcloud.Bool(proxyProtocol)
 	}
 	// HTTP
-	if cmd.Flag("http-redirect-http").Changed {
-		redirectHTTP, _ := cmd.Flags().GetBool("http-redirect-http")
+	if cmd.Flag("http-redirect-https").Changed {
+		redirectHTTP, _ := cmd.Flags().GetBool("http-redirect-https")
 		opts.HTTP.RedirectHTTP = hcloud.Bool(redirectHTTP)
 	}
 	if cmd.Flag("http-sticky-sessions").Changed {
