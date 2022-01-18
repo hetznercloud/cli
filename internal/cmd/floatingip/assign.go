@@ -22,7 +22,6 @@ func newAssignCommand(cli *state.State) *cobra.Command {
 		PreRunE:               cli.EnsureToken,
 		RunE:                  cli.Wrap(runAssign),
 	}
-	cmd.MarkFlagRequired("server")
 	return cmd
 }
 

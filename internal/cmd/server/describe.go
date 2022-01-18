@@ -41,12 +41,23 @@ var describeCmd = base.DescribeCmd{
 
 		fmt.Printf("Public Net:\n")
 		fmt.Printf("  IPv4:\n")
-		fmt.Printf("    IP:\t\t%s\n", server.PublicNet.IPv4.IP)
-		fmt.Printf("    Blocked:\t%s\n", util.YesNo(server.PublicNet.IPv4.Blocked))
-		fmt.Printf("    DNS:\t%s\n", server.PublicNet.IPv4.DNSPtr)
+		if server.PublicNet.IPv4.IsUnspecified() {
+			fmt.Printf("    No Primary IPv4\n")
+		} else {
+			fmt.Printf("    ID:\t\t%d\n", server.PublicNet.IPv4.ID)
+			fmt.Printf("    IP:\t\t%s\n", server.PublicNet.IPv4.IP)
+			fmt.Printf("    Blocked:\t%s\n", util.YesNo(server.PublicNet.IPv4.Blocked))
+			fmt.Printf("    DNS:\t%s\n", server.PublicNet.IPv4.DNSPtr)
+		}
+
 		fmt.Printf("  IPv6:\n")
-		fmt.Printf("    IP:\t\t%s\n", server.PublicNet.IPv6.Network.String())
-		fmt.Printf("    Blocked:\t%s\n", util.YesNo(server.PublicNet.IPv6.Blocked))
+		if server.PublicNet.IPv6.IsUnspecified() {
+			fmt.Printf("    No Primary IPv6\n")
+		} else {
+			fmt.Printf("    ID:\t\t%d\n", server.PublicNet.IPv6.ID)
+			fmt.Printf("    IP:\t\t%s\n", server.PublicNet.IPv6.Network.String())
+			fmt.Printf("    Blocked:\t%s\n", util.YesNo(server.PublicNet.IPv6.Blocked))
+		}
 		fmt.Printf("  Floating IPs:\n")
 		if len(server.PublicNet.FloatingIPs) > 0 {
 			for _, f := range server.PublicNet.FloatingIPs {

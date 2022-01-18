@@ -1,5 +1,5 @@
 include:
-  - project: "hc/backend/deploy-tools"
+  - project: "cloud/backend/deploy-tools"
     file: "ci/test/golang.yml"
 
 variables:
@@ -27,4 +27,6 @@ test:tests:
     - hc-bladerunner
   artifacts:
     reports:
-      cobertura: coverage.xml
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml

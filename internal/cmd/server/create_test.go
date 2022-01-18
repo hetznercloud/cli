@@ -45,6 +45,16 @@ func TestCreate(t *testing.T) {
 			Action:      &hcloud.Action{ID: 123},
 			NextActions: []*hcloud.Action{{ID: 234}},
 		}, nil, nil)
+	fx.Client.ServerClient.EXPECT().
+		GetByID(gomock.Any(), 1234).
+		Return(&hcloud.Server{
+			ID: 1234,
+			PublicNet: hcloud.ServerPublicNet{
+				IPv4: hcloud.ServerPublicNetIPv4{
+					IP: net.ParseIP("192.0.2.1"),
+				},
+			},
+		}, nil, nil)
 	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), &hcloud.Action{ID: 123}).Return(nil)
 	fx.ActionWaiter.EXPECT().WaitForActions(gomock.Any(), []*hcloud.Action{{ID: 234}}).Return(nil)
 

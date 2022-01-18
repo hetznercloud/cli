@@ -67,8 +67,15 @@ var CreateCmd = base.Cmd{
 		cmd.Flags().Bool("automount", false, "Automount volumes after attach (default: false)")
 		cmd.Flags().Bool("allow-deprecated-image", false, "Enable the use of deprecated images (default: false)")
 
-		cmd.Flags().String("placement-group", "", "Placement Group (ID of name")
+		cmd.Flags().String("placement-group", "", "Placement Group (ID of name)")
 		cmd.RegisterFlagCompletionFunc("placement-group", cmpl.SuggestCandidatesF(client.PlacementGroup().Names))
+		cmd.Flags().String("primary-ipv4", "", "Primary IPv4 (ID of name)")
+		cmd.RegisterFlagCompletionFunc("primary-ipv4", cmpl.SuggestCandidatesF(client.PrimaryIP().IPv4Names))
+		cmd.Flags().String("primary-ipv6", "", "Primary IPv6 (ID of name)")
+		cmd.RegisterFlagCompletionFunc("primary-ipv6", cmpl.SuggestCandidatesF(client.PrimaryIP().IPv6Names))
+
+		cmd.Flags().Bool("without-ipv4", false, "Creates the server without an IPv4 (default: false)")
+		cmd.Flags().Bool("without-ipv6", false, "Creates the server without an IPv6 (default: false)")
 		return cmd
 	},
 
@@ -90,9 +97,25 @@ var CreateCmd = base.Cmd{
 			return err
 		}
 
+		server, _, err := client.Server().GetByID(ctx, result.Server.ID)
+		if err != nil {
+			return err
+		}
 		fmt.Printf("Server %d created\n", result.Server.ID)
-		fmt.Printf("IPv4: %s\n", result.Server.PublicNet.IPv4.IP.String())
-
+		if !server.PublicNet.IPv4.IsUnspecified() {
+			fmt.Printf("IPv4: %s\n", server.PublicNet.IPv4.IP.String())
+		}
+		if !server.PublicNet.IPv6.IsUnspecified() {
+			fmt.Printf("IPv6: %s1\n", server.PublicNet.IPv6.Network.IP.String())
+			fmt.Printf("IPv6 Network: %s\n", server.PublicNet.IPv6.Network.String())
+		}
+		if len(server.PrivateNet) > 0 {
+			var networks []string
+			for _, network := range server.PrivateNet {
+				networks = append(networks, fmt.Sprintf("- %s (%s)", network.IP.String(), client.Network().Name(network.Network.ID)))
+			}
+			fmt.Printf("Private Networks:\n\t%s\n", strings.Join(networks, "\n"))
+		}
 		// Only print the root password if it's not empty,
 		// which is only the case if it wasn't created with an SSH key.
 		if result.RootPassword != "" {
@@ -188,6 +211,10 @@ func createOptsFromFlags(
 	automount, _ := flags.GetBool("automount")
 	allowDeprecatedImage, _ := flags.GetBool("allow-deprecated-image")
 	placementGroupIDorName, _ := flags.GetString("placement-group")
+	withoutIPv4, _ := flags.GetBool("without-ipv4")
+	withoutIPv6, _ := flags.GetBool("without-ipv6")
+	primaryIPv4IDorName, _ := flags.GetString("primary-ipv4")
+	primaryIPv6IDorName, _ := flags.GetString("primary-ipv6")
 
 	image, _, err := client.Image().Get(ctx, imageIDorName)
 	if err != nil {
@@ -212,6 +239,10 @@ func createOptsFromFlags(
 			return
 		}
 	}
+	if withoutIPv4 && withoutIPv6 && len(networks) == 0 {
+		err = fmt.Errorf("a server can not be created without IPv4, IPv6 and a private network. Choose at least one of those options to create the server")
+		return
+	}
 	opts = hcloud.ServerCreateOpts{
 		Name: name,
 		ServerType: &hcloud.ServerType{
@@ -222,7 +253,38 @@ func createOptsFromFlags(
 		StartAfterCreate: &startAfterCreate,
 		Automount:        &automount,
 	}
-
+	publicNetConfiguration := &hcloud.ServerCreatePublicNet{}
+	if !withoutIPv4 {
+		publicNetConfiguration.EnableIPv4 = true
+	}
+	if !withoutIPv6 {
+		publicNetConfiguration.EnableIPv6 = true
+	}
+	if primaryIPv4IDorName != "" {
+		var primaryIPv4 *hcloud.PrimaryIP
+		primaryIPv4, _, err = client.PrimaryIP().Get(ctx, primaryIPv4IDorName)
+		if err != nil {
+			return
+		}
+		if primaryIPv4 == nil {
+			err = fmt.Errorf("primary ipv4 not found: %s", primaryIPv4IDorName)
+			return
+		}
+		publicNetConfiguration.IPv4 = primaryIPv4
+	}
+	if primaryIPv6IDorName != "" {
+		var primaryIPv6 *hcloud.PrimaryIP
+		primaryIPv6, _, err = client.PrimaryIP().Get(ctx, primaryIPv6IDorName)
+		if err != nil {
+			return
+		}
+		if primaryIPv6 == nil {
+			err = fmt.Errorf("primary ipv4 not found: %s", primaryIPv6IDorName)
+			return
+		}
+		publicNetConfiguration.IPv6 = primaryIPv6
+	}
+	opts.PublicNet = publicNetConfiguration
 	if len(userDataFiles) == 1 {
 		var data []byte
 		if userDataFiles[0] == "-" {
