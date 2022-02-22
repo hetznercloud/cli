@@ -91,6 +91,7 @@ func validateOutputFlag(options []outputOption) func(cmd *cobra.Command, args []
 			if _, ok := validOptions[parts[0]]; !ok {
 				return fmt.Errorf("invalid output option: %s", parts[0])
 			}
+			parts[1] = strings.ToLower(strings.TrimSpace(parts[1]))
 			if validOptions[parts[0]] != nil {
 				for _, v := range strings.Split(parts[1], ",") {
 					if !validOptions[parts[0]][v] {
