@@ -84,6 +84,8 @@ archives:
   - id: hcloud-archive
     builds:
       - hcloud-build
+      - hcloud-macos-build
+      - hcloud-macos-build-arm64
     name_template: "{{ .Binary }}-{{ .Os }}-{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
 
     format_overrides:
@@ -92,5 +94,4 @@ archives:
 
     files:
       - LICENSE
-      - CHANGES.md
       - README.md

@@ -9,7 +9,3 @@ apple_id {
 sign {
   application_identity = "Developer ID Application: Hetzner Cloud GmbH (4PM38G6W5R)"
 }
-
-zip {
-  output_path = "./dist/hcloud-macos-amd64.zip"
-}
