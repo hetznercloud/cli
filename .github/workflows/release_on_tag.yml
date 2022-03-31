@@ -26,8 +26,8 @@ jobs:
         run: bash script/decrypt_secrets.sh
       - name: Install gon
         run: |
-          wget https://github.com/mitchellh/gon/releases/download/v0.2.5/gon_0.2.5_macos.zip
-          unzip gon_0.2.5_macos.zip
+          wget https://github.com/mitchellh/gon/releases/download/v0.2.5/gon_macos.zip
+          unzip gon_macos.zip
           mv gon /usr/local/bin/gon
           chmod +x /usr/local/bin/gon
       - name: Import GPG key
