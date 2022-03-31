@@ -73,7 +73,7 @@ archives:
     builds:
       - hcloud-build
       - hcloud-macos-build
-      - hcloud-macos-build-arm64
+      - hcloud-macos-arm-build
     name_template: "{{ .Binary }}-{{ .Os }}-{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
 
     format_overrides:
