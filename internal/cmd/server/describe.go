@@ -180,7 +180,7 @@ var describeCmd = base.DescribeCmd{
 			fmt.Printf("  Name:\t\t%s\n", server.PlacementGroup.Name)
 			fmt.Printf("  Type:\t\t%s\n", server.PlacementGroup.Type)
 		} else {
-			fmt.Print("  No Placement Group set")
+			fmt.Print("  No Placement Group set\n")
 		}
 
 		return nil
