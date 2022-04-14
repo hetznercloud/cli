@@ -34,7 +34,7 @@ var listCmd = base.ListCmd{
 	OutputTable: func(client hcapi2.Client) *output.Table {
 		return output.NewTable().
 			AddAllowedFields(hcloud.FloatingIP{}).
-			AddFieldFn("dns", func(obj interface{}) string {
+			AddFieldFn("dns", output.FieldFn(func(obj interface{}) string {
 				floatingIP := obj.(*hcloud.FloatingIP)
 				var dns string
 				if len(floatingIP.DNSPtr) == 1 {
@@ -46,42 +46,42 @@ var listCmd = base.ListCmd{
 					dns = fmt.Sprintf("%d entries", len(floatingIP.DNSPtr))
 				}
 				return util.NA(dns)
-			}).
-			AddFieldFn("server", func(obj interface{}) string {
+			})).
+			AddFieldFn("server", output.FieldFn(func(obj interface{}) string {
 				floatingIP := obj.(*hcloud.FloatingIP)
 				var server string
 				if floatingIP.Server != nil {
 					return client.Server().ServerName(floatingIP.Server.ID)
 				}
 				return util.NA(server)
-			}).
-			AddFieldFn("home", func(obj interface{}) string {
+			})).
+			AddFieldFn("home", output.FieldFn(func(obj interface{}) string {
 				floatingIP := obj.(*hcloud.FloatingIP)
 				return floatingIP.HomeLocation.Name
-			}).
-			AddFieldFn("ip", func(obj interface{}) string {
+			})).
+			AddFieldFn("ip", output.FieldFn(func(obj interface{}) string {
 				floatingIP := obj.(*hcloud.FloatingIP)
 				if floatingIP.Network != nil {
 					return floatingIP.Network.String()
 				}
 				return floatingIP.IP.String()
-			}).
-			AddFieldFn("protection", func(obj interface{}) string {
+			})).
+			AddFieldFn("protection", output.FieldFn(func(obj interface{}) string {
 				floatingIP := obj.(*hcloud.FloatingIP)
 				var protection []string
 				if floatingIP.Protection.Delete {
 					protection = append(protection, "delete")
 				}
 				return strings.Join(protection, ", ")
-			}).
-			AddFieldFn("labels", func(obj interface{}) string {
+			})).
+			AddFieldFn("labels", output.FieldFn(func(obj interface{}) string {
 				floatingIP := obj.(*hcloud.FloatingIP)
 				return util.LabelsToString(floatingIP.Labels)
-			}).
-			AddFieldFn("created", func(obj interface{}) string {
+			})).
+			AddFieldFn("created", output.FieldFn(func(obj interface{}) string {
 				floatingIP := obj.(*hcloud.FloatingIP)
 				return util.Datetime(floatingIP.Created)
-			})
+			}))
 	},
 
 	JSONSchema: func(resources []interface{}) interface{} {

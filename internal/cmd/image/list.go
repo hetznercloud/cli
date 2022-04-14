@@ -50,47 +50,47 @@ var listCmd = base.ListCmd{
 			AddFieldAlias("rapiddeploy", "rapid deploy").
 			AddFieldAlias("createdfrom", "created from").
 			AddFieldAlias("boundto", "bound to").
-			AddFieldFn("name", func(obj interface{}) string {
+			AddFieldFn("name", output.FieldFn(func(obj interface{}) string {
 				image := obj.(*hcloud.Image)
 				return util.NA(image.Name)
-			}).
-			AddFieldFn("image_size", func(obj interface{}) string {
+			})).
+			AddFieldFn("image_size", output.FieldFn(func(obj interface{}) string {
 				image := obj.(*hcloud.Image)
 				if image.ImageSize == 0 {
 					return util.NA("")
 				}
 				return fmt.Sprintf("%.2f GB", image.ImageSize)
-			}).
-			AddFieldFn("disk_size", func(obj interface{}) string {
+			})).
+			AddFieldFn("disk_size", output.FieldFn(func(obj interface{}) string {
 				image := obj.(*hcloud.Image)
 				return fmt.Sprintf("%.0f GB", image.DiskSize)
-			}).
-			AddFieldFn("created", func(obj interface{}) string {
+			})).
+			AddFieldFn("created", output.FieldFn(func(obj interface{}) string {
 				image := obj.(*hcloud.Image)
 				return humanize.Time(image.Created)
-			}).
-			AddFieldFn("bound_to", func(obj interface{}) string {
+			})).
+			AddFieldFn("bound_to", output.FieldFn(func(obj interface{}) string {
 				image := obj.(*hcloud.Image)
 				if image.BoundTo != nil {
 					return client.Server().ServerName(image.BoundTo.ID)
 				}
 				return util.NA("")
-			}).
-			AddFieldFn("created_from", func(obj interface{}) string {
+			})).
+			AddFieldFn("created_from", output.FieldFn(func(obj interface{}) string {
 				image := obj.(*hcloud.Image)
 				if image.CreatedFrom != nil && image.BoundTo != nil {
 					return client.Server().ServerName(image.BoundTo.ID)
 				}
 				return util.NA("")
-			}).
-			AddFieldFn("protection", func(obj interface{}) string {
+			})).
+			AddFieldFn("protection", output.FieldFn(func(obj interface{}) string {
 				image := obj.(*hcloud.Image)
 				var protection []string
 				if image.Protection.Delete {
 					protection = append(protection, "delete")
 				}
 				return strings.Join(protection, ", ")
-			}).
+			})).
 			AddFieldFn("labels", output.FieldFn(func(obj interface{}) string {
 				image := obj.(*hcloud.Image)
 				return util.LabelsToString(image.Labels)
