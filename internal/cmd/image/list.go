@@ -79,7 +79,7 @@ var listCmd = base.ListCmd{
 			AddFieldFn("created_from", output.FieldFn(func(obj interface{}) string {
 				image := obj.(*hcloud.Image)
 				if image.CreatedFrom != nil {
-					return client.Server().ServerName(image.BoundTo.ID)
+					return client.Server().ServerName(image.CreatedFrom.ID)
 				}
 				return util.NA("")
 			})).
