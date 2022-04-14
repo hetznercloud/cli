@@ -23,6 +23,16 @@ jobs:
         uses: crazy-max/ghaction-import-gpg@v3
         with:
           gpg-private-key: ${{ secrets.GPG_KEY }}
+      - name: Decrypt Secrets
+        env:
+          SECRETS_PASSWORD: ${{ secrets.SECRETS_PASSWORD }}
+        run: bash script/decrypt_secrets.sh
+      - name: Install gon
+        run: |
+          wget https://github.com/mitchellh/gon/releases/download/v0.2.5/gon_macos.zip
+          unzip gon_macos.zip
+          mv gon /usr/local/bin/gon
+          chmod +x /usr/local/bin/gon
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
         with:
