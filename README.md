@@ -35,7 +35,7 @@ is still the recommended install method.
 | Void Linux            | `xbps-install -Syu hcloud`                        |
 | Gentoo Linux          | `emerge hcloud`                                   |
 | Alpine Linux          | `apk add hcloud`                                  |
-| Fedora {35|36|37}     | `dnf install hcloud`                              |
+| Fedora {35,36,37}     | `dnf install hcloud`                              |
 
 ### Build manually
 
