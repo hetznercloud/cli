@@ -21,11 +21,15 @@ var listCmd = base.ListCmd{
 	ResourceNamePlural: "Floating IPs",
 	DefaultColumns:     []string{"id", "type", "name", "description", "ip", "home", "server", "dns"},
 
-	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts) ([]interface{}, error) {
-		floatingips, _, err := client.FloatingIP().List(ctx, hcloud.FloatingIPListOpts{ListOpts: listOpts})
+	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
+		opts := hcloud.FloatingIPListOpts{ListOpts: listOpts}
+		if len(sorts) > 0 {
+			opts.Sort = sorts
+		}
+		floatingIPs, _, err := client.FloatingIP().List(ctx, opts)
 
 		var resources []interface{}
-		for _, n := range floatingips {
+		for _, n := range floatingIPs {
 			resources = append(resources, n)
 		}
 		return resources, err

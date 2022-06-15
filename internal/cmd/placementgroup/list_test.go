@@ -22,13 +22,14 @@ func TestList(t *testing.T) {
 	fx.ExpectEnsureToken()
 
 	fx.Client.PlacementGroupClient.EXPECT().
-		List(
+		AllWithOpts(
 			gomock.Any(),
 			hcloud.PlacementGroupListOpts{
 				ListOpts: hcloud.ListOpts{
 					PerPage:       50,
 					LabelSelector: "foo=bar",
 				},
+				Sort: []string{"id:asc"},
 			},
 		).
 		Return([]*hcloud.PlacementGroup{
@@ -39,7 +40,7 @@ func TestList(t *testing.T) {
 				Servers: []int{4711, 4712},
 				Type:    hcloud.PlacementGroupTypeSpread,
 			},
-		}, nil, nil)
+		}, nil)
 
 	out, err := fx.Run(cmd, []string{"--selector", "foo=bar"})
 

@@ -16,8 +16,12 @@ var listCmd = base.ListCmd{
 	ResourceNamePlural: "ssh keys",
 	DefaultColumns:     []string{"id", "name", "fingerprint"},
 
-	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts) ([]interface{}, error) {
-		sshKeys, err := client.SSHKey().AllWithOpts(ctx, hcloud.SSHKeyListOpts{ListOpts: listOpts})
+	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
+		opts := hcloud.SSHKeyListOpts{ListOpts: listOpts}
+		if len(sorts) > 0 {
+			opts.Sort = sorts
+		}
+		sshKeys, err := client.SSHKey().AllWithOpts(ctx, opts)
 
 		var resources []interface{}
 		for _, n := range sshKeys {

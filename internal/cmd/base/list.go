@@ -16,7 +16,7 @@ import (
 type ListCmd struct {
 	ResourceNamePlural string // e.g. "servers"
 	DefaultColumns     []string
-	Fetch              func(context.Context, hcapi2.Client, *cobra.Command, hcloud.ListOpts) ([]interface{}, error)
+	Fetch              func(context.Context, hcapi2.Client, *cobra.Command, hcloud.ListOpts, []string) ([]interface{}, error)
 	AdditionalFlags    func(*cobra.Command)
 	OutputTable        func(client hcapi2.Client) *output.Table
 	JSONSchema         func([]interface{}) interface{}
@@ -47,6 +47,7 @@ func (lc *ListCmd) CobraCommand(
 	if lc.AdditionalFlags != nil {
 		lc.AdditionalFlags(cmd)
 	}
+	cmd.Flags().StringSliceP("sort", "s", []string{"id:asc"}, "Determine the sorting of the result")
 	return cmd
 }
 
@@ -59,8 +60,9 @@ func (lc *ListCmd) Run(ctx context.Context, client hcapi2.Client, cmd *cobra.Com
 		LabelSelector: labelSelector,
 		PerPage:       50,
 	}
+	sorts, _ := cmd.Flags().GetStringSlice("sort")
 
-	resources, err := lc.Fetch(ctx, client, cmd, listOpts)
+	resources, err := lc.Fetch(ctx, client, cmd, listOpts, sorts)
 	if err != nil {
 		return err
 	}

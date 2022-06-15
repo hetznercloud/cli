@@ -27,6 +27,7 @@ func TestList(t *testing.T) {
 					PerPage:       50,
 					LabelSelector: "foo=bar",
 				},
+				Sort: []string{"id:asc"},
 			},
 		).
 		Return([]*hcloud.Network{

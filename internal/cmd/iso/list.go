@@ -16,8 +16,12 @@ var listCmd = base.ListCmd{
 	ResourceNamePlural: "isos",
 	DefaultColumns:     []string{"id", "name", "description", "type"},
 
-	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts) ([]interface{}, error) {
-		isos, _, err := client.ISO().List(ctx, hcloud.ISOListOpts{ListOpts: listOpts})
+	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
+		opts := hcloud.ISOListOpts{ListOpts: listOpts}
+		if len(sorts) > 0 {
+			opts.Sort = sorts
+		}
+		isos, _, err := client.ISO().List(ctx, opts)
 
 		var resources []interface{}
 		for _, n := range isos {

@@ -16,8 +16,12 @@ var listCmd = base.ListCmd{
 	ResourceNamePlural: "Firewalls",
 	DefaultColumns:     []string{"id", "name", "rules_count", "applied_to_count"},
 
-	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts) ([]interface{}, error) {
-		firewalls, err := client.Firewall().AllWithOpts(ctx, hcloud.FirewallListOpts{ListOpts: listOpts})
+	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
+		opts := hcloud.FirewallListOpts{ListOpts: listOpts}
+		if len(sorts) > 0 {
+			opts.Sort = sorts
+		}
+		firewalls, err := client.Firewall().AllWithOpts(ctx, opts)
 
 		var resources []interface{}
 		for _, n := range firewalls {

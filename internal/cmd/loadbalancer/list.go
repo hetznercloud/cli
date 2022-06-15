@@ -18,8 +18,12 @@ var ListCmd = base.ListCmd{
 	ResourceNamePlural: "Load Balancer",
 
 	DefaultColumns: []string{"id", "name", "ipv4", "ipv6", "type", "location", "network_zone"},
-	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts) ([]interface{}, error) {
-		loadBalancers, _, err := client.LoadBalancer().List(ctx, hcloud.LoadBalancerListOpts{ListOpts: listOpts})
+	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
+		opts := hcloud.LoadBalancerListOpts{ListOpts: listOpts}
+		if len(sorts) > 0 {
+			opts.Sort = sorts
+		}
+		loadBalancers, err := client.LoadBalancer().AllWithOpts(ctx, opts)
 
 		var resources []interface{}
 		for _, r := range loadBalancers {
