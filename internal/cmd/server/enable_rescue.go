@@ -21,7 +21,7 @@ func newEnableRescueCommand(cli *state.State) *cobra.Command {
 		RunE:                  cli.Wrap(runEnableRescue),
 	}
 	cmd.Flags().String("type", "linux64", "Rescue type")
-	cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("linux64", "linux32", "freebsd64"))
+	cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("linux64", "linux32"))
 
 	cmd.Flags().StringSlice("ssh-key", nil, "ID or name of SSH key to inject (can be specified multiple times)")
 	cmd.RegisterFlagCompletionFunc("ssh-key", cmpl.SuggestCandidatesF(cli.SSHKeyNames))
