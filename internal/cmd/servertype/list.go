@@ -19,8 +19,12 @@ var ListCmd = base.ListCmd{
 
 	DefaultColumns: []string{"id", "name", "cores", "cpu_type", "memory", "disk", "storage_type"},
 
-	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts) ([]interface{}, error) {
-		servers, _, err := client.ServerType().List(ctx, hcloud.ServerTypeListOpts{ListOpts: listOpts})
+	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
+		opts := hcloud.ServerTypeListOpts{ListOpts: listOpts}
+		if len(sorts) > 0 {
+			opts.Sort = sorts
+		}
+		servers, _, err := client.ServerType().List(ctx, opts)
 
 		var resources []interface{}
 		for _, r := range servers {

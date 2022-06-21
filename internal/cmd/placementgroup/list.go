@@ -16,8 +16,12 @@ var ListCmd = base.ListCmd{
 	ResourceNamePlural: "placement groups",
 	DefaultColumns:     []string{"id", "name", "servers", "type"},
 
-	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts) ([]interface{}, error) {
-		placementGroups, _, err := client.PlacementGroup().List(ctx, hcloud.PlacementGroupListOpts{ListOpts: listOpts})
+	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
+		opts := hcloud.PlacementGroupListOpts{ListOpts: listOpts}
+		if len(sorts) > 0 {
+			opts.Sort = sorts
+		}
+		placementGroups, err := client.PlacementGroup().AllWithOpts(ctx, opts)
 
 		var resources []interface{}
 		for _, n := range placementGroups {

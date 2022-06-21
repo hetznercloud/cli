@@ -18,8 +18,12 @@ var ListCmd = base.ListCmd{
 
 	DefaultColumns: []string{"id", "name", "description", "max_services", "max_connections", "max_targets"},
 
-	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts) ([]interface{}, error) {
-		loadBalancerTypes, _, err := client.LoadBalancerType().List(ctx, hcloud.LoadBalancerTypeListOpts{ListOpts: listOpts})
+	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
+		opts := hcloud.LoadBalancerTypeListOpts{ListOpts: listOpts}
+		if len(sorts) > 0 {
+			opts.Sort = sorts
+		}
+		loadBalancerTypes, _, err := client.LoadBalancerType().List(ctx, opts)
 
 		var resources []interface{}
 		for _, r := range loadBalancerTypes {

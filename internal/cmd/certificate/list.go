@@ -18,11 +18,15 @@ var listCmd = base.ListCmd{
 	ResourceNamePlural: "certificates",
 	DefaultColumns:     []string{"id", "name", "type", "domain_names", "not_valid_after"},
 
-	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts) ([]interface{}, error) {
-		certficates, err := client.Certificate().AllWithOpts(ctx, hcloud.CertificateListOpts{ListOpts: listOpts})
+	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
+		opts := hcloud.CertificateListOpts{ListOpts: listOpts}
+		if len(sorts) > 0 {
+			opts.Sort = sorts
+		}
+		certificates, err := client.Certificate().AllWithOpts(ctx, opts)
 
 		var resources []interface{}
-		for _, n := range certficates {
+		for _, n := range certificates {
 			resources = append(resources, n)
 		}
 		return resources, err

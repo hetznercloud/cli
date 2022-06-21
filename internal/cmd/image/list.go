@@ -25,11 +25,14 @@ var listCmd = base.ListCmd{
 		cmd.Flags().StringP("type", "t", "", "Only show images of given type")
 		cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("backup", "snapshot", "system", "app"))
 	},
-	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts) ([]interface{}, error) {
+	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
 		opts := hcloud.ImageListOpts{ListOpts: listOpts, IncludeDeprecated: true}
 		imageType, _ := cmd.Flags().GetString("type")
 		if len(imageType) > 0 {
 			opts.Type = []hcloud.ImageType{hcloud.ImageType(imageType)}
+		}
+		if len(sorts) > 0 {
+			opts.Sort = sorts
 		}
 		images, err := client.Image().AllWithOpts(ctx, opts)
 
