@@ -43,7 +43,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: Upload macOS (amd64) Build Artifact
-          path: dist/hcloud-macos-build_darwin_amd64/hcloud
+          path: dist/hcloud-macos-build_darwin_amd64_v1/hcloud
       - uses: actions/upload-artifact@v2
         with:
           name: Upload macOS (arm64) Build Artifact
@@ -51,12 +51,12 @@ jobs:
       - uses: actions/upload-artifact@v1
         with:
           name: Upload Windows AMD64 Build Artifact
-          path: dist/hcloud-build_windows_amd64/hcloud.exe
+          path: dist/hcloud-build_windows_amd64_v1/hcloud.exe
       - uses: actions/upload-artifact@v1
         with:
           name: Upload Linux AMD64 Build Artifact
-          path: dist/hcloud-build_linux_amd64/hcloud
+          path: dist/hcloud-build_linux_amd64_v1/hcloud
       - uses: actions/upload-artifact@v1
         with:
           name: Upload FreeBSD AMD64 Build Artifact
-          path: dist/hcloud-build_freebsd_amd64/hcloud
+          path: dist/hcloud-build_freebsd_amd64_v1/hcloud
