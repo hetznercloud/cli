@@ -19,6 +19,13 @@ On Windows, you can install `hcloud` via [Scoop](https://scoop.sh/)
 
     scoop install hcloud
 
+### Third-party packages
+
+There are unofficial packages maintained by third-party users. Please note
+that these packages aren’t supported nor maintained by Hetzner Cloud and
+may not always be up-to-date. Downloading the binary or building from source
+is still the recommended install method.
+
 ### Build manually
 
 If you have Go installed, you can build and install the latest version of
