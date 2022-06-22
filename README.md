@@ -11,7 +11,7 @@
 You can download pre-built binaries for Linux, FreeBSD, macOS, and Windows on
 the [releases page](https://github.com/hetznercloud/cli/releases).
 
-On macOS, you can install `hcloud` via [Homebrew](https://brew.sh/):
+On macOS and Linux, you can install `hcloud` via [Homebrew](https://brew.sh/):
 
     brew install hcloud
 
@@ -26,16 +26,6 @@ There are unofficial packages maintained by third-party users. Please note
 that these packages aren’t supported nor maintained by Hetzner Cloud and
 may not always be up-to-date. Downloading the binary or building from source
 is still the recommended install method.
-
-| Operating System      | Command                                           |
-| --------------------- | ------------------------------------------------- |
-| Debian (>= bullseye)  | `apt install hcloud-cli`                          |
-| Ubuntu (>= 19.04)     | `apt install hcloud-cli`                          |
-| Arch Linux            | `pacman -Syu hcloud`                              |
-| Void Linux            | `xbps-install -Syu hcloud`                        |
-| Gentoo Linux          | `emerge hcloud`                                   |
-| Alpine Linux          | `apk add hcloud`                                  |
-| Fedora {35,36,37}     | `dnf install hcloud`                              |
 
 ### Build manually
 
