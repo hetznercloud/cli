@@ -25,6 +25,7 @@ type Client interface {
 	ISO() ISOClient
 	PlacementGroup() PlacementGroupClient
 	RDNS() RDNSClient
+	PrimaryIP() PrimaryIPClient
 }
 
 type client struct {
@@ -45,6 +46,7 @@ type client struct {
 	volumeClient           VolumeClient
 	placementGroupClient   PlacementGroupClient
 	rdnsClient             RDNSClient
+	primaryIPClient        PrimaryIPClient
 
 	mu sync.Mutex
 }
@@ -89,6 +91,15 @@ func (c *client) FloatingIP() FloatingIPClient {
 	}
 	defer c.mu.Unlock()
 	return c.floatingIPClient
+}
+
+func (c *client) PrimaryIP() PrimaryIPClient {
+	c.mu.Lock()
+	if c.primaryIPClient == nil {
+		c.primaryIPClient = NewPrimaryIPClient(&c.client.PrimaryIP)
+	}
+	defer c.mu.Unlock()
+	return c.primaryIPClient
 }
 
 func (c *client) Image() ImageClient {
@@ -201,6 +212,7 @@ type MockClient struct {
 	DatacenterClient       *MockDatacenterClient
 	FirewallClient         *MockFirewallClient
 	FloatingIPClient       *MockFloatingIPClient
+	PrimaryIPClient        *MockPrimaryIPClient
 	ImageClient            *MockImageClient
 	LocationClient         *MockLocationClient
 	LoadBalancerClient     *MockLoadBalancerClient
@@ -221,6 +233,7 @@ func NewMockClient(ctrl *gomock.Controller) *MockClient {
 		DatacenterClient:       NewMockDatacenterClient(ctrl),
 		FirewallClient:         NewMockFirewallClient(ctrl),
 		FloatingIPClient:       NewMockFloatingIPClient(ctrl),
+		PrimaryIPClient:        NewMockPrimaryIPClient(ctrl),
 		ImageClient:            NewMockImageClient(ctrl),
 		LocationClient:         NewMockLocationClient(ctrl),
 		LoadBalancerClient:     NewMockLoadBalancerClient(ctrl),
@@ -248,6 +261,10 @@ func (c *MockClient) Firewall() FirewallClient {
 
 func (c *MockClient) FloatingIP() FloatingIPClient {
 	return c.FloatingIPClient
+}
+
+func (c *MockClient) PrimaryIP() PrimaryIPClient {
+	return c.PrimaryIPClient
 }
 
 func (c *MockClient) Image() ImageClient {

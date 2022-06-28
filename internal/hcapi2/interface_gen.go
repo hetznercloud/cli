@@ -16,3 +16,4 @@ package hcapi2
 //go:generate interfacer -for github.com/hetznercloud/hcloud-go/hcloud.VolumeClient -as hcapi2.VolumeClientBase -o zz_volume_client_base.go
 //go:generate interfacer -for github.com/hetznercloud/hcloud-go/hcloud.PlacementGroupClient -as hcapi2.PlacementGroupClientBase -o zz_placement_group_client_base.go
 //go:generate interfacer -for github.com/hetznercloud/hcloud-go/hcloud.RDNSClient -as hcapi2.RDNSClientBase -o zz_rdns_client_base.go
+//go:generate interfacer -for github.com/hetznercloud/hcloud-go/hcloud.PrimaryIPClient -as hcapi2.PrimaryIPClientBase -o zz_primary_ip_client_base.go

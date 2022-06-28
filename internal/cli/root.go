@@ -16,6 +16,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/location"
 	"github.com/hetznercloud/cli/internal/cmd/network"
 	"github.com/hetznercloud/cli/internal/cmd/placementgroup"
+	"github.com/hetznercloud/cli/internal/cmd/primaryip"
 	"github.com/hetznercloud/cli/internal/cmd/server"
 	"github.com/hetznercloud/cli/internal/cmd/servertype"
 	"github.com/hetznercloud/cli/internal/cmd/sshkey"
@@ -55,6 +56,7 @@ func NewRootCommand(state *state.State, client hcapi2.Client) *cobra.Command {
 		certificate.NewCommand(state, client),
 		firewall.NewCommand(state, client),
 		placementgroup.NewCommand(state, client),
+		primaryip.NewCommand(state, client),
 	)
 	cmd.PersistentFlags().Duration("poll-interval", 500*time.Millisecond, "Interval at which to poll information, for example action progress")
 	return cmd

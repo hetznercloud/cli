@@ -34,8 +34,14 @@ func runIP(cli *state.State, cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("server not found: %s", idOrName)
 	}
 	if ipv6 {
+		if server.PublicNet.IPv6.IsUnspecified() {
+			return fmt.Errorf("server %s has not primary IPv6", idOrName)
+		}
 		fmt.Println(server.PublicNet.IPv6.IP.String() + "1")
 	} else {
+		if server.PublicNet.IPv4.IsUnspecified() {
+			return fmt.Errorf("server %s has not primary IPv4", idOrName)
+		}
 		fmt.Println(server.PublicNet.IPv4.IP.String())
 	}
 	return nil

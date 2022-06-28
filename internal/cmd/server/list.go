@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -19,7 +20,7 @@ import (
 var ListCmd = base.ListCmd{
 	ResourceNamePlural: "servers",
 
-	DefaultColumns: []string{"id", "name", "status", "ipv4", "ipv6", "datacenter"},
+	DefaultColumns: []string{"id", "name", "status", "ipv4", "ipv6", "private_net", "datacenter"},
 
 	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
 		opts := hcloud.ServerListOpts{ListOpts: listOpts}
@@ -40,10 +41,16 @@ var ListCmd = base.ListCmd{
 			AddAllowedFields(hcloud.Server{}).
 			AddFieldFn("ipv4", output.FieldFn(func(obj interface{}) string {
 				server := obj.(*hcloud.Server)
+				if server.PublicNet.IPv4.IsUnspecified() {
+					return "-"
+				}
 				return server.PublicNet.IPv4.IP.String()
 			})).
 			AddFieldFn("ipv6", output.FieldFn(func(obj interface{}) string {
 				server := obj.(*hcloud.Server)
+				if server.PublicNet.IPv6.IsUnspecified() {
+					return "-"
+				}
 				return server.PublicNet.IPv6.Network.String()
 			})).
 			AddFieldFn("included_traffic", output.FieldFn(func(obj interface{}) string {
@@ -87,7 +94,7 @@ var ListCmd = base.ListCmd{
 				server := obj.(*hcloud.Server)
 				var networks []string
 				for _, network := range server.PrivateNet {
-					networks = append(networks, client.Network().Name(network.Network.ID))
+					networks = append(networks, fmt.Sprintf("%s (%s)", network.IP.String(), client.Network().Name(network.Network.ID)))
 				}
 				return util.NA(strings.Join(networks, ", "))
 			})).
