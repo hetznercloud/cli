@@ -46,9 +46,16 @@ func runSSH(cli *state.State, cmd *cobra.Command, args []string) error {
 
 	ipAddress := server.PublicNet.IPv4.IP
 	if useIPv6 {
+		if server.PublicNet.IPv6.IsUnspecified() {
+			return fmt.Errorf("server %s does not have a assigned primary ipv6", idOrName)
+		}
 		ipAddress = server.PublicNet.IPv6.Network.IP
 		// increment last byte to get the ::1 IP, which is routed
 		ipAddress[15]++
+	} else {
+		if server.PublicNet.IPv4.IsUnspecified() {
+			return fmt.Errorf("server %s does not have a assigned primary ipv4", idOrName)
+		}
 	}
 
 	sshArgs := []string{"-l", user, "-p", strconv.Itoa(port), ipAddress.String()}
