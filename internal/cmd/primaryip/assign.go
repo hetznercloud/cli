@@ -3,6 +3,7 @@ package primaryip
 import (
 	"context"
 	"fmt"
+
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/cli/internal/hcapi2"

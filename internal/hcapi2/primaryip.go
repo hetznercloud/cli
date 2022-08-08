@@ -2,8 +2,9 @@ package hcapi2
 
 import (
 	"context"
-	"github.com/hetznercloud/hcloud-go/hcloud"
 	"strconv"
+
+	"github.com/hetznercloud/hcloud-go/hcloud"
 )
 
 // PrimaryIPClient embeds the hcloud PrimaryIPClient (via an interface) and provides
