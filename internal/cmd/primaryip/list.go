@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/hetznercloud/hcloud-go/hcloud/schema"
+
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
@@ -78,5 +80,37 @@ var listCmd = base.ListCmd{
 				primaryIP := obj.(*hcloud.PrimaryIP)
 				return util.Datetime(primaryIP.Created)
 			}))
+	},
+
+	JSONSchema: func(resources []interface{}) interface{} {
+		var primaryIPsSchema []schema.PrimaryIP
+		for _, resource := range resources {
+			primaryIP := resource.(*hcloud.PrimaryIP)
+			var dnsPtrs []hcloud.PrimaryIPDNSPTR
+			for i, d := range primaryIP.DNSPtr {
+				dnsPtrs = append(dnsPtrs, hcloud.PrimaryIPDNSPTR{
+					DNSPtr: d,
+					IP:     i,
+				})
+			}
+			var primaryIPSchema = schema.PrimaryIP{
+				ID:           primaryIP.ID,
+				Name:         primaryIP.Name,
+				IP:           primaryIP.IP.String(),
+				Type:         string(primaryIP.Type),
+				AssigneeID:   primaryIP.AssigneeID,
+				AssigneeType: primaryIP.AssigneeType,
+				AutoDelete:   primaryIP.AutoDelete,
+				Created:      primaryIP.Created,
+				Datacenter:   util.DatacenterToSchema(*primaryIP.Datacenter),
+
+				Protection: schema.PrimaryIPProtection{
+					Delete: primaryIP.Protection.Delete,
+				},
+				Labels: primaryIP.Labels,
+			}
+			primaryIPsSchema = append(primaryIPsSchema, primaryIPSchema)
+		}
+		return primaryIPsSchema
 	},
 }
