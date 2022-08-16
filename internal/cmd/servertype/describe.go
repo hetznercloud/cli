@@ -16,7 +16,7 @@ var describeCmd = base.DescribeCmd{
 	ShortDescription:     "Describe a server type",
 	JSONKeyGetByID:       "server_type",
 	JSONKeyGetByName:     "server_types",
-	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Image().Names },
+	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.ServerType().Names },
 	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
 		return client.ServerType().Get(ctx, idOrName)
 	},
