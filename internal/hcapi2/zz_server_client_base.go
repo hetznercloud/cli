@@ -21,6 +21,7 @@ type ServerClientBase interface {
 	Create(context.Context, hcloud.ServerCreateOpts) (hcloud.ServerCreateResult, *hcloud.Response, error)
 	CreateImage(context.Context, *hcloud.Server, *hcloud.ServerCreateImageOpts) (hcloud.ServerCreateImageResult, *hcloud.Response, error)
 	Delete(context.Context, *hcloud.Server) (*hcloud.Response, error)
+	DeleteWithResult(context.Context, *hcloud.Server) (*hcloud.ServerDeleteResult, *hcloud.Response, error)
 	DetachFromNetwork(context.Context, *hcloud.Server, hcloud.ServerDetachFromNetworkOpts) (*hcloud.Action, *hcloud.Response, error)
 	DetachISO(context.Context, *hcloud.Server) (*hcloud.Action, *hcloud.Response, error)
 	DisableBackup(context.Context, *hcloud.Server) (*hcloud.Action, *hcloud.Response, error)

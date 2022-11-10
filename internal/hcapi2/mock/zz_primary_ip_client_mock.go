@@ -50,6 +50,21 @@ func (mr *MockPrimaryIPClientMockRecorder) All(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "All", reflect.TypeOf((*MockPrimaryIPClient)(nil).All), arg0)
 }
 
+// AllWithOpts mocks base method.
+func (m *MockPrimaryIPClient) AllWithOpts(arg0 context.Context, arg1 hcloud.PrimaryIPListOpts) ([]*hcloud.PrimaryIP, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AllWithOpts", arg0, arg1)
+	ret0, _ := ret[0].([]*hcloud.PrimaryIP)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AllWithOpts indicates an expected call of AllWithOpts.
+func (mr *MockPrimaryIPClientMockRecorder) AllWithOpts(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AllWithOpts", reflect.TypeOf((*MockPrimaryIPClient)(nil).AllWithOpts), arg0, arg1)
+}
+
 // Assign mocks base method.
 func (m *MockPrimaryIPClient) Assign(arg0 context.Context, arg1 hcloud.PrimaryIPAssignOpts) (*hcloud.Action, *hcloud.Response, error) {
 	m.ctrl.T.Helper()
