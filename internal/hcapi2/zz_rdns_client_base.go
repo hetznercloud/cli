@@ -4,9 +4,8 @@ package hcapi2
 
 import (
 	"context"
-	"net"
-
 	"github.com/hetznercloud/hcloud-go/hcloud"
+	"net"
 )
 
 // RDNSClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/hcloud.RDNSClient".

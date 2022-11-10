@@ -3,7 +3,6 @@ package hcapi2
 import (
 	"sync"
 
-	"github.com/golang/mock/gomock"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 )
 
@@ -205,111 +204,4 @@ func (c *client) PlacementGroup() PlacementGroupClient {
 	}
 	defer c.mu.Unlock()
 	return c.placementGroupClient
-}
-
-type MockClient struct {
-	CertificateClient      *MockCertificateClient
-	DatacenterClient       *MockDatacenterClient
-	FirewallClient         *MockFirewallClient
-	FloatingIPClient       *MockFloatingIPClient
-	PrimaryIPClient        *MockPrimaryIPClient
-	ImageClient            *MockImageClient
-	LocationClient         *MockLocationClient
-	LoadBalancerClient     *MockLoadBalancerClient
-	LoadBalancerTypeClient *MockLoadBalancerTypeClient
-	NetworkClient          *MockNetworkClient
-	ServerClient           *MockServerClient
-	ServerTypeClient       *MockServerTypeClient
-	SSHKeyClient           *MockSSHKeyClient
-	VolumeClient           *MockVolumeClient
-	ISOClient              *MockISOClient
-	PlacementGroupClient   *MockPlacementGroupClient
-	RDNSClient             *MockRDNSClient
-}
-
-func NewMockClient(ctrl *gomock.Controller) *MockClient {
-	return &MockClient{
-		CertificateClient:      NewMockCertificateClient(ctrl),
-		DatacenterClient:       NewMockDatacenterClient(ctrl),
-		FirewallClient:         NewMockFirewallClient(ctrl),
-		FloatingIPClient:       NewMockFloatingIPClient(ctrl),
-		PrimaryIPClient:        NewMockPrimaryIPClient(ctrl),
-		ImageClient:            NewMockImageClient(ctrl),
-		LocationClient:         NewMockLocationClient(ctrl),
-		LoadBalancerClient:     NewMockLoadBalancerClient(ctrl),
-		LoadBalancerTypeClient: NewMockLoadBalancerTypeClient(ctrl),
-		NetworkClient:          NewMockNetworkClient(ctrl),
-		ServerClient:           NewMockServerClient(ctrl),
-		ServerTypeClient:       NewMockServerTypeClient(ctrl),
-		SSHKeyClient:           NewMockSSHKeyClient(ctrl),
-		VolumeClient:           NewMockVolumeClient(ctrl),
-		ISOClient:              NewMockISOClient(ctrl),
-		PlacementGroupClient:   NewMockPlacementGroupClient(ctrl),
-		RDNSClient:             NewMockRDNSClient(ctrl),
-	}
-}
-func (c *MockClient) Certificate() CertificateClient {
-	return c.CertificateClient
-}
-func (c *MockClient) Datacenter() DatacenterClient {
-	return c.DatacenterClient
-}
-
-func (c *MockClient) Firewall() FirewallClient {
-	return c.FirewallClient
-}
-
-func (c *MockClient) FloatingIP() FloatingIPClient {
-	return c.FloatingIPClient
-}
-
-func (c *MockClient) PrimaryIP() PrimaryIPClient {
-	return c.PrimaryIPClient
-}
-
-func (c *MockClient) Image() ImageClient {
-	return c.ImageClient
-}
-
-func (c *MockClient) ISO() ISOClient {
-	return c.ISOClient
-}
-
-func (c *MockClient) Location() LocationClient {
-	return c.LocationClient
-}
-
-func (c *MockClient) LoadBalancer() LoadBalancerClient {
-	return c.LoadBalancerClient
-}
-
-func (c *MockClient) LoadBalancerType() LoadBalancerTypeClient {
-	return c.LoadBalancerTypeClient
-}
-
-func (c *MockClient) Network() NetworkClient {
-	return c.NetworkClient
-}
-
-func (c *MockClient) Server() ServerClient {
-	return c.ServerClient
-}
-
-func (c *MockClient) ServerType() ServerTypeClient {
-	return c.ServerTypeClient
-}
-
-func (c *MockClient) SSHKey() SSHKeyClient {
-	return c.SSHKeyClient
-}
-
-func (c *MockClient) Volume() VolumeClient {
-	return c.VolumeClient
-}
-func (c *MockClient) RDNS() RDNSClient {
-	return c.RDNSClient
-}
-
-func (c *MockClient) PlacementGroup() PlacementGroupClient {
-	return c.PlacementGroupClient
 }
