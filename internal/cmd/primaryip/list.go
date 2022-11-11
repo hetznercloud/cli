@@ -24,7 +24,7 @@ var listCmd = base.ListCmd{
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		primaryips, _, err := client.PrimaryIP().List(ctx, opts)
+		primaryips, err := client.PrimaryIP().AllWithOpts(ctx, opts)
 
 		var resources []interface{}
 		for _, n := range primaryips {
