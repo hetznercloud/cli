@@ -224,6 +224,22 @@ func (mr *MockServerClientMockRecorder) Delete(arg0, arg1 interface{}) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockServerClient)(nil).Delete), arg0, arg1)
 }
 
+// DeleteWithResult mocks base method.
+func (m *MockServerClient) DeleteWithResult(arg0 context.Context, arg1 *hcloud.Server) (*hcloud.ServerDeleteResult, *hcloud.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteWithResult", arg0, arg1)
+	ret0, _ := ret[0].(*hcloud.ServerDeleteResult)
+	ret1, _ := ret[1].(*hcloud.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// DeleteWithResult indicates an expected call of DeleteWithResult.
+func (mr *MockServerClientMockRecorder) DeleteWithResult(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteWithResult", reflect.TypeOf((*MockServerClient)(nil).DeleteWithResult), arg0, arg1)
+}
+
 // DetachFromNetwork mocks base method.
 func (m *MockServerClient) DetachFromNetwork(arg0 context.Context, arg1 *hcloud.Server, arg2 hcloud.ServerDetachFromNetworkOpts) (*hcloud.Action, *hcloud.Response, error) {
 	m.ctrl.T.Helper()

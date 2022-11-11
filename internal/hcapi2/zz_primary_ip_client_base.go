@@ -10,6 +10,7 @@ import (
 // PrimaryIPClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/hcloud.PrimaryIPClient".
 type PrimaryIPClientBase interface {
 	All(context.Context) ([]*hcloud.PrimaryIP, error)
+	AllWithOpts(context.Context, hcloud.PrimaryIPListOpts) ([]*hcloud.PrimaryIP, error)
 	Assign(context.Context, hcloud.PrimaryIPAssignOpts) (*hcloud.Action, *hcloud.Response, error)
 	ChangeDNSPtr(context.Context, hcloud.PrimaryIPChangeDNSPtrOpts) (*hcloud.Action, *hcloud.Response, error)
 	ChangeProtection(context.Context, hcloud.PrimaryIPChangeProtectionOpts) (*hcloud.Action, *hcloud.Response, error)
