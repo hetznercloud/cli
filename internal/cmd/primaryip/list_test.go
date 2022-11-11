@@ -19,7 +19,7 @@ func TestList(t *testing.T) {
 
 	fx.ExpectEnsureToken()
 	fx.Client.PrimaryIPClient.EXPECT().
-		List(
+		AllWithOpts(
 			gomock.Any(),
 			hcloud.PrimaryIPListOpts{
 				ListOpts: hcloud.ListOpts{
@@ -38,7 +38,6 @@ func TestList(t *testing.T) {
 				IP:         net.ParseIP("127.0.0.1"),
 			},
 		},
-			&hcloud.Response{},
 			nil)
 
 	out, err := fx.Run(cmd, []string{"--selector", "foo=bar"})
