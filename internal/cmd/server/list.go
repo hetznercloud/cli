@@ -157,6 +157,10 @@ var ListCmd = base.ListCmd{
 				Labels:          server.Labels,
 				PrimaryDiskSize: server.PrimaryDiskSize,
 			}
+			if server.PlacementGroup != nil {
+				serverPlacementGroup := util.PlacementGroupToSchema(*server.PlacementGroup)
+				serverSchema.PlacementGroup = &serverPlacementGroup
+			}
 			if server.Image != nil {
 				serverImage := util.ImageToSchema(*server.Image)
 				serverSchema.Image = &serverImage

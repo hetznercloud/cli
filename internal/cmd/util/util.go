@@ -249,6 +249,17 @@ func LoadBalancerTypeToSchema(loadBalancerType hcloud.LoadBalancerType) schema.L
 	return loadBalancerTypeSchema
 }
 
+func PlacementGroupToSchema(placementGroup hcloud.PlacementGroup) schema.PlacementGroup {
+	return schema.PlacementGroup{
+		ID:      placementGroup.ID,
+		Name:    placementGroup.Name,
+		Labels:  placementGroup.Labels,
+		Created: placementGroup.Created,
+		Type:    string(placementGroup.Type),
+		Servers: placementGroup.Servers,
+	}
+}
+
 // ValidateRequiredFlags ensures that flags has values for all flags with
 // the passed names.
 //
