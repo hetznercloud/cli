@@ -6,6 +6,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/output"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/hetznercloud/hcloud-go/hcloud/schema"
@@ -14,7 +15,7 @@ import (
 
 var ListCmd = base.ListCmd{
 	ResourceNamePlural: "placement groups",
-	DefaultColumns:     []string{"id", "name", "servers", "type"},
+	DefaultColumns:     []string{"id", "name", "servers", "type", "age"},
 
 	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
 		opts := hcloud.PlacementGroupListOpts{ListOpts: listOpts}
@@ -40,6 +41,14 @@ var ListCmd = base.ListCmd{
 					return fmt.Sprintf("%d server", count)
 				}
 				return fmt.Sprintf("%d servers", count)
+			})).
+			AddFieldFn("created", output.FieldFn(func(obj interface{}) string {
+				placementGroup := obj.(*hcloud.PlacementGroup)
+				return util.Datetime(placementGroup.Created)
+			})).
+			AddFieldFn("age", output.FieldFn(func(obj interface{}) string {
+				placementGroup := obj.(*hcloud.PlacementGroup)
+				return util.Age(placementGroup.Created)
 			}))
 	},
 

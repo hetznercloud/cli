@@ -102,6 +102,10 @@ var listCmd = base.ListCmd{
 				image := obj.(*hcloud.Image)
 				return util.Datetime(image.Created)
 			})).
+			AddFieldFn("age", output.FieldFn(func(obj interface{}) string {
+				image := obj.(*hcloud.Image)
+				return util.Age(image.Created)
+			})).
 			AddFieldFn("deprecated", output.FieldFn(func(obj interface{}) string {
 				image := obj.(*hcloud.Image)
 				if image.Deprecated.IsZero() {

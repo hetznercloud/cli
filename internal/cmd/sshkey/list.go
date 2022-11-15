@@ -14,7 +14,7 @@ import (
 
 var listCmd = base.ListCmd{
 	ResourceNamePlural: "ssh keys",
-	DefaultColumns:     []string{"id", "name", "fingerprint"},
+	DefaultColumns:     []string{"id", "name", "fingerprint", "age"},
 
 	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
 		opts := hcloud.SSHKeyListOpts{ListOpts: listOpts}
@@ -40,6 +40,10 @@ var listCmd = base.ListCmd{
 			AddFieldFn("created", output.FieldFn(func(obj interface{}) string {
 				sshKey := obj.(*hcloud.SSHKey)
 				return util.Datetime(sshKey.Created)
+			})).
+			AddFieldFn("age", output.FieldFn(func(obj interface{}) string {
+				sshKey := obj.(*hcloud.SSHKey)
+				return util.Age(sshKey.Created)
 			}))
 	},
 

@@ -19,7 +19,7 @@ import (
 
 var listCmd = base.ListCmd{
 	ResourceNamePlural: "Floating IPs",
-	DefaultColumns:     []string{"id", "type", "name", "description", "ip", "home", "server", "dns"},
+	DefaultColumns:     []string{"id", "type", "name", "description", "ip", "home", "server", "dns", "age"},
 
 	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
 		opts := hcloud.FloatingIPListOpts{ListOpts: listOpts}
@@ -85,6 +85,10 @@ var listCmd = base.ListCmd{
 			AddFieldFn("created", output.FieldFn(func(obj interface{}) string {
 				floatingIP := obj.(*hcloud.FloatingIP)
 				return util.Datetime(floatingIP.Created)
+			})).
+			AddFieldFn("age", output.FieldFn(func(obj interface{}) string {
+				floatingIP := obj.(*hcloud.FloatingIP)
+				return util.Age(floatingIP.Created)
 			}))
 	},
 

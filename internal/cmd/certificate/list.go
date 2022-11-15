@@ -16,7 +16,7 @@ import (
 
 var listCmd = base.ListCmd{
 	ResourceNamePlural: "certificates",
-	DefaultColumns:     []string{"id", "name", "type", "domain_names", "not_valid_after"},
+	DefaultColumns:     []string{"id", "name", "type", "domain_names", "not_valid_after", "age"},
 
 	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
 		opts := hcloud.CertificateListOpts{ListOpts: listOpts}
@@ -70,6 +70,10 @@ var listCmd = base.ListCmd{
 			AddFieldFn("created", output.FieldFn(func(obj interface{}) string {
 				cert := obj.(*hcloud.Certificate)
 				return util.Datetime(cert.Created)
+			})).
+			AddFieldFn("age", output.FieldFn(func(obj interface{}) string {
+				cert := obj.(*hcloud.Certificate)
+				return util.Age(cert.Created)
 			}))
 	},
 

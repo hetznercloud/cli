@@ -34,6 +34,30 @@ func Datetime(t time.Time) string {
 	return t.Local().Format(time.UnixDate)
 }
 
+func Age(t time.Time) string {
+	currentTime := time.Now()
+	diff := currentTime.Sub(t)
+
+	if diff.Hours() >= 24 {
+		days := int(diff.Hours()) / 24
+		return fmt.Sprintf("%dd", days)
+	}
+
+	if diff.Hours() > 0 {
+		return fmt.Sprintf("%dh", int(diff.Hours()))
+	}
+
+	if diff.Minutes() > 0 {
+		return fmt.Sprintf("%dm", int(diff.Minutes()))
+	}
+
+	if diff.Seconds() > 0 {
+		return fmt.Sprintf("%ds", int(diff.Seconds()))
+	}
+
+	return "just now"
+}
+
 func ChainRunE(fns ...func(cmd *cobra.Command, args []string) error) func(cmd *cobra.Command, args []string) error {
 	return func(cmd *cobra.Command, args []string) error {
 		for _, fn := range fns {

@@ -16,7 +16,7 @@ import (
 
 var ListCmd = base.ListCmd{
 	ResourceNamePlural: "networks",
-	DefaultColumns:     []string{"id", "name", "ip_range", "servers"},
+	DefaultColumns:     []string{"id", "name", "ip_range", "servers", "age"},
 
 	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
 		opts := hcloud.NetworkListOpts{ListOpts: listOpts}
@@ -62,6 +62,10 @@ var ListCmd = base.ListCmd{
 			AddFieldFn("created", output.FieldFn(func(obj interface{}) string {
 				network := obj.(*hcloud.Network)
 				return util.Datetime(network.Created)
+			})).
+			AddFieldFn("age", output.FieldFn(func(obj interface{}) string {
+				network := obj.(*hcloud.Network)
+				return util.Age(network.Created)
 			}))
 	},
 
