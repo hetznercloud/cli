@@ -5,6 +5,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/certificate"
 	"github.com/hetznercloud/cli/internal/cmd/completion"
+	"github.com/hetznercloud/cli/internal/cmd/config"
 	"github.com/hetznercloud/cli/internal/cmd/context"
 	"github.com/hetznercloud/cli/internal/cmd/datacenter"
 	"github.com/hetznercloud/cli/internal/cmd/firewall"
@@ -45,6 +46,7 @@ func NewRootCommand(state *state.State, client hcapi2.Client) *cobra.Command {
 		version.NewCommand(state),
 		completion.NewCommand(state),
 		servertype.NewCommand(state, client),
+		config.NewCommand(state),
 		context.NewCommand(state),
 		datacenter.NewCommand(state, client),
 		location.NewCommand(state, client),

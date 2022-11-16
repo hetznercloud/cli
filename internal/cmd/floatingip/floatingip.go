@@ -16,7 +16,7 @@ func NewCommand(cli *state.State, client hcapi2.Client) *cobra.Command {
 	}
 	cmd.AddCommand(
 		updateCmd.CobraCommand(cli.Context, client, cli),
-		listCmd.CobraCommand(cli.Context, client, cli),
+		listCmd.CobraCommand(cli.Context, client, cli, cli.Config.SubcommandDefaults[cmd.Use]),
 		newCreateCommand(cli),
 		describeCmd.CobraCommand(cli.Context, client, cli),
 		newAssignCommand(cli),

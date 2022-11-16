@@ -9,14 +9,20 @@ import (
 var DefaultConfigPath string
 
 type Config struct {
-	Endpoint      string
-	ActiveContext *ConfigContext
-	Contexts      []*ConfigContext
+	Endpoint           string
+	ActiveContext      *ConfigContext
+	Contexts           []*ConfigContext
+	SubcommandDefaults map[string]*SubcommandDefaults
 }
 
 type ConfigContext struct {
 	Name  string
 	Token string
+}
+
+type SubcommandDefaults struct {
+	Sorting        []string
+	DefaultColumns []string
 }
 
 func (config *Config) ContextNames() []string {
@@ -49,13 +55,18 @@ func (config *Config) RemoveContext(context *ConfigContext) {
 }
 
 type RawConfig struct {
-	ActiveContext string             `toml:"active_context,omitempty"`
-	Contexts      []RawConfigContext `toml:"contexts"`
+	ActiveContext      string                            `toml:"active_context,omitempty"`
+	Contexts           []RawConfigContext                `toml:"contexts"`
+	SubcommandDefaults map[string]*RAWSubcommandDefaults `toml:"defaults,omitempty"`
 }
 
 type RawConfigContext struct {
 	Name  string `toml:"name"`
 	Token string `toml:"token"`
+}
+
+type RAWSubcommandDefaults struct {
+	Sorting []string `toml:"sort,omitempty"`
 }
 
 func MarshalConfig(c *Config) ([]byte, error) {
@@ -72,6 +83,15 @@ func MarshalConfig(c *Config) ([]byte, error) {
 			Name:  context.Name,
 			Token: context.Token,
 		})
+	}
+	if len(c.SubcommandDefaults) != 0 {
+		raw.SubcommandDefaults = make(map[string]*RAWSubcommandDefaults)
+
+		for command, defaults := range c.SubcommandDefaults {
+			raw.SubcommandDefaults[command] = &RAWSubcommandDefaults{
+				Sorting: defaults.Sorting,
+			}
+		}
 	}
 	return toml.Marshal(raw)
 }
@@ -98,5 +118,14 @@ func UnmarshalConfig(config *Config, data []byte) error {
 			return fmt.Errorf("active context %s not found", raw.ActiveContext)
 		}
 	}
+	if len(raw.SubcommandDefaults) > 0 {
+		config.SubcommandDefaults = make(map[string]*SubcommandDefaults)
+		for command, defaults := range raw.SubcommandDefaults {
+			config.SubcommandDefaults[command] = &SubcommandDefaults{
+				Sorting: defaults.Sorting,
+			}
+		}
+	}
+
 	return nil
 }

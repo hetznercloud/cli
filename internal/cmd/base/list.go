@@ -24,7 +24,7 @@ type ListCmd struct {
 
 // CobraCommand creates a command that can be registered with cobra.
 func (lc *ListCmd) CobraCommand(
-	ctx context.Context, client hcapi2.Client, tokenEnsurer state.TokenEnsurer,
+	ctx context.Context, client hcapi2.Client, tokenEnsurer state.TokenEnsurer, defaults *state.SubcommandDefaults,
 ) *cobra.Command {
 	outputColumns := lc.OutputTable(client).Columns()
 
@@ -47,7 +47,14 @@ func (lc *ListCmd) CobraCommand(
 	if lc.AdditionalFlags != nil {
 		lc.AdditionalFlags(cmd)
 	}
-	cmd.Flags().StringSliceP("sort", "s", []string{"id:asc"}, "Determine the sorting of the result")
+
+	sortingDefault := []string{"id:asc"}
+	if defaults != nil && len(defaults.Sorting) > 0 {
+		sortingDefault = defaults.Sorting
+	}
+
+	cmd.Flags().StringSliceP("sort", "s", sortingDefault, "Determine the sorting of the result")
+
 	return cmd
 }
 
