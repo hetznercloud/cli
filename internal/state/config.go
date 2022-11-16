@@ -67,6 +67,7 @@ type RawConfigContext struct {
 
 type RAWSubcommandDefaults struct {
 	Sorting []string `toml:"sort,omitempty"`
+	Columns []string `toml:"columns,omitempty"`
 }
 
 func MarshalConfig(c *Config) ([]byte, error) {
@@ -90,6 +91,7 @@ func MarshalConfig(c *Config) ([]byte, error) {
 		for command, defaults := range c.SubcommandDefaults {
 			raw.SubcommandDefaults[command] = &RAWSubcommandDefaults{
 				Sorting: defaults.Sorting,
+				Columns: defaults.DefaultColumns,
 			}
 		}
 	}
@@ -122,7 +124,8 @@ func UnmarshalConfig(config *Config, data []byte) error {
 		config.SubcommandDefaults = make(map[string]*SubcommandDefaults)
 		for command, defaults := range raw.SubcommandDefaults {
 			config.SubcommandDefaults[command] = &SubcommandDefaults{
-				Sorting: defaults.Sorting,
+				Sorting:        defaults.Sorting,
+				DefaultColumns: defaults.Columns,
 			}
 		}
 	}

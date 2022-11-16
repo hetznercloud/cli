@@ -55,6 +55,10 @@ func (lc *ListCmd) CobraCommand(
 
 	cmd.Flags().StringSliceP("sort", "s", sortingDefault, "Determine the sorting of the result")
 
+	if defaults != nil && len(defaults.DefaultColumns) > 0 {
+		lc.DefaultColumns = defaults.DefaultColumns
+	}
+
 	return cmd
 }
 
