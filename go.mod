@@ -8,11 +8,11 @@ require (
 	github.com/golang/mock v1.6.0
 	github.com/guptarohit/asciigraph v0.5.5
 	github.com/hetznercloud/hcloud-go v1.37.0
-	github.com/pelletier/go-toml v1.9.5
-	github.com/rjeczalik/interfaces v0.1.1
+	github.com/pelletier/go-toml/v2 v2.0.6
+	github.com/rjeczalik/interfaces v0.3.0
 	github.com/spf13/cobra v1.5.0
 	github.com/spf13/pflag v1.0.5
-	github.com/stretchr/testify v1.8.0
+	github.com/stretchr/testify v1.8.1
 	golang.org/x/crypto v0.0.0-20220722155217-630584e8d5aa
 )
 
@@ -35,13 +35,13 @@ require (
 	github.com/prometheus/common v0.26.0 // indirect
 	github.com/prometheus/procfs v0.6.0 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
-	golang.org/x/mod v0.4.2 // indirect
-	golang.org/x/net v0.0.0-20211112202133-69e39bad7dc2 // indirect
-	golang.org/x/sys v0.0.0-20220503163025-988cb79eb6c6 // indirect
-	golang.org/x/term v0.0.0-20201126162022-7de9c90e9dd1 // indirect
-	golang.org/x/text v0.3.6 // indirect
-	golang.org/x/tools v0.1.1 // indirect
-	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
+	golang.org/x/mod v0.7.0 // indirect
+	golang.org/x/net v0.2.0 // indirect
+	golang.org/x/sys v0.2.0 // indirect
+	golang.org/x/term v0.2.0 // indirect
+	golang.org/x/text v0.4.0 // indirect
+	golang.org/x/tools v0.3.0 // indirect
+	golang.org/x/xerrors v0.0.0-20220907171357-04be3eba64a2 // indirect
 	google.golang.org/protobuf v1.26.0-rc.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

@@ -3,7 +3,7 @@ package state
 import (
 	"fmt"
 
-	toml "github.com/pelletier/go-toml"
+	toml "github.com/pelletier/go-toml/v2"
 )
 
 var DefaultConfigPath string
