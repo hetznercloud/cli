@@ -4,6 +4,7 @@ import (
 	"context"
 	"net"
 	"testing"
+	"time"
 
 	"github.com/golang/mock/gomock"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -36,14 +37,15 @@ func TestList(t *testing.T) {
 				AutoDelete: true,
 				Type:       hcloud.PrimaryIPTypeIPv4,
 				IP:         net.ParseIP("127.0.0.1"),
+				Created:    time.Now().Add(-10 * time.Second),
 			},
 		},
 			nil)
 
 	out, err := fx.Run(cmd, []string{"--selector", "foo=bar"})
 
-	expOut := `ID    TYPE   NAME       IP          ASSIGNEE   DNS   AUTO DELETE
-123   ipv4   test-net   127.0.0.1   -          -     yes
+	expOut := `ID    TYPE   NAME       IP          ASSIGNEE   DNS   AUTO DELETE   AGE
+123   ipv4   test-net   127.0.0.1   -          -     yes           10s
 `
 
 	assert.NoError(t, err)

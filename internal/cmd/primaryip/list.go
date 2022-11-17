@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/hetznercloud/hcloud-go/hcloud/schema"
 
@@ -17,7 +18,7 @@ import (
 
 var listCmd = base.ListCmd{
 	ResourceNamePlural: "Primary IPs",
-	DefaultColumns:     []string{"id", "type", "name", "ip", "assignee", "dns", "auto_delete"},
+	DefaultColumns:     []string{"id", "type", "name", "ip", "assignee", "dns", "auto_delete", "age"},
 
 	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
 		opts := hcloud.PrimaryIPListOpts{ListOpts: listOpts}
@@ -79,6 +80,10 @@ var listCmd = base.ListCmd{
 			AddFieldFn("created", output.FieldFn(func(obj interface{}) string {
 				primaryIP := obj.(*hcloud.PrimaryIP)
 				return util.Datetime(primaryIP.Created)
+			})).
+			AddFieldFn("age", output.FieldFn(func(obj interface{}) string {
+				primaryIP := obj.(*hcloud.PrimaryIP)
+				return util.Age(primaryIP.Created, time.Now())
 			}))
 	},
 

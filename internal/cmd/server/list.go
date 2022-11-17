@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 
 	humanize "github.com/dustin/go-humanize"
 	"github.com/hetznercloud/cli/internal/cmd/base"
@@ -20,7 +21,7 @@ import (
 var ListCmd = base.ListCmd{
 	ResourceNamePlural: "servers",
 
-	DefaultColumns: []string{"id", "name", "status", "ipv4", "ipv6", "private_net", "datacenter"},
+	DefaultColumns: []string{"id", "name", "status", "ipv4", "ipv6", "private_net", "datacenter", "age"},
 
 	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
 		opts := hcloud.ServerListOpts{ListOpts: listOpts}
@@ -112,6 +113,10 @@ var ListCmd = base.ListCmd{
 			AddFieldFn("created", output.FieldFn(func(obj interface{}) string {
 				server := obj.(*hcloud.Server)
 				return util.Datetime(server.Created)
+			})).
+			AddFieldFn("age", output.FieldFn(func(obj interface{}) string {
+				server := obj.(*hcloud.Server)
+				return util.Age(server.Created, time.Now())
 			})).
 			AddFieldFn("placement_group", output.FieldFn(func(obj interface{}) string {
 				server := obj.(*hcloud.Server)

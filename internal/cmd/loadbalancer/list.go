@@ -3,6 +3,7 @@ package loadbalancer
 import (
 	"context"
 	"strings"
+	"time"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/output"
@@ -17,7 +18,7 @@ import (
 var ListCmd = base.ListCmd{
 	ResourceNamePlural: "Load Balancer",
 
-	DefaultColumns: []string{"id", "name", "ipv4", "ipv6", "type", "location", "network_zone"},
+	DefaultColumns: []string{"id", "name", "ipv4", "ipv6", "type", "location", "network_zone", "age"},
 	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
 		opts := hcloud.LoadBalancerListOpts{ListOpts: listOpts}
 		if len(sorts) > 0 {
@@ -70,6 +71,10 @@ var ListCmd = base.ListCmd{
 			AddFieldFn("created", output.FieldFn(func(obj interface{}) string {
 				loadBalancer := obj.(*hcloud.LoadBalancer)
 				return util.Datetime(loadBalancer.Created)
+			})).
+			AddFieldFn("age", output.FieldFn(func(obj interface{}) string {
+				loadBalancer := obj.(*hcloud.LoadBalancer)
+				return util.Age(loadBalancer.Created, time.Now())
 			}))
 	},
 

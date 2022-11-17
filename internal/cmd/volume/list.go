@@ -3,6 +3,7 @@ package volume
 import (
 	"context"
 	"strings"
+	"time"
 
 	"github.com/spf13/cobra"
 
@@ -19,7 +20,7 @@ import (
 
 var listCmd = base.ListCmd{
 	ResourceNamePlural: "volumes",
-	DefaultColumns:     []string{"id", "name", "size", "server", "location"},
+	DefaultColumns:     []string{"id", "name", "size", "server", "location", "age"},
 
 	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
 		opts := hcloud.VolumeListOpts{ListOpts: listOpts}
@@ -69,6 +70,10 @@ var listCmd = base.ListCmd{
 			AddFieldFn("created", output.FieldFn(func(obj interface{}) string {
 				volume := obj.(*hcloud.Volume)
 				return util.Datetime(volume.Created)
+			})).
+			AddFieldFn("age", output.FieldFn(func(obj interface{}) string {
+				volume := obj.(*hcloud.Volume)
+				return util.Age(volume.Created, time.Now())
 			}))
 	},
 
