@@ -19,7 +19,8 @@ func TestList(t *testing.T) {
 	cmd := placementgroup.ListCmd.CobraCommand(
 		context.Background(),
 		fx.Client,
-		fx.TokenEnsurer)
+		fx.TokenEnsurer,
+		nil)
 	fx.ExpectEnsureToken()
 
 	fx.Client.PlacementGroupClient.EXPECT().
