@@ -50,7 +50,7 @@ func TestOnlyOneSet(t *testing.T) {
 	}
 }
 
-func TestAgo(t *testing.T) {
+func TestAge(t *testing.T) {
 	tests := []struct {
 		name     string
 		t        time.Time
