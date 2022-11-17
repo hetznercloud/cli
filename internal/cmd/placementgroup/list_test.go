@@ -3,6 +3,7 @@ package placementgroup_test
 import (
 	"context"
 	"testing"
+	"time"
 
 	"github.com/golang/mock/gomock"
 	"github.com/hetznercloud/cli/internal/cmd/placementgroup"
@@ -39,13 +40,14 @@ func TestList(t *testing.T) {
 				Labels:  map[string]string{"key": "value"},
 				Servers: []int{4711, 4712},
 				Type:    hcloud.PlacementGroupTypeSpread,
+				Created: time.Now().Add(-10 * time.Second),
 			},
 		}, nil)
 
 	out, err := fx.Run(cmd, []string{"--selector", "foo=bar"})
 
 	expOut := `ID    NAME                 SERVERS     TYPE     AGE
-897   my Placement Group   2 servers   spread   106751d
+897   my Placement Group   2 servers   spread   10s
 `
 
 	assert.NoError(t, err)
