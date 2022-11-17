@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 
 	humanize "github.com/dustin/go-humanize"
 	"github.com/hetznercloud/cli/internal/cmd/base"
@@ -115,7 +116,7 @@ var ListCmd = base.ListCmd{
 			})).
 			AddFieldFn("age", output.FieldFn(func(obj interface{}) string {
 				server := obj.(*hcloud.Server)
-				return util.Age(server.Created)
+				return util.Age(server.Created, time.Now())
 			})).
 			AddFieldFn("placement_group", output.FieldFn(func(obj interface{}) string {
 				server := obj.(*hcloud.Server)

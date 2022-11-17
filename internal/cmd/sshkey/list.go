@@ -2,6 +2,7 @@ package sshkey
 
 import (
 	"context"
+	"time"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/output"
@@ -43,7 +44,7 @@ var listCmd = base.ListCmd{
 			})).
 			AddFieldFn("age", output.FieldFn(func(obj interface{}) string {
 				sshKey := obj.(*hcloud.SSHKey)
-				return util.Age(sshKey.Created)
+				return util.Age(sshKey.Created, time.Now())
 			}))
 	},
 

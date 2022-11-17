@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/hetznercloud/hcloud-go/hcloud/schema"
 
@@ -82,7 +83,7 @@ var listCmd = base.ListCmd{
 			})).
 			AddFieldFn("age", output.FieldFn(func(obj interface{}) string {
 				primaryIP := obj.(*hcloud.PrimaryIP)
-				return util.Age(primaryIP.Created)
+				return util.Age(primaryIP.Created, time.Now())
 			}))
 	},
 

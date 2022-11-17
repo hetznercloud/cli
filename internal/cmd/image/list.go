@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
@@ -104,7 +105,7 @@ var listCmd = base.ListCmd{
 			})).
 			AddFieldFn("age", output.FieldFn(func(obj interface{}) string {
 				image := obj.(*hcloud.Image)
-				return util.Age(image.Created)
+				return util.Age(image.Created, time.Now())
 			})).
 			AddFieldFn("deprecated", output.FieldFn(func(obj interface{}) string {
 				image := obj.(*hcloud.Image)

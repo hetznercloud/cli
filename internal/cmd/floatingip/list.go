@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/spf13/cobra"
 
@@ -88,7 +89,7 @@ var listCmd = base.ListCmd{
 			})).
 			AddFieldFn("age", output.FieldFn(func(obj interface{}) string {
 				floatingIP := obj.(*hcloud.FloatingIP)
-				return util.Age(floatingIP.Created)
+				return util.Age(floatingIP.Created, time.Now())
 			}))
 	},
 

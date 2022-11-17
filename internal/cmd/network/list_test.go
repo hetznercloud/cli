@@ -42,8 +42,8 @@ func TestList(t *testing.T) {
 
 	out, err := fx.Run(cmd, []string{"--selector", "foo=bar"})
 
-	expOut := `ID    NAME       IP RANGE       SERVERS
-123   test-net   192.0.2.1/24   1 server
+	expOut := `ID    NAME       IP RANGE       SERVERS    AGE
+123   test-net   192.0.2.1/24   1 server   106751d
 `
 
 	assert.NoError(t, err)

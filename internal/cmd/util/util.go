@@ -34,24 +34,23 @@ func Datetime(t time.Time) string {
 	return t.Local().Format(time.UnixDate)
 }
 
-func Age(t time.Time) string {
-	currentTime := time.Now()
+func Age(t, currentTime time.Time) string {
 	diff := currentTime.Sub(t)
 
-	if diff.Hours() >= 24 {
+	if int(diff.Hours()) >= 24 {
 		days := int(diff.Hours()) / 24
 		return fmt.Sprintf("%dd", days)
 	}
 
-	if diff.Hours() > 0 {
+	if int(diff.Hours()) > 0 {
 		return fmt.Sprintf("%dh", int(diff.Hours()))
 	}
 
-	if diff.Minutes() > 0 {
+	if int(diff.Minutes()) > 0 {
 		return fmt.Sprintf("%dm", int(diff.Minutes()))
 	}
 
-	if diff.Seconds() > 0 {
+	if int(diff.Seconds()) > 0 {
 		return fmt.Sprintf("%ds", int(diff.Seconds()))
 	}
 

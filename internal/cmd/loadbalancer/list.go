@@ -3,6 +3,7 @@ package loadbalancer
 import (
 	"context"
 	"strings"
+	"time"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/output"
@@ -73,7 +74,7 @@ var ListCmd = base.ListCmd{
 			})).
 			AddFieldFn("age", output.FieldFn(func(obj interface{}) string {
 				loadBalancer := obj.(*hcloud.LoadBalancer)
-				return util.Age(loadBalancer.Created)
+				return util.Age(loadBalancer.Created, time.Now())
 			}))
 	},
 

@@ -44,8 +44,8 @@ func TestList(t *testing.T) {
 
 	out, err := fx.Run(cmd, []string{"--selector", "foo=bar"})
 
-	expOut := `ID    NAME                 SERVERS     TYPE
-897   my Placement Group   2 servers   spread
+	expOut := `ID    NAME                 SERVERS     TYPE     AGE
+897   my Placement Group   2 servers   spread   106751d
 `
 
 	assert.NoError(t, err)

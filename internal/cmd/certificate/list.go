@@ -3,6 +3,7 @@ package certificate
 import (
 	"context"
 	"strings"
+	"time"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/hcapi2"
@@ -73,7 +74,7 @@ var listCmd = base.ListCmd{
 			})).
 			AddFieldFn("age", output.FieldFn(func(obj interface{}) string {
 				cert := obj.(*hcloud.Certificate)
-				return util.Age(cert.Created)
+				return util.Age(cert.Created, time.Now())
 			}))
 	},
 

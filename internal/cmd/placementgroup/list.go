@@ -3,6 +3,7 @@ package placementgroup
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/output"
@@ -48,7 +49,7 @@ var ListCmd = base.ListCmd{
 			})).
 			AddFieldFn("age", output.FieldFn(func(obj interface{}) string {
 				placementGroup := obj.(*hcloud.PlacementGroup)
-				return util.Age(placementGroup.Created)
+				return util.Age(placementGroup.Created, time.Now())
 			}))
 	},
 

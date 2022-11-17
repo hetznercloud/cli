@@ -3,6 +3,7 @@ package volume
 import (
 	"context"
 	"strings"
+	"time"
 
 	"github.com/spf13/cobra"
 
@@ -72,7 +73,7 @@ var listCmd = base.ListCmd{
 			})).
 			AddFieldFn("age", output.FieldFn(func(obj interface{}) string {
 				volume := obj.(*hcloud.Volume)
-				return util.Age(volume.Created)
+				return util.Age(volume.Created, time.Now())
 			}))
 	},
 

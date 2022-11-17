@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/output"
@@ -65,7 +66,7 @@ var ListCmd = base.ListCmd{
 			})).
 			AddFieldFn("age", output.FieldFn(func(obj interface{}) string {
 				network := obj.(*hcloud.Network)
-				return util.Age(network.Created)
+				return util.Age(network.Created, time.Now())
 			}))
 	},
 
