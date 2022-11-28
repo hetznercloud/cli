@@ -36,7 +36,7 @@ func newCreateCommand(cli *state.State) *cobra.Command {
 	cmd.RegisterFlagCompletionFunc("location", cmpl.SuggestCandidatesF(cli.LocationNames))
 
 	cmd.Flags().String("network-zone", "", "Network Zone")
-	cmd.RegisterFlagCompletionFunc("network-zone", cmpl.SuggestCandidates("eu-central"))
+	cmd.RegisterFlagCompletionFunc("network-zone", cmpl.SuggestCandidatesF(cli.NetworkZoneNames))
 
 	cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 
