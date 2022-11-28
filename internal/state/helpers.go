@@ -143,6 +143,14 @@ func (c *State) LocationNames() []string {
 	return c.locationClient.LocationNames()
 }
 
+func (c *State) NetworkZoneNames() []string {
+	if c.locationClient == nil {
+		client := c.Client()
+		c.locationClient = &hcapi.LocationClient{LocationClient: &client.Location}
+	}
+	return c.locationClient.NetworkZoneNames()
+}
+
 func (c *State) DataCenterNames() []string {
 	if c.dataCenterClient == nil {
 		client := c.Client()

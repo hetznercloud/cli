@@ -27,7 +27,7 @@ func newAddSubnetCommand(cli *state.State) *cobra.Command {
 	cmd.MarkFlagRequired("type")
 
 	cmd.Flags().String("network-zone", "", "Name of network zone (required)")
-	cmd.RegisterFlagCompletionFunc("network-zone", cmpl.SuggestCandidates("eu-central", "us-east"))
+	cmd.RegisterFlagCompletionFunc("network-zone", cmpl.SuggestCandidatesF(cli.NetworkZoneNames))
 	cmd.MarkFlagRequired("network-zone")
 
 	cmd.Flags().IPNet("ip-range", net.IPNet{}, "Range to allocate IPs from")
