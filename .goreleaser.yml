@@ -32,7 +32,7 @@ builds:
       - amd64
     hooks:
       post:
-        - cmd: gon -log-level DEBUG gon.hcl
+        - cmd: gon -log-level TRACE gon.hcl
           output: true
   - id: "hcloud-macos-arm-build"
     main: ./cmd/hcloud/main.go
@@ -47,7 +47,7 @@ builds:
       - arm64
     hooks:
       post:
-        - cmd: gon -log-level DEBUG gon_arm64.hcl
+        - cmd: gon -log-level TRACE gon_arm64.hcl
           output: true
 before:
   hooks:
