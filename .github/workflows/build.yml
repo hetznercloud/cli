@@ -37,7 +37,7 @@ jobs:
         run: |
           xcrun altool --help
           go version
-          goreleaser --version
+          release --version
           xcrun codesign --help
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
