@@ -31,7 +31,9 @@ builds:
     goarch:
       - amd64
     hooks:
-      post: gon -log-level DEBUG gon.hcl
+      post:
+        cmd: gon -log-level DEBUG gon.hcl
+        output: true
   - id: "hcloud-macos-arm-build"
     main: ./cmd/hcloud/main.go
     binary: hcloud
@@ -44,8 +46,9 @@ builds:
     goarch:
       - arm64
     hooks:
-      post: gon -log-level DEBUG gon_arm64.hcl
-
+      post:
+        cmd: gon -log-level DEBUG gon_arm64.hcl
+        output: true
 before:
   hooks:
     - go mod tidy
