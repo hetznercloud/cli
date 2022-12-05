@@ -30,10 +30,10 @@ builds:
       - darwin
     goarch:
       - amd64
-    hooks:
-      post:
-        - cmd: gon -log-level TRACE gon.hcl
-          output: true
+    #hooks:
+    #  post:
+    #    - cmd: gon -log-level TRACE gon.hcl
+    #      output: true
   - id: "hcloud-macos-arm-build"
     main: ./cmd/hcloud/main.go
     binary: hcloud
@@ -45,10 +45,10 @@ builds:
       - darwin
     goarch:
       - arm64
-    hooks:
-      post:
-        - cmd: gon -log-level TRACE gon_arm64.hcl
-          output: true
+    #hooks:
+    #  post:
+    #    - cmd: gon -log-level TRACE gon_arm64.hcl
+    #      output: true
 before:
   hooks:
     - go mod tidy
