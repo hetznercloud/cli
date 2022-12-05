@@ -7,7 +7,7 @@ on:
 
 jobs:
   release-cli:
-    runs-on: macos-latest
+    runs-on: macos-12
     timeout-minutes: 720
     steps:
       - name: Checkout
