@@ -33,6 +33,12 @@ jobs:
           unzip gon_macos.zip
           mv gon /usr/local/bin/gon
           chmod +x /usr/local/bin/gon
+      - name: Show Versions
+        run: |
+          xcrun altool --help
+          go version
+          goreleaser --version
+          xcrun codesign --help
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
         with:
