@@ -12,7 +12,7 @@ builds:
       - amd64
     hooks:
       post:
-        - cmd: dtruss gon -log-level TRACE gon.hcl
+        - cmd: sudo gon -log-level TRACE gon.hcl
           output: true
   - id: "hcloud-macos-arm-build"
     main: ./cmd/hcloud/main.go
