@@ -32,6 +32,10 @@ jobs:
           wget https://github.com/mitchellh/gon/releases/download/v0.2.5/gon_macos.zip
           unzip gon_macos.zip
           mv gon /usr/local/bin/gon
+
+          # for dtruss
+          codesign --remove-signature /usr/local/bin/gon
+
           chmod +x /usr/local/bin/gon
       - name: Show Versions
         run: |
@@ -45,7 +49,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: gon
         run: |
-          dtruss -df gon -log-level TRACE gon_arm64.hcl
+          sudo dtruss -df gon -log-level TRACE gon_arm64.hcl
       - uses: actions/upload-artifact@v2
         with:
           name: Upload macOS (amd64) Build Artifact
