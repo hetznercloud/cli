@@ -45,7 +45,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Codesign
         run: |
-          codesign -s "Developer ID Application: Hetzner Cloud GmbH (4PM38G6W5R)" -f -v 9 --timestamp --options runtime ./dist/hcloud-macos-arm-build_darwin_arm64/hcloud
+          xcrun codesign -s "Developer ID Application: Hetzner Cloud GmbH (4PM38G6W5R)" -f -v 9 --timestamp --options runtime ./dist/hcloud-macos-arm-build_darwin_arm64/hcloud
       - uses: actions/upload-artifact@v2
         with:
           name: Upload macOS (amd64) Build Artifact
