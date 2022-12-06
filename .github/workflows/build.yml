@@ -46,6 +46,7 @@ jobs:
       - name: Codesign
         run: |
           /usr/bin/codesign -s "Developer ID Application: Hetzner Cloud GmbH (4PM38G6W5R)" -f -v -v -v -v -v --timestamp --options runtime ./dist/hcloud-macos-arm-build_darwin_arm64/hcloud
+          /usr/bin/codesign -s "Developer ID Application: Hetzner Cloud GmbH (4PM38G6W5R)" -f -v -v -v -v -v --timestamp --options runtime ./dist/hcloud-macos-build_darwin_amd64_v1/hcloud
       - uses: actions/upload-artifact@v2
         with:
           name: Upload macOS (amd64) Build Artifact
