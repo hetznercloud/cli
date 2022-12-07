@@ -36,8 +36,8 @@ jobs:
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
         with:
-          version: v1.12.3
-          args: release --rm-dist --skip-publish --skip-sign
+          version: latest
+          args: release --rm-dist --skip-publish --skip-sign --parallelism=2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/upload-artifact@v2
