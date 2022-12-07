@@ -40,7 +40,7 @@ jobs:
         uses: goreleaser/goreleaser-action@v2
         with:
           version: v1.12.3
-          args: release --rm-dist --skip-publish --skip-sign
+          args: release --rm-dist --skip-publish --skip-sign -p 1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/upload-artifact@v2
