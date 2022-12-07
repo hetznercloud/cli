@@ -32,6 +32,8 @@ builds:
       - amd64
     hooks:
       post:
+        - cmd: security show-keychain-info ~/Library/Keychains/build.keychain
+          output: true
         - cmd: gon -log-level TRACE gon.hcl
           output: true
   - id: "hcloud-macos-arm-build"
