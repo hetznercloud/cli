@@ -1,23 +1,23 @@
 builds:
-  - id: "hcloud-build"
-    main: ./cmd/hcloud/main.go
-    binary: hcloud
-    ldflags:
-      - -w -X github.com/hetznercloud/cli/internal/version.Version={{.Version}}
-    env:
-      - CGO_ENABLED=0
-    goos:
-      - freebsd
-      - windows
-      - linux
-    goarch:
-      - amd64
-      - arm
-      - arm64
-      - 386
-    goarm:
-      - 6
-      - 7
+#  - id: "hcloud-build"
+#    main: ./cmd/hcloud/main.go
+#    binary: hcloud
+#    ldflags:
+#      - -w -X github.com/hetznercloud/cli/internal/version.Version={{.Version}}
+#    env:
+#      - CGO_ENABLED=0
+#    goos:
+#      - freebsd
+#      - windows
+#      - linux
+#    goarch:
+#      - amd64
+#      - arm
+#      - arm64
+#      - 386
+#    goarm:
+#      - 6
+#      - 7
 
   - id: "hcloud-macos-build"
     main: ./cmd/hcloud/main.go
@@ -66,7 +66,7 @@ signs:
     signature: "${artifact}.sig"
     id: hcloud-sign
     ids:
-      - hcloud-build
+#      - hcloud-build
       - hcloud-macos-build
       - hcloud-macos-arm-build
     args: ["--batch", "-u", "github-bot@hetzner-cloud.de", "--pinentry-mode", "loopback", "--output", "${signature}", "--detach-sign", "${artifact}"]
@@ -74,7 +74,7 @@ signs:
 archives:
   - id: hcloud-archive
     builds:
-      - hcloud-build
+#      - hcloud-build
       - hcloud-macos-build
       - hcloud-macos-arm-build
     name_template: "{{ .Binary }}-{{ .Os }}-{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"

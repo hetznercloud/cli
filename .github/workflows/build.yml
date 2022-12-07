@@ -33,9 +33,9 @@ jobs:
           unzip gon_macos.zip
           mv gon /usr/local/bin/gon
           chmod +x /usr/local/bin/gon
-      - name: Show Versions
+      - name: Sleep
         run: |
-          xcrun altool --help
+          sleep 600
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
         with:
