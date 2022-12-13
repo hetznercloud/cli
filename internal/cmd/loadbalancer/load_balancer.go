@@ -10,6 +10,7 @@ func NewCommand(cli *state.State, client hcapi2.Client) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "load-balancer",
 		Short:                 "Manage Load Balancers",
+		Aliases:               []string{"loadbalancer"},
 		Args:                  cobra.NoArgs,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
