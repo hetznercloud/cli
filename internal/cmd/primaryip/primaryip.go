@@ -25,6 +25,8 @@ func NewCommand(cli *state.State, client hcapi2.Client) *cobra.Command {
 		ChangeDNSCmd.CobraCommand(cli.Context, client, cli, cli),
 		EnableProtectionCmd.CobraCommand(cli.Context, client, cli, cli),
 		DisableProtectionCmd.CobraCommand(cli.Context, client, cli, cli),
+		labelCmds.AddCobraCommand(cli.Context, client, cli),
+		labelCmds.RemoveCobraCommand(cli.Context, client, cli),
 	)
 	return cmd
 }
