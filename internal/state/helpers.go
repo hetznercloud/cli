@@ -55,22 +55,6 @@ func (c *State) Client() *hcloud.Client {
 	return c.client
 }
 
-func (c *State) CertificateNames() []string {
-	if c.certificateClient == nil {
-		client := c.Client()
-		c.certificateClient = &hcapi.CertificateClient{CertificateClient: &client.Certificate}
-	}
-	return c.certificateClient.CertificateNames()
-}
-
-func (c *State) CertificateLabelKeys(idOrName string) []string {
-	if c.certificateClient == nil {
-		client := c.Client()
-		c.certificateClient = &hcapi.CertificateClient{CertificateClient: &client.Certificate}
-	}
-	return c.certificateClient.CertificateLabelKeys(idOrName)
-}
-
 func (c *State) FirewallNames() []string {
 	if c.firewallClient == nil {
 		client := c.Client()
