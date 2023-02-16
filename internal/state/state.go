@@ -28,7 +28,6 @@ type State struct {
 	dataCenterClient     *hcapi.DataCenterClient
 	sshKeyClient         *hcapi.SSHKeyClient
 	volumeClient         *hcapi.VolumeClient
-	certificateClient    *hcapi.CertificateClient
 	floatingIPClient     *hcapi.FloatingIPClient
 	networkClient        *hcapi.NetworkClient
 	loadBalancerClient   *hcapi.LoadBalancerClient
