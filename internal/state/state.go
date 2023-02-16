@@ -25,7 +25,6 @@ type State struct {
 	isoClient            *hcapi.ISOClient
 	imageClient          *hcapi.ImageClient
 	locationClient       *hcapi.LocationClient
-	dataCenterClient     *hcapi.DataCenterClient
 	sshKeyClient         *hcapi.SSHKeyClient
 	volumeClient         *hcapi.VolumeClient
 	floatingIPClient     *hcapi.FloatingIPClient
