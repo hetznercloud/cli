@@ -151,14 +151,6 @@ func (c *State) NetworkZoneNames() []string {
 	return c.locationClient.NetworkZoneNames()
 }
 
-func (c *State) DataCenterNames() []string {
-	if c.dataCenterClient == nil {
-		client := c.Client()
-		c.dataCenterClient = &hcapi.DataCenterClient{DatacenterClient: &client.Datacenter}
-	}
-	return c.dataCenterClient.DataCenterNames()
-}
-
 func (c *State) SSHKeyNames() []string {
 	if c.sshKeyClient == nil {
 		client := c.Client()
