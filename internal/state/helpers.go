@@ -87,14 +87,6 @@ func (c *State) FloatingIPLabelKeys(idOrName string) []string {
 	return c.floatingIPClient.FloatingIPLabelKeys(idOrName)
 }
 
-func (c *State) ISONames() []string {
-	if c.isoClient == nil {
-		client := c.Client()
-		c.isoClient = &hcapi.ISOClient{ISOClient: &client.ISO}
-	}
-	return c.isoClient.ISONames()
-}
-
 func (c *State) ImageNames() []string {
 	if c.imageClient == nil {
 		client := c.Client()
