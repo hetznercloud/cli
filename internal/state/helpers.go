@@ -71,14 +71,6 @@ func (c *State) FirewallLabelKeys(idOrName string) []string {
 	return c.firewallClient.FirewallLabelKeys(idOrName)
 }
 
-func (c *State) PrimaryIPNames() []string {
-	if c.primaryIPClient == nil {
-		client := c.Client()
-		c.primaryIPClient = &hcapi.PrimaryIPClient{PrimaryIPClient: &client.PrimaryIP}
-	}
-	return c.primaryIPClient.PrimaryIPNames()
-}
-
 func (c *State) FloatingIPNames() []string {
 	if c.floatingIPClient == nil {
 		client := c.Client()

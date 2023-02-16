@@ -34,7 +34,6 @@ type State struct {
 	serverClient         *hcapi.ServerClient
 	firewallClient       *hcapi.FirewallClient
 	placementGroupClient *hcapi.PlacementGroupClient
-	primaryIPClient      *hcapi.PrimaryIPClient
 }
 
 func New() *State {
