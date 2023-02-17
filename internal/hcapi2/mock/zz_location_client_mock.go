@@ -127,3 +127,17 @@ func (mr *MockLocationClientMockRecorder) Names() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockLocationClient)(nil).Names))
 }
+
+// NetworkZones mocks base method.
+func (m *MockLocationClient) NetworkZones() []string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "NetworkZones")
+	ret0, _ := ret[0].([]string)
+	return ret0
+}
+
+// NetworkZones indicates an expected call of NetworkZones.
+func (mr *MockLocationClientMockRecorder) NetworkZones() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NetworkZones", reflect.TypeOf((*MockLocationClient)(nil).NetworkZones))
+}
