@@ -10,6 +10,7 @@ import (
 type LocationClient interface {
 	LocationClientBase
 	Names() []string
+	NetworkZones() []string
 }
 
 func NewLocationClient(client LocationClientBase) LocationClient {
@@ -38,4 +39,26 @@ func (c *locationClient) Names() []string {
 		names[i] = name
 	}
 	return names
+}
+
+// NetworkZones obtains a list of available network zones. It returns nil if
+// location data could not be fetched.
+func (c *locationClient) NetworkZones() []string {
+	locs, err := c.All(context.Background())
+	if err != nil || len(locs) == 0 {
+		return nil
+	}
+
+	zones := make(map[string]bool)
+	for _, loc := range locs {
+		if loc.NetworkZone != "" {
+			zones[string(loc.NetworkZone)] = true
+		}
+	}
+
+	var zoneList []string
+	for zone := range zones {
+		zoneList = append(zoneList, zone)
+	}
+	return zoneList
 }

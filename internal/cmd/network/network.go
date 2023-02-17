@@ -23,7 +23,7 @@ func NewCommand(cli *state.State, client hcapi2.Client) *cobra.Command {
 		newChangeIPRangeCommand(cli),
 		newAddRouteCommand(cli),
 		newRemoveRouteCommand(cli),
-		newAddSubnetCommand(cli),
+		AddSubnetCommand.CobraCommand(cli.Context, client, cli, cli),
 		newRemoveSubnetCommand(cli),
 		labelCmds.AddCobraCommand(cli.Context, client, cli),
 		labelCmds.RemoveCobraCommand(cli.Context, client, cli),
