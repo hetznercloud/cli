@@ -34,6 +34,10 @@ If you have Go installed, you can build and install the latest version of
 
     go install github.com/hetznercloud/cli/cmd/hcloud@latest
 
+> Binaries built in this way do not have the correct version embedded. Use our
+prebuilt binaries or check out [`.goreleaser.yml`](.goreleaser.yml) to learn
+how to embed it yourself.
+
 ## Getting Started
 
 1.  Visit the Hetzner Cloud Console at [console.hetzner.cloud](https://console.hetzner.cloud/),
