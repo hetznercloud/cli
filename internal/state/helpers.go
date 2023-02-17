@@ -87,22 +87,6 @@ func (c *State) FloatingIPLabelKeys(idOrName string) []string {
 	return c.floatingIPClient.FloatingIPLabelKeys(idOrName)
 }
 
-func (c *State) ImageNames() []string {
-	if c.imageClient == nil {
-		client := c.Client()
-		c.imageClient = &hcapi.ImageClient{ImageClient: &client.Image}
-	}
-	return c.imageClient.ImageNames()
-}
-
-func (c *State) ImageLabelKeys(idOrName string) []string {
-	if c.imageClient == nil {
-		client := c.Client()
-		c.imageClient = &hcapi.ImageClient{ImageClient: &client.Image}
-	}
-	return c.imageClient.ImageLabelKeys(idOrName)
-}
-
 func (c *State) LocationNames() []string {
 	if c.locationClient == nil {
 		client := c.Client()

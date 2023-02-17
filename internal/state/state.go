@@ -22,7 +22,6 @@ type State struct {
 	DebugFilePath string
 
 	client               *hcloud.Client
-	imageClient          *hcapi.ImageClient
 	locationClient       *hcapi.LocationClient
 	sshKeyClient         *hcapi.SSHKeyClient
 	volumeClient         *hcapi.VolumeClient
