@@ -87,22 +87,6 @@ func (c *State) FloatingIPLabelKeys(idOrName string) []string {
 	return c.floatingIPClient.FloatingIPLabelKeys(idOrName)
 }
 
-func (c *State) SSHKeyNames() []string {
-	if c.sshKeyClient == nil {
-		client := c.Client()
-		c.sshKeyClient = &hcapi.SSHKeyClient{SSHKeyClient: &client.SSHKey}
-	}
-	return c.sshKeyClient.SSHKeyNames()
-}
-
-func (c *State) SSHKeyLabelKeys(idOrName string) []string {
-	if c.sshKeyClient == nil {
-		client := c.Client()
-		c.sshKeyClient = &hcapi.SSHKeyClient{SSHKeyClient: &client.SSHKey}
-	}
-	return c.sshKeyClient.SSHKeyLabelKeys(idOrName)
-}
-
 func (c *State) VolumeNames() []string {
 	if c.volumeClient == nil {
 		client := c.Client()
