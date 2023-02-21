@@ -87,22 +87,6 @@ func (c *State) FloatingIPLabelKeys(idOrName string) []string {
 	return c.floatingIPClient.FloatingIPLabelKeys(idOrName)
 }
 
-func (c *State) VolumeNames() []string {
-	if c.volumeClient == nil {
-		client := c.Client()
-		c.volumeClient = &hcapi.VolumeClient{VolumeClient: &client.Volume}
-	}
-	return c.volumeClient.VolumeNames()
-}
-
-func (c *State) VolumeLabelKeys(idOrName string) []string {
-	if c.volumeClient == nil {
-		client := c.Client()
-		c.volumeClient = &hcapi.VolumeClient{VolumeClient: &client.Volume}
-	}
-	return c.volumeClient.VolumeLabelKeys(idOrName)
-}
-
 // Terminal returns whether the CLI is run in a terminal.
 func (c *State) Terminal() bool {
 	return terminal.IsTerminal(int(os.Stdout.Fd()))

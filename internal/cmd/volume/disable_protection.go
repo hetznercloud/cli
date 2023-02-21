@@ -1,64 +1,65 @@
 package volume
 
 import (
+	"context"
 	"fmt"
 	"strings"
 
+	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
 
-func newDisableProtectionCommand(cli *state.State) *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "disable-protection [FLAGS] VOLUME PROTECTIONLEVEL [PROTECTIONLEVEL...]",
-		Short: "Disable resource protection for a volume",
-		Args:  cobra.MinimumNArgs(2),
-		ValidArgsFunction: cmpl.SuggestArgs(
-			cmpl.SuggestCandidatesF(cli.VolumeNames),
-			cmpl.SuggestCandidates("delete"),
-		),
-		TraverseChildren:      true,
-		DisableFlagsInUseLine: true,
-		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runDisableProtection),
-	}
-	return cmd
-}
-
-func runDisableProtection(cli *state.State, cmd *cobra.Command, args []string) error {
-	volume, _, err := cli.Client().Volume.Get(cli.Context, args[0])
-	if err != nil {
-		return err
-	}
-	if volume == nil {
-		return fmt.Errorf("volume not found: %s", args[0])
-	}
-
-	var unknown []string
-	opts := hcloud.VolumeChangeProtectionOpts{}
-	for _, arg := range args[1:] {
-		switch strings.ToLower(arg) {
-		case "delete":
-			opts.Delete = hcloud.Bool(false)
-		default:
-			unknown = append(unknown, arg)
+var DisableProtectionCommand = base.Cmd{
+	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
+		return &cobra.Command{
+			Use:   "disable-protection [FLAGS] VOLUME PROTECTIONLEVEL [PROTECTIONLEVEL...]",
+			Short: "Disable resource protection for a volume",
+			Args:  cobra.MinimumNArgs(2),
+			ValidArgsFunction: cmpl.SuggestArgs(
+				cmpl.SuggestCandidatesF(client.Volume().Names),
+				cmpl.SuggestCandidates("delete"),
+			),
+			TraverseChildren:      true,
+			DisableFlagsInUseLine: true,
 		}
-	}
-	if len(unknown) > 0 {
-		return fmt.Errorf("unknown protection level: %s", strings.Join(unknown, ", "))
-	}
+	},
+	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+		volume, _, err := client.Volume().Get(ctx, args[0])
+		if err != nil {
+			return err
+		}
+		if volume == nil {
+			return fmt.Errorf("volume not found: %s", args[0])
+		}
 
-	action, _, err := cli.Client().Volume.ChangeProtection(cli.Context, volume, opts)
-	if err != nil {
-		return err
-	}
+		var unknown []string
+		opts := hcloud.VolumeChangeProtectionOpts{}
+		for _, arg := range args[1:] {
+			switch strings.ToLower(arg) {
+			case "delete":
+				opts.Delete = hcloud.Bool(false)
+			default:
+				unknown = append(unknown, arg)
+			}
+		}
+		if len(unknown) > 0 {
+			return fmt.Errorf("unknown protection level: %s", strings.Join(unknown, ", "))
+		}
 
-	if err := cli.ActionProgress(cli.Context, action); err != nil {
-		return err
-	}
+		action, _, err := client.Volume().ChangeProtection(ctx, volume, opts)
+		if err != nil {
+			return err
+		}
 
-	fmt.Printf("Resource protection disabled for volume %d\n", volume.ID)
-	return nil
+		if err := waiter.ActionProgress(ctx, action); err != nil {
+			return err
+		}
+
+		fmt.Printf("Resource protection disabled for volume %d\n", volume.ID)
+		return nil
+	},
 }
