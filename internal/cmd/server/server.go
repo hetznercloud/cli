@@ -26,7 +26,7 @@ func NewCommand(cli *state.State, client hcapi2.Client) *cobra.Command {
 		newShutdownCommand(cli),
 		newCreateImageCommand(cli),
 		newResetPasswordCommand(cli),
-		newEnableRescueCommand(cli),
+		EnableRescueCommand.CobraCommand(cli.Context, client, cli, cli),
 		newDisableRescueCommand(cli),
 		AttachISOCommand.CobraCommand(cli.Context, client, cli, cli),
 		newDetachISOCommand(cli),
