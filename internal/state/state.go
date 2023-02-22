@@ -22,7 +22,6 @@ type State struct {
 	DebugFilePath string
 
 	client             *hcloud.Client
-	floatingIPClient   *hcapi.FloatingIPClient
 	networkClient      *hcapi.NetworkClient
 	loadBalancerClient *hcapi.LoadBalancerClient
 	serverClient       *hcapi.ServerClient

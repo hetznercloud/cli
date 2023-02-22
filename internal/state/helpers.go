@@ -71,22 +71,6 @@ func (c *State) FirewallLabelKeys(idOrName string) []string {
 	return c.firewallClient.FirewallLabelKeys(idOrName)
 }
 
-func (c *State) FloatingIPNames() []string {
-	if c.floatingIPClient == nil {
-		client := c.Client()
-		c.floatingIPClient = &hcapi.FloatingIPClient{FloatingIPClient: &client.FloatingIP}
-	}
-	return c.floatingIPClient.FloatingIPNames()
-}
-
-func (c *State) FloatingIPLabelKeys(idOrName string) []string {
-	if c.floatingIPClient == nil {
-		client := c.Client()
-		c.floatingIPClient = &hcapi.FloatingIPClient{FloatingIPClient: &client.FloatingIP}
-	}
-	return c.floatingIPClient.FloatingIPLabelKeys(idOrName)
-}
-
 // Terminal returns whether the CLI is run in a terminal.
 func (c *State) Terminal() bool {
 	return terminal.IsTerminal(int(os.Stdout.Fd()))
