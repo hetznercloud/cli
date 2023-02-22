@@ -20,15 +20,15 @@ func NewCommand(cli *state.State, client hcapi2.Client) *cobra.Command {
 		newCreateCommand(cli),
 		updateCmd.CobraCommand(cli.Context, client, cli),
 		deleteCmd.CobraCommand(cli.Context, client, cli),
-		newChangeIPRangeCommand(cli),
-		newAddRouteCommand(cli),
-		newRemoveRouteCommand(cli),
+		ChangeIPRangeCommand.CobraCommand(cli.Context, client, cli, cli),
+		AddRouteCommand.CobraCommand(cli.Context, client, cli, cli),
+		RemoveRouteCommand.CobraCommand(cli.Context, client, cli, cli),
 		AddSubnetCommand.CobraCommand(cli.Context, client, cli, cli),
-		newRemoveSubnetCommand(cli),
+		RemoveSubnetCommand.CobraCommand(cli.Context, client, cli, cli),
 		labelCmds.AddCobraCommand(cli.Context, client, cli),
 		labelCmds.RemoveCobraCommand(cli.Context, client, cli),
-		newEnableProtectionCommand(cli),
-		newDisableProtectionCommand(cli),
+		EnableProtectionCommand.CobraCommand(cli.Context, client, cli, cli),
+		DisableProtectionCommand.CobraCommand(cli.Context, client, cli, cli),
 	)
 	return cmd
 }
