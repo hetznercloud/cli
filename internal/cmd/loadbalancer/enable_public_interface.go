@@ -1,47 +1,47 @@
 package loadbalancer
 
 import (
+	"context"
 	"fmt"
 
+	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/spf13/cobra"
 )
 
-func newEnablePublicInterfaceCommand(cli *state.State) *cobra.Command {
-	cmd := &cobra.Command{
-		Use:                   "enable-public-interface [FLAGS] LOADBALANCER",
-		Short:                 "Enable the public interface of a Load Balancer",
-		Args:                  cobra.ExactArgs(1),
-		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(cli.LoadBalancerNames)),
-		TraverseChildren:      true,
-		DisableFlagsInUseLine: true,
-		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runEnablePublicInterface),
-	}
+var EnablePublicInterfaceCommand = base.Cmd{
+	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
+		return &cobra.Command{
+			Use:                   "enable-public-interface [FLAGS] LOADBALANCER",
+			Short:                 "Enable the public interface of a Load Balancer",
+			Args:                  cobra.ExactArgs(1),
+			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.LoadBalancer().Names)),
+			TraverseChildren:      true,
+			DisableFlagsInUseLine: true,
+		}
+	},
+	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+		idOrName := args[0]
+		loadBalancer, _, err := client.LoadBalancer().Get(ctx, idOrName)
+		if err != nil {
+			return err
+		}
+		if loadBalancer == nil {
+			return fmt.Errorf("Load Balancer not found: %s", idOrName)
+		}
 
-	return cmd
-}
+		action, _, err := client.LoadBalancer().EnablePublicInterface(ctx, loadBalancer)
+		if err != nil {
+			return err
+		}
 
-func runEnablePublicInterface(cli *state.State, cmd *cobra.Command, args []string) error {
-	idOrName := args[0]
-	loadBalancer, _, err := cli.Client().LoadBalancer.Get(cli.Context, idOrName)
-	if err != nil {
-		return err
-	}
-	if loadBalancer == nil {
-		return fmt.Errorf("Load Balancer not found: %s", idOrName)
-	}
+		if err := waiter.ActionProgress(ctx, action); err != nil {
+			return err
+		}
 
-	action, _, err := cli.Client().LoadBalancer.EnablePublicInterface(cli.Context, loadBalancer)
-	if err != nil {
-		return err
-	}
-
-	if err := cli.ActionProgress(cli.Context, action); err != nil {
-		return err
-	}
-
-	fmt.Printf("Public interface of Load Balancer %d was enabled\n", loadBalancer.ID)
-	return nil
+		fmt.Printf("Public interface of Load Balancer %d was enabled\n", loadBalancer.ID)
+		return nil
+	},
 }

@@ -21,9 +21,8 @@ type State struct {
 	Debug         bool
 	DebugFilePath string
 
-	client             *hcloud.Client
-	loadBalancerClient *hcapi.LoadBalancerClient
-	serverClient       *hcapi.ServerClient
+	client       *hcloud.Client
+	serverClient *hcapi.ServerClient
 }
 
 func New() *State {
