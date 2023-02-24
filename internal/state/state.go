@@ -8,7 +8,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/hetznercloud/cli/internal/hcapi"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 )
 
@@ -21,8 +20,7 @@ type State struct {
 	Debug         bool
 	DebugFilePath string
 
-	client       *hcloud.Client
-	serverClient *hcapi.ServerClient
+	client *hcloud.Client
 }
 
 func New() *State {
