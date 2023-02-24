@@ -1,63 +1,63 @@
 package loadbalancer
 
 import (
+	"context"
 	"fmt"
 
+	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
 
-func newChangeTypeCommand(cli *state.State) *cobra.Command {
-	cmd := &cobra.Command{
-		Use:   "change-type [FLAGS] LOADBALANCER LOADBALANCERTYPE",
-		Short: "Change type of a Load Balancer",
-		Args:  cobra.ExactArgs(2),
-		ValidArgsFunction: cmpl.SuggestArgs(
-			cmpl.SuggestCandidatesF(cli.LoadBalancerNames),
-			cmpl.SuggestCandidatesF(cli.LoadBalancerTypeNames),
-		),
-		TraverseChildren:      true,
-		DisableFlagsInUseLine: true,
-		PreRunE:               cli.EnsureToken,
-		RunE:                  cli.Wrap(runChangeType),
-	}
+var ChangeTypeCommand = base.Cmd{
+	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
+		return &cobra.Command{
+			Use:   "change-type [FLAGS] LOADBALANCER LOADBALANCERTYPE",
+			Short: "Change type of a Load Balancer",
+			Args:  cobra.ExactArgs(2),
+			ValidArgsFunction: cmpl.SuggestArgs(
+				cmpl.SuggestCandidatesF(client.LoadBalancer().Names),
+				cmpl.SuggestCandidatesF(client.LoadBalancerType().Names),
+			),
+			TraverseChildren:      true,
+			DisableFlagsInUseLine: true,
+		}
+	},
+	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+		idOrName := args[0]
+		loadBalancer, _, err := client.LoadBalancer().Get(ctx, idOrName)
+		if err != nil {
+			return err
+		}
+		if loadBalancer == nil {
+			return fmt.Errorf("Load Balancer not found: %s", idOrName)
+		}
 
-	return cmd
-}
+		loadBalancerTypeIDOrName := args[1]
+		loadBalancerType, _, err := client.LoadBalancerType().Get(ctx, loadBalancerTypeIDOrName)
+		if err != nil {
+			return err
+		}
+		if loadBalancerType == nil {
+			return fmt.Errorf("Load Balancer type not found: %s", loadBalancerTypeIDOrName)
+		}
 
-func runChangeType(cli *state.State, cmd *cobra.Command, args []string) error {
-	idOrName := args[0]
-	loadBalancer, _, err := cli.Client().LoadBalancer.Get(cli.Context, idOrName)
-	if err != nil {
-		return err
-	}
-	if loadBalancer == nil {
-		return fmt.Errorf("Load Balancer not found: %s", idOrName)
-	}
+		opts := hcloud.LoadBalancerChangeTypeOpts{
+			LoadBalancerType: loadBalancerType,
+		}
+		action, _, err := client.LoadBalancer().ChangeType(ctx, loadBalancer, opts)
+		if err != nil {
+			return err
+		}
 
-	loadBalancerTypeIDOrName := args[1]
-	loadBalancerType, _, err := cli.Client().LoadBalancerType.Get(cli.Context, loadBalancerTypeIDOrName)
-	if err != nil {
-		return err
-	}
-	if loadBalancerType == nil {
-		return fmt.Errorf("Load Balancer type not found: %s", loadBalancerTypeIDOrName)
-	}
+		if err := waiter.ActionProgress(ctx, action); err != nil {
+			return err
+		}
 
-	opts := hcloud.LoadBalancerChangeTypeOpts{
-		LoadBalancerType: loadBalancerType,
-	}
-	action, _, err := cli.Client().LoadBalancer.ChangeType(cli.Context, loadBalancer, opts)
-	if err != nil {
-		return err
-	}
-
-	if err := cli.ActionProgress(cli.Context, action); err != nil {
-		return err
-	}
-
-	fmt.Printf("LoadBalancer %d changed to type %s\n", loadBalancer.ID, loadBalancerType.Name)
-	return nil
+		fmt.Printf("LoadBalancer %d changed to type %s\n", loadBalancer.ID, loadBalancerType.Name)
+		return nil
+	},
 }
