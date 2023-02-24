@@ -170,28 +170,26 @@ func (c *State) ServerNames() []string {
 	return c.serverClient.ServerNames()
 }
 
-func (c *State) NetworkNames() []string {
-	if c.networkClient == nil {
+func (c *State) ServerLabelKeys(idOrName string) []string {
+	if c.serverClient == nil {
 		client := c.Client()
-		c.networkClient = &hcapi.NetworkClient{NetworkClient: &client.Network}
+		c.serverClient = &hcapi.ServerClient{
+			ServerClient: &client.Server,
+			ServerTypes:  &client.ServerType,
+		}
 	}
-	return c.networkClient.NetworkNames()
+	return c.serverClient.ServerLabelKeys(idOrName)
 }
 
-func (c *State) NetworkName(id int) string {
-	if c.networkClient == nil {
+func (c *State) ServerName(id int) string {
+	if c.serverClient == nil {
 		client := c.Client()
-		c.networkClient = &hcapi.NetworkClient{NetworkClient: &client.Network}
+		c.serverClient = &hcapi.ServerClient{
+			ServerClient: &client.Server,
+			ServerTypes:  &client.ServerType,
+		}
 	}
-	return c.networkClient.NetworkName(id)
-}
-
-func (c *State) NetworkLabelKeys(idOrName string) []string {
-	if c.networkClient == nil {
-		client := c.Client()
-		c.networkClient = &hcapi.NetworkClient{NetworkClient: &client.Network}
-	}
-	return c.networkClient.NetworkLabelKeys(idOrName)
+	return c.serverClient.ServerName(id)
 }
 
 func (c *State) LoadBalancerNames() []string {
