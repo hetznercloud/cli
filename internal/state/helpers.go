@@ -55,22 +55,6 @@ func (c *State) Client() *hcloud.Client {
 	return c.client
 }
 
-func (c *State) FirewallNames() []string {
-	if c.firewallClient == nil {
-		client := c.Client()
-		c.firewallClient = &hcapi.FirewallClient{FirewallClient: &client.Firewall}
-	}
-	return c.firewallClient.FirewallNames()
-}
-
-func (c *State) FirewallLabelKeys(idOrName string) []string {
-	if c.firewallClient == nil {
-		client := c.Client()
-		c.firewallClient = &hcapi.FirewallClient{FirewallClient: &client.Firewall}
-	}
-	return c.firewallClient.FirewallLabelKeys(idOrName)
-}
-
 // Terminal returns whether the CLI is run in a terminal.
 func (c *State) Terminal() bool {
 	return terminal.IsTerminal(int(os.Stdout.Fd()))
@@ -184,28 +168,6 @@ func (c *State) ServerNames() []string {
 		}
 	}
 	return c.serverClient.ServerNames()
-}
-
-func (c *State) ServerLabelKeys(idOrName string) []string {
-	if c.serverClient == nil {
-		client := c.Client()
-		c.serverClient = &hcapi.ServerClient{
-			ServerClient: &client.Server,
-			ServerTypes:  &client.ServerType,
-		}
-	}
-	return c.serverClient.ServerLabelKeys(idOrName)
-}
-
-func (c *State) ServerName(id int) string {
-	if c.serverClient == nil {
-		client := c.Client()
-		c.serverClient = &hcapi.ServerClient{
-			ServerClient: &client.Server,
-			ServerTypes:  &client.ServerType,
-		}
-	}
-	return c.serverClient.ServerName(id)
 }
 
 func (c *State) NetworkNames() []string {

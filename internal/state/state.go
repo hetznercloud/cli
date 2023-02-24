@@ -25,7 +25,6 @@ type State struct {
 	networkClient      *hcapi.NetworkClient
 	loadBalancerClient *hcapi.LoadBalancerClient
 	serverClient       *hcapi.ServerClient
-	firewallClient     *hcapi.FirewallClient
 }
 
 func New() *State {
