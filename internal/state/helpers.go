@@ -12,7 +12,6 @@ import (
 	"github.com/spf13/cobra"
 	"golang.org/x/crypto/ssh/terminal"
 
-	"github.com/hetznercloud/cli/internal/hcapi"
 	"github.com/hetznercloud/cli/internal/version"
 )
 
@@ -146,48 +145,4 @@ func (c *State) WaitForActions(ctx context.Context, actions []*hcloud.Action) er
 	}
 
 	return nil
-}
-
-func (c *State) ServerTypeNames() []string {
-	if c.serverClient == nil {
-		client := c.Client()
-		c.serverClient = &hcapi.ServerClient{
-			ServerClient: &client.Server,
-			ServerTypes:  &client.ServerType,
-		}
-	}
-	return c.serverClient.ServerTypeNames()
-}
-
-func (c *State) ServerNames() []string {
-	if c.serverClient == nil {
-		client := c.Client()
-		c.serverClient = &hcapi.ServerClient{
-			ServerClient: &client.Server,
-			ServerTypes:  &client.ServerType,
-		}
-	}
-	return c.serverClient.ServerNames()
-}
-
-func (c *State) ServerLabelKeys(idOrName string) []string {
-	if c.serverClient == nil {
-		client := c.Client()
-		c.serverClient = &hcapi.ServerClient{
-			ServerClient: &client.Server,
-			ServerTypes:  &client.ServerType,
-		}
-	}
-	return c.serverClient.ServerLabelKeys(idOrName)
-}
-
-func (c *State) ServerName(id int) string {
-	if c.serverClient == nil {
-		client := c.Client()
-		c.serverClient = &hcapi.ServerClient{
-			ServerClient: &client.Server,
-			ServerTypes:  &client.ServerType,
-		}
-	}
-	return c.serverClient.ServerName(id)
 }
