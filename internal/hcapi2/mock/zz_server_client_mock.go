@@ -508,6 +508,22 @@ func (mr *MockServerClientMockRecorder) Rebuild(arg0, arg1, arg2 interface{}) *g
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Rebuild", reflect.TypeOf((*MockServerClient)(nil).Rebuild), arg0, arg1, arg2)
 }
 
+// RebuildWithResult mocks base method.
+func (m *MockServerClient) RebuildWithResult(arg0 context.Context, arg1 *hcloud.Server, arg2 hcloud.ServerRebuildOpts) (hcloud.ServerRebuildResult, *hcloud.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RebuildWithResult", arg0, arg1, arg2)
+	ret0, _ := ret[0].(hcloud.ServerRebuildResult)
+	ret1, _ := ret[1].(*hcloud.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// RebuildWithResult indicates an expected call of RebuildWithResult.
+func (mr *MockServerClientMockRecorder) RebuildWithResult(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RebuildWithResult", reflect.TypeOf((*MockServerClient)(nil).RebuildWithResult), arg0, arg1, arg2)
+}
+
 // RemoveFromPlacementGroup mocks base method.
 func (m *MockServerClient) RemoveFromPlacementGroup(arg0 context.Context, arg1 *hcloud.Server) (*hcloud.Action, *hcloud.Response, error) {
 	m.ctrl.T.Helper()
