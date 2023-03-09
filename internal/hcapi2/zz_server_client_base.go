@@ -37,6 +37,7 @@ type ServerClientBase interface {
 	Poweron(context.Context, *hcloud.Server) (*hcloud.Action, *hcloud.Response, error)
 	Reboot(context.Context, *hcloud.Server) (*hcloud.Action, *hcloud.Response, error)
 	Rebuild(context.Context, *hcloud.Server, hcloud.ServerRebuildOpts) (*hcloud.Action, *hcloud.Response, error)
+	RebuildWithResult(context.Context, *hcloud.Server, hcloud.ServerRebuildOpts) (hcloud.ServerRebuildResult, *hcloud.Response, error)
 	RemoveFromPlacementGroup(context.Context, *hcloud.Server) (*hcloud.Action, *hcloud.Response, error)
 	RequestConsole(context.Context, *hcloud.Server) (hcloud.ServerRequestConsoleResult, *hcloud.Response, error)
 	Reset(context.Context, *hcloud.Server) (*hcloud.Action, *hcloud.Response, error)
