@@ -51,16 +51,23 @@ var RebuildCommand = base.Cmd{
 		opts := hcloud.ServerRebuildOpts{
 			Image: image,
 		}
-		action, _, err := client.Server().Rebuild(ctx, server, opts)
+		result, _, err := client.Server().RebuildWithResult(ctx, server, opts)
 		if err != nil {
 			return err
 		}
 
-		if err := waiter.ActionProgress(ctx, action); err != nil {
+		if err := waiter.ActionProgress(ctx, result.Action); err != nil {
 			return err
 		}
 
 		fmt.Printf("Server %d rebuilt with image %s\n", server.ID, image.Name)
+
+		// Only print the root password if it's not empty,
+		// which is only the case if it wasn't created with an SSH key.
+		if result.RootPassword != "" {
+			fmt.Printf("Root password: %s\n", result.RootPassword)
+		}
+
 		return nil
 	},
 }
