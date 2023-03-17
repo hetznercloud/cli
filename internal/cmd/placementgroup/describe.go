@@ -15,8 +15,8 @@ import (
 var DescribeCmd = base.DescribeCmd{
 	ResourceNameSingular: "placement group",
 	ShortDescription:     "Describe a placement group",
-	JSONKeyGetByID:       "placement group",
-	JSONKeyGetByName:     "placement groups",
+	JSONKeyGetByID:       "placement_group",
+	JSONKeyGetByName:     "placement_groups",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.PlacementGroup().Names },
 	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
 		return client.PlacementGroup().Get(ctx, idOrName)
