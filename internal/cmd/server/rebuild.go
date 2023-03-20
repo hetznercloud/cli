@@ -26,6 +26,7 @@ var RebuildCommand = base.Cmd{
 		cmd.Flags().String("image", "", "ID or name of image to rebuild from (required)")
 		cmd.RegisterFlagCompletionFunc("image", cmpl.SuggestCandidatesF(client.Image().Names))
 		cmd.MarkFlagRequired("image")
+		cmd.Flags().Bool("allow-deprecated-image", false, "Enable the use of deprecated images (default: false)")
 
 		return cmd
 	},
@@ -40,12 +41,23 @@ var RebuildCommand = base.Cmd{
 		}
 
 		imageIDOrName, _ := cmd.Flags().GetString("image")
-		image, _, err := client.Image().Get(ctx, imageIDOrName)
+		// Select correct image based on server type architecture
+		image, _, err := client.Image().GetForArchitecture(ctx, imageIDOrName, server.ServerType.Architecture)
 		if err != nil {
 			return err
 		}
+
 		if image == nil {
-			return fmt.Errorf("image not found: %s", imageIDOrName)
+			return fmt.Errorf("image %s for architecture %s not found", imageIDOrName, server.ServerType.Architecture)
+		}
+
+		allowDeprecatedImage, _ := cmd.Flags().GetBool("allow-deprecated-image")
+		if !image.Deprecated.IsZero() {
+			if allowDeprecatedImage {
+				fmt.Printf("Attention: image %s is deprecated. It will continue to be available until %s.\n", image.Name, image.Deprecated.AddDate(0, 3, 0).Format("2006-01-02"))
+			} else {
+				return fmt.Errorf("image %s is deprecated, please use --allow-deprecated-image to create a server with this image. It will continue to be available until %s", image.Name, image.Deprecated.AddDate(0, 3, 0).Format("2006-01-02"))
+			}
 		}
 
 		opts := hcloud.ServerRebuildOpts{

@@ -25,8 +25,11 @@ func TestCreate(t *testing.T) {
 
 	fx.ExpectEnsureToken()
 
+	fx.Client.ServerTypeClient.EXPECT().
+		Get(gomock.Any(), "cx11").
+		Return(&hcloud.ServerType{Architecture: hcloud.ArchitectureX86}, nil, nil)
 	fx.Client.ImageClient.EXPECT().
-		Get(gomock.Any(), "ubuntu-20.04").
+		GetForArchitecture(gomock.Any(), "ubuntu-20.04", hcloud.ArchitectureX86).
 		Return(&hcloud.Image{}, nil, nil)
 	fx.Client.ServerClient.EXPECT().
 		Create(gomock.Any(), gomock.Any()).
