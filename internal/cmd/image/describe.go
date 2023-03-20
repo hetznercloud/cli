@@ -41,6 +41,7 @@ var describeCmd = base.DescribeCmd{
 		fmt.Printf("Disk size:\t%.0f GB\n", image.DiskSize)
 		fmt.Printf("OS flavor:\t%s\n", image.OSFlavor)
 		fmt.Printf("OS version:\t%s\n", util.NA(image.OSVersion))
+		fmt.Printf("Architecture:\t%s\n", image.Architecture)
 		fmt.Printf("Rapid deploy:\t%s\n", util.YesNo(image.RapidDeploy))
 		fmt.Printf("Protection:\n")
 		fmt.Printf("  Delete:\t%s\n", util.YesNo(image.Protection.Delete))
