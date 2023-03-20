@@ -16,6 +16,8 @@ type ImageClientBase interface {
 	Get(context.Context, string) (*hcloud.Image, *hcloud.Response, error)
 	GetByID(context.Context, int) (*hcloud.Image, *hcloud.Response, error)
 	GetByName(context.Context, string) (*hcloud.Image, *hcloud.Response, error)
+	GetByNameAndArchitecture(context.Context, string, hcloud.Architecture) (*hcloud.Image, *hcloud.Response, error)
+	GetForArchitecture(context.Context, string, hcloud.Architecture) (*hcloud.Image, *hcloud.Response, error)
 	List(context.Context, hcloud.ImageListOpts) ([]*hcloud.Image, *hcloud.Response, error)
 	Update(context.Context, *hcloud.Image, hcloud.ImageUpdateOpts) (*hcloud.Image, *hcloud.Response, error)
 }

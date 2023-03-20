@@ -144,6 +144,38 @@ func (mr *MockImageClientMockRecorder) GetByName(arg0, arg1 interface{}) *gomock
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByName", reflect.TypeOf((*MockImageClient)(nil).GetByName), arg0, arg1)
 }
 
+// GetByNameAndArchitecture mocks base method.
+func (m *MockImageClient) GetByNameAndArchitecture(arg0 context.Context, arg1 string, arg2 hcloud.Architecture) (*hcloud.Image, *hcloud.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetByNameAndArchitecture", arg0, arg1, arg2)
+	ret0, _ := ret[0].(*hcloud.Image)
+	ret1, _ := ret[1].(*hcloud.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// GetByNameAndArchitecture indicates an expected call of GetByNameAndArchitecture.
+func (mr *MockImageClientMockRecorder) GetByNameAndArchitecture(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByNameAndArchitecture", reflect.TypeOf((*MockImageClient)(nil).GetByNameAndArchitecture), arg0, arg1, arg2)
+}
+
+// GetForArchitecture mocks base method.
+func (m *MockImageClient) GetForArchitecture(arg0 context.Context, arg1 string, arg2 hcloud.Architecture) (*hcloud.Image, *hcloud.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetForArchitecture", arg0, arg1, arg2)
+	ret0, _ := ret[0].(*hcloud.Image)
+	ret1, _ := ret[1].(*hcloud.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// GetForArchitecture indicates an expected call of GetForArchitecture.
+func (mr *MockImageClientMockRecorder) GetForArchitecture(arg0, arg1, arg2 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetForArchitecture", reflect.TypeOf((*MockImageClient)(nil).GetForArchitecture), arg0, arg1, arg2)
+}
+
 // LabelKeys mocks base method.
 func (m *MockImageClient) LabelKeys(arg0 string) []string {
 	m.ctrl.T.Helper()
