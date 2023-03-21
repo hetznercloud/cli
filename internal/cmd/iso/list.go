@@ -14,7 +14,7 @@ import (
 
 var listCmd = base.ListCmd{
 	ResourceNamePlural: "isos",
-	DefaultColumns:     []string{"id", "name", "description", "type"},
+	DefaultColumns:     []string{"id", "name", "description", "type", "architecture"},
 
 	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
 		opts := hcloud.ISOListOpts{ListOpts: listOpts}
@@ -32,7 +32,15 @@ var listCmd = base.ListCmd{
 
 	OutputTable: func(_ hcapi2.Client) *output.Table {
 		return output.NewTable().
-			AddAllowedFields(hcloud.Location{})
+			AddAllowedFields(hcloud.ISO{}).
+			AddFieldFn("architecture", func(obj interface{}) string {
+				iso := obj.(*hcloud.ISO)
+				if iso.Architecture == nil {
+					return "-"
+				} else {
+					return string(*iso.Architecture)
+				}
+			})
 	},
 
 	JSONSchema: func(resources []interface{}) interface{} {
