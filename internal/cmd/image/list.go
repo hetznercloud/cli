@@ -25,16 +25,29 @@ var listCmd = base.ListCmd{
 	AdditionalFlags: func(cmd *cobra.Command) {
 		cmd.Flags().StringP("type", "t", "", "Only show images of given type")
 		cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("backup", "snapshot", "system", "app"))
+
+		cmd.Flags().StringSliceP("architecture", "a", []string{}, "Only show images of given architecture: x86|arm")
+		cmd.RegisterFlagCompletionFunc("architecture", cmpl.SuggestCandidates(string(hcloud.ArchitectureX86), string(hcloud.ArchitectureARM)))
 	},
 	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
 		opts := hcloud.ImageListOpts{ListOpts: listOpts, IncludeDeprecated: true}
+
 		imageType, _ := cmd.Flags().GetString("type")
 		if len(imageType) > 0 {
 			opts.Type = []hcloud.ImageType{hcloud.ImageType(imageType)}
 		}
+
+		architecture, _ := cmd.Flags().GetStringSlice("architecture")
+		if len(architecture) > 0 {
+			for _, arch := range architecture {
+				opts.Architecture = append(opts.Architecture, hcloud.Architecture(arch))
+			}
+		}
+
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
+
 		images, err := client.Image().AllWithOpts(ctx, opts)
 
 		var resources []interface{}
