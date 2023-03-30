@@ -1,12 +1,43 @@
-include:
-  - project: "cloud/backend/deploy-tools"
-    file: "ci/test/golang.yml"
-
 variables:
-  GIT_SUBMODULE_STRATEGY: normal
-  GOPROXY: goproxy.prodext.hcinfra.de
-  GONOSUMDB: hetzner.cloud
   COVERAGE_FILE: .testCoverage.txt
+
+workflow:
+  rules:
+    - # Do not execute on main branch
+      if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
+      when: never
+    - # Do not execute on tag
+      if: $CI_COMMIT_TAG != null
+      when: never
+    - # Avoid duplicate pipelines in MRs
+      if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+      when: never
+    - when: always
+
+test:golangci-lint:
+  stage: test
+  image: golangci/golangci-lint:v1.52.2
+  script:
+    - golangci-lint run -v
+
+test:go-mod-tidy:
+  stage: test
+  image: golang:1.18
+  script:
+    - go mod tidy -v
+    - git diff --exit-code
+
+test:go-generate:
+  stage: test
+  image: golang:1.18
+  variables:
+    GOBIN: "$CI_PROJECT_DIR/bin"
+  before_script:
+    - script/install_tools.sh
+  script:
+    - export PATH="$GOBIN:$PATH"
+    - go generate ./...
+    - git diff --exit-code
 
 test:tests:
   stage: test
@@ -19,12 +50,8 @@ test:tests:
               ./...
     - go tool cover -func=$COVERAGE_FILE | tail -n1
     - GOBIN="$CI_PROJECT_DIR/bin" script/install_tools.sh
-    - '"$CI_PROJECT_DIR/bin/gocover-cobertura" < $COVERAGE_FILE > coverage.xml'
-  except:
-    - tags
-    - master
-  tags:
-    - hc-bladerunner
+    - $CI_PROJECT_DIR/bin/gocover-cobertura < $COVERAGE_FILE > coverage.xml
+
   artifacts:
     reports:
       coverage_report:
