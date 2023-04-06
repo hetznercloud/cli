@@ -37,7 +37,7 @@ func (c *State) Client() *hcloud.Client {
 		}
 		if c.Debug {
 			if c.DebugFilePath == "" {
-				opts = append(opts, hcloud.WithDebugWriter(os.Stdout))
+				opts = append(opts, hcloud.WithDebugWriter(os.Stderr))
 			} else {
 				writer, _ := os.Create(c.DebugFilePath)
 				opts = append(opts, hcloud.WithDebugWriter(writer))
