@@ -17,7 +17,7 @@ import (
 var ListCmd = base.ListCmd{
 	ResourceNamePlural: "Server Types",
 
-	DefaultColumns: []string{"id", "name", "cores", "cpu_type", "memory", "disk", "storage_type"},
+	DefaultColumns: []string{"id", "name", "cores", "cpu_type", "architecture", "memory", "disk", "storage_type"},
 
 	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
 		opts := hcloud.ServerTypeListOpts{ListOpts: listOpts}

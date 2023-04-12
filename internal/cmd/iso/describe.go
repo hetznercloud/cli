@@ -3,7 +3,6 @@ package iso
 import (
 	"context"
 	"fmt"
-
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/spf13/cobra"
@@ -28,6 +27,13 @@ var DescribeCmd = base.DescribeCmd{
 		fmt.Printf("Name:\t\t%s\n", iso.Name)
 		fmt.Printf("Description:\t%s\n", iso.Description)
 		fmt.Printf("Type:\t\t%s\n", iso.Type)
+
+		architecture := "-"
+		if iso.Architecture != nil {
+			architecture = string(*iso.Architecture)
+		}
+		fmt.Printf("Architecture:\t%s\n", architecture)
+
 		return nil
 	},
 }

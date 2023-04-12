@@ -197,7 +197,7 @@ func createOptsFromFlags(
 	ctx context.Context, client hcapi2.Client, flags *pflag.FlagSet,
 ) (opts hcloud.ServerCreateOpts, err error) {
 	name, _ := flags.GetString("name")
-	serverType, _ := flags.GetString("type")
+	serverTypeName, _ := flags.GetString("type")
 	imageIDorName, _ := flags.GetString("image")
 	location, _ := flags.GetString("location")
 	datacenter, _ := flags.GetString("datacenter")
@@ -216,21 +216,22 @@ func createOptsFromFlags(
 	primaryIPv4IDorName, _ := flags.GetString("primary-ipv4")
 	primaryIPv6IDorName, _ := flags.GetString("primary-ipv6")
 
-	image, _, err := client.Image().Get(ctx, imageIDorName)
+	serverType, _, err := client.ServerType().Get(ctx, serverTypeName)
 	if err != nil {
 		return
 	}
-	if image == nil {
-		images, err := client.Image().AllWithOpts(ctx, hcloud.ImageListOpts{Name: imageIDorName, IncludeDeprecated: true})
-		if err != nil {
-			return opts, err
-		}
-		if len(images) == 0 {
-			err = fmt.Errorf("image not found: %s", imageIDorName)
-			return opts, err
-		}
-		image = images[0]
+
+	// Select correct image based on server type architecture
+	image, _, err := client.Image().GetForArchitecture(ctx, imageIDorName, serverType.Architecture)
+	if err != nil {
+		return
 	}
+
+	if image == nil {
+		err = fmt.Errorf("image %s for architecture %s not found", imageIDorName, serverType.Architecture)
+		return
+	}
+
 	if !image.Deprecated.IsZero() {
 		if allowDeprecatedImage {
 			fmt.Printf("Attention: image %s is deprecated. It will continue to be available until %s.\n", image.Name, image.Deprecated.AddDate(0, 3, 0).Format("2006-01-02"))
@@ -239,15 +240,14 @@ func createOptsFromFlags(
 			return
 		}
 	}
+
 	if withoutIPv4 && withoutIPv6 && len(networks) == 0 {
 		err = fmt.Errorf("a server can not be created without IPv4, IPv6 and a private network. Choose at least one of those options to create the server")
 		return
 	}
 	opts = hcloud.ServerCreateOpts{
-		Name: name,
-		ServerType: &hcloud.ServerType{
-			Name: serverType,
-		},
+		Name:             name,
+		ServerType:       serverType,
 		Image:            image,
 		Labels:           labels,
 		StartAfterCreate: &startAfterCreate,

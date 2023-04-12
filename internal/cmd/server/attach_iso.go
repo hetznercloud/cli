@@ -2,6 +2,7 @@ package server
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
@@ -42,6 +43,12 @@ var AttachISOCommand = base.Cmd{
 		}
 		if iso == nil {
 			return fmt.Errorf("ISO not found: %s", isoIDOrName)
+		}
+
+		// If ISO architecture is empty -> wildcard/unknown     --> allow
+		// If ISO architecture is set and does not match server -->  deny
+		if iso.Architecture != nil && *iso.Architecture != server.ServerType.Architecture {
+			return errors.New("failed to attach iso: iso has a different architecture than the server")
 		}
 
 		action, _, err := client.Server().AttachISO(ctx, server, iso)

@@ -181,14 +181,15 @@ func DatacenterToSchema(datacenter hcloud.Datacenter) schema.Datacenter {
 
 func ServerTypeToSchema(serverType hcloud.ServerType) schema.ServerType {
 	serverTypeSchema := schema.ServerType{
-		ID:          serverType.ID,
-		Name:        serverType.Name,
-		Description: serverType.Description,
-		Cores:       serverType.Cores,
-		Memory:      serverType.Memory,
-		Disk:        serverType.Disk,
-		StorageType: string(serverType.StorageType),
-		CPUType:     string(serverType.CPUType),
+		ID:           serverType.ID,
+		Name:         serverType.Name,
+		Description:  serverType.Description,
+		Cores:        serverType.Cores,
+		Memory:       serverType.Memory,
+		Disk:         serverType.Disk,
+		StorageType:  string(serverType.StorageType),
+		CPUType:      string(serverType.CPUType),
+		Architecture: string(serverType.Architecture),
 	}
 	for _, pricing := range serverType.Pricings {
 		serverTypeSchema.Prices = append(serverTypeSchema.Prices, schema.PricingServerTypePrice{
@@ -208,17 +209,18 @@ func ServerTypeToSchema(serverType hcloud.ServerType) schema.ServerType {
 
 func ImageToSchema(image hcloud.Image) schema.Image {
 	imageSchema := schema.Image{
-		ID:          image.ID,
-		Name:        hcloud.String(image.Name),
-		Description: image.Description,
-		Status:      string(image.Status),
-		Type:        string(image.Type),
-		ImageSize:   &image.ImageSize,
-		DiskSize:    image.DiskSize,
-		Created:     image.Created,
-		OSFlavor:    image.OSFlavor,
-		OSVersion:   hcloud.String(image.OSVersion),
-		RapidDeploy: image.RapidDeploy,
+		ID:           image.ID,
+		Name:         hcloud.String(image.Name),
+		Description:  image.Description,
+		Status:       string(image.Status),
+		Type:         string(image.Type),
+		ImageSize:    &image.ImageSize,
+		DiskSize:     image.DiskSize,
+		Created:      image.Created,
+		OSFlavor:     image.OSFlavor,
+		OSVersion:    hcloud.String(image.OSVersion),
+		Architecture: string(image.Architecture),
+		RapidDeploy:  image.RapidDeploy,
 		Protection: schema.ImageProtection{
 			Delete: image.Protection.Delete,
 		},
