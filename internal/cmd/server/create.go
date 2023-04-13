@@ -220,6 +220,10 @@ func createOptsFromFlags(
 	if err != nil {
 		return
 	}
+	if serverType == nil {
+		err = fmt.Errorf("server type not found: %s", serverTypeName)
+		return
+	}
 
 	// Select correct image based on server type architecture
 	image, _, err := client.Image().GetForArchitecture(ctx, imageIDorName, serverType.Architecture)
