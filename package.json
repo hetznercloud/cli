@@ -1,0 +1,26 @@
+{
+  "name": "hcloud-action",
+  "version": "1.0.0",
+  "description": "HCloud-Action-Enviroment",
+  "main": "github-action.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "action": "ncc build  ./github-action.js -o action"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hetznercloud/cli"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hetznercloud/cli/issues"
+  },
+  "homepage": "https://github.com/hetznercloud/cli",
+  "devDependencies": {
+    "@actions/core": "^1.10.0",
+    "tar": "^6.1.1",
+    "@vercel/ncc": "^0.33.3",
+    "uuid": "^8.3.2"
+  }
+}

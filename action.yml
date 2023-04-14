@@ -1,0 +1,28 @@
+name: 'Setup HCloud'
+description: 'Github Action provides the hcloud tool'
+inputs:
+  version:
+    description: 'the version of the hcloud tool'
+    required: false
+    default: 'v1.33.0'
+  url: 
+    description: 'base url to download'
+    required: false
+    default: 'https://github.com/hetznercloud/cli/releases/download'
+  filename:
+    description: 'filename of hcloud'
+    required: false
+    default: 'hcloud'
+  os:
+    description: 'os of hcloud'
+    required: false
+  suffix:
+    description: 'suffix of hcloud'
+    required: false
+    default: '.tar.gz'
+  cpu:
+    description: 'cpu of hcloud'
+    required: false
+runs:
+  using: 'node16'
+  main: 'action/index.js'
