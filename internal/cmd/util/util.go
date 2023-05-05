@@ -240,12 +240,19 @@ func ImageToSchema(image hcloud.Image) schema.Image {
 }
 
 func ISOToSchema(iso hcloud.ISO) schema.ISO {
-	return schema.ISO{
+	isoSchema := schema.ISO{
 		ID:          iso.ID,
 		Name:        iso.Name,
 		Description: iso.Description,
+		Type:        string(iso.Type),
 		Deprecated:  iso.Deprecated,
 	}
+
+	if iso.Architecture != nil {
+		isoSchema.Architecture = hcloud.Ptr(string(*iso.Architecture))
+	}
+
+	return isoSchema
 }
 
 func LoadBalancerTypeToSchema(loadBalancerType hcloud.LoadBalancerType) schema.LoadBalancerType {
