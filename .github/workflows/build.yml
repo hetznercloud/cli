@@ -11,52 +11,43 @@ jobs:
     runs-on: macos-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
+
       - name: Set up Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v4
         with:
           go-version: 1.18
+
       - name: Print Go Version
         run: go version
+
       - name: Import GPG key
         id: import_gpg
-        uses: crazy-max/ghaction-import-gpg@v3
+        uses: crazy-max/ghaction-import-gpg@v5
         with:
-          gpg-private-key: ${{ secrets.GPG_KEY }}
+          gpg_private_key: ${{ secrets.GPG_KEY }}
+
       - name: Decrypt Secrets
         env:
           SECRETS_PASSWORD: ${{ secrets.SECRETS_PASSWORD }}
         run: bash script/decrypt_secrets.sh
+
       - name: Install gon
         run: |
           wget https://github.com/mitchellh/gon/releases/download/v0.2.5/gon_macos.zip
           unzip gon_macos.zip
           mv gon /usr/local/bin/gon
           chmod +x /usr/local/bin/gon
+
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v2
+        uses: goreleaser/goreleaser-action@v4
         with:
           version: latest
-          args: release --rm-dist --skip-publish --skip-sign --parallelism=2
+          args: release --clean --snapshot --skip-sign --parallelism=2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/upload-artifact@v2
+
+      - uses: actions/upload-artifact@v3
         with:
-          name: Upload macOS (amd64) Build Artifact
-          path: dist/hcloud-macos-build_darwin_amd64_v1/hcloud
-      - uses: actions/upload-artifact@v2
-        with:
-          name: Upload macOS (arm64) Build Artifact
-          path: dist/hcloud-macos-arm-build_darwin_arm64/hcloud
-      - uses: actions/upload-artifact@v1
-        with:
-          name: Upload Windows AMD64 Build Artifact
-          path: dist/hcloud-build_windows_amd64_v1/hcloud.exe
-      - uses: actions/upload-artifact@v1
-        with:
-          name: Upload Linux AMD64 Build Artifact
-          path: dist/hcloud-build_linux_amd64_v1/hcloud
-      - uses: actions/upload-artifact@v1
-        with:
-          name: Upload FreeBSD AMD64 Build Artifact
-          path: dist/hcloud-build_freebsd_amd64_v1/hcloud
+          name: Preview Binaries
+          path: dist/hcloud-*/hcloud
