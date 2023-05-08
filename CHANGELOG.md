@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.33.2](https://github.com/hetznercloud/cli/compare/v1.33.1...v1.33.2) (2023-05-08)
+
+
+### Bug Fixes
+
+* **iso:** list only shows the first 50 results & missing field in json output ([#474](https://github.com/hetznercloud/cli/issues/474)) ([9d7c6a4](https://github.com/hetznercloud/cli/commit/9d7c6a416c33c98d30b6e5a0546a91ac25d5dced))
+
 ## v1.33.1
 
 ### What's Changed
