@@ -2,6 +2,7 @@ package iso
 
 import (
 	"context"
+
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
@@ -42,7 +43,7 @@ var listCmd = base.ListCmd{
 			opts.Sort = sorts
 		}
 
-		isos, _, err := client.ISO().List(ctx, opts)
+		isos, err := client.ISO().AllWithOpts(ctx, opts)
 
 		var resources []interface{}
 		for _, n := range isos {

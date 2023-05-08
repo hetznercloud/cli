@@ -50,6 +50,21 @@ func (mr *MockISOClientMockRecorder) All(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "All", reflect.TypeOf((*MockISOClient)(nil).All), arg0)
 }
 
+// AllWithOpts mocks base method.
+func (m *MockISOClient) AllWithOpts(arg0 context.Context, arg1 hcloud.ISOListOpts) ([]*hcloud.ISO, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AllWithOpts", arg0, arg1)
+	ret0, _ := ret[0].([]*hcloud.ISO)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AllWithOpts indicates an expected call of AllWithOpts.
+func (mr *MockISOClientMockRecorder) AllWithOpts(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AllWithOpts", reflect.TypeOf((*MockISOClient)(nil).AllWithOpts), arg0, arg1)
+}
+
 // Get mocks base method.
 func (m *MockISOClient) Get(arg0 context.Context, arg1 string) (*hcloud.ISO, *hcloud.Response, error) {
 	m.ctrl.T.Helper()
