@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/spf13/cobra"
 
@@ -23,15 +24,16 @@ var describeCmd = base.DescribeCmd{
 	PrintText: func(_ context.Context, _ hcapi2.Client, _ *cobra.Command, resource interface{}) error {
 		serverType := resource.(*hcloud.ServerType)
 
-		fmt.Printf("ID:\t\t%d\n", serverType.ID)
-		fmt.Printf("Name:\t\t%s\n", serverType.Name)
-		fmt.Printf("Description:\t%s\n", serverType.Description)
-		fmt.Printf("Cores:\t\t%d\n", serverType.Cores)
-		fmt.Printf("CPU Type:\t%s\n", serverType.CPUType)
-		fmt.Printf("Architecture:\t%s\n", serverType.Architecture)
-		fmt.Printf("Memory:\t\t%.1f GB\n", serverType.Memory)
-		fmt.Printf("Disk:\t\t%d GB\n", serverType.Disk)
-		fmt.Printf("Storage Type:\t%s\n", serverType.StorageType)
+		fmt.Printf("ID:\t\t\t%d\n", serverType.ID)
+		fmt.Printf("Name:\t\t\t%s\n", serverType.Name)
+		fmt.Printf("Description:\t\t%s\n", serverType.Description)
+		fmt.Printf("Cores:\t\t\t%d\n", serverType.Cores)
+		fmt.Printf("CPU Type:\t\t%s\n", serverType.CPUType)
+		fmt.Printf("Architecture:\t\t%s\n", serverType.Architecture)
+		fmt.Printf("Memory:\t\t\t%.1f GB\n", serverType.Memory)
+		fmt.Printf("Disk:\t\t\t%d GB\n", serverType.Disk)
+		fmt.Printf("Storage Type:\t\t%s\n", serverType.StorageType)
+		fmt.Printf("Included Traffic:\t%d TB\n", serverType.IncludedTraffic/util.Tebibyte)
 
 		fmt.Printf("Pricings per Location:\n")
 		for _, price := range serverType.Pricings {

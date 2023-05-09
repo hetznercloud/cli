@@ -181,15 +181,16 @@ func DatacenterToSchema(datacenter hcloud.Datacenter) schema.Datacenter {
 
 func ServerTypeToSchema(serverType hcloud.ServerType) schema.ServerType {
 	serverTypeSchema := schema.ServerType{
-		ID:           serverType.ID,
-		Name:         serverType.Name,
-		Description:  serverType.Description,
-		Cores:        serverType.Cores,
-		Memory:       serverType.Memory,
-		Disk:         serverType.Disk,
-		StorageType:  string(serverType.StorageType),
-		CPUType:      string(serverType.CPUType),
-		Architecture: string(serverType.Architecture),
+		ID:              serverType.ID,
+		Name:            serverType.Name,
+		Description:     serverType.Description,
+		Cores:           serverType.Cores,
+		Memory:          serverType.Memory,
+		Disk:            serverType.Disk,
+		StorageType:     string(serverType.StorageType),
+		CPUType:         string(serverType.CPUType),
+		Architecture:    string(serverType.Architecture),
+		IncludedTraffic: serverType.IncludedTraffic,
 	}
 	for _, pricing := range serverType.Pricings {
 		serverTypeSchema.Prices = append(serverTypeSchema.Prices, schema.PricingServerTypePrice{

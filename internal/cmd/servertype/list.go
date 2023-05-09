@@ -17,7 +17,7 @@ import (
 var ListCmd = base.ListCmd{
 	ResourceNamePlural: "Server Types",
 
-	DefaultColumns: []string{"id", "name", "cores", "cpu_type", "architecture", "memory", "disk", "storage_type"},
+	DefaultColumns: []string{"id", "name", "cores", "cpu_type", "architecture", "memory", "disk", "storage_type", "traffic"},
 
 	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
 		opts := hcloud.ServerTypeListOpts{ListOpts: listOpts}
@@ -44,7 +44,11 @@ var ListCmd = base.ListCmd{
 			AddFieldFn("disk", output.FieldFn(func(obj interface{}) string {
 				serverType := obj.(*hcloud.ServerType)
 				return fmt.Sprintf("%d GB", serverType.Disk)
-			}))
+			})).
+			AddFieldFn("traffic", func(obj interface{}) string {
+				serverType := obj.(*hcloud.ServerType)
+				return fmt.Sprintf("%d TB", serverType.IncludedTraffic/util.Tebibyte)
+			})
 	},
 
 	JSONSchema: func(resources []interface{}) interface{} {
