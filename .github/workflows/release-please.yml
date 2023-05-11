@@ -6,9 +6,13 @@ name: release-please
 
 jobs:
   release-please:
+    # The secret HCLOUD_BOT_TOKEN is only available on the main repo, not in forks.
+    if: github.repository == 'hetznercloud/cli'
+
     runs-on: ubuntu-latest
     steps:
       - uses: google-github-actions/release-please-action@v3
         with:
+          token: ${{ secrets.HCLOUD_BOT_TOKEN }}
           release-type: go
           package-name: hcloud-cli
