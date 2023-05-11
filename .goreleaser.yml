@@ -1,3 +1,7 @@
+before:
+  hooks:
+    - go mod tidy
+
 builds:
   - id: "hcloud-build"
     main: ./cmd/hcloud/main.go
@@ -49,17 +53,10 @@ builds:
       post:
         - cmd: gon -log-level DEBUG gon_arm64.hcl
           output: true
-before:
-  hooks:
-    - go mod tidy
 
 checksum:
   name_template: "checksums.txt"
   algorithm: sha256
-
-release:
-  draft: true
-  name_template: "hcloud v{{.Version}}"
 
 signs:
   - artifacts: all
@@ -86,3 +83,6 @@ archives:
     files:
       - LICENSE
       - README.md
+
+release:
+  draft: false
