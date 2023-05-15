@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.34.0](https://github.com/hetznercloud/cli/compare/v1.33.2...v1.34.0) (2023-05-15)
+
+
+### Features
+
+* **servertype:** show included traffic ([#480](https://github.com/hetznercloud/cli/issues/480)) ([17c5f4f](https://github.com/hetznercloud/cli/commit/17c5f4f02f4753f6ce2b8e843725db9da1f78737))
+
 ## [1.33.2](https://github.com/hetznercloud/cli/compare/v1.33.1...v1.33.2) (2023-05-08)
 
 
