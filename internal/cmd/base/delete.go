@@ -21,12 +21,12 @@ type DeleteCmd struct {
 	NameSuggestions      func(client hcapi2.Client) func() []string
 	AdditionalFlags      func(*cobra.Command)
 	Fetch                func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error)
-	Delete               func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}) error
+	Delete               func(ctx context.Context, client hcapi2.Client, actionWaiter state.ActionWaiter, cmd *cobra.Command, resource interface{}) error
 }
 
 // CobraCommand creates a command that can be registered with cobra.
 func (dc *DeleteCmd) CobraCommand(
-	ctx context.Context, client hcapi2.Client, tokenEnsurer state.TokenEnsurer,
+	ctx context.Context, client hcapi2.Client, tokenEnsurer state.TokenEnsurer, actionWaiter state.ActionWaiter,
 ) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   fmt.Sprintf("delete [FLAGS] %s", strings.ToUpper(dc.ResourceNameSingular)),
@@ -37,7 +37,7 @@ func (dc *DeleteCmd) CobraCommand(
 		DisableFlagsInUseLine: true,
 		PreRunE:               util.ChainRunE(tokenEnsurer.EnsureToken),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return dc.Run(ctx, client, cmd, args)
+			return dc.Run(ctx, client, actionWaiter, cmd, args)
 		},
 	}
 	if dc.AdditionalFlags != nil {
@@ -47,7 +47,7 @@ func (dc *DeleteCmd) CobraCommand(
 }
 
 // Run executes a describe command.
-func (dc *DeleteCmd) Run(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, args []string) error {
+func (dc *DeleteCmd) Run(ctx context.Context, client hcapi2.Client, actionWaiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
 
 	idOrName := args[0]
 	resource, _, err := dc.Fetch(ctx, client, cmd, idOrName)
@@ -61,7 +61,7 @@ func (dc *DeleteCmd) Run(ctx context.Context, client hcapi2.Client, cmd *cobra.C
 		return fmt.Errorf("%s not found: %s", dc.ResourceNameSingular, idOrName)
 	}
 
-	if err := dc.Delete(ctx, client, cmd, resource); err != nil {
+	if err := dc.Delete(ctx, client, actionWaiter, cmd, resource); err != nil {
 		return fmt.Errorf("deleting %s %s failed: %s", dc.ResourceNameSingular, idOrName, err)
 	}
 	fmt.Printf("%s %v deleted\n", dc.ResourceNameSingular, idOrName)
