@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.34.1](https://github.com/hetznercloud/cli/compare/v1.34.0...v1.34.1) (2023-06-01)
+
+
+### Bug Fixes
+
+* **server:** wait for delete before returning ([#482](https://github.com/hetznercloud/cli/issues/482)) ([62cb07f](https://github.com/hetznercloud/cli/commit/62cb07f5aa6938cbdb066113e42672f16e882287))
+
 ## [1.34.0](https://github.com/hetznercloud/cli/compare/v1.33.2...v1.34.0) (2023-05-15)
 
 
