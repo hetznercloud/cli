@@ -22,14 +22,14 @@ test:golangci-lint:
 
 test:go-mod-tidy:
   stage: test
-  image: golang:1.18
+  image: golang:1.20
   script:
     - go mod tidy -v
     - git diff --exit-code
 
 test:go-generate:
   stage: test
-  image: golang:1.18
+  image: golang:1.20
   variables:
     GOBIN: "$CI_PROJECT_DIR/bin"
   before_script:
@@ -41,7 +41,7 @@ test:go-generate:
 
 test:tests:
   stage: test
-  image: golang:1.18
+  image: golang:1.20
   script:
     - |
       go test -v \
