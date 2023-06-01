@@ -19,7 +19,8 @@ func TestDelete(t *testing.T) {
 	cmd := placementgroup.DeleteCmd.CobraCommand(
 		context.Background(),
 		fx.Client,
-		fx.TokenEnsurer)
+		fx.TokenEnsurer,
+		fx.ActionWaiter)
 	fx.ExpectEnsureToken()
 
 	placementGroup := hcloud.PlacementGroup{

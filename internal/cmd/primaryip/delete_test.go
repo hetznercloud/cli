@@ -14,7 +14,7 @@ func TestDelete(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := deleteCmd.CobraCommand(context.Background(), fx.Client, fx.TokenEnsurer)
+	cmd := deleteCmd.CobraCommand(context.Background(), fx.Client, fx.TokenEnsurer, fx.ActionWaiter)
 	primaryip := &hcloud.PrimaryIP{ID: 13}
 	fx.ExpectEnsureToken()
 	fx.Client.PrimaryIPClient.EXPECT().

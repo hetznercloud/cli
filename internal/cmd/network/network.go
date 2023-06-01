@@ -19,7 +19,7 @@ func NewCommand(cli *state.State, client hcapi2.Client) *cobra.Command {
 		DescribeCmd.CobraCommand(cli.Context, client, cli),
 		newCreateCommand(cli),
 		updateCmd.CobraCommand(cli.Context, client, cli),
-		deleteCmd.CobraCommand(cli.Context, client, cli),
+		deleteCmd.CobraCommand(cli.Context, client, cli, cli),
 		ChangeIPRangeCommand.CobraCommand(cli.Context, client, cli, cli),
 		AddRouteCommand.CobraCommand(cli.Context, client, cli, cli),
 		RemoveRouteCommand.CobraCommand(cli.Context, client, cli, cli),

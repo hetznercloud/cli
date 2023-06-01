@@ -5,6 +5,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/hcapi2"
+	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/hcloud"
 	"github.com/spf13/cobra"
 )
@@ -16,7 +17,7 @@ var DeleteCmd = base.DeleteCmd{
 	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
 		return client.PlacementGroup().Get(ctx, idOrName)
 	},
-	Delete: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}) error {
+	Delete: func(ctx context.Context, client hcapi2.Client, _ state.ActionWaiter, cmd *cobra.Command, resource interface{}) error {
 		placementGroup := resource.(*hcloud.PlacementGroup)
 		if _, err := client.PlacementGroup().Delete(ctx, placementGroup); err != nil {
 			return err
