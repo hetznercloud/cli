@@ -288,7 +288,7 @@ func createOptsFromFlags(
 			return
 		}
 		if primaryIPv6 == nil {
-			err = fmt.Errorf("primary ipv4 not found: %s", primaryIPv6IDorName)
+			err = fmt.Errorf("primary ipv6 not found: %s", primaryIPv6IDorName)
 			return
 		}
 		publicNetConfiguration.IPv6 = primaryIPv6
