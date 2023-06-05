@@ -225,6 +225,10 @@ func createOptsFromFlags(
 		return
 	}
 
+	if serverType.IsDeprecated() {
+		fmt.Print(warningDeprecatedServerType(serverType))
+	}
+
 	// Select correct image based on server type architecture
 	image, _, err := client.Image().GetForArchitecture(ctx, imageIDorName, serverType.Architecture)
 	if err != nil {

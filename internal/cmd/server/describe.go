@@ -38,6 +38,7 @@ var describeCmd = base.DescribeCmd{
 		fmt.Printf("  Memory:\t%v GB\n", server.ServerType.Memory)
 		fmt.Printf("  Disk:\t\t%d GB\n", server.PrimaryDiskSize)
 		fmt.Printf("  Storage Type:\t%s\n", server.ServerType.StorageType)
+		fmt.Printf(util.PrefixLines(util.DescribeDeprecation(server.ServerType), "  "))
 
 		fmt.Printf("Public Net:\n")
 		fmt.Printf("  IPv4:\n")
