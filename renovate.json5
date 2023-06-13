@@ -1,0 +1,11 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:base",
+
+    // Generate commits compatible with release-please changelog
+    // => "deps: update module github.com/prometheus/client_golang to v1.15.1"
+    ":semanticCommitTypeAll(deps)",
+    ":semanticCommitScopeDisabled",
+  ]
+}
