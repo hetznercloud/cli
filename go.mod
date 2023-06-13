@@ -8,7 +8,7 @@ require (
 	github.com/golang/mock v1.6.0
 	github.com/google/go-cmp v0.5.9
 	github.com/guptarohit/asciigraph v0.5.5
-	github.com/hetznercloud/hcloud-go v1.45.1
+	github.com/hetznercloud/hcloud-go v1.46.0
 	github.com/pelletier/go-toml/v2 v2.0.6
 	github.com/rjeczalik/interfaces v0.3.0
 	github.com/spf13/cobra v1.5.0
