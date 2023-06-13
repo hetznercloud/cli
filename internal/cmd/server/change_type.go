@@ -48,6 +48,10 @@ var ChangeTypeCommand = base.Cmd{
 			return fmt.Errorf("server type not found: %s", serverTypeIDOrName)
 		}
 
+		if serverType.IsDeprecated() {
+			fmt.Print(warningDeprecatedServerType(serverType))
+		}
+
 		keepDisk, _ := cmd.Flags().GetBool("keep-disk")
 		opts := hcloud.ServerChangeTypeOpts{
 			ServerType:  serverType,

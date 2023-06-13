@@ -34,6 +34,7 @@ var describeCmd = base.DescribeCmd{
 		fmt.Printf("Disk:\t\t\t%d GB\n", serverType.Disk)
 		fmt.Printf("Storage Type:\t\t%s\n", serverType.StorageType)
 		fmt.Printf("Included Traffic:\t%d TB\n", serverType.IncludedTraffic/util.Tebibyte)
+		fmt.Printf(util.DescribeDeprecation(serverType))
 
 		fmt.Printf("Pricings per Location:\n")
 		for _, price := range serverType.Pricings {

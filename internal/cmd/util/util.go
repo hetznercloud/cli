@@ -134,6 +134,17 @@ func LabelsToString(labels map[string]string) string {
 	return strings.Join(labelsString, ", ")
 }
 
+// PrefixLines will prefix all individual lines in the text with the passed prefix.
+func PrefixLines(text, prefix string) string {
+	var lines []string
+
+	for _, line := range strings.Split(text, "\n") {
+		lines = append(lines, prefix+line)
+	}
+
+	return strings.Join(lines, "\n")
+}
+
 func DescribeFormat(object interface{}, format string) error {
 	if !strings.HasSuffix(format, "\n") {
 		format = format + "\n"
@@ -181,16 +192,17 @@ func DatacenterToSchema(datacenter hcloud.Datacenter) schema.Datacenter {
 
 func ServerTypeToSchema(serverType hcloud.ServerType) schema.ServerType {
 	serverTypeSchema := schema.ServerType{
-		ID:              serverType.ID,
-		Name:            serverType.Name,
-		Description:     serverType.Description,
-		Cores:           serverType.Cores,
-		Memory:          serverType.Memory,
-		Disk:            serverType.Disk,
-		StorageType:     string(serverType.StorageType),
-		CPUType:         string(serverType.CPUType),
-		Architecture:    string(serverType.Architecture),
-		IncludedTraffic: serverType.IncludedTraffic,
+		ID:                   serverType.ID,
+		Name:                 serverType.Name,
+		Description:          serverType.Description,
+		Cores:                serverType.Cores,
+		Memory:               serverType.Memory,
+		Disk:                 serverType.Disk,
+		StorageType:          string(serverType.StorageType),
+		CPUType:              string(serverType.CPUType),
+		Architecture:         string(serverType.Architecture),
+		IncludedTraffic:      serverType.IncludedTraffic,
+		DeprecatableResource: DeprecatableResourceToSchema(serverType.DeprecatableResource),
 	}
 	for _, pricing := range serverType.Pricings {
 		serverTypeSchema.Prices = append(serverTypeSchema.Prices, schema.PricingServerTypePrice{
@@ -290,6 +302,21 @@ func PlacementGroupToSchema(placementGroup hcloud.PlacementGroup) schema.Placeme
 		Created: placementGroup.Created,
 		Type:    string(placementGroup.Type),
 		Servers: placementGroup.Servers,
+	}
+}
+
+func DeprecatableResourceToSchema(deprecatableResource hcloud.DeprecatableResource) schema.DeprecatableResource {
+	var deprecation *schema.DeprecationInfo
+
+	if deprecatableResource.IsDeprecated() {
+		deprecation = &schema.DeprecationInfo{
+			Announced:        deprecatableResource.Deprecation.Announced,
+			UnavailableAfter: deprecatableResource.Deprecation.UnavailableAfter,
+		}
+	}
+
+	return schema.DeprecatableResource{
+		Deprecation: deprecation,
 	}
 }
 
