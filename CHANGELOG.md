@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.35.0](https://github.com/hetznercloud/cli/compare/v1.34.1...v1.35.0) (2023-06-13)
+
+
+### Features
+
+* show server-type deprecation warnings ([#490](https://github.com/hetznercloud/cli/issues/490)) ([c5c0527](https://github.com/hetznercloud/cli/commit/c5c052732f0e87f7040640e20f372d8b2c2ba315))
+
 ## [1.34.1](https://github.com/hetznercloud/cli/compare/v1.34.0...v1.34.1) (2023-06-01)
 
 
