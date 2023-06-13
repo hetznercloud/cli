@@ -3,7 +3,7 @@ module github.com/hetznercloud/cli
 require (
 	github.com/boumenot/gocover-cobertura v1.2.0
 	github.com/cheggaaa/pb/v3 v3.1.2
-	github.com/dustin/go-humanize v1.0.0
+	github.com/dustin/go-humanize v1.0.1
 	github.com/fatih/structs v1.1.0
 	github.com/golang/mock v1.6.0
 	github.com/google/go-cmp v0.5.9
