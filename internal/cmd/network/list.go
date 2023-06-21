@@ -76,12 +76,13 @@ var ListCmd = base.ListCmd{
 			network := resource.(*hcloud.Network)
 
 			networkSchema := schema.Network{
-				ID:         network.ID,
-				Name:       network.Name,
-				IPRange:    network.IPRange.String(),
-				Protection: schema.NetworkProtection{Delete: network.Protection.Delete},
-				Created:    network.Created,
-				Labels:     network.Labels,
+				ID:                    network.ID,
+				Name:                  network.Name,
+				IPRange:               network.IPRange.String(),
+				Protection:            schema.NetworkProtection{Delete: network.Protection.Delete},
+				Created:               network.Created,
+				Labels:                network.Labels,
+				ExposeRoutesToVSwitch: network.ExposeRoutesToVSwitch,
 			}
 			for _, subnet := range network.Subnets {
 				networkSchema.Subnets = append(networkSchema.Subnets, schema.NetworkSubnet{

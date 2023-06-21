@@ -29,6 +29,7 @@ func NewCommand(cli *state.State, client hcapi2.Client) *cobra.Command {
 		labelCmds.RemoveCobraCommand(cli.Context, client, cli),
 		EnableProtectionCommand.CobraCommand(cli.Context, client, cli, cli),
 		DisableProtectionCommand.CobraCommand(cli.Context, client, cli, cli),
+		ExposeRoutesToVSwitchCommand.CobraCommand(cli.Context, client, cli, cli),
 	)
 	return cmd
 }

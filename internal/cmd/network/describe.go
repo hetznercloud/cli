@@ -30,6 +30,7 @@ var DescribeCmd = base.DescribeCmd{
 		fmt.Printf("Name:\t\t%s\n", network.Name)
 		fmt.Printf("Created:\t%s (%s)\n", util.Datetime(network.Created), humanize.Time(network.Created))
 		fmt.Printf("IP Range:\t%s\n", network.IPRange.String())
+		fmt.Printf("Expose Routes to vSwitch: %s\n", util.YesNo(network.ExposeRoutesToVSwitch))
 
 		fmt.Printf("Subnets:\n")
 		if len(network.Subnets) == 0 {
