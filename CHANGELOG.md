@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.36.0](https://github.com/hetznercloud/cli/compare/v1.35.0...v1.36.0) (2023-06-22)
+
+
+### Features
+
+* **network:** add support for exposing routes to vswitch connection ([#504](https://github.com/hetznercloud/cli/issues/504)) ([339cee9](https://github.com/hetznercloud/cli/commit/339cee9edb416b5055cf2d401124d2b9efe4ab1d))
+
 ## [1.35.0](https://github.com/hetznercloud/cli/compare/v1.34.1...v1.35.0) (2023-06-13)
 
 
