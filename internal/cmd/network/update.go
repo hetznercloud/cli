@@ -12,7 +12,7 @@ import (
 
 var updateCmd = base.UpdateCmd{
 	ResourceNameSingular: "Network",
-	ShortDescription:     "Update a Network",
+	ShortDescription:     "Update a Network.\n\nTo enable or disable exposing routes to the vSwitch connection you can use the subcommand \"hcloud network expose-routes-to-vswitch\".",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Network().Names },
 	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
 		return client.Network().Get(ctx, idOrName)
