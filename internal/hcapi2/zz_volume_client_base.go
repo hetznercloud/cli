@@ -4,10 +4,11 @@ package hcapi2
 
 import (
 	"context"
-	"github.com/hetznercloud/hcloud-go/hcloud"
+
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-// VolumeClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/hcloud.VolumeClient".
+// VolumeClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/v2/hcloud.VolumeClient".
 type VolumeClientBase interface {
 	All(context.Context) ([]*hcloud.Volume, error)
 	AllWithOpts(context.Context, hcloud.VolumeListOpts) ([]*hcloud.Volume, error)

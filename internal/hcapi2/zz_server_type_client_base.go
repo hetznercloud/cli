@@ -4,10 +4,11 @@ package hcapi2
 
 import (
 	"context"
-	"github.com/hetznercloud/hcloud-go/hcloud"
+
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-// ServerTypeClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/hcloud.ServerTypeClient".
+// ServerTypeClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/v2/hcloud.ServerTypeClient".
 type ServerTypeClientBase interface {
 	All(context.Context) ([]*hcloud.ServerType, error)
 	Get(context.Context, string) (*hcloud.ServerType, *hcloud.Response, error)

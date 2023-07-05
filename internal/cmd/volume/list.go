@@ -12,10 +12,10 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
-	"github.com/hetznercloud/hcloud-go/hcloud/schema"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 
 	humanize "github.com/dustin/go-humanize"
-	"github.com/hetznercloud/hcloud-go/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 var listCmd = base.ListCmd{

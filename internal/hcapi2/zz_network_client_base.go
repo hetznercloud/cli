@@ -4,10 +4,11 @@ package hcapi2
 
 import (
 	"context"
-	"github.com/hetznercloud/hcloud-go/hcloud"
+
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-// NetworkClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/hcloud.NetworkClient".
+// NetworkClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/v2/hcloud.NetworkClient".
 type NetworkClientBase interface {
 	AddRoute(context.Context, *hcloud.Network, hcloud.NetworkAddRouteOpts) (*hcloud.Action, *hcloud.Response, error)
 	AddSubnet(context.Context, *hcloud.Network, hcloud.NetworkAddSubnetOpts) (*hcloud.Action, *hcloud.Response, error)

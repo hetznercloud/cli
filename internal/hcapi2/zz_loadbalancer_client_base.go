@@ -4,11 +4,12 @@ package hcapi2
 
 import (
 	"context"
-	"github.com/hetznercloud/hcloud-go/hcloud"
 	"net"
+
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-// LoadBalancerClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/hcloud.LoadBalancerClient".
+// LoadBalancerClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/v2/hcloud.LoadBalancerClient".
 type LoadBalancerClientBase interface {
 	AddIPTarget(context.Context, *hcloud.LoadBalancer, hcloud.LoadBalancerAddIPTargetOpts) (*hcloud.Action, *hcloud.Response, error)
 	AddLabelSelectorTarget(context.Context, *hcloud.LoadBalancer, hcloud.LoadBalancerAddLabelSelectorTargetOpts) (*hcloud.Action, *hcloud.Response, error)

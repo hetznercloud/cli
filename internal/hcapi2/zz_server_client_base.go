@@ -4,10 +4,11 @@ package hcapi2
 
 import (
 	"context"
-	"github.com/hetznercloud/hcloud-go/hcloud"
+
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-// ServerClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/hcloud.ServerClient".
+// ServerClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/v2/hcloud.ServerClient".
 type ServerClientBase interface {
 	AddToPlacementGroup(context.Context, *hcloud.Server, *hcloud.PlacementGroup) (*hcloud.Action, *hcloud.Response, error)
 	All(context.Context) ([]*hcloud.Server, error)

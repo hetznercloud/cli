@@ -4,10 +4,11 @@ package hcapi2
 
 import (
 	"context"
-	"github.com/hetznercloud/hcloud-go/hcloud"
+
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-// PrimaryIPClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/hcloud.PrimaryIPClient".
+// PrimaryIPClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/v2/hcloud.PrimaryIPClient".
 type PrimaryIPClientBase interface {
 	All(context.Context) ([]*hcloud.PrimaryIP, error)
 	AllWithOpts(context.Context, hcloud.PrimaryIPListOpts) ([]*hcloud.PrimaryIP, error)

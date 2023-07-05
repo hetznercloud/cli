@@ -4,10 +4,11 @@ package hcapi2
 
 import (
 	"context"
-	"github.com/hetznercloud/hcloud-go/hcloud"
+
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-// SSHKeyClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/hcloud.SSHKeyClient".
+// SSHKeyClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/v2/hcloud.SSHKeyClient".
 type SSHKeyClientBase interface {
 	All(context.Context) ([]*hcloud.SSHKey, error)
 	AllWithOpts(context.Context, hcloud.SSHKeyListOpts) ([]*hcloud.SSHKey, error)

@@ -4,10 +4,11 @@ package hcapi2
 
 import (
 	"context"
-	"github.com/hetznercloud/hcloud-go/hcloud"
+
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-// FirewallClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/hcloud.FirewallClient".
+// FirewallClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/v2/hcloud.FirewallClient".
 type FirewallClientBase interface {
 	All(context.Context) ([]*hcloud.Firewall, error)
 	AllWithOpts(context.Context, hcloud.FirewallListOpts) ([]*hcloud.Firewall, error)

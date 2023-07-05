@@ -4,10 +4,11 @@ package hcapi2
 
 import (
 	"context"
-	"github.com/hetznercloud/hcloud-go/hcloud"
+
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-// ImageClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/hcloud.ImageClient".
+// ImageClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/v2/hcloud.ImageClient".
 type ImageClientBase interface {
 	All(context.Context) ([]*hcloud.Image, error)
 	AllWithOpts(context.Context, hcloud.ImageListOpts) ([]*hcloud.Image, error)

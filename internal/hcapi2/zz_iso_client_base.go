@@ -4,10 +4,11 @@ package hcapi2
 
 import (
 	"context"
-	"github.com/hetznercloud/hcloud-go/hcloud"
+
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-// ISOClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/hcloud.ISOClient".
+// ISOClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/v2/hcloud.ISOClient".
 type ISOClientBase interface {
 	All(context.Context) ([]*hcloud.ISO, error)
 	AllWithOpts(context.Context, hcloud.ISOListOpts) ([]*hcloud.ISO, error)

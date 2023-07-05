@@ -4,10 +4,11 @@ package hcapi2
 
 import (
 	"context"
-	"github.com/hetznercloud/hcloud-go/hcloud"
+
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-// FloatingIPClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/hcloud.FloatingIPClient".
+// FloatingIPClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/v2/hcloud.FloatingIPClient".
 type FloatingIPClientBase interface {
 	All(context.Context) ([]*hcloud.FloatingIP, error)
 	AllWithOpts(context.Context, hcloud.FloatingIPListOpts) ([]*hcloud.FloatingIP, error)

@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/hetznercloud/hcloud-go/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 // LoadBalancerClient embeds the Hetzner Cloud LoadBalancer client and provides some

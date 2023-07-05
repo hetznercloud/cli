@@ -4,10 +4,11 @@ package hcapi2
 
 import (
 	"context"
-	"github.com/hetznercloud/hcloud-go/hcloud"
+
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-// PlacementGroupClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/hcloud.PlacementGroupClient".
+// PlacementGroupClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/v2/hcloud.PlacementGroupClient".
 type PlacementGroupClientBase interface {
 	All(context.Context) ([]*hcloud.PlacementGroup, error)
 	AllWithOpts(context.Context, hcloud.PlacementGroupListOpts) ([]*hcloud.PlacementGroup, error)

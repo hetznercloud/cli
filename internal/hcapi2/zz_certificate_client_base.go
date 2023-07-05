@@ -4,10 +4,11 @@ package hcapi2
 
 import (
 	"context"
-	"github.com/hetznercloud/hcloud-go/hcloud"
+
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-// CertificateClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/hcloud.CertificateClient".
+// CertificateClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/v2/hcloud.CertificateClient".
 type CertificateClientBase interface {
 	All(context.Context) ([]*hcloud.Certificate, error)
 	AllWithOpts(context.Context, hcloud.CertificateListOpts) ([]*hcloud.Certificate, error)

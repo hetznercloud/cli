@@ -9,7 +9,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	hcloud "github.com/hetznercloud/hcloud-go/hcloud"
+	hcloud "github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 // MockPlacementGroupClient is a mock of PlacementGroupClient interface.

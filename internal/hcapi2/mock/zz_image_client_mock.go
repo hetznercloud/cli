@@ -9,7 +9,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	hcloud "github.com/hetznercloud/hcloud-go/hcloud"
+	hcloud "github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 // MockImageClient is a mock of ImageClient interface.

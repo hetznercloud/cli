@@ -4,7 +4,7 @@ import (
 	"context"
 	"strconv"
 
-	"github.com/hetznercloud/hcloud-go/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 // ImageClient embeds the Hetzner Cloud Image client and provides some
