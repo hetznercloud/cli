@@ -4,7 +4,6 @@ package hcapi2
 
 import (
 	"context"
-
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
@@ -15,7 +14,7 @@ type PlacementGroupClientBase interface {
 	Create(context.Context, hcloud.PlacementGroupCreateOpts) (hcloud.PlacementGroupCreateResult, *hcloud.Response, error)
 	Delete(context.Context, *hcloud.PlacementGroup) (*hcloud.Response, error)
 	Get(context.Context, string) (*hcloud.PlacementGroup, *hcloud.Response, error)
-	GetByID(context.Context, int) (*hcloud.PlacementGroup, *hcloud.Response, error)
+	GetByID(context.Context, int64) (*hcloud.PlacementGroup, *hcloud.Response, error)
 	GetByName(context.Context, string) (*hcloud.PlacementGroup, *hcloud.Response, error)
 	List(context.Context, hcloud.PlacementGroupListOpts) ([]*hcloud.PlacementGroup, *hcloud.Response, error)
 	Update(context.Context, *hcloud.PlacementGroup, hcloud.PlacementGroupUpdateOpts) (*hcloud.PlacementGroup, *hcloud.Response, error)

@@ -50,6 +50,21 @@ func (mr *MockDatacenterClientMockRecorder) All(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "All", reflect.TypeOf((*MockDatacenterClient)(nil).All), arg0)
 }
 
+// AllWithOpts mocks base method.
+func (m *MockDatacenterClient) AllWithOpts(arg0 context.Context, arg1 hcloud.DatacenterListOpts) ([]*hcloud.Datacenter, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AllWithOpts", arg0, arg1)
+	ret0, _ := ret[0].([]*hcloud.Datacenter)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AllWithOpts indicates an expected call of AllWithOpts.
+func (mr *MockDatacenterClientMockRecorder) AllWithOpts(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AllWithOpts", reflect.TypeOf((*MockDatacenterClient)(nil).AllWithOpts), arg0, arg1)
+}
+
 // Get mocks base method.
 func (m *MockDatacenterClient) Get(arg0 context.Context, arg1 string) (*hcloud.Datacenter, *hcloud.Response, error) {
 	m.ctrl.T.Helper()
@@ -67,7 +82,7 @@ func (mr *MockDatacenterClientMockRecorder) Get(arg0, arg1 interface{}) *gomock.
 }
 
 // GetByID mocks base method.
-func (m *MockDatacenterClient) GetByID(arg0 context.Context, arg1 int) (*hcloud.Datacenter, *hcloud.Response, error) {
+func (m *MockDatacenterClient) GetByID(arg0 context.Context, arg1 int64) (*hcloud.Datacenter, *hcloud.Response, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetByID", arg0, arg1)
 	ret0, _ := ret[0].(*hcloud.Datacenter)

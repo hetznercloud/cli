@@ -116,7 +116,7 @@ var listCmd = base.ListCmd{
 				})
 			}
 			if floatingIP.Server != nil {
-				floatingIPSchema.Server = hcloud.Int(floatingIP.Server.ID)
+				floatingIPSchema.Server = hcloud.Ptr(floatingIP.Server.ID)
 			}
 			floatingIPSchemas = append(floatingIPSchemas, floatingIPSchema)
 		}

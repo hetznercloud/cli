@@ -34,7 +34,7 @@ func (c *locationClient) Names() []string {
 	for i, loc := range locs {
 		name := loc.Name
 		if name == "" {
-			name = strconv.Itoa(loc.ID)
+			name = strconv.FormatInt(loc.ID, 10)
 		}
 		names[i] = name
 	}

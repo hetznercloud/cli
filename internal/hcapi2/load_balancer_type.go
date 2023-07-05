@@ -11,8 +11,8 @@ import (
 type LoadBalancerTypeClient interface {
 	LoadBalancerTypeClientBase
 	Names() []string
-	LoadBalancerTypeName(id int) string
-	LoadBalancerTypeDescription(id int) string
+	LoadBalancerTypeName(id int64) string
+	LoadBalancerTypeDescription(id int64) string
 }
 
 func NewLoadBalancerTypeClient(client LoadBalancerTypeClientBase) LoadBalancerTypeClient {
@@ -24,35 +24,35 @@ func NewLoadBalancerTypeClient(client LoadBalancerTypeClientBase) LoadBalancerTy
 type loadBalancerTypeClient struct {
 	LoadBalancerTypeClientBase
 
-	lbTypeByID map[int]*hcloud.LoadBalancerType
+	lbTypeByID map[int64]*hcloud.LoadBalancerType
 	once       sync.Once
 	err        error
 }
 
 // LoadBalancerTypeName obtains the name of the loadBalancer type with id. If the name could not
 // be fetched it returns the value id converted to a string.
-func (c *loadBalancerTypeClient) LoadBalancerTypeName(id int) string {
+func (c *loadBalancerTypeClient) LoadBalancerTypeName(id int64) string {
 	if err := c.init(); err != nil {
-		return strconv.Itoa(id)
+		return strconv.FormatInt(id, 10)
 	}
 
 	loadBalancerType, ok := c.lbTypeByID[id]
 	if !ok || loadBalancerType.Name == "" {
-		return strconv.Itoa(id)
+		return strconv.FormatInt(id, 10)
 	}
 	return loadBalancerType.Name
 }
 
 // LoadBalancerTypeDescription obtains the description of the loadBalancer type with id. If the name could not
 // be fetched it returns the value id converted to a string.
-func (c *loadBalancerTypeClient) LoadBalancerTypeDescription(id int) string {
+func (c *loadBalancerTypeClient) LoadBalancerTypeDescription(id int64) string {
 	if err := c.init(); err != nil {
-		return strconv.Itoa(id)
+		return strconv.FormatInt(id, 10)
 	}
 
 	loadBalancerType, ok := c.lbTypeByID[id]
 	if !ok || loadBalancerType.Description == "" {
-		return strconv.Itoa(id)
+		return strconv.FormatInt(id, 10)
 	}
 	return loadBalancerType.Description
 }
@@ -79,7 +79,7 @@ func (c *loadBalancerTypeClient) init() error {
 		if c.err != nil || len(loadBalancerTypes) == 0 {
 			return
 		}
-		c.lbTypeByID = make(map[int]*hcloud.LoadBalancerType, len(loadBalancerTypes))
+		c.lbTypeByID = make(map[int64]*hcloud.LoadBalancerType, len(loadBalancerTypes))
 		for _, srv := range loadBalancerTypes {
 			c.lbTypeByID[srv.ID] = srv
 		}

@@ -129,7 +129,7 @@ func (mr *MockSSHKeyClientMockRecorder) GetByFingerprint(arg0, arg1 interface{})
 }
 
 // GetByID mocks base method.
-func (m *MockSSHKeyClient) GetByID(arg0 context.Context, arg1 int) (*hcloud.SSHKey, *hcloud.Response, error) {
+func (m *MockSSHKeyClient) GetByID(arg0 context.Context, arg1 int64) (*hcloud.SSHKey, *hcloud.Response, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetByID", arg0, arg1)
 	ret0, _ := ret[0].(*hcloud.SSHKey)

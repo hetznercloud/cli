@@ -247,7 +247,7 @@ func ImageToSchema(image hcloud.Image) schema.Image {
 		}
 	}
 	if image.BoundTo != nil {
-		imageSchema.BoundTo = hcloud.Int(image.BoundTo.ID)
+		imageSchema.BoundTo = hcloud.Ptr(image.BoundTo.ID)
 	}
 	return imageSchema
 }

@@ -20,8 +20,8 @@ type LabelCmds struct {
 	ShortDescriptionRemove string
 	NameSuggestions        func(client hcapi2.Client) func() []string
 	LabelKeySuggestions    func(client hcapi2.Client) func(idOrName string) []string
-	FetchLabels            func(ctx context.Context, client hcapi2.Client, idOrName string) (map[string]string, int, error)
-	SetLabels              func(ctx context.Context, client hcapi2.Client, id int, labels map[string]string) error
+	FetchLabels            func(ctx context.Context, client hcapi2.Client, idOrName string) (map[string]string, int64, error)
+	SetLabels              func(ctx context.Context, client hcapi2.Client, id int64, labels map[string]string) error
 }
 
 // AddCobraCommand creates a command that can be registered with cobra.

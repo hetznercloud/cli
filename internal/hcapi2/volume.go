@@ -35,7 +35,7 @@ func (c *volumeClient) Names() []string {
 	for i, vol := range vols {
 		name := vol.Name
 		if name == "" {
-			name = strconv.Itoa(vol.ID)
+			name = strconv.FormatInt(vol.ID, 10)
 		}
 		names[i] = name
 	}

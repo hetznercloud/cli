@@ -86,7 +86,7 @@ var ListCmd = base.ListCmd{
 				server := obj.(*hcloud.Server)
 				var volumes []string
 				for _, volume := range server.Volumes {
-					volumeID := strconv.Itoa(volume.ID)
+					volumeID := strconv.FormatInt(volume.ID, 10)
 					volumes = append(volumes, volumeID)
 				}
 				return strings.Join(volumes, ", ")

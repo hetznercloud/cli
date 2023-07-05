@@ -12,7 +12,7 @@ import (
 // additional helper functions.
 type LoadBalancerClient interface {
 	LoadBalancerClientBase
-	LoadBalancerName(id int) string
+	LoadBalancerName(id int64) string
 	Names() []string
 	LabelKeys(string) []string
 }
@@ -26,7 +26,7 @@ func NewLoadBalancerClient(client LoadBalancerClientBase) LoadBalancerClient {
 type loadBalancerClient struct {
 	LoadBalancerClientBase
 
-	lbByID map[int]*hcloud.LoadBalancer
+	lbByID map[int64]*hcloud.LoadBalancer
 
 	once sync.Once
 	err  error
@@ -34,14 +34,14 @@ type loadBalancerClient struct {
 
 // LoadBalancerName obtains the name of the server with id. If the name could not
 // be fetched it returns the value id converted to a string.
-func (c *loadBalancerClient) LoadBalancerName(id int) string {
+func (c *loadBalancerClient) LoadBalancerName(id int64) string {
 	if err := c.init(); err != nil {
-		return strconv.Itoa(id)
+		return strconv.FormatInt(id, 10)
 	}
 
 	lb, ok := c.lbByID[id]
 	if !ok || lb.Name == "" {
-		return strconv.Itoa(id)
+		return strconv.FormatInt(id, 10)
 	}
 	return lb.Name
 }
@@ -57,7 +57,7 @@ func (c *loadBalancerClient) Names() []string {
 	for i, dc := range dcs {
 		name := dc.Name
 		if name == "" {
-			name = strconv.Itoa(dc.ID)
+			name = strconv.FormatInt(dc.ID, 10)
 		}
 		names[i] = name
 	}
@@ -83,7 +83,7 @@ func (c *loadBalancerClient) init() error {
 		if c.err != nil || len(srvs) == 0 {
 			return
 		}
-		c.lbByID = make(map[int]*hcloud.LoadBalancer, len(srvs))
+		c.lbByID = make(map[int64]*hcloud.LoadBalancer, len(srvs))
 		for _, srv := range srvs {
 			c.lbByID[srv.ID] = srv
 		}

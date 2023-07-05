@@ -30,7 +30,7 @@ func (c *placementGroupClient) Names() []string {
 	for i, firewall := range placementGroups {
 		name := firewall.Name
 		if name == "" {
-			name = strconv.Itoa(firewall.ID)
+			name = strconv.FormatInt(firewall.ID, 10)
 		}
 		names[i] = name
 	}

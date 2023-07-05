@@ -129,7 +129,7 @@ func (mr *MockCertificateClientMockRecorder) Get(arg0, arg1 interface{}) *gomock
 }
 
 // GetByID mocks base method.
-func (m *MockCertificateClient) GetByID(arg0 context.Context, arg1 int) (*hcloud.Certificate, *hcloud.Response, error) {
+func (m *MockCertificateClient) GetByID(arg0 context.Context, arg1 int64) (*hcloud.Certificate, *hcloud.Response, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetByID", arg0, arg1)
 	ret0, _ := ret[0].(*hcloud.Certificate)

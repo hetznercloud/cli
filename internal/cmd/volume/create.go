@@ -57,7 +57,7 @@ var CreateCommand = base.Cmd{
 		}
 
 		if location != "" {
-			id, err := strconv.Atoi(location)
+			id, err := strconv.ParseInt(location, 10, 64)
 			if err == nil {
 				opts.Location = &hcloud.Location{ID: id}
 			} else {

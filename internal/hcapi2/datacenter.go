@@ -33,7 +33,7 @@ func (c *datacenterClient) Names() []string {
 	for i, dc := range dcs {
 		name := dc.Name
 		if name == "" {
-			name = strconv.Itoa(dc.ID)
+			name = strconv.FormatInt(dc.ID, 10)
 		}
 		names[i] = name
 	}

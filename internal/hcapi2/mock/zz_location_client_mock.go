@@ -50,6 +50,21 @@ func (mr *MockLocationClientMockRecorder) All(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "All", reflect.TypeOf((*MockLocationClient)(nil).All), arg0)
 }
 
+// AllWithOpts mocks base method.
+func (m *MockLocationClient) AllWithOpts(arg0 context.Context, arg1 hcloud.LocationListOpts) ([]*hcloud.Location, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AllWithOpts", arg0, arg1)
+	ret0, _ := ret[0].([]*hcloud.Location)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AllWithOpts indicates an expected call of AllWithOpts.
+func (mr *MockLocationClientMockRecorder) AllWithOpts(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AllWithOpts", reflect.TypeOf((*MockLocationClient)(nil).AllWithOpts), arg0, arg1)
+}
+
 // Get mocks base method.
 func (m *MockLocationClient) Get(arg0 context.Context, arg1 string) (*hcloud.Location, *hcloud.Response, error) {
 	m.ctrl.T.Helper()
@@ -67,7 +82,7 @@ func (mr *MockLocationClientMockRecorder) Get(arg0, arg1 interface{}) *gomock.Ca
 }
 
 // GetByID mocks base method.
-func (m *MockLocationClient) GetByID(arg0 context.Context, arg1 int) (*hcloud.Location, *hcloud.Response, error) {
+func (m *MockLocationClient) GetByID(arg0 context.Context, arg1 int64) (*hcloud.Location, *hcloud.Response, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetByID", arg0, arg1)
 	ret0, _ := ret[0].(*hcloud.Location)

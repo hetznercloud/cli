@@ -92,7 +92,7 @@ var listCmd = base.ListCmd{
 				Protection:  schema.VolumeProtection{Delete: volume.Protection.Delete},
 			}
 			if volume.Server != nil {
-				volumeSchema.Server = hcloud.Int(volume.Server.ID)
+				volumeSchema.Server = hcloud.Ptr(volume.Server.ID)
 			}
 			volumesSchema = append(volumesSchema, volumeSchema)
 		}

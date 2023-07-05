@@ -113,7 +113,7 @@ func (mr *MockPlacementGroupClientMockRecorder) Get(arg0, arg1 interface{}) *gom
 }
 
 // GetByID mocks base method.
-func (m *MockPlacementGroupClient) GetByID(arg0 context.Context, arg1 int) (*hcloud.PlacementGroup, *hcloud.Response, error) {
+func (m *MockPlacementGroupClient) GetByID(arg0 context.Context, arg1 int64) (*hcloud.PlacementGroup, *hcloud.Response, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetByID", arg0, arg1)
 	ret0, _ := ret[0].(*hcloud.PlacementGroup)

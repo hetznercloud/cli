@@ -177,7 +177,7 @@ func (mr *MockVolumeClientMockRecorder) Get(arg0, arg1 interface{}) *gomock.Call
 }
 
 // GetByID mocks base method.
-func (m *MockVolumeClient) GetByID(arg0 context.Context, arg1 int) (*hcloud.Volume, *hcloud.Response, error) {
+func (m *MockVolumeClient) GetByID(arg0 context.Context, arg1 int64) (*hcloud.Volume, *hcloud.Response, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetByID", arg0, arg1)
 	ret0, _ := ret[0].(*hcloud.Volume)

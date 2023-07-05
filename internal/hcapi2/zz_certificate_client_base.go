@@ -4,7 +4,6 @@ package hcapi2
 
 import (
 	"context"
-
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
@@ -16,7 +15,7 @@ type CertificateClientBase interface {
 	CreateCertificate(context.Context, hcloud.CertificateCreateOpts) (hcloud.CertificateCreateResult, *hcloud.Response, error)
 	Delete(context.Context, *hcloud.Certificate) (*hcloud.Response, error)
 	Get(context.Context, string) (*hcloud.Certificate, *hcloud.Response, error)
-	GetByID(context.Context, int) (*hcloud.Certificate, *hcloud.Response, error)
+	GetByID(context.Context, int64) (*hcloud.Certificate, *hcloud.Response, error)
 	GetByName(context.Context, string) (*hcloud.Certificate, *hcloud.Response, error)
 	List(context.Context, hcloud.CertificateListOpts) ([]*hcloud.Certificate, *hcloud.Response, error)
 	RetryIssuance(context.Context, *hcloud.Certificate) (*hcloud.Action, *hcloud.Response, error)

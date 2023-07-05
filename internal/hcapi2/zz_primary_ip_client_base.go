@@ -4,7 +4,6 @@ package hcapi2
 
 import (
 	"context"
-
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
@@ -18,10 +17,10 @@ type PrimaryIPClientBase interface {
 	Create(context.Context, hcloud.PrimaryIPCreateOpts) (*hcloud.PrimaryIPCreateResult, *hcloud.Response, error)
 	Delete(context.Context, *hcloud.PrimaryIP) (*hcloud.Response, error)
 	Get(context.Context, string) (*hcloud.PrimaryIP, *hcloud.Response, error)
-	GetByID(context.Context, int) (*hcloud.PrimaryIP, *hcloud.Response, error)
+	GetByID(context.Context, int64) (*hcloud.PrimaryIP, *hcloud.Response, error)
 	GetByIP(context.Context, string) (*hcloud.PrimaryIP, *hcloud.Response, error)
 	GetByName(context.Context, string) (*hcloud.PrimaryIP, *hcloud.Response, error)
 	List(context.Context, hcloud.PrimaryIPListOpts) ([]*hcloud.PrimaryIP, *hcloud.Response, error)
-	Unassign(context.Context, int) (*hcloud.Action, *hcloud.Response, error)
+	Unassign(context.Context, int64) (*hcloud.Action, *hcloud.Response, error)
 	Update(context.Context, *hcloud.PrimaryIP, hcloud.PrimaryIPUpdateOpts) (*hcloud.PrimaryIP, *hcloud.Response, error)
 }

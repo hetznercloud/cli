@@ -10,7 +10,7 @@ import (
 
 type ServerClient interface {
 	ServerClientBase
-	ServerName(id int) string
+	ServerName(id int64) string
 	Names() []string
 	LabelKeys(idOrName string) []string
 }
@@ -28,7 +28,7 @@ type serverClient struct {
 
 	ServerTypes *hcloud.ServerTypeClient
 
-	srvByID   map[int]*hcloud.Server
+	srvByID   map[int64]*hcloud.Server
 	srvByName map[string]*hcloud.Server
 
 	once sync.Once
@@ -37,19 +37,19 @@ type serverClient struct {
 
 // ServerName obtains the name of the server with id. If the name could not
 // be fetched it returns the value id converted to a string.
-func (c *serverClient) ServerName(id int) string {
+func (c *serverClient) ServerName(id int64) string {
 	if err := c.init(); err != nil {
-		return strconv.Itoa(id)
+		return strconv.FormatInt(id, 10)
 	}
 
 	srv, ok := c.srvByID[id]
 	if !ok || srv.Name == "" {
-		return strconv.Itoa(id)
+		return strconv.FormatInt(id, 10)
 	}
 	return srv.Name
 }
 
-// ServerNames obtains a list of available servers. It returns nil if the
+// Names obtains a list of available servers. It returns nil if the
 // server names could not be fetched or if there are no servers.
 func (c *serverClient) Names() []string {
 	if err := c.init(); err != nil || len(c.srvByID) == 0 {
@@ -60,7 +60,7 @@ func (c *serverClient) Names() []string {
 	for _, srv := range c.srvByID {
 		name := srv.Name
 		if name == "" {
-			name = strconv.Itoa(srv.ID)
+			name = strconv.FormatInt(srv.ID, 10)
 		}
 		names[i] = name
 		i++
@@ -77,7 +77,7 @@ func (c *serverClient) LabelKeys(idOrName string) []string {
 		return nil
 	}
 	// Try to get server by ID.
-	if id, err := strconv.Atoi(idOrName); err != nil {
+	if id, err := strconv.ParseInt(idOrName, 10, 64); err != nil {
 		srv = c.srvByID[id]
 	}
 	// If the above failed idOrName might contain a server name. If srv is not
@@ -114,7 +114,7 @@ func (c *serverClient) init() error {
 		if c.err != nil || len(srvs) == 0 {
 			return
 		}
-		c.srvByID = make(map[int]*hcloud.Server, len(srvs))
+		c.srvByID = make(map[int64]*hcloud.Server, len(srvs))
 		c.srvByName = make(map[string]*hcloud.Server, len(srvs))
 		for _, srv := range srvs {
 			c.srvByID[srv.ID] = srv

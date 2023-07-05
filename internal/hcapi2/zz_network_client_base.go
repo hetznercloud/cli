@@ -4,7 +4,6 @@ package hcapi2
 
 import (
 	"context"
-
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
@@ -21,7 +20,7 @@ type NetworkClientBase interface {
 	DeleteRoute(context.Context, *hcloud.Network, hcloud.NetworkDeleteRouteOpts) (*hcloud.Action, *hcloud.Response, error)
 	DeleteSubnet(context.Context, *hcloud.Network, hcloud.NetworkDeleteSubnetOpts) (*hcloud.Action, *hcloud.Response, error)
 	Get(context.Context, string) (*hcloud.Network, *hcloud.Response, error)
-	GetByID(context.Context, int) (*hcloud.Network, *hcloud.Response, error)
+	GetByID(context.Context, int64) (*hcloud.Network, *hcloud.Response, error)
 	GetByName(context.Context, string) (*hcloud.Network, *hcloud.Response, error)
 	List(context.Context, hcloud.NetworkListOpts) ([]*hcloud.Network, *hcloud.Response, error)
 	Update(context.Context, *hcloud.Network, hcloud.NetworkUpdateOpts) (*hcloud.Network, *hcloud.Response, error)

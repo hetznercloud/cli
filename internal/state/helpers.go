@@ -104,7 +104,7 @@ func (c *State) WaitForActions(ctx context.Context, actions []*hcloud.Action) er
 	)
 
 	for _, action := range actions {
-		resources := make(map[string]int)
+		resources := make(map[string]int64)
 		for _, resource := range action.Resources {
 			resources[string(resource.Type)] = resource.ID
 		}

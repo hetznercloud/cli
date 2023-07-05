@@ -30,7 +30,7 @@ var DisableProtectionCommand = base.Cmd{
 		}
 	},
 	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, command *cobra.Command, args []string) error {
-		imageID, err := strconv.Atoi(args[0])
+		imageID, err := strconv.ParseInt(args[0], 10, 64)
 		if err != nil {
 			return errors.New("invalid image ID")
 		}

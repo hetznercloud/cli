@@ -11,8 +11,8 @@ import (
 type ServerTypeClient interface {
 	ServerTypeClientBase
 	Names() []string
-	ServerTypeName(id int) string
-	ServerTypeDescription(id int) string
+	ServerTypeName(id int64) string
+	ServerTypeDescription(id int64) string
 }
 
 func NewServerTypeClient(client ServerTypeClientBase) ServerTypeClient {
@@ -24,35 +24,35 @@ func NewServerTypeClient(client ServerTypeClientBase) ServerTypeClient {
 type serverTypeClient struct {
 	ServerTypeClientBase
 
-	srvTypeByID map[int]*hcloud.ServerType
+	srvTypeByID map[int64]*hcloud.ServerType
 	once        sync.Once
 	err         error
 }
 
 // ServerTypeName obtains the name of the server type with id. If the name could not
 // be fetched it returns the value id converted to a string.
-func (c *serverTypeClient) ServerTypeName(id int) string {
+func (c *serverTypeClient) ServerTypeName(id int64) string {
 	if err := c.init(); err != nil {
-		return strconv.Itoa(id)
+		return strconv.FormatInt(id, 10)
 	}
 
 	serverType, ok := c.srvTypeByID[id]
 	if !ok || serverType.Name == "" {
-		return strconv.Itoa(id)
+		return strconv.FormatInt(id, 10)
 	}
 	return serverType.Name
 }
 
 // ServerTypeDescription obtains the description of the server type with id. If the name could not
 // be fetched it returns the value id converted to a string.
-func (c *serverTypeClient) ServerTypeDescription(id int) string {
+func (c *serverTypeClient) ServerTypeDescription(id int64) string {
 	if err := c.init(); err != nil {
-		return strconv.Itoa(id)
+		return strconv.FormatInt(id, 10)
 	}
 
 	serverType, ok := c.srvTypeByID[id]
 	if !ok || serverType.Description == "" {
-		return strconv.Itoa(id)
+		return strconv.FormatInt(id, 10)
 	}
 	return serverType.Description
 }
@@ -79,7 +79,7 @@ func (c *serverTypeClient) init() error {
 		if c.err != nil || len(serverTypes) == 0 {
 			return
 		}
-		c.srvTypeByID = make(map[int]*hcloud.ServerType, len(serverTypes))
+		c.srvTypeByID = make(map[int64]*hcloud.ServerType, len(serverTypes))
 		for _, srv := range serverTypes {
 			c.srvTypeByID[srv.ID] = srv
 		}

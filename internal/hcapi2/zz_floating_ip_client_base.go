@@ -4,7 +4,6 @@ package hcapi2
 
 import (
 	"context"
-
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
@@ -18,7 +17,7 @@ type FloatingIPClientBase interface {
 	Create(context.Context, hcloud.FloatingIPCreateOpts) (hcloud.FloatingIPCreateResult, *hcloud.Response, error)
 	Delete(context.Context, *hcloud.FloatingIP) (*hcloud.Response, error)
 	Get(context.Context, string) (*hcloud.FloatingIP, *hcloud.Response, error)
-	GetByID(context.Context, int) (*hcloud.FloatingIP, *hcloud.Response, error)
+	GetByID(context.Context, int64) (*hcloud.FloatingIP, *hcloud.Response, error)
 	GetByName(context.Context, string) (*hcloud.FloatingIP, *hcloud.Response, error)
 	List(context.Context, hcloud.FloatingIPListOpts) ([]*hcloud.FloatingIP, *hcloud.Response, error)
 	Unassign(context.Context, *hcloud.FloatingIP) (*hcloud.Action, *hcloud.Response, error)

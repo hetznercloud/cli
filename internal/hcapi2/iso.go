@@ -33,7 +33,7 @@ func (c *isoClient) Names() []string {
 	for i, iso := range isos {
 		name := iso.Name
 		if name == "" {
-			name = strconv.Itoa(iso.ID)
+			name = strconv.FormatInt(iso.ID, 10)
 		}
 		names[i] = name
 	}

@@ -30,7 +30,7 @@ func TestDescribe(t *testing.T) {
 		Name:    "my Placement Group",
 		Created: time.Date(2021, 07, 23, 10, 0, 0, 0, time.UTC),
 		Labels:  map[string]string{"key": "value"},
-		Servers: []int{4711, 4712},
+		Servers: []int64{4711, 4712},
 		Type:    hcloud.PlacementGroupTypeSpread,
 	}
 

@@ -36,7 +36,7 @@ func (c *imageClient) Names() []string {
 	for i, img := range imgs {
 		name := img.Name
 		if name == "" {
-			name = strconv.Itoa(img.ID)
+			name = strconv.FormatInt(img.ID, 10)
 		}
 		names[i] = name
 	}

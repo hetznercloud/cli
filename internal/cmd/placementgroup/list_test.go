@@ -38,7 +38,7 @@ func TestList(t *testing.T) {
 				ID:      897,
 				Name:    "my Placement Group",
 				Labels:  map[string]string{"key": "value"},
-				Servers: []int{4711, 4712},
+				Servers: []int64{4711, 4712},
 				Type:    hcloud.PlacementGroupTypeSpread,
 				Created: time.Now().Add(-10 * time.Second),
 			},

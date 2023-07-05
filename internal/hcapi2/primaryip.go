@@ -41,7 +41,7 @@ func (c *primaryIPClient) Names() []string {
 	for i, fip := range fips {
 		name := fip.Name
 		if name == "" {
-			name = strconv.Itoa(fip.ID)
+			name = strconv.FormatInt(fip.ID, 10)
 		}
 		names[i] = name
 	}
@@ -60,7 +60,7 @@ func (c *primaryIPClient) IPv4Names() []string {
 		if fip.Type == hcloud.PrimaryIPTypeIPv4 {
 			name := fip.Name
 			if name == "" {
-				name = strconv.Itoa(fip.ID)
+				name = strconv.FormatInt(fip.ID, 10)
 			}
 			names = append(names, name)
 		}
@@ -80,7 +80,7 @@ func (c *primaryIPClient) IPv6Names() []string {
 		if fip.Type == hcloud.PrimaryIPTypeIPv6 {
 			name := fip.Name
 			if name == "" {
-				name = strconv.Itoa(fip.ID)
+				name = strconv.FormatInt(fip.ID, 10)
 			}
 			names = append(names, name)
 		}

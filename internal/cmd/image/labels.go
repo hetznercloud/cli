@@ -15,7 +15,7 @@ var labelCmds = base.LabelCmds{
 	ShortDescriptionRemove: "Remove a label from an image",
 	NameSuggestions:        func(c hcapi2.Client) func() []string { return c.Image().Names },
 	LabelKeySuggestions:    func(c hcapi2.Client) func(idOrName string) []string { return c.Image().LabelKeys },
-	FetchLabels: func(ctx context.Context, client hcapi2.Client, idOrName string) (map[string]string, int, error) {
+	FetchLabels: func(ctx context.Context, client hcapi2.Client, idOrName string) (map[string]string, int64, error) {
 		image, _, err := client.Image().Get(ctx, idOrName)
 		if err != nil {
 			return nil, 0, err
@@ -25,7 +25,7 @@ var labelCmds = base.LabelCmds{
 		}
 		return image.Labels, image.ID, nil
 	},
-	SetLabels: func(ctx context.Context, client hcapi2.Client, id int, labels map[string]string) error {
+	SetLabels: func(ctx context.Context, client hcapi2.Client, id int64, labels map[string]string) error {
 		opts := hcloud.ImageUpdateOpts{
 			Labels: labels,
 		}

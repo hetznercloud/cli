@@ -28,7 +28,7 @@ func TestDelete(t *testing.T) {
 		Name:    "my Placement Group",
 		Created: time.Now(),
 		Labels:  map[string]string{"key": "value"},
-		Servers: []int{4711, 4712},
+		Servers: []int64{4711, 4712},
 		Type:    hcloud.PlacementGroupTypeSpread,
 	}
 

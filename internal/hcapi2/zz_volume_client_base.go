@@ -4,7 +4,6 @@ package hcapi2
 
 import (
 	"context"
-
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
@@ -19,7 +18,7 @@ type VolumeClientBase interface {
 	Delete(context.Context, *hcloud.Volume) (*hcloud.Response, error)
 	Detach(context.Context, *hcloud.Volume) (*hcloud.Action, *hcloud.Response, error)
 	Get(context.Context, string) (*hcloud.Volume, *hcloud.Response, error)
-	GetByID(context.Context, int) (*hcloud.Volume, *hcloud.Response, error)
+	GetByID(context.Context, int64) (*hcloud.Volume, *hcloud.Response, error)
 	GetByName(context.Context, string) (*hcloud.Volume, *hcloud.Response, error)
 	List(context.Context, hcloud.VolumeListOpts) ([]*hcloud.Volume, *hcloud.Response, error)
 	Resize(context.Context, *hcloud.Volume, int) (*hcloud.Action, *hcloud.Response, error)

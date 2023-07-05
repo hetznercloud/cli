@@ -129,7 +129,7 @@ func (mr *MockFirewallClientMockRecorder) Get(arg0, arg1 interface{}) *gomock.Ca
 }
 
 // GetByID mocks base method.
-func (m *MockFirewallClient) GetByID(arg0 context.Context, arg1 int) (*hcloud.Firewall, *hcloud.Response, error) {
+func (m *MockFirewallClient) GetByID(arg0 context.Context, arg1 int64) (*hcloud.Firewall, *hcloud.Response, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetByID", arg0, arg1)
 	ret0, _ := ret[0].(*hcloud.Firewall)
