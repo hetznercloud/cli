@@ -38,10 +38,10 @@ func TestDescribe(t *testing.T) {
 		Get(gomock.Any(), placementGroup.Name).
 		Return(&placementGroup, nil, nil)
 	fx.Client.ServerClient.EXPECT().
-		ServerName(4711).
+		ServerName(int64(4711)).
 		Return("server1")
 	fx.Client.ServerClient.EXPECT().
-		ServerName(4712).
+		ServerName(int64(4712)).
 		Return("server2")
 
 	out, err := fx.Run(cmd, []string{placementGroup.Name})

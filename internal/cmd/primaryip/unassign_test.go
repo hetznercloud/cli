@@ -30,7 +30,7 @@ func TestUnAssign(t *testing.T) {
 	fx.Client.PrimaryIPClient.EXPECT().
 		Unassign(
 			gomock.Any(),
-			13,
+			int64(13),
 		).
 		Return(
 			action,

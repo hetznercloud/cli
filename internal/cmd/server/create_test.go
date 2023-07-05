@@ -49,7 +49,7 @@ func TestCreate(t *testing.T) {
 			NextActions: []*hcloud.Action{{ID: 234}},
 		}, nil, nil)
 	fx.Client.ServerClient.EXPECT().
-		GetByID(gomock.Any(), 1234).
+		GetByID(gomock.Any(), int64(1234)).
 		Return(&hcloud.Server{
 			ID: 1234,
 			PublicNet: hcloud.ServerPublicNet{
