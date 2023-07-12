@@ -12,10 +12,10 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
-	"github.com/hetznercloud/hcloud-go/hcloud/schema"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 
 	humanize "github.com/dustin/go-humanize"
-	"github.com/hetznercloud/hcloud-go/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 var listCmd = base.ListCmd{
@@ -92,7 +92,7 @@ var listCmd = base.ListCmd{
 				Protection:  schema.VolumeProtection{Delete: volume.Protection.Delete},
 			}
 			if volume.Server != nil {
-				volumeSchema.Server = hcloud.Int(volume.Server.ID)
+				volumeSchema.Server = hcloud.Ptr(volume.Server.ID)
 			}
 			volumesSchema = append(volumesSchema, volumeSchema)
 		}

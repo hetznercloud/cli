@@ -8,7 +8,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
-	"github.com/hetznercloud/hcloud-go/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 	"github.com/spf13/cobra"
 )
 
@@ -32,7 +32,7 @@ var AddServiceCommand = base.Cmd{
 		cmd.Flags().Bool("http-sticky-sessions", false, "Enable Sticky Sessions")
 		cmd.Flags().String("http-cookie-name", "", "Sticky Sessions: Cookie Name we set")
 		cmd.Flags().Duration("http-cookie-lifetime", 0, "Sticky Sessions: Lifetime of the cookie")
-		cmd.Flags().IntSlice("http-certificates", []int{}, "ID of Certificates which are attached to this Load Balancer")
+		cmd.Flags().Int64Slice("http-certificates", []int64{}, "ID of Certificates which are attached to this Load Balancer")
 		cmd.Flags().Bool("http-redirect-http", false, "Redirect all traffic on port 80 to port 443")
 
 		return cmd
@@ -41,7 +41,7 @@ var AddServiceCommand = base.Cmd{
 		protocol, _ := cmd.Flags().GetString("protocol")
 		listenPort, _ := cmd.Flags().GetInt("listen-port")
 		destinationPort, _ := cmd.Flags().GetInt("destination-port")
-		httpCertificates, _ := cmd.Flags().GetIntSlice("http-certificates")
+		httpCertificates, _ := cmd.Flags().GetInt64Slice("http-certificates")
 
 		if protocol == "" {
 			return fmt.Errorf("required flag protocol not set")

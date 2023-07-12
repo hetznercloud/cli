@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"sync"
 
-	"github.com/hetznercloud/hcloud-go/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 // NetworkClient embeds the Hetzner Cloud Network client and provides some
@@ -13,7 +13,7 @@ import (
 type NetworkClient interface {
 	NetworkClientBase
 	Names() []string
-	Name(int) string
+	Name(int64) string
 	LabelKeys(string) []string
 }
 
@@ -26,23 +26,23 @@ func NewNetworkClient(client NetworkClientBase) NetworkClient {
 type networkClient struct {
 	NetworkClientBase
 
-	netsByID   map[int]*hcloud.Network
+	netsByID   map[int64]*hcloud.Network
 	netsByName map[string]*hcloud.Network
 
 	once sync.Once
 	err  error
 }
 
-// NetworkName obtains the name of the network with id. If the name could not
+// Name obtains the name of the network with id. If the name could not
 // be fetched it returns the value id converted to a string.
-func (c *networkClient) Name(id int) string {
+func (c *networkClient) Name(id int64) string {
 	if err := c.init(); err != nil {
-		return strconv.Itoa(id)
+		return strconv.FormatInt(id, 10)
 	}
 
 	net, ok := c.netsByID[id]
 	if !ok || net.Name == "" {
-		return strconv.Itoa(id)
+		return strconv.FormatInt(id, 10)
 	}
 	return net.Name
 }
@@ -58,7 +58,7 @@ func (c *networkClient) Names() []string {
 	for _, net := range c.netsByID {
 		name := net.Name
 		if name == "" {
-			name = strconv.Itoa(net.ID)
+			name = strconv.FormatInt(net.ID, 10)
 		}
 		names[i] = name
 		i++
@@ -74,7 +74,7 @@ func (c *networkClient) LabelKeys(idOrName string) []string {
 	if err := c.init(); err != nil || len(c.netsByID) == 0 {
 		return nil
 	}
-	if id, err := strconv.Atoi(idOrName); err != nil {
+	if id, err := strconv.ParseInt(idOrName, 10, 64); err != nil {
 		net = c.netsByID[id]
 	}
 	if v, ok := c.netsByName[idOrName]; ok && net == nil {
@@ -95,7 +95,7 @@ func (c *networkClient) init() error {
 		if c.err != nil || len(nets) == 0 {
 			return
 		}
-		c.netsByID = make(map[int]*hcloud.Network, len(nets))
+		c.netsByID = make(map[int64]*hcloud.Network, len(nets))
 		c.netsByName = make(map[string]*hcloud.Network, len(nets))
 		for _, net := range nets {
 			c.netsByID[net.ID] = net

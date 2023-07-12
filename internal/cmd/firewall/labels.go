@@ -6,7 +6,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/hcapi2"
-	"github.com/hetznercloud/hcloud-go/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 var labelCmds = base.LabelCmds{
@@ -15,7 +15,7 @@ var labelCmds = base.LabelCmds{
 	ShortDescriptionRemove: "Remove a label from an firewall",
 	NameSuggestions:        func(c hcapi2.Client) func() []string { return c.Firewall().Names },
 	LabelKeySuggestions:    func(c hcapi2.Client) func(idOrName string) []string { return c.Firewall().LabelKeys },
-	FetchLabels: func(ctx context.Context, client hcapi2.Client, idOrName string) (map[string]string, int, error) {
+	FetchLabels: func(ctx context.Context, client hcapi2.Client, idOrName string) (map[string]string, int64, error) {
 		firewall, _, err := client.Firewall().Get(ctx, idOrName)
 		if err != nil {
 			return nil, 0, err
@@ -25,7 +25,7 @@ var labelCmds = base.LabelCmds{
 		}
 		return firewall.Labels, firewall.ID, nil
 	},
-	SetLabels: func(ctx context.Context, client hcapi2.Client, id int, labels map[string]string) error {
+	SetLabels: func(ctx context.Context, client hcapi2.Client, id int64, labels map[string]string) error {
 		opts := hcloud.FirewallUpdateOpts{
 			Labels: labels,
 		}

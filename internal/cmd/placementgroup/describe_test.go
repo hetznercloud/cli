@@ -11,7 +11,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/placementgroup"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/testutil"
-	"github.com/hetznercloud/hcloud-go/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -30,7 +30,7 @@ func TestDescribe(t *testing.T) {
 		Name:    "my Placement Group",
 		Created: time.Date(2021, 07, 23, 10, 0, 0, 0, time.UTC),
 		Labels:  map[string]string{"key": "value"},
-		Servers: []int{4711, 4712},
+		Servers: []int64{4711, 4712},
 		Type:    hcloud.PlacementGroupTypeSpread,
 	}
 
@@ -38,10 +38,10 @@ func TestDescribe(t *testing.T) {
 		Get(gomock.Any(), placementGroup.Name).
 		Return(&placementGroup, nil, nil)
 	fx.Client.ServerClient.EXPECT().
-		ServerName(4711).
+		ServerName(int64(4711)).
 		Return("server1")
 	fx.Client.ServerClient.EXPECT().
-		ServerName(4712).
+		ServerName(int64(4712)).
 		Return("server2")
 
 	out, err := fx.Run(cmd, []string{placementGroup.Name})

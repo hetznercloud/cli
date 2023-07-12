@@ -9,7 +9,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	hcloud "github.com/hetznercloud/hcloud-go/hcloud"
+	hcloud "github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 // MockServerClient is a mock of ServerClient interface.
@@ -353,7 +353,7 @@ func (mr *MockServerClientMockRecorder) Get(arg0, arg1 interface{}) *gomock.Call
 }
 
 // GetByID mocks base method.
-func (m *MockServerClient) GetByID(arg0 context.Context, arg1 int) (*hcloud.Server, *hcloud.Response, error) {
+func (m *MockServerClient) GetByID(arg0 context.Context, arg1 int64) (*hcloud.Server, *hcloud.Response, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetByID", arg0, arg1)
 	ret0, _ := ret[0].(*hcloud.Server)
@@ -589,7 +589,7 @@ func (mr *MockServerClientMockRecorder) ResetPassword(arg0, arg1 interface{}) *g
 }
 
 // ServerName mocks base method.
-func (m *MockServerClient) ServerName(arg0 int) string {
+func (m *MockServerClient) ServerName(arg0 int64) string {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ServerName", arg0)
 	ret0, _ := ret[0].(string)

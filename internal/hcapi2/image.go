@@ -4,7 +4,7 @@ import (
 	"context"
 	"strconv"
 
-	"github.com/hetznercloud/hcloud-go/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 // ImageClient embeds the Hetzner Cloud Image client and provides some
@@ -36,7 +36,7 @@ func (c *imageClient) Names() []string {
 	for i, img := range imgs {
 		name := img.Name
 		if name == "" {
-			name = strconv.Itoa(img.ID)
+			name = strconv.FormatInt(img.ID, 10)
 		}
 		names[i] = name
 	}

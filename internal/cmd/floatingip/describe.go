@@ -10,7 +10,7 @@ import (
 
 	"github.com/dustin/go-humanize"
 	"github.com/hetznercloud/cli/internal/cmd/util"
-	"github.com/hetznercloud/hcloud-go/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 var describeCmd = base.DescribeCmd{

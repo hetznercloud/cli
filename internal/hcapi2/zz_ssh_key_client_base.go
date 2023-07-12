@@ -4,10 +4,10 @@ package hcapi2
 
 import (
 	"context"
-	"github.com/hetznercloud/hcloud-go/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-// SSHKeyClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/hcloud.SSHKeyClient".
+// SSHKeyClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/v2/hcloud.SSHKeyClient".
 type SSHKeyClientBase interface {
 	All(context.Context) ([]*hcloud.SSHKey, error)
 	AllWithOpts(context.Context, hcloud.SSHKeyListOpts) ([]*hcloud.SSHKey, error)
@@ -15,7 +15,7 @@ type SSHKeyClientBase interface {
 	Delete(context.Context, *hcloud.SSHKey) (*hcloud.Response, error)
 	Get(context.Context, string) (*hcloud.SSHKey, *hcloud.Response, error)
 	GetByFingerprint(context.Context, string) (*hcloud.SSHKey, *hcloud.Response, error)
-	GetByID(context.Context, int) (*hcloud.SSHKey, *hcloud.Response, error)
+	GetByID(context.Context, int64) (*hcloud.SSHKey, *hcloud.Response, error)
 	GetByName(context.Context, string) (*hcloud.SSHKey, *hcloud.Response, error)
 	List(context.Context, hcloud.SSHKeyListOpts) ([]*hcloud.SSHKey, *hcloud.Response, error)
 	Update(context.Context, *hcloud.SSHKey, hcloud.SSHKeyUpdateOpts) (*hcloud.SSHKey, *hcloud.Response, error)

@@ -9,7 +9,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	hcloud "github.com/hetznercloud/hcloud-go/hcloud"
+	hcloud "github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 // MockImageClient is a mock of ImageClient interface.
@@ -113,7 +113,7 @@ func (mr *MockImageClientMockRecorder) Get(arg0, arg1 interface{}) *gomock.Call 
 }
 
 // GetByID mocks base method.
-func (m *MockImageClient) GetByID(arg0 context.Context, arg1 int) (*hcloud.Image, *hcloud.Response, error) {
+func (m *MockImageClient) GetByID(arg0 context.Context, arg1 int64) (*hcloud.Image, *hcloud.Response, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetByID", arg0, arg1)
 	ret0, _ := ret[0].(*hcloud.Image)

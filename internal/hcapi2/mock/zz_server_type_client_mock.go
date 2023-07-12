@@ -9,7 +9,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	hcloud "github.com/hetznercloud/hcloud-go/hcloud"
+	hcloud "github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 // MockServerTypeClient is a mock of ServerTypeClient interface.
@@ -50,6 +50,21 @@ func (mr *MockServerTypeClientMockRecorder) All(arg0 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "All", reflect.TypeOf((*MockServerTypeClient)(nil).All), arg0)
 }
 
+// AllWithOpts mocks base method.
+func (m *MockServerTypeClient) AllWithOpts(arg0 context.Context, arg1 hcloud.ServerTypeListOpts) ([]*hcloud.ServerType, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AllWithOpts", arg0, arg1)
+	ret0, _ := ret[0].([]*hcloud.ServerType)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AllWithOpts indicates an expected call of AllWithOpts.
+func (mr *MockServerTypeClientMockRecorder) AllWithOpts(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AllWithOpts", reflect.TypeOf((*MockServerTypeClient)(nil).AllWithOpts), arg0, arg1)
+}
+
 // Get mocks base method.
 func (m *MockServerTypeClient) Get(arg0 context.Context, arg1 string) (*hcloud.ServerType, *hcloud.Response, error) {
 	m.ctrl.T.Helper()
@@ -67,7 +82,7 @@ func (mr *MockServerTypeClientMockRecorder) Get(arg0, arg1 interface{}) *gomock.
 }
 
 // GetByID mocks base method.
-func (m *MockServerTypeClient) GetByID(arg0 context.Context, arg1 int) (*hcloud.ServerType, *hcloud.Response, error) {
+func (m *MockServerTypeClient) GetByID(arg0 context.Context, arg1 int64) (*hcloud.ServerType, *hcloud.Response, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetByID", arg0, arg1)
 	ret0, _ := ret[0].(*hcloud.ServerType)
@@ -129,7 +144,7 @@ func (mr *MockServerTypeClientMockRecorder) Names() *gomock.Call {
 }
 
 // ServerTypeDescription mocks base method.
-func (m *MockServerTypeClient) ServerTypeDescription(arg0 int) string {
+func (m *MockServerTypeClient) ServerTypeDescription(arg0 int64) string {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ServerTypeDescription", arg0)
 	ret0, _ := ret[0].(string)
@@ -143,7 +158,7 @@ func (mr *MockServerTypeClientMockRecorder) ServerTypeDescription(arg0 interface
 }
 
 // ServerTypeName mocks base method.
-func (m *MockServerTypeClient) ServerTypeName(arg0 int) string {
+func (m *MockServerTypeClient) ServerTypeName(arg0 int64) string {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ServerTypeName", arg0)
 	ret0, _ := ret[0].(string)

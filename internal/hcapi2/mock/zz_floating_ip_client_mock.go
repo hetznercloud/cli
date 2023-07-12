@@ -9,7 +9,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	hcloud "github.com/hetznercloud/hcloud-go/hcloud"
+	hcloud "github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 // MockFloatingIPClient is a mock of FloatingIPClient interface.
@@ -161,7 +161,7 @@ func (mr *MockFloatingIPClientMockRecorder) Get(arg0, arg1 interface{}) *gomock.
 }
 
 // GetByID mocks base method.
-func (m *MockFloatingIPClient) GetByID(arg0 context.Context, arg1 int) (*hcloud.FloatingIP, *hcloud.Response, error) {
+func (m *MockFloatingIPClient) GetByID(arg0 context.Context, arg1 int64) (*hcloud.FloatingIP, *hcloud.Response, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetByID", arg0, arg1)
 	ret0, _ := ret[0].(*hcloud.FloatingIP)

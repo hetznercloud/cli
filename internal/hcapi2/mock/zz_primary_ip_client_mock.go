@@ -9,7 +9,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	hcloud "github.com/hetznercloud/hcloud-go/hcloud"
+	hcloud "github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 // MockPrimaryIPClient is a mock of PrimaryIPClient interface.
@@ -161,7 +161,7 @@ func (mr *MockPrimaryIPClientMockRecorder) Get(arg0, arg1 interface{}) *gomock.C
 }
 
 // GetByID mocks base method.
-func (m *MockPrimaryIPClient) GetByID(arg0 context.Context, arg1 int) (*hcloud.PrimaryIP, *hcloud.Response, error) {
+func (m *MockPrimaryIPClient) GetByID(arg0 context.Context, arg1 int64) (*hcloud.PrimaryIP, *hcloud.Response, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetByID", arg0, arg1)
 	ret0, _ := ret[0].(*hcloud.PrimaryIP)
@@ -281,7 +281,7 @@ func (mr *MockPrimaryIPClientMockRecorder) Names() *gomock.Call {
 }
 
 // Unassign mocks base method.
-func (m *MockPrimaryIPClient) Unassign(arg0 context.Context, arg1 int) (*hcloud.Action, *hcloud.Response, error) {
+func (m *MockPrimaryIPClient) Unassign(arg0 context.Context, arg1 int64) (*hcloud.Action, *hcloud.Response, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Unassign", arg0, arg1)
 	ret0, _ := ret[0].(*hcloud.Action)

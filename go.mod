@@ -8,7 +8,7 @@ require (
 	github.com/golang/mock v1.6.0
 	github.com/google/go-cmp v0.5.9
 	github.com/guptarohit/asciigraph v0.5.6
-	github.com/hetznercloud/hcloud-go v1.47.0
+	github.com/hetznercloud/hcloud-go/v2 v2.0.0
 	github.com/pelletier/go-toml/v2 v2.0.8
 	github.com/rjeczalik/interfaces v0.3.0
 	github.com/spf13/cobra v1.7.0
@@ -25,7 +25,6 @@ require (
 	github.com/fatih/color v1.15.0 // indirect
 	github.com/golang/protobuf v1.5.3 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
-	github.com/kr/text v0.2.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.19 // indirect
 	github.com/mattn/go-runewidth v0.0.14 // indirect
@@ -36,9 +35,8 @@ require (
 	github.com/prometheus/common v0.42.0 // indirect
 	github.com/prometheus/procfs v0.10.1 // indirect
 	github.com/rivo/uniseg v0.2.0 // indirect
-	github.com/rogpeppe/go-internal v1.10.0 // indirect
-	golang.org/x/mod v0.8.0 // indirect
-	golang.org/x/net v0.11.0 // indirect
+	golang.org/x/mod v0.9.0 // indirect
+	golang.org/x/net v0.12.0 // indirect
 	golang.org/x/sys v0.10.0 // indirect
 	golang.org/x/term v0.10.0 // indirect
 	golang.org/x/text v0.11.0 // indirect

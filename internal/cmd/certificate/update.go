@@ -7,7 +7,7 @@ import (
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/spf13/pflag"
 
-	"github.com/hetznercloud/hcloud-go/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 	"github.com/spf13/cobra"
 )
 

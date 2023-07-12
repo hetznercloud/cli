@@ -34,7 +34,7 @@ func (c *sshKeyClient) Names() []string {
 	for i, key := range sshKeys {
 		name := key.Name
 		if name == "" {
-			name = strconv.Itoa(key.ID)
+			name = strconv.FormatInt(key.ID, 10)
 		}
 		names[i] = name
 	}

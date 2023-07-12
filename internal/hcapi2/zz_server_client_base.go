@@ -4,10 +4,10 @@ package hcapi2
 
 import (
 	"context"
-	"github.com/hetznercloud/hcloud-go/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-// ServerClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/hcloud.ServerClient".
+// ServerClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/v2/hcloud.ServerClient".
 type ServerClientBase interface {
 	AddToPlacementGroup(context.Context, *hcloud.Server, *hcloud.PlacementGroup) (*hcloud.Action, *hcloud.Response, error)
 	All(context.Context) ([]*hcloud.Server, error)
@@ -29,7 +29,7 @@ type ServerClientBase interface {
 	EnableBackup(context.Context, *hcloud.Server, string) (*hcloud.Action, *hcloud.Response, error)
 	EnableRescue(context.Context, *hcloud.Server, hcloud.ServerEnableRescueOpts) (hcloud.ServerEnableRescueResult, *hcloud.Response, error)
 	Get(context.Context, string) (*hcloud.Server, *hcloud.Response, error)
-	GetByID(context.Context, int) (*hcloud.Server, *hcloud.Response, error)
+	GetByID(context.Context, int64) (*hcloud.Server, *hcloud.Response, error)
 	GetByName(context.Context, string) (*hcloud.Server, *hcloud.Response, error)
 	GetMetrics(context.Context, *hcloud.Server, hcloud.ServerGetMetricsOpts) (*hcloud.ServerMetrics, *hcloud.Response, error)
 	List(context.Context, hcloud.ServerListOpts) ([]*hcloud.Server, *hcloud.Response, error)

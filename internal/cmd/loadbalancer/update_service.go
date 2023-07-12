@@ -9,7 +9,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
-	"github.com/hetznercloud/hcloud-go/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 	"github.com/spf13/cobra"
 )
 
@@ -36,7 +36,7 @@ var UpdateServiceCommand = base.Cmd{
 		cmd.Flags().Bool("http-sticky-sessions", false, "Enable or disable (with --http-sticky-sessions=false) Sticky Sessions")
 		cmd.Flags().String("http-cookie-name", "", "Sticky Sessions: Cookie Name which will be set")
 		cmd.Flags().Duration("http-cookie-lifetime", 0, "Sticky Sessions: Lifetime of the cookie")
-		cmd.Flags().IntSlice("http-certificates", []int{}, "ID of Certificates which are attached to this Load Balancer")
+		cmd.Flags().Int64Slice("http-certificates", []int64{}, "ID of Certificates which are attached to this Load Balancer")
 
 		cmd.Flags().String("health-check-protocol", "", "The protocol the health check is performed over")
 		cmd.Flags().Int("health-check-port", 0, "The port the health check is performed over")
@@ -105,7 +105,7 @@ var UpdateServiceCommand = base.Cmd{
 			opts.HTTP.CookieLifetime = hcloud.Duration(cookieLifetime)
 		}
 		if cmd.Flag("http-certificates").Changed {
-			certificates, _ := cmd.Flags().GetIntSlice("http-certificates")
+			certificates, _ := cmd.Flags().GetInt64Slice("http-certificates")
 			for _, certificateID := range certificates {
 				opts.HTTP.Certificates = append(opts.HTTP.Certificates, &hcloud.Certificate{ID: certificateID})
 			}

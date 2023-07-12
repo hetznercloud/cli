@@ -9,7 +9,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	hcloud "github.com/hetznercloud/hcloud-go/hcloud"
+	hcloud "github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 // MockLoadBalancerTypeClient is a mock of LoadBalancerTypeClient interface.
@@ -50,6 +50,21 @@ func (mr *MockLoadBalancerTypeClientMockRecorder) All(arg0 interface{}) *gomock.
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "All", reflect.TypeOf((*MockLoadBalancerTypeClient)(nil).All), arg0)
 }
 
+// AllWithOpts mocks base method.
+func (m *MockLoadBalancerTypeClient) AllWithOpts(arg0 context.Context, arg1 hcloud.LoadBalancerTypeListOpts) ([]*hcloud.LoadBalancerType, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AllWithOpts", arg0, arg1)
+	ret0, _ := ret[0].([]*hcloud.LoadBalancerType)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AllWithOpts indicates an expected call of AllWithOpts.
+func (mr *MockLoadBalancerTypeClientMockRecorder) AllWithOpts(arg0, arg1 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AllWithOpts", reflect.TypeOf((*MockLoadBalancerTypeClient)(nil).AllWithOpts), arg0, arg1)
+}
+
 // Get mocks base method.
 func (m *MockLoadBalancerTypeClient) Get(arg0 context.Context, arg1 string) (*hcloud.LoadBalancerType, *hcloud.Response, error) {
 	m.ctrl.T.Helper()
@@ -67,7 +82,7 @@ func (mr *MockLoadBalancerTypeClientMockRecorder) Get(arg0, arg1 interface{}) *g
 }
 
 // GetByID mocks base method.
-func (m *MockLoadBalancerTypeClient) GetByID(arg0 context.Context, arg1 int) (*hcloud.LoadBalancerType, *hcloud.Response, error) {
+func (m *MockLoadBalancerTypeClient) GetByID(arg0 context.Context, arg1 int64) (*hcloud.LoadBalancerType, *hcloud.Response, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetByID", arg0, arg1)
 	ret0, _ := ret[0].(*hcloud.LoadBalancerType)
@@ -115,7 +130,7 @@ func (mr *MockLoadBalancerTypeClientMockRecorder) List(arg0, arg1 interface{}) *
 }
 
 // LoadBalancerTypeDescription mocks base method.
-func (m *MockLoadBalancerTypeClient) LoadBalancerTypeDescription(arg0 int) string {
+func (m *MockLoadBalancerTypeClient) LoadBalancerTypeDescription(arg0 int64) string {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "LoadBalancerTypeDescription", arg0)
 	ret0, _ := ret[0].(string)
@@ -129,7 +144,7 @@ func (mr *MockLoadBalancerTypeClientMockRecorder) LoadBalancerTypeDescription(ar
 }
 
 // LoadBalancerTypeName mocks base method.
-func (m *MockLoadBalancerTypeClient) LoadBalancerTypeName(arg0 int) string {
+func (m *MockLoadBalancerTypeClient) LoadBalancerTypeName(arg0 int64) string {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "LoadBalancerTypeName", arg0)
 	ret0, _ := ret[0].(string)

@@ -9,8 +9,8 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/hetznercloud/hcloud-go/hcloud"
-	"github.com/hetznercloud/hcloud-go/hcloud/schema"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -247,7 +247,7 @@ func ImageToSchema(image hcloud.Image) schema.Image {
 		}
 	}
 	if image.BoundTo != nil {
-		imageSchema.BoundTo = hcloud.Int(image.BoundTo.ID)
+		imageSchema.BoundTo = hcloud.Ptr(image.BoundTo.ID)
 	}
 	return imageSchema
 }

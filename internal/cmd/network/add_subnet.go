@@ -9,7 +9,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
-	"github.com/hetznercloud/hcloud-go/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 	"github.com/spf13/cobra"
 )
 
@@ -34,14 +34,14 @@ var AddSubnetCommand = base.Cmd{
 
 		cmd.Flags().IPNet("ip-range", net.IPNet{}, "Range to allocate IPs from")
 
-		cmd.Flags().Int("vswitch-id", 0, "ID of the vSwitch")
+		cmd.Flags().Int64("vswitch-id", 0, "ID of the vSwitch")
 		return cmd
 	},
 	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
 		subnetType, _ := cmd.Flags().GetString("type")
 		networkZone, _ := cmd.Flags().GetString("network-zone")
 		ipRange, _ := cmd.Flags().GetIPNet("ip-range")
-		vSwitchID, _ := cmd.Flags().GetInt("vswitch-id")
+		vSwitchID, _ := cmd.Flags().GetInt64("vswitch-id")
 		idOrName := args[0]
 
 		network, _, err := client.Network().Get(ctx, idOrName)

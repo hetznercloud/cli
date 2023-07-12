@@ -12,10 +12,10 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
-	"github.com/hetznercloud/hcloud-go/hcloud/schema"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 	"github.com/spf13/cobra"
 
-	"github.com/hetznercloud/hcloud-go/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 var ListCmd = base.ListCmd{
@@ -86,7 +86,7 @@ var ListCmd = base.ListCmd{
 				server := obj.(*hcloud.Server)
 				var volumes []string
 				for _, volume := range server.Volumes {
-					volumeID := strconv.Itoa(volume.ID)
+					volumeID := strconv.FormatInt(volume.ID, 10)
 					volumes = append(volumes, volumeID)
 				}
 				return strings.Join(volumes, ", ")

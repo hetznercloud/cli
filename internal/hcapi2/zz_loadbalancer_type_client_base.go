@@ -4,14 +4,15 @@ package hcapi2
 
 import (
 	"context"
-	"github.com/hetznercloud/hcloud-go/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-// LoadBalancerTypeClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/hcloud.LoadBalancerTypeClient".
+// LoadBalancerTypeClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/v2/hcloud.LoadBalancerTypeClient".
 type LoadBalancerTypeClientBase interface {
 	All(context.Context) ([]*hcloud.LoadBalancerType, error)
+	AllWithOpts(context.Context, hcloud.LoadBalancerTypeListOpts) ([]*hcloud.LoadBalancerType, error)
 	Get(context.Context, string) (*hcloud.LoadBalancerType, *hcloud.Response, error)
-	GetByID(context.Context, int) (*hcloud.LoadBalancerType, *hcloud.Response, error)
+	GetByID(context.Context, int64) (*hcloud.LoadBalancerType, *hcloud.Response, error)
 	GetByName(context.Context, string) (*hcloud.LoadBalancerType, *hcloud.Response, error)
 	List(context.Context, hcloud.LoadBalancerTypeListOpts) ([]*hcloud.LoadBalancerType, *hcloud.Response, error)
 }

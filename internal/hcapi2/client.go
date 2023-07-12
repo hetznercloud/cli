@@ -3,7 +3,7 @@ package hcapi2
 import (
 	"sync"
 
-	"github.com/hetznercloud/hcloud-go/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 // Client makes all API clients accessible via a single interface.

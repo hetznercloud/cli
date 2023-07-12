@@ -6,7 +6,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/hetznercloud/cli/internal/testutil"
-	"github.com/hetznercloud/hcloud-go/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -30,7 +30,7 @@ func TestUnAssign(t *testing.T) {
 	fx.Client.PrimaryIPClient.EXPECT().
 		Unassign(
 			gomock.Any(),
-			13,
+			int64(13),
 		).
 		Return(
 			action,

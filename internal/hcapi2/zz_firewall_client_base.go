@@ -4,10 +4,10 @@ package hcapi2
 
 import (
 	"context"
-	"github.com/hetznercloud/hcloud-go/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-// FirewallClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/hcloud.FirewallClient".
+// FirewallClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/v2/hcloud.FirewallClient".
 type FirewallClientBase interface {
 	All(context.Context) ([]*hcloud.Firewall, error)
 	AllWithOpts(context.Context, hcloud.FirewallListOpts) ([]*hcloud.Firewall, error)
@@ -15,7 +15,7 @@ type FirewallClientBase interface {
 	Create(context.Context, hcloud.FirewallCreateOpts) (hcloud.FirewallCreateResult, *hcloud.Response, error)
 	Delete(context.Context, *hcloud.Firewall) (*hcloud.Response, error)
 	Get(context.Context, string) (*hcloud.Firewall, *hcloud.Response, error)
-	GetByID(context.Context, int) (*hcloud.Firewall, *hcloud.Response, error)
+	GetByID(context.Context, int64) (*hcloud.Firewall, *hcloud.Response, error)
 	GetByName(context.Context, string) (*hcloud.Firewall, *hcloud.Response, error)
 	List(context.Context, hcloud.FirewallListOpts) ([]*hcloud.Firewall, *hcloud.Response, error)
 	RemoveResources(context.Context, *hcloud.Firewall, []hcloud.FirewallResource) ([]*hcloud.Action, *hcloud.Response, error)

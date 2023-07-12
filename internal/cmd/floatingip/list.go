@@ -13,9 +13,9 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
-	"github.com/hetznercloud/hcloud-go/hcloud/schema"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 
-	"github.com/hetznercloud/hcloud-go/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 var listCmd = base.ListCmd{
@@ -116,7 +116,7 @@ var listCmd = base.ListCmd{
 				})
 			}
 			if floatingIP.Server != nil {
-				floatingIPSchema.Server = hcloud.Int(floatingIP.Server.ID)
+				floatingIPSchema.Server = hcloud.Ptr(floatingIP.Server.ID)
 			}
 			floatingIPSchemas = append(floatingIPSchemas, floatingIPSchema)
 		}

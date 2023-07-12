@@ -8,7 +8,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/hetznercloud/cli/internal/cmd/placementgroup"
 	"github.com/hetznercloud/cli/internal/testutil"
-	"github.com/hetznercloud/hcloud-go/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -28,7 +28,7 @@ func TestDelete(t *testing.T) {
 		Name:    "my Placement Group",
 		Created: time.Now(),
 		Labels:  map[string]string{"key": "value"},
-		Servers: []int{4711, 4712},
+		Servers: []int64{4711, 4712},
 		Type:    hcloud.PlacementGroupTypeSpread,
 	}
 

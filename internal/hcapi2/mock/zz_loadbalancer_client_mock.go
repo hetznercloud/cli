@@ -10,7 +10,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	hcloud "github.com/hetznercloud/hcloud-go/hcloud"
+	hcloud "github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 // MockLoadBalancerClient is a mock of LoadBalancerClient interface.
@@ -322,7 +322,7 @@ func (mr *MockLoadBalancerClientMockRecorder) Get(arg0, arg1 interface{}) *gomoc
 }
 
 // GetByID mocks base method.
-func (m *MockLoadBalancerClient) GetByID(arg0 context.Context, arg1 int) (*hcloud.LoadBalancer, *hcloud.Response, error) {
+func (m *MockLoadBalancerClient) GetByID(arg0 context.Context, arg1 int64) (*hcloud.LoadBalancer, *hcloud.Response, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetByID", arg0, arg1)
 	ret0, _ := ret[0].(*hcloud.LoadBalancer)
@@ -400,7 +400,7 @@ func (mr *MockLoadBalancerClientMockRecorder) List(arg0, arg1 interface{}) *gomo
 }
 
 // LoadBalancerName mocks base method.
-func (m *MockLoadBalancerClient) LoadBalancerName(arg0 int) string {
+func (m *MockLoadBalancerClient) LoadBalancerName(arg0 int64) string {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "LoadBalancerName", arg0)
 	ret0, _ := ret[0].(string)

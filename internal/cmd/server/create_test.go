@@ -8,7 +8,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/hetznercloud/cli/internal/cmd/server"
 	"github.com/hetznercloud/cli/internal/testutil"
-	"github.com/hetznercloud/hcloud-go/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -49,7 +49,7 @@ func TestCreate(t *testing.T) {
 			NextActions: []*hcloud.Action{{ID: 234}},
 		}, nil, nil)
 	fx.Client.ServerClient.EXPECT().
-		GetByID(gomock.Any(), 1234).
+		GetByID(gomock.Any(), int64(1234)).
 		Return(&hcloud.Server{
 			ID: 1234,
 			PublicNet: hcloud.ServerPublicNet{

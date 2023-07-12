@@ -4,11 +4,11 @@ package hcapi2
 
 import (
 	"context"
-	"github.com/hetznercloud/hcloud-go/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 	"net"
 )
 
-// LoadBalancerClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/hcloud.LoadBalancerClient".
+// LoadBalancerClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/v2/hcloud.LoadBalancerClient".
 type LoadBalancerClientBase interface {
 	AddIPTarget(context.Context, *hcloud.LoadBalancer, hcloud.LoadBalancerAddIPTargetOpts) (*hcloud.Action, *hcloud.Response, error)
 	AddLabelSelectorTarget(context.Context, *hcloud.LoadBalancer, hcloud.LoadBalancerAddLabelSelectorTargetOpts) (*hcloud.Action, *hcloud.Response, error)
@@ -28,7 +28,7 @@ type LoadBalancerClientBase interface {
 	DisablePublicInterface(context.Context, *hcloud.LoadBalancer) (*hcloud.Action, *hcloud.Response, error)
 	EnablePublicInterface(context.Context, *hcloud.LoadBalancer) (*hcloud.Action, *hcloud.Response, error)
 	Get(context.Context, string) (*hcloud.LoadBalancer, *hcloud.Response, error)
-	GetByID(context.Context, int) (*hcloud.LoadBalancer, *hcloud.Response, error)
+	GetByID(context.Context, int64) (*hcloud.LoadBalancer, *hcloud.Response, error)
 	GetByName(context.Context, string) (*hcloud.LoadBalancer, *hcloud.Response, error)
 	GetMetrics(context.Context, *hcloud.LoadBalancer, hcloud.LoadBalancerGetMetricsOpts) (*hcloud.LoadBalancerMetrics, *hcloud.Response, error)
 	List(context.Context, hcloud.LoadBalancerListOpts) ([]*hcloud.LoadBalancer, *hcloud.Response, error)

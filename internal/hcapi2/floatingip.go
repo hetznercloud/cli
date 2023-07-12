@@ -26,7 +26,7 @@ type floatingIPClient struct {
 	FloatingIPClientBase
 }
 
-// FloatingIPNames obtains a list of available floating IPs. It returns nil if
+// Names obtains a list of available floating IPs. It returns nil if
 // no floating IP names could be fetched or none were available.
 func (c *floatingIPClient) Names() []string {
 	fips, err := c.All(context.Background())
@@ -37,14 +37,14 @@ func (c *floatingIPClient) Names() []string {
 	for i, fip := range fips {
 		name := fip.Name
 		if name == "" {
-			name = strconv.Itoa(fip.ID)
+			name = strconv.FormatInt(fip.ID, 10)
 		}
 		names[i] = name
 	}
 	return names
 }
 
-// FloatingIPLabelKeys returns a slice containing the keys of all labels
+// LabelKeys returns a slice containing the keys of all labels
 // assigned to the Floating IP with the passed idOrName.
 func (c *floatingIPClient) LabelKeys(idOrName string) []string {
 	fip, _, err := c.Get(context.Background(), idOrName)

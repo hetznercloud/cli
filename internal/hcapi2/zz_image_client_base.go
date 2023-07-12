@@ -4,17 +4,17 @@ package hcapi2
 
 import (
 	"context"
-	"github.com/hetznercloud/hcloud-go/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-// ImageClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/hcloud.ImageClient".
+// ImageClientBase is an interface generated for "github.com/hetznercloud/hcloud-go/v2/hcloud.ImageClient".
 type ImageClientBase interface {
 	All(context.Context) ([]*hcloud.Image, error)
 	AllWithOpts(context.Context, hcloud.ImageListOpts) ([]*hcloud.Image, error)
 	ChangeProtection(context.Context, *hcloud.Image, hcloud.ImageChangeProtectionOpts) (*hcloud.Action, *hcloud.Response, error)
 	Delete(context.Context, *hcloud.Image) (*hcloud.Response, error)
 	Get(context.Context, string) (*hcloud.Image, *hcloud.Response, error)
-	GetByID(context.Context, int) (*hcloud.Image, *hcloud.Response, error)
+	GetByID(context.Context, int64) (*hcloud.Image, *hcloud.Response, error)
 	GetByName(context.Context, string) (*hcloud.Image, *hcloud.Response, error)
 	GetByNameAndArchitecture(context.Context, string, hcloud.Architecture) (*hcloud.Image, *hcloud.Response, error)
 	GetForArchitecture(context.Context, string, hcloud.Architecture) (*hcloud.Image, *hcloud.Response, error)

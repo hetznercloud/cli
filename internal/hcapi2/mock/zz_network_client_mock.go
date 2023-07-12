@@ -9,7 +9,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	hcloud "github.com/hetznercloud/hcloud-go/hcloud"
+	hcloud "github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 // MockNetworkClient is a mock of NetworkClient interface.
@@ -209,7 +209,7 @@ func (mr *MockNetworkClientMockRecorder) Get(arg0, arg1 interface{}) *gomock.Cal
 }
 
 // GetByID mocks base method.
-func (m *MockNetworkClient) GetByID(arg0 context.Context, arg1 int) (*hcloud.Network, *hcloud.Response, error) {
+func (m *MockNetworkClient) GetByID(arg0 context.Context, arg1 int64) (*hcloud.Network, *hcloud.Response, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "GetByID", arg0, arg1)
 	ret0, _ := ret[0].(*hcloud.Network)
@@ -271,7 +271,7 @@ func (mr *MockNetworkClientMockRecorder) List(arg0, arg1 interface{}) *gomock.Ca
 }
 
 // Name mocks base method.
-func (m *MockNetworkClient) Name(arg0 int) string {
+func (m *MockNetworkClient) Name(arg0 int64) string {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Name", arg0)
 	ret0, _ := ret[0].(string)

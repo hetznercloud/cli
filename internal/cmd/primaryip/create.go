@@ -8,7 +8,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
-	"github.com/hetznercloud/hcloud-go/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 	"github.com/spf13/cobra"
 )
 
@@ -28,7 +28,7 @@ var CreateCmd = base.Cmd{
 		cmd.Flags().String("name", "", "Name (required)")
 		cmd.MarkFlagRequired("name")
 
-		cmd.Flags().Int("assignee-id", 0, "Assignee (usually a server) to assign Primary IP to")
+		cmd.Flags().Int64("assignee-id", 0, "Assignee (usually a server) to assign Primary IP to")
 
 		cmd.Flags().String("datacenter", "", "Datacenter (ID or name)")
 		cmd.RegisterFlagCompletionFunc("datacenter", cmpl.SuggestCandidatesF(client.Datacenter().Names))
@@ -39,7 +39,7 @@ var CreateCmd = base.Cmd{
 	Run: func(ctx context.Context, client hcapi2.Client, actionWaiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
 		typ, _ := cmd.Flags().GetString("type")
 		name, _ := cmd.Flags().GetString("name")
-		assigneeID, _ := cmd.Flags().GetInt("assignee-id")
+		assigneeID, _ := cmd.Flags().GetInt64("assignee-id")
 		datacenter, _ := cmd.Flags().GetString("datacenter")
 
 		opts := hcloud.PrimaryIPCreateOpts{
