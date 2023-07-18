@@ -13,7 +13,7 @@ import (
 
 var updateCmd = base.UpdateCmd{
 	ResourceNameSingular: "Image",
-	ShortDescription:     "Update a Image",
+	ShortDescription:     "Update an image",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Image().Names },
 	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
 		return client.Image().Get(ctx, idOrName)

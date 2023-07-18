@@ -12,7 +12,7 @@ import (
 
 var deleteCmd = base.DeleteCmd{
 	ResourceNameSingular: "image",
-	ShortDescription:     "Delete a image",
+	ShortDescription:     "Delete an image",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Image().Names },
 	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
 		return client.Image().Get(ctx, idOrName)
