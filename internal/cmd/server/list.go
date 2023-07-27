@@ -131,74 +131,79 @@ var ListCmd = base.ListCmd{
 		var serversSchema []schema.Server
 		for _, resource := range resources {
 			server := resource.(*hcloud.Server)
-
-			serverSchema := schema.Server{
-				ID:         server.ID,
-				Name:       server.Name,
-				Status:     string(server.Status),
-				Created:    server.Created,
-				Datacenter: util.DatacenterToSchema(*server.Datacenter),
-				ServerType: util.ServerTypeToSchema(*server.ServerType),
-				PublicNet: schema.ServerPublicNet{
-					IPv4: schema.ServerPublicNetIPv4{
-						IP:      server.PublicNet.IPv4.IP.String(),
-						Blocked: server.PublicNet.IPv4.Blocked,
-						DNSPtr:  server.PublicNet.IPv4.DNSPtr,
-					},
-					IPv6: schema.ServerPublicNetIPv6{
-						IP:      server.PublicNet.IPv6.IP.String(),
-						Blocked: server.PublicNet.IPv6.Blocked,
-					},
-				},
-				RescueEnabled:   server.RescueEnabled,
-				BackupWindow:    hcloud.String(server.BackupWindow),
-				OutgoingTraffic: &server.OutgoingTraffic,
-				IngoingTraffic:  &server.IngoingTraffic,
-				IncludedTraffic: server.IncludedTraffic,
-				Protection: schema.ServerProtection{
-					Delete:  server.Protection.Delete,
-					Rebuild: server.Protection.Rebuild,
-				},
-				Labels:          server.Labels,
-				PrimaryDiskSize: server.PrimaryDiskSize,
-			}
-			if server.PlacementGroup != nil {
-				serverPlacementGroup := util.PlacementGroupToSchema(*server.PlacementGroup)
-				serverSchema.PlacementGroup = &serverPlacementGroup
-			}
-			if server.Image != nil {
-				serverImage := util.ImageToSchema(*server.Image)
-				serverSchema.Image = &serverImage
-			}
-			if server.ISO != nil {
-				serverISO := util.ISOToSchema(*server.ISO)
-				serverSchema.ISO = &serverISO
-			}
-			for ip, dnsPTR := range server.PublicNet.IPv6.DNSPtr {
-				serverSchema.PublicNet.IPv6.DNSPtr = append(serverSchema.PublicNet.IPv6.DNSPtr, schema.ServerPublicNetIPv6DNSPtr{
-					IP:     ip,
-					DNSPtr: dnsPTR,
-				})
-			}
-			for _, floatingIP := range server.PublicNet.FloatingIPs {
-				serverSchema.PublicNet.FloatingIPs = append(serverSchema.PublicNet.FloatingIPs, floatingIP.ID)
-			}
-			for _, volume := range server.Volumes {
-				serverSchema.Volumes = append(serverSchema.Volumes, volume.ID)
-			}
-			for _, privateNet := range server.PrivateNet {
-				privateNetSchema := schema.ServerPrivateNet{
-					Network:    privateNet.Network.ID,
-					IP:         privateNet.IP.String(),
-					MACAddress: privateNet.MACAddress,
-				}
-				for _, aliasIP := range privateNet.Aliases {
-					privateNetSchema.AliasIPs = append(privateNetSchema.AliasIPs, aliasIP.String())
-				}
-				serverSchema.PrivateNet = append(serverSchema.PrivateNet, privateNetSchema)
-			}
+			serverSchema := serverToSchema(server)
 			serversSchema = append(serversSchema, serverSchema)
 		}
 		return serversSchema
 	},
+}
+
+func serverToSchema(server *hcloud.Server) schema.Server {
+	serverSchema := schema.Server{
+		ID:         server.ID,
+		Name:       server.Name,
+		Status:     string(server.Status),
+		Created:    server.Created,
+		Datacenter: util.DatacenterToSchema(*server.Datacenter),
+		ServerType: util.ServerTypeToSchema(*server.ServerType),
+		PublicNet: schema.ServerPublicNet{
+			IPv4: schema.ServerPublicNetIPv4{
+				IP:      server.PublicNet.IPv4.IP.String(),
+				Blocked: server.PublicNet.IPv4.Blocked,
+				DNSPtr:  server.PublicNet.IPv4.DNSPtr,
+			},
+			IPv6: schema.ServerPublicNetIPv6{
+				IP:      server.PublicNet.IPv6.IP.String(),
+				Blocked: server.PublicNet.IPv6.Blocked,
+			},
+		},
+		RescueEnabled:   server.RescueEnabled,
+		BackupWindow:    hcloud.Ptr(server.BackupWindow),
+		OutgoingTraffic: &server.OutgoingTraffic,
+		IngoingTraffic:  &server.IngoingTraffic,
+		IncludedTraffic: server.IncludedTraffic,
+		Protection: schema.ServerProtection{
+			Delete:  server.Protection.Delete,
+			Rebuild: server.Protection.Rebuild,
+		},
+		Labels:          server.Labels,
+		PrimaryDiskSize: server.PrimaryDiskSize,
+	}
+	if server.PlacementGroup != nil {
+		serverPlacementGroup := util.PlacementGroupToSchema(*server.PlacementGroup)
+		serverSchema.PlacementGroup = &serverPlacementGroup
+	}
+	if server.Image != nil {
+		serverImage := util.ImageToSchema(*server.Image)
+		serverSchema.Image = &serverImage
+	}
+	if server.ISO != nil {
+		serverISO := util.ISOToSchema(*server.ISO)
+		serverSchema.ISO = &serverISO
+	}
+	for ip, dnsPTR := range server.PublicNet.IPv6.DNSPtr {
+		serverSchema.PublicNet.IPv6.DNSPtr = append(serverSchema.PublicNet.IPv6.DNSPtr, schema.ServerPublicNetIPv6DNSPtr{
+			IP:     ip,
+			DNSPtr: dnsPTR,
+		})
+	}
+	for _, floatingIP := range server.PublicNet.FloatingIPs {
+		serverSchema.PublicNet.FloatingIPs = append(serverSchema.PublicNet.FloatingIPs, floatingIP.ID)
+	}
+	for _, volume := range server.Volumes {
+		serverSchema.Volumes = append(serverSchema.Volumes, volume.ID)
+	}
+	for _, privateNet := range server.PrivateNet {
+		privateNetSchema := schema.ServerPrivateNet{
+			Network:    privateNet.Network.ID,
+			IP:         privateNet.IP.String(),
+			MACAddress: privateNet.MACAddress,
+		}
+		for _, aliasIP := range privateNet.Aliases {
+			privateNetSchema.AliasIPs = append(privateNetSchema.AliasIPs, aliasIP.String())
+		}
+		serverSchema.PrivateNet = append(serverSchema.PrivateNet, privateNetSchema)
+	}
+
+	return serverSchema
 }

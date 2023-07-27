@@ -14,6 +14,8 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/output"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -77,6 +79,9 @@ var CreateCmd = base.Cmd{
 
 		cmd.Flags().Bool("without-ipv4", false, "Creates the server without an IPv4 (default: false)")
 		cmd.Flags().Bool("without-ipv6", false, "Creates the server without an IPv6 (default: false)")
+
+		output.AddFlag(cmd, output.OptionJSON())
+
 		return cmd
 	},
 
@@ -102,29 +107,59 @@ var CreateCmd = base.Cmd{
 		if err != nil {
 			return err
 		}
-		fmt.Printf("Server %d created\n", result.Server.ID)
-		if !server.PublicNet.IPv4.IsUnspecified() {
-			fmt.Printf("IPv4: %s\n", server.PublicNet.IPv4.IP.String())
-		}
-		if !server.PublicNet.IPv6.IsUnspecified() {
-			fmt.Printf("IPv6: %s1\n", server.PublicNet.IPv6.Network.IP.String())
-			fmt.Printf("IPv6 Network: %s\n", server.PublicNet.IPv6.Network.String())
-		}
-		if len(server.PrivateNet) > 0 {
-			var networks []string
-			for _, network := range server.PrivateNet {
-				networks = append(networks, fmt.Sprintf("- %s (%s)", network.IP.String(), client.Network().Name(network.Network.ID)))
+
+		outputFlags := output.FlagsForCommand(cmd)
+		switch {
+		case outputFlags.IsSet("json"):
+			err := createPrintJSON(result, server)
+			if err != nil {
+				return err
 			}
-			fmt.Printf("Private Networks:\n\t%s\n", strings.Join(networks, "\n"))
-		}
-		// Only print the root password if it's not empty,
-		// which is only the case if it wasn't created with an SSH key.
-		if result.RootPassword != "" {
-			fmt.Printf("Root password: %s\n", result.RootPassword)
+
+		default:
+			createPrintText(client, result, server)
 		}
 
 		return nil
 	},
+}
+
+func createPrintText(client hcapi2.Client, result hcloud.ServerCreateResult, server *hcloud.Server) {
+	fmt.Printf("Server %d created\n", server.ID)
+	if !server.PublicNet.IPv4.IsUnspecified() {
+		fmt.Printf("IPv4: %s\n", server.PublicNet.IPv4.IP.String())
+	}
+	if !server.PublicNet.IPv6.IsUnspecified() {
+		fmt.Printf("IPv6: %s1\n", server.PublicNet.IPv6.Network.IP.String())
+		fmt.Printf("IPv6 Network: %s\n", server.PublicNet.IPv6.Network.String())
+	}
+	if len(server.PrivateNet) > 0 {
+		var networks []string
+		for _, network := range server.PrivateNet {
+			networks = append(networks, fmt.Sprintf("- %s (%s)", network.IP.String(), client.Network().Name(network.Network.ID)))
+		}
+		fmt.Printf("Private Networks:\n\t%s\n", strings.Join(networks, "\n"))
+	}
+	// Only print the root password if it's not empty,
+	// which is only the case if it wasn't created with an SSH key.
+	if result.RootPassword != "" {
+		fmt.Printf("Root password: %s\n", result.RootPassword)
+	}
+}
+
+func createPrintJSON(result hcloud.ServerCreateResult, server *hcloud.Server) error {
+	serverSchema := serverToSchema(server)
+
+	json := map[string]any{
+		"server":        serverSchema,
+		"root_password": nil,
+	}
+
+	if result.RootPassword != "" {
+		json["root_password"] = result.RootPassword
+	}
+
+	return util.DescribeJSON(json)
 }
 
 var userDataContentTypes = map[string]string{
