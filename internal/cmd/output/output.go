@@ -206,7 +206,8 @@ func (o *Table) AddAllowedFields(obj interface{}) *Table {
 			k != reflect.Float32 &&
 			k != reflect.Float64 &&
 			k != reflect.String &&
-			k != reflect.Int {
+			k != reflect.Int &&
+			k != reflect.Int64 {
 			// only allow simple values
 			// complex values need to be mapped via a FieldFn
 			continue
