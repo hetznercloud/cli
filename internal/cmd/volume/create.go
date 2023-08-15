@@ -35,7 +35,7 @@ var CreateCommand = base.Cmd{
 		cmd.MarkFlagRequired("size")
 
 		cmd.Flags().Bool("automount", false, "Automount volume after attach (server must be provided)")
-		cmd.Flags().String("format", "", "Format volume after creation (automount must be enabled)")
+		cmd.Flags().String("format", "", "Format volume after creation")
 
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 
@@ -76,9 +76,9 @@ var CreateCommand = base.Cmd{
 		}
 		if automount {
 			opts.Automount = &automount
-			if format != "" {
-				opts.Format = &format
-			}
+		}
+		if format != "" {
+			opts.Format = &format
 		}
 
 		result, _, err := client.Volume().Create(ctx, opts)
