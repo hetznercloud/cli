@@ -35,7 +35,9 @@ var CreateCommand = base.Cmd{
 		cmd.MarkFlagRequired("size")
 
 		cmd.Flags().Bool("automount", false, "Automount volume after attach (server must be provided)")
-		cmd.Flags().String("format", "", "Format volume after creation")
+
+		cmd.Flags().String("format", "", "Format volume after creation (ext4 or xfs)")
+		cmd.RegisterFlagCompletionFunc("format", cmpl.SuggestCandidates("ext4", "xfs"))
 
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 
