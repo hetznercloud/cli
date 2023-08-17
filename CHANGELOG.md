@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.37.0](https://github.com/hetznercloud/cli/compare/v1.36.0...v1.37.0) (2023-08-17)
+
+
+### Features
+
+* allow formatting a volume without automounting it ([#530](https://github.com/hetznercloud/cli/issues/530)) ([a435c9a](https://github.com/hetznercloud/cli/commit/a435c9a98a216eab3b1a2319092bd4a10a26cc9c))
+* upgrade to hcloud-go v2 ([#512](https://github.com/hetznercloud/cli/issues/512)) ([e2df229](https://github.com/hetznercloud/cli/commit/e2df229c0f105c3138584424632a0a8ce3248e71))
+
+
+### Bug Fixes
+
+* make image subcommand descriptions consistent ([#519](https://github.com/hetznercloud/cli/issues/519)) ([34beff0](https://github.com/hetznercloud/cli/commit/34beff0910d63b9dae6a406c2076d3be4e23e760))
+* **output:** ID column could not be selected ([#520](https://github.com/hetznercloud/cli/issues/520)) ([7d5594b](https://github.com/hetznercloud/cli/commit/7d5594bb29314b4eed5902302514fa73e1d9b445))
+* **primary-ip:** assignee-id was not correctly passed when creating the IP ([#506](https://github.com/hetznercloud/cli/issues/506)) ([8c027b6](https://github.com/hetznercloud/cli/commit/8c027b65e6dd02b470f457c516aea3230e18b535))
+* **server:** show actual progress on image-create ([a2f0874](https://github.com/hetznercloud/cli/commit/a2f0874af5e49d0c52df2dd5b2baebf39c7915e3))
+
 ## [1.36.0](https://github.com/hetznercloud/cli/compare/v1.35.0...v1.36.0) (2023-06-22)
 
 
