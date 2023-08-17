@@ -33,6 +33,8 @@ github.com/guptarohit/asciigraph v0.5.6 h1:0tra3HEhfdj1sP/9IedrCpfSiXYTtHdCgBhBL
 github.com/guptarohit/asciigraph v0.5.6/go.mod h1:dYl5wwK4gNsnFf9Zp+l06rFiDZ5YtXM6x7SRWZ3KGag=
 github.com/hetznercloud/hcloud-go/v2 v2.0.0 h1:Sg1DJ+MAKvbYAqaBaq9tPbwXBS2ckPIaMtVdUjKu+4g=
 github.com/hetznercloud/hcloud-go/v2 v2.0.0/go.mod h1:4iUG2NG8b61IAwNx6UsMWQ6IfIf/i1RsG0BbsKAyR5Q=
+github.com/hetznercloud/hcloud-go/v2 v2.1.1 h1:HDe1IBEYut7sfi4uiDyz1ml2+4ZuQZWW6vjSK3PP8DM=
+github.com/hetznercloud/hcloud-go/v2 v2.1.1/go.mod h1:4iUG2NG8b61IAwNx6UsMWQ6IfIf/i1RsG0BbsKAyR5Q=
 github.com/inconshreveable/mousetrap v1.1.0 h1:wN+x4NVGpMsO7ErUn/mUI3vEoE6Jt13X2s0bqwp9tc8=
 github.com/inconshreveable/mousetrap v1.1.0/go.mod h1:vpF70FUmC8bwa3OWnCshd2FqLfsEA9PFc4w1p2J65bw=
 github.com/jpillora/backoff v1.0.0/go.mod h1:J/6gKK9jxlEcS3zixgDgUAsiuZ7yrSoa/FX5e0EB2j4=
