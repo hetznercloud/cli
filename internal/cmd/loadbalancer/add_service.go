@@ -16,7 +16,7 @@ var AddServiceCommand = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:                   "add-service LOADBALANCER FLAGS",
-			Short:                 "Add a service from a Load Balancer",
+			Short:                 "Add a service to a Load Balancer",
 			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.LoadBalancer().Names)),
 			TraverseChildren:      true,
