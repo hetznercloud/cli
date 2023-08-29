@@ -18,7 +18,7 @@ var RemoveTargetCommand = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:                   "remove-target LOADBALANCER FLAGS",
-			Short:                 "Remove a target to a Load Balancer",
+			Short:                 "Remove a target from a Load Balancer",
 			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.LoadBalancer().Names)),
 			TraverseChildren:      true,
