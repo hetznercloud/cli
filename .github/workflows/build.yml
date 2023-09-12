@@ -40,7 +40,7 @@ jobs:
           chmod +x /usr/local/bin/gon
 
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v4
+        uses: goreleaser/goreleaser-action@v5
         with:
           version: latest
           args: release --clean --snapshot --skip-sign --parallelism=2
