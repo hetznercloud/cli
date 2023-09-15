@@ -1,5 +1,13 @@
 name: Continuous Integration
-on: [push, pull_request]
+
+on:
+  push:
+    tags:
+      - v*
+    branches:
+      - main
+  pull_request:
+
 jobs:
   build:
     name: Build
@@ -21,3 +29,19 @@ jobs:
           go test -v \
                   -race \
                   ./...
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-go@v4
+        with:
+          go-version: "1.21"
+      - uses: actions/checkout@v4
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          # Required: the version of golangci-lint is required and must be specified with patch version
+          version: v1.54.2
+          # In general linting is quite fast with warm caches, but a fresh run might take some time.
+          args: --timeout 5m

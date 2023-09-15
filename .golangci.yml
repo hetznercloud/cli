@@ -47,7 +47,6 @@ linters:
   # Some of these are temporarily disabled until we fix the numerous issues we have.
   enable:
     - bodyclose
-    - deadcode
     # - dupl
     # - errcheck
     - exhaustive
@@ -64,11 +63,9 @@ linters:
     - rowserrcheck
     # - scopelint
     # - staticcheck
-    - structcheck
     - typecheck
     # - unparam
     - unused
-    - varcheck
     # - whitespace
 
 issues:
