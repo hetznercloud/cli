@@ -1,5 +1,7 @@
 module github.com/hetznercloud/cli
 
+go 1.21.1
+
 require (
 	github.com/boumenot/gocover-cobertura v1.2.0
 	github.com/cheggaaa/pb/v3 v3.1.4
@@ -44,5 +46,3 @@ require (
 	google.golang.org/protobuf v1.30.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
-
-go 1.20
