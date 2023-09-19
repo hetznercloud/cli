@@ -178,55 +178,21 @@ func loadBalancerHealth(l *hcloud.LoadBalancer) string {
 	unknownCount := 0
 
 	for _, lbTarget := range l.Targets {
-		switch loadBalancerTargetHealth(&lbTarget) {
-		case string(hcloud.LoadBalancerTargetHealthStatusStatusHealthy):
-			healthyCount++
+		for _, svcHealth := range lbTarget.HealthStatus {
+			switch svcHealth.Status {
+			case hcloud.LoadBalancerTargetHealthStatusStatusHealthy:
+				healthyCount++
 
-		case string(hcloud.LoadBalancerTargetHealthStatusStatusUnhealthy):
-			unhealthyCount++
+			case hcloud.LoadBalancerTargetHealthStatusStatusUnhealthy:
+				unhealthyCount++
 
-		case "mixed":
-			return "mixed"
-
-		default:
-			unknownCount++
+			default:
+				unknownCount++
+			}
 		}
 	}
 
-	switch len(l.Targets) {
-	case healthyCount:
-		return string(hcloud.LoadBalancerTargetHealthStatusStatusHealthy)
-
-	case unhealthyCount:
-		return string(hcloud.LoadBalancerTargetHealthStatusStatusUnhealthy)
-
-	case unknownCount:
-		return string(hcloud.LoadBalancerTargetHealthStatusStatusUnknown)
-
-	default:
-		return "mixed"
-	}
-}
-
-func loadBalancerTargetHealth(t *hcloud.LoadBalancerTarget) string {
-	healthyCount := 0
-	unhealthyCount := 0
-	unknownCount := 0
-
-	for _, targetHealth := range t.HealthStatus {
-		switch targetHealth.Status {
-		case hcloud.LoadBalancerTargetHealthStatusStatusHealthy:
-			healthyCount++
-
-		case hcloud.LoadBalancerTargetHealthStatusStatusUnhealthy:
-			unhealthyCount++
-
-		default:
-			unknownCount++
-		}
-	}
-
-	switch len(t.HealthStatus) {
+	switch len(l.Targets) * len(l.Services) {
 	case healthyCount:
 		return string(hcloud.LoadBalancerTargetHealthStatusStatusHealthy)
 
