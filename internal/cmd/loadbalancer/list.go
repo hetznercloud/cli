@@ -18,7 +18,7 @@ import (
 var ListCmd = base.ListCmd{
 	ResourceNamePlural: "Load Balancer",
 
-	DefaultColumns: []string{"id", "name", "ipv4", "ipv6", "type", "location", "network_zone", "age"},
+	DefaultColumns: []string{"id", "name", "health", "ipv4", "ipv6", "type", "location", "network_zone", "age"},
 	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
 		opts := hcloud.LoadBalancerListOpts{ListOpts: listOpts}
 		if len(sorts) > 0 {
@@ -75,6 +75,10 @@ var ListCmd = base.ListCmd{
 			AddFieldFn("age", output.FieldFn(func(obj interface{}) string {
 				loadBalancer := obj.(*hcloud.LoadBalancer)
 				return util.Age(loadBalancer.Created, time.Now())
+			})).
+			AddFieldFn("health", output.FieldFn(func(obj interface{}) string {
+				loadBalancer := obj.(*hcloud.LoadBalancer)
+				return loadBalancerHealth(loadBalancer)
 			}))
 	},
 
@@ -166,4 +170,39 @@ var ListCmd = base.ListCmd{
 		}
 		return loadBalancerSchemas
 	},
+}
+
+func loadBalancerHealth(l *hcloud.LoadBalancer) string {
+	healthyCount := 0
+	unhealthyCount := 0
+	unknownCount := 0
+
+	for _, lbTarget := range l.Targets {
+		for _, svcHealth := range lbTarget.HealthStatus {
+			switch svcHealth.Status {
+			case hcloud.LoadBalancerTargetHealthStatusStatusHealthy:
+				healthyCount++
+
+			case hcloud.LoadBalancerTargetHealthStatusStatusUnhealthy:
+				unhealthyCount++
+
+			default:
+				unknownCount++
+			}
+		}
+	}
+
+	switch len(l.Targets) * len(l.Services) {
+	case healthyCount:
+		return string(hcloud.LoadBalancerTargetHealthStatusStatusHealthy)
+
+	case unhealthyCount:
+		return string(hcloud.LoadBalancerTargetHealthStatusStatusUnhealthy)
+
+	case unknownCount:
+		return string(hcloud.LoadBalancerTargetHealthStatusStatusUnknown)
+
+	default:
+		return "mixed"
+	}
 }
