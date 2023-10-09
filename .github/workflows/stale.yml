@@ -11,3 +11,4 @@ jobs:
       pull-requests: write
 
     uses: hetznercloud/.github/.github/workflows/stale.yml@main
+
