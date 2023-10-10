@@ -8,7 +8,7 @@ require (
 	github.com/dustin/go-humanize v1.0.1
 	github.com/fatih/structs v1.1.0
 	github.com/golang/mock v1.6.0
-	github.com/google/go-cmp v0.5.9
+	github.com/google/go-cmp v0.6.0
 	github.com/guptarohit/asciigraph v0.5.6
 	github.com/hetznercloud/hcloud-go/v2 v2.3.0
 	github.com/pelletier/go-toml/v2 v2.1.0
