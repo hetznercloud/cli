@@ -3,7 +3,7 @@ before:
     - go mod tidy
 
 builds:
-  - id: "hcloud-build"
+  - id: hcloud-build
     main: ./cmd/hcloud/main.go
     binary: hcloud
     ldflags:
@@ -18,12 +18,12 @@ builds:
       - amd64
       - arm
       - arm64
-      - 386
+      - "386"
     goarm:
-      - 6
-      - 7
+      - "6"
+      - "7"
 
-  - id: "hcloud-macos-build"
+  - id: hcloud-build-darwin
     main: ./cmd/hcloud/main.go
     binary: hcloud
     ldflags:
@@ -34,46 +34,37 @@ builds:
       - darwin
     goarch:
       - amd64
-    hooks:
-      post:
-        - cmd: gon -log-level DEBUG gon.hcl
-          output: true
-  - id: "hcloud-macos-arm-build"
-    main: ./cmd/hcloud/main.go
-    binary: hcloud
-    ldflags:
-      - -w -X github.com/hetznercloud/cli/internal/version.Version={{.Version}}
-    env:
-      - CGO_ENABLED=0
-    goos:
-      - darwin
-    goarch:
       - arm64
     hooks:
       post:
-        - cmd: gon -log-level DEBUG gon_arm64.hcl
+        - env:
+            - GON_SOURCE={{ .Path }}
+          cmd: gon -log-level=debug gon.hcl
           output: true
 
 checksum:
-  name_template: "checksums.txt"
+  name_template: checksums.txt
   algorithm: sha256
 
 signs:
   - artifacts: all
-    signature: "${artifact}.sig"
+    signature: ${artifact}.sig
     id: hcloud-sign
     ids:
       - hcloud-build
-      - hcloud-macos-build
-      - hcloud-macos-arm-build
-    args: ["--batch", "-u", "github-bot@hetzner-cloud.de", "--pinentry-mode", "loopback", "--output", "${signature}", "--detach-sign", "${artifact}"]
+      - hcloud-build-darwin
+    args: 
+    - --batch
+    - --local-usergithub-bot@hetzner-cloud.de
+    - --pinentry-mode=loopback
+    - --output=${signature}
+    - --detach-sign=${artifact}
 
 archives:
   - id: hcloud-archive
     builds:
       - hcloud-build
-      - hcloud-macos-build
-      - hcloud-macos-arm-build
+      - hcloud-build-darwin
     name_template: "{{ .Binary }}-{{ .Os }}-{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
 
     format_overrides:
