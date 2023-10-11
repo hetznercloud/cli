@@ -55,7 +55,7 @@ signs:
       - hcloud-build-darwin
     args: 
     - --batch
-    - --local-usergithub-bot@hetzner-cloud.de
+    - --local-user=github-bot@hetzner-cloud.de
     - --pinentry-mode=loopback
     - --output=${signature}
     - --detach-sign=${artifact}
