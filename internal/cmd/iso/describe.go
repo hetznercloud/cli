@@ -4,9 +4,11 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/hetznercloud/cli/internal/cmd/base"
-	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/spf13/cobra"
+
+	"github.com/hetznercloud/cli/internal/cmd/base"
+	"github.com/hetznercloud/cli/internal/cmd/util"
+	"github.com/hetznercloud/cli/internal/hcapi2"
 
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -28,6 +30,7 @@ var DescribeCmd = base.DescribeCmd{
 		fmt.Printf("Name:\t\t%s\n", iso.Name)
 		fmt.Printf("Description:\t%s\n", iso.Description)
 		fmt.Printf("Type:\t\t%s\n", iso.Type)
+		fmt.Printf(util.DescribeDeprecation(iso))
 
 		architecture := "-"
 		if iso.Architecture != nil {
