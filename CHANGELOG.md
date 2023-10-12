@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.38.0](https://github.com/hetznercloud/cli/compare/v1.37.0...v1.38.0) (2023-10-12)
+
+
+### Features
+
+* build with Go 1.21 ([#543](https://github.com/hetznercloud/cli/issues/543)) ([368bfae](https://github.com/hetznercloud/cli/commit/368bfae953e074b4f6e81887bc437025b7dc0779))
+* **iso:** support deprecation info API ([#555](https://github.com/hetznercloud/cli/issues/555)) ([2b0a0fa](https://github.com/hetznercloud/cli/commit/2b0a0fa47f01e5f22646e56840c7fa5663d2af6b))
+* **load-balancer:** Add health status to list output ([#542](https://github.com/hetznercloud/cli/issues/542)) ([272cc63](https://github.com/hetznercloud/cli/commit/272cc635787a1ea09fb418fde5f5bba6252212d0))
+
+
+### Bug Fixes
+
+* typo in primary ipv6 not found error message ([#534](https://github.com/hetznercloud/cli/issues/534)) ([b9451f2](https://github.com/hetznercloud/cli/commit/b9451f2ac92bbcfb6201f6ca803c3fdc52cb557f))
+
 ## [1.37.0](https://github.com/hetznercloud/cli/compare/v1.36.0...v1.37.0) (2023-08-17)
 
 
