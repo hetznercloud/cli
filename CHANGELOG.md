@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.38.2](https://github.com/hetznercloud/cli/compare/v1.38.2-rc.0...v1.38.2) (2023-10-13)
+
+
+### Bug Fixes
+
+* **build:** create release from previous candidates ([cf6eb47](https://github.com/hetznercloud/cli/commit/cf6eb472de8162c71f8de4355b714e6b0aa3a75f))
+
 ## [1.38.2-rc.0](https://github.com/hetznercloud/cli/compare/v1.38.1...v1.38.2-rc.0) (2023-10-13)
 
 
