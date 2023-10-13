@@ -1,12 +1,12 @@
-name: Release CLI Version on tag
+name: Release
 
 on:
   push:
     tags:
-      - 'v*.*.*'
+      - "v*.*.*"
 
 jobs:
-  release-cli:
+  release:
     runs-on: macos-latest
     steps:
       - name: Checkout
@@ -17,8 +17,8 @@ jobs:
         with:
           go-version: "1.21"
 
-      - name: Print Go Version
-        run: go version
+      - name: Set up gon
+        run: brew install mitchellh/gon/gon
 
       - name: Import GPG key
         id: import_gpg
@@ -31,18 +31,11 @@ jobs:
           SECRETS_PASSWORD: ${{ secrets.SECRETS_PASSWORD }}
         run: bash script/decrypt_secrets.sh
 
-      - name: Install gon
-        run: |
-          wget https://github.com/mitchellh/gon/releases/download/v0.2.5/gon_macos.zip
-          unzip gon_macos.zip
-          mv gon /usr/local/bin/gon
-          chmod +x /usr/local/bin/gon
-
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v5
         with:
           version: latest
-          args: release --clean --skip-validate --parallelism=2
+          args: release --clean --skip=validate
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           HC_APPLE_DEVELOPER_USER: ${{ secrets.HC_APPLE_DEVELOPER_USER }}

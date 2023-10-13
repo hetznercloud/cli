@@ -37,9 +37,7 @@ builds:
       - arm64
     hooks:
       post:
-        - env:
-            - GON_SOURCE={{ .Path }}
-          cmd: gon -log-level=debug gon.hcl
+        - cmd: bash script/gon.sh "{{ .Path }}"
           output: true
 
 checksum:
@@ -53,12 +51,12 @@ signs:
     ids:
       - hcloud-build
       - hcloud-build-darwin
-    args: 
-    - --batch
-    - --local-user=github-bot@hetzner-cloud.de
-    - --pinentry-mode=loopback
-    - --output=${signature}
-    - --detach-sign=${artifact}
+    args:
+      - --batch
+      - --local-user=github-bot@hetzner-cloud.de
+      - --pinentry-mode=loopback
+      - --output=${signature}
+      - --detach-sign=${artifact}
 
 archives:
   - id: hcloud-archive

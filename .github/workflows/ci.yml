@@ -1,16 +1,12 @@
-name: Continuous Integration
+name: CI
 
 on:
   push:
-    tags:
-      - v*
-    branches:
-      - main
+    branches: [main]
   pull_request:
 
 jobs:
-  build:
-    name: Build
+  lint:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -21,27 +17,27 @@ jobs:
         with:
           go-version: "1.21"
 
-      - name: Run go fmt
+      - name: Run gofmt
         run: diff -u <(echo -n) <(gofmt -d -s .)
 
-      - name: Run tests
-        run: |
-          go test -v \
-                  -race \
-                  ./...
-
-  lint:
-    name: Lint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/setup-go@v4
-        with:
-          go-version: "1.21"
-      - uses: actions/checkout@v4
-      - name: golangci-lint
+      - name: Run golangci-lint
         uses: golangci/golangci-lint-action@v3
         with:
           # Required: the version of golangci-lint is required and must be specified with patch version
           version: v1.54.2
           # In general linting is quite fast with warm caches, but a fresh run might take some time.
           args: --timeout 5m
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.21"
+
+      - name: Run tests
+        run: go test -v -race ./...

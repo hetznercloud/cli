@@ -1,8 +1,8 @@
+name: Release-please
+
 on:
   push:
-    branches:
-      - main
-name: release-please
+    branches: [main]
 
 jobs:
   release-please:
