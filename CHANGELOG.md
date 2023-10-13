@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.38.1](https://github.com/hetznercloud/cli/compare/v1.38.0...v1.38.1) (2023-10-13)
+
+
+### Bug Fixes
+
+* **build:** goreleaser failed building binaries for release ([8e4cd29](https://github.com/hetznercloud/cli/commit/8e4cd2942e0b941ca0b9a61873214d9632614e76))
+
 ## [1.38.0](https://github.com/hetznercloud/cli/compare/v1.37.0...v1.38.0) (2023-10-12)
 
 
