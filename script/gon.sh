@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-set -eu
+set -eu -o posix
 
 # Only sign on releasing
 if [[ "${GITHUB_REF_TYPE:-}" != "tag" ]]; then
@@ -9,7 +9,7 @@ fi
 
 BINARY_PATH="$1"
 
-GON_CONFIG=$(mktemp gon_XXXX.json)
+GON_CONFIG="gon_$RANDOM.json"
 cleanup() {
   rm -f "$GON_CONFIG"
 }
