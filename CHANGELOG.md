@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.38.2-rc.0](https://github.com/hetznercloud/cli/compare/v1.38.1...v1.38.2-rc.0) (2023-10-13)
+
+
+### Bug Fixes
+
+* **build:** ensure unique tmp files for gon script ([#558](https://github.com/hetznercloud/cli/issues/558)) ([c20a78b](https://github.com/hetznercloud/cli/commit/c20a78b10c86747de5c50d117264666e6b5bb3c8))
+
 ## [1.38.1](https://github.com/hetznercloud/cli/compare/v1.38.0...v1.38.1) (2023-10-13)
 
 
