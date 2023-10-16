@@ -56,7 +56,8 @@ signs:
       - --local-user=github-bot@hetzner-cloud.de
       - --pinentry-mode=loopback
       - --output=${signature}
-      - --detach-sign=${artifact}
+      - --detach-sign
+      - ${artifact}
 
 archives:
   - id: hcloud-archive
