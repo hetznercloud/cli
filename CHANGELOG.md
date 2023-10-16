@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.38.3](https://github.com/hetznercloud/cli/compare/v1.38.2...v1.38.3) (2023-10-16)
+
+
+### Bug Fixes
+
+* **build:** ensure signature is properly generated ([#562](https://github.com/hetznercloud/cli/issues/562)) ([77b313c](https://github.com/hetznercloud/cli/commit/77b313c4db3c4c707fd5ad454be79a3edf7e4d04))
+
 ## [1.38.2](https://github.com/hetznercloud/cli/compare/v1.38.2-rc.0...v1.38.2) (2023-10-13)
 
 
