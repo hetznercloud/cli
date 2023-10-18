@@ -45,7 +45,7 @@ func TestEnable(t *testing.T) {
 	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), action).Return(nil)
 	out, err := fx.Run(cmd, []string{"13"})
 
-	expOut := "Primary IP 13 protection disabled"
+	expOut := "Resource protection disabled for primary IP 13\n"
 
 	assert.NoError(t, err)
 	assert.Equal(t, expOut, out)

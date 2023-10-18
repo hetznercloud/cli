@@ -13,6 +13,49 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func getChangeProtectionOpts(enable bool, flags []string) (hcloud.NetworkChangeProtectionOpts, error) {
+
+	opts := hcloud.NetworkChangeProtectionOpts{}
+
+	var unknown []string
+	for _, arg := range flags {
+		switch strings.ToLower(arg) {
+		case "delete":
+			opts.Delete = hcloud.Ptr(enable)
+		default:
+			unknown = append(unknown, arg)
+		}
+	}
+	if len(unknown) > 0 {
+		return opts, fmt.Errorf("unknown protection level: %s", strings.Join(unknown, ", "))
+	}
+
+	return opts, nil
+}
+
+func changeProtection(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, network *hcloud.Network, enable bool, opts hcloud.NetworkChangeProtectionOpts) error {
+
+	if opts.Delete == nil {
+		return nil
+	}
+
+	action, _, err := client.Network().ChangeProtection(ctx, network, opts)
+	if err != nil {
+		return err
+	}
+
+	if err := waiter.ActionProgress(ctx, action); err != nil {
+		return err
+	}
+
+	if enable {
+		fmt.Printf("Resource protection enabled for network %d\n", network.ID)
+	} else {
+		fmt.Printf("Resource protection disabled for network %d\n", network.ID)
+	}
+	return nil
+}
+
 var EnableProtectionCommand = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		return &cobra.Command{
@@ -37,30 +80,11 @@ var EnableProtectionCommand = base.Cmd{
 			return fmt.Errorf("network not found: %s", idOrName)
 		}
 
-		var unknown []string
-		opts := hcloud.NetworkChangeProtectionOpts{}
-		for _, arg := range args[1:] {
-			switch strings.ToLower(arg) {
-			case "delete":
-				opts.Delete = hcloud.Bool(true)
-			default:
-				unknown = append(unknown, arg)
-			}
-		}
-		if len(unknown) > 0 {
-			return fmt.Errorf("unknown protection level: %s", strings.Join(unknown, ", "))
-		}
-
-		action, _, err := client.Network().ChangeProtection(ctx, network, opts)
+		opts, err := getChangeProtectionOpts(true, args[1:])
 		if err != nil {
 			return err
 		}
 
-		if err := waiter.ActionProgress(ctx, action); err != nil {
-			return err
-		}
-
-		fmt.Printf("Resource protection enabled for network %d\n", network.ID)
-		return nil
+		return changeProtection(ctx, client, waiter, network, true, opts)
 	},
 }

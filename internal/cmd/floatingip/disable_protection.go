@@ -3,13 +3,10 @@ package floatingip
 import (
 	"context"
 	"fmt"
-	"strings"
-
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
-	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 	"github.com/spf13/cobra"
 )
 
@@ -37,30 +34,11 @@ var DisableProtectionCommand = base.Cmd{
 			return fmt.Errorf("Floating IP not found: %v", idOrName)
 		}
 
-		var unknown []string
-		opts := hcloud.FloatingIPChangeProtectionOpts{}
-		for _, arg := range args[1:] {
-			switch strings.ToLower(arg) {
-			case "delete":
-				opts.Delete = hcloud.Bool(false)
-			default:
-				unknown = append(unknown, arg)
-			}
-		}
-		if len(unknown) > 0 {
-			return fmt.Errorf("unknown protection level: %s", strings.Join(unknown, ", "))
-		}
-
-		action, _, err := client.FloatingIP().ChangeProtection(ctx, floatingIP, opts)
+		opts, err := getChangeProtectionOpts(false, args[1:])
 		if err != nil {
 			return err
 		}
 
-		if err := waiter.ActionProgress(ctx, action); err != nil {
-			return err
-		}
-
-		fmt.Printf("Resource protection disabled for Floating IP %d\n", floatingIP.ID)
-		return nil
+		return changeProtection(ctx, client, waiter, floatingIP, false, opts)
 	},
 }

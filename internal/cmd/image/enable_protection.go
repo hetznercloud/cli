@@ -15,6 +15,49 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func getChangeProtectionOpts(enable bool, flags []string) (hcloud.ImageChangeProtectionOpts, error) {
+
+	opts := hcloud.ImageChangeProtectionOpts{}
+
+	var unknown []string
+	for _, arg := range flags {
+		switch strings.ToLower(arg) {
+		case "delete":
+			opts.Delete = hcloud.Ptr(enable)
+		default:
+			unknown = append(unknown, arg)
+		}
+	}
+	if len(unknown) > 0 {
+		return opts, fmt.Errorf("unknown protection level: %s", strings.Join(unknown, ", "))
+	}
+
+	return opts, nil
+}
+
+func changeProtection(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, image *hcloud.Image, enable bool, opts hcloud.ImageChangeProtectionOpts) error {
+
+	if opts.Delete == nil {
+		return nil
+	}
+
+	action, _, err := client.Image().ChangeProtection(ctx, image, opts)
+	if err != nil {
+		return err
+	}
+
+	if err := waiter.ActionProgress(ctx, action); err != nil {
+		return err
+	}
+
+	if enable {
+		fmt.Printf("Resource protection enabled for image %d\n", image.ID)
+	} else {
+		fmt.Printf("Resource protection disabled for image %d\n", image.ID)
+	}
+	return nil
+}
+
 var EnableProtectionCommand = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 
@@ -37,30 +80,11 @@ var EnableProtectionCommand = base.Cmd{
 		}
 		image := &hcloud.Image{ID: imageID}
 
-		var unknown []string
-		opts := hcloud.ImageChangeProtectionOpts{}
-		for _, arg := range args[1:] {
-			switch strings.ToLower(arg) {
-			case "delete":
-				opts.Delete = hcloud.Bool(true)
-			default:
-				unknown = append(unknown, arg)
-			}
-		}
-		if len(unknown) > 0 {
-			return fmt.Errorf("unknown protection level: %s", strings.Join(unknown, ", "))
-		}
-
-		action, _, err := client.Image().ChangeProtection(ctx, image, opts)
+		opts, err := getChangeProtectionOpts(true, args[1:])
 		if err != nil {
 			return err
 		}
 
-		if err := waiter.ActionProgress(ctx, action); err != nil {
-			return err
-		}
-
-		fmt.Printf("Resource protection enabled for image %d\n", image.ID)
-		return nil
+		return changeProtection(ctx, client, waiter, image, true, opts)
 	},
 }
