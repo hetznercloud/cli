@@ -38,6 +38,9 @@ var CreateCommand = base.Cmd{
 
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 
+		cmd.Flags().StringSlice("enable-protection", []string{}, "Enable protection (delete) (default: none)")
+		cmd.RegisterFlagCompletionFunc("enable-protection", cmpl.SuggestCandidates("delete"))
+
 		return cmd
 	},
 	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
@@ -56,17 +59,23 @@ var CreateCommand = base.Cmd{
 		description, _ := cmd.Flags().GetString("description")
 		serverNameOrID, _ := cmd.Flags().GetString("server")
 		labels, _ := cmd.Flags().GetStringToString("label")
+		protection, _ := cmd.Flags().GetStringSlice("enable-protection")
 
-		opts := hcloud.FloatingIPCreateOpts{
+		protectionOps, err := getChangeProtectionOpts(true, protection)
+		if err != nil {
+			return err
+		}
+
+		createOpts := hcloud.FloatingIPCreateOpts{
 			Type:        hcloud.FloatingIPType(typ),
 			Description: &description,
 			Labels:      labels,
 		}
 		if name != "" {
-			opts.Name = &name
+			createOpts.Name = &name
 		}
 		if homeLocation != "" {
-			opts.HomeLocation = &hcloud.Location{Name: homeLocation}
+			createOpts.HomeLocation = &hcloud.Location{Name: homeLocation}
 		}
 		if serverNameOrID != "" {
 			server, _, err := client.Server().Get(ctx, serverNameOrID)
@@ -76,16 +85,16 @@ var CreateCommand = base.Cmd{
 			if server == nil {
 				return fmt.Errorf("server not found: %s", serverNameOrID)
 			}
-			opts.Server = server
+			createOpts.Server = server
 		}
 
-		result, _, err := client.FloatingIP().Create(ctx, opts)
+		result, _, err := client.FloatingIP().Create(ctx, createOpts)
 		if err != nil {
 			return err
 		}
 
 		fmt.Printf("Floating IP %d created\n", result.FloatingIP.ID)
 
-		return nil
+		return changeProtection(ctx, client, waiter, result.FloatingIP, true, protectionOps)
 	},
 }

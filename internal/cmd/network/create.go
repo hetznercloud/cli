@@ -1,7 +1,8 @@
 package network
 
 import (
-	"fmt"
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/hcapi2"
 	"net"
 
 	"github.com/hetznercloud/cli/internal/state"
@@ -30,6 +31,8 @@ func newCreateCommand(cli *state.State) *cobra.Command {
 
 	cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 
+	cmd.Flags().StringSlice("enable-protection", []string{}, "Enable protection (delete) (default: none)")
+	cmd.RegisterFlagCompletionFunc("enable-protection", cmpl.SuggestCandidates("delete"))
 	return cmd
 }
 
@@ -38,19 +41,26 @@ func runCreate(cli *state.State, cmd *cobra.Command, args []string) error {
 	ipRange, _ := cmd.Flags().GetIPNet("ip-range")
 	labels, _ := cmd.Flags().GetStringToString("label")
 	exposeRoutesToVSwitch, _ := cmd.Flags().GetBool("expose-routes-to-vswitch")
+	protection, _ := cmd.Flags().GetStringSlice("enable-protection")
 
-	opts := hcloud.NetworkCreateOpts{
+	protectionOpts, err := getChangeProtectionOpts(true, protection)
+	if err != nil {
+		return err
+	}
+
+	createOpts := hcloud.NetworkCreateOpts{
 		Name:                  name,
 		IPRange:               &ipRange,
 		Labels:                labels,
 		ExposeRoutesToVSwitch: exposeRoutesToVSwitch,
 	}
 
-	network, _, err := cli.Client().Network.Create(cli.Context, opts)
+	network, _, err := cli.Client().Network.Create(cli.Context, createOpts)
 	if err != nil {
 		return err
 	}
 
-	fmt.Printf("Network %d created\n", network.ID)
-	return nil
+	cmd.Printf("Network %d created\n", network.ID)
+
+	return changeProtection(cli.Context, hcapi2.NewClient(cli.Client()), cli, network, true, protectionOpts)
 }

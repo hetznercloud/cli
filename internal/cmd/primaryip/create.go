@@ -3,7 +3,6 @@ package primaryip
 import (
 	"context"
 	"fmt"
-
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/cli/internal/hcapi2"
@@ -34,6 +33,10 @@ var CreateCmd = base.Cmd{
 		cmd.RegisterFlagCompletionFunc("datacenter", cmpl.SuggestCandidatesF(client.Datacenter().Names))
 
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
+
+		cmd.Flags().StringSlice("enable-protection", []string{}, "Enable protection (delete) (default: none)")
+		cmd.RegisterFlagCompletionFunc("enable-protection", cmpl.SuggestCandidates("delete"))
+
 		return cmd
 	},
 	Run: func(ctx context.Context, client hcapi2.Client, actionWaiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
@@ -41,23 +44,35 @@ var CreateCmd = base.Cmd{
 		name, _ := cmd.Flags().GetString("name")
 		assigneeID, _ := cmd.Flags().GetInt64("assignee-id")
 		datacenter, _ := cmd.Flags().GetString("datacenter")
+		protection, _ := cmd.Flags().GetStringSlice("enable-protection")
 
-		opts := hcloud.PrimaryIPCreateOpts{
+		protectionOpts, err := getChangeProtectionOpts(true, protection)
+		if err != nil {
+			return err
+		}
+
+		createOpts := hcloud.PrimaryIPCreateOpts{
 			Type:         hcloud.PrimaryIPType(typ),
 			Name:         name,
 			AssigneeType: "server",
 			Datacenter:   datacenter,
 		}
 		if assigneeID != 0 {
-			opts.AssigneeID = &assigneeID
+			createOpts.AssigneeID = &assigneeID
 		}
 
-		result, _, err := client.PrimaryIP().Create(ctx, opts)
+		result, _, err := client.PrimaryIP().Create(ctx, createOpts)
 		if err != nil {
 			return err
 		}
 
 		fmt.Printf("Primary IP %d created\n", result.PrimaryIP.ID)
+
+		if len(protection) > 0 {
+			if err := changeProtection(ctx, client, actionWaiter, result.PrimaryIP, true, protectionOpts); err != nil {
+				return err
+			}
+		}
 
 		return nil
 	},

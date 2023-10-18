@@ -41,6 +41,9 @@ var CreateCommand = base.Cmd{
 
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 
+		cmd.Flags().StringSlice("enable-protection", []string{}, "Enable protection (delete) (default: none)")
+		cmd.RegisterFlagCompletionFunc("enable-protection", cmpl.SuggestCandidates("delete"))
+
 		return cmd
 	},
 	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
@@ -51,8 +54,14 @@ var CreateCommand = base.Cmd{
 		automount, _ := cmd.Flags().GetBool("automount")
 		format, _ := cmd.Flags().GetString("format")
 		labels, _ := cmd.Flags().GetStringToString("label")
+		protection, _ := cmd.Flags().GetStringSlice("enable-protection")
 
-		opts := hcloud.VolumeCreateOpts{
+		protectionOpts, err := getChangeProtectionOpts(true, protection)
+		if err != nil {
+			return err
+		}
+
+		createOpts := hcloud.VolumeCreateOpts{
 			Name:   name,
 			Size:   size,
 			Labels: labels,
@@ -61,9 +70,9 @@ var CreateCommand = base.Cmd{
 		if location != "" {
 			id, err := strconv.ParseInt(location, 10, 64)
 			if err == nil {
-				opts.Location = &hcloud.Location{ID: id}
+				createOpts.Location = &hcloud.Location{ID: id}
 			} else {
-				opts.Location = &hcloud.Location{Name: location}
+				createOpts.Location = &hcloud.Location{Name: location}
 			}
 		}
 		if serverIDOrName != "" {
@@ -74,16 +83,16 @@ var CreateCommand = base.Cmd{
 			if server == nil {
 				return fmt.Errorf("server not found: %s", serverIDOrName)
 			}
-			opts.Server = server
+			createOpts.Server = server
 		}
 		if automount {
-			opts.Automount = &automount
+			createOpts.Automount = &automount
 		}
 		if format != "" {
-			opts.Format = &format
+			createOpts.Format = &format
 		}
 
-		result, _, err := client.Volume().Create(ctx, opts)
+		result, _, err := client.Volume().Create(ctx, createOpts)
 		if err != nil {
 			return err
 		}
@@ -96,6 +105,6 @@ var CreateCommand = base.Cmd{
 		}
 		fmt.Printf("Volume %d created\n", result.Volume.ID)
 
-		return nil
+		return changeProtection(ctx, client, waiter, result.Volume, true, protectionOpts)
 	},
 }
