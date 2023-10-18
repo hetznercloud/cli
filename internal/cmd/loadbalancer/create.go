@@ -42,6 +42,9 @@ var CreateCommand = base.Cmd{
 
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 
+		cmd.Flags().StringSlice("enable-protection", []string{}, "Enable protection (delete) (default: none)")
+		cmd.RegisterFlagCompletionFunc("enable-protection", cmpl.SuggestCandidates("delete"))
+
 		return cmd
 	},
 	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
@@ -51,8 +54,14 @@ var CreateCommand = base.Cmd{
 		location, _ := cmd.Flags().GetString("location")
 		networkZone, _ := cmd.Flags().GetString("network-zone")
 		labels, _ := cmd.Flags().GetStringToString("label")
+		protection, _ := cmd.Flags().GetStringSlice("enable-protection")
 
-		opts := hcloud.LoadBalancerCreateOpts{
+		protectionOpts, err := getChangeProtectionOpts(true, protection)
+		if err != nil {
+			return err
+		}
+
+		createOpts := hcloud.LoadBalancerCreateOpts{
 			Name: name,
 			LoadBalancerType: &hcloud.LoadBalancerType{
 				Name: serverType,
@@ -60,15 +69,15 @@ var CreateCommand = base.Cmd{
 			Labels: labels,
 		}
 		if algorithmType != "" {
-			opts.Algorithm = &hcloud.LoadBalancerAlgorithm{Type: hcloud.LoadBalancerAlgorithmType(algorithmType)}
+			createOpts.Algorithm = &hcloud.LoadBalancerAlgorithm{Type: hcloud.LoadBalancerAlgorithmType(algorithmType)}
 		}
 		if networkZone != "" {
-			opts.NetworkZone = hcloud.NetworkZone(networkZone)
+			createOpts.NetworkZone = hcloud.NetworkZone(networkZone)
 		}
 		if location != "" {
-			opts.Location = &hcloud.Location{Name: location}
+			createOpts.Location = &hcloud.Location{Name: location}
 		}
-		result, _, err := client.LoadBalancer().Create(ctx, opts)
+		result, _, err := client.LoadBalancer().Create(ctx, createOpts)
 		if err != nil {
 			return err
 		}
@@ -80,7 +89,12 @@ var CreateCommand = base.Cmd{
 		if err != nil {
 			return err
 		}
-		fmt.Printf("LoadBalancer %d created\n", loadBalancer.ID)
+		fmt.Printf("Load Balancer %d created\n", loadBalancer.ID)
+
+		if err := changeProtection(ctx, client, waiter, loadBalancer, true, protectionOpts); err != nil {
+			return err
+		}
+
 		fmt.Printf("IPv4: %s\n", loadBalancer.PublicNet.IPv4.IP.String())
 		fmt.Printf("IPv6: %s\n", loadBalancer.PublicNet.IPv6.IP.String())
 		return nil

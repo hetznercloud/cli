@@ -77,16 +77,20 @@ var CreateCmd = base.Cmd{
 
 		cmd.Flags().Bool("without-ipv4", false, "Creates the server without an IPv4 (default: false)")
 		cmd.Flags().Bool("without-ipv6", false, "Creates the server without an IPv6 (default: false)")
+
+		cmd.Flags().StringSlice("enable-protection", []string{}, "Enable protection (delete, rebuild) (default: none)")
+		cmd.RegisterFlagCompletionFunc("enable-protection", cmpl.SuggestCandidates("delete", "rebuild"))
+
 		return cmd
 	},
 
 	Run: func(ctx context.Context, client hcapi2.Client, actionWaiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
-		opts, err := createOptsFromFlags(ctx, client, cmd.Flags())
+		createOpts, protectionOpts, err := createOptsFromFlags(ctx, client, cmd.Flags())
 		if err != nil {
 			return err
 		}
 
-		result, _, err := client.Server().Create(ctx, opts)
+		result, _, err := client.Server().Create(ctx, createOpts)
 		if err != nil {
 			return err
 		}
@@ -103,6 +107,11 @@ var CreateCmd = base.Cmd{
 			return err
 		}
 		fmt.Printf("Server %d created\n", result.Server.ID)
+
+		if err := changeProtection(ctx, client, actionWaiter, server, true, protectionOpts); err != nil {
+			return err
+		}
+
 		if !server.PublicNet.IPv4.IsUnspecified() {
 			fmt.Printf("IPv4: %s\n", server.PublicNet.IPv4.IP.String())
 		}
@@ -196,7 +205,7 @@ func buildUserData(files []string) (string, error) {
 
 func createOptsFromFlags(
 	ctx context.Context, client hcapi2.Client, flags *pflag.FlagSet,
-) (opts hcloud.ServerCreateOpts, err error) {
+) (createOpts hcloud.ServerCreateOpts, protectionOps hcloud.ServerChangeProtectionOpts, err error) {
 	name, _ := flags.GetString("name")
 	serverTypeName, _ := flags.GetString("type")
 	imageIDorName, _ := flags.GetString("image")
@@ -216,6 +225,7 @@ func createOptsFromFlags(
 	withoutIPv6, _ := flags.GetBool("without-ipv6")
 	primaryIPv4IDorName, _ := flags.GetString("primary-ipv4")
 	primaryIPv6IDorName, _ := flags.GetString("primary-ipv6")
+	protection, _ := flags.GetStringSlice("enable-protection")
 
 	serverType, _, err := client.ServerType().Get(ctx, serverTypeName)
 	if err != nil {
@@ -254,7 +264,7 @@ func createOptsFromFlags(
 		err = fmt.Errorf("a server can not be created without IPv4, IPv6 and a private network. Choose at least one of those options to create the server")
 		return
 	}
-	opts = hcloud.ServerCreateOpts{
+	createOpts = hcloud.ServerCreateOpts{
 		Name:             name,
 		ServerType:       serverType,
 		Image:            image,
@@ -293,7 +303,7 @@ func createOptsFromFlags(
 		}
 		publicNetConfiguration.IPv6 = primaryIPv6
 	}
-	opts.PublicNet = publicNetConfiguration
+	createOpts.PublicNet = publicNetConfiguration
 	if len(userDataFiles) == 1 {
 		var data []byte
 		if userDataFiles[0] == "-" {
@@ -304,9 +314,9 @@ func createOptsFromFlags(
 		if err != nil {
 			return
 		}
-		opts.UserData = string(data)
+		createOpts.UserData = string(data)
 	} else if len(userDataFiles) > 1 {
-		opts.UserData, err = buildUserData(userDataFiles)
+		createOpts.UserData, err = buildUserData(userDataFiles)
 		if err != nil {
 			return
 		}
@@ -330,7 +340,7 @@ func createOptsFromFlags(
 			err = fmt.Errorf("SSH key not found: %s", sshKeyIDOrName)
 			return
 		}
-		opts.SSHKeys = append(opts.SSHKeys, sshKey)
+		createOpts.SSHKeys = append(createOpts.SSHKeys, sshKey)
 	}
 	for _, volumeIDOrName := range volumes {
 		var volume *hcloud.Volume
@@ -343,7 +353,7 @@ func createOptsFromFlags(
 			err = fmt.Errorf("volume not found: %s", volumeIDOrName)
 			return
 		}
-		opts.Volumes = append(opts.Volumes, volume)
+		createOpts.Volumes = append(createOpts.Volumes, volume)
 	}
 	for _, networkIDOrName := range networks {
 		var network *hcloud.Network
@@ -356,7 +366,7 @@ func createOptsFromFlags(
 			err = fmt.Errorf("network not found: %s", networkIDOrName)
 			return
 		}
-		opts.Networks = append(opts.Networks, network)
+		createOpts.Networks = append(createOpts.Networks, network)
 	}
 	for _, firewallIDOrName := range firewalls {
 		var firewall *hcloud.Firewall
@@ -369,14 +379,14 @@ func createOptsFromFlags(
 			err = fmt.Errorf("firewall not found: %s", firewallIDOrName)
 			return
 		}
-		opts.Firewalls = append(opts.Firewalls, &hcloud.ServerCreateFirewall{Firewall: *firewall})
+		createOpts.Firewalls = append(createOpts.Firewalls, &hcloud.ServerCreateFirewall{Firewall: *firewall})
 	}
 
 	if datacenter != "" {
-		opts.Datacenter = &hcloud.Datacenter{Name: datacenter}
+		createOpts.Datacenter = &hcloud.Datacenter{Name: datacenter}
 	}
 	if location != "" {
-		opts.Location = &hcloud.Location{Name: location}
+		createOpts.Location = &hcloud.Location{Name: location}
 	}
 	if placementGroupIDorName != "" {
 		var placementGroup *hcloud.PlacementGroup
@@ -388,9 +398,10 @@ func createOptsFromFlags(
 			err = fmt.Errorf("placement group not found: %s", placementGroupIDorName)
 			return
 		}
-		opts.PlacementGroup = placementGroup
+		createOpts.PlacementGroup = placementGroup
 	}
 
+	protectionOps, err = getChangeProtectionOpts(true, protection)
 	return
 }
 
