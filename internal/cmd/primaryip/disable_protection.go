@@ -3,6 +3,7 @@ package primaryip
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 
@@ -16,11 +17,12 @@ import (
 var DisableProtectionCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:   "disable-protection PRIMARYIP",
+			Use:   "disable-protection PRIMARYIP [PROTECTIONLEVEL...]",
 			Short: "Disable Protection for a Primary IP",
-			Args:  cobra.ExactArgs(1),
+			Args:  cobra.MinimumNArgs(1),
 			ValidArgsFunction: cmpl.SuggestArgs(
 				cmpl.SuggestCandidatesF(client.PrimaryIP().Names),
+				cmpl.SuggestCandidates("delete"),
 			),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
@@ -37,9 +39,24 @@ var DisableProtectionCmd = base.Cmd{
 			return fmt.Errorf("Primary IP not found: %v", idOrName)
 		}
 
-		opts := hcloud.PrimaryIPChangeProtectionOpts{
-			ID:     primaryIP.ID,
-			Delete: false,
+		// This command used to have the "delete" protection level as the default.
+		// To avoid a breaking change, we now add it if no level is defined.
+		if len(args) < 2 {
+			args = append(args, "delete")
+		}
+
+		var unknown []string
+		opts := hcloud.PrimaryIPChangeProtectionOpts{ID: primaryIP.ID}
+		for _, arg := range args[1:] {
+			switch strings.ToLower(arg) {
+			case "delete":
+				opts.Delete = false
+			default:
+				unknown = append(unknown, arg)
+			}
+		}
+		if len(unknown) > 0 {
+			return fmt.Errorf("unknown protection level: %s", strings.Join(unknown, ", "))
 		}
 
 		action, _, err := client.PrimaryIP().ChangeProtection(ctx, opts)
