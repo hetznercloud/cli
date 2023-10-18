@@ -3,14 +3,11 @@ package primaryip
 import (
 	"context"
 	"fmt"
-	"strings"
-
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
-	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 	"github.com/spf13/cobra"
 )
 
@@ -45,30 +42,11 @@ var DisableProtectionCmd = base.Cmd{
 			args = append(args, "delete")
 		}
 
-		var unknown []string
-		opts := hcloud.PrimaryIPChangeProtectionOpts{ID: primaryIP.ID}
-		for _, arg := range args[1:] {
-			switch strings.ToLower(arg) {
-			case "delete":
-				opts.Delete = false
-			default:
-				unknown = append(unknown, arg)
-			}
-		}
-		if len(unknown) > 0 {
-			return fmt.Errorf("unknown protection level: %s", strings.Join(unknown, ", "))
-		}
-
-		action, _, err := client.PrimaryIP().ChangeProtection(ctx, opts)
+		opts, err := getChangeProtectionOpts(false, args[1:])
 		if err != nil {
 			return err
 		}
 
-		if err := actionWaiter.ActionProgress(ctx, action); err != nil {
-			return err
-		}
-
-		fmt.Printf("Primary IP %d protection disabled", opts.ID)
-		return nil
+		return changeProtection(ctx, client, actionWaiter, primaryIP, false, opts)
 	},
 }

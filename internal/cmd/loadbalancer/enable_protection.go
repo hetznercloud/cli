@@ -13,6 +13,49 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func getChangeProtectionOpts(enable bool, flags []string) (hcloud.LoadBalancerChangeProtectionOpts, error) {
+
+	opts := hcloud.LoadBalancerChangeProtectionOpts{}
+
+	var unknown []string
+	for _, arg := range flags {
+		switch strings.ToLower(arg) {
+		case "delete":
+			opts.Delete = hcloud.Ptr(enable)
+		default:
+			unknown = append(unknown, arg)
+		}
+	}
+	if len(unknown) > 0 {
+		return opts, fmt.Errorf("unknown protection level: %s", strings.Join(unknown, ", "))
+	}
+
+	return opts, nil
+}
+
+func changeProtection(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, loadBalancer *hcloud.LoadBalancer, enable bool, opts hcloud.LoadBalancerChangeProtectionOpts) error {
+
+	if opts.Delete == nil {
+		return nil
+	}
+
+	action, _, err := client.LoadBalancer().ChangeProtection(ctx, loadBalancer, opts)
+	if err != nil {
+		return err
+	}
+
+	if err := waiter.ActionProgress(ctx, action); err != nil {
+		return err
+	}
+
+	if enable {
+		fmt.Printf("Resource protection enabled for Load Balancer %d\n", loadBalancer.ID)
+	} else {
+		fmt.Printf("Resource protection disabled for Load Balancer %d\n", loadBalancer.ID)
+	}
+	return nil
+}
+
 var EnableProtectionCommand = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		return &cobra.Command{
@@ -29,38 +72,19 @@ var EnableProtectionCommand = base.Cmd{
 	},
 	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		LoadBalancer, _, err := client.LoadBalancer().Get(ctx, idOrName)
+		loadBalancer, _, err := client.LoadBalancer().Get(ctx, idOrName)
 		if err != nil {
 			return err
 		}
-		if LoadBalancer == nil {
+		if loadBalancer == nil {
 			return fmt.Errorf("Load Balancer not found: %s", idOrName)
 		}
 
-		var unknown []string
-		opts := hcloud.LoadBalancerChangeProtectionOpts{}
-		for _, arg := range args[1:] {
-			switch strings.ToLower(arg) {
-			case "delete":
-				opts.Delete = hcloud.Bool(true)
-			default:
-				unknown = append(unknown, arg)
-			}
-		}
-		if len(unknown) > 0 {
-			return fmt.Errorf("unknown protection level: %s", strings.Join(unknown, ", "))
-		}
-
-		action, _, err := client.LoadBalancer().ChangeProtection(ctx, LoadBalancer, opts)
+		opts, err := getChangeProtectionOpts(true, args[1:])
 		if err != nil {
 			return err
 		}
 
-		if err := waiter.ActionProgress(ctx, action); err != nil {
-			return err
-		}
-
-		fmt.Printf("Resource protection enabled Load Balancer %d\n", LoadBalancer.ID)
-		return nil
+		return changeProtection(ctx, client, waiter, loadBalancer, true, opts)
 	},
 }

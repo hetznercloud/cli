@@ -14,6 +14,47 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func getChangeProtectionOpts(enable bool, flags []string) (hcloud.PrimaryIPChangeProtectionOpts, error) {
+
+	opts := hcloud.PrimaryIPChangeProtectionOpts{}
+
+	var unknown []string
+	for _, arg := range flags {
+		switch strings.ToLower(arg) {
+		case "delete":
+			opts.Delete = enable
+		default:
+			unknown = append(unknown, arg)
+		}
+	}
+	if len(unknown) > 0 {
+		return opts, fmt.Errorf("unknown protection level: %s", strings.Join(unknown, ", "))
+	}
+
+	return opts, nil
+}
+
+func changeProtection(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, primaryIp *hcloud.PrimaryIP, enable bool, opts hcloud.PrimaryIPChangeProtectionOpts) error {
+
+	opts.ID = primaryIp.ID
+
+	action, _, err := client.PrimaryIP().ChangeProtection(ctx, opts)
+	if err != nil {
+		return err
+	}
+
+	if err := waiter.ActionProgress(ctx, action); err != nil {
+		return err
+	}
+
+	if enable {
+		fmt.Printf("Resource protection enabled for primary IP %d\n", opts.ID)
+	} else {
+		fmt.Printf("Resource protection disabled for primary IP %d\n", opts.ID)
+	}
+	return nil
+}
+
 var EnableProtectionCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
@@ -45,30 +86,11 @@ var EnableProtectionCmd = base.Cmd{
 			args = append(args, "delete")
 		}
 
-		var unknown []string
-		opts := hcloud.PrimaryIPChangeProtectionOpts{ID: primaryIP.ID}
-		for _, arg := range args[1:] {
-			switch strings.ToLower(arg) {
-			case "delete":
-				opts.Delete = true
-			default:
-				unknown = append(unknown, arg)
-			}
-		}
-		if len(unknown) > 0 {
-			return fmt.Errorf("unknown protection level: %s", strings.Join(unknown, ", "))
-		}
-
-		action, _, err := client.PrimaryIP().ChangeProtection(ctx, opts)
+		opts, err := getChangeProtectionOpts(true, args[1:])
 		if err != nil {
 			return err
 		}
 
-		if err := actionWaiter.ActionProgress(ctx, action); err != nil {
-			return err
-		}
-
-		fmt.Printf("Primary IP %d protection enabled", opts.ID)
-		return nil
+		return changeProtection(ctx, client, actionWaiter, primaryIP, true, opts)
 	},
 }

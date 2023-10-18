@@ -13,6 +13,49 @@ import (
 	"github.com/spf13/cobra"
 )
 
+func getChangeProtectionOpts(enable bool, flags []string) (hcloud.VolumeChangeProtectionOpts, error) {
+
+	opts := hcloud.VolumeChangeProtectionOpts{}
+
+	var unknown []string
+	for _, arg := range flags {
+		switch strings.ToLower(arg) {
+		case "delete":
+			opts.Delete = hcloud.Ptr(enable)
+		default:
+			unknown = append(unknown, arg)
+		}
+	}
+	if len(unknown) > 0 {
+		return opts, fmt.Errorf("unknown protection level: %s", strings.Join(unknown, ", "))
+	}
+
+	return opts, nil
+}
+
+func changeProtection(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, volume *hcloud.Volume, enable bool, opts hcloud.VolumeChangeProtectionOpts) error {
+
+	if opts.Delete == nil {
+		return nil
+	}
+
+	action, _, err := client.Volume().ChangeProtection(ctx, volume, opts)
+	if err != nil {
+		return err
+	}
+
+	if err := waiter.ActionProgress(ctx, action); err != nil {
+		return err
+	}
+
+	if enable {
+		fmt.Printf("Resource protection enabled for volume %d\n", volume.ID)
+	} else {
+		fmt.Printf("Resource protection disabled for volume %d\n", volume.ID)
+	}
+	return nil
+}
+
 var EnableProtectionCommand = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		return &cobra.Command{
@@ -36,30 +79,11 @@ var EnableProtectionCommand = base.Cmd{
 			return fmt.Errorf("volume not found: %s", args[0])
 		}
 
-		var unknown []string
-		opts := hcloud.VolumeChangeProtectionOpts{}
-		for _, arg := range args[1:] {
-			switch strings.ToLower(arg) {
-			case "delete":
-				opts.Delete = hcloud.Bool(true)
-			default:
-				unknown = append(unknown, arg)
-			}
-		}
-		if len(unknown) > 0 {
-			return fmt.Errorf("unknown protection level: %s", strings.Join(unknown, ", "))
-		}
-
-		action, _, err := client.Volume().ChangeProtection(ctx, volume, opts)
+		opts, err := getChangeProtectionOpts(true, args[1:])
 		if err != nil {
 			return err
 		}
 
-		if err := waiter.ActionProgress(ctx, action); err != nil {
-			return err
-		}
-
-		fmt.Printf("Resource protection enabled for volume %d\n", volume.ID)
-		return nil
+		return changeProtection(ctx, client, waiter, volume, true, opts)
 	},
 }
