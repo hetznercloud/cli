@@ -81,6 +81,8 @@ var CreateCmd = base.Cmd{
 		cmd.Flags().StringSlice("enable-protection", []string{}, "Enable protection (delete, rebuild) (default: none)")
 		cmd.RegisterFlagCompletionFunc("enable-protection", cmpl.SuggestCandidates("delete", "rebuild"))
 
+		cmd.Flags().Bool("enable-backup", false, "Enable automatic backups")
+
 		return cmd
 	},
 
@@ -110,6 +112,20 @@ var CreateCmd = base.Cmd{
 
 		if err := changeProtection(ctx, client, actionWaiter, server, true, protectionOpts); err != nil {
 			return err
+		}
+
+		enableBackup, _ := cmd.Flags().GetBool("enable-backup")
+		if enableBackup {
+			action, _, err := client.Server().EnableBackup(ctx, server, "")
+			if err != nil {
+				return err
+			}
+
+			if err := actionWaiter.ActionProgress(ctx, action); err != nil {
+				return err
+			}
+
+			fmt.Printf("Backups enabled for server %d\n", server.ID)
 		}
 
 		if !server.PublicNet.IPv4.IsUnspecified() {
