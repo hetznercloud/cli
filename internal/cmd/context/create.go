@@ -24,8 +24,8 @@ func newCreateCommand(cli *state.State) *cobra.Command {
 	return cmd
 }
 
-func runCreate(cli *state.State, cmd *cobra.Command, args []string) error {
-	if !cli.Terminal() {
+func runCreate(cli *state.State, _ *cobra.Command, args []string) error {
+	if !state.StdoutIsTerminal() {
 		return errors.New("context create is an interactive command")
 	}
 

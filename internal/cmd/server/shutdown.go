@@ -2,7 +2,10 @@ package server
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
+	"time"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
@@ -13,16 +16,32 @@ import (
 
 var ShutdownCommand = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
-		return &cobra.Command{
+
+		const description = "Shuts down a Server gracefully by sending an ACPI shutdown request. " +
+			"The Server operating system must support ACPI and react to the request, " +
+			"otherwise the Server will not shut down. Use the --wait flag to wait for the " +
+			"server to shut down before returning."
+
+		cmd := &cobra.Command{
 			Use:                   "shutdown [FLAGS] SERVER",
 			Short:                 "Shutdown a server",
+			Long:                  description,
 			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
 		}
+
+		cmd.Flags().Bool("wait", false, "Wait for the server to shut down before exiting")
+		cmd.Flags().Duration("wait-timeout", 30*time.Second, "Timeout for waiting for off state after shutdown")
+
+		return cmd
 	},
 	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+
+		wait, _ := cmd.Flags().GetBool("wait")
+		timeout, _ := cmd.Flags().GetDuration("wait-timeout")
+
 		idOrName := args[0]
 		server, _, err := client.Server().Get(ctx, idOrName)
 		if err != nil {
@@ -41,7 +60,45 @@ var ShutdownCommand = base.Cmd{
 			return err
 		}
 
-		fmt.Printf("Server %d shut down\n", server.ID)
+		fmt.Printf("Sent shutdown signal to server %d\n", server.ID)
+
+		if wait {
+			start := time.Now()
+			errCh := make(chan error)
+
+			interval, _ := cmd.Flags().GetDuration("poll-interval")
+			if interval < time.Second {
+				interval = time.Second
+			}
+
+			go func() {
+				defer close(errCh)
+
+				ticker := time.NewTicker(interval)
+				defer ticker.Stop()
+
+				for server.Status != hcloud.ServerStatusOff {
+					if now := <-ticker.C; now.Sub(start) >= timeout {
+						errCh <- errors.New("failed to shut down server")
+						return
+					}
+					server, _, err = client.Server().GetByID(ctx, server.ID)
+					if err != nil {
+						errCh <- err
+						return
+					}
+				}
+
+				errCh <- nil
+			}()
+
+			if err := state.DisplayProgressCircle(errCh, "Waiting for server to shut down"); err != nil {
+				return err
+			}
+
+			fmt.Printf("Server %d shut down\n", server.ID)
+		}
+
 		return nil
 	},
 }
