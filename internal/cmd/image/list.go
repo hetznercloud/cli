@@ -3,6 +3,7 @@ package image
 import (
 	"context"
 	"fmt"
+	"github.com/spf13/pflag"
 	"strings"
 	"time"
 
@@ -19,7 +20,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var listCmd = base.ListCmd{
+var ListCmd = base.ListCmd{
 	ResourceNamePlural: "images",
 	DefaultColumns:     []string{"id", "type", "name", "description", "architecture", "image_size", "disk_size", "created", "deprecated"},
 	AdditionalFlags: func(cmd *cobra.Command) {
@@ -29,15 +30,15 @@ var listCmd = base.ListCmd{
 		cmd.Flags().StringSliceP("architecture", "a", []string{}, "Only show images of given architecture: x86|arm")
 		cmd.RegisterFlagCompletionFunc("architecture", cmpl.SuggestCandidates(string(hcloud.ArchitectureX86), string(hcloud.ArchitectureARM)))
 	},
-	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
+	Fetch: func(ctx context.Context, client hcapi2.Client, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
 		opts := hcloud.ImageListOpts{ListOpts: listOpts, IncludeDeprecated: true}
 
-		imageType, _ := cmd.Flags().GetString("type")
+		imageType, _ := flags.GetString("type")
 		if len(imageType) > 0 {
 			opts.Type = []hcloud.ImageType{hcloud.ImageType(imageType)}
 		}
 
-		architecture, _ := cmd.Flags().GetStringSlice("architecture")
+		architecture, _ := flags.GetStringSlice("architecture")
 		if len(architecture) > 0 {
 			for _, arch := range architecture {
 				opts.Architecture = append(opts.Architecture, hcloud.Architecture(arch))

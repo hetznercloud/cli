@@ -3,6 +3,7 @@ package primaryip
 import (
 	"context"
 	"fmt"
+	"github.com/spf13/pflag"
 	"strings"
 	"time"
 
@@ -13,14 +14,13 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
-	"github.com/spf13/cobra"
 )
 
-var listCmd = base.ListCmd{
+var ListCmd = base.ListCmd{
 	ResourceNamePlural: "Primary IPs",
 	DefaultColumns:     []string{"id", "type", "name", "ip", "assignee", "dns", "auto_delete", "age"},
 
-	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
+	Fetch: func(ctx context.Context, client hcapi2.Client, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
 		opts := hcloud.PrimaryIPListOpts{ListOpts: listOpts}
 		if len(sorts) > 0 {
 			opts.Sort = sorts
