@@ -7,12 +7,13 @@ import (
 	"reflect"
 	"strings"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
-	"github.com/spf13/cobra"
 )
 
 // SetRdnsCmd allows defining commands for setting the RDNS of a resource.

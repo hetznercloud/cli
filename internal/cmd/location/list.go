@@ -2,6 +2,7 @@ package location
 
 import (
 	"context"
+
 	"github.com/spf13/pflag"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"

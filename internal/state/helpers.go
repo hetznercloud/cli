@@ -8,11 +8,11 @@ import (
 	"time"
 
 	"github.com/cheggaaa/pb/v3"
-	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 	"github.com/spf13/cobra"
 	"golang.org/x/crypto/ssh/terminal"
 
 	"github.com/hetznercloud/cli/internal/version"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 const (

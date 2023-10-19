@@ -1,9 +1,10 @@
 package servertype
 
 import (
+	"github.com/spf13/cobra"
+
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
-	"github.com/spf13/cobra"
 )
 
 func NewCommand(cli *state.State, client hcapi2.Client) *cobra.Command {

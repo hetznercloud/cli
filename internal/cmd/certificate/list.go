@@ -2,9 +2,10 @@ package certificate
 
 import (
 	"context"
-	"github.com/spf13/pflag"
 	"strings"
 	"time"
+
+	"github.com/spf13/pflag"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/output"

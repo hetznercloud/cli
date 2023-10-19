@@ -2,6 +2,7 @@ package hcapi2_mock
 
 import (
 	"github.com/golang/mock/gomock"
+
 	"github.com/hetznercloud/cli/internal/hcapi2"
 )
 

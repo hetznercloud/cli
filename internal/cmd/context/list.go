@@ -1,10 +1,11 @@
 package context
 
 import (
+	"github.com/spf13/cobra"
+
 	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
-	"github.com/spf13/cobra"
 )
 
 var listTableOutput *output.Table

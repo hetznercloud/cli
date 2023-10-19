@@ -3,8 +3,9 @@ package loadbalancer
 import (
 	"testing"
 
-	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 func TestLoadBalancerHealth(t *testing.T) {

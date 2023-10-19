@@ -3,9 +3,10 @@ package cmpl_test
 import (
 	"testing"
 
-	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
+
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 )
 
 func TestSuggestCandidates(t *testing.T) {

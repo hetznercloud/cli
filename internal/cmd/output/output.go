@@ -11,9 +11,10 @@ import (
 	"unicode"
 
 	"github.com/fatih/structs"
+	"github.com/spf13/cobra"
+
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/cli/internal/cmd/util"
-	"github.com/spf13/cobra"
 )
 
 const flagName = "output"
