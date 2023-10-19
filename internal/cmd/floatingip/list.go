@@ -25,7 +25,7 @@ var ListCmd = base.ListCmd{
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		floatingIPs, _, err := client.FloatingIP().List(ctx, opts)
+		floatingIPs, err := client.FloatingIP().AllWithOpts(ctx, opts)
 
 		var resources []interface{}
 		for _, n := range floatingIPs {
