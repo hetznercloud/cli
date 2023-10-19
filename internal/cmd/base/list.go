@@ -3,6 +3,7 @@ package base
 import (
 	"context"
 	"fmt"
+	"github.com/spf13/pflag"
 
 	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
@@ -16,7 +17,7 @@ import (
 type ListCmd struct {
 	ResourceNamePlural string // e.g. "servers"
 	DefaultColumns     []string
-	Fetch              func(context.Context, hcapi2.Client, *cobra.Command, hcloud.ListOpts, []string) ([]interface{}, error)
+	Fetch              func(context.Context, hcapi2.Client, *pflag.FlagSet, hcloud.ListOpts, []string) ([]interface{}, error)
 	AdditionalFlags    func(*cobra.Command)
 	OutputTable        func(client hcapi2.Client) *output.Table
 	JSONSchema         func([]interface{}) interface{}
@@ -62,7 +63,7 @@ func (lc *ListCmd) Run(ctx context.Context, client hcapi2.Client, cmd *cobra.Com
 	}
 	sorts, _ := cmd.Flags().GetStringSlice("sort")
 
-	resources, err := lc.Fetch(ctx, client, cmd, listOpts, sorts)
+	resources, err := lc.Fetch(ctx, client, cmd.Flags(), listOpts, sorts)
 	if err != nil {
 		return err
 	}

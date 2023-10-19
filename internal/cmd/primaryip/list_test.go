@@ -16,7 +16,7 @@ func TestList(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := listCmd.CobraCommand(context.Background(), fx.Client, fx.TokenEnsurer)
+	cmd := ListCmd.CobraCommand(context.Background(), fx.Client, fx.TokenEnsurer)
 
 	fx.ExpectEnsureToken()
 	fx.Client.PrimaryIPClient.EXPECT().

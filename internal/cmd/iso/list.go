@@ -2,6 +2,7 @@ package iso
 
 import (
 	"context"
+	"github.com/spf13/pflag"
 
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 
@@ -14,7 +15,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var listCmd = base.ListCmd{
+var ListCmd = base.ListCmd{
 	ResourceNamePlural: "isos",
 	DefaultColumns:     []string{"id", "name", "description", "type", "architecture"},
 	AdditionalFlags: func(cmd *cobra.Command) {
@@ -24,17 +25,17 @@ var listCmd = base.ListCmd{
 		cmd.Flags().Bool("include-architecture-wildcard", false, "Include ISOs with unknown architecture, only required if you want so show custom ISOs and still filter for architecture.")
 	},
 
-	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
+	Fetch: func(ctx context.Context, client hcapi2.Client, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
 		opts := hcloud.ISOListOpts{ListOpts: listOpts}
 
-		architecture, _ := cmd.Flags().GetStringSlice("architecture")
+		architecture, _ := flags.GetStringSlice("architecture")
 		if len(architecture) > 0 {
 			for _, arch := range architecture {
 				opts.Architecture = append(opts.Architecture, hcloud.Architecture(arch))
 			}
 		}
 
-		includeArchitectureWildcard, _ := cmd.Flags().GetBool("include-architecture-wildcard")
+		includeArchitectureWildcard, _ := flags.GetBool("include-architecture-wildcard")
 		if includeArchitectureWildcard {
 			opts.IncludeWildcardArchitecture = includeArchitectureWildcard
 		}
