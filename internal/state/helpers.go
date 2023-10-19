@@ -54,8 +54,8 @@ func (c *State) Client() *hcloud.Client {
 	return c.client
 }
 
-// Terminal returns whether the CLI is run in a terminal.
-func (c *State) Terminal() bool {
+// StdoutIsTerminal returns whether the CLI is run in a terminal.
+func StdoutIsTerminal() bool {
 	return terminal.IsTerminal(int(os.Stdout.Fd()))
 }
 
@@ -66,7 +66,7 @@ func (c *State) ActionProgress(ctx context.Context, action *hcloud.Action) error
 func (c *State) ActionsProgresses(ctx context.Context, actions []*hcloud.Action) error {
 	progressCh, errCh := c.Client().Action.WatchOverallProgress(ctx, actions)
 
-	if c.Terminal() {
+	if StdoutIsTerminal() {
 		progress := pb.New(100)
 		progress.SetMaxWidth(50) // width of progress bar is too large by default
 		progress.SetTemplateString(progressBarTpl)
@@ -89,7 +89,7 @@ func (c *State) ActionsProgresses(ctx context.Context, actions []*hcloud.Action)
 	}
 }
 
-func (c *State) EnsureToken(cmd *cobra.Command, args []string) error {
+func (c *State) EnsureToken(_ *cobra.Command, _ []string) error {
 	if c.Token == "" {
 		return errors.New("no active context or token (see `hcloud context --help`)")
 	}
@@ -97,12 +97,6 @@ func (c *State) EnsureToken(cmd *cobra.Command, args []string) error {
 }
 
 func (c *State) WaitForActions(ctx context.Context, actions []*hcloud.Action) error {
-	const (
-		done     = "done"
-		failed   = "failed"
-		ellipsis = " ... "
-	)
-
 	for _, action := range actions {
 		resources := make(map[string]int64)
 		for _, resource := range action.Resources {
@@ -119,30 +113,44 @@ func (c *State) WaitForActions(ctx context.Context, actions []*hcloud.Action) er
 			waitingFor = fmt.Sprintf("Waiting for volume %d to have been attached to server %d", resources["volume"], resources["server"])
 		}
 
-		if c.Terminal() {
-			fmt.Println(waitingFor)
-			progress := pb.New(1) // total progress of 1 will do since we use a circle here
-			progress.SetTemplateString(progressCircleTpl)
-			progress.Start()
-			defer progress.Finish()
+		_, errCh := c.Client().Action.WatchProgress(ctx, action)
 
-			_, errCh := c.Client().Action.WatchProgress(ctx, action)
-			if err := <-errCh; err != nil {
-				progress.SetTemplateString(ellipsis + failed)
-				return err
-			}
-			progress.SetTemplateString(ellipsis + done)
-		} else {
-			fmt.Print(waitingFor + ellipsis)
-
-			_, errCh := c.Client().Action.WatchProgress(ctx, action)
-			if err := <-errCh; err != nil {
-				fmt.Println(failed)
-				return err
-			}
-			fmt.Println(done)
+		err := DisplayProgressCircle(errCh, waitingFor)
+		if err != nil {
+			return err
 		}
 	}
 
+	return nil
+}
+
+func DisplayProgressCircle(errCh <-chan error, waitingFor string) error {
+	const (
+		done     = "done"
+		failed   = "failed"
+		ellipsis = " ... "
+	)
+
+	if StdoutIsTerminal() {
+		fmt.Println(waitingFor)
+		progress := pb.New(1) // total progress of 1 will do since we use a circle here
+		progress.SetTemplateString(progressCircleTpl)
+		progress.Start()
+		defer progress.Finish()
+
+		if err := <-errCh; err != nil {
+			progress.SetTemplateString(ellipsis + failed)
+			return err
+		}
+		progress.SetTemplateString(ellipsis + done)
+	} else {
+		fmt.Print(waitingFor + ellipsis)
+
+		if err := <-errCh; err != nil {
+			fmt.Println(failed)
+			return err
+		}
+		fmt.Println(done)
+	}
 	return nil
 }
