@@ -3,10 +3,11 @@ package base
 import (
 	"context"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
-	"github.com/spf13/cobra"
 )
 
 // Cmd allows defining commands for generic resource-based commands

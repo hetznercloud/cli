@@ -1,5 +1,10 @@
 ---
 linters-settings:
+  gci:
+    sections:
+      - standard
+      - default
+      - prefix(github.com/hetznercloud)
   exhaustive:
     default-signifies-exhaustive: true
   gomodguard:
@@ -52,7 +57,7 @@ linters:
     - exhaustive
     # - gocritic
     # - golint
-    # - goimports
+    - gci
     - gomodguard
     - gosec
     # - gosimple

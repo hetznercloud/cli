@@ -4,8 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/hetznercloud/cli/internal/state"
 	"github.com/spf13/cobra"
+
+	"github.com/hetznercloud/cli/internal/state"
 )
 
 // const (

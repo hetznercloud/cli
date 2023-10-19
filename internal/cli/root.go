@@ -3,6 +3,8 @@ package cli
 import (
 	"time"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hetznercloud/cli/internal/cmd/certificate"
 	"github.com/hetznercloud/cli/internal/cmd/completion"
 	"github.com/hetznercloud/cli/internal/cmd/context"
@@ -24,7 +26,6 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/volume"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
-	"github.com/spf13/cobra"
 )
 
 func NewRootCommand(state *state.State, client hcapi2.Client) *cobra.Command {

@@ -7,9 +7,10 @@ import (
 	"strings"
 	"syscall"
 
-	"github.com/hetznercloud/cli/internal/state"
 	"github.com/spf13/cobra"
 	"golang.org/x/crypto/ssh/terminal"
+
+	"github.com/hetznercloud/cli/internal/state"
 )
 
 func newCreateCommand(cli *state.State) *cobra.Command {

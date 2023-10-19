@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"net"
 
+	"github.com/dustin/go-humanize"
 	"github.com/spf13/cobra"
 
-	"github.com/dustin/go-humanize"
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"

@@ -3,8 +3,9 @@ package context
 import (
 	"fmt"
 
-	"github.com/hetznercloud/cli/internal/state"
 	"github.com/spf13/cobra"
+
+	"github.com/hetznercloud/cli/internal/state"
 )
 
 func newActiveCommand(cli *state.State) *cobra.Command {

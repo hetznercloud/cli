@@ -4,9 +4,10 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
+	"github.com/spf13/cobra"
+
 	hcapi2_mock "github.com/hetznercloud/cli/internal/hcapi2/mock"
 	"github.com/hetznercloud/cli/internal/state"
-	"github.com/spf13/cobra"
 )
 
 // Fixture provides affordances for testing CLI commands.

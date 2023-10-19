@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/dustin/go-humanize"
+
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 

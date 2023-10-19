@@ -3,12 +3,13 @@ package image
 import (
 	"context"
 
+	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
+
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
-	"github.com/spf13/cobra"
-	"github.com/spf13/pflag"
 )
 
 var updateCmd = base.UpdateCmd{

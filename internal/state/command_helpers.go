@@ -3,8 +3,9 @@ package state
 import (
 	"context"
 
-	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 	"github.com/spf13/cobra"
+
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 //go:generate mockgen -package state -destination command_helper_mocks.go . ActionWaiter,TokenEnsurer

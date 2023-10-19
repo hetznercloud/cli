@@ -4,11 +4,12 @@ import (
 	"fmt"
 	"io/ioutil"
 
+	"github.com/spf13/cobra"
+
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
-	"github.com/spf13/cobra"
 )
 
 func newCreateCommand(cli *state.State) *cobra.Command {

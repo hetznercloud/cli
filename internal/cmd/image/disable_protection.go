@@ -3,13 +3,15 @@ package image
 import (
 	"context"
 	"errors"
+	"strconv"
+
+	"github.com/spf13/cobra"
+
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
-	"github.com/spf13/cobra"
-	"strconv"
 )
 
 var DisableProtectionCommand = base.Cmd{
