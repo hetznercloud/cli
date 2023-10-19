@@ -2,6 +2,9 @@ package iso
 
 import (
 	"context"
+	"fmt"
+	"slices"
+	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -23,10 +26,28 @@ var ListCmd = base.ListCmd{
 		cmd.RegisterFlagCompletionFunc("architecture", cmpl.SuggestCandidates(string(hcloud.ArchitectureX86), string(hcloud.ArchitectureARM)))
 
 		cmd.Flags().Bool("include-architecture-wildcard", false, "Include ISOs with unknown architecture, only required if you want so show custom ISOs and still filter for architecture.")
+
+		cmd.Flags().StringSlice("type", []string{"public", "private"}, "Types to include (public, private)")
+		cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("public", "private"))
 	},
 
 	Fetch: func(ctx context.Context, client hcapi2.Client, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
 		opts := hcloud.ISOListOpts{ListOpts: listOpts}
+
+		types, _ := flags.GetStringSlice("type")
+
+		var unknown []string
+		for _, t := range types {
+			switch t {
+			case string(hcloud.ISOTypePublic), string(hcloud.ISOTypePrivate):
+				break
+			default:
+				unknown = append(unknown, t)
+			}
+		}
+		if len(unknown) > 0 {
+			return nil, fmt.Errorf("unknown ISO types %s\n", strings.Join(unknown, ", "))
+		}
 
 		architecture, _ := flags.GetStringSlice("architecture")
 		if len(architecture) > 0 {
@@ -47,8 +68,10 @@ var ListCmd = base.ListCmd{
 		isos, err := client.ISO().AllWithOpts(ctx, opts)
 
 		var resources []interface{}
-		for _, n := range isos {
-			resources = append(resources, n)
+		for _, iso := range isos {
+			if slices.Contains(types, string(iso.Type)) {
+				resources = append(resources, iso)
+			}
 		}
 		return resources, err
 	},
