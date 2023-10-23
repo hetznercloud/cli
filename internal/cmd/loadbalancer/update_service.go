@@ -30,7 +30,7 @@ var UpdateServiceCommand = base.Cmd{
 
 		cmd.Flags().Int("destination-port", 0, "Destination port of the service on the targets")
 
-		cmd.Flags().String("protocol", "", "The protocol the health check is performed over")
+		cmd.Flags().String("protocol", "", "The protocol to use for load balancing traffic")
 		cmd.Flags().Bool("proxy-protocol", false, "Enable or disable (with --proxy-protocol=false) Proxy Protocol")
 		cmd.Flags().Bool("http-redirect-http", false, "Enable or disable redirect all traffic on port 80 to port 443")
 
