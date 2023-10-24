@@ -128,7 +128,7 @@ var ListCmd = base.ListCmd{
 	},
 
 	JSONSchema: func(resources []interface{}) interface{} {
-		var serversSchema []schema.Server
+		serversSchema := make([]schema.Server, 0, len(resources))
 		for _, resource := range resources {
 			server := resource.(*hcloud.Server)
 

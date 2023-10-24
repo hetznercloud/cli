@@ -55,7 +55,7 @@ var ListCmd = base.ListCmd{
 	},
 
 	JSONSchema: func(resources []interface{}) interface{} {
-		var placementGroupSchemas []schema.PlacementGroup
+		placementGroupSchemas := make([]schema.PlacementGroup, 0, len(resources))
 		for _, resource := range resources {
 			placementGroup := resource.(*hcloud.PlacementGroup)
 			placementGroupSchema := schema.PlacementGroup{

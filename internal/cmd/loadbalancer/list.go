@@ -83,7 +83,7 @@ var ListCmd = base.ListCmd{
 	},
 
 	JSONSchema: func(resources []interface{}) interface{} {
-		var loadBalancerSchemas []schema.LoadBalancer
+		loadBalancerSchemas := make([]schema.LoadBalancer, 0, len(resources))
 		for _, resource := range resources {
 			loadBalancer := resource.(*hcloud.LoadBalancer)
 			loadBalancerSchema := schema.LoadBalancer{

@@ -70,9 +70,8 @@ var ListCmd = base.ListCmd{
 				return util.Age(network.Created, time.Now())
 			}))
 	},
-
 	JSONSchema: func(resources []interface{}) interface{} {
-		var networkSchemas []schema.Network
+		networkSchemas := make([]schema.Network, 0, len(resources))
 		for _, resource := range resources {
 			network := resource.(*hcloud.Network)
 
