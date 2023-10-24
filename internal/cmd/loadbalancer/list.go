@@ -17,8 +17,8 @@ import (
 
 var ListCmd = base.ListCmd{
 	ResourceNamePlural: "Load Balancer",
-
-	DefaultColumns: []string{"id", "name", "health", "ipv4", "ipv6", "type", "location", "network_zone", "age"},
+	JSONKeyGetByName:   "load_balancers",
+	DefaultColumns:     []string{"id", "name", "health", "ipv4", "ipv6", "type", "location", "network_zone", "age"},
 	Fetch: func(ctx context.Context, client hcapi2.Client, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
 		opts := hcloud.LoadBalancerListOpts{ListOpts: listOpts}
 		if len(sorts) > 0 {

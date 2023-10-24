@@ -5,6 +5,7 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/hetznercloud/cli/internal/cmd/all"
 	"github.com/hetznercloud/cli/internal/cmd/certificate"
 	"github.com/hetznercloud/cli/internal/cmd/completion"
 	"github.com/hetznercloud/cli/internal/cmd/context"
@@ -39,6 +40,7 @@ func NewRootCommand(state *state.State, client hcapi2.Client) *cobra.Command {
 		DisableFlagsInUseLine: true,
 	}
 	cmd.AddCommand(
+		all.NewCommand(state, client),
 		floatingip.NewCommand(state, client),
 		image.NewCommand(state, client),
 		server.NewCommand(state, client),

@@ -18,6 +18,7 @@ import (
 
 var ListCmd = base.ListCmd{
 	ResourceNamePlural: "Primary IPs",
+	JSONKeyGetByName:   "primary_ips",
 	DefaultColumns:     []string{"id", "type", "name", "ip", "assignee", "dns", "auto_delete", "age"},
 
 	Fetch: func(ctx context.Context, client hcapi2.Client, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {

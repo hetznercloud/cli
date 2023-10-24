@@ -15,6 +15,7 @@ import (
 
 var ListCmd = base.ListCmd{
 	ResourceNamePlural: "Datacenters",
+	JSONKeyGetByName:   "datacenters",
 	DefaultColumns:     []string{"id", "name", "description", "location"},
 
 	Fetch: func(ctx context.Context, client hcapi2.Client, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {

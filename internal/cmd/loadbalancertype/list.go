@@ -15,6 +15,7 @@ import (
 
 var ListCmd = base.ListCmd{
 	ResourceNamePlural: "Load Balancer Types",
+	JSONKeyGetByName:   "load_balancer_types",
 
 	DefaultColumns: []string{"id", "name", "description", "max_services", "max_connections", "max_targets"},
 

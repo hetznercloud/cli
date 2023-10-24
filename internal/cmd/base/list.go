@@ -17,6 +17,7 @@ import (
 // ListCmd allows defining commands for listing resources
 type ListCmd struct {
 	ResourceNamePlural string // e.g. "servers"
+	JSONKeyGetByName   string // e.g. "servers"
 	DefaultColumns     []string
 	Fetch              func(context.Context, hcapi2.Client, *pflag.FlagSet, hcloud.ListOpts, []string) ([]interface{}, error)
 	AdditionalFlags    func(*cobra.Command)
