@@ -23,7 +23,7 @@ var ListCmd = base.ListCmd{
 	ResourceNamePlural: "images",
 	DefaultColumns:     []string{"id", "type", "name", "description", "architecture", "image_size", "disk_size", "created", "deprecated"},
 	AdditionalFlags: func(cmd *cobra.Command) {
-		cmd.Flags().StringP("type", "t", "", "Only show images of given type")
+		cmd.Flags().StringSliceP("type", "t", []string{}, "Only show images of given type")
 		cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("backup", "snapshot", "system", "app"))
 
 		cmd.Flags().StringSliceP("architecture", "a", []string{}, "Only show images of given architecture: x86|arm")
@@ -32,9 +32,20 @@ var ListCmd = base.ListCmd{
 	Fetch: func(ctx context.Context, client hcapi2.Client, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
 		opts := hcloud.ImageListOpts{ListOpts: listOpts, IncludeDeprecated: true}
 
-		imageType, _ := flags.GetString("type")
-		if len(imageType) > 0 {
-			opts.Type = []hcloud.ImageType{hcloud.ImageType(imageType)}
+		types, _ := flags.GetStringSlice("type")
+		var (
+			unknown []string
+		)
+		for _, imageType := range types {
+			switch imageType {
+			case string(hcloud.ImageTypeBackup), string(hcloud.ImageTypeSnapshot), string(hcloud.ImageTypeSystem), string(hcloud.ImageTypeApp):
+				opts.Type = append(opts.Type, hcloud.ImageType(imageType))
+			default:
+				unknown = append(unknown, imageType)
+			}
+		}
+		if len(unknown) > 0 {
+			return nil, fmt.Errorf("unknown image type: %s\n", strings.Join(unknown, ", "))
 		}
 
 		architecture, _ := flags.GetStringSlice("architecture")
