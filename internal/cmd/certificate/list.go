@@ -16,7 +16,7 @@ import (
 )
 
 var ListCmd = base.ListCmd{
-	ResourceNamePlural: "certificates",
+	ResourceNamePlural: "Certificates",
 	DefaultColumns:     []string{"id", "name", "type", "domain_names", "not_valid_after", "age"},
 
 	Fetch: func(ctx context.Context, client hcapi2.Client, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {

@@ -19,7 +19,7 @@ import (
 )
 
 var ListCmd = base.ListCmd{
-	ResourceNamePlural: "isos",
+	ResourceNamePlural: "ISOs",
 	DefaultColumns:     []string{"id", "name", "description", "type", "architecture"},
 	AdditionalFlags: func(cmd *cobra.Command) {
 		cmd.Flags().StringSlice("architecture", []string{}, "Only show images of given architecture: x86|arm")
