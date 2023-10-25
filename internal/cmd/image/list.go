@@ -21,6 +21,7 @@ import (
 
 var ListCmd = base.ListCmd{
 	ResourceNamePlural: "Images",
+	JSONKeyGetByName:   "images",
 	DefaultColumns:     []string{"id", "type", "name", "description", "architecture", "image_size", "disk_size", "created", "deprecated"},
 	AdditionalFlags: func(cmd *cobra.Command) {
 		cmd.Flags().StringSliceP("type", "t", []string{}, "Only show images of given type")

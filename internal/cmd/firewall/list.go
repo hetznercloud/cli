@@ -15,6 +15,7 @@ import (
 
 var ListCmd = base.ListCmd{
 	ResourceNamePlural: "Firewalls",
+	JSONKeyGetByName:   "firewalls",
 	DefaultColumns:     []string{"id", "name", "rules_count", "applied_to_count"},
 
 	Fetch: func(ctx context.Context, client hcapi2.Client, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {

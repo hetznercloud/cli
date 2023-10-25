@@ -16,6 +16,7 @@ import (
 
 var ListCmd = base.ListCmd{
 	ResourceNamePlural: "Server Types",
+	JSONKeyGetByName:   "server_types",
 
 	DefaultColumns: []string{"id", "name", "cores", "cpu_type", "architecture", "memory", "disk", "storage_type", "traffic"},
 
