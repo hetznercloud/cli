@@ -1,5 +1,24 @@
 # Changelog
 
+## [1.39.0](https://github.com/hetznercloud/cli/compare/v1.38.3...v1.39.0) (2023-10-25)
+
+
+### Features
+
+* add --enable-protection flag to "create" commands ([#567](https://github.com/hetznercloud/cli/issues/567)) ([e313e69](https://github.com/hetznercloud/cli/commit/e313e6900f3fcf05eeace9af0c8697654b868df4))
+* add "all list" command to list all resources in the project ([6d3b064](https://github.com/hetznercloud/cli/commit/6d3b064920f65807bccbf2f41f1acbc4836a760c))
+* **iso:** allow to filter list by type (public, private) ([#573](https://github.com/hetznercloud/cli/issues/573)) ([140cbc3](https://github.com/hetznercloud/cli/commit/140cbc3931007e8b95e2e02d2bd9c20076da9d96))
+* **primary-ip:** enable/disable-protection accept levels as arguments ([#564](https://github.com/hetznercloud/cli/issues/564)) ([b11e223](https://github.com/hetznercloud/cli/commit/b11e223c4ff51ebe46e452a10a22ca8ab002ac3b))
+* **server:** add --enable-backup flag to "create" command ([#568](https://github.com/hetznercloud/cli/issues/568)) ([15adee0](https://github.com/hetznercloud/cli/commit/15adee05069e3470a9733c2cf95669436f88a253))
+* **server:** add --wait flag to "shutdown" command ([#569](https://github.com/hetznercloud/cli/issues/569)) ([3ce048c](https://github.com/hetznercloud/cli/commit/3ce048cc576b21d7978daf308f48db75ebfc1f2f))
+
+
+### Bug Fixes
+
+* **floating-ip:** list command only returns first 50 entries ([#574](https://github.com/hetznercloud/cli/issues/574)) ([f3fa881](https://github.com/hetznercloud/cli/commit/f3fa8815dbec92d3f770dd2c441021aed5ce386b))
+* **image:** list does not parse "type" flag correctly ([#578](https://github.com/hetznercloud/cli/issues/578)) ([9a0487a](https://github.com/hetznercloud/cli/commit/9a0487a5438e89feffe558f911522ec7b4daadf1))
+* list outputs null instead of empty array when listing in JSON ([#579](https://github.com/hetznercloud/cli/issues/579)) ([93bed7e](https://github.com/hetznercloud/cli/commit/93bed7eb6b9c4d0f0b81f455c8f2ff2ba7e8e52b))
+
 ## [1.38.3](https://github.com/hetznercloud/cli/compare/v1.38.2...v1.38.3) (2023-10-16)
 
 
