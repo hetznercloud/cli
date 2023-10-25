@@ -15,7 +15,7 @@ import (
 )
 
 var ListCmd = base.ListCmd{
-	ResourceNamePlural: "ssh keys",
+	ResourceNamePlural: "SSH keys",
 	DefaultColumns:     []string{"id", "name", "fingerprint", "age"},
 
 	Fetch: func(ctx context.Context, client hcapi2.Client, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {

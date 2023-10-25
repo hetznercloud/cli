@@ -19,7 +19,7 @@ import (
 )
 
 var ListCmd = base.ListCmd{
-	ResourceNamePlural: "servers",
+	ResourceNamePlural: "Servers",
 
 	DefaultColumns: []string{"id", "name", "status", "ipv4", "ipv6", "private_net", "datacenter", "age"},
 
