@@ -1,14 +1,16 @@
 package context
 
 import (
+	"bufio"
 	"bytes"
 	"errors"
 	"fmt"
+	"os"
 	"strings"
 	"syscall"
 
 	"github.com/spf13/cobra"
-	"golang.org/x/crypto/ssh/terminal"
+	"golang.org/x/term"
 
 	"github.com/hetznercloud/cli/internal/state"
 )
@@ -40,24 +42,43 @@ func runCreate(cli *state.State, _ *cobra.Command, args []string) error {
 
 	context := &state.ConfigContext{Name: name}
 
-	for {
-		fmt.Printf("Token: ")
-		btoken, err := terminal.ReadPassword(int(syscall.Stdin))
-		fmt.Print("\n")
-		if err != nil {
-			return err
+	var token string
+
+	envToken := os.Getenv("HCLOUD_TOKEN")
+	if envToken != "" {
+		if len(envToken) != 64 {
+			fmt.Println("Warning: HCLOUD_TOKEN is set, but token is invalid (must be exactly 64 characters long)")
+		} else {
+			fmt.Print("The HCLOUD_TOKEN environment variable is set. Do you want to use the token from HCLOUD_TOKEN for the new context? (Y/n): ")
+			scanner := bufio.NewScanner(os.Stdin)
+			scanner.Scan()
+			if s := strings.ToLower(scanner.Text()); s == "" || s == "y" || s == "yes" {
+				token = envToken
+			}
 		}
-		token := string(bytes.TrimSpace(btoken))
-		if token == "" {
-			continue
-		}
-		if len(token) != 64 {
-			fmt.Print("Entered token is invalid (must be exactly 64 characters long)\n")
-			continue
-		}
-		context.Token = token
-		break
 	}
+
+	if token == "" {
+		for {
+			fmt.Printf("Token: ")
+			btoken, err := term.ReadPassword(syscall.Stdin)
+			fmt.Print("\n")
+			if err != nil {
+				return err
+			}
+			token = string(bytes.TrimSpace(btoken))
+			if token == "" {
+				continue
+			}
+			if len(token) != 64 {
+				fmt.Print("Entered token is invalid (must be exactly 64 characters long)\n")
+				continue
+			}
+			break
+		}
+	}
+
+	context.Token = token
 
 	cli.Config.Contexts = append(cli.Config.Contexts, context)
 	cli.Config.ActiveContext = context
