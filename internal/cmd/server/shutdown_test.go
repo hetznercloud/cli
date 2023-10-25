@@ -16,7 +16,7 @@ func TestShutdown(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := ShutdownCommand.CobraCommand(
+	cmd := ShutdownCmd.CobraCommand(
 		context.Background(),
 		fx.Client,
 		fx.TokenEnsurer,
@@ -52,7 +52,7 @@ func TestShutdownWait(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := ShutdownCommand.CobraCommand(
+	cmd := ShutdownCmd.CobraCommand(
 		context.Background(),
 		fx.Client,
 		fx.TokenEnsurer,

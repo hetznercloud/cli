@@ -1,82 +1,70 @@
 package sshkey
 
 import (
-	"errors"
+	"context"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 
 	"github.com/spf13/cobra"
 
-	"github.com/hetznercloud/cli/internal/cmd/util"
+	"github.com/hetznercloud/cli/internal/cmd/base"
+	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-func newCreateCommand(cli *state.State) *cobra.Command {
-	cmd := &cobra.Command{
-		Use:                   "create FLAGS",
-		Short:                 "Create a SSH key",
-		Args:                  cobra.NoArgs,
-		TraverseChildren:      true,
-		DisableFlagsInUseLine: true,
-		PreRunE:               util.ChainRunE(validateCreate, cli.EnsureToken),
-		RunE:                  cli.Wrap(runCreate),
-	}
-	cmd.Flags().String("name", "", "Key name (required)")
-	cmd.Flags().String("public-key", "", "Public key")
-	cmd.Flags().String("public-key-from-file", "", "Path to file containing public key")
-	cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
-	return cmd
-}
-
-func validateCreate(cmd *cobra.Command, args []string) error {
-	if name, _ := cmd.Flags().GetString("name"); name == "" {
-		return errors.New("flag --name is required")
-	}
-
-	publicKey, _ := cmd.Flags().GetString("public-key")
-	publicKeyFile, _ := cmd.Flags().GetString("public-key-from-file")
-	if publicKey != "" && publicKeyFile != "" {
-		return errors.New("flags --public-key and --public-key-from-file are mutually exclusive")
-	}
-
-	return nil
-}
-
-func runCreate(cli *state.State, cmd *cobra.Command, args []string) error {
-	name, _ := cmd.Flags().GetString("name")
-	publicKey, _ := cmd.Flags().GetString("public-key")
-	publicKeyFile, _ := cmd.Flags().GetString("public-key-from-file")
-	labels, _ := cmd.Flags().GetStringToString("label")
-
-	if publicKeyFile != "" {
-		var (
-			data []byte
-			err  error
-		)
-		if publicKeyFile == "-" {
-			data, err = ioutil.ReadAll(os.Stdin)
-		} else {
-			data, err = ioutil.ReadFile(publicKeyFile)
+var CreateCmd = base.Cmd{
+	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
+		cmd := &cobra.Command{
+			Use:   "create FLAGS",
+			Short: "Create a SSH key",
+			Args:  cobra.NoArgs,
 		}
+		cmd.Flags().String("name", "", "Key name (required)")
+		_ = cmd.MarkFlagRequired("name")
+
+		cmd.Flags().String("public-key", "", "Public key")
+		cmd.Flags().String("public-key-from-file", "", "Path to file containing public key")
+		cmd.MarkFlagsMutuallyExclusive("public-key", "public-key-from-file")
+
+		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
+		return cmd
+	},
+	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+		name, _ := cmd.Flags().GetString("name")
+		publicKey, _ := cmd.Flags().GetString("public-key")
+		publicKeyFile, _ := cmd.Flags().GetString("public-key-from-file")
+		labels, _ := cmd.Flags().GetStringToString("label")
+
+		if publicKeyFile != "" {
+			var (
+				data []byte
+				err  error
+			)
+			if publicKeyFile == "-" {
+				data, err = io.ReadAll(os.Stdin)
+			} else {
+				data, err = os.ReadFile(publicKeyFile)
+			}
+			if err != nil {
+				return err
+			}
+			publicKey = string(data)
+		}
+
+		opts := hcloud.SSHKeyCreateOpts{
+			Name:      name,
+			PublicKey: publicKey,
+			Labels:    labels,
+		}
+		sshKey, _, err := client.SSHKey().Create(ctx, opts)
 		if err != nil {
 			return err
 		}
-		publicKey = string(data)
-	}
 
-	opts := hcloud.SSHKeyCreateOpts{
-		Name:      name,
-		PublicKey: publicKey,
-		Labels:    labels,
-	}
-	sshKey, _, err := cli.Client().SSHKey.Create(cli.Context, opts)
-	if err != nil {
-		return err
-	}
+		fmt.Printf("SSH key %d created\n", sshKey.ID)
 
-	fmt.Printf("SSH key %d created\n", sshKey.ID)
-
-	return nil
+		return nil
+	},
 }

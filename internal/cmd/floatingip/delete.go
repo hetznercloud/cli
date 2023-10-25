@@ -11,7 +11,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var deleteCmd = base.DeleteCmd{
+var DeleteCmd = base.DeleteCmd{
 	ResourceNameSingular: "Floating IP",
 	ShortDescription:     "Delete a Floating IP",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.FloatingIP().Names },

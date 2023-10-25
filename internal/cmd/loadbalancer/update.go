@@ -11,7 +11,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var updateCmd = base.UpdateCmd{
+var UpdateCmd = base.UpdateCmd{
 	ResourceNameSingular: "Load Balancer",
 	ShortDescription:     "Update a Load Balancer",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.LoadBalancer().Names },

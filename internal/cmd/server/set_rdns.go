@@ -11,7 +11,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var setRDNSCmd = base.SetRdnsCmd{
+var SetRDNSCmd = base.SetRdnsCmd{
 	ResourceNameSingular: "Server",
 	ShortDescription:     "Change reverse DNS of a Server",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Server().Names },

@@ -11,7 +11,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var updateCmd = base.UpdateCmd{
+var UpdateCmd = base.UpdateCmd{
 	ResourceNameSingular: "Volume",
 	ShortDescription:     "Update a Volume",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Volume().Names },

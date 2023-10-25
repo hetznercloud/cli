@@ -13,7 +13,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var ChangeTypeCommand = base.Cmd{
+var ChangeTypeCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		return &cobra.Command{
 			Use:   "change-type [FLAGS] LOADBALANCER LOADBALANCERTYPE",

@@ -59,7 +59,7 @@ func changeProtection(ctx context.Context, client hcapi2.Client, waiter state.Ac
 	return nil
 }
 
-var EnableProtectionCommand = base.Cmd{
+var EnableProtectionCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 
 		return &cobra.Command{

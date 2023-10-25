@@ -11,7 +11,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var updateCmd = base.UpdateCmd{
+var UpdateCmd = base.UpdateCmd{
 	ResourceNameSingular: "SSHKey",
 	ShortDescription:     "Update a SSHKey",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.SSHKey().Names },

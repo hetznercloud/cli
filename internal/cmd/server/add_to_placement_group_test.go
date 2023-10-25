@@ -16,7 +16,7 @@ func TestAddToPlacementGroup(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := server.AddToPlacementGroupCommand.CobraCommand(
+	cmd := server.AddToPlacementGroupCmd.CobraCommand(
 		context.Background(),
 		fx.Client,
 		fx.TokenEnsurer,

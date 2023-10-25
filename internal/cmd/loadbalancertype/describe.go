@@ -11,7 +11,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var describeCmd = base.DescribeCmd{
+var DescribeCmd = base.DescribeCmd{
 	ResourceNameSingular: "Load Balancer Type",
 	ShortDescription:     "Describe a Load Balancer type",
 	JSONKeyGetByID:       "load_balancer_type",

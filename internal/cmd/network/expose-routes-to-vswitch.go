@@ -13,7 +13,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var ExposeRoutesToVSwitchCommand = base.Cmd{
+var ExposeRoutesToVSwitchCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:                   "expose-routes-to-vswitch [flags] network",
