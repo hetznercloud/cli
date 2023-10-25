@@ -61,7 +61,9 @@ func runCreate(cli *state.State, _ *cobra.Command, args []string) error {
 	if token == "" {
 		for {
 			fmt.Printf("Token: ")
-			btoken, err := term.ReadPassword(syscall.Stdin)
+			// Conversion needed for compilation on Windows
+			//                               vvv
+			btoken, err := term.ReadPassword(int(syscall.Stdin))
 			fmt.Print("\n")
 			if err != nil {
 				return err
