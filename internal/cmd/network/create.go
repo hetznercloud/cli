@@ -2,6 +2,7 @@ package network
 
 import (
 	"context"
+	"fmt"
 	"net"
 
 	"github.com/spf13/cobra"
@@ -59,7 +60,7 @@ var CreateCmd = base.Cmd{
 			return err
 		}
 
-		cmd.Printf("Network %d created\n", network.ID)
+		fmt.Printf("Network %d created\n", network.ID)
 
 		return changeProtection(ctx, client, waiter, network, true, protectionOpts)
 	},
