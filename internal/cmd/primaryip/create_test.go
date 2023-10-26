@@ -2,6 +2,7 @@ package primaryip
 
 import (
 	"context"
+	"net"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -29,8 +30,12 @@ func TestCreate(t *testing.T) {
 		).
 		Return(
 			&hcloud.PrimaryIPCreateResult{
-				PrimaryIP: &hcloud.PrimaryIP{ID: 1},
-				Action:    &hcloud.Action{ID: 321},
+				PrimaryIP: &hcloud.PrimaryIP{
+					ID:   1,
+					IP:   net.ParseIP("192.168.2.1"),
+					Type: hcloud.PrimaryIPTypeIPv4,
+				},
+				Action: &hcloud.Action{ID: 321},
 			},
 			&hcloud.Response{},
 			nil,
@@ -41,7 +46,9 @@ func TestCreate(t *testing.T) {
 
 	out, err := fx.Run(cmd, []string{"--name=my-ip", "--type=ipv4", "--datacenter=fsn1-dc14"})
 
-	expOut := "Primary IP 1 created\n"
+	expOut := `Primary IP 1 created
+IPv4: 192.168.2.1
+`
 
 	assert.NoError(t, err)
 	assert.Equal(t, expOut, out)

@@ -82,6 +82,7 @@ var CreateCmd = base.Cmd{
 			}
 		}
 
+		fmt.Printf("IP%s: %s\n", result.PrimaryIP.Type[2:], result.PrimaryIP.IP)
 		return nil
 	},
 }
