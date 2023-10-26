@@ -11,7 +11,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var deleteCmd = base.DeleteCmd{
+var DeleteCmd = base.DeleteCmd{
 	ResourceNameSingular: "image",
 	ShortDescription:     "Delete an image",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Image().Names },

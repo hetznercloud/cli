@@ -14,7 +14,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var UpdateServiceCommand = base.Cmd{
+var UpdateServiceCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:                   "update-service LOADBALANCER FLAGS",

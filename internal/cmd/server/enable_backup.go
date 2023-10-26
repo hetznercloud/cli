@@ -12,7 +12,7 @@ import (
 	"github.com/hetznercloud/cli/internal/state"
 )
 
-var EnableBackupCommand = base.Cmd{
+var EnableBackupCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:                   "enable-backup [FLAGS] SERVER",

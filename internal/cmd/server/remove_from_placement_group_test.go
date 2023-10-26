@@ -16,7 +16,7 @@ func TestRemoveFromPlacementGroup(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := server.RemoveFromPlacementGroup.CobraCommand(
+	cmd := server.RemoveFromPlacementGroupCmd.CobraCommand(
 		context.Background(),
 		fx.Client,
 		fx.TokenEnsurer,

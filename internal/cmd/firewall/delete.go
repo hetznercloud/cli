@@ -11,7 +11,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var deleteCmd = base.DeleteCmd{
+var DeleteCmd = base.DeleteCmd{
 	ResourceNameSingular: "firewall",
 	ShortDescription:     "Delete a firewall",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Firewall().Names },

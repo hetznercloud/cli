@@ -20,7 +20,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var MetricsCommand = base.Cmd{
+var MetricsCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:                   "metrics [FLAGS] SERVER",

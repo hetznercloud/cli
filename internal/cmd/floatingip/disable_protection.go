@@ -12,7 +12,7 @@ import (
 	"github.com/hetznercloud/cli/internal/state"
 )
 
-var DisableProtectionCommand = base.Cmd{
+var DisableProtectionCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		return &cobra.Command{
 			Use:   "disable-protection [FLAGS] FLOATINGIP PROTECTIONLEVEL [PROTECTIONLEVEL...]",

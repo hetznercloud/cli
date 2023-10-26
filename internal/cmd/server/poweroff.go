@@ -12,7 +12,7 @@ import (
 	"github.com/hetznercloud/cli/internal/state"
 )
 
-var PoweroffCommand = base.Cmd{
+var PoweroffCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		return &cobra.Command{
 			Use:                   "poweroff [FLAGS] SERVER",

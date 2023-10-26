@@ -11,7 +11,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var setRDNSCmd = base.SetRdnsCmd{
+var SetRDNSCmd = base.SetRdnsCmd{
 	ResourceNameSingular: "Floating IP",
 	ShortDescription:     "Change reverse DNS of a Floating IP",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.FloatingIP().Names },

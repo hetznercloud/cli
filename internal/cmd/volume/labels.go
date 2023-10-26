@@ -9,7 +9,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var labelCmds = base.LabelCmds{
+var LabelCmds = base.LabelCmds{
 	ResourceNameSingular:   "Volume",
 	ShortDescriptionAdd:    "Add a label to a Volume",
 	ShortDescriptionRemove: "Remove a label from a Volume",

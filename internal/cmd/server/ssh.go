@@ -16,7 +16,7 @@ import (
 	"github.com/hetznercloud/cli/internal/state"
 )
 
-var SSHCommand = base.Cmd{
+var SSHCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:                   "ssh [FLAGS] SERVER [COMMAND...]",

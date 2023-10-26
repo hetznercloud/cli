@@ -9,7 +9,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var labelCmds = base.LabelCmds{
+var LabelCmds = base.LabelCmds{
 	ResourceNameSingular:   "firewall",
 	ShortDescriptionAdd:    "Add a label to an firewall",
 	ShortDescriptionRemove: "Remove a label from an firewall",

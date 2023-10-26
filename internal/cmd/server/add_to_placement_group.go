@@ -12,7 +12,7 @@ import (
 	"github.com/hetznercloud/cli/internal/state"
 )
 
-var AddToPlacementGroupCommand = base.Cmd{
+var AddToPlacementGroupCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:               "add-to-placement-group [FLAGS] SERVER",

@@ -14,7 +14,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var ChangeIPRangeCommand = base.Cmd{
+var ChangeIPRangeCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:                   "change-ip-range [FLAGS] NETWORK",

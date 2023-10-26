@@ -18,7 +18,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
-var ReplaceRulesCommand = base.Cmd{
+var ReplaceRulesCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:                   "replace-rules FIREWALL FLAGS",

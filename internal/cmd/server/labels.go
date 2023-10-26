@@ -9,7 +9,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var labelCmds = base.LabelCmds{
+var LabelCmds = base.LabelCmds{
 	ResourceNameSingular:   "server",
 	ShortDescriptionAdd:    "Add a label to a server",
 	ShortDescriptionRemove: "Remove a label from a server",

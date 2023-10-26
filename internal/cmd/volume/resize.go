@@ -12,7 +12,7 @@ import (
 	"github.com/hetznercloud/cli/internal/state"
 )
 
-var ResizeCommand = base.Cmd{
+var ResizeCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:                   "resize [FLAGS] VOLUME",

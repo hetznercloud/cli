@@ -15,7 +15,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var describeCmd = base.DescribeCmd{
+var DescribeCmd = base.DescribeCmd{
 	ResourceNameSingular: "image",
 	ShortDescription:     "Describe an image",
 	JSONKeyGetByID:       "image",

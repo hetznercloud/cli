@@ -12,7 +12,7 @@ import (
 	"github.com/hetznercloud/cli/internal/state"
 )
 
-var UnassignCommand = base.Cmd{
+var UnassignCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		return &cobra.Command{
 			Use:                   "unassign [FLAGS] FLOATINGIP",

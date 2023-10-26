@@ -12,7 +12,7 @@ import (
 	"github.com/hetznercloud/cli/internal/state"
 )
 
-var DisablePublicInterfaceCommand = base.Cmd{
+var DisablePublicInterfaceCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		return &cobra.Command{
 			Use:                   "disable-public-interface [FLAGS] LOADBALANCER",

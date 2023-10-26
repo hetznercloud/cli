@@ -11,7 +11,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var updateCmd = base.UpdateCmd{
+var UpdateCmd = base.UpdateCmd{
 	ResourceNameSingular: "Network",
 	ShortDescription:     "Update a Network.\n\nTo enable or disable exposing routes to the vSwitch connection you can use the subcommand \"hcloud network expose-routes-to-vswitch\".",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Network().Names },

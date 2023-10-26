@@ -15,7 +15,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var ShutdownCommand = base.Cmd{
+var ShutdownCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 
 		const description = "Shuts down a Server gracefully by sending an ACPI shutdown request. " +

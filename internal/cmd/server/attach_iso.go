@@ -13,7 +13,7 @@ import (
 	"github.com/hetznercloud/cli/internal/state"
 )
 
-var AttachISOCommand = base.Cmd{
+var AttachISOCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		return &cobra.Command{
 			Use:              "attach-iso [FLAGS] SERVER ISO",

@@ -19,7 +19,7 @@ func TestDescribe(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := describeCmd.CobraCommand(context.Background(), fx.Client, fx.TokenEnsurer)
+	cmd := DescribeCmd.CobraCommand(context.Background(), fx.Client, fx.TokenEnsurer)
 	created := time.Date(1, time.Month(1), 1, 0, 0, 0, 0, time.UTC)
 	ip := net.ParseIP("192.168.0.1")
 	fx.ExpectEnsureToken()

@@ -12,7 +12,7 @@ import (
 	"github.com/hetznercloud/cli/internal/state"
 )
 
-var RemoveFromPlacementGroup = base.Cmd{
+var RemoveFromPlacementGroupCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:               "remove-from-placement-group SERVER",

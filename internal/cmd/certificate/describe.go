@@ -13,7 +13,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var describeCmd = base.DescribeCmd{
+var DescribeCmd = base.DescribeCmd{
 	ResourceNameSingular: "certificate",
 	ShortDescription:     "Describe an certificate",
 	JSONKeyGetByID:       "certificate",

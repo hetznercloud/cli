@@ -13,7 +13,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var ChangeAlgorithmCommand = base.Cmd{
+var ChangeAlgorithmCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:                   "change-algorithm LOADBALANCER FLAGS",

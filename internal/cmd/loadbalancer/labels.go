@@ -9,7 +9,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var labelCmds = base.LabelCmds{
+var LabelCmds = base.LabelCmds{
 	ResourceNameSingular:   "Load Balancer",
 	ShortDescriptionAdd:    "Add a label to a Load Balancer",
 	ShortDescriptionRemove: "Remove a label from a Load Balancer",

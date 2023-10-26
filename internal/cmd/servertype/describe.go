@@ -12,7 +12,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var describeCmd = base.DescribeCmd{
+var DescribeCmd = base.DescribeCmd{
 	ResourceNameSingular: "serverType",
 	ShortDescription:     "Describe a server type",
 	JSONKeyGetByID:       "server_type",
