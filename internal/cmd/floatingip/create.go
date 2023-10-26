@@ -94,6 +94,12 @@ var CreateCmd = base.Cmd{
 			return err
 		}
 
+		if result.Action != nil {
+			if err := waiter.ActionProgress(ctx, result.Action); err != nil {
+				return err
+			}
+		}
+
 		fmt.Printf("Floating IP %d created\n", result.FloatingIP.ID)
 
 		return changeProtection(ctx, client, waiter, result.FloatingIP, true, protectionOps)

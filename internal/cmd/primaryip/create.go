@@ -41,7 +41,7 @@ var CreateCmd = base.Cmd{
 
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, actionWaiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
 		typ, _ := cmd.Flags().GetString("type")
 		name, _ := cmd.Flags().GetString("name")
 		assigneeID, _ := cmd.Flags().GetInt64("assignee-id")
@@ -68,10 +68,16 @@ var CreateCmd = base.Cmd{
 			return err
 		}
 
+		if result.Action != nil {
+			if err := waiter.ActionProgress(ctx, result.Action); err != nil {
+				return err
+			}
+		}
+
 		fmt.Printf("Primary IP %d created\n", result.PrimaryIP.ID)
 
 		if len(protection) > 0 {
-			if err := changeProtection(ctx, client, actionWaiter, result.PrimaryIP, true, protectionOpts); err != nil {
+			if err := changeProtection(ctx, client, waiter, result.PrimaryIP, true, protectionOpts); err != nil {
 				return err
 			}
 		}

@@ -30,10 +30,14 @@ func TestCreate(t *testing.T) {
 		Return(
 			&hcloud.PrimaryIPCreateResult{
 				PrimaryIP: &hcloud.PrimaryIP{ID: 1},
+				Action:    &hcloud.Action{ID: 321},
 			},
 			&hcloud.Response{},
 			nil,
 		)
+
+	fx.ActionWaiter.EXPECT().
+		ActionProgress(gomock.Any(), &hcloud.Action{ID: 321})
 
 	out, err := fx.Run(cmd, []string{"--name=my-ip", "--type=ipv4", "--datacenter=fsn1-dc14"})
 

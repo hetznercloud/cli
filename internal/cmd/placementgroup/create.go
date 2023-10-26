@@ -27,7 +27,7 @@ var CreateCmd = base.Cmd{
 		cmd.MarkFlagRequired("type")
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, actionWaiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
 		name, _ := cmd.Flags().GetString("name")
 		labels, _ := cmd.Flags().GetStringToString("label")
 		placementGroupType, _ := cmd.Flags().GetString("type")
@@ -41,6 +41,12 @@ var CreateCmd = base.Cmd{
 		result, _, err := client.PlacementGroup().Create(ctx, opts)
 		if err != nil {
 			return err
+		}
+
+		if result.Action != nil {
+			if err := waiter.ActionProgress(ctx, result.Action); err != nil {
+				return err
+			}
 		}
 
 		fmt.Printf("Placement group %d created\n", result.PlacementGroup.ID)

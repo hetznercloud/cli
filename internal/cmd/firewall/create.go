@@ -83,6 +83,10 @@ var CreateCmd = base.Cmd{
 			return err
 		}
 
+		if err := waiter.WaitForActions(ctx, result.Actions); err != nil {
+			return err
+		}
+
 		fmt.Printf("Firewall %d created\n", result.Firewall.ID)
 
 		return nil
