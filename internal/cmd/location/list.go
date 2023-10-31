@@ -23,7 +23,7 @@ var ListCmd = base.ListCmd{
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		locations, _, err := client.Location().List(ctx, opts)
+		locations, err := client.Location().AllWithOpts(ctx, opts)
 
 		var resources []interface{}
 		for _, n := range locations {
