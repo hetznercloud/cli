@@ -33,8 +33,8 @@ var DescribeCmd = base.DescribeCmd{
 		fmt.Printf("Not valid after:\t%s (%s)\n", util.Datetime(cert.NotValidAfter), humanize.Time(cert.NotValidAfter))
 		if cert.Status != nil {
 			fmt.Printf("Status:\n")
-			fmt.Printf("  Issuance: %s\n", cert.Status.Issuance)
-			fmt.Printf("  Renewal: %s\n", cert.Status.Renewal)
+			fmt.Printf("  Issuance:\t%s\n", cert.Status.Issuance)
+			fmt.Printf("  Renewal:\t%s\n", cert.Status.Renewal)
 			if cert.Status.IsFailed() {
 				fmt.Printf("  Failure reason: %s\n", cert.Status.Error.Message)
 			}
@@ -56,15 +56,15 @@ var DescribeCmd = base.DescribeCmd{
 			fmt.Println("  Certificate unused")
 		} else {
 			for _, ub := range cert.UsedBy {
-				fmt.Printf("  - Type: %s", ub.Type)
+				fmt.Printf("  - Type: %s\n", ub.Type)
 				// Currently certificates can be only attached to load balancers.
 				// If we ever get something that is not a load balancer fall back
 				// to printing the ID.
 				if ub.Type != hcloud.CertificateUsedByRefTypeLoadBalancer {
-					fmt.Printf("  - ID: %d", ub.ID)
+					fmt.Printf("  - ID: %d\n", ub.ID)
 					continue
 				}
-				fmt.Printf("  - Name: %s", client.LoadBalancer().LoadBalancerName(ub.ID))
+				fmt.Printf("  - Name: %s\n", client.LoadBalancer().LoadBalancerName(ub.ID))
 			}
 		}
 		return nil

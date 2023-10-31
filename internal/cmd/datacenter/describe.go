@@ -24,7 +24,6 @@ var DescribeCmd = base.DescribeCmd{
 		datacenter := resource.(*hcloud.Datacenter)
 
 		fmt.Printf("ID:\t\t%d\n", datacenter.ID)
-		fmt.Printf("ID:\t\t%d\n", datacenter.ID)
 		fmt.Printf("Name:\t\t%s\n", datacenter.Name)
 		fmt.Printf("Description:\t%s\n", datacenter.Description)
 		fmt.Printf("Location:\n")
