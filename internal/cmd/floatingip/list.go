@@ -65,6 +65,7 @@ var ListCmd = base.ListCmd{
 			})).
 			AddFieldFn("ip", output.FieldFn(func(obj interface{}) string {
 				floatingIP := obj.(*hcloud.FloatingIP)
+				// Format IPv6 correctly
 				if floatingIP.Network != nil {
 					return floatingIP.Network.String()
 				}

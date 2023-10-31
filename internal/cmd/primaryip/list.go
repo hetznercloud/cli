@@ -38,6 +38,14 @@ var ListCmd = base.ListCmd{
 	OutputTable: func(client hcapi2.Client) *output.Table {
 		return output.NewTable().
 			AddAllowedFields(hcloud.PrimaryIP{}).
+			AddFieldFn("ip", output.FieldFn(func(obj interface{}) string {
+				primaryIP := obj.(*hcloud.PrimaryIP)
+				// Format IPv6 correctly
+				if primaryIP.Network != nil {
+					return primaryIP.Network.String()
+				}
+				return primaryIP.IP.String()
+			})).
 			AddFieldFn("dns", output.FieldFn(func(obj interface{}) string {
 				primaryIP := obj.(*hcloud.PrimaryIP)
 				var dns string
