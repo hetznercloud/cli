@@ -40,6 +40,14 @@ func TestDescribe(t *testing.T) {
 			ID:   123,
 			Type: hcloud.CertificateUsedByRefTypeLoadBalancer,
 		}},
+		Status: &hcloud.CertificateStatus{
+			Error: &hcloud.Error{
+				Code:    hcloud.ErrorCode("cert_error"),
+				Message: "Certificate error",
+			},
+			Issuance: hcloud.CertificateStatusTypeFailed,
+			Renewal:  hcloud.CertificateStatusTypeScheduled,
+		},
 	}
 
 	fx.Client.CertificateClient.EXPECT().
@@ -58,6 +66,10 @@ Fingerprint:
 Created:		%s (%s)
 Not valid before:	%s (%s)
 Not valid after:	%s (%s)
+Status:
+  Issuance:	failed
+  Renewal:	scheduled
+  Failure reason: Certificate error
 Domain names:
   - example.com
 Labels:
