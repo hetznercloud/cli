@@ -1,4 +1,4 @@
-package placementgroup
+package certificate
 
 import (
 	"context"
@@ -21,17 +21,17 @@ func TestUpdateName(t *testing.T) {
 		fx.TokenEnsurer)
 	fx.ExpectEnsureToken()
 
-	fx.Client.PlacementGroupClient.EXPECT().
+	fx.Client.CertificateClient.EXPECT().
 		Get(gomock.Any(), "123").
-		Return(&hcloud.PlacementGroup{ID: 123}, nil, nil)
-	fx.Client.PlacementGroupClient.EXPECT().
-		Update(gomock.Any(), &hcloud.PlacementGroup{ID: 123}, hcloud.PlacementGroupUpdateOpts{
+		Return(&hcloud.Certificate{ID: 123}, nil, nil)
+	fx.Client.CertificateClient.EXPECT().
+		Update(gomock.Any(), &hcloud.Certificate{ID: 123}, hcloud.CertificateUpdateOpts{
 			Name: "new-name",
 		})
 
 	out, err := fx.Run(cmd, []string{"123", "--name", "new-name"})
 
-	expOut := "placement group 123 updated\n"
+	expOut := "certificate 123 updated\n"
 
 	assert.NoError(t, err)
 	assert.Equal(t, expOut, out)
