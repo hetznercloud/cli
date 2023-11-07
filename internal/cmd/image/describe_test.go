@@ -2,12 +2,15 @@ package image
 
 import (
 	"context"
+	"fmt"
 	"testing"
 	"time"
 
+	"github.com/dustin/go-humanize"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -24,30 +27,32 @@ func TestDescribe(t *testing.T) {
 		fx.TokenEnsurer)
 	fx.ExpectEnsureToken()
 
+	img := &hcloud.Image{
+		ID:           123,
+		Type:         hcloud.ImageTypeSystem,
+		Status:       hcloud.ImageStatusAvailable,
+		Name:         "test",
+		Created:      time.Date(2036, 8, 12, 12, 0, 0, 0, time.UTC),
+		Description:  "Test image",
+		ImageSize:    20.0,
+		DiskSize:     20.0,
+		Architecture: hcloud.ArchitectureX86,
+		Labels: map[string]string{
+			"key": "value",
+		},
+	}
+
 	fx.Client.ImageClient.EXPECT().
 		GetForArchitecture(gomock.Any(), "test", hcloud.ArchitectureX86).
-		Return(&hcloud.Image{
-			ID:           123,
-			Type:         hcloud.ImageTypeSystem,
-			Status:       hcloud.ImageStatusAvailable,
-			Name:         "test",
-			Created:      time.Date(1905, 10, 6, 12, 0, 0, 0, time.UTC),
-			Description:  "Test image",
-			ImageSize:    20.0,
-			DiskSize:     20.0,
-			Architecture: hcloud.ArchitectureX86,
-			Labels: map[string]string{
-				"key": "value",
-			},
-		}, nil, nil)
+		Return(img, nil, nil)
 
 	out, err := fx.Run(cmd, []string{"test"})
 
-	expOut := `ID:		123
+	expOut := fmt.Sprintf(`ID:		123
 Type:		system
 Status:		available
 Name:		test
-Created:	Fri Oct  6 12:00:00 UTC 1905 (a long while ago)
+Created:	%s (%s)
 Description:	Test image
 Image size:	20.00 GB
 Disk size:	20 GB
@@ -59,7 +64,7 @@ Protection:
   Delete:	no
 Labels:
   key: value
-`
+`, util.Datetime(img.Created), humanize.Time(img.Created))
 
 	assert.NoError(t, err)
 	assert.Equal(t, expOut, out)

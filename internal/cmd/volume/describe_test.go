@@ -2,12 +2,15 @@ package volume
 
 import (
 	"context"
+	"fmt"
 	"testing"
 	"time"
 
+	"github.com/dustin/go-humanize"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -24,34 +27,36 @@ func TestDescribe(t *testing.T) {
 		fx.TokenEnsurer)
 	fx.ExpectEnsureToken()
 
+	volume := &hcloud.Volume{
+		ID:     123,
+		Name:   "test",
+		Size:   50,
+		Server: &hcloud.Server{ID: 321},
+		Location: &hcloud.Location{
+			ID:          3,
+			Name:        "hel1",
+			Description: "Helsinki DC Park 1",
+			NetworkZone: "eu-central",
+			Country:     "FI",
+			City:        "Helsinki",
+			Latitude:    60.169855,
+			Longitude:   24.938379,
+		},
+		Created: time.Date(2036, 8, 12, 12, 0, 0, 0, time.UTC),
+	}
+
 	fx.Client.VolumeClient.EXPECT().
 		Get(gomock.Any(), "test").
-		Return(&hcloud.Volume{
-			ID:     123,
-			Name:   "test",
-			Size:   50,
-			Server: &hcloud.Server{ID: 321},
-			Location: &hcloud.Location{
-				ID:          3,
-				Name:        "hel1",
-				Description: "Helsinki DC Park 1",
-				NetworkZone: "eu-central",
-				Country:     "FI",
-				City:        "Helsinki",
-				Latitude:    60.169855,
-				Longitude:   24.938379,
-			},
-			Created: time.Date(1905, 10, 6, 12, 0, 0, 0, time.UTC),
-		}, nil, nil)
+		Return(volume, nil, nil)
 	fx.Client.ServerClient.EXPECT().
 		ServerName(int64(321)).
 		Return("myServer")
 
 	out, err := fx.Run(cmd, []string{"test"})
 
-	expOut := `ID:		123
+	expOut := fmt.Sprintf(`ID:		123
 Name:		test
-Created:	Fri Oct  6 12:00:00 UTC 1905 (a long while ago)
+Created:	%s (%s)
 Size:		50 GB
 Linux Device:	
 Location:
@@ -68,7 +73,7 @@ Protection:
   Delete:	no
 Labels:
   No labels
-`
+`, util.Datetime(volume.Created), humanize.Time(volume.Created))
 
 	assert.NoError(t, err)
 	assert.Equal(t, expOut, out)

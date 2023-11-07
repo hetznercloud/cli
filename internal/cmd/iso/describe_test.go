@@ -3,7 +3,6 @@ package iso
 import (
 	"context"
 	"testing"
-	"time"
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
@@ -15,8 +14,6 @@ import (
 func TestDescribe(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
-
-	time.Local = time.UTC
 
 	cmd := DescribeCmd.CobraCommand(
 		context.Background(),

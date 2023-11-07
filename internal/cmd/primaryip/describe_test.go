@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/dustin/go-humanize"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 
@@ -19,34 +20,32 @@ func TestDescribe(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
+	time.Local = time.UTC
+
 	cmd := DescribeCmd.CobraCommand(context.Background(), fx.Client, fx.TokenEnsurer)
-	created := time.Date(1, time.Month(1), 1, 0, 0, 0, 0, time.UTC)
-	ip := net.ParseIP("192.168.0.1")
 	fx.ExpectEnsureToken()
+
+	primaryIP := &hcloud.PrimaryIP{
+		ID:           10,
+		Name:         "test-net",
+		Type:         "ipv4",
+		Created:      time.Date(2036, 8, 12, 12, 0, 0, 0, time.UTC),
+		IP:           net.ParseIP("192.168.0.1"),
+		Blocked:      true,
+		AutoDelete:   false,
+		AssigneeType: "server",
+		Datacenter:   &hcloud.Datacenter{ID: 0, Location: &hcloud.Location{ID: 0}},
+	}
+
 	fx.Client.PrimaryIPClient.EXPECT().
-		Get(
-			gomock.Any(),
-			"10",
-		).
-		Return(&hcloud.PrimaryIP{
-			ID:           10,
-			Name:         "test-net",
-			Type:         "ipv4",
-			Created:      created,
-			IP:           ip,
-			Blocked:      true,
-			AutoDelete:   false,
-			AssigneeType: "server",
-			Datacenter:   &hcloud.Datacenter{ID: 0, Location: &hcloud.Location{ID: 0}},
-		},
-			&hcloud.Response{},
-			nil)
+		Get(gomock.Any(), "10").
+		Return(primaryIP, nil, nil)
 
 	out, err := fx.Run(cmd, []string{"10"})
 
-	expOut := `ID:		10
+	expOut := fmt.Sprintf(`ID:		10
 Name:		test-net
-Created:	%s (a long while ago)
+Created:	%s (%s)
 Type:		ipv4
 IP:		192.168.0.1
 Blocked:	yes
@@ -70,8 +69,8 @@ Datacenter:
     City:		
     Latitude:		0.000000
     Longitude:		0.000000
-`
-	expOutFmt := fmt.Sprintf(expOut, util.Datetime(created))
+`, util.Datetime(primaryIP.Created), humanize.Time(primaryIP.Created))
+
 	assert.NoError(t, err)
-	assert.Equal(t, expOutFmt, out)
+	assert.Equal(t, expOut, out)
 }

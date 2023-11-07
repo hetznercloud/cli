@@ -2,10 +2,12 @@ package loadbalancer
 
 import (
 	"context"
+	"fmt"
 	"net"
 	"testing"
 	"time"
 
+	"github.com/dustin/go-humanize"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 
@@ -26,43 +28,45 @@ func TestDescribe(t *testing.T) {
 		fx.TokenEnsurer)
 	fx.ExpectEnsureToken()
 
+	lb := &hcloud.LoadBalancer{
+		ID:   123,
+		Name: "test",
+		LoadBalancerType: &hcloud.LoadBalancerType{
+			ID:                      123,
+			Name:                    "lb11",
+			Description:             "LB11",
+			MaxServices:             5,
+			MaxConnections:          10000,
+			MaxTargets:              25,
+			MaxAssignedCertificates: 10,
+		},
+		Created: time.Date(2036, 8, 12, 12, 0, 0, 0, time.UTC),
+		PublicNet: hcloud.LoadBalancerPublicNet{
+			Enabled: true,
+			IPv4: hcloud.LoadBalancerPublicNetIPv4{
+				IP: net.ParseIP("192.168.2.1"),
+			},
+			IPv6: hcloud.LoadBalancerPublicNetIPv6{
+				IP: net.IPv6loopback,
+			},
+		},
+		Algorithm: hcloud.LoadBalancerAlgorithm{
+			Type: hcloud.LoadBalancerAlgorithmTypeLeastConnections,
+		},
+		IncludedTraffic: 20 * util.Tebibyte,
+		IngoingTraffic:  10 * util.Tebibyte,
+		OutgoingTraffic: 10 * util.Tebibyte,
+	}
+
 	fx.Client.LoadBalancerClient.EXPECT().
 		Get(gomock.Any(), "test").
-		Return(&hcloud.LoadBalancer{
-			ID:   123,
-			Name: "test",
-			LoadBalancerType: &hcloud.LoadBalancerType{
-				ID:                      123,
-				Name:                    "lb11",
-				Description:             "LB11",
-				MaxServices:             5,
-				MaxConnections:          10000,
-				MaxTargets:              25,
-				MaxAssignedCertificates: 10,
-			},
-			Created: time.Date(1905, 10, 6, 12, 0, 0, 0, time.UTC),
-			PublicNet: hcloud.LoadBalancerPublicNet{
-				Enabled: true,
-				IPv4: hcloud.LoadBalancerPublicNetIPv4{
-					IP: net.ParseIP("192.168.2.1"),
-				},
-				IPv6: hcloud.LoadBalancerPublicNetIPv6{
-					IP: net.IPv6loopback,
-				},
-			},
-			Algorithm: hcloud.LoadBalancerAlgorithm{
-				Type: hcloud.LoadBalancerAlgorithmTypeLeastConnections,
-			},
-			IncludedTraffic: 20 * util.Tebibyte,
-			IngoingTraffic:  10 * util.Tebibyte,
-			OutgoingTraffic: 10 * util.Tebibyte,
-		}, nil, nil)
+		Return(lb, nil, nil)
 
 	out, err := fx.Run(cmd, []string{"test"})
 
-	expOut := `ID:				123
+	expOut := fmt.Sprintf(`ID:				123
 Name:				test
-Created:			Fri Oct  6 12:00:00 UTC 1905 (a long while ago)
+Created:			%s (%s)
 Public Net:
   Enabled:			yes
   IPv4:				192.168.2.1
@@ -92,7 +96,7 @@ Protection:
   Delete:	no
 Labels:
   No labels
-`
+`, util.Datetime(lb.Created), humanize.Time(lb.Created))
 
 	assert.NoError(t, err)
 	assert.Equal(t, expOut, out)
