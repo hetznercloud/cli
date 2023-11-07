@@ -20,6 +20,8 @@ func TestDescribe(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
+	time.Local = time.UTC
+
 	cmd := placementgroup.DescribeCmd.CobraCommand(
 		context.Background(),
 		fx.Client,
@@ -58,9 +60,7 @@ Servers:
   - Server ID:		4712
     Server Name:	server2
 Type:		spread
-`, util.Datetime(placementGroup.Created),
-		humanize.Time(placementGroup.Created),
-	)
+`, util.Datetime(placementGroup.Created), humanize.Time(placementGroup.Created))
 
 	assert.NoError(t, err)
 	assert.Equal(t, expOut, out)
