@@ -1,4 +1,4 @@
-package placementgroup
+package server
 
 import (
 	"context"
@@ -21,11 +21,11 @@ func TestLabelAdd(t *testing.T) {
 		fx.TokenEnsurer)
 	fx.ExpectEnsureToken()
 
-	fx.Client.PlacementGroupClient.EXPECT().
+	fx.Client.ServerClient.EXPECT().
 		Get(gomock.Any(), "123").
-		Return(&hcloud.PlacementGroup{ID: 123}, nil, nil)
-	fx.Client.PlacementGroupClient.EXPECT().
-		Update(gomock.Any(), &hcloud.PlacementGroup{ID: 123}, hcloud.PlacementGroupUpdateOpts{
+		Return(&hcloud.Server{ID: 123}, nil, nil)
+	fx.Client.ServerClient.EXPECT().
+		Update(gomock.Any(), &hcloud.Server{ID: 123}, hcloud.ServerUpdateOpts{
 			Labels: map[string]string{
 				"key": "value",
 			},
@@ -33,7 +33,7 @@ func TestLabelAdd(t *testing.T) {
 
 	out, err := fx.Run(cmd, []string{"123", "key=value"})
 
-	expOut := "Label key added to placement group 123\n"
+	expOut := "Label key added to server 123\n"
 
 	assert.NoError(t, err)
 	assert.Equal(t, expOut, out)
@@ -49,22 +49,22 @@ func TestLabelRemove(t *testing.T) {
 		fx.TokenEnsurer)
 	fx.ExpectEnsureToken()
 
-	fx.Client.PlacementGroupClient.EXPECT().
+	fx.Client.ServerClient.EXPECT().
 		Get(gomock.Any(), "123").
-		Return(&hcloud.PlacementGroup{
+		Return(&hcloud.Server{
 			ID: 123,
 			Labels: map[string]string{
 				"key": "value",
 			},
 		}, nil, nil)
-	fx.Client.PlacementGroupClient.EXPECT().
-		Update(gomock.Any(), &hcloud.PlacementGroup{ID: 123}, hcloud.PlacementGroupUpdateOpts{
+	fx.Client.ServerClient.EXPECT().
+		Update(gomock.Any(), &hcloud.Server{ID: 123}, hcloud.ServerUpdateOpts{
 			Labels: make(map[string]string),
 		})
 
 	out, err := fx.Run(cmd, []string{"123", "key"})
 
-	expOut := "Label key removed from placement group 123\n"
+	expOut := "Label key removed from server 123\n"
 
 	assert.NoError(t, err)
 	assert.Equal(t, expOut, out)

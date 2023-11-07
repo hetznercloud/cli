@@ -1,4 +1,4 @@
-package placementgroup
+package primaryip
 
 import (
 	"context"
@@ -21,19 +21,19 @@ func TestLabelAdd(t *testing.T) {
 		fx.TokenEnsurer)
 	fx.ExpectEnsureToken()
 
-	fx.Client.PlacementGroupClient.EXPECT().
+	fx.Client.PrimaryIPClient.EXPECT().
 		Get(gomock.Any(), "123").
-		Return(&hcloud.PlacementGroup{ID: 123}, nil, nil)
-	fx.Client.PlacementGroupClient.EXPECT().
-		Update(gomock.Any(), &hcloud.PlacementGroup{ID: 123}, hcloud.PlacementGroupUpdateOpts{
-			Labels: map[string]string{
+		Return(&hcloud.PrimaryIP{ID: 123}, nil, nil)
+	fx.Client.PrimaryIPClient.EXPECT().
+		Update(gomock.Any(), &hcloud.PrimaryIP{ID: 123}, hcloud.PrimaryIPUpdateOpts{
+			Labels: hcloud.Ptr(map[string]string{
 				"key": "value",
-			},
+			}),
 		})
 
 	out, err := fx.Run(cmd, []string{"123", "key=value"})
 
-	expOut := "Label key added to placement group 123\n"
+	expOut := "Label key added to primary-ip 123\n"
 
 	assert.NoError(t, err)
 	assert.Equal(t, expOut, out)
@@ -49,22 +49,22 @@ func TestLabelRemove(t *testing.T) {
 		fx.TokenEnsurer)
 	fx.ExpectEnsureToken()
 
-	fx.Client.PlacementGroupClient.EXPECT().
+	fx.Client.PrimaryIPClient.EXPECT().
 		Get(gomock.Any(), "123").
-		Return(&hcloud.PlacementGroup{
+		Return(&hcloud.PrimaryIP{
 			ID: 123,
 			Labels: map[string]string{
 				"key": "value",
 			},
 		}, nil, nil)
-	fx.Client.PlacementGroupClient.EXPECT().
-		Update(gomock.Any(), &hcloud.PlacementGroup{ID: 123}, hcloud.PlacementGroupUpdateOpts{
-			Labels: make(map[string]string),
+	fx.Client.PrimaryIPClient.EXPECT().
+		Update(gomock.Any(), &hcloud.PrimaryIP{ID: 123}, hcloud.PrimaryIPUpdateOpts{
+			Labels: hcloud.Ptr(make(map[string]string)),
 		})
 
 	out, err := fx.Run(cmd, []string{"123", "key"})
 
-	expOut := "Label key removed from placement group 123\n"
+	expOut := "Label key removed from primary-ip 123\n"
 
 	assert.NoError(t, err)
 	assert.Equal(t, expOut, out)
