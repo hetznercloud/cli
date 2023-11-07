@@ -27,10 +27,12 @@ var updateCmd = base.UpdateCmd{
 		updOpts := hcloud.PrimaryIPUpdateOpts{
 			Name: flags["name"].String(),
 		}
-		autoDelete, _ := cmd.Flags().GetBool("auto-delete")
-		if primaryIP.AutoDelete != autoDelete {
-			updOpts.AutoDelete = hcloud.Bool(autoDelete)
+
+		if cmd.Flags().Changed("auto-delete") {
+			autoDelete, _ := cmd.Flags().GetBool("auto-delete")
+			updOpts.AutoDelete = hcloud.Ptr(autoDelete)
 		}
+
 		_, _, err := client.PrimaryIP().Update(ctx, primaryIP, updOpts)
 		if err != nil {
 			return err
