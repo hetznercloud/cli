@@ -2,6 +2,7 @@ package context
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 
@@ -23,6 +24,9 @@ func newUseCommand(cli *state.State) *cobra.Command {
 }
 
 func runUse(cli *state.State, cmd *cobra.Command, args []string) error {
+	if os.Getenv("HCLOUD_TOKEN") != "" {
+		_, _ = fmt.Fprintln(os.Stderr, "Warning: HCLOUD_TOKEN is set. The active context will have no effect.")
+	}
 	name := args[0]
 	context := cli.Config.ContextByName(name)
 	if context == nil {
