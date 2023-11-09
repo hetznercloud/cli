@@ -158,6 +158,7 @@ func DescribeFormat(object interface{}, format string) error {
 
 func DescribeJSON(object interface{}) error {
 	enc := json.NewEncoder(os.Stdout)
+	enc.SetIndent("", "  ")
 	return enc.Encode(object)
 }
 
