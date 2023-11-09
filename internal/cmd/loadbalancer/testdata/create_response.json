@@ -1,0 +1,51 @@
+{
+  "load_balancer": {
+    "algorithm": {
+      "type": ""
+    },
+    "created": "2016-01-30T23:50:00Z",
+    "id": 123,
+    "included_traffic": 654321,
+    "ingoing_traffic": null,
+    "labels": {},
+    "load_balancer_type": {
+      "description": "",
+      "id": 0,
+      "max_assigned_certificates": 0,
+      "max_connections": 0,
+      "max_services": 0,
+      "max_targets": 0,
+      "name": "",
+      "prices": null
+    },
+    "location": {
+      "city": "",
+      "country": "",
+      "description": "",
+      "id": 0,
+      "latitude": 0,
+      "longitude": 0,
+      "name": "",
+      "network_zone": ""
+    },
+    "name": "myLoadBalancer",
+    "outgoing_traffic": null,
+    "private_net": null,
+    "protection": {
+      "delete": false
+    },
+    "public_net": {
+      "enabled": false,
+      "ipv4": {
+        "dns_ptr": "",
+        "ip": "192.168.2.1"
+      },
+      "ipv6": {
+        "dns_ptr": "",
+        "ip": "::"
+      }
+    },
+    "services": [],
+    "targets": []
+  }
+}

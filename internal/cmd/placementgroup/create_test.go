@@ -2,6 +2,7 @@ package placementgroup_test
 
 import (
 	"context"
+	_ "embed"
 	"testing"
 	"time"
 
@@ -11,7 +12,11 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/placementgroup"
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
+
+//go:embed testdata/create_response.json
+var createResponseJson string
 
 func TestCreate(t *testing.T) {
 	fx := testutil.NewFixture(t)
@@ -52,4 +57,66 @@ func TestCreate(t *testing.T) {
 
 	assert.NoError(t, err)
 	assert.Equal(t, expOut, out)
+}
+
+func TestCreateJSON(t *testing.T) {
+	fx := testutil.NewFixture(t)
+	defer fx.Finish()
+
+	time.Local = time.UTC
+
+	cmd := placementgroup.CreateCmd.CobraCommand(
+		context.Background(),
+		fx.Client,
+		fx.TokenEnsurer,
+		fx.ActionWaiter)
+	fx.ExpectEnsureToken()
+
+	response, err := testutil.MockResponse(&schema.PlacementGroupCreateResponse{
+		PlacementGroup: schema.PlacementGroup{
+			ID:      897,
+			Name:    "myPlacementGroup",
+			Created: time.Date(2016, 1, 30, 23, 50, 0, 0, time.UTC),
+			Servers: []int64{1, 2, 3},
+			Labels:  make(map[string]string),
+			Type:    string(hcloud.PlacementGroupTypeSpread),
+		},
+		Action: &schema.Action{ID: 321},
+	})
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	opts := hcloud.PlacementGroupCreateOpts{
+		Name:   "my Placement Group",
+		Labels: map[string]string{},
+		Type:   hcloud.PlacementGroupTypeSpread,
+	}
+
+	placementGroup := hcloud.PlacementGroup{
+		ID:      897,
+		Name:    opts.Name,
+		Created: time.Now(),
+		Labels:  opts.Labels,
+		Type:    opts.Type,
+	}
+
+	fx.Client.PlacementGroupClient.EXPECT().
+		Create(gomock.Any(), opts).
+		Return(hcloud.PlacementGroupCreateResult{
+			PlacementGroup: &placementGroup,
+			Action:         &hcloud.Action{ID: 321},
+		}, response, nil)
+
+	fx.ActionWaiter.EXPECT().
+		ActionProgress(gomock.Any(), &hcloud.Action{ID: 321})
+
+	jsonOut, out, err := fx.Run(cmd, []string{"-o=json", "--name", placementGroup.Name, "--type", string(placementGroup.Type)})
+
+	expOut := "Placement group 897 created\n"
+
+	assert.NoError(t, err)
+	assert.Equal(t, expOut, out)
+	assert.JSONEq(t, createResponseJson, jsonOut)
 }

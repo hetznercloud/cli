@@ -14,7 +14,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var CreateCmd = base.Cmd{
+var CreateCmd = base.CreateCmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:                   "create FLAGS",
@@ -47,7 +47,7 @@ var CreateCmd = base.Cmd{
 
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) (*hcloud.Response, any, error) {
 		name, _ := cmd.Flags().GetString("name")
 		serverIDOrName, _ := cmd.Flags().GetString("server")
 		size, _ := cmd.Flags().GetInt("size")
@@ -59,7 +59,7 @@ var CreateCmd = base.Cmd{
 
 		protectionOpts, err := getChangeProtectionOpts(true, protection)
 		if err != nil {
-			return err
+			return nil, nil, err
 		}
 
 		createOpts := hcloud.VolumeCreateOpts{
@@ -79,10 +79,10 @@ var CreateCmd = base.Cmd{
 		if serverIDOrName != "" {
 			server, _, err := client.Server().Get(ctx, serverIDOrName)
 			if err != nil {
-				return err
+				return nil, nil, err
 			}
 			if server == nil {
-				return fmt.Errorf("server not found: %s", serverIDOrName)
+				return nil, nil, fmt.Errorf("server not found: %s", serverIDOrName)
 			}
 			createOpts.Server = server
 		}
@@ -93,19 +93,22 @@ var CreateCmd = base.Cmd{
 			createOpts.Format = &format
 		}
 
-		result, _, err := client.Volume().Create(ctx, createOpts)
+		result, response, err := client.Volume().Create(ctx, createOpts)
 		if err != nil {
-			return err
+			return nil, nil, err
 		}
 
 		if err := waiter.ActionProgress(ctx, result.Action); err != nil {
-			return err
+			return nil, nil, err
 		}
 		if err := waiter.WaitForActions(ctx, result.NextActions); err != nil {
-			return err
+			return nil, nil, err
 		}
 		cmd.Printf("Volume %d created\n", result.Volume.ID)
 
-		return changeProtection(ctx, client, waiter, cmd, result.Volume, true, protectionOpts)
+		return response, nil, changeProtection(ctx, client, waiter, cmd, result.Volume, true, protectionOpts)
+	},
+	PrintResource: func(_ context.Context, _ hcapi2.Client, _ *cobra.Command, _ any) {
+		// no-op
 	},
 }

@@ -15,7 +15,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var CreateCmd = base.Cmd{
+var CreateCmd = base.CreateCmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:   "create [FLAGS]",
@@ -41,23 +41,26 @@ var CreateCmd = base.Cmd{
 
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, strings []string) error {
+	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, strings []string) (*hcloud.Response, any, error) {
 		certType, err := cmd.Flags().GetString("type")
 		if err != nil {
-			return err
+			return nil, nil, err
 		}
 		switch hcloud.CertificateType(certType) {
-		case hcloud.CertificateTypeUploaded:
-			return createUploaded(ctx, client, cmd)
 		case hcloud.CertificateTypeManaged:
-			return createManaged(ctx, client, waiter, cmd)
-		default:
-			return createUploaded(ctx, client, cmd)
+			response, err := createManaged(ctx, client, waiter, cmd)
+			return response, nil, err
+		default: // Uploaded
+			response, err := createUploaded(ctx, client, cmd)
+			return response, nil, err
 		}
+	},
+	PrintResource: func(_ context.Context, _ hcapi2.Client, _ *cobra.Command, _ any) {
+		// no-op
 	},
 }
 
-func createUploaded(ctx context.Context, client hcapi2.Client, cmd *cobra.Command) error {
+func createUploaded(ctx context.Context, client hcapi2.Client, cmd *cobra.Command) (*hcloud.Response, error) {
 	var (
 		name              string
 		certFile, keyFile string
@@ -68,23 +71,23 @@ func createUploaded(ctx context.Context, client hcapi2.Client, cmd *cobra.Comman
 	)
 
 	if err = util.ValidateRequiredFlags(cmd.Flags(), "cert-file", "key-file"); err != nil {
-		return err
+		return nil, err
 	}
 	if name, err = cmd.Flags().GetString("name"); err != nil {
-		return err
+		return nil, err
 	}
 	if certFile, err = cmd.Flags().GetString("cert-file"); err != nil {
-		return err
+		return nil, err
 	}
 	if keyFile, err = cmd.Flags().GetString("key-file"); err != nil {
-		return err
+		return nil, err
 	}
 
 	if certPEM, err = os.ReadFile(certFile); err != nil {
-		return err
+		return nil, err
 	}
 	if keyPEM, err = os.ReadFile(keyFile); err != nil {
-		return err
+		return nil, err
 	}
 
 	createOpts := hcloud.CertificateCreateOpts{
@@ -93,14 +96,15 @@ func createUploaded(ctx context.Context, client hcapi2.Client, cmd *cobra.Comman
 		Certificate: string(certPEM),
 		PrivateKey:  string(keyPEM),
 	}
-	if cert, _, err = client.Certificate().Create(ctx, createOpts); err != nil {
-		return err
+	cert, response, err := client.Certificate().Create(ctx, createOpts)
+	if err != nil {
+		return nil, err
 	}
 	cmd.Printf("Certificate %d created\n", cert.ID)
-	return nil
+	return response, nil
 }
 
-func createManaged(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command) error {
+func createManaged(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command) (*hcloud.Response, error) {
 	var (
 		name    string
 		domains []string
@@ -109,13 +113,13 @@ func createManaged(ctx context.Context, client hcapi2.Client, waiter state.Actio
 	)
 
 	if name, err = cmd.Flags().GetString("name"); err != nil {
-		return nil
+		return nil, nil
 	}
 	if err = util.ValidateRequiredFlags(cmd.Flags(), "domain"); err != nil {
-		return err
+		return nil, err
 	}
 	if domains, err = cmd.Flags().GetStringSlice("domain"); err != nil {
-		return nil
+		return nil, nil
 	}
 
 	createOpts := hcloud.CertificateCreateOpts{
@@ -123,12 +127,13 @@ func createManaged(ctx context.Context, client hcapi2.Client, waiter state.Actio
 		Type:        hcloud.CertificateTypeManaged,
 		DomainNames: domains,
 	}
-	if res, _, err = client.Certificate().CreateCertificate(ctx, createOpts); err != nil {
-		return err
+	res, response, err := client.Certificate().CreateCertificate(ctx, createOpts)
+	if err != nil {
+		return nil, err
 	}
 	if err := waiter.ActionProgress(ctx, res.Action); err != nil {
-		return err
+		return nil, err
 	}
 	cmd.Printf("Certificate %d created\n", res.Certificate.ID)
-	return nil
+	return response, nil
 }

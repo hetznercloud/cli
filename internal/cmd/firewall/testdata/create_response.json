@@ -1,0 +1,24 @@
+{
+  "actions": [],
+  "firewall": {
+    "applied_to": [
+      {
+        "server": {
+          "id": 1
+        },
+        "type": "server"
+      }
+    ],
+    "created": "2016-01-30T23:50:00Z",
+    "id": 123,
+    "labels": {},
+    "name": "test",
+    "rules": [
+      {
+        "direction": "in",
+        "port": "22",
+        "protocol": "tcp"
+      }
+    ]
+  }
+}

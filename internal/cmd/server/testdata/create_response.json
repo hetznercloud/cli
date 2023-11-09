@@ -1,0 +1,105 @@
+{
+  "next_actions": [],
+  "root_password": "secret",
+  "server": {
+    "backup_window": null,
+    "created": "2016-01-30T23:50:00Z",
+    "datacenter": {
+      "description": "",
+      "id": 1,
+      "location": {
+        "city": "",
+        "country": "",
+        "description": "",
+        "id": 1,
+        "latitude": 0,
+        "longitude": 0,
+        "name": "fsn1",
+        "network_zone": ""
+      },
+      "name": "fsn1-dc14",
+      "server_types": {
+        "available": null,
+        "supported": null
+      }
+    },
+    "id": 1234,
+    "image": {
+      "architecture": "",
+      "bound_to": null,
+      "created": "0001-01-01T00:00:00Z",
+      "created_from": null,
+      "deleted": "0001-01-01T00:00:00Z",
+      "deprecated": "0001-01-01T00:00:00Z",
+      "description": "Ubuntu 20.04",
+      "disk_size": 0,
+      "id": 1,
+      "image_size": null,
+      "labels": {},
+      "name": "ubuntu-20.04",
+      "os_flavor": "ubuntu",
+      "os_version": "20.04",
+      "protection": {
+        "delete": true
+      },
+      "rapid_deploy": true,
+      "status": "available",
+      "type": "system"
+    },
+    "included_traffic": 0,
+    "ingoing_traffic": null,
+    "iso": {
+      "architecture": null,
+      "deprecated": "0001-01-01T00:00:00Z",
+      "deprecation": null,
+      "description": "FreeBSD 11.0 x64",
+      "id": 1,
+      "name": "FreeBSD-11.0-RELEASE-amd64-dvd1",
+      "type": "public"
+    },
+    "labels": {},
+    "locked": true,
+    "name": "cli-test",
+    "outgoing_traffic": null,
+    "placement_group": null,
+    "primary_disk_size": 0,
+    "private_net": null,
+    "protection": {
+      "delete": false,
+      "rebuild": false
+    },
+    "public_net": {
+      "firewalls": null,
+      "floating_ips": null,
+      "ipv4": {
+        "blocked": false,
+        "dns_ptr": "",
+        "id": 0,
+        "ip": "192.0.2.1"
+      },
+      "ipv6": {
+        "blocked": false,
+        "dns_ptr": null,
+        "id": 0,
+        "ip": ""
+      }
+    },
+    "rescue_enabled": true,
+    "server_type": {
+      "architecture": "x86",
+      "cores": 1,
+      "cpu_type": "shared",
+      "deprecation": null,
+      "description": "",
+      "disk": 20,
+      "id": 1,
+      "included_traffic": 0,
+      "memory": 2,
+      "name": "cx11",
+      "prices": null,
+      "storage_type": "local"
+    },
+    "status": "running",
+    "volumes": null
+  }
+}

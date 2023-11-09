@@ -1,0 +1,34 @@
+{
+  "certificate": {
+    "certificate": "",
+    "created": "2020-08-24T12:00:00Z",
+    "domain_names": [
+      "example.com"
+    ],
+    "fingerprint": "",
+    "id": 123,
+    "labels": {
+      "key": "value"
+    },
+    "name": "test",
+    "not_valid_after": "2036-08-12T12:00:00Z",
+    "not_valid_before": "2020-08-24T12:00:00Z",
+    "status": {
+      "error": {
+        "Details": null,
+        "code": "cert_error",
+        "details": null,
+        "message": "Certificate error"
+      },
+      "issuance": "",
+      "renewal": ""
+    },
+    "type": "managed",
+    "used_by": [
+      {
+        "id": 123,
+        "type": "load_balancer"
+      }
+    ]
+  }
+}

@@ -14,7 +14,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var CreateCmd = base.Cmd{
+var CreateCmd = base.CreateCmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:                   "create FLAGS",
@@ -44,16 +44,16 @@ var CreateCmd = base.Cmd{
 
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) (*hcloud.Response, any, error) {
 		typ, _ := cmd.Flags().GetString("type")
 		if typ == "" {
-			return errors.New("type is required")
+			return nil, nil, errors.New("type is required")
 		}
 
 		homeLocation, _ := cmd.Flags().GetString("home-location")
 		server, _ := cmd.Flags().GetString("server")
 		if homeLocation == "" && server == "" {
-			return errors.New("one of --home-location or --server is required")
+			return nil, nil, errors.New("one of --home-location or --server is required")
 		}
 
 		name, _ := cmd.Flags().GetString("name")
@@ -64,7 +64,7 @@ var CreateCmd = base.Cmd{
 
 		protectionOps, err := getChangeProtectionOpts(true, protection)
 		if err != nil {
-			return err
+			return nil, nil, err
 		}
 
 		createOpts := hcloud.FloatingIPCreateOpts{
@@ -81,32 +81,36 @@ var CreateCmd = base.Cmd{
 		if serverNameOrID != "" {
 			server, _, err := client.Server().Get(ctx, serverNameOrID)
 			if err != nil {
-				return err
+				return nil, nil, err
 			}
 			if server == nil {
-				return fmt.Errorf("server not found: %s", serverNameOrID)
+				return nil, nil, fmt.Errorf("server not found: %s", serverNameOrID)
 			}
 			createOpts.Server = server
 		}
 
-		result, _, err := client.FloatingIP().Create(ctx, createOpts)
+		result, response, err := client.FloatingIP().Create(ctx, createOpts)
 		if err != nil {
-			return err
+			return nil, nil, err
 		}
 
 		if result.Action != nil {
 			if err := waiter.ActionProgress(ctx, result.Action); err != nil {
-				return err
+				return nil, nil, err
 			}
 		}
 
 		cmd.Printf("Floating IP %d created\n", result.FloatingIP.ID)
 
 		if err := changeProtection(ctx, client, waiter, cmd, result.FloatingIP, true, protectionOps); err != nil {
-			return err
+			return nil, nil, err
 		}
 
-		cmd.Printf("IP%s: %s\n", result.FloatingIP.Type[2:], result.FloatingIP.IP)
-		return nil
+		return response, result.FloatingIP, nil
+	},
+
+	PrintResource: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, resource any) {
+		floatingIP := resource.(*hcloud.FloatingIP)
+		cmd.Printf("IP%s: %s\n", floatingIP.Type[2:], floatingIP.IP)
 	},
 }

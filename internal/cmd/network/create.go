@@ -13,7 +13,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var CreateCmd = base.Cmd{
+var CreateCmd = base.CreateCmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:   "create [FLAGS]",
@@ -35,7 +35,7 @@ var CreateCmd = base.Cmd{
 		cmd.RegisterFlagCompletionFunc("enable-protection", cmpl.SuggestCandidates("delete"))
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) (*hcloud.Response, any, error) {
 		name, _ := cmd.Flags().GetString("name")
 		ipRange, _ := cmd.Flags().GetIPNet("ip-range")
 		labels, _ := cmd.Flags().GetStringToString("label")
@@ -44,7 +44,7 @@ var CreateCmd = base.Cmd{
 
 		protectionOpts, err := getChangeProtectionOpts(true, protection)
 		if err != nil {
-			return err
+			return nil, nil, err
 		}
 
 		createOpts := hcloud.NetworkCreateOpts{
@@ -54,13 +54,16 @@ var CreateCmd = base.Cmd{
 			ExposeRoutesToVSwitch: exposeRoutesToVSwitch,
 		}
 
-		network, _, err := client.Network().Create(ctx, createOpts)
+		network, response, err := client.Network().Create(ctx, createOpts)
 		if err != nil {
-			return err
+			return nil, nil, err
 		}
 
 		cmd.Printf("Network %d created\n", network.ID)
 
-		return changeProtection(ctx, client, waiter, cmd, network, true, protectionOpts)
+		return response, nil, changeProtection(ctx, client, waiter, cmd, network, true, protectionOpts)
+	},
+	PrintResource: func(_ context.Context, _ hcapi2.Client, _ *cobra.Command, _ any) {
+		// no-op
 	},
 }

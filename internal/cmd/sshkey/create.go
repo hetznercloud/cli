@@ -13,7 +13,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var CreateCmd = base.Cmd{
+var CreateCmd = base.CreateCmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:   "create FLAGS",
@@ -30,7 +30,7 @@ var CreateCmd = base.Cmd{
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) (*hcloud.Response, any, error) {
 		name, _ := cmd.Flags().GetString("name")
 		publicKey, _ := cmd.Flags().GetString("public-key")
 		publicKeyFile, _ := cmd.Flags().GetString("public-key-from-file")
@@ -47,7 +47,7 @@ var CreateCmd = base.Cmd{
 				data, err = os.ReadFile(publicKeyFile)
 			}
 			if err != nil {
-				return err
+				return nil, nil, err
 			}
 			publicKey = string(data)
 		}
@@ -57,13 +57,16 @@ var CreateCmd = base.Cmd{
 			PublicKey: publicKey,
 			Labels:    labels,
 		}
-		sshKey, _, err := client.SSHKey().Create(ctx, opts)
+		sshKey, response, err := client.SSHKey().Create(ctx, opts)
 		if err != nil {
-			return err
+			return nil, nil, err
 		}
 
 		cmd.Printf("SSH key %d created\n", sshKey.ID)
 
-		return nil
+		return response, nil, nil
+	},
+	PrintResource: func(_ context.Context, _ hcapi2.Client, _ *cobra.Command, _ any) {
+		// no-op
 	},
 }

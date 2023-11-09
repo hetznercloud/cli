@@ -1,0 +1,26 @@
+{
+  "next_actions": [],
+  "volume": {
+    "created": "2016-01-30T23:50:00Z",
+    "id": 123,
+    "labels": {},
+    "linux_device": "",
+    "location": {
+      "city": "",
+      "country": "",
+      "description": "",
+      "id": 0,
+      "latitude": 0,
+      "longitude": 0,
+      "name": "fsn1",
+      "network_zone": ""
+    },
+    "name": "test",
+    "protection": {
+      "delete": true
+    },
+    "server": 123,
+    "size": 20,
+    "status": "available"
+  }
+}

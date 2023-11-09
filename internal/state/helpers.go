@@ -132,7 +132,8 @@ func DisplayProgressCircle(errCh <-chan error, waitingFor string) error {
 	)
 
 	if StdoutIsTerminal() {
-		fmt.Println(waitingFor)
+		_, _ = fmt.Fprintln(os.Stderr, waitingFor)
+
 		progress := pb.New(1) // total progress of 1 will do since we use a circle here
 		progress.SetTemplateString(progressCircleTpl)
 		progress.Start()
@@ -144,13 +145,13 @@ func DisplayProgressCircle(errCh <-chan error, waitingFor string) error {
 		}
 		progress.SetTemplateString(ellipsis + done)
 	} else {
-		fmt.Print(waitingFor + ellipsis)
+		_, _ = fmt.Fprint(os.Stderr, waitingFor+ellipsis)
 
 		if err := <-errCh; err != nil {
-			fmt.Println(failed)
+			_, _ = fmt.Fprintln(os.Stderr, failed)
 			return err
 		}
-		fmt.Println(done)
+		_, _ = fmt.Fprintln(os.Stderr, done)
 	}
 	return nil
 }
