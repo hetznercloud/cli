@@ -48,7 +48,7 @@ func TestDescribe(t *testing.T) {
 		ServerName(int64(321)).
 		Return("myServer")
 
-	out, err := fx.Run(cmd, []string{"test"})
+	out, _, err := fx.Run(cmd, []string{"test"})
 
 	expOut := fmt.Sprintf(`ID:		123
 Type:		ipv4

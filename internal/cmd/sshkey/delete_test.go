@@ -34,7 +34,7 @@ func TestDelete(t *testing.T) {
 		Delete(gomock.Any(), sshKey).
 		Return(nil, nil)
 
-	out, err := fx.Run(cmd, []string{"test"})
+	out, _, err := fx.Run(cmd, []string{"test"})
 
 	expOut := "SSH Key test deleted\n"
 

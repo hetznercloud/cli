@@ -43,7 +43,7 @@ func TestList(t *testing.T) {
 		ServerName(int64(321)).
 		Return("myServer")
 
-	out, err := fx.Run(cmd, []string{})
+	out, _, err := fx.Run(cmd, []string{})
 
 	expOut := `ID    NAME   SIZE    SERVER     LOCATION   AGE
 123   test   50 GB   myServer   fsn1       1h

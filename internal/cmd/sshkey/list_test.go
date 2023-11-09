@@ -37,7 +37,7 @@ func TestList(t *testing.T) {
 			},
 		}, nil)
 
-	out, err := fx.Run(cmd, []string{})
+	out, _, err := fx.Run(cmd, []string{})
 
 	expOut := `ID    NAME   FINGERPRINT   AGE
 123   test   -             1h

@@ -63,7 +63,7 @@ func TestCreate(t *testing.T) {
 	fx.ActionWaiter.EXPECT().WaitForActions(gomock.Any(), []*hcloud.Action{{ID: 234}}).Return(nil)
 
 	args := []string{"--name", "cli-test", "--type", "cx11", "--image", "ubuntu-20.04"}
-	out, err := fx.Run(cmd, args)
+	out, _, err := fx.Run(cmd, args)
 
 	assert.NoError(t, err)
 	expOut := `Server 1234 created
@@ -145,7 +145,7 @@ func TestCreateProtectionBackup(t *testing.T) {
 	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), &hcloud.Action{ID: 42}).Return(nil)
 
 	args := []string{"--name", "cli-test", "--type", "cx11", "--image", "ubuntu-20.04", "--enable-protection", "rebuild,delete", "--enable-backup"}
-	out, err := fx.Run(cmd, args)
+	out, _, err := fx.Run(cmd, args)
 
 	assert.NoError(t, err)
 	expOut := `Server 1234 created

@@ -45,7 +45,7 @@ func TestList(t *testing.T) {
 			},
 		}, nil)
 
-	out, err := fx.Run(cmd, []string{"--selector", "foo=bar"})
+	out, _, err := fx.Run(cmd, []string{"--selector", "foo=bar"})
 
 	expOut := `ID    NAME                 SERVERS     TYPE     AGE
 897   my Placement Group   2 servers   spread   10s

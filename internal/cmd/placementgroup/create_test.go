@@ -45,7 +45,7 @@ func TestCreate(t *testing.T) {
 	fx.ActionWaiter.EXPECT().
 		ActionProgress(gomock.Any(), &hcloud.Action{ID: 321})
 
-	out, err := fx.Run(cmd, []string{"--name", placementGroup.Name, "--type", string(placementGroup.Type)})
+	out, _, err := fx.Run(cmd, []string{"--name", placementGroup.Name, "--type", string(placementGroup.Type)})
 
 	expOut := `Placement group 897 created
 `

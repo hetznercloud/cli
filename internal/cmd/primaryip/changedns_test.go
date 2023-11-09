@@ -45,7 +45,7 @@ func TestChangeDNS(t *testing.T) {
 
 	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), action).Return(nil)
 
-	out, err := fx.Run(cmd, []string{"--hostname=server.your-host.de", "--ip=192.168.0.1", "13"})
+	out, _, err := fx.Run(cmd, []string{"--hostname=server.your-host.de", "--ip=192.168.0.1", "13"})
 
 	expOut := "Primary IP 13 DNS pointer: server.your-host.de associated to 192.168.0.1\n"
 

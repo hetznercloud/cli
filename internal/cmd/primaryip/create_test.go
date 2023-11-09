@@ -44,7 +44,7 @@ func TestCreate(t *testing.T) {
 	fx.ActionWaiter.EXPECT().
 		ActionProgress(gomock.Any(), &hcloud.Action{ID: 321})
 
-	out, err := fx.Run(cmd, []string{"--name=my-ip", "--type=ipv4", "--datacenter=fsn1-dc14"})
+	out, _, err := fx.Run(cmd, []string{"--name=my-ip", "--type=ipv4", "--datacenter=fsn1-dc14"})
 
 	expOut := `Primary IP 1 created
 IPv4: 192.168.2.1

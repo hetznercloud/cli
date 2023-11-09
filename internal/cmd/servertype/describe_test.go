@@ -34,7 +34,7 @@ func TestDescribe(t *testing.T) {
 			StorageType: hcloud.StorageTypeLocal,
 		}, nil, nil)
 
-	out, err := fx.Run(cmd, []string{"cax11"})
+	out, _, err := fx.Run(cmd, []string{"cax11"})
 
 	expOut := `ID:			45
 Name:			cax11

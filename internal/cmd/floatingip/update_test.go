@@ -29,7 +29,7 @@ func TestUpdateName(t *testing.T) {
 			Name: "new-name",
 		})
 
-	out, err := fx.Run(cmd, []string{"123", "--name", "new-name"})
+	out, _, err := fx.Run(cmd, []string{"123", "--name", "new-name"})
 
 	expOut := "Floating IP 123 updated\n"
 
@@ -55,7 +55,7 @@ func TestUpdateDescription(t *testing.T) {
 			Description: "new-description",
 		})
 
-	out, err := fx.Run(cmd, []string{"123", "--description", "new-description"})
+	out, _, err := fx.Run(cmd, []string{"123", "--description", "new-description"})
 
 	expOut := "Floating IP 123 updated\n"
 

@@ -45,7 +45,7 @@ func TestList(t *testing.T) {
 			},
 		}, nil)
 
-	out, err := fx.Run(cmd, []string{})
+	out, _, err := fx.Run(cmd, []string{})
 
 	expOut := `ID    NAME   STATUS    IPV4          IPV6   PRIVATE NET   DATACENTER   AGE
 123   test   running   192.168.2.1   -      -             fsn1-dc14    20s

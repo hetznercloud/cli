@@ -33,7 +33,7 @@ func TestDescribe(t *testing.T) {
 			MaxAssignedCertificates: 10,
 		}, nil, nil)
 
-	out, err := fx.Run(cmd, []string{"lb11"})
+	out, _, err := fx.Run(cmd, []string{"lb11"})
 
 	expOut := `ID:				123
 Name:				lb11

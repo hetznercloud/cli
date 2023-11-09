@@ -39,7 +39,7 @@ func TestList(t *testing.T) {
 			},
 		}, nil)
 
-	out, err := fx.Run(cmd, []string{})
+	out, _, err := fx.Run(cmd, []string{})
 
 	expOut := `ID    NAME   RULES COUNT   APPLIED TO COUNT
 123   test   5 Rules       2 Servers | 0 Label Selectors

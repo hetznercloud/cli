@@ -35,7 +35,7 @@ func TestDescribe(t *testing.T) {
 			Longitude:   24.938379,
 		}, nil, nil)
 
-	out, err := fx.Run(cmd, []string{"hel1"})
+	out, _, err := fx.Run(cmd, []string{"hel1"})
 
 	expOut := `ID:		3
 Name:		hel1

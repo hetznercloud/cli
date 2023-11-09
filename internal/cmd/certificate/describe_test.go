@@ -57,7 +57,7 @@ func TestDescribe(t *testing.T) {
 		LoadBalancerName(int64(123)).
 		Return("test")
 
-	out, err := fx.Run(cmd, []string{"test"})
+	out, _, err := fx.Run(cmd, []string{"test"})
 
 	expOut := fmt.Sprintf(`ID:			123
 Name:			test

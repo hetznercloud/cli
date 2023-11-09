@@ -36,7 +36,7 @@ func TestCreate(t *testing.T) {
 			IPRange: ipRange,
 		}, nil, nil)
 
-	out, err := fx.Run(cmd, []string{"--name", "myNetwork", "--ip-range", "10.0.0.0/24"})
+	out, _, err := fx.Run(cmd, []string{"--name", "myNetwork", "--ip-range", "10.0.0.0/24"})
 
 	expOut := "Network 123 created\n"
 
@@ -76,7 +76,7 @@ func TestCreateProtection(t *testing.T) {
 		Return(&hcloud.Action{ID: 123}, nil, nil)
 	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), &hcloud.Action{ID: 123}).Return(nil)
 
-	out, err := fx.Run(cmd, []string{"--name", "myNetwork", "--ip-range", "10.0.0.0/24", "--enable-protection", "delete"})
+	out, _, err := fx.Run(cmd, []string{"--name", "myNetwork", "--ip-range", "10.0.0.0/24", "--enable-protection", "delete"})
 
 	expOut := `Network 123 created
 Resource protection enabled for network 123

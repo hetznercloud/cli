@@ -29,7 +29,7 @@ func TestUpdateName(t *testing.T) {
 			Name: "new-name",
 		})
 
-	out, err := fx.Run(cmd, []string{"123", "--name", "new-name"})
+	out, _, err := fx.Run(cmd, []string{"123", "--name", "new-name"})
 
 	expOut := "placement group 123 updated\n"
 

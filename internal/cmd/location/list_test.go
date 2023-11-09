@@ -39,7 +39,7 @@ func TestList(t *testing.T) {
 			},
 		}, nil)
 
-	out, err := fx.Run(cmd, []string{})
+	out, _, err := fx.Run(cmd, []string{})
 
 	expOut := `ID   NAME   DESCRIPTION   NETWORK ZONE   COUNTRY   CITY
 1    fsn1   -             eu-central     DE        Falkenstein

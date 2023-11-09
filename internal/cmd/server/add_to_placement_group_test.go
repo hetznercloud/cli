@@ -44,7 +44,7 @@ func TestAddToPlacementGroup(t *testing.T) {
 		AddToPlacementGroup(gomock.Any(), &server, &placementGroup)
 	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), nil)
 
-	out, err := fx.Run(cmd, []string{"-g", placementGroup.Name, server.Name})
+	out, _, err := fx.Run(cmd, []string{"-g", placementGroup.Name, server.Name})
 
 	expOut := `Server 42 added to placement group my Placement Group
 `
