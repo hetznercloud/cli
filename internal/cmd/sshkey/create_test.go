@@ -34,7 +34,7 @@ func TestCreate(t *testing.T) {
 			PublicKey: "test",
 		}, nil, nil)
 
-	out, err := fx.Run(cmd, []string{"--name", "test", "--public-key", "test"})
+	out, _, err := fx.Run(cmd, []string{"--name", "test", "--public-key", "test"})
 
 	expOut := "SSH key 123 created\n"
 

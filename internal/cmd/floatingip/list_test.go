@@ -41,7 +41,7 @@ func TestList(t *testing.T) {
 			},
 		}, nil)
 
-	out, err := fx.Run(cmd, []string{})
+	out, _, err := fx.Run(cmd, []string{})
 
 	expOut := `ID    TYPE   NAME   DESCRIPTION   IP            HOME   SERVER   DNS   AGE
 123   ipv4   test   -             192.168.2.1   fsn1   -        -     10m

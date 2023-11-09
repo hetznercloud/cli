@@ -43,7 +43,7 @@ func TestList(t *testing.T) {
 		},
 			nil)
 
-	out, err := fx.Run(cmd, []string{"--selector", "foo=bar"})
+	out, _, err := fx.Run(cmd, []string{"--selector", "foo=bar"})
 
 	expOut := `ID    TYPE   NAME       IP          ASSIGNEE   DNS   AUTO DELETE   AGE
 123   ipv4   test-net   127.0.0.1   -          -     yes           10s

@@ -37,7 +37,7 @@ func TestCreate(t *testing.T) {
 	fx.ActionWaiter.EXPECT().
 		WaitForActions(gomock.Any(), []*hcloud.Action{{ID: 321}})
 
-	out, err := fx.Run(cmd, []string{"--name", "test"})
+	out, _, err := fx.Run(cmd, []string{"--name", "test"})
 
 	expOut := "Firewall 123 created\n"
 

@@ -39,7 +39,7 @@ func TestList(t *testing.T) {
 			},
 		}, nil)
 
-	out, err := fx.Run(cmd, []string{})
+	out, _, err := fx.Run(cmd, []string{})
 
 	expOut := `ID    NAME   DESCRIPTION   MAX SERVICES   MAX CONNECTIONS   MAX TARGETS
 123   test   -             12             100               5

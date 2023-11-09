@@ -44,7 +44,7 @@ func TestCreate(t *testing.T) {
 	fx.ActionWaiter.EXPECT().
 		WaitForActions(gomock.Any(), []*hcloud.Action{{ID: 1}, {ID: 2}, {ID: 3}})
 
-	out, err := fx.Run(cmd, []string{"--name", "test", "--size", "20", "--location", "fsn1"})
+	out, _, err := fx.Run(cmd, []string{"--name", "test", "--size", "20", "--location", "fsn1"})
 
 	expOut := "Volume 123 created\n"
 
@@ -94,7 +94,7 @@ func TestCreateProtection(t *testing.T) {
 	fx.ActionWaiter.EXPECT().
 		ActionProgress(gomock.Any(), &hcloud.Action{ID: 123})
 
-	out, err := fx.Run(cmd, []string{"--name", "test", "--size", "20", "--location", "fsn1", "--enable-protection", "delete"})
+	out, _, err := fx.Run(cmd, []string{"--name", "test", "--size", "20", "--location", "fsn1", "--enable-protection", "delete"})
 
 	expOut := `Volume 123 created
 Resource protection enabled for volume 123

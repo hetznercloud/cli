@@ -38,7 +38,7 @@ func TestList(t *testing.T) {
 			},
 		}, nil)
 
-	out, err := fx.Run(cmd, []string{})
+	out, _, err := fx.Run(cmd, []string{})
 
 	expOut := `ID   NAME        DESCRIPTION                   LOCATION
 4    fsn1-dc14   Falkenstein 1 virtual DC 14   fsn1

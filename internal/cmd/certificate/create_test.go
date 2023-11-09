@@ -40,7 +40,7 @@ func TestCreateManaged(t *testing.T) {
 	fx.ActionWaiter.EXPECT().
 		ActionProgress(gomock.Any(), &hcloud.Action{ID: 321})
 
-	out, err := fx.Run(cmd, []string{"--name", "test", "--type", "managed", "--domain", "example.com"})
+	out, _, err := fx.Run(cmd, []string{"--name", "test", "--type", "managed", "--domain", "example.com"})
 
 	expOut := "Certificate 123 created\n"
 
@@ -72,7 +72,7 @@ func TestCreateUploaded(t *testing.T) {
 			Type: hcloud.CertificateTypeUploaded,
 		}, nil, nil)
 
-	out, err := fx.Run(cmd, []string{"--name", "test", "--key-file", "testdata/key.pem", "--cert-file", "testdata/cert.pem"})
+	out, _, err := fx.Run(cmd, []string{"--name", "test", "--key-file", "testdata/key.pem", "--cert-file", "testdata/cert.pem"})
 
 	expOut := "Certificate 123 created\n"
 

@@ -31,7 +31,7 @@ func TestLabelAdd(t *testing.T) {
 			},
 		})
 
-	out, err := fx.Run(cmd, []string{"123", "key=value"})
+	out, _, err := fx.Run(cmd, []string{"123", "key=value"})
 
 	expOut := "Label key added to placement group 123\n"
 
@@ -62,7 +62,7 @@ func TestLabelRemove(t *testing.T) {
 			Labels: make(map[string]string),
 		})
 
-	out, err := fx.Run(cmd, []string{"123", "key"})
+	out, _, err := fx.Run(cmd, []string{"123", "key"})
 
 	expOut := "Label key removed from placement group 123\n"
 

@@ -39,7 +39,7 @@ func TestList(t *testing.T) {
 			},
 		}, nil)
 
-	out, err := fx.Run(cmd, []string{})
+	out, _, err := fx.Run(cmd, []string{})
 
 	expOut := `ID    NAME   DESCRIPTION   TYPE     ARCHITECTURE
 123   test   Test ISO      public   x86

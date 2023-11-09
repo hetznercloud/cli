@@ -56,7 +56,7 @@ func TestAssign(t *testing.T) {
 
 	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), action).Return(nil)
 
-	out, err := fx.Run(cmd, []string{"13", "--server", "15"})
+	out, _, err := fx.Run(cmd, []string{"13", "--server", "15"})
 
 	expOut := "Primary IP 13 assigned to server 15\n"
 

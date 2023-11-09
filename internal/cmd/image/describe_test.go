@@ -46,7 +46,7 @@ func TestDescribe(t *testing.T) {
 		GetForArchitecture(gomock.Any(), "test", hcloud.ArchitectureX86).
 		Return(img, nil, nil)
 
-	out, err := fx.Run(cmd, []string{"test"})
+	out, _, err := fx.Run(cmd, []string{"test"})
 
 	expOut := fmt.Sprintf(`ID:		123
 Type:		system

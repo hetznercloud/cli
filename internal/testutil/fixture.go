@@ -37,9 +37,9 @@ func (f *Fixture) ExpectEnsureToken() {
 
 // Run runs the given cobra command with the given arguments and returns stdout output and a
 // potential error.
-func (f *Fixture) Run(cmd *cobra.Command, args []string) (string, error) {
+func (f *Fixture) Run(cmd *cobra.Command, args []string) (string, string, error) {
 	cmd.SetArgs(args)
-	return CaptureStdout(cmd.Execute)
+	return CaptureOutStreams(cmd.Execute)
 }
 
 // Finish must be called after the test is finished, preferably via `defer` directly after

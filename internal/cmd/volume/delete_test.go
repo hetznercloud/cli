@@ -34,7 +34,7 @@ func TestDelete(t *testing.T) {
 		Delete(gomock.Any(), volume).
 		Return(nil, nil)
 
-	out, err := fx.Run(cmd, []string{"test"})
+	out, _, err := fx.Run(cmd, []string{"test"})
 
 	expOut := "Volume test deleted\n"
 

@@ -47,7 +47,7 @@ func TestDescribe(t *testing.T) {
 		ServerName(int64(4712)).
 		Return("server2")
 
-	out, err := fx.Run(cmd, []string{placementGroup.Name})
+	out, _, err := fx.Run(cmd, []string{placementGroup.Name})
 
 	expOut := fmt.Sprintf(`ID:		897
 Name:		my Placement Group

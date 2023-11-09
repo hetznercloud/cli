@@ -34,7 +34,7 @@ func TestDelete(t *testing.T) {
 		Delete(gomock.Any(), firewall).
 		Return(nil, nil)
 
-	out, err := fx.Run(cmd, []string{"test"})
+	out, _, err := fx.Run(cmd, []string{"test"})
 
 	expOut := "firewall test deleted\n"
 

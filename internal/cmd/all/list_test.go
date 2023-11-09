@@ -173,7 +173,7 @@ func TestListAll(t *testing.T) {
 			},
 		}, nil)
 
-	out, err := fx.Run(cmd, []string{})
+	out, _, err := fx.Run(cmd, []string{})
 
 	expOut := `SERVERS
 ---
@@ -287,7 +287,7 @@ func TestListAllPaidJSON(t *testing.T) {
 		AllWithOpts(gomock.Any(), hcloud.VolumeListOpts{}).
 		Return([]*hcloud.Volume{}, nil)
 
-	out, err := fx.Run(cmd, []string{"--paid", "-o=json"})
+	out, _, err := fx.Run(cmd, []string{"--paid", "-o=json"})
 
 	expOut := "{\"floating_ips\":[],\"images\":[{\"id\":114690387,\"status\":\"available\",\"type\":\"system\"," +
 		"\"name\":\"debian-12\",\"description\":\"Debian 12\",\"image_size\":0,\"disk_size\":5,\"created\":" +

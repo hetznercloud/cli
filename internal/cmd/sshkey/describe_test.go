@@ -39,7 +39,7 @@ func TestDescribe(t *testing.T) {
 		Get(gomock.Any(), "test").
 		Return(key, nil, nil)
 
-	out, err := fx.Run(cmd, []string{"test"})
+	out, _, err := fx.Run(cmd, []string{"test"})
 
 	expOut := fmt.Sprintf(`ID:		123
 Name:		test

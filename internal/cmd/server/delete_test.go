@@ -38,7 +38,7 @@ func TestDelete(t *testing.T) {
 	fx.ActionWaiter.EXPECT().
 		ActionProgress(gomock.Any(), &hcloud.Action{ID: 321})
 
-	out, err := fx.Run(cmd, []string{"test"})
+	out, _, err := fx.Run(cmd, []string{"test"})
 
 	expOut := "Server test deleted\n"
 

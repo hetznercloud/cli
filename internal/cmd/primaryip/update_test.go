@@ -30,7 +30,7 @@ func TestUpdateName(t *testing.T) {
 			AutoDelete: nil,
 		})
 
-	out, err := fx.Run(cmd, []string{"123", "--name", "new-name"})
+	out, _, err := fx.Run(cmd, []string{"123", "--name", "new-name"})
 
 	expOut := "Primary IP 123 updated\n"
 
@@ -56,7 +56,7 @@ func TestUpdateAutoDelete(t *testing.T) {
 			AutoDelete: hcloud.Ptr(false),
 		})
 
-	out, err := fx.Run(cmd, []string{"123", "--auto-delete=false"})
+	out, _, err := fx.Run(cmd, []string{"123", "--auto-delete=false"})
 
 	expOut := "Primary IP 123 updated\n"
 
