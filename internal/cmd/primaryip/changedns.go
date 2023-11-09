@@ -58,7 +58,7 @@ var ChangeDNSCmd = base.Cmd{
 			return err
 		}
 
-		fmt.Printf("Primary IP %d DNS pointer: %s associated to %s\n", opts.ID, opts.DNSPtr, opts.IP)
+		cmd.Printf("Primary IP %d DNS pointer: %s associated to %s\n", opts.ID, opts.DNSPtr, opts.IP)
 		return nil
 	},
 }

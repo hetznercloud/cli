@@ -81,7 +81,7 @@ func (rc *SetRdnsCmd) Run(ctx context.Context, client hcapi2.Client, cmd *cobra.
 		return err
 	}
 
-	fmt.Printf("Reverse DNS of %s %s changed\n", rc.ResourceNameSingular, idOrName)
+	cmd.Printf("Reverse DNS of %s %s changed\n", rc.ResourceNameSingular, idOrName)
 
 	return nil
 }

@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"os"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -62,5 +63,6 @@ func NewRootCommand(state *state.State, client hcapi2.Client) *cobra.Command {
 		primaryip.NewCommand(state, client),
 	)
 	cmd.PersistentFlags().Duration("poll-interval", 500*time.Millisecond, "Interval at which to poll information, for example action progress")
+	cmd.SetOut(os.Stdout)
 	return cmd
 }

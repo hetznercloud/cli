@@ -59,7 +59,7 @@ var AddRouteCmd = base.Cmd{
 		if err := waiter.ActionProgress(ctx, action); err != nil {
 			return err
 		}
-		fmt.Printf("Route added to network %d\n", network.ID)
+		cmd.Printf("Route added to network %d\n", network.ID)
 
 		return nil
 	},

@@ -2,7 +2,6 @@ package primaryip
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/dustin/go-humanize"
 	"github.com/spf13/cobra"
@@ -25,51 +24,51 @@ var DescribeCmd = base.DescribeCmd{
 	PrintText: func(_ context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}) error {
 		primaryIP := resource.(*hcloud.PrimaryIP)
 
-		fmt.Printf("ID:\t\t%d\n", primaryIP.ID)
-		fmt.Printf("Name:\t\t%s\n", primaryIP.Name)
-		fmt.Printf("Created:\t%s (%s)\n", util.Datetime(primaryIP.Created), humanize.Time(primaryIP.Created))
-		fmt.Printf("Type:\t\t%s\n", primaryIP.Type)
-		fmt.Printf("IP:\t\t%s\n", primaryIP.IP.String())
-		fmt.Printf("Blocked:\t%s\n", util.YesNo(primaryIP.Blocked))
-		fmt.Printf("Auto delete:\t%s\n", util.YesNo(primaryIP.AutoDelete))
+		cmd.Printf("ID:\t\t%d\n", primaryIP.ID)
+		cmd.Printf("Name:\t\t%s\n", primaryIP.Name)
+		cmd.Printf("Created:\t%s (%s)\n", util.Datetime(primaryIP.Created), humanize.Time(primaryIP.Created))
+		cmd.Printf("Type:\t\t%s\n", primaryIP.Type)
+		cmd.Printf("IP:\t\t%s\n", primaryIP.IP.String())
+		cmd.Printf("Blocked:\t%s\n", util.YesNo(primaryIP.Blocked))
+		cmd.Printf("Auto delete:\t%s\n", util.YesNo(primaryIP.AutoDelete))
 		if primaryIP.AssigneeID != 0 {
-			fmt.Printf("Assignee:\n")
-			fmt.Printf("  ID:\t%d\n", primaryIP.AssigneeID)
-			fmt.Printf("  Type:\t%s\n", primaryIP.AssigneeType)
+			cmd.Printf("Assignee:\n")
+			cmd.Printf("  ID:\t%d\n", primaryIP.AssigneeID)
+			cmd.Printf("  Type:\t%s\n", primaryIP.AssigneeType)
 		} else {
-			fmt.Print("Assignee:\n  Not assigned\n")
+			cmd.Print("Assignee:\n  Not assigned\n")
 		}
-		fmt.Print("DNS:\n")
+		cmd.Print("DNS:\n")
 		if len(primaryIP.DNSPtr) == 0 {
-			fmt.Print("  No reverse DNS entries\n")
+			cmd.Print("  No reverse DNS entries\n")
 		} else {
 			for ip, dns := range primaryIP.DNSPtr {
-				fmt.Printf("  %s: %s\n", ip, dns)
+				cmd.Printf("  %s: %s\n", ip, dns)
 			}
 		}
 
-		fmt.Printf("Protection:\n")
-		fmt.Printf("  Delete:\t%s\n", util.YesNo(primaryIP.Protection.Delete))
+		cmd.Printf("Protection:\n")
+		cmd.Printf("  Delete:\t%s\n", util.YesNo(primaryIP.Protection.Delete))
 
-		fmt.Print("Labels:\n")
+		cmd.Print("Labels:\n")
 		if len(primaryIP.Labels) == 0 {
-			fmt.Print("  No labels\n")
+			cmd.Print("  No labels\n")
 		} else {
 			for key, value := range primaryIP.Labels {
-				fmt.Printf("  %s: %s\n", key, value)
+				cmd.Printf("  %s: %s\n", key, value)
 			}
 		}
-		fmt.Printf("Datacenter:\n")
-		fmt.Printf("  ID:\t\t%d\n", primaryIP.Datacenter.ID)
-		fmt.Printf("  Name:\t\t%s\n", primaryIP.Datacenter.Name)
-		fmt.Printf("  Description:\t%s\n", primaryIP.Datacenter.Description)
-		fmt.Printf("  Location:\n")
-		fmt.Printf("    Name:\t\t%s\n", primaryIP.Datacenter.Location.Name)
-		fmt.Printf("    Description:\t%s\n", primaryIP.Datacenter.Location.Description)
-		fmt.Printf("    Country:\t\t%s\n", primaryIP.Datacenter.Location.Country)
-		fmt.Printf("    City:\t\t%s\n", primaryIP.Datacenter.Location.City)
-		fmt.Printf("    Latitude:\t\t%f\n", primaryIP.Datacenter.Location.Latitude)
-		fmt.Printf("    Longitude:\t\t%f\n", primaryIP.Datacenter.Location.Longitude)
+		cmd.Printf("Datacenter:\n")
+		cmd.Printf("  ID:\t\t%d\n", primaryIP.Datacenter.ID)
+		cmd.Printf("  Name:\t\t%s\n", primaryIP.Datacenter.Name)
+		cmd.Printf("  Description:\t%s\n", primaryIP.Datacenter.Description)
+		cmd.Printf("  Location:\n")
+		cmd.Printf("    Name:\t\t%s\n", primaryIP.Datacenter.Location.Name)
+		cmd.Printf("    Description:\t%s\n", primaryIP.Datacenter.Location.Description)
+		cmd.Printf("    Country:\t\t%s\n", primaryIP.Datacenter.Location.Country)
+		cmd.Printf("    City:\t\t%s\n", primaryIP.Datacenter.Location.City)
+		cmd.Printf("    Latitude:\t\t%f\n", primaryIP.Datacenter.Location.Latitude)
+		cmd.Printf("    Longitude:\t\t%f\n", primaryIP.Datacenter.Location.Longitude)
 		return nil
 	},
 }

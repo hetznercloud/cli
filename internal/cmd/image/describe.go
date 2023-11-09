@@ -36,42 +36,42 @@ var DescribeCmd = base.DescribeCmd{
 		}
 		return client.Image().GetForArchitecture(ctx, idOrName, hcloud.Architecture(arch))
 	},
-	PrintText: func(_ context.Context, _ hcapi2.Client, _ *cobra.Command, resource interface{}) error {
+	PrintText: func(_ context.Context, _ hcapi2.Client, cmd *cobra.Command, resource interface{}) error {
 		image := resource.(*hcloud.Image)
 
-		fmt.Printf("ID:\t\t%d\n", image.ID)
-		fmt.Printf("Type:\t\t%s\n", image.Type)
-		fmt.Printf("Status:\t\t%s\n", image.Status)
-		fmt.Printf("Name:\t\t%s\n", util.NA(image.Name))
-		fmt.Printf("Created:\t%s (%s)\n", util.Datetime(image.Created), humanize.Time(image.Created))
+		cmd.Printf("ID:\t\t%d\n", image.ID)
+		cmd.Printf("Type:\t\t%s\n", image.Type)
+		cmd.Printf("Status:\t\t%s\n", image.Status)
+		cmd.Printf("Name:\t\t%s\n", util.NA(image.Name))
+		cmd.Printf("Created:\t%s (%s)\n", util.Datetime(image.Created), humanize.Time(image.Created))
 		if !image.Deprecated.IsZero() {
-			fmt.Printf("Deprecated:\t%s (%s)\n", util.Datetime(image.Deprecated), humanize.Time(image.Deprecated))
+			cmd.Printf("Deprecated:\t%s (%s)\n", util.Datetime(image.Deprecated), humanize.Time(image.Deprecated))
 		}
-		fmt.Printf("Description:\t%s\n", image.Description)
+		cmd.Printf("Description:\t%s\n", image.Description)
 		if image.ImageSize != 0 {
-			fmt.Printf("Image size:\t%.2f GB\n", image.ImageSize)
+			cmd.Printf("Image size:\t%.2f GB\n", image.ImageSize)
 		} else {
-			fmt.Printf("Image size:\t%s\n", util.NA(""))
+			cmd.Printf("Image size:\t%s\n", util.NA(""))
 		}
-		fmt.Printf("Disk size:\t%.0f GB\n", image.DiskSize)
-		fmt.Printf("OS flavor:\t%s\n", image.OSFlavor)
-		fmt.Printf("OS version:\t%s\n", util.NA(image.OSVersion))
-		fmt.Printf("Architecture:\t%s\n", image.Architecture)
-		fmt.Printf("Rapid deploy:\t%s\n", util.YesNo(image.RapidDeploy))
-		fmt.Printf("Protection:\n")
-		fmt.Printf("  Delete:\t%s\n", util.YesNo(image.Protection.Delete))
+		cmd.Printf("Disk size:\t%.0f GB\n", image.DiskSize)
+		cmd.Printf("OS flavor:\t%s\n", image.OSFlavor)
+		cmd.Printf("OS version:\t%s\n", util.NA(image.OSVersion))
+		cmd.Printf("Architecture:\t%s\n", image.Architecture)
+		cmd.Printf("Rapid deploy:\t%s\n", util.YesNo(image.RapidDeploy))
+		cmd.Printf("Protection:\n")
+		cmd.Printf("  Delete:\t%s\n", util.YesNo(image.Protection.Delete))
 
-		fmt.Print("Labels:\n")
+		cmd.Print("Labels:\n")
 		if len(image.Labels) == 0 {
-			fmt.Print("  No labels\n")
+			cmd.Print("  No labels\n")
 		} else {
 			for key, value := range image.Labels {
-				fmt.Printf("  %s: %s\n", key, value)
+				cmd.Printf("  %s: %s\n", key, value)
 			}
 		}
 
 		if !image.Deprecated.IsZero() {
-			fmt.Printf("\nAttention: This image is deprecated and will be removed in the future.\n")
+			cmd.Printf("\nAttention: This image is deprecated and will be removed in the future.\n")
 		}
 		return nil
 	},

@@ -2,7 +2,6 @@ package location
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/spf13/cobra"
 
@@ -24,14 +23,14 @@ var DescribeCmd = base.DescribeCmd{
 	PrintText: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}) error {
 		location := resource.(*hcloud.Location)
 
-		fmt.Printf("ID:\t\t%d\n", location.ID)
-		fmt.Printf("Name:\t\t%s\n", location.Name)
-		fmt.Printf("Description:\t%s\n", location.Description)
-		fmt.Printf("Network Zone:\t%s\n", location.NetworkZone)
-		fmt.Printf("Country:\t%s\n", location.Country)
-		fmt.Printf("City:\t\t%s\n", location.City)
-		fmt.Printf("Latitude:\t%f\n", location.Latitude)
-		fmt.Printf("Longitude:\t%f\n", location.Longitude)
+		cmd.Printf("ID:\t\t%d\n", location.ID)
+		cmd.Printf("Name:\t\t%s\n", location.Name)
+		cmd.Printf("Description:\t%s\n", location.Description)
+		cmd.Printf("Network Zone:\t%s\n", location.NetworkZone)
+		cmd.Printf("Country:\t%s\n", location.Country)
+		cmd.Printf("City:\t\t%s\n", location.City)
+		cmd.Printf("Latitude:\t%f\n", location.Latitude)
+		cmd.Printf("Longitude:\t%f\n", location.Longitude)
 		return nil
 	},
 }

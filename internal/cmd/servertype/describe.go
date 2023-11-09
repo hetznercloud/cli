@@ -2,7 +2,6 @@ package servertype
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/spf13/cobra"
 
@@ -21,26 +20,26 @@ var DescribeCmd = base.DescribeCmd{
 	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
 		return client.ServerType().Get(ctx, idOrName)
 	},
-	PrintText: func(_ context.Context, _ hcapi2.Client, _ *cobra.Command, resource interface{}) error {
+	PrintText: func(_ context.Context, _ hcapi2.Client, cmd *cobra.Command, resource interface{}) error {
 		serverType := resource.(*hcloud.ServerType)
 
-		fmt.Printf("ID:\t\t\t%d\n", serverType.ID)
-		fmt.Printf("Name:\t\t\t%s\n", serverType.Name)
-		fmt.Printf("Description:\t\t%s\n", serverType.Description)
-		fmt.Printf("Cores:\t\t\t%d\n", serverType.Cores)
-		fmt.Printf("CPU Type:\t\t%s\n", serverType.CPUType)
-		fmt.Printf("Architecture:\t\t%s\n", serverType.Architecture)
-		fmt.Printf("Memory:\t\t\t%.1f GB\n", serverType.Memory)
-		fmt.Printf("Disk:\t\t\t%d GB\n", serverType.Disk)
-		fmt.Printf("Storage Type:\t\t%s\n", serverType.StorageType)
-		fmt.Printf("Included Traffic:\t%d TB\n", serverType.IncludedTraffic/util.Tebibyte)
-		fmt.Printf(util.DescribeDeprecation(serverType))
+		cmd.Printf("ID:\t\t\t%d\n", serverType.ID)
+		cmd.Printf("Name:\t\t\t%s\n", serverType.Name)
+		cmd.Printf("Description:\t\t%s\n", serverType.Description)
+		cmd.Printf("Cores:\t\t\t%d\n", serverType.Cores)
+		cmd.Printf("CPU Type:\t\t%s\n", serverType.CPUType)
+		cmd.Printf("Architecture:\t\t%s\n", serverType.Architecture)
+		cmd.Printf("Memory:\t\t\t%.1f GB\n", serverType.Memory)
+		cmd.Printf("Disk:\t\t\t%d GB\n", serverType.Disk)
+		cmd.Printf("Storage Type:\t\t%s\n", serverType.StorageType)
+		cmd.Printf("Included Traffic:\t%d TB\n", serverType.IncludedTraffic/util.Tebibyte)
+		cmd.Printf(util.DescribeDeprecation(serverType))
 
-		fmt.Printf("Pricings per Location:\n")
+		cmd.Printf("Pricings per Location:\n")
 		for _, price := range serverType.Pricings {
-			fmt.Printf("  - Location:\t%s:\n", price.Location.Name)
-			fmt.Printf("    Hourly:\t€ %s\n", price.Hourly.Gross)
-			fmt.Printf("    Monthly:\t€ %s\n", price.Monthly.Gross)
+			cmd.Printf("  - Location:\t%s:\n", price.Location.Name)
+			cmd.Printf("    Hourly:\t€ %s\n", price.Hourly.Gross)
+			cmd.Printf("    Monthly:\t€ %s\n", price.Monthly.Gross)
 		}
 		return nil
 	},

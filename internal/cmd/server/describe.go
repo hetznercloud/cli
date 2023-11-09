@@ -25,175 +25,175 @@ var DescribeCmd = base.DescribeCmd{
 	PrintText: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}) error {
 		server := resource.(*hcloud.Server)
 
-		fmt.Printf("ID:\t\t%d\n", server.ID)
-		fmt.Printf("Name:\t\t%s\n", server.Name)
-		fmt.Printf("Status:\t\t%s\n", server.Status)
-		fmt.Printf("Created:\t%s (%s)\n", util.Datetime(server.Created), humanize.Time(server.Created))
+		cmd.Printf("ID:\t\t%d\n", server.ID)
+		cmd.Printf("Name:\t\t%s\n", server.Name)
+		cmd.Printf("Status:\t\t%s\n", server.Status)
+		cmd.Printf("Created:\t%s (%s)\n", util.Datetime(server.Created), humanize.Time(server.Created))
 
-		fmt.Printf("Server Type:\t%s (ID: %d)\n", server.ServerType.Name, server.ServerType.ID)
-		fmt.Printf("  ID:\t\t%d\n", server.ServerType.ID)
-		fmt.Printf("  Name:\t\t%s\n", server.ServerType.Name)
-		fmt.Printf("  Description:\t%s\n", server.ServerType.Description)
-		fmt.Printf("  Cores:\t%d\n", server.ServerType.Cores)
-		fmt.Printf("  CPU Type:\t%s\n", server.ServerType.CPUType)
-		fmt.Printf("  Memory:\t%v GB\n", server.ServerType.Memory)
-		fmt.Printf("  Disk:\t\t%d GB\n", server.PrimaryDiskSize)
-		fmt.Printf("  Storage Type:\t%s\n", server.ServerType.StorageType)
-		fmt.Printf(util.PrefixLines(util.DescribeDeprecation(server.ServerType), "  "))
+		cmd.Printf("Server Type:\t%s (ID: %d)\n", server.ServerType.Name, server.ServerType.ID)
+		cmd.Printf("  ID:\t\t%d\n", server.ServerType.ID)
+		cmd.Printf("  Name:\t\t%s\n", server.ServerType.Name)
+		cmd.Printf("  Description:\t%s\n", server.ServerType.Description)
+		cmd.Printf("  Cores:\t%d\n", server.ServerType.Cores)
+		cmd.Printf("  CPU Type:\t%s\n", server.ServerType.CPUType)
+		cmd.Printf("  Memory:\t%v GB\n", server.ServerType.Memory)
+		cmd.Printf("  Disk:\t\t%d GB\n", server.PrimaryDiskSize)
+		cmd.Printf("  Storage Type:\t%s\n", server.ServerType.StorageType)
+		cmd.Printf(util.PrefixLines(util.DescribeDeprecation(server.ServerType), "  "))
 
-		fmt.Printf("Public Net:\n")
-		fmt.Printf("  IPv4:\n")
+		cmd.Printf("Public Net:\n")
+		cmd.Printf("  IPv4:\n")
 		if server.PublicNet.IPv4.IsUnspecified() {
-			fmt.Printf("    No Primary IPv4\n")
+			cmd.Printf("    No Primary IPv4\n")
 		} else {
-			fmt.Printf("    ID:\t\t%d\n", server.PublicNet.IPv4.ID)
-			fmt.Printf("    IP:\t\t%s\n", server.PublicNet.IPv4.IP)
-			fmt.Printf("    Blocked:\t%s\n", util.YesNo(server.PublicNet.IPv4.Blocked))
-			fmt.Printf("    DNS:\t%s\n", server.PublicNet.IPv4.DNSPtr)
+			cmd.Printf("    ID:\t\t%d\n", server.PublicNet.IPv4.ID)
+			cmd.Printf("    IP:\t\t%s\n", server.PublicNet.IPv4.IP)
+			cmd.Printf("    Blocked:\t%s\n", util.YesNo(server.PublicNet.IPv4.Blocked))
+			cmd.Printf("    DNS:\t%s\n", server.PublicNet.IPv4.DNSPtr)
 		}
 
-		fmt.Printf("  IPv6:\n")
+		cmd.Printf("  IPv6:\n")
 		if server.PublicNet.IPv6.IsUnspecified() {
-			fmt.Printf("    No Primary IPv6\n")
+			cmd.Printf("    No Primary IPv6\n")
 		} else {
-			fmt.Printf("    ID:\t\t%d\n", server.PublicNet.IPv6.ID)
-			fmt.Printf("    IP:\t\t%s\n", server.PublicNet.IPv6.Network.String())
-			fmt.Printf("    Blocked:\t%s\n", util.YesNo(server.PublicNet.IPv6.Blocked))
+			cmd.Printf("    ID:\t\t%d\n", server.PublicNet.IPv6.ID)
+			cmd.Printf("    IP:\t\t%s\n", server.PublicNet.IPv6.Network.String())
+			cmd.Printf("    Blocked:\t%s\n", util.YesNo(server.PublicNet.IPv6.Blocked))
 		}
-		fmt.Printf("  Floating IPs:\n")
+		cmd.Printf("  Floating IPs:\n")
 		if len(server.PublicNet.FloatingIPs) > 0 {
 			for _, f := range server.PublicNet.FloatingIPs {
 				floatingIP, _, err := client.FloatingIP().GetByID(ctx, f.ID)
 				if err != nil {
 					return fmt.Errorf("error fetching Floating IP: %v", err)
 				}
-				fmt.Printf("  - ID:\t\t\t%d\n", floatingIP.ID)
-				fmt.Printf("    Description:\t%s\n", util.NA(floatingIP.Description))
-				fmt.Printf("    IP:\t\t\t%s\n", floatingIP.IP)
+				cmd.Printf("  - ID:\t\t\t%d\n", floatingIP.ID)
+				cmd.Printf("    Description:\t%s\n", util.NA(floatingIP.Description))
+				cmd.Printf("    IP:\t\t\t%s\n", floatingIP.IP)
 			}
 		} else {
-			fmt.Printf("    No Floating IPs\n")
+			cmd.Printf("    No Floating IPs\n")
 		}
 
-		fmt.Printf("Private Net:\n")
+		cmd.Printf("Private Net:\n")
 		if len(server.PrivateNet) > 0 {
 			for _, n := range server.PrivateNet {
 				network, _, err := client.Network().GetByID(ctx, n.Network.ID)
 				if err != nil {
 					return fmt.Errorf("error fetching network: %v", err)
 				}
-				fmt.Printf("  - ID:\t\t\t%d\n", network.ID)
-				fmt.Printf("    Name:\t\t%s\n", network.Name)
-				fmt.Printf("    IP:\t\t\t%s\n", n.IP.String())
-				fmt.Printf("    MAC Address:\t%s\n", n.MACAddress)
+				cmd.Printf("  - ID:\t\t\t%d\n", network.ID)
+				cmd.Printf("    Name:\t\t%s\n", network.Name)
+				cmd.Printf("    IP:\t\t\t%s\n", n.IP.String())
+				cmd.Printf("    MAC Address:\t%s\n", n.MACAddress)
 				if len(n.Aliases) > 0 {
-					fmt.Printf("    Alias IPs:\n")
+					cmd.Printf("    Alias IPs:\n")
 					for _, a := range n.Aliases {
-						fmt.Printf("     -\t\t\t%s\n", a)
+						cmd.Printf("     -\t\t\t%s\n", a)
 					}
 				} else {
-					fmt.Printf("    Alias IPs:\t\t%s\n", util.NA(""))
+					cmd.Printf("    Alias IPs:\t\t%s\n", util.NA(""))
 				}
 			}
 		} else {
-			fmt.Printf("    No Private Networks\n")
+			cmd.Printf("    No Private Networks\n")
 		}
 
-		fmt.Printf("Volumes:\n")
+		cmd.Printf("Volumes:\n")
 		if len(server.Volumes) > 0 {
 			for _, v := range server.Volumes {
 				volume, _, err := client.Volume().GetByID(ctx, v.ID)
 				if err != nil {
 					return fmt.Errorf("error fetching Volume: %v", err)
 				}
-				fmt.Printf("  - ID:\t\t%d\n", volume.ID)
-				fmt.Printf("    Name:\t%s\n", volume.Name)
-				fmt.Printf("    Size:\t%s\n", humanize.Bytes(uint64(volume.Size*humanize.GByte)))
+				cmd.Printf("  - ID:\t\t%d\n", volume.ID)
+				cmd.Printf("    Name:\t%s\n", volume.Name)
+				cmd.Printf("    Size:\t%s\n", humanize.Bytes(uint64(volume.Size*humanize.GByte)))
 			}
 		} else {
-			fmt.Printf("  No Volumes\n")
+			cmd.Printf("  No Volumes\n")
 		}
-		fmt.Printf("Image:\n")
+		cmd.Printf("Image:\n")
 		if server.Image != nil {
 			image := server.Image
-			fmt.Printf("  ID:\t\t%d\n", image.ID)
-			fmt.Printf("  Type:\t\t%s\n", image.Type)
-			fmt.Printf("  Status:\t%s\n", image.Status)
-			fmt.Printf("  Name:\t\t%s\n", util.NA(image.Name))
-			fmt.Printf("  Description:\t%s\n", image.Description)
+			cmd.Printf("  ID:\t\t%d\n", image.ID)
+			cmd.Printf("  Type:\t\t%s\n", image.Type)
+			cmd.Printf("  Status:\t%s\n", image.Status)
+			cmd.Printf("  Name:\t\t%s\n", util.NA(image.Name))
+			cmd.Printf("  Description:\t%s\n", image.Description)
 			if image.ImageSize != 0 {
-				fmt.Printf("  Image size:\t%.2f GB\n", image.ImageSize)
+				cmd.Printf("  Image size:\t%.2f GB\n", image.ImageSize)
 			} else {
-				fmt.Printf("  Image size:\t%s\n", util.NA(""))
+				cmd.Printf("  Image size:\t%s\n", util.NA(""))
 			}
-			fmt.Printf("  Disk size:\t%.0f GB\n", image.DiskSize)
-			fmt.Printf("  Created:\t%s (%s)\n", util.Datetime(image.Created), humanize.Time(image.Created))
-			fmt.Printf("  OS flavor:\t%s\n", image.OSFlavor)
-			fmt.Printf("  OS version:\t%s\n", util.NA(image.OSVersion))
-			fmt.Printf("  Rapid deploy:\t%s\n", util.YesNo(image.RapidDeploy))
+			cmd.Printf("  Disk size:\t%.0f GB\n", image.DiskSize)
+			cmd.Printf("  Created:\t%s (%s)\n", util.Datetime(image.Created), humanize.Time(image.Created))
+			cmd.Printf("  OS flavor:\t%s\n", image.OSFlavor)
+			cmd.Printf("  OS version:\t%s\n", util.NA(image.OSVersion))
+			cmd.Printf("  Rapid deploy:\t%s\n", util.YesNo(image.RapidDeploy))
 		} else {
-			fmt.Printf("  No Image\n")
+			cmd.Printf("  No Image\n")
 		}
 
-		fmt.Printf("Datacenter:\n")
-		fmt.Printf("  ID:\t\t%d\n", server.Datacenter.ID)
-		fmt.Printf("  Name:\t\t%s\n", server.Datacenter.Name)
-		fmt.Printf("  Description:\t%s\n", server.Datacenter.Description)
-		fmt.Printf("  Location:\n")
-		fmt.Printf("    Name:\t\t%s\n", server.Datacenter.Location.Name)
-		fmt.Printf("    Description:\t%s\n", server.Datacenter.Location.Description)
-		fmt.Printf("    Country:\t\t%s\n", server.Datacenter.Location.Country)
-		fmt.Printf("    City:\t\t%s\n", server.Datacenter.Location.City)
-		fmt.Printf("    Latitude:\t\t%f\n", server.Datacenter.Location.Latitude)
-		fmt.Printf("    Longitude:\t\t%f\n", server.Datacenter.Location.Longitude)
+		cmd.Printf("Datacenter:\n")
+		cmd.Printf("  ID:\t\t%d\n", server.Datacenter.ID)
+		cmd.Printf("  Name:\t\t%s\n", server.Datacenter.Name)
+		cmd.Printf("  Description:\t%s\n", server.Datacenter.Description)
+		cmd.Printf("  Location:\n")
+		cmd.Printf("    Name:\t\t%s\n", server.Datacenter.Location.Name)
+		cmd.Printf("    Description:\t%s\n", server.Datacenter.Location.Description)
+		cmd.Printf("    Country:\t\t%s\n", server.Datacenter.Location.Country)
+		cmd.Printf("    City:\t\t%s\n", server.Datacenter.Location.City)
+		cmd.Printf("    Latitude:\t\t%f\n", server.Datacenter.Location.Latitude)
+		cmd.Printf("    Longitude:\t\t%f\n", server.Datacenter.Location.Longitude)
 
-		fmt.Printf("Traffic:\n")
-		fmt.Printf("  Outgoing:\t%v\n", humanize.IBytes(server.OutgoingTraffic))
-		fmt.Printf("  Ingoing:\t%v\n", humanize.IBytes(server.IngoingTraffic))
-		fmt.Printf("  Included:\t%v\n", humanize.IBytes(server.IncludedTraffic))
+		cmd.Printf("Traffic:\n")
+		cmd.Printf("  Outgoing:\t%v\n", humanize.IBytes(server.OutgoingTraffic))
+		cmd.Printf("  Ingoing:\t%v\n", humanize.IBytes(server.IngoingTraffic))
+		cmd.Printf("  Included:\t%v\n", humanize.IBytes(server.IncludedTraffic))
 
 		if server.BackupWindow != "" {
-			fmt.Printf("Backup Window:\t%s\n", server.BackupWindow)
+			cmd.Printf("Backup Window:\t%s\n", server.BackupWindow)
 		} else {
-			fmt.Printf("Backup Window:\tBackups disabled\n")
+			cmd.Printf("Backup Window:\tBackups disabled\n")
 		}
 
 		if server.RescueEnabled {
-			fmt.Printf("Rescue System:\tenabled\n")
+			cmd.Printf("Rescue System:\tenabled\n")
 		} else {
-			fmt.Printf("Rescue System:\tdisabled\n")
+			cmd.Printf("Rescue System:\tdisabled\n")
 		}
 
-		fmt.Printf("ISO:\n")
+		cmd.Printf("ISO:\n")
 		if server.ISO != nil {
-			fmt.Printf("  ID:\t\t%d\n", server.ISO.ID)
-			fmt.Printf("  Name:\t\t%s\n", server.ISO.Name)
-			fmt.Printf("  Description:\t%s\n", server.ISO.Description)
-			fmt.Printf("  Type:\t\t%s\n", server.ISO.Type)
+			cmd.Printf("  ID:\t\t%d\n", server.ISO.ID)
+			cmd.Printf("  Name:\t\t%s\n", server.ISO.Name)
+			cmd.Printf("  Description:\t%s\n", server.ISO.Description)
+			cmd.Printf("  Type:\t\t%s\n", server.ISO.Type)
 		} else {
-			fmt.Printf("  No ISO attached\n")
+			cmd.Printf("  No ISO attached\n")
 		}
 
-		fmt.Printf("Protection:\n")
-		fmt.Printf("  Delete:\t%s\n", util.YesNo(server.Protection.Delete))
-		fmt.Printf("  Rebuild:\t%s\n", util.YesNo(server.Protection.Rebuild))
+		cmd.Printf("Protection:\n")
+		cmd.Printf("  Delete:\t%s\n", util.YesNo(server.Protection.Delete))
+		cmd.Printf("  Rebuild:\t%s\n", util.YesNo(server.Protection.Rebuild))
 
-		fmt.Print("Labels:\n")
+		cmd.Print("Labels:\n")
 		if len(server.Labels) == 0 {
-			fmt.Print("  No labels\n")
+			cmd.Print("  No labels\n")
 		} else {
 			for key, value := range server.Labels {
-				fmt.Printf("  %s: %s\n", key, value)
+				cmd.Printf("  %s: %s\n", key, value)
 			}
 		}
 
-		fmt.Print("Placement Group:\n")
+		cmd.Print("Placement Group:\n")
 		if server.PlacementGroup != nil {
-			fmt.Printf("  ID:\t\t%d\n", server.PlacementGroup.ID)
-			fmt.Printf("  Name:\t\t%s\n", server.PlacementGroup.Name)
-			fmt.Printf("  Type:\t\t%s\n", server.PlacementGroup.Type)
+			cmd.Printf("  ID:\t\t%d\n", server.PlacementGroup.ID)
+			cmd.Printf("  Name:\t\t%s\n", server.PlacementGroup.Name)
+			cmd.Printf("  Type:\t\t%s\n", server.PlacementGroup.Type)
 		} else {
-			fmt.Print("  No Placement Group set\n")
+			cmd.Print("  No Placement Group set\n")
 		}
 
 		return nil

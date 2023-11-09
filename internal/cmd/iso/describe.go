@@ -2,7 +2,6 @@ package iso
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/spf13/cobra"
 
@@ -25,17 +24,17 @@ var DescribeCmd = base.DescribeCmd{
 	PrintText: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}) error {
 		iso := resource.(*hcloud.ISO)
 
-		fmt.Printf("ID:\t\t%d\n", iso.ID)
-		fmt.Printf("Name:\t\t%s\n", iso.Name)
-		fmt.Printf("Description:\t%s\n", iso.Description)
-		fmt.Printf("Type:\t\t%s\n", iso.Type)
-		fmt.Printf(util.DescribeDeprecation(iso))
+		cmd.Printf("ID:\t\t%d\n", iso.ID)
+		cmd.Printf("Name:\t\t%s\n", iso.Name)
+		cmd.Printf("Description:\t%s\n", iso.Description)
+		cmd.Printf("Type:\t\t%s\n", iso.Type)
+		cmd.Printf(util.DescribeDeprecation(iso))
 
 		architecture := "-"
 		if iso.Architecture != nil {
 			architecture = string(*iso.Architecture)
 		}
-		fmt.Printf("Architecture:\t%s\n", architecture)
+		cmd.Printf("Architecture:\t%s\n", architecture)
 
 		return nil
 	},

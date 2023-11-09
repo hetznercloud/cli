@@ -2,7 +2,6 @@ package placementgroup
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/spf13/cobra"
 
@@ -49,7 +48,7 @@ var CreateCmd = base.Cmd{
 			}
 		}
 
-		fmt.Printf("Placement group %d created\n", result.PlacementGroup.ID)
+		cmd.Printf("Placement group %d created\n", result.PlacementGroup.ID)
 
 		return nil
 	},

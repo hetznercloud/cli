@@ -45,7 +45,7 @@ var UnAssignCmd = base.Cmd{
 			return err
 		}
 
-		fmt.Printf("Primary IP %d was unassigned successfully\n", primaryIP.ID)
+		cmd.Printf("Primary IP %d was unassigned successfully\n", primaryIP.ID)
 		return nil
 	},
 }

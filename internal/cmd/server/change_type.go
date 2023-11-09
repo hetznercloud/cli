@@ -50,7 +50,7 @@ var ChangeTypeCmd = base.Cmd{
 		}
 
 		if serverType.IsDeprecated() {
-			fmt.Print(warningDeprecatedServerType(serverType))
+			cmd.Print(warningDeprecatedServerType(serverType))
 		}
 
 		keepDisk, _ := cmd.Flags().GetBool("keep-disk")
@@ -68,9 +68,9 @@ var ChangeTypeCmd = base.Cmd{
 		}
 
 		if opts.UpgradeDisk {
-			fmt.Printf("Server %d changed to type %s\n", server.ID, serverType.Name)
+			cmd.Printf("Server %d changed to type %s\n", server.ID, serverType.Name)
 		} else {
-			fmt.Printf("Server %d changed to type %s (disk size was unchanged)\n", server.ID, serverType.Name)
+			cmd.Printf("Server %d changed to type %s (disk size was unchanged)\n", server.ID, serverType.Name)
 		}
 		return nil
 	},

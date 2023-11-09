@@ -34,7 +34,8 @@ func getChangeProtectionOpts(enable bool, flags []string) (hcloud.FloatingIPChan
 	return opts, nil
 }
 
-func changeProtection(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, floatingIP *hcloud.FloatingIP, enable bool, opts hcloud.FloatingIPChangeProtectionOpts) error {
+func changeProtection(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command,
+	floatingIP *hcloud.FloatingIP, enable bool, opts hcloud.FloatingIPChangeProtectionOpts) error {
 
 	if opts.Delete == nil {
 		return nil
@@ -50,9 +51,9 @@ func changeProtection(ctx context.Context, client hcapi2.Client, waiter state.Ac
 	}
 
 	if enable {
-		fmt.Printf("Resource protection enabled for floating IP %d\n", floatingIP.ID)
+		cmd.Printf("Resource protection enabled for floating IP %d\n", floatingIP.ID)
 	} else {
-		fmt.Printf("Resource protection disabled for floating IP %d\n", floatingIP.ID)
+		cmd.Printf("Resource protection disabled for floating IP %d\n", floatingIP.ID)
 	}
 	return nil
 }
@@ -87,6 +88,6 @@ var EnableProtectionCmd = base.Cmd{
 			return err
 		}
 
-		return changeProtection(ctx, client, waiter, floatingIP, true, opts)
+		return changeProtection(ctx, client, waiter, cmd, floatingIP, true, opts)
 	},
 }

@@ -100,7 +100,7 @@ var AddTargetCmd = base.Cmd{
 		if err := waiter.ActionProgress(ctx, action); err != nil {
 			return err
 		}
-		fmt.Printf("Target added to Load Balancer %d\n", loadBalancer.ID)
+		cmd.Printf("Target added to Load Balancer %d\n", loadBalancer.ID)
 
 		return nil
 	},

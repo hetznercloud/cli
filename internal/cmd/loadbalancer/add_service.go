@@ -125,7 +125,7 @@ var AddServiceCmd = base.Cmd{
 		if err := waiter.ActionProgress(ctx, action); err != nil {
 			return err
 		}
-		fmt.Printf("Service was added to Load Balancer %d\n", loadBalancer.ID)
+		cmd.Printf("Service was added to Load Balancer %d\n", loadBalancer.ID)
 
 		return nil
 	},

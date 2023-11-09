@@ -42,7 +42,7 @@ var EnablePublicInterfaceCmd = base.Cmd{
 			return err
 		}
 
-		fmt.Printf("Public interface of Load Balancer %d was enabled\n", loadBalancer.ID)
+		cmd.Printf("Public interface of Load Balancer %d was enabled\n", loadBalancer.ID)
 		return nil
 	},
 }

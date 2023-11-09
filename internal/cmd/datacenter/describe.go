@@ -2,7 +2,6 @@ package datacenter
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/spf13/cobra"
 
@@ -23,37 +22,37 @@ var DescribeCmd = base.DescribeCmd{
 	PrintText: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}) error {
 		datacenter := resource.(*hcloud.Datacenter)
 
-		fmt.Printf("ID:\t\t%d\n", datacenter.ID)
-		fmt.Printf("Name:\t\t%s\n", datacenter.Name)
-		fmt.Printf("Description:\t%s\n", datacenter.Description)
-		fmt.Printf("Location:\n")
-		fmt.Printf("  Name:\t\t%s\n", datacenter.Location.Name)
-		fmt.Printf("  Description:\t%s\n", datacenter.Location.Description)
-		fmt.Printf("  Country:\t%s\n", datacenter.Location.Country)
-		fmt.Printf("  City:\t\t%s\n", datacenter.Location.City)
-		fmt.Printf("  Latitude:\t%f\n", datacenter.Location.Latitude)
-		fmt.Printf("  Longitude:\t%f\n", datacenter.Location.Longitude)
-		fmt.Printf("Server Types:\n")
+		cmd.Printf("ID:\t\t%d\n", datacenter.ID)
+		cmd.Printf("Name:\t\t%s\n", datacenter.Name)
+		cmd.Printf("Description:\t%s\n", datacenter.Description)
+		cmd.Printf("Location:\n")
+		cmd.Printf("  Name:\t\t%s\n", datacenter.Location.Name)
+		cmd.Printf("  Description:\t%s\n", datacenter.Location.Description)
+		cmd.Printf("  Country:\t%s\n", datacenter.Location.Country)
+		cmd.Printf("  City:\t\t%s\n", datacenter.Location.City)
+		cmd.Printf("  Latitude:\t%f\n", datacenter.Location.Latitude)
+		cmd.Printf("  Longitude:\t%f\n", datacenter.Location.Longitude)
+		cmd.Printf("Server Types:\n")
 
 		printServerTypes := func(list []*hcloud.ServerType) {
 			for _, t := range list {
-				fmt.Printf("  - ID:\t\t %d\n", t.ID)
-				fmt.Printf("    Name:\t %s\n", client.ServerType().ServerTypeName(t.ID))
-				fmt.Printf("    Description: %s\n", client.ServerType().ServerTypeDescription(t.ID))
+				cmd.Printf("  - ID:\t\t %d\n", t.ID)
+				cmd.Printf("    Name:\t %s\n", client.ServerType().ServerTypeName(t.ID))
+				cmd.Printf("    Description: %s\n", client.ServerType().ServerTypeDescription(t.ID))
 			}
 		}
 
-		fmt.Printf("  Available:\n")
+		cmd.Printf("  Available:\n")
 		if len(datacenter.ServerTypes.Available) > 0 {
 			printServerTypes(datacenter.ServerTypes.Available)
 		} else {
-			fmt.Printf("    No available server types\n")
+			cmd.Printf("    No available server types\n")
 		}
-		fmt.Printf("  Supported:\n")
+		cmd.Printf("  Supported:\n")
 		if len(datacenter.ServerTypes.Supported) > 0 {
 			printServerTypes(datacenter.ServerTypes.Supported)
 		} else {
-			fmt.Printf("    No supported server types\n")
+			cmd.Printf("    No supported server types\n")
 		}
 
 		return nil

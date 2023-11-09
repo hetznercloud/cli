@@ -51,7 +51,7 @@ var ChangeAlgorithmCmd = base.Cmd{
 		if err := waiter.ActionProgress(ctx, action); err != nil {
 			return err
 		}
-		fmt.Printf("Algorithm for Load Balancer %d was changed\n", loadBalancer.ID)
+		cmd.Printf("Algorithm for Load Balancer %d was changed\n", loadBalancer.ID)
 
 		return nil
 	},

@@ -42,7 +42,7 @@ var PoweroffCmd = base.Cmd{
 			return err
 		}
 
-		fmt.Printf("Server %d stopped\n", server.ID)
+		cmd.Printf("Server %d stopped\n", server.ID)
 		return nil
 	},
 }

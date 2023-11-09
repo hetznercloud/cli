@@ -2,7 +2,6 @@ package sshkey
 
 import (
 	"context"
-	"fmt"
 	"strings"
 
 	"github.com/dustin/go-humanize"
@@ -23,19 +22,19 @@ var DescribeCmd = base.DescribeCmd{
 	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
 		return client.SSHKey().Get(ctx, idOrName)
 	},
-	PrintText: func(_ context.Context, _ hcapi2.Client, _ *cobra.Command, resource interface{}) error {
+	PrintText: func(_ context.Context, _ hcapi2.Client, cmd *cobra.Command, resource interface{}) error {
 		sshKey := resource.(*hcloud.SSHKey)
-		fmt.Printf("ID:\t\t%d\n", sshKey.ID)
-		fmt.Printf("Name:\t\t%s\n", sshKey.Name)
-		fmt.Printf("Created:\t%s (%s)\n", util.Datetime(sshKey.Created), humanize.Time(sshKey.Created))
-		fmt.Printf("Fingerprint:\t%s\n", sshKey.Fingerprint)
-		fmt.Printf("Public Key:\n%s\n", strings.TrimSpace(sshKey.PublicKey))
-		fmt.Print("Labels:\n")
+		cmd.Printf("ID:\t\t%d\n", sshKey.ID)
+		cmd.Printf("Name:\t\t%s\n", sshKey.Name)
+		cmd.Printf("Created:\t%s (%s)\n", util.Datetime(sshKey.Created), humanize.Time(sshKey.Created))
+		cmd.Printf("Fingerprint:\t%s\n", sshKey.Fingerprint)
+		cmd.Printf("Public Key:\n%s\n", strings.TrimSpace(sshKey.PublicKey))
+		cmd.Print("Labels:\n")
 		if len(sshKey.Labels) == 0 {
-			fmt.Print("  No labels\n")
+			cmd.Print("  No labels\n")
 		} else {
 			for key, value := range sshKey.Labels {
-				fmt.Printf("  %s: %s\n", key, value)
+				cmd.Printf("  %s: %s\n", key, value)
 			}
 		}
 

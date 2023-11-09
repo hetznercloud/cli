@@ -61,7 +61,7 @@ var ShutdownCmd = base.Cmd{
 			return err
 		}
 
-		fmt.Printf("Sent shutdown signal to server %d\n", server.ID)
+		cmd.Printf("Sent shutdown signal to server %d\n", server.ID)
 
 		if wait {
 			start := time.Now()
@@ -97,7 +97,7 @@ var ShutdownCmd = base.Cmd{
 				return err
 			}
 
-			fmt.Printf("Server %d shut down\n", server.ID)
+			cmd.Printf("Server %d shut down\n", server.ID)
 		}
 
 		return nil

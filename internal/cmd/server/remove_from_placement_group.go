@@ -43,7 +43,7 @@ var RemoveFromPlacementGroupCmd = base.Cmd{
 			return err
 		}
 
-		fmt.Printf("Server %d removed from placement group\n", server.ID)
+		cmd.Printf("Server %d removed from placement group\n", server.ID)
 		return nil
 	},
 }

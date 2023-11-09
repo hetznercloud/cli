@@ -42,7 +42,7 @@ var ResetPasswordCmd = base.Cmd{
 			return err
 		}
 
-		fmt.Printf("Password of server %d reset to: %s\n", server.ID, result.RootPassword)
+		cmd.Printf("Password of server %d reset to: %s\n", server.ID, result.RootPassword)
 		return nil
 	},
 }

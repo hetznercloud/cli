@@ -74,6 +74,6 @@ func (uc *UpdateCmd) Run(ctx context.Context, client hcapi2.Client, cmd *cobra.C
 		return fmt.Errorf("updating %s %s failed: %s", uc.ResourceNameSingular, idOrName, err)
 	}
 
-	fmt.Printf("%s %v updated\n", uc.ResourceNameSingular, idOrName)
+	cmd.Printf("%s %v updated\n", uc.ResourceNameSingular, idOrName)
 	return nil
 }

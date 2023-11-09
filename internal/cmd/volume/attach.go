@@ -61,7 +61,7 @@ var AttachCmd = base.Cmd{
 			return err
 		}
 
-		fmt.Printf("Volume %d attached to server %s\n", volume.ID, server.Name)
+		cmd.Printf("Volume %d attached to server %s\n", volume.ID, server.Name)
 		return nil
 	},
 }

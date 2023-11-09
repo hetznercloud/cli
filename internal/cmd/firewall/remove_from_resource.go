@@ -85,7 +85,7 @@ var RemoveFromResourceCmd = base.Cmd{
 		if err := waiter.WaitForActions(ctx, actions); err != nil {
 			return err
 		}
-		fmt.Printf("Firewall %d applied\n", firewall.ID)
+		cmd.Printf("Firewall %d applied\n", firewall.ID)
 
 		return nil
 	},

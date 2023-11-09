@@ -167,7 +167,7 @@ var UpdateServiceCmd = base.Cmd{
 		if err := waiter.ActionProgress(ctx, action); err != nil {
 			return err
 		}
-		fmt.Printf("Service %d on Load Balancer %d was updated\n", listenPort, loadBalancer.ID)
+		cmd.Printf("Service %d on Load Balancer %d was updated\n", listenPort, loadBalancer.ID)
 
 		return nil
 	},

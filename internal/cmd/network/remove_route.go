@@ -58,7 +58,7 @@ var RemoveRouteCmd = base.Cmd{
 		if err := waiter.ActionProgress(ctx, action); err != nil {
 			return err
 		}
-		fmt.Printf("Route removed from network %d\n", network.ID)
+		cmd.Printf("Route removed from network %d\n", network.ID)
 
 		return nil
 	},

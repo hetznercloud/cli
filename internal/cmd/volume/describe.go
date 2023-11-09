@@ -2,7 +2,6 @@ package volume
 
 import (
 	"context"
-	"fmt"
 
 	humanize "github.com/dustin/go-humanize"
 	"github.com/spf13/cobra"
@@ -25,34 +24,34 @@ var DescribeCmd = base.DescribeCmd{
 	PrintText: func(_ context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}) error {
 		volume := resource.(*hcloud.Volume)
 
-		fmt.Printf("ID:\t\t%d\n", volume.ID)
-		fmt.Printf("Name:\t\t%s\n", volume.Name)
-		fmt.Printf("Created:\t%s (%s)\n", util.Datetime(volume.Created), humanize.Time(volume.Created))
-		fmt.Printf("Size:\t\t%s\n", humanize.Bytes(uint64(volume.Size*humanize.GByte)))
-		fmt.Printf("Linux Device:\t%s\n", volume.LinuxDevice)
-		fmt.Printf("Location:\n")
-		fmt.Printf("  Name:\t\t%s\n", volume.Location.Name)
-		fmt.Printf("  Description:\t%s\n", volume.Location.Description)
-		fmt.Printf("  Country:\t%s\n", volume.Location.Country)
-		fmt.Printf("  City:\t\t%s\n", volume.Location.City)
-		fmt.Printf("  Latitude:\t%f\n", volume.Location.Latitude)
-		fmt.Printf("  Longitude:\t%f\n", volume.Location.Longitude)
+		cmd.Printf("ID:\t\t%d\n", volume.ID)
+		cmd.Printf("Name:\t\t%s\n", volume.Name)
+		cmd.Printf("Created:\t%s (%s)\n", util.Datetime(volume.Created), humanize.Time(volume.Created))
+		cmd.Printf("Size:\t\t%s\n", humanize.Bytes(uint64(volume.Size*humanize.GByte)))
+		cmd.Printf("Linux Device:\t%s\n", volume.LinuxDevice)
+		cmd.Printf("Location:\n")
+		cmd.Printf("  Name:\t\t%s\n", volume.Location.Name)
+		cmd.Printf("  Description:\t%s\n", volume.Location.Description)
+		cmd.Printf("  Country:\t%s\n", volume.Location.Country)
+		cmd.Printf("  City:\t\t%s\n", volume.Location.City)
+		cmd.Printf("  Latitude:\t%f\n", volume.Location.Latitude)
+		cmd.Printf("  Longitude:\t%f\n", volume.Location.Longitude)
 		if volume.Server != nil {
-			fmt.Printf("Server:\n")
-			fmt.Printf("  ID:\t\t%d\n", volume.Server.ID)
-			fmt.Printf("  Name:\t\t%s\n", client.Server().ServerName(volume.Server.ID))
+			cmd.Printf("Server:\n")
+			cmd.Printf("  ID:\t\t%d\n", volume.Server.ID)
+			cmd.Printf("  Name:\t\t%s\n", client.Server().ServerName(volume.Server.ID))
 		} else {
-			fmt.Print("Server:\n  Not attached\n")
+			cmd.Print("Server:\n  Not attached\n")
 		}
-		fmt.Printf("Protection:\n")
-		fmt.Printf("  Delete:\t%s\n", util.YesNo(volume.Protection.Delete))
+		cmd.Printf("Protection:\n")
+		cmd.Printf("  Delete:\t%s\n", util.YesNo(volume.Protection.Delete))
 
-		fmt.Print("Labels:\n")
+		cmd.Print("Labels:\n")
 		if len(volume.Labels) == 0 {
-			fmt.Print("  No labels\n")
+			cmd.Print("  No labels\n")
 		} else {
 			for key, value := range volume.Labels {
-				fmt.Printf("  %s: %s\n", key, value)
+				cmd.Printf("  %s: %s\n", key, value)
 			}
 		}
 

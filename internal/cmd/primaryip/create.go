@@ -2,7 +2,6 @@ package primaryip
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/spf13/cobra"
 
@@ -74,15 +73,15 @@ var CreateCmd = base.Cmd{
 			}
 		}
 
-		fmt.Printf("Primary IP %d created\n", result.PrimaryIP.ID)
+		cmd.Printf("Primary IP %d created\n", result.PrimaryIP.ID)
 
 		if len(protection) > 0 {
-			if err := changeProtection(ctx, client, waiter, result.PrimaryIP, true, protectionOpts); err != nil {
+			if err := changeProtection(ctx, client, waiter, cmd, result.PrimaryIP, true, protectionOpts); err != nil {
 				return err
 			}
 		}
 
-		fmt.Printf("IP%s: %s\n", result.PrimaryIP.Type[2:], result.PrimaryIP.IP)
+		cmd.Printf("IP%s: %s\n", result.PrimaryIP.Type[2:], result.PrimaryIP.IP)
 		return nil
 	},
 }

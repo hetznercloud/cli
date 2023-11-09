@@ -27,7 +27,7 @@ var AttachISOCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, command *cobra.Command, args []string) error {
+	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
 		server, _, err := client.Server().Get(ctx, idOrName)
 		if err != nil {
@@ -61,7 +61,7 @@ var AttachISOCmd = base.Cmd{
 			return err
 		}
 
-		fmt.Printf("ISO %s attached to server %d\n", iso.Name, server.ID)
+		cmd.Printf("ISO %s attached to server %d\n", iso.Name, server.ID)
 		return nil
 	},
 }

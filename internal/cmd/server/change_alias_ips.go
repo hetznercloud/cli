@@ -76,7 +76,7 @@ var ChangeAliasIPsCmd = base.Cmd{
 			return err
 		}
 
-		fmt.Printf("Alias IPs changed for server %d in network %d\n", server.ID, network.ID)
+		cmd.Printf("Alias IPs changed for server %d in network %d\n", server.ID, network.ID)
 		return nil
 	},
 }

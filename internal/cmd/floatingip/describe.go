@@ -2,7 +2,6 @@ package floatingip
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/dustin/go-humanize"
 	"github.com/spf13/cobra"
@@ -25,43 +24,43 @@ var DescribeCmd = base.DescribeCmd{
 	PrintText: func(_ context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}) error {
 		floatingIP := resource.(*hcloud.FloatingIP)
 
-		fmt.Printf("ID:\t\t%d\n", floatingIP.ID)
-		fmt.Printf("Type:\t\t%s\n", floatingIP.Type)
-		fmt.Printf("Name:\t\t%s\n", floatingIP.Name)
-		fmt.Printf("Description:\t%s\n", util.NA(floatingIP.Description))
-		fmt.Printf("Created:\t%s (%s)\n", util.Datetime(floatingIP.Created), humanize.Time(floatingIP.Created))
+		cmd.Printf("ID:\t\t%d\n", floatingIP.ID)
+		cmd.Printf("Type:\t\t%s\n", floatingIP.Type)
+		cmd.Printf("Name:\t\t%s\n", floatingIP.Name)
+		cmd.Printf("Description:\t%s\n", util.NA(floatingIP.Description))
+		cmd.Printf("Created:\t%s (%s)\n", util.Datetime(floatingIP.Created), humanize.Time(floatingIP.Created))
 		if floatingIP.Network != nil {
-			fmt.Printf("IP:\t\t%s\n", floatingIP.Network.String())
+			cmd.Printf("IP:\t\t%s\n", floatingIP.Network.String())
 		} else {
-			fmt.Printf("IP:\t\t%s\n", floatingIP.IP.String())
+			cmd.Printf("IP:\t\t%s\n", floatingIP.IP.String())
 		}
-		fmt.Printf("Blocked:\t%s\n", util.YesNo(floatingIP.Blocked))
-		fmt.Printf("Home Location:\t%s\n", floatingIP.HomeLocation.Name)
+		cmd.Printf("Blocked:\t%s\n", util.YesNo(floatingIP.Blocked))
+		cmd.Printf("Home Location:\t%s\n", floatingIP.HomeLocation.Name)
 		if floatingIP.Server != nil {
-			fmt.Printf("Server:\n")
-			fmt.Printf("  ID:\t%d\n", floatingIP.Server.ID)
-			fmt.Printf("  Name:\t%s\n", client.Server().ServerName(floatingIP.Server.ID))
+			cmd.Printf("Server:\n")
+			cmd.Printf("  ID:\t%d\n", floatingIP.Server.ID)
+			cmd.Printf("  Name:\t%s\n", client.Server().ServerName(floatingIP.Server.ID))
 		} else {
-			fmt.Print("Server:\n  Not assigned\n")
+			cmd.Print("Server:\n  Not assigned\n")
 		}
-		fmt.Print("DNS:\n")
+		cmd.Print("DNS:\n")
 		if len(floatingIP.DNSPtr) == 0 {
-			fmt.Print("  No reverse DNS entries\n")
+			cmd.Print("  No reverse DNS entries\n")
 		} else {
 			for ip, dns := range floatingIP.DNSPtr {
-				fmt.Printf("  %s: %s\n", ip, dns)
+				cmd.Printf("  %s: %s\n", ip, dns)
 			}
 		}
 
-		fmt.Printf("Protection:\n")
-		fmt.Printf("  Delete:\t%s\n", util.YesNo(floatingIP.Protection.Delete))
+		cmd.Printf("Protection:\n")
+		cmd.Printf("  Delete:\t%s\n", util.YesNo(floatingIP.Protection.Delete))
 
-		fmt.Print("Labels:\n")
+		cmd.Print("Labels:\n")
 		if len(floatingIP.Labels) == 0 {
-			fmt.Print("  No labels\n")
+			cmd.Print("  No labels\n")
 		} else {
 			for key, value := range floatingIP.Labels {
-				fmt.Printf("  %s: %s\n", key, value)
+				cmd.Printf("  %s: %s\n", key, value)
 			}
 		}
 		return nil

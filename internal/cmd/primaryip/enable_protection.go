@@ -34,7 +34,8 @@ func getChangeProtectionOpts(enable bool, flags []string) (hcloud.PrimaryIPChang
 	return opts, nil
 }
 
-func changeProtection(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, primaryIp *hcloud.PrimaryIP, enable bool, opts hcloud.PrimaryIPChangeProtectionOpts) error {
+func changeProtection(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command,
+	primaryIp *hcloud.PrimaryIP, enable bool, opts hcloud.PrimaryIPChangeProtectionOpts) error {
 
 	opts.ID = primaryIp.ID
 
@@ -48,9 +49,9 @@ func changeProtection(ctx context.Context, client hcapi2.Client, waiter state.Ac
 	}
 
 	if enable {
-		fmt.Printf("Resource protection enabled for primary IP %d\n", opts.ID)
+		cmd.Printf("Resource protection enabled for primary IP %d\n", opts.ID)
 	} else {
-		fmt.Printf("Resource protection disabled for primary IP %d\n", opts.ID)
+		cmd.Printf("Resource protection disabled for primary IP %d\n", opts.ID)
 	}
 	return nil
 }
@@ -91,6 +92,6 @@ var EnableProtectionCmd = base.Cmd{
 			return err
 		}
 
-		return changeProtection(ctx, client, actionWaiter, primaryIP, true, opts)
+		return changeProtection(ctx, client, actionWaiter, cmd, primaryIP, true, opts)
 	},
 }

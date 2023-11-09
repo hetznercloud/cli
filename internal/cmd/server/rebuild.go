@@ -56,7 +56,7 @@ var RebuildCmd = base.Cmd{
 		allowDeprecatedImage, _ := cmd.Flags().GetBool("allow-deprecated-image")
 		if !image.Deprecated.IsZero() {
 			if allowDeprecatedImage {
-				fmt.Printf("Attention: image %s is deprecated. It will continue to be available until %s.\n", image.Name, image.Deprecated.AddDate(0, 3, 0).Format(time.DateOnly))
+				cmd.Printf("Attention: image %s is deprecated. It will continue to be available until %s.\n", image.Name, image.Deprecated.AddDate(0, 3, 0).Format(time.DateOnly))
 			} else {
 				return fmt.Errorf("image %s is deprecated, please use --allow-deprecated-image to create a server with this image. It will continue to be available until %s", image.Name, image.Deprecated.AddDate(0, 3, 0).Format(time.DateOnly))
 			}
@@ -74,12 +74,12 @@ var RebuildCmd = base.Cmd{
 			return err
 		}
 
-		fmt.Printf("Server %d rebuilt with image %s\n", server.ID, image.Name)
+		cmd.Printf("Server %d rebuilt with image %s\n", server.ID, image.Name)
 
 		// Only print the root password if it's not empty,
 		// which is only the case if it wasn't created with an SSH key.
 		if result.RootPassword != "" {
-			fmt.Printf("Root password: %s\n", result.RootPassword)
+			cmd.Printf("Root password: %s\n", result.RootPassword)
 		}
 
 		return nil

@@ -58,7 +58,7 @@ var ChangeTypeCmd = base.Cmd{
 			return err
 		}
 
-		fmt.Printf("LoadBalancer %d changed to type %s\n", loadBalancer.ID, loadBalancerType.Name)
+		cmd.Printf("LoadBalancer %d changed to type %s\n", loadBalancer.ID, loadBalancerType.Name)
 		return nil
 	},
 }

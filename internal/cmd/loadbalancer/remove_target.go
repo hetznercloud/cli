@@ -92,7 +92,7 @@ var RemoveTargetCmd = base.Cmd{
 		if err := waiter.ActionProgress(ctx, action); err != nil {
 			return err
 		}
-		fmt.Printf("Target removed from Load Balancer %d\n", loadBalancer.ID)
+		cmd.Printf("Target removed from Load Balancer %d\n", loadBalancer.ID)
 
 		return nil
 	},

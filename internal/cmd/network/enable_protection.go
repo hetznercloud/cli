@@ -34,7 +34,8 @@ func getChangeProtectionOpts(enable bool, flags []string) (hcloud.NetworkChangeP
 	return opts, nil
 }
 
-func changeProtection(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, network *hcloud.Network, enable bool, opts hcloud.NetworkChangeProtectionOpts) error {
+func changeProtection(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command,
+	network *hcloud.Network, enable bool, opts hcloud.NetworkChangeProtectionOpts) error {
 
 	if opts.Delete == nil {
 		return nil
@@ -50,9 +51,9 @@ func changeProtection(ctx context.Context, client hcapi2.Client, waiter state.Ac
 	}
 
 	if enable {
-		fmt.Printf("Resource protection enabled for network %d\n", network.ID)
+		cmd.Printf("Resource protection enabled for network %d\n", network.ID)
 	} else {
-		fmt.Printf("Resource protection disabled for network %d\n", network.ID)
+		cmd.Printf("Resource protection disabled for network %d\n", network.ID)
 	}
 	return nil
 }
@@ -86,6 +87,6 @@ var EnableProtectionCmd = base.Cmd{
 			return err
 		}
 
-		return changeProtection(ctx, client, waiter, network, true, opts)
+		return changeProtection(ctx, client, waiter, cmd, network, true, opts)
 	},
 }

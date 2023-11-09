@@ -57,9 +57,9 @@ var RequestConsoleCmd = base.Cmd{
 			})
 		}
 
-		fmt.Printf("Console for server %d:\n", server.ID)
-		fmt.Printf("WebSocket URL: %s\n", result.WSSURL)
-		fmt.Printf("VNC Password: %s\n", result.Password)
+		cmd.Printf("Console for server %d:\n", server.ID)
+		cmd.Printf("WebSocket URL: %s\n", result.WSSURL)
+		cmd.Printf("VNC Password: %s\n", result.Password)
 		return nil
 	},
 }

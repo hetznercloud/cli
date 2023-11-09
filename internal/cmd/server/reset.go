@@ -42,7 +42,7 @@ var ResetCmd = base.Cmd{
 			return err
 		}
 
-		fmt.Printf("Server %d reset\n", server.ID)
+		cmd.Printf("Server %d reset\n", server.ID)
 		return nil
 	},
 }

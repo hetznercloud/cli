@@ -97,18 +97,18 @@ var MetricsCmd = base.Cmd{
 			sort.Strings(keys)
 			for _, k := range keys {
 				if len(m.TimeSeries[k]) == 0 {
-					fmt.Printf("Currently there are now metrics available. Please try it again later.")
+					cmd.Printf("Currently there are now metrics available. Please try it again later.")
 					return nil
 				}
-				fmt.Printf("Load Balancer: %s \t Metric: %s \t Start: %s \t End: %s\n", LoadBalancer.Name, k, m.Start.String(), m.End.String())
+				cmd.Printf("Load Balancer: %s \t Metric: %s \t Start: %s \t End: %s\n", LoadBalancer.Name, k, m.Start.String(), m.End.String())
 				var data []float64
 				for _, m := range m.TimeSeries[k] {
 					d, _ := strconv.ParseFloat(m.Value, 64)
 					data = append(data, d)
 				}
 				graph := asciigraph.Plot(data, asciigraph.Height(20), asciigraph.Width(100))
-				fmt.Println(graph)
-				fmt.Printf("\n\n")
+				cmd.Println(graph)
+				cmd.Printf("\n\n")
 			}
 		}
 		return nil

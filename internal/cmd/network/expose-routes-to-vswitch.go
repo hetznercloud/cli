@@ -50,9 +50,9 @@ var ExposeRoutesToVSwitchCmd = base.Cmd{
 		}
 
 		if disable {
-			fmt.Printf("Exposing routes to connected vSwitch of network %s disabled\n", network.Name)
+			cmd.Printf("Exposing routes to connected vSwitch of network %s disabled\n", network.Name)
 		} else {
-			fmt.Printf("Exposing routes to connected vSwitch of network %s enabled\n", network.Name)
+			cmd.Printf("Exposing routes to connected vSwitch of network %s enabled\n", network.Name)
 		}
 
 		return nil

@@ -100,13 +100,13 @@ var CreateCmd = base.Cmd{
 			}
 		}
 
-		fmt.Printf("Floating IP %d created\n", result.FloatingIP.ID)
+		cmd.Printf("Floating IP %d created\n", result.FloatingIP.ID)
 
-		if err := changeProtection(ctx, client, waiter, result.FloatingIP, true, protectionOps); err != nil {
+		if err := changeProtection(ctx, client, waiter, cmd, result.FloatingIP, true, protectionOps); err != nil {
 			return err
 		}
 
-		fmt.Printf("IP%s: %s\n", result.FloatingIP.Type[2:], result.FloatingIP.IP)
+		cmd.Printf("IP%s: %s\n", result.FloatingIP.Type[2:], result.FloatingIP.IP)
 		return nil
 	},
 }

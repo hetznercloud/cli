@@ -1,6 +1,7 @@
 package testutil
 
 import (
+	"os"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -39,7 +40,12 @@ func (f *Fixture) ExpectEnsureToken() {
 // potential error.
 func (f *Fixture) Run(cmd *cobra.Command, args []string) (string, string, error) {
 	cmd.SetArgs(args)
-	return CaptureOutStreams(cmd.Execute)
+	return CaptureOutStreams(func() error {
+		// We need to re-set the output because CaptureOutStream changes os.Stdout
+		// and the command's outWriter still points to the old os.Stdout.
+		cmd.SetOut(os.Stdout)
+		return cmd.Execute()
+	})
 }
 
 // Finish must be called after the test is finished, preferably via `defer` directly after
