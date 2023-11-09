@@ -1,8 +1,6 @@
 package version
 
 import (
-	"fmt"
-
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/state"
@@ -21,6 +19,6 @@ func NewCommand(cli *state.State) *cobra.Command {
 }
 
 func runVersion(cli *state.State, cmd *cobra.Command, args []string) error {
-	fmt.Printf("hcloud %s\n", version.Version)
+	cmd.Printf("hcloud %s\n", version.Version)
 	return nil
 }

@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"bytes"
 	"errors"
-	"fmt"
 	"os"
 	"strings"
 	"syscall"
@@ -27,7 +26,7 @@ func newCreateCommand(cli *state.State) *cobra.Command {
 	return cmd
 }
 
-func runCreate(cli *state.State, _ *cobra.Command, args []string) error {
+func runCreate(cli *state.State, cmd *cobra.Command, args []string) error {
 	if !state.StdoutIsTerminal() {
 		return errors.New("context create is an interactive command")
 	}
@@ -47,9 +46,9 @@ func runCreate(cli *state.State, _ *cobra.Command, args []string) error {
 	envToken := os.Getenv("HCLOUD_TOKEN")
 	if envToken != "" {
 		if len(envToken) != 64 {
-			fmt.Println("Warning: HCLOUD_TOKEN is set, but token is invalid (must be exactly 64 characters long)")
+			cmd.Println("Warning: HCLOUD_TOKEN is set, but token is invalid (must be exactly 64 characters long)")
 		} else {
-			fmt.Print("The HCLOUD_TOKEN environment variable is set. Do you want to use the token from HCLOUD_TOKEN for the new context? (Y/n): ")
+			cmd.Print("The HCLOUD_TOKEN environment variable is set. Do you want to use the token from HCLOUD_TOKEN for the new context? (Y/n): ")
 			scanner := bufio.NewScanner(os.Stdin)
 			scanner.Scan()
 			if s := strings.ToLower(scanner.Text()); s == "" || s == "y" || s == "yes" {
@@ -60,11 +59,11 @@ func runCreate(cli *state.State, _ *cobra.Command, args []string) error {
 
 	if token == "" {
 		for {
-			fmt.Printf("Token: ")
+			cmd.Printf("Token: ")
 			// Conversion needed for compilation on Windows
 			//                               vvv
 			btoken, err := term.ReadPassword(int(syscall.Stdin))
-			fmt.Print("\n")
+			cmd.Print("\n")
 			if err != nil {
 				return err
 			}
@@ -73,7 +72,7 @@ func runCreate(cli *state.State, _ *cobra.Command, args []string) error {
 				continue
 			}
 			if len(token) != 64 {
-				fmt.Print("Entered token is invalid (must be exactly 64 characters long)\n")
+				cmd.Print("Entered token is invalid (must be exactly 64 characters long)\n")
 				continue
 			}
 			break
@@ -89,7 +88,7 @@ func runCreate(cli *state.State, _ *cobra.Command, args []string) error {
 		return err
 	}
 
-	fmt.Printf("Context %s created and activated\n", name)
+	cmd.Printf("Context %s created and activated\n", name)
 
 	return nil
 }

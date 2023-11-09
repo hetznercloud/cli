@@ -42,7 +42,7 @@ var DeleteServiceCmd = base.Cmd{
 			return err
 		}
 
-		fmt.Printf("Service on port %d deleted from Load Balancer %d\n", listenPort, loadBalancer.ID)
+		cmd.Printf("Service on port %d deleted from Load Balancer %d\n", listenPort, loadBalancer.ID)
 		return nil
 	},
 }

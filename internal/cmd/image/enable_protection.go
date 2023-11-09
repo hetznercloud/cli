@@ -36,7 +36,8 @@ func getChangeProtectionOpts(enable bool, flags []string) (hcloud.ImageChangePro
 	return opts, nil
 }
 
-func changeProtection(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, image *hcloud.Image, enable bool, opts hcloud.ImageChangeProtectionOpts) error {
+func changeProtection(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command,
+	image *hcloud.Image, enable bool, opts hcloud.ImageChangeProtectionOpts) error {
 
 	if opts.Delete == nil {
 		return nil
@@ -52,9 +53,9 @@ func changeProtection(ctx context.Context, client hcapi2.Client, waiter state.Ac
 	}
 
 	if enable {
-		fmt.Printf("Resource protection enabled for image %d\n", image.ID)
+		cmd.Printf("Resource protection enabled for image %d\n", image.ID)
 	} else {
-		fmt.Printf("Resource protection disabled for image %d\n", image.ID)
+		cmd.Printf("Resource protection disabled for image %d\n", image.ID)
 	}
 	return nil
 }
@@ -74,7 +75,7 @@ var EnableProtectionCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, command *cobra.Command, args []string) error {
+	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
 		imageID, err := strconv.ParseInt(args[0], 10, 64)
 		if err != nil {
 			return errors.New("invalid image ID")
@@ -86,6 +87,6 @@ var EnableProtectionCmd = base.Cmd{
 			return err
 		}
 
-		return changeProtection(ctx, client, waiter, image, true, opts)
+		return changeProtection(ctx, client, waiter, cmd, image, true, opts)
 	},
 }

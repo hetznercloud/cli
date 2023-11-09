@@ -59,7 +59,7 @@ var DetachFromNetworkCmd = base.Cmd{
 			return err
 		}
 
-		fmt.Printf("Server %d detached from network %d\n", server.ID, network.ID)
+		cmd.Printf("Server %d detached from network %d\n", server.ID, network.ID)
 		return nil
 	},
 }

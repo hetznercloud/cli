@@ -65,6 +65,6 @@ func (dc *DeleteCmd) Run(ctx context.Context, client hcapi2.Client, actionWaiter
 	if err := dc.Delete(ctx, client, actionWaiter, cmd, resource); err != nil {
 		return fmt.Errorf("deleting %s %s failed: %s", dc.ResourceNameSingular, idOrName, err)
 	}
-	fmt.Printf("%s %v deleted\n", dc.ResourceNameSingular, idOrName)
+	cmd.Printf("%s %v deleted\n", dc.ResourceNameSingular, idOrName)
 	return nil
 }

@@ -41,6 +41,6 @@ var DisableProtectionCmd = base.Cmd{
 			return err
 		}
 
-		return changeProtection(ctx, client, waiter, server, false, opts)
+		return changeProtection(ctx, client, waiter, cmd, server, false, opts)
 	},
 }

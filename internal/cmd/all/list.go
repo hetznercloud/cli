@@ -3,7 +3,6 @@ package all
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -158,7 +157,7 @@ Listed resources are:
 			if err != nil {
 				return err
 			}
-			fmt.Printf("%s\n", jsonBytes)
+			cmd.Printf("%s\n", jsonBytes)
 			return nil
 		}
 
@@ -171,14 +170,14 @@ Listed resources are:
 				continue
 			}
 
-			fmt.Print(strings.ToUpper(lc.ResourceNamePlural) + "\n---\n")
+			cmd.Print(strings.ToUpper(lc.ResourceNamePlural) + "\n---\n")
 			for _, resource := range resources[i] {
 				table.Write(cols, resource)
 			}
 			if err := table.Flush(); err != nil {
 				return err
 			}
-			fmt.Println()
+			cmd.Println()
 		}
 
 		return nil

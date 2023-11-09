@@ -96,7 +96,7 @@ func createUploaded(ctx context.Context, client hcapi2.Client, cmd *cobra.Comman
 	if cert, _, err = client.Certificate().Create(ctx, createOpts); err != nil {
 		return err
 	}
-	fmt.Printf("Certificate %d created\n", cert.ID)
+	cmd.Printf("Certificate %d created\n", cert.ID)
 	return nil
 }
 
@@ -129,6 +129,6 @@ func createManaged(ctx context.Context, client hcapi2.Client, waiter state.Actio
 	if err := waiter.ActionProgress(ctx, res.Action); err != nil {
 		return err
 	}
-	fmt.Printf("Certificate %d created\n", res.Certificate.ID)
+	cmd.Printf("Certificate %d created\n", res.Certificate.ID)
 	return nil
 }

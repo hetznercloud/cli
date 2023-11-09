@@ -64,7 +64,7 @@ var AssignCmd = base.Cmd{
 			return err
 		}
 
-		fmt.Printf("Primary IP %d assigned to %s %d\n", opts.ID, opts.AssigneeType, opts.AssigneeID)
+		cmd.Printf("Primary IP %d assigned to %s %d\n", opts.ID, opts.AssigneeType, opts.AssigneeID)
 		return nil
 	},
 }

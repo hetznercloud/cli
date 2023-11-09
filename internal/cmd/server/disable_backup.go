@@ -42,7 +42,7 @@ var DisableBackupCmd = base.Cmd{
 			return err
 		}
 
-		fmt.Printf("Backup disabled for server %d\n", server.ID)
+		cmd.Printf("Backup disabled for server %d\n", server.ID)
 		return nil
 	},
 }

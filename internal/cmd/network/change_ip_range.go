@@ -53,7 +53,7 @@ var ChangeIPRangeCmd = base.Cmd{
 		if err := waiter.ActionProgress(ctx, action); err != nil {
 			return err
 		}
-		fmt.Printf("IP range of network %d changed\n", network.ID)
+		cmd.Printf("IP range of network %d changed\n", network.ID)
 		return nil
 	},
 }

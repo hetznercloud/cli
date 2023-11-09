@@ -67,7 +67,7 @@ var EnableRescueCmd = base.Cmd{
 			return err
 		}
 
-		fmt.Printf("Rescue enabled for server %d with root password: %s\n", server.ID, result.RootPassword)
+		cmd.Printf("Rescue enabled for server %d with root password: %s\n", server.ID, result.RootPassword)
 		return nil
 	},
 }

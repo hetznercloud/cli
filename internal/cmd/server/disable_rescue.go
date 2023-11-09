@@ -42,7 +42,7 @@ var DisableRescueCmd = base.Cmd{
 			return err
 		}
 
-		fmt.Printf("Rescue disabled for server %d\n", server.ID)
+		cmd.Printf("Rescue disabled for server %d\n", server.ID)
 		return nil
 	},
 }

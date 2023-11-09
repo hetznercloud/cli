@@ -42,7 +42,7 @@ var DetachISOCmd = base.Cmd{
 			return err
 		}
 
-		fmt.Printf("ISO detached from server %d\n", server.ID)
+		cmd.Printf("ISO detached from server %d\n", server.ID)
 		return nil
 	},
 }

@@ -45,8 +45,8 @@ var ResizeCmd = base.Cmd{
 			return err
 		}
 
-		fmt.Printf("Volume %d resized\n", volume.ID)
-		fmt.Printf("You might need to adjust the filesystem size on the server too\n")
+		cmd.Printf("Volume %d resized\n", volume.ID)
+		cmd.Printf("You might need to adjust the filesystem size on the server too\n")
 		return nil
 	},
 }

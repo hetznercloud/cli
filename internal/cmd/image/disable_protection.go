@@ -28,7 +28,7 @@ var DisableProtectionCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, command *cobra.Command, args []string) error {
+	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
 		imageID, err := strconv.ParseInt(args[0], 10, 64)
 		if err != nil {
 			return errors.New("invalid image ID")
@@ -40,6 +40,6 @@ var DisableProtectionCmd = base.Cmd{
 			return err
 		}
 
-		return changeProtection(ctx, client, waiter, image, false, opts)
+		return changeProtection(ctx, client, waiter, cmd, image, false, opts)
 	},
 }

@@ -39,12 +39,12 @@ var IPCmd = base.Cmd{
 			if server.PublicNet.IPv6.IsUnspecified() {
 				return fmt.Errorf("server %s has not primary IPv6", idOrName)
 			}
-			fmt.Println(server.PublicNet.IPv6.IP.String() + "1")
+			cmd.Println(server.PublicNet.IPv6.IP.String() + "1")
 		} else {
 			if server.PublicNet.IPv4.IsUnspecified() {
 				return fmt.Errorf("server %s has not primary IPv4", idOrName)
 			}
-			fmt.Println(server.PublicNet.IPv4.IP.String())
+			cmd.Println(server.PublicNet.IPv4.IP.String())
 		}
 		return nil
 	},

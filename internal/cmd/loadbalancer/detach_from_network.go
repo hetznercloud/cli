@@ -58,7 +58,7 @@ var DetachFromNetworkCmd = base.Cmd{
 			return err
 		}
 
-		fmt.Printf("Load Balancer %d detached from Network %d\n", loadBalancer.ID, network.ID)
+		cmd.Printf("Load Balancer %d detached from Network %d\n", loadBalancer.ID, network.ID)
 		return nil
 	},
 }

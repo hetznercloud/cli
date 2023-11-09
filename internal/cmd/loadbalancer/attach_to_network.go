@@ -67,7 +67,7 @@ var AttachToNetworkCmd = base.Cmd{
 			return err
 		}
 
-		fmt.Printf("Load Balancer %d attached to network %d\n", loadBalancer.ID, network.ID)
+		cmd.Printf("Load Balancer %d attached to network %d\n", loadBalancer.ID, network.ID)
 		return nil
 	},
 }

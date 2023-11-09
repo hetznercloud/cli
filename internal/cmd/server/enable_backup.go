@@ -39,7 +39,7 @@ var EnableBackupCmd = base.Cmd{
 
 		window, _ := cmd.Flags().GetString("window")
 		if window != "" {
-			fmt.Print("[WARN] The ability to specify a backup window when enabling backups has been removed. Ignoring flag.\n")
+			cmd.Print("[WARN] The ability to specify a backup window when enabling backups has been removed. Ignoring flag.\n")
 		}
 
 		action, _, err := client.Server().EnableBackup(ctx, server, "")
@@ -51,7 +51,7 @@ var EnableBackupCmd = base.Cmd{
 			return err
 		}
 
-		fmt.Printf("Backup enabled for server %d\n", server.ID)
+		cmd.Printf("Backup enabled for server %d\n", server.ID)
 		return nil
 	},
 }

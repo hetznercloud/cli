@@ -74,7 +74,7 @@ var AddSubnetCmd = base.Cmd{
 		if err := waiter.ActionProgress(ctx, action); err != nil {
 			return err
 		}
-		fmt.Printf("Subnet added to network %d\n", network.ID)
+		cmd.Printf("Subnet added to network %d\n", network.ID)
 
 		return nil
 	},

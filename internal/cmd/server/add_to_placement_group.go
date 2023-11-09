@@ -55,7 +55,7 @@ var AddToPlacementGroupCmd = base.Cmd{
 			return err
 		}
 
-		fmt.Printf("Server %d added to placement group %s\n", server.ID, placementGroupIDOrName)
+		cmd.Printf("Server %d added to placement group %s\n", server.ID, placementGroupIDOrName)
 		return nil
 	},
 }

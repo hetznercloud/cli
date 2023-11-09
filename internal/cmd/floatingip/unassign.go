@@ -42,7 +42,7 @@ var UnassignCmd = base.Cmd{
 			return err
 		}
 
-		fmt.Printf("Floating IP %d unassigned\n", floatingIP.ID)
+		cmd.Printf("Floating IP %d unassigned\n", floatingIP.ID)
 		return nil
 	},
 }

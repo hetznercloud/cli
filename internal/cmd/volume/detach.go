@@ -41,7 +41,7 @@ var DetachCmd = base.Cmd{
 			return err
 		}
 
-		fmt.Printf("Volume %d detached\n", volume.ID)
+		cmd.Printf("Volume %d detached\n", volume.ID)
 		return nil
 	},
 }

@@ -42,7 +42,7 @@ var RebootCmd = base.Cmd{
 			return err
 		}
 
-		fmt.Printf("Server %d rebooted\n", server.ID)
+		cmd.Printf("Server %d rebooted\n", server.ID)
 		return nil
 	},
 }

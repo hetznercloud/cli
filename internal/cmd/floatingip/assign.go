@@ -54,7 +54,7 @@ var AssignCmd = base.Cmd{
 			return err
 		}
 
-		fmt.Printf("Floating IP %d assigned to server %d\n", floatingIP.ID, server.ID)
+		cmd.Printf("Floating IP %d assigned to server %d\n", floatingIP.ID, server.ID)
 		return nil
 	},
 }

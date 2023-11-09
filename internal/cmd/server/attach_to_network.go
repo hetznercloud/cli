@@ -73,7 +73,7 @@ var AttachToNetworkCmd = base.Cmd{
 			return err
 		}
 
-		fmt.Printf("Server %d attached to network %d\n", server.ID, network.ID)
+		cmd.Printf("Server %d attached to network %d\n", server.ID, network.ID)
 		return nil
 	},
 }

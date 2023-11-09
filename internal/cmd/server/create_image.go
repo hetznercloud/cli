@@ -65,7 +65,7 @@ var CreateImageCmd = base.Cmd{
 			return err
 		}
 
-		fmt.Printf("Image %d created from server %d\n", result.Image.ID, server.ID)
+		cmd.Printf("Image %d created from server %d\n", result.Image.ID, server.ID)
 
 		return nil
 	},

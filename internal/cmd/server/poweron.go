@@ -42,7 +42,7 @@ var PoweronCmd = base.Cmd{
 			return err
 		}
 
-		fmt.Printf("Server %d started\n", server.ID)
+		cmd.Printf("Server %d started\n", server.ID)
 		return nil
 	},
 }

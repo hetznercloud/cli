@@ -51,7 +51,7 @@ var RemoveSubnetCmd = base.Cmd{
 		if err := waiter.ActionProgress(ctx, action); err != nil {
 			return err
 		}
-		fmt.Printf("Subnet %s removed from network %d\n", ipRange.String(), network.ID)
+		cmd.Printf("Subnet %s removed from network %d\n", ipRange.String(), network.ID)
 
 		return nil
 	},

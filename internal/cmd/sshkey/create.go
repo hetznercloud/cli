@@ -2,7 +2,6 @@ package sshkey
 
 import (
 	"context"
-	"fmt"
 	"io"
 	"os"
 
@@ -63,7 +62,7 @@ var CreateCmd = base.Cmd{
 			return err
 		}
 
-		fmt.Printf("SSH key %d created\n", sshKey.ID)
+		cmd.Printf("SSH key %d created\n", sshKey.ID)
 
 		return nil
 	},

@@ -34,7 +34,8 @@ func getChangeProtectionOpts(enable bool, flags []string) (hcloud.LoadBalancerCh
 	return opts, nil
 }
 
-func changeProtection(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, loadBalancer *hcloud.LoadBalancer, enable bool, opts hcloud.LoadBalancerChangeProtectionOpts) error {
+func changeProtection(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command,
+	loadBalancer *hcloud.LoadBalancer, enable bool, opts hcloud.LoadBalancerChangeProtectionOpts) error {
 
 	if opts.Delete == nil {
 		return nil
@@ -50,9 +51,9 @@ func changeProtection(ctx context.Context, client hcapi2.Client, waiter state.Ac
 	}
 
 	if enable {
-		fmt.Printf("Resource protection enabled for Load Balancer %d\n", loadBalancer.ID)
+		cmd.Printf("Resource protection enabled for Load Balancer %d\n", loadBalancer.ID)
 	} else {
-		fmt.Printf("Resource protection disabled for Load Balancer %d\n", loadBalancer.ID)
+		cmd.Printf("Resource protection disabled for Load Balancer %d\n", loadBalancer.ID)
 	}
 	return nil
 }
@@ -86,6 +87,6 @@ var EnableProtectionCmd = base.Cmd{
 			return err
 		}
 
-		return changeProtection(ctx, client, waiter, loadBalancer, true, opts)
+		return changeProtection(ctx, client, waiter, cmd, loadBalancer, true, opts)
 	},
 }

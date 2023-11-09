@@ -87,7 +87,7 @@ var CreateCmd = base.Cmd{
 			return err
 		}
 
-		fmt.Printf("Firewall %d created\n", result.Firewall.ID)
+		cmd.Printf("Firewall %d created\n", result.Firewall.ID)
 
 		return nil
 	},

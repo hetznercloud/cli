@@ -104,8 +104,8 @@ var CreateCmd = base.Cmd{
 		if err := waiter.WaitForActions(ctx, result.NextActions); err != nil {
 			return err
 		}
-		fmt.Printf("Volume %d created\n", result.Volume.ID)
+		cmd.Printf("Volume %d created\n", result.Volume.ID)
 
-		return changeProtection(ctx, client, waiter, result.Volume, true, protectionOpts)
+		return changeProtection(ctx, client, waiter, cmd, result.Volume, true, protectionOpts)
 	},
 }

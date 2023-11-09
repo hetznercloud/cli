@@ -34,7 +34,8 @@ func getChangeProtectionOpts(enable bool, flags []string) (hcloud.VolumeChangePr
 	return opts, nil
 }
 
-func changeProtection(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, volume *hcloud.Volume, enable bool, opts hcloud.VolumeChangeProtectionOpts) error {
+func changeProtection(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command,
+	volume *hcloud.Volume, enable bool, opts hcloud.VolumeChangeProtectionOpts) error {
 
 	if opts.Delete == nil {
 		return nil
@@ -50,9 +51,9 @@ func changeProtection(ctx context.Context, client hcapi2.Client, waiter state.Ac
 	}
 
 	if enable {
-		fmt.Printf("Resource protection enabled for volume %d\n", volume.ID)
+		cmd.Printf("Resource protection enabled for volume %d\n", volume.ID)
 	} else {
-		fmt.Printf("Resource protection disabled for volume %d\n", volume.ID)
+		cmd.Printf("Resource protection disabled for volume %d\n", volume.ID)
 	}
 	return nil
 }
@@ -85,6 +86,6 @@ var EnableProtectionCmd = base.Cmd{
 			return err
 		}
 
-		return changeProtection(ctx, client, waiter, volume, true, opts)
+		return changeProtection(ctx, client, waiter, cmd, volume, true, opts)
 	},
 }

@@ -117,7 +117,7 @@ var AddRuleCmd = base.Cmd{
 			return err
 		}
 
-		fmt.Printf("Firewall Rules for Firewall %d updated\n", firewall.ID)
+		cmd.Printf("Firewall Rules for Firewall %d updated\n", firewall.ID)
 
 		return nil
 	},

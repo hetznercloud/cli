@@ -13,7 +13,6 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/pflag"
 	"golang.org/x/crypto/ssh"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
@@ -88,7 +87,7 @@ var CreateCmd = base.Cmd{
 	},
 
 	Run: func(ctx context.Context, client hcapi2.Client, actionWaiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
-		createOpts, protectionOpts, err := createOptsFromFlags(ctx, client, cmd.Flags())
+		createOpts, protectionOpts, err := createOptsFromFlags(ctx, client, cmd)
 		if err != nil {
 			return err
 		}
@@ -109,9 +108,9 @@ var CreateCmd = base.Cmd{
 		if err != nil {
 			return err
 		}
-		fmt.Printf("Server %d created\n", result.Server.ID)
+		cmd.Printf("Server %d created\n", result.Server.ID)
 
-		if err := changeProtection(ctx, client, actionWaiter, server, true, protectionOpts); err != nil {
+		if err := changeProtection(ctx, client, actionWaiter, cmd, server, true, protectionOpts); err != nil {
 			return err
 		}
 
@@ -126,27 +125,27 @@ var CreateCmd = base.Cmd{
 				return err
 			}
 
-			fmt.Printf("Backups enabled for server %d\n", server.ID)
+			cmd.Printf("Backups enabled for server %d\n", server.ID)
 		}
 
 		if !server.PublicNet.IPv4.IsUnspecified() {
-			fmt.Printf("IPv4: %s\n", server.PublicNet.IPv4.IP.String())
+			cmd.Printf("IPv4: %s\n", server.PublicNet.IPv4.IP.String())
 		}
 		if !server.PublicNet.IPv6.IsUnspecified() {
-			fmt.Printf("IPv6: %s1\n", server.PublicNet.IPv6.Network.IP.String())
-			fmt.Printf("IPv6 Network: %s\n", server.PublicNet.IPv6.Network.String())
+			cmd.Printf("IPv6: %s1\n", server.PublicNet.IPv6.Network.IP.String())
+			cmd.Printf("IPv6 Network: %s\n", server.PublicNet.IPv6.Network.String())
 		}
 		if len(server.PrivateNet) > 0 {
 			var networks []string
 			for _, network := range server.PrivateNet {
 				networks = append(networks, fmt.Sprintf("- %s (%s)", network.IP.String(), client.Network().Name(network.Network.ID)))
 			}
-			fmt.Printf("Private Networks:\n\t%s\n", strings.Join(networks, "\n"))
+			cmd.Printf("Private Networks:\n\t%s\n", strings.Join(networks, "\n"))
 		}
 		// Only print the root password if it's not empty,
 		// which is only the case if it wasn't created with an SSH key.
 		if result.RootPassword != "" {
-			fmt.Printf("Root password: %s\n", result.RootPassword)
+			cmd.Printf("Root password: %s\n", result.RootPassword)
 		}
 
 		return nil
@@ -221,8 +220,9 @@ func buildUserData(files []string) (string, error) {
 }
 
 func createOptsFromFlags(
-	ctx context.Context, client hcapi2.Client, flags *pflag.FlagSet,
+	ctx context.Context, client hcapi2.Client, cmd *cobra.Command,
 ) (createOpts hcloud.ServerCreateOpts, protectionOps hcloud.ServerChangeProtectionOpts, err error) {
+	flags := cmd.Flags()
 	name, _ := flags.GetString("name")
 	serverTypeName, _ := flags.GetString("type")
 	imageIDorName, _ := flags.GetString("image")
@@ -254,7 +254,7 @@ func createOptsFromFlags(
 	}
 
 	if serverType.IsDeprecated() {
-		fmt.Print(warningDeprecatedServerType(serverType))
+		cmd.Print(warningDeprecatedServerType(serverType))
 	}
 
 	// Select correct image based on server type architecture
@@ -270,7 +270,7 @@ func createOptsFromFlags(
 
 	if !image.Deprecated.IsZero() {
 		if allowDeprecatedImage {
-			fmt.Printf("Attention: image %s is deprecated. It will continue to be available until %s.\n", image.Name, image.Deprecated.AddDate(0, 3, 0).Format(time.DateOnly))
+			cmd.Printf("Attention: image %s is deprecated. It will continue to be available until %s.\n", image.Name, image.Deprecated.AddDate(0, 3, 0).Format(time.DateOnly))
 		} else {
 			err = fmt.Errorf("image %s is deprecated, please use --allow-deprecated-image to create a server with this image. It will continue to be available until %s", image.Name, image.Deprecated.AddDate(0, 3, 0).Format(time.DateOnly))
 			return

@@ -2,7 +2,6 @@ package loadbalancer
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/spf13/cobra"
 
@@ -90,14 +89,14 @@ var CreateCmd = base.Cmd{
 		if err != nil {
 			return err
 		}
-		fmt.Printf("Load Balancer %d created\n", loadBalancer.ID)
+		cmd.Printf("Load Balancer %d created\n", loadBalancer.ID)
 
-		if err := changeProtection(ctx, client, waiter, loadBalancer, true, protectionOpts); err != nil {
+		if err := changeProtection(ctx, client, waiter, cmd, loadBalancer, true, protectionOpts); err != nil {
 			return err
 		}
 
-		fmt.Printf("IPv4: %s\n", loadBalancer.PublicNet.IPv4.IP.String())
-		fmt.Printf("IPv6: %s\n", loadBalancer.PublicNet.IPv6.IP.String())
+		cmd.Printf("IPv4: %s\n", loadBalancer.PublicNet.IPv4.IP.String())
+		cmd.Printf("IPv6: %s\n", loadBalancer.PublicNet.IPv6.IP.String())
 		return nil
 	},
 }

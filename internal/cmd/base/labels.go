@@ -71,7 +71,7 @@ func (lc *LabelCmds) RunAdd(ctx context.Context, client hcapi2.Client, cmd *cobr
 		return err
 	}
 
-	fmt.Printf("Label %s added to %s %d\n", key, lc.ResourceNameSingular, id)
+	cmd.Printf("Label %s added to %s %d\n", key, lc.ResourceNameSingular, id)
 	return nil
 }
 
@@ -137,9 +137,9 @@ func (lc *LabelCmds) RunRemove(ctx context.Context, client hcapi2.Client, cmd *c
 	}
 
 	if all {
-		fmt.Printf("All labels removed from %s %d\n", lc.ResourceNameSingular, id)
+		cmd.Printf("All labels removed from %s %d\n", lc.ResourceNameSingular, id)
 	} else {
-		fmt.Printf("Label %s removed from %s %d\n", args[1], lc.ResourceNameSingular, id)
+		cmd.Printf("Label %s removed from %s %d\n", args[1], lc.ResourceNameSingular, id)
 	}
 
 	return nil
