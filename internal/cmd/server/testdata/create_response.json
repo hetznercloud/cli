@@ -1,5 +1,4 @@
 {
-  "next_actions": [],
   "root_password": "secret",
   "server": {
     "backup_window": null,
