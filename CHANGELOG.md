@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.40.0](https://github.com/hetznercloud/cli/compare/v1.39.0...v1.40.0) (2023-11-14)
+
+
+### Features
+
+* add warning messages to context commands ([#605](https://github.com/hetznercloud/cli/issues/605)) ([d84fe36](https://github.com/hetznercloud/cli/commit/d84fe3629f3879f157883bbcc21de618ae333e8b)), closes [#588](https://github.com/hetznercloud/cli/issues/588)
+* allow JSON output on resource creation ([#609](https://github.com/hetznercloud/cli/issues/609)) ([d7241fe](https://github.com/hetznercloud/cli/commit/d7241fed634bdba2598197fe458a08205f6e0f36)), closes [#470](https://github.com/hetznercloud/cli/issues/470)
+* **context:** ask to use HCLOUD_TOKEN when creating new context ([#582](https://github.com/hetznercloud/cli/issues/582)) ([54e582a](https://github.com/hetznercloud/cli/commit/54e582a7253274ef5b578b01fc9f992ef6eae226)), closes [#576](https://github.com/hetznercloud/cli/issues/576)
+* pretty-print JSON output ([#610](https://github.com/hetznercloud/cli/issues/610)) ([ca4706f](https://github.com/hetznercloud/cli/commit/ca4706f118d4cfb559d84c7a726f99673d42f7d4))
+* print out IPs after they were created ([#590](https://github.com/hetznercloud/cli/issues/590)) ([0e0eaa8](https://github.com/hetznercloud/cli/commit/0e0eaa8b58b184d26c8c1cb3b08b5b87bd5770f6))
+
+
+### Bug Fixes
+
+* "create" actions were not awaited in some cases ([#589](https://github.com/hetznercloud/cli/issues/589)) ([1c0e50a](https://github.com/hetznercloud/cli/commit/1c0e50ac88b78f0ae5b013e5a3a83fee9797d4df))
+* **image:** backup is suggested as type in update command ([#603](https://github.com/hetznercloud/cli/issues/603)) ([6ea4695](https://github.com/hetznercloud/cli/commit/6ea469544a281d081fd5130ac5b7cd25df96ca18))
+* inconsistent formatting in "describe" commands ([#593](https://github.com/hetznercloud/cli/issues/593)) ([b70dfe3](https://github.com/hetznercloud/cli/commit/b70dfe3613b75af0ef8b78cd01af8a2ae5dd47e5))
+* **network:** create prints success to stderr instead of stdout ([#587](https://github.com/hetznercloud/cli/issues/587)) ([0a4c361](https://github.com/hetznercloud/cli/commit/0a4c3611b33dc8c1ae1621b03c45026fd0bd6950))
+* **primary-ip:** list does now allow to output IP column ([#594](https://github.com/hetznercloud/cli/issues/594)) ([ee8e6ed](https://github.com/hetznercloud/cli/commit/ee8e6ed9a9e0ca2bc71dc04bbed8b80352a1a8dc)), closes [#591](https://github.com/hetznercloud/cli/issues/591)
+* **primary-ip:** updating the name resets auto-delete ([#604](https://github.com/hetznercloud/cli/issues/604)) ([292f6c4](https://github.com/hetznercloud/cli/commit/292f6c40d33c8028184756318fe276b5b46c37c5))
+* static resource list commands only return first 50 entries ([#592](https://github.com/hetznercloud/cli/issues/592)) ([7e511d9](https://github.com/hetznercloud/cli/commit/7e511d95669bade7057b0054c0bfafa57a6a1551))
+
 ## [1.39.0](https://github.com/hetznercloud/cli/compare/v1.38.3...v1.39.0) (2023-10-25)
 
 
