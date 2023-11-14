@@ -17,7 +17,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
-var CreateCmd = base.Cmd{
+var CreateCmd = base.CreateCmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:   "create FLAGS",
@@ -32,7 +32,7 @@ var CreateCmd = base.Cmd{
 		cmd.Flags().String("rules-file", "", "JSON file containing your routes (use - to read from stdin). The structure of the file needs to be the same as within the API: https://docs.hetzner.cloud/#firewalls-get-a-firewall ")
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, strings []string) error {
+	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, strings []string) (*hcloud.Response, any, error) {
 		name, _ := cmd.Flags().GetString("name")
 		labels, _ := cmd.Flags().GetStringToString("label")
 
@@ -52,19 +52,19 @@ var CreateCmd = base.Cmd{
 				data, err = ioutil.ReadFile(rulesFile)
 			}
 			if err != nil {
-				return err
+				return nil, nil, err
 			}
 			var rules []schema.FirewallRule
 			err = json.Unmarshal(data, &rules)
 			if err != nil {
-				return err
+				return nil, nil, err
 			}
 			for _, rule := range rules {
 				var sourceNets []net.IPNet
 				for i, sourceIP := range rule.SourceIPs {
 					_, sourceNet, err := net.ParseCIDR(sourceIP)
 					if err != nil {
-						return fmt.Errorf("invalid CIDR on index %d : %s", i, err)
+						return nil, nil, fmt.Errorf("invalid CIDR on index %d : %s", i, err)
 					}
 					sourceNets = append(sourceNets, *sourceNet)
 				}
@@ -78,17 +78,17 @@ var CreateCmd = base.Cmd{
 			}
 		}
 
-		result, _, err := client.Firewall().Create(ctx, opts)
+		result, response, err := client.Firewall().Create(ctx, opts)
 		if err != nil {
-			return err
+			return nil, nil, err
 		}
 
 		if err := waiter.WaitForActions(ctx, result.Actions); err != nil {
-			return err
+			return nil, nil, err
 		}
 
 		cmd.Printf("Firewall %d created\n", result.Firewall.ID)
 
-		return nil
+		return response, nil, err
 	},
 }

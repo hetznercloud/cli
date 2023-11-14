@@ -12,7 +12,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var CreateCmd = base.Cmd{
+var CreateCmd = base.CreateCmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:                   "create FLAGS",
@@ -40,7 +40,7 @@ var CreateCmd = base.Cmd{
 
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) (*hcloud.Response, any, error) {
 		typ, _ := cmd.Flags().GetString("type")
 		name, _ := cmd.Flags().GetString("name")
 		assigneeID, _ := cmd.Flags().GetInt64("assignee-id")
@@ -49,7 +49,7 @@ var CreateCmd = base.Cmd{
 
 		protectionOpts, err := getChangeProtectionOpts(true, protection)
 		if err != nil {
-			return err
+			return nil, nil, err
 		}
 
 		createOpts := hcloud.PrimaryIPCreateOpts{
@@ -62,14 +62,14 @@ var CreateCmd = base.Cmd{
 			createOpts.AssigneeID = &assigneeID
 		}
 
-		result, _, err := client.PrimaryIP().Create(ctx, createOpts)
+		result, response, err := client.PrimaryIP().Create(ctx, createOpts)
 		if err != nil {
-			return err
+			return nil, nil, err
 		}
 
 		if result.Action != nil {
 			if err := waiter.ActionProgress(ctx, result.Action); err != nil {
-				return err
+				return nil, nil, err
 			}
 		}
 
@@ -77,11 +77,14 @@ var CreateCmd = base.Cmd{
 
 		if len(protection) > 0 {
 			if err := changeProtection(ctx, client, waiter, cmd, result.PrimaryIP, true, protectionOpts); err != nil {
-				return err
+				return nil, nil, err
 			}
 		}
 
-		cmd.Printf("IP%s: %s\n", result.PrimaryIP.Type[2:], result.PrimaryIP.IP)
-		return nil
+		return response, result.PrimaryIP, nil
+	},
+	PrintResource: func(_ context.Context, _ hcapi2.Client, cmd *cobra.Command, resource any) {
+		primaryIP := resource.(*hcloud.PrimaryIP)
+		cmd.Printf("IP%s: %s\n", primaryIP.Type[2:], primaryIP.IP)
 	},
 }

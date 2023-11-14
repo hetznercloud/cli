@@ -1,0 +1,14 @@
+{
+  "placement_group": {
+    "created": "2016-01-30T23:50:00Z",
+    "id": 897,
+    "labels": {},
+    "name": "myPlacementGroup",
+    "servers": [
+      1,
+      2,
+      3
+    ],
+    "type": "spread"
+  }
+}

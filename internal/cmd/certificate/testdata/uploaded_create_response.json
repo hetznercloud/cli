@@ -1,0 +1,23 @@
+{
+  "certificate": {
+    "certificate": "",
+    "created": "2020-08-24T12:00:00Z",
+    "domain_names": null,
+    "fingerprint": "00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00",
+    "id": 123,
+    "labels": {
+      "key": "value"
+    },
+    "name": "test",
+    "not_valid_after": "2036-08-12T12:00:00Z",
+    "not_valid_before": "2020-08-24T12:00:00Z",
+    "status": null,
+    "type": "uploaded",
+    "used_by": [
+      {
+        "id": 123,
+        "type": "load_balancer"
+      }
+    ]
+  }
+}

@@ -12,7 +12,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var CreateCmd = base.Cmd{
+var CreateCmd = base.CreateCmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:                   "create [FLAGS]",
@@ -47,7 +47,7 @@ var CreateCmd = base.Cmd{
 
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) (*hcloud.Response, any, error) {
 		name, _ := cmd.Flags().GetString("name")
 		serverType, _ := cmd.Flags().GetString("type")
 		algorithmType, _ := cmd.Flags().GetString("algorithm-type")
@@ -58,7 +58,7 @@ var CreateCmd = base.Cmd{
 
 		protectionOpts, err := getChangeProtectionOpts(true, protection)
 		if err != nil {
-			return err
+			return nil, nil, err
 		}
 
 		createOpts := hcloud.LoadBalancerCreateOpts{
@@ -77,26 +77,30 @@ var CreateCmd = base.Cmd{
 		if location != "" {
 			createOpts.Location = &hcloud.Location{Name: location}
 		}
-		result, _, err := client.LoadBalancer().Create(ctx, createOpts)
+		result, response, err := client.LoadBalancer().Create(ctx, createOpts)
 		if err != nil {
-			return err
+			return nil, nil, err
 		}
 
 		if err := waiter.ActionProgress(ctx, result.Action); err != nil {
-			return err
+			return nil, nil, err
 		}
 		loadBalancer, _, err := client.LoadBalancer().GetByID(ctx, result.LoadBalancer.ID)
 		if err != nil {
-			return err
+			return nil, nil, err
 		}
 		cmd.Printf("Load Balancer %d created\n", loadBalancer.ID)
 
 		if err := changeProtection(ctx, client, waiter, cmd, loadBalancer, true, protectionOpts); err != nil {
-			return err
+			return nil, nil, err
 		}
 
+		return response, loadBalancer, nil
+	},
+
+	PrintResource: func(_ context.Context, _ hcapi2.Client, cmd *cobra.Command, resource any) {
+		loadBalancer := resource.(*hcloud.LoadBalancer)
 		cmd.Printf("IPv4: %s\n", loadBalancer.PublicNet.IPv4.IP.String())
 		cmd.Printf("IPv6: %s\n", loadBalancer.PublicNet.IPv6.IP.String())
-		return nil
 	},
 }

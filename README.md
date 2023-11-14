@@ -128,6 +128,11 @@ You can control output via the `-o` option:
   of the resource. The schema is identical to those in the Hetzner Cloud API which
   are documented at [docs.hetzner.cloud](https://docs.hetzner.cloud).
 
+* For `create` commands, you can specify `-o json` to get a JSON representation
+  of the API response. API responses are documented at [docs.hetzner.cloud](https://docs.hetzner.cloud).
+  In contrast to `describe` commands, `create` commands can return extra information, for example
+  the initial root password of a server.
+
 * For `describe` commands, you can specify `-o format={{.ID}}` to format output
   according to the given [Go template](https://golang.org/pkg/text/template/).
   The template’s input is the resource’s corresponding struct in the

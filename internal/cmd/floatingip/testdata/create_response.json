@@ -1,0 +1,27 @@
+{
+  "floating_ip": {
+    "blocked": false,
+    "created": "0001-01-01T00:00:00Z",
+    "description": null,
+    "dns_ptr": null,
+    "home_location": {
+      "city": "",
+      "country": "",
+      "description": "",
+      "id": 0,
+      "latitude": 0,
+      "longitude": 0,
+      "name": "",
+      "network_zone": ""
+    },
+    "id": 123,
+    "ip": "127.0.0.1",
+    "labels": {},
+    "name": "myFloatingIP",
+    "protection": {
+      "delete": false
+    },
+    "server": 1,
+    "type": "ipv4"
+  }
+}

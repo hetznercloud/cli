@@ -1,0 +1,20 @@
+{
+  "network": {
+    "created": "2016-01-30T23:50:00Z",
+    "expose_routes_to_vswitch": false,
+    "id": 123,
+    "ip_range": "10.0.0.0/24",
+    "labels": {},
+    "name": "myNetwork",
+    "protection": {
+      "delete": false
+    },
+    "routes": [],
+    "servers": [
+      1,
+      2,
+      3
+    ],
+    "subnets": []
+  }
+}

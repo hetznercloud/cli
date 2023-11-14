@@ -22,8 +22,13 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
+type createResult struct {
+	Server       *hcloud.Server
+	RootPassword string
+}
+
 // CreateCmd defines a command for creating a server.
-var CreateCmd = base.Cmd{
+var CreateCmd = base.CreateCmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:   "create FLAGS",
@@ -86,47 +91,55 @@ var CreateCmd = base.Cmd{
 		return cmd
 	},
 
-	Run: func(ctx context.Context, client hcapi2.Client, actionWaiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(ctx context.Context, client hcapi2.Client, actionWaiter state.ActionWaiter, cmd *cobra.Command, args []string) (*hcloud.Response, any, error) {
 		createOpts, protectionOpts, err := createOptsFromFlags(ctx, client, cmd)
 		if err != nil {
-			return err
+			return nil, nil, err
 		}
 
-		result, _, err := client.Server().Create(ctx, createOpts)
+		result, response, err := client.Server().Create(ctx, createOpts)
 		if err != nil {
-			return err
+			return nil, nil, err
 		}
 
 		if err := actionWaiter.ActionProgress(ctx, result.Action); err != nil {
-			return err
+			return nil, nil, err
 		}
 		if err := actionWaiter.WaitForActions(ctx, result.NextActions); err != nil {
-			return err
+			return nil, nil, err
 		}
 
 		server, _, err := client.Server().GetByID(ctx, result.Server.ID)
 		if err != nil {
-			return err
+			return nil, nil, err
 		}
+
 		cmd.Printf("Server %d created\n", result.Server.ID)
 
 		if err := changeProtection(ctx, client, actionWaiter, cmd, server, true, protectionOpts); err != nil {
-			return err
+			return nil, nil, err
 		}
 
 		enableBackup, _ := cmd.Flags().GetBool("enable-backup")
 		if enableBackup {
 			action, _, err := client.Server().EnableBackup(ctx, server, "")
 			if err != nil {
-				return err
+				return nil, nil, err
 			}
 
 			if err := actionWaiter.ActionProgress(ctx, action); err != nil {
-				return err
+				return nil, nil, err
 			}
 
 			cmd.Printf("Backups enabled for server %d\n", server.ID)
 		}
+
+		return response, createResult{Server: server, RootPassword: result.RootPassword}, nil
+	},
+
+	PrintResource: func(_ context.Context, client hcapi2.Client, cmd *cobra.Command, resource any) {
+		result := resource.(createResult)
+		server := result.Server
 
 		if !server.PublicNet.IPv4.IsUnspecified() {
 			cmd.Printf("IPv4: %s\n", server.PublicNet.IPv4.IP.String())
@@ -147,8 +160,6 @@ var CreateCmd = base.Cmd{
 		if result.RootPassword != "" {
 			cmd.Printf("Root password: %s\n", result.RootPassword)
 		}
-
-		return nil
 	},
 }
 
