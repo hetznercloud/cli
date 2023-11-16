@@ -3,24 +3,26 @@ package hcapi2
 import (
 	"context"
 	"strconv"
+
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 // LocationClient embeds the Hetzner Cloud Location client and provides some
 // additional helper functions.
 type LocationClient interface {
-	LocationClientBase
+	hcloud.ILocationClient
 	Names() []string
 	NetworkZones() []string
 }
 
-func NewLocationClient(client LocationClientBase) LocationClient {
+func NewLocationClient(client hcloud.ILocationClient) LocationClient {
 	return &locationClient{
-		LocationClientBase: client,
+		ILocationClient: client,
 	}
 }
 
 type locationClient struct {
-	LocationClientBase
+	hcloud.ILocationClient
 }
 
 // Names obtains a list of available locations. It returns nil if

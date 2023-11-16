@@ -10,19 +10,19 @@ import (
 // ImageClient embeds the Hetzner Cloud Image client and provides some
 // additional helper functions.
 type ImageClient interface {
-	ImageClientBase
+	hcloud.IImageClient
 	Names() []string
 	LabelKeys(string) []string
 }
 
-func NewImageClient(client ImageClientBase) ImageClient {
+func NewImageClient(client hcloud.IImageClient) ImageClient {
 	return &imageClient{
-		ImageClientBase: client,
+		IImageClient: client,
 	}
 }
 
 type imageClient struct {
-	ImageClientBase
+	hcloud.IImageClient
 }
 
 // Names obtains a list of available images. It returns nil if image names

@@ -3,22 +3,24 @@ package hcapi2
 import (
 	"context"
 	"strconv"
+
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 type PlacementGroupClient interface {
-	PlacementGroupClientBase
+	hcloud.IPlacementGroupClient
 	Names() []string
 	LabelKeys(string) []string
 }
 
-func NewPlacementGroupClient(client PlacementGroupClientBase) PlacementGroupClient {
+func NewPlacementGroupClient(client hcloud.IPlacementGroupClient) PlacementGroupClient {
 	return &placementGroupClient{
-		PlacementGroupClientBase: client,
+		IPlacementGroupClient: client,
 	}
 }
 
 type placementGroupClient struct {
-	PlacementGroupClientBase
+	hcloud.IPlacementGroupClient
 }
 
 func (c *placementGroupClient) Names() []string {

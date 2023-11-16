@@ -9,7 +9,7 @@ import (
 )
 
 type ServerClient interface {
-	ServerClientBase
+	hcloud.IServerClient
 	ServerName(id int64) string
 	Names() []string
 	LabelKeys(idOrName string) []string
@@ -17,14 +17,14 @@ type ServerClient interface {
 
 func NewServerClient(client *hcloud.ServerClient) ServerClient {
 	return &serverClient{
-		ServerClientBase: client,
+		IServerClient: client,
 	}
 }
 
 // ServerClient embeds the Hetzner Cloud Server client and provides some
 // additional helper functions.
 type serverClient struct {
-	ServerClientBase
+	hcloud.IServerClient
 
 	ServerTypes *hcloud.ServerTypeClient
 

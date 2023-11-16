@@ -3,24 +3,26 @@ package hcapi2
 import (
 	"context"
 	"strconv"
+
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 // VolumeClient embeds the Hetzner Cloud Volume client and provides some additional
 // helper functions.
 type VolumeClient interface {
-	VolumeClientBase
+	hcloud.IVolumeClient
 	Names() []string
 	LabelKeys(idOrName string) []string
 }
 
-func NewVolumeClient(client VolumeClientBase) VolumeClient {
+func NewVolumeClient(client hcloud.IVolumeClient) VolumeClient {
 	return &volumeClient{
-		VolumeClientBase: client,
+		IVolumeClient: client,
 	}
 }
 
 type volumeClient struct {
-	VolumeClientBase
+	hcloud.IVolumeClient
 }
 
 // Names obtains a list of available volumes for the current account. It

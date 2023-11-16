@@ -11,20 +11,20 @@ import (
 // NetworkClient embeds the Hetzner Cloud Network client and provides some
 // additional helper functions.
 type NetworkClient interface {
-	NetworkClientBase
+	hcloud.INetworkClient
 	Names() []string
 	Name(int64) string
 	LabelKeys(string) []string
 }
 
-func NewNetworkClient(client NetworkClientBase) NetworkClient {
+func NewNetworkClient(client hcloud.INetworkClient) NetworkClient {
 	return &networkClient{
-		NetworkClientBase: client,
+		INetworkClient: client,
 	}
 }
 
 type networkClient struct {
-	NetworkClientBase
+	hcloud.INetworkClient
 
 	netsByID   map[int64]*hcloud.Network
 	netsByName map[string]*hcloud.Network

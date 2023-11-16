@@ -3,23 +3,25 @@ package hcapi2
 import (
 	"context"
 	"strconv"
+
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 // ISOClient embeds the Hetzner Cloud iso client and provides some
 // additional helper functions.
 type ISOClient interface {
-	ISOClientBase
+	hcloud.IISOClient
 	Names() []string
 }
 
-func NewISOClient(client ISOClientBase) ISOClient {
+func NewISOClient(client hcloud.IISOClient) ISOClient {
 	return &isoClient{
-		ISOClientBase: client,
+		IISOClient: client,
 	}
 }
 
 type isoClient struct {
-	ISOClientBase
+	hcloud.IISOClient
 }
 
 // Names obtains a list of available data centers. It returns nil if

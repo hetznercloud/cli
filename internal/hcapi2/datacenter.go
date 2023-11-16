@@ -3,23 +3,25 @@ package hcapi2
 import (
 	"context"
 	"strconv"
+
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 // DatacenterClient embeds the Hetzner Cloud DataCenter client and provides some
 // additional helper functions.
 type DatacenterClient interface {
-	DatacenterClientBase
+	hcloud.IDatacenterClient
 	Names() []string
 }
 
-func NewDatacenterClient(client DatacenterClientBase) DatacenterClient {
+func NewDatacenterClient(client hcloud.IDatacenterClient) DatacenterClient {
 	return &datacenterClient{
-		DatacenterClientBase: client,
+		IDatacenterClient: client,
 	}
 }
 
 type datacenterClient struct {
-	DatacenterClientBase
+	hcloud.IDatacenterClient
 }
 
 // Names obtains a list of available data centers. It returns nil if

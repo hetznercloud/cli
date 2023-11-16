@@ -10,7 +10,7 @@ import (
 // PrimaryIPClient embeds the hcloud PrimaryIPClient (via an interface) and provides
 // some additional helper functions.
 type PrimaryIPClient interface {
-	PrimaryIPClientBase
+	hcloud.IPrimaryIPClient
 	Names() []string
 	IPv4Names() []string
 	IPv6Names() []string
@@ -18,16 +18,16 @@ type PrimaryIPClient interface {
 }
 
 // NewPrimaryIPClient creates a new primary IP client.
-func NewPrimaryIPClient(client PrimaryIPClientBase) PrimaryIPClient {
+func NewPrimaryIPClient(client hcloud.IPrimaryIPClient) PrimaryIPClient {
 	return &primaryIPClient{
-		PrimaryIPClientBase: client,
+		IPrimaryIPClient: client,
 	}
 }
 
 // PrimaryIPClient embeds the Hetzner Cloud PrimaryIP client and provides some
 // additional helper functions.
 type primaryIPClient struct {
-	PrimaryIPClientBase
+	hcloud.IPrimaryIPClient
 }
 
 // Names obtains a list of available primary IPs. It returns nil if

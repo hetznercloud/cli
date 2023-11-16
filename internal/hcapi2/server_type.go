@@ -9,20 +9,20 @@ import (
 )
 
 type ServerTypeClient interface {
-	ServerTypeClientBase
+	hcloud.IServerTypeClient
 	Names() []string
 	ServerTypeName(id int64) string
 	ServerTypeDescription(id int64) string
 }
 
-func NewServerTypeClient(client ServerTypeClientBase) ServerTypeClient {
+func NewServerTypeClient(client hcloud.IServerTypeClient) ServerTypeClient {
 	return &serverTypeClient{
-		ServerTypeClientBase: client,
+		IServerTypeClient: client,
 	}
 }
 
 type serverTypeClient struct {
-	ServerTypeClientBase
+	hcloud.IServerTypeClient
 
 	srvTypeByID map[int64]*hcloud.ServerType
 	once        sync.Once
