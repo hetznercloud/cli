@@ -40,4 +40,7 @@ jobs:
           go-version: "1.21"
 
       - name: Run tests
-        run: go test -v -race ./...
+        run: go test -coverprofile=coverage.txt -v -race ./...
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
