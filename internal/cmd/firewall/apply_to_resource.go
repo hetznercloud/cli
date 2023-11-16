@@ -23,7 +23,7 @@ var ApplyToResourceCmd = base.Cmd{
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
 		}
-		cmd.Flags().String("type", "", "Resource Type (server) (required)")
+		cmd.Flags().String("type", "", "Resource Type (server, label_selector) (required)")
 		cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("server", "label_selector"))
 		cmd.MarkFlagRequired("type")
 
