@@ -145,7 +145,7 @@ var ListCmd = base.ListCmd{
 		imageSchemas := make([]schema.Image, 0, len(resources))
 		for _, resource := range resources {
 			image := resource.(*hcloud.Image)
-			imageSchemas = append(imageSchemas, util.ImageToSchema(*image))
+			imageSchemas = append(imageSchemas, hcloud.SchemaFromImage(image))
 		}
 		return imageSchemas
 	},

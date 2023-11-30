@@ -7,7 +7,7 @@
       "type": "system",
       "name": "debian-12",
       "description": "Debian 12",
-      "image_size": 0,
+      "image_size": null,
       "disk_size": 5,
       "created": "2023-06-13T06:00:00Z",
       "created_from": null,
@@ -19,7 +19,7 @@
       "protection": {
         "delete": false
       },
-      "deprecated": "0001-01-01T00:00:00Z",
+      "deprecated": null,
       "deleted": null,
       "labels": null
     }

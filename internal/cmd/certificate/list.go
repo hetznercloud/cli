@@ -83,28 +83,7 @@ var ListCmd = base.ListCmd{
 		certSchemas := make([]schema.Certificate, 0, len(resources))
 		for _, resource := range resources {
 			cert := resource.(*hcloud.Certificate)
-			certSchema := schema.Certificate{
-				ID:             cert.ID,
-				Certificate:    cert.Certificate,
-				Created:        cert.Created,
-				DomainNames:    cert.DomainNames,
-				Fingerprint:    cert.Fingerprint,
-				Labels:         cert.Labels,
-				Name:           cert.Name,
-				Type:           string(cert.Type),
-				NotValidAfter:  cert.NotValidAfter,
-				NotValidBefore: cert.NotValidBefore,
-			}
-			if len(cert.UsedBy) > 0 {
-				certSchema.UsedBy = make([]schema.CertificateUsedByRef, len(cert.UsedBy))
-				for i, ub := range cert.UsedBy {
-					certSchema.UsedBy[i] = schema.CertificateUsedByRef{
-						ID:   ub.ID,
-						Type: string(ub.Type),
-					}
-				}
-			}
-			certSchemas = append(certSchemas, certSchema)
+			certSchemas = append(certSchemas, hcloud.SchemaFromCertificate(cert))
 		}
 
 		return certSchemas

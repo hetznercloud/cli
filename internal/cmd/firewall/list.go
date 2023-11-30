@@ -69,46 +69,8 @@ var ListCmd = base.ListCmd{
 	Schema: func(resources []interface{}) interface{} {
 		firewallSchemas := make([]schema.Firewall, 0, len(resources))
 		for _, resource := range resources {
-			firewall := resource.(*hcloud.Firewall)
-			firewallSchema := schema.Firewall{
-				ID:      firewall.ID,
-				Name:    firewall.Name,
-				Labels:  firewall.Labels,
-				Created: firewall.Created,
-			}
-			for _, rule := range firewall.Rules {
-				var sourceNets []string
-				for _, sourceIP := range rule.SourceIPs {
-					sourceNets = append(sourceNets, sourceIP.Network())
-				}
-				var destinationNets []string
-				for _, destinationIP := range rule.DestinationIPs {
-					destinationNets = append(destinationNets, destinationIP.Network())
-				}
-				firewallSchema.Rules = append(firewallSchema.Rules, schema.FirewallRule{
-					Direction:      string(rule.Direction),
-					SourceIPs:      sourceNets,
-					DestinationIPs: destinationNets,
-					Protocol:       string(rule.Protocol),
-					Port:           rule.Port,
-					Description:    rule.Description,
-				})
-			}
-			for _, AppliedTo := range firewall.AppliedTo {
-				s := schema.FirewallResource{
-					Type: string(AppliedTo.Type),
-				}
-				switch AppliedTo.Type {
-				case hcloud.FirewallResourceTypeServer:
-					s.Server = &schema.FirewallResourceServer{ID: AppliedTo.Server.ID}
-				case hcloud.FirewallResourceTypeLabelSelector:
-					s.LabelSelector = &schema.FirewallResourceLabelSelector{Selector: AppliedTo.LabelSelector.Selector}
-				}
-
-				firewallSchema.AppliedTo = append(firewallSchema.AppliedTo, s)
-			}
-
-			firewallSchemas = append(firewallSchemas, firewallSchema)
+			fw := resource.(*hcloud.Firewall)
+			firewallSchemas = append(firewallSchemas, hcloud.SchemaFromFirewall(fw))
 		}
 		return firewallSchemas
 	},

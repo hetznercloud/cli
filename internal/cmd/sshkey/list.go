@@ -54,15 +54,7 @@ var ListCmd = base.ListCmd{
 		sshKeySchemas := make([]schema.SSHKey, 0, len(resources))
 		for _, resource := range resources {
 			sshKey := resource.(*hcloud.SSHKey)
-			sshKeySchema := schema.SSHKey{
-				ID:          sshKey.ID,
-				Name:        sshKey.Name,
-				Fingerprint: sshKey.Fingerprint,
-				PublicKey:   sshKey.PublicKey,
-				Labels:      sshKey.Labels,
-				Created:     sshKey.Created,
-			}
-			sshKeySchemas = append(sshKeySchemas, sshKeySchema)
+			sshKeySchemas = append(sshKeySchemas, hcloud.SchemaFromSSHKey(sshKey))
 		}
 		return sshKeySchemas
 	},
