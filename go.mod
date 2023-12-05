@@ -1,6 +1,6 @@
 module github.com/hetznercloud/cli
 
-go 1.21.1
+go 1.21.5
 
 require (
 	github.com/boumenot/gocover-cobertura v1.2.0
