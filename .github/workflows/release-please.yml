@@ -14,5 +14,4 @@ jobs:
       - uses: google-github-actions/release-please-action@v4
         with:
           token: ${{ secrets.HCLOUD_BOT_TOKEN }}
-          release-type: go
-          package-name: hcloud-cli
+          config-file: .github/release-please-config.json
