@@ -19,28 +19,32 @@ import (
 
 const flagName = "output"
 
-type outputOption struct {
+type Option struct {
 	Name   string
 	Values []string
 }
 
-func OptionNoHeader() outputOption {
-	return outputOption{Name: "noheader"}
+func OptionNoHeader() Option {
+	return Option{Name: "noheader"}
 }
 
-func OptionJSON() outputOption {
-	return outputOption{Name: "json"}
+func OptionJSON() Option {
+	return Option{Name: "json"}
 }
 
-func OptionFormat() outputOption {
-	return outputOption{Name: "format"}
+func OptionYAML() Option {
+	return Option{Name: "yaml"}
 }
 
-func OptionColumns(columns []string) outputOption {
-	return outputOption{Name: "columns", Values: columns}
+func OptionFormat() Option {
+	return Option{Name: "format"}
 }
 
-func AddFlag(cmd *cobra.Command, options ...outputOption) {
+func OptionColumns(columns []string) Option {
+	return Option{Name: "columns", Values: columns}
+}
+
+func AddFlag(cmd *cobra.Command, options ...Option) {
 	var (
 		names  []string
 		values []string
@@ -63,7 +67,7 @@ func AddFlag(cmd *cobra.Command, options ...outputOption) {
 	cmd.PreRunE = util.ChainRunE(cmd.PreRunE, validateOutputFlag(options))
 }
 
-func validateOutputFlag(options []outputOption) func(cmd *cobra.Command, args []string) error {
+func validateOutputFlag(options []Option) func(cmd *cobra.Command, args []string) error {
 	return func(cmd *cobra.Command, args []string) error {
 		validOptions := map[string]map[string]bool{}
 		for _, option := range options {
@@ -105,34 +109,34 @@ func validateOutputFlag(options []outputOption) func(cmd *cobra.Command, args []
 	}
 }
 
-func FlagsForCommand(cmd *cobra.Command) outputOpts {
+func FlagsForCommand(cmd *cobra.Command) Opts {
 	opts, _ := cmd.Flags().GetStringArray(flagName)
 	return parseOutputFlags(opts)
 }
 
-type outputOpts map[string][]string
+type Opts map[string][]string
 
 // Set sets the key to value. It replaces any existing
 // values.
-func (o outputOpts) Set(key, value string) {
+func (o Opts) Set(key, value string) {
 	o[key] = []string{value}
 }
 
 // Add adds the value to key. It appends to any existing
 // values associated with key.
-func (o outputOpts) Add(key, value string) {
+func (o Opts) Add(key, value string) {
 	o[key] = append(o[key], value)
 }
 
-func (o outputOpts) IsSet(key string) bool {
+func (o Opts) IsSet(key string) bool {
 	if values, ok := o[key]; ok && len(values) > 0 {
 		return true
 	}
 	return false
 }
 
-func parseOutputFlags(in []string) outputOpts {
-	o := outputOpts{}
+func parseOutputFlags(in []string) Opts {
+	o := Opts{}
 	for _, param := range in {
 		parts := strings.SplitN(param, "=", 2)
 		if len(parts) == 2 {
@@ -252,7 +256,7 @@ func (o *Table) WriteHeader(columns []string) {
 		}
 		header = append(header, strings.Replace(strings.ToUpper(col), "_", " ", -1))
 	}
-	fmt.Fprintln(o.w, strings.Join(header, "\t"))
+	_, _ = fmt.Fprintln(o.w, strings.Join(header, "\t"))
 }
 
 func (o *Table) Flush() error {
@@ -296,7 +300,7 @@ func (o *Table) Write(columns []string, obj interface{}) {
 			out = append(out, fmt.Sprintf("%v", value))
 		}
 	}
-	fmt.Fprintln(o.w, strings.Join(out, "\t"))
+	_, _ = fmt.Fprintln(o.w, strings.Join(out, "\t"))
 }
 
 func fieldName(name string) string {

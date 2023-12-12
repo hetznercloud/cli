@@ -66,7 +66,7 @@ var ListCmd = base.ListCmd{
 			}))
 	},
 
-	JSONSchema: func(resources []interface{}) interface{} {
+	Schema: func(resources []interface{}) interface{} {
 		firewallSchemas := make([]schema.Firewall, 0, len(resources))
 		for _, resource := range resources {
 			firewall := resource.(*hcloud.Firewall)

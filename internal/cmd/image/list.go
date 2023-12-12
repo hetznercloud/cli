@@ -141,7 +141,7 @@ var ListCmd = base.ListCmd{
 			}))
 	},
 
-	JSONSchema: func(resources []interface{}) interface{} {
+	Schema: func(resources []interface{}) interface{} {
 		imageSchemas := make([]schema.Image, 0, len(resources))
 		for _, resource := range resources {
 			image := resource.(*hcloud.Image)

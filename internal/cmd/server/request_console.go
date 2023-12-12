@@ -24,7 +24,7 @@ var RequestConsoleCmd = base.Cmd{
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
 		}
-		output.AddFlag(cmd, output.OptionJSON())
+		output.AddFlag(cmd, output.OptionJSON(), output.OptionYAML())
 		return cmd
 	},
 	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
@@ -47,7 +47,7 @@ var RequestConsoleCmd = base.Cmd{
 			return err
 		}
 
-		if outOpts.IsSet("json") {
+		if outOpts.IsSet("json") || outOpts.IsSet("yaml") {
 			schema := struct {
 				WSSURL   string `json:"wss_url"`
 				Password string `json:"password"`
@@ -56,7 +56,11 @@ var RequestConsoleCmd = base.Cmd{
 				Password: result.Password,
 			}
 
-			return util.DescribeJSON(schema)
+			if outOpts.IsSet("json") {
+				return util.DescribeJSON(schema)
+			} else {
+				return util.DescribeYAML(schema)
+			}
 		}
 
 		cmd.Printf("Console for server %d:\n", server.ID)

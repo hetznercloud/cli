@@ -2,7 +2,6 @@ package all
 
 import (
 	"context"
-	"encoding/json"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -21,6 +20,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/primaryip"
 	"github.com/hetznercloud/cli/internal/cmd/server"
 	"github.com/hetznercloud/cli/internal/cmd/sshkey"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/cmd/volume"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
@@ -63,7 +63,7 @@ Listed resources are:
 
 		cmd.Flags().Bool("paid", false, "Only list resources that cost money")
 
-		output.AddFlag(cmd, output.OptionJSON())
+		output.AddFlag(cmd, output.OptionJSON(), output.OptionYAML())
 
 		return cmd
 	},
@@ -148,17 +148,16 @@ Listed resources are:
 			resources[i] = response.result
 		}
 
-		if outOpts.IsSet("json") {
-			jsonSchema := make(map[string]any)
+		if outOpts.IsSet("json") || outOpts.IsSet("yaml") {
+			schema := make(map[string]any)
 			for i, lc := range cmds {
-				jsonSchema[lc.JSONKeyGetByName] = lc.JSONSchema(resources[i])
+				schema[lc.JSONKeyGetByName] = lc.Schema(resources[i])
 			}
-			jsonBytes, err := json.Marshal(jsonSchema)
-			if err != nil {
-				return err
+			if outOpts.IsSet("json") {
+				return util.DescribeJSON(schema)
+			} else {
+				return util.DescribeYAML(schema)
 			}
-			cmd.Printf("%s\n", jsonBytes)
-			return nil
 		}
 
 		for i, lc := range cmds {

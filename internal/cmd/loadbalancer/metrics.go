@@ -38,7 +38,7 @@ var MetricsCmd = base.Cmd{
 		cmd.Flags().String("start", "", "ISO 8601 timestamp")
 		cmd.Flags().String("end", "", "ISO 8601 timestamp")
 
-		output.AddFlag(cmd, output.OptionJSON())
+		output.AddFlag(cmd, output.OptionJSON(), output.OptionYAML())
 		return cmd
 	},
 	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
@@ -83,12 +83,16 @@ var MetricsCmd = base.Cmd{
 			return err
 		}
 		switch {
-		case outputFlags.IsSet("json"):
-			var data map[string]interface{}
-			if err := json.NewDecoder(resp.Body).Decode(&data); err != nil {
+		case outputFlags.IsSet("json") || outputFlags.IsSet("yaml"):
+			var schema map[string]interface{}
+			if err := json.NewDecoder(resp.Body).Decode(&schema); err != nil {
 				return err
 			}
-			return util.DescribeJSON(data)
+			if outputFlags.IsSet("json") {
+				return util.DescribeJSON(schema)
+			} else {
+				return util.DescribeYAML(schema)
+			}
 		default:
 			var keys []string
 			for k := range m.TimeSeries {

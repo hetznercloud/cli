@@ -79,7 +79,7 @@ var ListCmd = base.ListCmd{
 			}))
 	},
 
-	JSONSchema: func(resources []interface{}) interface{} {
+	Schema: func(resources []interface{}) interface{} {
 		certSchemas := make([]schema.Certificate, 0, len(resources))
 		for _, resource := range resources {
 			cert := resource.(*hcloud.Certificate)

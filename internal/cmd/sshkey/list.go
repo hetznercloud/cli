@@ -50,7 +50,7 @@ var ListCmd = base.ListCmd{
 			}))
 	},
 
-	JSONSchema: func(resources []interface{}) interface{} {
+	Schema: func(resources []interface{}) interface{} {
 		sshKeySchemas := make([]schema.SSHKey, 0, len(resources))
 		for _, resource := range resources {
 			sshKey := resource.(*hcloud.SSHKey)

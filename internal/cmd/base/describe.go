@@ -47,7 +47,7 @@ func (dc *DescribeCmd) CobraCommand(
 			return dc.Run(ctx, client, cmd, args)
 		},
 	}
-	output.AddFlag(cmd, output.OptionJSON(), output.OptionFormat())
+	output.AddFlag(cmd, output.OptionJSON(), output.OptionYAML(), output.OptionFormat())
 	if dc.AdditionalFlags != nil {
 		dc.AdditionalFlags(cmd)
 	}
@@ -72,7 +72,9 @@ func (dc *DescribeCmd) Run(ctx context.Context, client hcapi2.Client, cmd *cobra
 
 	switch {
 	case outputFlags.IsSet("json"):
-		return dc.describeJSON(resp.Body)
+		return dc.describe(resp.Body, util.DescribeJSON)
+	case outputFlags.IsSet("yaml"):
+		return dc.describe(resp.Body, util.DescribeYAML)
 	case outputFlags.IsSet("format"):
 		return util.DescribeFormat(resource, outputFlags["format"][0])
 	default:
@@ -80,18 +82,18 @@ func (dc *DescribeCmd) Run(ctx context.Context, client hcapi2.Client, cmd *cobra
 	}
 }
 
-func (dc *DescribeCmd) describeJSON(body io.ReadCloser) error {
-	var data map[string]interface{}
-	if err := json.NewDecoder(body).Decode(&data); err != nil {
+func (dc *DescribeCmd) describe(body io.ReadCloser, describeFunc func(interface{}) error) error {
+	var schema map[string]interface{}
+	if err := json.NewDecoder(body).Decode(&schema); err != nil {
 		return err
 	}
-	if resource, ok := data[dc.JSONKeyGetByID]; ok {
-		return util.DescribeJSON(resource)
+	if resource, ok := schema[dc.JSONKeyGetByID]; ok {
+		return describeFunc(resource)
 	}
-	if resources, ok := data[dc.JSONKeyGetByName].([]interface{}); ok {
+	if resources, ok := schema[dc.JSONKeyGetByName].([]interface{}); ok {
 		// We check whether we got a resource at all above (see reflect-based nil check), so it's
 		// ok to assume there's an element in resources.
-		return util.DescribeJSON(resources[0])
+		return describeFunc(resources[0])
 	}
 	return fmt.Errorf("got invalid JSON response")
 }

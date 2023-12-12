@@ -22,7 +22,7 @@ type ListCmd struct {
 	Fetch              func(context.Context, hcapi2.Client, *pflag.FlagSet, hcloud.ListOpts, []string) ([]interface{}, error)
 	AdditionalFlags    func(*cobra.Command)
 	OutputTable        func(client hcapi2.Client) *output.Table
-	JSONSchema         func([]interface{}) interface{}
+	Schema             func([]interface{}) interface{}
 }
 
 // CobraCommand creates a command that can be registered with cobra.
@@ -45,7 +45,7 @@ func (lc *ListCmd) CobraCommand(
 			return lc.Run(ctx, client, cmd)
 		},
 	}
-	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(outputColumns), output.OptionJSON())
+	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(outputColumns), output.OptionJSON(), output.OptionYAML())
 	cmd.Flags().StringP("selector", "l", "", "Selector to filter by labels")
 	if lc.AdditionalFlags != nil {
 		lc.AdditionalFlags(cmd)
@@ -70,8 +70,13 @@ func (lc *ListCmd) Run(ctx context.Context, client hcapi2.Client, cmd *cobra.Com
 		return err
 	}
 
-	if outOpts.IsSet("json") {
-		return util.DescribeJSON(lc.JSONSchema(resources))
+	if outOpts.IsSet("json") || outOpts.IsSet("yaml") {
+		schema := lc.Schema(resources)
+		if outOpts.IsSet("json") {
+			return util.DescribeJSON(schema)
+		} else {
+			return util.DescribeYAML(schema)
+		}
 	}
 
 	cols := lc.DefaultColumns

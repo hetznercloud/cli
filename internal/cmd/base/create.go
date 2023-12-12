@@ -28,7 +28,7 @@ func (cc *CreateCmd) CobraCommand(
 ) *cobra.Command {
 	cmd := cc.BaseCobraCommand(client)
 
-	output.AddFlag(cmd, output.OptionJSON())
+	output.AddFlag(cmd, output.OptionJSON(), output.OptionYAML())
 
 	if cmd.Args == nil {
 		cmd.Args = cobra.NoArgs
@@ -46,8 +46,8 @@ func (cc *CreateCmd) CobraCommand(
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
 		outputFlags := output.FlagsForCommand(cmd)
 
-		isJson := outputFlags.IsSet("json")
-		if isJson {
+		isSchema := outputFlags.IsSet("json") || outputFlags.IsSet("yaml")
+		if isSchema {
 			cmd.SetOut(os.Stderr)
 		} else {
 			cmd.SetOut(os.Stdout)
@@ -58,19 +58,23 @@ func (cc *CreateCmd) CobraCommand(
 			return err
 		}
 
-		if isJson {
+		if isSchema {
 			bytes, _ := io.ReadAll(response.Body)
 
-			var data map[string]any
-			if err := json.Unmarshal(bytes, &data); err != nil {
+			var schema map[string]any
+			if err := json.Unmarshal(bytes, &schema); err != nil {
 				return err
 			}
 
-			delete(data, "action")
-			delete(data, "actions")
-			delete(data, "next_actions")
+			delete(schema, "action")
+			delete(schema, "actions")
+			delete(schema, "next_actions")
 
-			return util.DescribeJSON(data)
+			if outputFlags.IsSet("json") {
+				return util.DescribeJSON(schema)
+			} else {
+				return util.DescribeYAML(schema)
+			}
 		} else if resource != nil {
 			cc.PrintResource(ctx, client, cmd, resource)
 		}

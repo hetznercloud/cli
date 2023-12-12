@@ -9,6 +9,7 @@ import (
 	"text/template"
 	"time"
 
+	"github.com/goccy/go-yaml"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
@@ -159,6 +160,11 @@ func DescribeFormat(object interface{}, format string) error {
 func DescribeJSON(object interface{}) error {
 	enc := json.NewEncoder(os.Stdout)
 	enc.SetIndent("", "  ")
+	return enc.Encode(object)
+}
+
+func DescribeYAML(object interface{}) error {
+	enc := yaml.NewEncoder(os.Stdout)
 	return enc.Encode(object)
 }
 

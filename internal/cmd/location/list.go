@@ -37,7 +37,7 @@ var ListCmd = base.ListCmd{
 			AddAllowedFields(hcloud.Location{})
 	},
 
-	JSONSchema: func(resources []interface{}) interface{} {
+	Schema: func(resources []interface{}) interface{} {
 		locationSchemas := make([]schema.Location, 0, len(resources))
 		for _, resource := range resources {
 			location := resource.(*hcloud.Location)

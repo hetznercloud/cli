@@ -90,7 +90,7 @@ var ListCmd = base.ListCmd{
 			})
 	},
 
-	JSONSchema: func(resources []interface{}) interface{} {
+	Schema: func(resources []interface{}) interface{} {
 		isoSchemas := make([]schema.ISO, 0, len(resources))
 		for _, resource := range resources {
 			iso := resource.(*hcloud.ISO)
