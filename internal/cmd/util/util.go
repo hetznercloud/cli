@@ -236,7 +236,7 @@ func ImageToSchema(image hcloud.Image) schema.Image {
 		Type:         string(image.Type),
 		ImageSize:    &image.ImageSize,
 		DiskSize:     image.DiskSize,
-		Created:      image.Created,
+		Created:      &image.Created,
 		OSFlavor:     image.OSFlavor,
 		OSVersion:    hcloud.String(image.OSVersion),
 		Architecture: string(image.Architecture),
@@ -244,7 +244,7 @@ func ImageToSchema(image hcloud.Image) schema.Image {
 		Protection: schema.ImageProtection{
 			Delete: image.Protection.Delete,
 		},
-		Deprecated: image.Deprecated,
+		Deprecated: &image.Deprecated,
 		Labels:     image.Labels,
 	}
 	if image.CreatedFrom != nil {
@@ -265,7 +265,7 @@ func ISOToSchema(iso hcloud.ISO) schema.ISO {
 		Name:        iso.Name,
 		Description: iso.Description,
 		Type:        string(iso.Type),
-		Deprecated:  iso.Deprecated,
+		Deprecated:  &iso.Deprecated,
 	}
 
 	if iso.Architecture != nil {

@@ -2,6 +2,7 @@ package all
 
 import (
 	"context"
+	_ "embed"
 	"net"
 	"testing"
 	"time"
@@ -12,6 +13,9 @@ import (
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
+
+//go:embed testdata/all_list_response.json
+var allListResponseJson string
 
 func TestListAll(t *testing.T) {
 	fx := testutil.NewFixture(t)
@@ -287,15 +291,8 @@ func TestListAllPaidJSON(t *testing.T) {
 		AllWithOpts(gomock.Any(), hcloud.VolumeListOpts{}).
 		Return([]*hcloud.Volume{}, nil)
 
-	out, _, err := fx.Run(cmd, []string{"--paid", "-o=json"})
-
-	expOut := "{\"floating_ips\":[],\"images\":[{\"id\":114690387,\"status\":\"available\",\"type\":\"system\"," +
-		"\"name\":\"debian-12\",\"description\":\"Debian 12\",\"image_size\":0,\"disk_size\":5,\"created\":" +
-		"\"2023-06-13T06:00:00Z\",\"created_from\":null,\"bound_to\":null,\"os_flavor\":\"debian\",\"os_version\":" +
-		"\"12\",\"architecture\":\"x86\",\"rapid_deploy\":true,\"protection\":{\"delete\":false},\"deprecated\":" +
-		"\"0001-01-01T00:00:00Z\",\"deleted\":\"0001-01-01T00:00:00Z\",\"labels\":null}],\"load_balancers\":[]," +
-		"\"primary_ips\":[],\"servers\":[],\"volumes\":[]}\n"
+	jsonOut, _, err := fx.Run(cmd, []string{"--paid", "-o=json"})
 
 	assert.NoError(t, err)
-	assert.JSONEq(t, expOut, out)
+	assert.JSONEq(t, allListResponseJson, jsonOut)
 }

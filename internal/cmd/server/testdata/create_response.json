@@ -19,6 +19,7 @@
       "name": "fsn1-dc14",
       "server_types": {
         "available": null,
+        "available_for_migration": null,
         "supported": null
       }
     },
@@ -26,10 +27,10 @@
     "image": {
       "architecture": "",
       "bound_to": null,
-      "created": "0001-01-01T00:00:00Z",
+      "created": null,
       "created_from": null,
-      "deleted": "0001-01-01T00:00:00Z",
-      "deprecated": "0001-01-01T00:00:00Z",
+      "deleted": null,
+      "deprecated": null,
       "description": "Ubuntu 20.04",
       "disk_size": 0,
       "id": 1,
@@ -49,7 +50,7 @@
     "ingoing_traffic": null,
     "iso": {
       "architecture": null,
-      "deprecated": "0001-01-01T00:00:00Z",
+      "deprecated": null,
       "deprecation": null,
       "description": "FreeBSD 11.0 x64",
       "id": 1,
@@ -57,6 +58,7 @@
       "type": "public"
     },
     "labels": {},
+    "load_balancers": null,
     "locked": true,
     "name": "cli-test",
     "outgoing_traffic": null,
@@ -88,6 +90,7 @@
       "architecture": "x86",
       "cores": 1,
       "cpu_type": "shared",
+      "deprecated": false,
       "deprecation": null,
       "description": "",
       "disk": 20,

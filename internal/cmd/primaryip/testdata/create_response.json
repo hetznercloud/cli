@@ -21,6 +21,7 @@
       "name": "fsn1-dc14",
       "server_types": {
         "available": null,
+        "available_for_migration": null,
         "supported": null
       }
     },
