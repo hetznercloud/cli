@@ -8,6 +8,7 @@ import (
 	"time"
 
 	humanize "github.com/dustin/go-humanize"
+	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
@@ -24,10 +25,34 @@ var ListCmd = base.ListCmd{
 
 	DefaultColumns: []string{"id", "name", "status", "ipv4", "ipv6", "private_net", "datacenter", "age"},
 
-	Fetch: func(ctx context.Context, client hcapi2.Client, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
+	AdditionalFlags: func(cmd *cobra.Command) {
+		cmd.Flags().StringSlice("status", nil, "Only servers with one of these statuses are displayed")
+	},
+
+	Fetch: func(ctx context.Context, client hcapi2.Client, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
+		statuses, _ := flags.GetStringSlice("status")
+
 		opts := hcloud.ServerListOpts{ListOpts: listOpts}
 		if len(sorts) > 0 {
 			opts.Sort = sorts
+		}
+		if len(statuses) > 0 {
+			for _, status := range statuses {
+				switch status {
+				case string(hcloud.ServerStatusInitializing),
+					string(hcloud.ServerStatusOff),
+					string(hcloud.ServerStatusRunning),
+					string(hcloud.ServerStatusStarting),
+					string(hcloud.ServerStatusStopping),
+					string(hcloud.ServerStatusMigrating),
+					string(hcloud.ServerStatusRebuilding),
+					string(hcloud.ServerStatusDeleting),
+					string(hcloud.ServerStatusUnknown):
+					opts.Status = append(opts.Status, hcloud.ServerStatus(status))
+				default:
+					return nil, fmt.Errorf("invalid status: %s", status)
+				}
+			}
 		}
 		servers, err := client.Server().AllWithOpts(ctx, opts)
 
