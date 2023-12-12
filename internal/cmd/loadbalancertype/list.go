@@ -38,7 +38,7 @@ var ListCmd = base.ListCmd{
 			AddAllowedFields(hcloud.LoadBalancerType{})
 	},
 
-	JSONSchema: func(resources []interface{}) interface{} {
+	Schema: func(resources []interface{}) interface{} {
 		loadBalancerTypeSchemas := make([]schema.LoadBalancerType, 0, len(resources))
 		for _, resource := range resources {
 			loadBalancerType := resource.(*hcloud.LoadBalancerType)

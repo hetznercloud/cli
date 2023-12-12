@@ -93,7 +93,7 @@ var ListCmd = base.ListCmd{
 			}))
 	},
 
-	JSONSchema: func(resources []interface{}) interface{} {
+	Schema: func(resources []interface{}) interface{} {
 		floatingIPSchemas := make([]schema.FloatingIP, 0, len(resources))
 		for _, resource := range resources {
 			floatingIP := resource.(*hcloud.FloatingIP)

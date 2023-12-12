@@ -76,7 +76,7 @@ var ListCmd = base.ListCmd{
 			}))
 	},
 
-	JSONSchema: func(resources []interface{}) interface{} {
+	Schema: func(resources []interface{}) interface{} {
 		volumesSchema := make([]schema.Volume, 0, len(resources))
 		for _, resource := range resources {
 			volume := resource.(*hcloud.Volume)

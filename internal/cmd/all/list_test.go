@@ -297,5 +297,5 @@ func TestListAllPaidJSON(t *testing.T) {
 		"\"primary_ips\":[],\"servers\":[],\"volumes\":[]}\n"
 
 	assert.NoError(t, err)
-	assert.Equal(t, expOut, out)
+	assert.JSONEq(t, expOut, out)
 }
