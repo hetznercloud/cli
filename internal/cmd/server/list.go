@@ -3,6 +3,7 @@ package server
 import (
 	"context"
 	"fmt"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -12,12 +13,25 @@ import (
 	"github.com/spf13/pflag"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
+
+var serverStatusStrings = []string{
+	string(hcloud.ServerStatusInitializing),
+	string(hcloud.ServerStatusOff),
+	string(hcloud.ServerStatusRunning),
+	string(hcloud.ServerStatusStarting),
+	string(hcloud.ServerStatusStopping),
+	string(hcloud.ServerStatusMigrating),
+	string(hcloud.ServerStatusRebuilding),
+	string(hcloud.ServerStatusDeleting),
+	string(hcloud.ServerStatusUnknown),
+}
 
 var ListCmd = base.ListCmd{
 	ResourceNamePlural: "Servers",
@@ -27,6 +41,7 @@ var ListCmd = base.ListCmd{
 
 	AdditionalFlags: func(cmd *cobra.Command) {
 		cmd.Flags().StringSlice("status", nil, "Only servers with one of these statuses are displayed")
+		_ = cmd.RegisterFlagCompletionFunc("status", cmpl.SuggestCandidates(serverStatusStrings...))
 	},
 
 	Fetch: func(ctx context.Context, client hcapi2.Client, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
@@ -38,18 +53,9 @@ var ListCmd = base.ListCmd{
 		}
 		if len(statuses) > 0 {
 			for _, status := range statuses {
-				switch status {
-				case string(hcloud.ServerStatusInitializing),
-					string(hcloud.ServerStatusOff),
-					string(hcloud.ServerStatusRunning),
-					string(hcloud.ServerStatusStarting),
-					string(hcloud.ServerStatusStopping),
-					string(hcloud.ServerStatusMigrating),
-					string(hcloud.ServerStatusRebuilding),
-					string(hcloud.ServerStatusDeleting),
-					string(hcloud.ServerStatusUnknown):
+				if slices.Contains(serverStatusStrings, status) {
 					opts.Status = append(opts.Status, hcloud.ServerStatus(status))
-				default:
+				} else {
 					return nil, fmt.Errorf("invalid status: %s", status)
 				}
 			}
