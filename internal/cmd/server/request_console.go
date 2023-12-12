@@ -48,13 +48,15 @@ var RequestConsoleCmd = base.Cmd{
 		}
 
 		if outOpts.IsSet("json") {
-			return util.DescribeJSON(struct {
-				WSSURL   string
-				Password string
+			schema := struct {
+				WSSURL   string `json:"wss_url"`
+				Password string `json:"password"`
 			}{
 				WSSURL:   result.WSSURL,
 				Password: result.Password,
-			})
+			}
+
+			return util.DescribeJSON(schema)
 		}
 
 		cmd.Printf("Console for server %d:\n", server.ID)
