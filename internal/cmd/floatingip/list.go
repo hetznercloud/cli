@@ -97,28 +97,7 @@ var ListCmd = base.ListCmd{
 		floatingIPSchemas := make([]schema.FloatingIP, 0, len(resources))
 		for _, resource := range resources {
 			floatingIP := resource.(*hcloud.FloatingIP)
-			floatingIPSchema := schema.FloatingIP{
-				ID:           floatingIP.ID,
-				Name:         floatingIP.Name,
-				Description:  hcloud.String(floatingIP.Description),
-				IP:           floatingIP.IP.String(),
-				Created:      floatingIP.Created,
-				Type:         string(floatingIP.Type),
-				HomeLocation: util.LocationToSchema(*floatingIP.HomeLocation),
-				Blocked:      floatingIP.Blocked,
-				Protection:   schema.FloatingIPProtection{Delete: floatingIP.Protection.Delete},
-				Labels:       floatingIP.Labels,
-			}
-			for ip, dnsPtr := range floatingIP.DNSPtr {
-				floatingIPSchema.DNSPtr = append(floatingIPSchema.DNSPtr, schema.FloatingIPDNSPtr{
-					IP:     ip,
-					DNSPtr: dnsPtr,
-				})
-			}
-			if floatingIP.Server != nil {
-				floatingIPSchema.Server = hcloud.Ptr(floatingIP.Server.ID)
-			}
-			floatingIPSchemas = append(floatingIPSchemas, floatingIPSchema)
+			floatingIPSchemas = append(floatingIPSchemas, hcloud.SchemaFromFloatingIP(floatingIP))
 		}
 		return floatingIPSchemas
 	},

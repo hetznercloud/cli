@@ -59,16 +59,7 @@ var ListCmd = base.ListCmd{
 		placementGroupSchemas := make([]schema.PlacementGroup, 0, len(resources))
 		for _, resource := range resources {
 			placementGroup := resource.(*hcloud.PlacementGroup)
-			placementGroupSchema := schema.PlacementGroup{
-				ID:      placementGroup.ID,
-				Name:    placementGroup.Name,
-				Labels:  placementGroup.Labels,
-				Created: placementGroup.Created,
-				Servers: placementGroup.Servers,
-				Type:    string(placementGroup.Type),
-			}
-
-			placementGroupSchemas = append(placementGroupSchemas, placementGroupSchema)
+			placementGroupSchemas = append(placementGroupSchemas, hcloud.SchemaFromPlacementGroup(placementGroup))
 		}
 		return placementGroupSchemas
 	},

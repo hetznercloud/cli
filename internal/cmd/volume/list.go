@@ -80,20 +80,7 @@ var ListCmd = base.ListCmd{
 		volumesSchema := make([]schema.Volume, 0, len(resources))
 		for _, resource := range resources {
 			volume := resource.(*hcloud.Volume)
-			volumeSchema := schema.Volume{
-				ID:          volume.ID,
-				Name:        volume.Name,
-				Location:    util.LocationToSchema(*volume.Location),
-				Size:        volume.Size,
-				LinuxDevice: volume.LinuxDevice,
-				Labels:      volume.Labels,
-				Created:     volume.Created,
-				Protection:  schema.VolumeProtection{Delete: volume.Protection.Delete},
-			}
-			if volume.Server != nil {
-				volumeSchema.Server = hcloud.Ptr(volume.Server.ID)
-			}
-			volumesSchema = append(volumesSchema, volumeSchema)
+			volumesSchema = append(volumesSchema, hcloud.SchemaFromVolume(volume))
 		}
 		return volumesSchema
 	},

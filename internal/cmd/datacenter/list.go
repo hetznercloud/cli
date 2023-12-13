@@ -7,7 +7,6 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/output"
-	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
@@ -44,7 +43,7 @@ var ListCmd = base.ListCmd{
 		dcSchemas := make([]schema.Datacenter, 0, len(resources))
 		for _, resource := range resources {
 			dc := resource.(*hcloud.Datacenter)
-			dcSchemas = append(dcSchemas, util.DatacenterToSchema(*dc))
+			dcSchemas = append(dcSchemas, hcloud.SchemaFromDatacenter(dc))
 		}
 
 		return dcSchemas

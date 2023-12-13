@@ -7,7 +7,6 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/output"
-	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
@@ -42,7 +41,7 @@ var ListCmd = base.ListCmd{
 		loadBalancerTypeSchemas := make([]schema.LoadBalancerType, 0, len(resources))
 		for _, resource := range resources {
 			loadBalancerType := resource.(*hcloud.LoadBalancerType)
-			loadBalancerTypeSchemas = append(loadBalancerTypeSchemas, util.LoadBalancerTypeToSchema(*loadBalancerType))
+			loadBalancerTypeSchemas = append(loadBalancerTypeSchemas, hcloud.SchemaFromLoadBalancerType(loadBalancerType))
 		}
 		return loadBalancerTypeSchemas
 	},

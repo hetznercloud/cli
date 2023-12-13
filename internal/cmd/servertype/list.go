@@ -56,7 +56,7 @@ var ListCmd = base.ListCmd{
 		serverTypeSchemas := make([]schema.ServerType, 0, len(resources))
 		for _, resource := range resources {
 			serverType := resource.(*hcloud.ServerType)
-			serverTypeSchemas = append(serverTypeSchemas, util.ServerTypeToSchema(*serverType))
+			serverTypeSchemas = append(serverTypeSchemas, hcloud.SchemaFromServerType(serverType))
 		}
 		return serverTypeSchemas
 	},

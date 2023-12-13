@@ -12,7 +12,6 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/cli/internal/cmd/output"
-	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
@@ -94,7 +93,7 @@ var ListCmd = base.ListCmd{
 		isoSchemas := make([]schema.ISO, 0, len(resources))
 		for _, resource := range resources {
 			iso := resource.(*hcloud.ISO)
-			isoSchemas = append(isoSchemas, util.ISOToSchema(*iso))
+			isoSchemas = append(isoSchemas, hcloud.SchemaFromISO(iso))
 		}
 		return isoSchemas
 	},
