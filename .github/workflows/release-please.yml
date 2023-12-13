@@ -11,7 +11,8 @@ jobs:
 
     runs-on: ubuntu-latest
     steps:
-      - uses: google-github-actions/release-please-action@v4
+      - uses: google-github-actions/release-please-action@v3
         with:
           token: ${{ secrets.HCLOUD_BOT_TOKEN }}
-          config-file: .github/release-please-config.json
+          release-type: go
+          package-name: hcloud-cli
