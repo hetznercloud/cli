@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.41.0](https://github.com/hetznercloud/cli/compare/v1.40.0...v1.41.0) (2023-12-13)
+
+
+### Features
+
+* allow YAML output ([#628](https://github.com/hetznercloud/cli/issues/628)) ([87552d2](https://github.com/hetznercloud/cli/commit/87552d2a684f7147dc0528e32915fa96dd7332ad))
+* **server:** allow to filter list by server status ([#629](https://github.com/hetznercloud/cli/issues/629)) ([1cb51f2](https://github.com/hetznercloud/cli/commit/1cb51f2f4148d9a0825c127910ddcb72ceac349f)), closes [#623](https://github.com/hetznercloud/cli/issues/623)
+
+
+### Bug Fixes
+
+* make JSON/YAML outputs consistent ([#622](https://github.com/hetznercloud/cli/issues/622)) ([43944b8](https://github.com/hetznercloud/cli/commit/43944b8561071883616f10cf03b6e714d3a4fa88))
+* **server:** properly format request-console JSON output ([#626](https://github.com/hetznercloud/cli/issues/626)) ([40641b6](https://github.com/hetznercloud/cli/commit/40641b6f0ede6beb45ddbcd8362f6b0609e60eba))
+
 ## [1.40.0](https://github.com/hetznercloud/cli/compare/v1.39.0...v1.40.0) (2023-11-14)
 
 
