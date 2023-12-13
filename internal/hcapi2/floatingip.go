@@ -3,27 +3,29 @@ package hcapi2
 import (
 	"context"
 	"strconv"
+
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 // FloatingIPClient embeds the hcloud FloatingIPClient (via an interface) and provides
 // some additional helper functions.
 type FloatingIPClient interface {
-	FloatingIPClientBase
+	hcloud.IFloatingIPClient
 	Names() []string
 	LabelKeys(idOrName string) []string
 }
 
 // NewFloatingIPClient creates a new floating IP client.
-func NewFloatingIPClient(client FloatingIPClientBase) FloatingIPClient {
+func NewFloatingIPClient(client hcloud.IFloatingIPClient) FloatingIPClient {
 	return &floatingIPClient{
-		FloatingIPClientBase: client,
+		IFloatingIPClient: client,
 	}
 }
 
 // FloatingIPClient embeds the Hetzner Cloud FloatingIP client and provides some
 // additional helper functions.
 type floatingIPClient struct {
-	FloatingIPClientBase
+	hcloud.IFloatingIPClient
 }
 
 // Names obtains a list of available floating IPs. It returns nil if

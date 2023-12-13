@@ -6,4 +6,3 @@ set -o nounset
 
 go install github.com/boumenot/gocover-cobertura
 go install github.com/golang/mock/mockgen
-go install github.com/rjeczalik/interfaces/cmd/interfacer

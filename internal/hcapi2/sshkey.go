@@ -3,24 +3,26 @@ package hcapi2
 import (
 	"context"
 	"strconv"
+
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 // SSHKeyClient embeds the Hetzner Cloud SSHKey client and provides some
 // additional helper functions.
 type SSHKeyClient interface {
-	SSHKeyClientBase
+	hcloud.ISSHKeyClient
 	Names() []string
 	LabelKeys(idOrName string) []string
 }
 
-func NewSSHKeyClient(client SSHKeyClientBase) SSHKeyClient {
+func NewSSHKeyClient(client hcloud.ISSHKeyClient) SSHKeyClient {
 	return &sshKeyClient{
-		SSHKeyClientBase: client,
+		ISSHKeyClient: client,
 	}
 }
 
 type sshKeyClient struct {
-	SSHKeyClientBase
+	hcloud.ISSHKeyClient
 }
 
 // Names obtains a list of available SSH keys. It returns nil if SSH key

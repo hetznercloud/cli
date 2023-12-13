@@ -3,24 +3,26 @@ package hcapi2
 import (
 	"context"
 	"strconv"
+
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 type FirewallClient interface {
-	FirewallClientBase
+	hcloud.IFirewallClient
 	Names() []string
 	LabelKeys(string) []string
 }
 
-func NewFirewallClient(client FirewallClientBase) FirewallClient {
+func NewFirewallClient(client hcloud.IFirewallClient) FirewallClient {
 	return &firewallClient{
-		FirewallClientBase: client,
+		IFirewallClient: client,
 	}
 }
 
 // FirewallClient embeds the Hetzner Cloud Firewall client and provides
 // some additional helper functions.
 type firewallClient struct {
-	FirewallClientBase
+	hcloud.IFirewallClient
 }
 
 // Names obtains a list of available firewalls. It returns nil if

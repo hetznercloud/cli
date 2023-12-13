@@ -9,20 +9,20 @@ import (
 )
 
 type LoadBalancerTypeClient interface {
-	LoadBalancerTypeClientBase
+	hcloud.ILoadBalancerTypeClient
 	Names() []string
 	LoadBalancerTypeName(id int64) string
 	LoadBalancerTypeDescription(id int64) string
 }
 
-func NewLoadBalancerTypeClient(client LoadBalancerTypeClientBase) LoadBalancerTypeClient {
+func NewLoadBalancerTypeClient(client hcloud.ILoadBalancerTypeClient) LoadBalancerTypeClient {
 	return &loadBalancerTypeClient{
-		LoadBalancerTypeClientBase: client,
+		ILoadBalancerTypeClient: client,
 	}
 }
 
 type loadBalancerTypeClient struct {
-	LoadBalancerTypeClientBase
+	hcloud.ILoadBalancerTypeClient
 
 	lbTypeByID map[int64]*hcloud.LoadBalancerType
 	once       sync.Once

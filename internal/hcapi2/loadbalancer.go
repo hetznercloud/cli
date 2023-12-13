@@ -11,20 +11,20 @@ import (
 // LoadBalancerClient embeds the Hetzner Cloud LoadBalancer client and provides some
 // additional helper functions.
 type LoadBalancerClient interface {
-	LoadBalancerClientBase
+	hcloud.ILoadBalancerClient
 	LoadBalancerName(id int64) string
 	Names() []string
 	LabelKeys(string) []string
 }
 
-func NewLoadBalancerClient(client LoadBalancerClientBase) LoadBalancerClient {
+func NewLoadBalancerClient(client hcloud.ILoadBalancerClient) LoadBalancerClient {
 	return &loadBalancerClient{
-		LoadBalancerClientBase: client,
+		ILoadBalancerClient: client,
 	}
 }
 
 type loadBalancerClient struct {
-	LoadBalancerClientBase
+	hcloud.ILoadBalancerClient
 
 	lbByID map[int64]*hcloud.LoadBalancer
 

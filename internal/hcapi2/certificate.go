@@ -3,24 +3,26 @@ package hcapi2
 import (
 	"context"
 	"strconv"
+
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 // CertificateClient embeds the Hetzner Cloud Certificate client and provides some
 // additional helper functions.
 type CertificateClient interface {
-	CertificateClientBase
+	hcloud.ICertificateClient
 	Names() []string
 	LabelKeys(string) []string
 }
 
-func NewCertificateClient(client CertificateClientBase) CertificateClient {
+func NewCertificateClient(client hcloud.ICertificateClient) CertificateClient {
 	return &certificateClient{
-		CertificateClientBase: client,
+		ICertificateClient: client,
 	}
 }
 
 type certificateClient struct {
-	CertificateClientBase
+	hcloud.ICertificateClient
 }
 
 // Names obtains a list of available data centers. It returns nil if

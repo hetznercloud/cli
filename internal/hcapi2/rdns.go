@@ -1,16 +1,18 @@
 package hcapi2
 
+import "github.com/hetznercloud/hcloud-go/v2/hcloud"
+
 // NewRDNSClient embeds the Hetzner Cloud rdns client.
 type RDNSClient interface {
-	RDNSClientBase
+	hcloud.IRDNSClient
 }
 
-func NewRDNSClient(client RDNSClientBase) RDNSClient {
+func NewRDNSClient(client hcloud.IRDNSClient) RDNSClient {
 	return &rdnsClient{
-		RDNSClientBase: client,
+		IRDNSClient: client,
 	}
 }
 
 type rdnsClient struct {
-	RDNSClientBase
+	hcloud.IRDNSClient
 }
