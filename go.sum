@@ -39,6 +39,8 @@ github.com/guptarohit/asciigraph v0.5.6 h1:0tra3HEhfdj1sP/9IedrCpfSiXYTtHdCgBhBL
 github.com/guptarohit/asciigraph v0.5.6/go.mod h1:dYl5wwK4gNsnFf9Zp+l06rFiDZ5YtXM6x7SRWZ3KGag=
 github.com/hetznercloud/hcloud-go/v2 v2.5.0 h1:FkfiqB2Bz2mLSQqOskWULpmVRYOQgFy7k0hfIuXv4YI=
 github.com/hetznercloud/hcloud-go/v2 v2.5.0/go.mod h1:y75vdFT0eNNnYyGWO55Qv0LI23kSgsQZl3Gyy0KMrI4=
+github.com/hetznercloud/hcloud-go/v2 v2.5.1 h1:tJQxd+Qyd9CwGOFL0og80zZ3a4Z5p9+iIRTnUPlvOgc=
+github.com/hetznercloud/hcloud-go/v2 v2.5.1/go.mod h1:y75vdFT0eNNnYyGWO55Qv0LI23kSgsQZl3Gyy0KMrI4=
 github.com/inconshreveable/mousetrap v1.1.0 h1:wN+x4NVGpMsO7ErUn/mUI3vEoE6Jt13X2s0bqwp9tc8=
 github.com/inconshreveable/mousetrap v1.1.0/go.mod h1:vpF70FUmC8bwa3OWnCshd2FqLfsEA9PFc4w1p2J65bw=
 github.com/kr/pretty v0.3.1 h1:flRD4NNwYAUpkphVc1HcthR4KEIFJ65n8Mw5qdRn3LE=
