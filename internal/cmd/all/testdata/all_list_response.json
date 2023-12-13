@@ -1,0 +1,31 @@
+{
+  "floating_ips": [],
+  "images": [
+    {
+      "id": 114690387,
+      "status": "available",
+      "type": "system",
+      "name": "debian-12",
+      "description": "Debian 12",
+      "image_size": 0,
+      "disk_size": 5,
+      "created": "2023-06-13T06:00:00Z",
+      "created_from": null,
+      "bound_to": null,
+      "os_flavor": "debian",
+      "os_version": "12",
+      "architecture": "x86",
+      "rapid_deploy": true,
+      "protection": {
+        "delete": false
+      },
+      "deprecated": "0001-01-01T00:00:00Z",
+      "deleted": null,
+      "labels": null
+    }
+  ],
+  "load_balancers": [],
+  "primary_ips": [],
+  "servers": [],
+  "volumes": []
+}

@@ -9,6 +9,7 @@
     "ingoing_traffic": null,
     "labels": {},
     "load_balancer_type": {
+      "deprecated": null,
       "description": "",
       "id": 0,
       "max_assigned_certificates": 0,
