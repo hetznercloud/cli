@@ -101,7 +101,7 @@ var MetricsCmd = base.Cmd{
 			sort.Strings(keys)
 			for _, k := range keys {
 				if len(m.TimeSeries[k]) == 0 {
-					cmd.Printf("Currently there are now metrics available. Please try it again later.")
+					cmd.Printf("Currently there are no metrics available. Please try it again later.")
 					return nil
 				}
 				cmd.Printf("Load Balancer: %s \t Metric: %s \t Start: %s \t End: %s\n", LoadBalancer.Name, k, m.Start.String(), m.End.String())
