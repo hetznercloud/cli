@@ -18,8 +18,12 @@ var DescribeCmd = base.DescribeCmd{
 	JSONKeyGetByID:       "volume",
 	JSONKeyGetByName:     "volumes",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Volume().Names },
-	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
-		return client.Volume().Get(ctx, idOrName)
+	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
+		v, _, err := client.Volume().Get(ctx, idOrName)
+		if err != nil {
+			return nil, nil, err
+		}
+		return v, hcloud.SchemaFromVolume(v), nil
 	},
 	PrintText: func(_ context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}) error {
 		volume := resource.(*hcloud.Volume)

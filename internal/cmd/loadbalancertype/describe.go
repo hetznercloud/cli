@@ -16,8 +16,12 @@ var DescribeCmd = base.DescribeCmd{
 	JSONKeyGetByID:       "load_balancer_type",
 	JSONKeyGetByName:     "load_balancer_types",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.LoadBalancerType().Names },
-	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
-		return client.LoadBalancerType().Get(ctx, idOrName)
+	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
+		lbt, _, err := client.LoadBalancerType().Get(ctx, idOrName)
+		if err != nil {
+			return nil, nil, err
+		}
+		return lbt, hcloud.SchemaFromLoadBalancerType(lbt), nil
 	},
 	PrintText: func(_ context.Context, _ hcapi2.Client, cmd *cobra.Command, resource interface{}) error {
 		loadBalancerType := resource.(*hcloud.LoadBalancerType)

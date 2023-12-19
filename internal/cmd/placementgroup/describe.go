@@ -18,8 +18,12 @@ var DescribeCmd = base.DescribeCmd{
 	JSONKeyGetByID:       "placement_group",
 	JSONKeyGetByName:     "placement_groups",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.PlacementGroup().Names },
-	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
-		return client.PlacementGroup().Get(ctx, idOrName)
+	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
+		pg, _, err := client.PlacementGroup().Get(ctx, idOrName)
+		if err != nil {
+			return nil, nil, err
+		}
+		return pg, hcloud.SchemaFromPlacementGroup(pg), nil
 	},
 	PrintText: func(_ context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}) error {
 		placementGroup := resource.(*hcloud.PlacementGroup)

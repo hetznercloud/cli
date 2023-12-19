@@ -18,8 +18,12 @@ var DescribeCmd = base.DescribeCmd{
 	JSONKeyGetByID:       "certificate",
 	JSONKeyGetByName:     "certificates",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Certificate().Names },
-	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
-		return client.Certificate().Get(ctx, idOrName)
+	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
+		cert, _, err := client.Certificate().Get(ctx, idOrName)
+		if err != nil {
+			return nil, nil, err
+		}
+		return cert, hcloud.SchemaFromCertificate(cert), nil
 	},
 	PrintText: func(_ context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}) error {
 		cert := resource.(*hcloud.Certificate)
