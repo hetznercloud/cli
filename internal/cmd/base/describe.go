@@ -24,8 +24,10 @@ type DescribeCmd struct {
 	JSONKeyGetByName string // e.g. "servers"
 	NameSuggestions  func(client hcapi2.Client) func() []string
 	AdditionalFlags  func(*cobra.Command)
-	Fetch            func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error)
-	PrintText        func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}) error
+	// Fetch is called to fetch the resource to describe.
+	// The first returned interface is the resource itself as a hcloud struct, the second is the schema for the resource.
+	Fetch     func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error)
+	PrintText func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}) error
 }
 
 // CobraCommand creates a command that can be registered with cobra.
