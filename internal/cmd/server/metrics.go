@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"slices"
 	"sort"
 	"strconv"
 	"time"
@@ -20,6 +21,12 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
+var metricTypeStrings = []string{
+	string(hcloud.ServerMetricCPU),
+	string(hcloud.ServerMetricDisk),
+	string(hcloud.ServerMetricNetwork),
+}
+
 var MetricsCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
@@ -31,9 +38,9 @@ var MetricsCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 
-		cmd.Flags().String("type", "", "Type of metrics you want to show")
+		cmd.Flags().StringSlice("type", nil, "Types of metrics you want to show")
 		cmd.MarkFlagRequired("type")
-		cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("cpu", "disk", "network"))
+		cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates(metricTypeStrings...))
 
 		cmd.Flags().String("start", "", "ISO 8601 timestamp")
 		cmd.Flags().String("end", "", "ISO 8601 timestamp")
@@ -53,7 +60,15 @@ var MetricsCmd = base.Cmd{
 			return fmt.Errorf("server not found: %s", idOrName)
 		}
 
-		metricType, _ := cmd.Flags().GetString("type")
+		metricTypesStr, _ := cmd.Flags().GetStringSlice("type")
+		var metricTypes []hcloud.ServerMetricType
+		for _, t := range metricTypesStr {
+			if slices.Contains(metricTypeStrings, t) {
+				metricTypes = append(metricTypes, hcloud.ServerMetricType(t))
+			} else {
+				return fmt.Errorf("invalid metric type: %s", t)
+			}
+		}
 
 		start, _ := cmd.Flags().GetString("start")
 		startTime := time.Now().Add(-30 * time.Minute)
@@ -74,7 +89,7 @@ var MetricsCmd = base.Cmd{
 		}
 
 		m, resp, err := client.Server().GetMetrics(ctx, server, hcloud.ServerGetMetricsOpts{
-			Types: []hcloud.ServerMetricType{hcloud.ServerMetricType(metricType)},
+			Types: metricTypes,
 			Start: startTime,
 			End:   endTime,
 		})
