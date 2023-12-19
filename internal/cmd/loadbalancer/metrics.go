@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"slices"
 	"sort"
 	"strconv"
 	"time"
@@ -20,6 +21,13 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
+var metricTypeStrings = []string{
+	string(hcloud.LoadBalancerMetricOpenConnections),
+	string(hcloud.LoadBalancerMetricConnectionsPerSecond),
+	string(hcloud.LoadBalancerMetricRequestsPerSecond),
+	string(hcloud.LoadBalancerMetricBandwidth),
+}
+
 var MetricsCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
@@ -31,9 +39,9 @@ var MetricsCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 
-		cmd.Flags().String("type", "", "Type of metrics you want to show")
+		cmd.Flags().StringSlice("type", nil, "Types of metrics you want to show")
 		cmd.MarkFlagRequired("type")
-		cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("open_connections", "connections_per_second", "requests_per_second", "bandwidth"))
+		cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates(metricTypeStrings...))
 
 		cmd.Flags().String("start", "", "ISO 8601 timestamp")
 		cmd.Flags().String("end", "", "ISO 8601 timestamp")
@@ -53,7 +61,15 @@ var MetricsCmd = base.Cmd{
 			return fmt.Errorf("LoadBalancer not found: %s", idOrName)
 		}
 
-		metricType, _ := cmd.Flags().GetString("type")
+		metricTypesStr, _ := cmd.Flags().GetStringSlice("type")
+		var metricTypes []hcloud.LoadBalancerMetricType
+		for _, t := range metricTypesStr {
+			if slices.Contains(metricTypeStrings, t) {
+				metricTypes = append(metricTypes, hcloud.LoadBalancerMetricType(t))
+			} else {
+				return fmt.Errorf("invalid metric type: %s", t)
+			}
+		}
 
 		start, _ := cmd.Flags().GetString("start")
 		startTime := time.Now().Add(-30 * time.Minute)
@@ -74,7 +90,7 @@ var MetricsCmd = base.Cmd{
 		}
 
 		m, resp, err := client.LoadBalancer().GetMetrics(ctx, LoadBalancer, hcloud.LoadBalancerGetMetricsOpts{
-			Types: []hcloud.LoadBalancerMetricType{hcloud.LoadBalancerMetricType(metricType)},
+			Types: metricTypes,
 			Start: startTime,
 			End:   endTime,
 		})
