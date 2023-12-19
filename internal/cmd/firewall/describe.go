@@ -19,8 +19,12 @@ var DescribeCmd = base.DescribeCmd{
 	JSONKeyGetByID:       "firewall",
 	JSONKeyGetByName:     "firewalls",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Firewall().Names },
-	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
-		return client.Firewall().Get(ctx, idOrName)
+	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
+		fw, _, err := client.Firewall().Get(ctx, idOrName)
+		if err != nil {
+			return nil, nil, err
+		}
+		return fw, hcloud.SchemaFromFirewall(fw), nil
 	},
 	PrintText: func(_ context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}) error {
 		firewall := resource.(*hcloud.Firewall)

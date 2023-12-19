@@ -19,8 +19,12 @@ var DescribeCmd = base.DescribeCmd{
 	JSONKeyGetByID:       "load_balancer",
 	JSONKeyGetByName:     "load_balancers",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.LoadBalancer().Names },
-	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
-		return client.LoadBalancer().Get(ctx, idOrName)
+	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
+		lb, _, err := client.LoadBalancer().Get(ctx, idOrName)
+		if err != nil {
+			return nil, nil, err
+		}
+		return lb, hcloud.SchemaFromLoadBalancer(lb), nil
 	},
 	AdditionalFlags: func(cmd *cobra.Command) {
 		cmd.Flags().Bool("expand-targets", false, "Expand all label_selector targets")

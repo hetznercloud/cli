@@ -2,9 +2,7 @@ package base
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"io"
 	"reflect"
 	"strings"
 
@@ -15,7 +13,6 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
-	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 // DescribeCmd allows defining commands for describing a resource.
@@ -27,7 +24,7 @@ type DescribeCmd struct {
 	JSONKeyGetByName string // e.g. "servers"
 	NameSuggestions  func(client hcapi2.Client) func() []string
 	AdditionalFlags  func(*cobra.Command)
-	Fetch            func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error)
+	Fetch            func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error)
 	PrintText        func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}) error
 }
 
@@ -59,7 +56,7 @@ func (dc *DescribeCmd) Run(ctx context.Context, client hcapi2.Client, cmd *cobra
 	outputFlags := output.FlagsForCommand(cmd)
 
 	idOrName := args[0]
-	resource, resp, err := dc.Fetch(ctx, client, cmd, idOrName)
+	resource, schema, err := dc.Fetch(ctx, client, cmd, idOrName)
 	if err != nil {
 		return err
 	}
@@ -72,28 +69,12 @@ func (dc *DescribeCmd) Run(ctx context.Context, client hcapi2.Client, cmd *cobra
 
 	switch {
 	case outputFlags.IsSet("json"):
-		return dc.describe(resp.Body, util.DescribeJSON)
+		return util.DescribeJSON(schema)
 	case outputFlags.IsSet("yaml"):
-		return dc.describe(resp.Body, util.DescribeYAML)
+		return util.DescribeYAML(schema)
 	case outputFlags.IsSet("format"):
 		return util.DescribeFormat(resource, outputFlags["format"][0])
 	default:
 		return dc.PrintText(ctx, client, cmd, resource)
 	}
-}
-
-func (dc *DescribeCmd) describe(body io.ReadCloser, describeFunc func(interface{}) error) error {
-	var schema map[string]interface{}
-	if err := json.NewDecoder(body).Decode(&schema); err != nil {
-		return err
-	}
-	if resource, ok := schema[dc.JSONKeyGetByID]; ok {
-		return describeFunc(resource)
-	}
-	if resources, ok := schema[dc.JSONKeyGetByName].([]interface{}); ok {
-		// We check whether we got a resource at all above (see reflect-based nil check), so it's
-		// ok to assume there's an element in resources.
-		return describeFunc(resources[0])
-	}
-	return fmt.Errorf("got invalid JSON response")
 }

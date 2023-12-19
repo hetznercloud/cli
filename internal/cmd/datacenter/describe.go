@@ -16,8 +16,12 @@ var DescribeCmd = base.DescribeCmd{
 	JSONKeyGetByID:       "datacenter",
 	JSONKeyGetByName:     "datacenters",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Datacenter().Names },
-	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
-		return client.Datacenter().Get(ctx, idOrName)
+	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
+		dc, _, err := client.Datacenter().Get(ctx, idOrName)
+		if err != nil {
+			return nil, nil, err
+		}
+		return dc, hcloud.SchemaFromDatacenter(dc), nil
 	},
 	PrintText: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}) error {
 		datacenter := resource.(*hcloud.Datacenter)

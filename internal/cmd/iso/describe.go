@@ -18,8 +18,12 @@ var DescribeCmd = base.DescribeCmd{
 	JSONKeyGetByID:       "iso",
 	JSONKeyGetByName:     "isos",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Location().Names },
-	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
-		return client.ISO().Get(ctx, idOrName)
+	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
+		iso, _, err := client.ISO().Get(ctx, idOrName)
+		if err != nil {
+			return nil, nil, err
+		}
+		return iso, hcloud.SchemaFromISO(iso), nil
 	},
 	PrintText: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}) error {
 		iso := resource.(*hcloud.ISO)
