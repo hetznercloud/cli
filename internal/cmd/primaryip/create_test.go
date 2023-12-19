@@ -12,7 +12,6 @@ import (
 
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
-	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
 //go:embed testdata/create_response.json
@@ -73,33 +72,6 @@ func TestCreateJSON(t *testing.T) {
 		fx.ActionWaiter)
 	fx.ExpectEnsureToken()
 
-	response, err := testutil.MockResponse(&schema.PrimaryIPCreateResponse{
-		PrimaryIP: schema.PrimaryIP{
-			ID:   1,
-			Name: "my-ip",
-			IP:   "192.168.2.1",
-			Type: "ipv4",
-			Datacenter: schema.Datacenter{
-				ID:       1,
-				Name:     "fsn1-dc14",
-				Location: schema.Location{ID: 1, Name: "fsn1"},
-			},
-			Created:      time.Date(2016, 1, 30, 23, 50, 0, 0, time.UTC),
-			Labels:       make(map[string]string),
-			AutoDelete:   true,
-			AssigneeID:   1,
-			AssigneeType: "server",
-			DNSPtr:       make([]schema.PrimaryIPDNSPTR, 0),
-		},
-		Action: &schema.Action{
-			ID: 321,
-		},
-	})
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
 	fx.Client.PrimaryIPClient.EXPECT().
 		Create(
 			gomock.Any(),
@@ -114,11 +86,23 @@ func TestCreateJSON(t *testing.T) {
 			&hcloud.PrimaryIPCreateResult{
 				PrimaryIP: &hcloud.PrimaryIP{
 					ID:   1,
+					Name: "my-ip",
 					IP:   net.ParseIP("192.168.2.1"),
-					Type: hcloud.PrimaryIPTypeIPv4,
+					Type: "ipv4",
+					Datacenter: &hcloud.Datacenter{
+						ID:       1,
+						Name:     "fsn1-dc14",
+						Location: &hcloud.Location{ID: 1, Name: "fsn1"},
+					},
+					Created:      time.Date(2016, 1, 30, 23, 50, 0, 0, time.UTC),
+					Labels:       make(map[string]string),
+					AutoDelete:   true,
+					AssigneeID:   1,
+					AssigneeType: "server",
+					DNSPtr:       map[string]string{},
 				},
 				Action: &hcloud.Action{ID: 321},
-			}, response, nil)
+			}, nil, nil)
 
 	fx.ActionWaiter.EXPECT().
 		ActionProgress(gomock.Any(), &hcloud.Action{ID: 321})

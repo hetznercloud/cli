@@ -12,7 +12,6 @@ import (
 
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
-	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
 //go:embed testdata/create_response.json
@@ -77,28 +76,22 @@ func TestCreateJSON(t *testing.T) {
 		fx.ActionWaiter)
 	fx.ExpectEnsureToken()
 
-	response, err := testutil.MockResponse(&schema.LoadBalancerCreateResponse{
-		LoadBalancer: schema.LoadBalancer{
-			ID:   123,
-			Name: "myLoadBalancer",
-			PublicNet: schema.LoadBalancerPublicNet{
-				IPv4: schema.LoadBalancerPublicNetIPv4{
-					IP: "192.168.2.1",
-				},
-				IPv6: schema.LoadBalancerPublicNetIPv6{
-					IP: "::",
-				},
+	lb := &hcloud.LoadBalancer{
+		ID:   123,
+		Name: "myLoadBalancer",
+		PublicNet: hcloud.LoadBalancerPublicNet{
+			IPv4: hcloud.LoadBalancerPublicNetIPv4{
+				IP: net.ParseIP("192.168.2.1"),
 			},
-			Labels:          make(map[string]string),
-			Created:         time.Date(2016, 1, 30, 23, 50, 0, 0, time.UTC),
-			IncludedTraffic: 654321,
-			Services:        make([]schema.LoadBalancerService, 0),
-			Targets:         make([]schema.LoadBalancerTarget, 0),
+			IPv6: hcloud.LoadBalancerPublicNetIPv6{
+				IP: net.IPv6zero,
+			},
 		},
-	})
-
-	if err != nil {
-		t.Fatal(err)
+		Labels:          make(map[string]string),
+		Created:         time.Date(2016, 1, 30, 23, 50, 0, 0, time.UTC),
+		IncludedTraffic: 654321,
+		Services:        []hcloud.LoadBalancerService{},
+		Targets:         []hcloud.LoadBalancerTarget{},
 	}
 
 	fx.Client.LoadBalancerClient.EXPECT().
@@ -109,23 +102,13 @@ func TestCreateJSON(t *testing.T) {
 			Labels:           make(map[string]string),
 		}).
 		Return(hcloud.LoadBalancerCreateResult{
-			LoadBalancer: &hcloud.LoadBalancer{ID: 123},
+			LoadBalancer: lb,
 			Action:       &hcloud.Action{ID: 321},
-		}, response, nil)
+		}, nil, nil)
 	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), &hcloud.Action{ID: 321}).Return(nil)
 	fx.Client.LoadBalancerClient.EXPECT().
 		GetByID(gomock.Any(), int64(123)).
-		Return(&hcloud.LoadBalancer{
-			ID: 123,
-			PublicNet: hcloud.LoadBalancerPublicNet{
-				IPv4: hcloud.LoadBalancerPublicNetIPv4{
-					IP: net.ParseIP("192.168.2.1"),
-				},
-				IPv6: hcloud.LoadBalancerPublicNetIPv6{
-					IP: net.IPv6zero,
-				},
-			},
-		}, nil, nil)
+		Return(lb, nil, nil)
 
 	jsonOut, out, err := fx.Run(cmd, []string{"-o=json", "--name", "myLoadBalancer", "--type", "lb11", "--location", "fsn1"})
 

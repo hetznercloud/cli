@@ -3,6 +3,7 @@ package firewall
 import (
 	"context"
 	_ "embed"
+	"net"
 	"testing"
 	"time"
 
@@ -11,7 +12,6 @@ import (
 
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
-	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
 //go:embed testdata/create_response.json
@@ -62,33 +62,6 @@ func TestCreateJSON(t *testing.T) {
 		fx.ActionWaiter)
 	fx.ExpectEnsureToken()
 
-	response, err := testutil.MockResponse(&schema.FirewallCreateResponse{
-		Firewall: schema.Firewall{
-			ID:      123,
-			Name:    "test",
-			Created: time.Date(2016, 1, 30, 23, 50, 0, 0, time.UTC),
-			AppliedTo: []schema.FirewallResource{
-				{Type: "server", Server: &schema.FirewallResourceServer{
-					ID: 1,
-				}},
-			},
-			Labels: make(map[string]string),
-			Rules: []schema.FirewallRule{
-				{
-					Direction: "in",
-					SourceIPs: make([]string, 0),
-					Protocol:  "tcp",
-					Port:      hcloud.Ptr("22"),
-				},
-			},
-		},
-		Actions: make([]schema.Action, 0),
-	})
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
 	fx.Client.FirewallClient.EXPECT().
 		Create(gomock.Any(), hcloud.FirewallCreateOpts{
 			Name:   "test",
@@ -96,11 +69,26 @@ func TestCreateJSON(t *testing.T) {
 		}).
 		Return(hcloud.FirewallCreateResult{
 			Firewall: &hcloud.Firewall{
-				ID:   123,
-				Name: "test",
+				ID:      123,
+				Name:    "test",
+				Created: time.Date(2016, 1, 30, 23, 50, 0, 0, time.UTC),
+				AppliedTo: []hcloud.FirewallResource{
+					{Type: "server", Server: &hcloud.FirewallResourceServer{
+						ID: 1,
+					}},
+				},
+				Labels: make(map[string]string),
+				Rules: []hcloud.FirewallRule{
+					{
+						Direction: "in",
+						SourceIPs: []net.IPNet{},
+						Protocol:  "tcp",
+						Port:      hcloud.Ptr("22"),
+					},
+				},
 			},
 			Actions: []*hcloud.Action{{ID: 321}},
-		}, response, nil)
+		}, nil, nil)
 	fx.ActionWaiter.EXPECT().
 		WaitForActions(gomock.Any(), []*hcloud.Action{{ID: 321}})
 

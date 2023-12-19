@@ -2,8 +2,8 @@
   "floating_ip": {
     "blocked": false,
     "created": "0001-01-01T00:00:00Z",
-    "description": null,
-    "dns_ptr": null,
+    "description": "",
+    "dns_ptr": [],
     "home_location": {
       "city": "",
       "country": "",

@@ -80,7 +80,7 @@
       },
       "ipv6": {
         "blocked": false,
-        "dns_ptr": null,
+        "dns_ptr": [],
         "id": 0,
         "ip": ""
       }

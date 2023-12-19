@@ -11,7 +11,6 @@ import (
 
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
-	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
 //go:embed testdata/create_response.json
@@ -67,24 +66,6 @@ func TestCreateJSON(t *testing.T) {
 		fx.ActionWaiter)
 	fx.ExpectEnsureToken()
 
-	response, err := testutil.MockResponse(&schema.FloatingIPCreateResponse{
-		FloatingIP: schema.FloatingIP{
-			ID:     123,
-			Name:   "myFloatingIP",
-			IP:     "127.0.0.1",
-			Type:   string(hcloud.FloatingIPTypeIPv4),
-			Labels: make(map[string]string),
-			Server: hcloud.Ptr(int64(1)),
-		},
-		Action: &schema.Action{
-			ID: 321,
-		},
-	})
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
 	fx.Client.FloatingIPClient.EXPECT().
 		Create(gomock.Any(), hcloud.FloatingIPCreateOpts{
 			Name:         hcloud.Ptr("myFloatingIP"),
@@ -95,13 +76,15 @@ func TestCreateJSON(t *testing.T) {
 		}).
 		Return(hcloud.FloatingIPCreateResult{
 			FloatingIP: &hcloud.FloatingIP{
-				ID:   123,
-				Name: "myFloatingIP",
-				IP:   net.ParseIP("192.168.2.1"),
-				Type: hcloud.FloatingIPTypeIPv4,
+				ID:     123,
+				Name:   "myFloatingIP",
+				IP:     net.ParseIP("127.0.0.1"),
+				Type:   hcloud.FloatingIPTypeIPv4,
+				Labels: map[string]string{},
+				Server: &hcloud.Server{ID: 1},
 			},
 			Action: nil,
-		}, response, nil)
+		}, nil, nil)
 
 	jsonOut, out, err := fx.Run(cmd, []string{"-o=json", "--name", "myFloatingIP", "--type", "ipv4", "--home-location", "fsn1"})
 

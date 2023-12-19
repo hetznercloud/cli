@@ -12,6 +12,7 @@ import (
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
 var CreateCmd = base.CreateCmd{
@@ -44,7 +45,7 @@ var CreateCmd = base.CreateCmd{
 
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) (*hcloud.Response, any, error) {
+	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) (any, any, error) {
 		typ, _ := cmd.Flags().GetString("type")
 		if typ == "" {
 			return nil, nil, errors.New("type is required")
@@ -89,24 +90,28 @@ var CreateCmd = base.CreateCmd{
 			createOpts.Server = server
 		}
 
-		result, response, err := client.FloatingIP().Create(ctx, createOpts)
+		res, _, err := client.FloatingIP().Create(ctx, createOpts)
 		if err != nil {
 			return nil, nil, err
 		}
 
-		if result.Action != nil {
-			if err := waiter.ActionProgress(ctx, result.Action); err != nil {
+		if res.Action != nil {
+			if err := waiter.ActionProgress(ctx, res.Action); err != nil {
 				return nil, nil, err
 			}
 		}
 
-		cmd.Printf("Floating IP %d created\n", result.FloatingIP.ID)
+		cmd.Printf("Floating IP %d created\n", res.FloatingIP.ID)
 
-		if err := changeProtection(ctx, client, waiter, cmd, result.FloatingIP, true, protectionOps); err != nil {
+		if err := changeProtection(ctx, client, waiter, cmd, res.FloatingIP, true, protectionOps); err != nil {
 			return nil, nil, err
 		}
 
-		return response, result.FloatingIP, nil
+		return res.FloatingIP, struct {
+			FloatingIP schema.FloatingIP `json:"floating_ip"`
+		}{
+			FloatingIP: hcloud.SchemaFromFloatingIP(res.FloatingIP),
+		}, nil
 	},
 
 	PrintResource: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, resource any) {

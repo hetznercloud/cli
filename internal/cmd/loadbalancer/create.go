@@ -10,6 +10,7 @@ import (
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
 var CreateCmd = base.CreateCmd{
@@ -47,7 +48,7 @@ var CreateCmd = base.CreateCmd{
 
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) (*hcloud.Response, any, error) {
+	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) (any, any, error) {
 		name, _ := cmd.Flags().GetString("name")
 		serverType, _ := cmd.Flags().GetString("type")
 		algorithmType, _ := cmd.Flags().GetString("algorithm-type")
@@ -77,15 +78,15 @@ var CreateCmd = base.CreateCmd{
 		if location != "" {
 			createOpts.Location = &hcloud.Location{Name: location}
 		}
-		result, response, err := client.LoadBalancer().Create(ctx, createOpts)
+		res, _, err := client.LoadBalancer().Create(ctx, createOpts)
 		if err != nil {
 			return nil, nil, err
 		}
 
-		if err := waiter.ActionProgress(ctx, result.Action); err != nil {
+		if err := waiter.ActionProgress(ctx, res.Action); err != nil {
 			return nil, nil, err
 		}
-		loadBalancer, _, err := client.LoadBalancer().GetByID(ctx, result.LoadBalancer.ID)
+		loadBalancer, _, err := client.LoadBalancer().GetByID(ctx, res.LoadBalancer.ID)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -95,7 +96,11 @@ var CreateCmd = base.CreateCmd{
 			return nil, nil, err
 		}
 
-		return response, loadBalancer, nil
+		return loadBalancer, struct {
+			LoadBalancer schema.LoadBalancer `json:"load_balancer"`
+		}{
+			LoadBalancer: hcloud.SchemaFromLoadBalancer(loadBalancer),
+		}, nil
 	},
 
 	PrintResource: func(_ context.Context, _ hcapi2.Client, cmd *cobra.Command, resource any) {

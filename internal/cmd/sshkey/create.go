@@ -11,6 +11,7 @@ import (
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
 var CreateCmd = base.CreateCmd{
@@ -30,7 +31,7 @@ var CreateCmd = base.CreateCmd{
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) (*hcloud.Response, any, error) {
+	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) (any, any, error) {
 		name, _ := cmd.Flags().GetString("name")
 		publicKey, _ := cmd.Flags().GetString("public-key")
 		publicKeyFile, _ := cmd.Flags().GetString("public-key-from-file")
@@ -57,16 +58,17 @@ var CreateCmd = base.CreateCmd{
 			PublicKey: publicKey,
 			Labels:    labels,
 		}
-		sshKey, response, err := client.SSHKey().Create(ctx, opts)
+		sshKey, _, err := client.SSHKey().Create(ctx, opts)
 		if err != nil {
 			return nil, nil, err
 		}
 
 		cmd.Printf("SSH key %d created\n", sshKey.ID)
 
-		return response, nil, nil
-	},
-	PrintResource: func(_ context.Context, _ hcapi2.Client, _ *cobra.Command, _ any) {
-		// no-op
+		return sshKey, struct {
+			SSHKey schema.SSHKey `json:"ssh_key"`
+		}{
+			SSHKey: hcloud.SchemaFromSSHKey(sshKey),
+		}, nil
 	},
 }

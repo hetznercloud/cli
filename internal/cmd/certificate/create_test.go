@@ -11,7 +11,6 @@ import (
 
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
-	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
 //go:embed testdata/managed_create_response.json
@@ -68,33 +67,6 @@ func TestCreateManagedJSON(t *testing.T) {
 		fx.ActionWaiter)
 	fx.ExpectEnsureToken()
 
-	response, err := testutil.MockResponse(&schema.CertificateCreateResponse{
-		Certificate: schema.Certificate{
-			ID:             123,
-			Name:           "test",
-			Type:           string(hcloud.CertificateTypeManaged),
-			Created:        time.Date(2020, 8, 24, 12, 0, 0, 0, time.UTC),
-			NotValidBefore: time.Date(2020, 8, 24, 12, 0, 0, 0, time.UTC),
-			NotValidAfter:  time.Date(2036, 8, 12, 12, 0, 0, 0, time.UTC),
-			DomainNames:    []string{"example.com"},
-			Labels:         map[string]string{"key": "value"},
-			UsedBy: []schema.CertificateUsedByRef{{
-				ID:   123,
-				Type: string(hcloud.CertificateUsedByRefTypeLoadBalancer),
-			}},
-			Status: &schema.CertificateStatusRef{
-				Error: &schema.Error{
-					Code:    "cert_error",
-					Message: "Certificate error",
-				},
-			},
-		},
-	})
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
 	fx.Client.CertificateClient.EXPECT().
 		CreateCertificate(gomock.Any(), hcloud.CertificateCreateOpts{
 			Name:        "test",
@@ -103,13 +75,27 @@ func TestCreateManagedJSON(t *testing.T) {
 		}).
 		Return(hcloud.CertificateCreateResult{
 			Certificate: &hcloud.Certificate{
-				ID:          123,
-				Name:        "test",
-				Type:        hcloud.CertificateTypeManaged,
-				DomainNames: []string{"example.com"},
+				ID:             123,
+				Name:           "test",
+				Type:           hcloud.CertificateTypeManaged,
+				Created:        time.Date(2020, 8, 24, 12, 0, 0, 0, time.UTC),
+				NotValidBefore: time.Date(2020, 8, 24, 12, 0, 0, 0, time.UTC),
+				NotValidAfter:  time.Date(2036, 8, 12, 12, 0, 0, 0, time.UTC),
+				DomainNames:    []string{"example.com"},
+				Labels:         map[string]string{"key": "value"},
+				UsedBy: []hcloud.CertificateUsedByRef{{
+					ID:   123,
+					Type: hcloud.CertificateUsedByRefTypeLoadBalancer,
+				}},
+				Status: &hcloud.CertificateStatus{
+					Error: &hcloud.Error{
+						Code:    "cert_error",
+						Message: "Certificate error",
+					},
+				},
 			},
 			Action: &hcloud.Action{ID: 321},
-		}, response, nil)
+		}, nil, nil)
 	fx.ActionWaiter.EXPECT().
 		ActionProgress(gomock.Any(), &hcloud.Action{ID: 321})
 
@@ -166,27 +152,6 @@ func TestCreateUploadedJSON(t *testing.T) {
 		fx.ActionWaiter)
 	fx.ExpectEnsureToken()
 
-	response, err := testutil.MockResponse(&schema.CertificateCreateResponse{
-		Certificate: schema.Certificate{
-			ID:             123,
-			Name:           "test",
-			Type:           string(hcloud.CertificateTypeUploaded),
-			Created:        time.Date(2020, 8, 24, 12, 0, 0, 0, time.UTC),
-			NotValidBefore: time.Date(2020, 8, 24, 12, 0, 0, 0, time.UTC),
-			NotValidAfter:  time.Date(2036, 8, 12, 12, 0, 0, 0, time.UTC),
-			Labels:         map[string]string{"key": "value"},
-			Fingerprint:    "00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00",
-			UsedBy: []schema.CertificateUsedByRef{{
-				ID:   123,
-				Type: string(hcloud.CertificateUsedByRefTypeLoadBalancer),
-			}},
-		},
-	})
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
 	fx.Client.CertificateClient.EXPECT().
 		Create(gomock.Any(), hcloud.CertificateCreateOpts{
 			Name:        "test",
@@ -195,10 +160,19 @@ func TestCreateUploadedJSON(t *testing.T) {
 			PrivateKey:  "key file content",
 		}).
 		Return(&hcloud.Certificate{
-			ID:   123,
-			Name: "test",
-			Type: hcloud.CertificateTypeUploaded,
-		}, response, nil)
+			ID:             123,
+			Name:           "test",
+			Type:           hcloud.CertificateTypeUploaded,
+			Created:        time.Date(2020, 8, 24, 12, 0, 0, 0, time.UTC),
+			NotValidBefore: time.Date(2020, 8, 24, 12, 0, 0, 0, time.UTC),
+			NotValidAfter:  time.Date(2036, 8, 12, 12, 0, 0, 0, time.UTC),
+			Labels:         map[string]string{"key": "value"},
+			Fingerprint:    "00:00:00:00:00:00:00:00:00:00:00:00:00:00:00:00",
+			UsedBy: []hcloud.CertificateUsedByRef{{
+				ID:   123,
+				Type: hcloud.CertificateUsedByRefTypeLoadBalancer,
+			}},
+		}, nil, nil)
 
 	jsonOut, out, err := fx.Run(cmd, []string{"-o=json", "--name", "test", "--key-file", "testdata/key.pem", "--cert-file", "testdata/cert.pem"})
 

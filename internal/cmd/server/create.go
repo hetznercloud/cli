@@ -20,11 +20,17 @@ import (
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
 type createResult struct {
 	Server       *hcloud.Server
 	RootPassword string
+}
+
+type createResultSchema struct {
+	Server       schema.Server `json:"server"`
+	RootPassword string        `json:"root_password,omitempty"`
 }
 
 // CreateCmd defines a command for creating a server.
@@ -91,13 +97,13 @@ var CreateCmd = base.CreateCmd{
 		return cmd
 	},
 
-	Run: func(ctx context.Context, client hcapi2.Client, actionWaiter state.ActionWaiter, cmd *cobra.Command, args []string) (*hcloud.Response, any, error) {
+	Run: func(ctx context.Context, client hcapi2.Client, actionWaiter state.ActionWaiter, cmd *cobra.Command, args []string) (any, any, error) {
 		createOpts, protectionOpts, err := createOptsFromFlags(ctx, client, cmd)
 		if err != nil {
 			return nil, nil, err
 		}
 
-		result, response, err := client.Server().Create(ctx, createOpts)
+		result, _, err := client.Server().Create(ctx, createOpts)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -134,7 +140,8 @@ var CreateCmd = base.CreateCmd{
 			cmd.Printf("Backups enabled for server %d\n", server.ID)
 		}
 
-		return response, createResult{Server: server, RootPassword: result.RootPassword}, nil
+		return createResult{Server: server, RootPassword: result.RootPassword},
+			createResultSchema{Server: hcloud.SchemaFromServer(server), RootPassword: result.RootPassword}, nil
 	},
 
 	PrintResource: func(_ context.Context, client hcapi2.Client, cmd *cobra.Command, resource any) {

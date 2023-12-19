@@ -32,7 +32,7 @@ var CreateCmd = base.CreateCmd{
 		cmd.Flags().String("rules-file", "", "JSON file containing your routes (use - to read from stdin). The structure of the file needs to be the same as within the API: https://docs.hetzner.cloud/#firewalls-get-a-firewall ")
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, strings []string) (*hcloud.Response, any, error) {
+	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, strings []string) (any, any, error) {
 		name, _ := cmd.Flags().GetString("name")
 		labels, _ := cmd.Flags().GetStringToString("label")
 
@@ -78,17 +78,21 @@ var CreateCmd = base.CreateCmd{
 			}
 		}
 
-		result, response, err := client.Firewall().Create(ctx, opts)
+		res, _, err := client.Firewall().Create(ctx, opts)
 		if err != nil {
 			return nil, nil, err
 		}
 
-		if err := waiter.WaitForActions(ctx, result.Actions); err != nil {
+		if err := waiter.WaitForActions(ctx, res.Actions); err != nil {
 			return nil, nil, err
 		}
 
-		cmd.Printf("Firewall %d created\n", result.Firewall.ID)
+		cmd.Printf("Firewall %d created\n", res.Firewall.ID)
 
-		return response, nil, err
+		return res.Firewall, struct {
+			Firewall schema.Firewall `json:"firewall"`
+		}{
+			Firewall: hcloud.SchemaFromFirewall(res.Firewall),
+		}, err
 	},
 }
