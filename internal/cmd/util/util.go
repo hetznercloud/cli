@@ -165,6 +165,13 @@ func DescribeYAML(object interface{}) error {
 	return enc.Encode(object)
 }
 
+// WrapSchema return a map wrapping the schema (value) in a dict (`{ key: value }`).
+//
+// Used to reduce boilerplate.
+func WrapSchema(key string, value any) map[string]any {
+	return map[string]any{key: value}
+}
+
 // ValidateRequiredFlags ensures that flags has values for all flags with
 // the passed names.
 //

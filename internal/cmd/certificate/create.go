@@ -13,7 +13,6 @@ import (
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
-	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
 var CreateCmd = base.CreateCmd{
@@ -57,11 +56,7 @@ var CreateCmd = base.CreateCmd{
 		if err != nil {
 			return nil, nil, err
 		}
-		return cert, struct {
-			Certificate schema.Certificate `json:"certificate"`
-		}{
-			Certificate: hcloud.SchemaFromCertificate(cert),
-		}, nil
+		return cert, util.WrapSchema("certificate", hcloud.SchemaFromCertificate(cert)), nil
 	},
 }
 
