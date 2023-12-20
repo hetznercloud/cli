@@ -9,6 +9,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -47,7 +48,7 @@ var CreateCmd = base.CreateCmd{
 
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) (*hcloud.Response, any, error) {
+	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) (any, any, error) {
 		name, _ := cmd.Flags().GetString("name")
 		serverIDOrName, _ := cmd.Flags().GetString("server")
 		size, _ := cmd.Flags().GetInt("size")
@@ -93,7 +94,7 @@ var CreateCmd = base.CreateCmd{
 			createOpts.Format = &format
 		}
 
-		result, response, err := client.Volume().Create(ctx, createOpts)
+		result, _, err := client.Volume().Create(ctx, createOpts)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -106,9 +107,10 @@ var CreateCmd = base.CreateCmd{
 		}
 		cmd.Printf("Volume %d created\n", result.Volume.ID)
 
-		return response, nil, changeProtection(ctx, client, waiter, cmd, result.Volume, true, protectionOpts)
-	},
-	PrintResource: func(_ context.Context, _ hcapi2.Client, _ *cobra.Command, _ any) {
-		// no-op
+		if err := changeProtection(ctx, client, waiter, cmd, result.Volume, true, protectionOpts); err != nil {
+			return nil, nil, err
+		}
+
+		return result.Volume, util.Wrap("volume", hcloud.SchemaFromVolume(result.Volume)), nil
 	},
 }

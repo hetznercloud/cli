@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -26,7 +27,7 @@ var CreateCmd = base.CreateCmd{
 		cmd.MarkFlagRequired("type")
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) (*hcloud.Response, any, error) {
+	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) (any, any, error) {
 		name, _ := cmd.Flags().GetString("name")
 		labels, _ := cmd.Flags().GetStringToString("label")
 		placementGroupType, _ := cmd.Flags().GetString("type")
@@ -37,7 +38,7 @@ var CreateCmd = base.CreateCmd{
 			Type:   hcloud.PlacementGroupType(placementGroupType),
 		}
 
-		result, response, err := client.PlacementGroup().Create(ctx, opts)
+		result, _, err := client.PlacementGroup().Create(ctx, opts)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -50,9 +51,6 @@ var CreateCmd = base.CreateCmd{
 
 		cmd.Printf("Placement group %d created\n", result.PlacementGroup.ID)
 
-		return response, nil, nil
-	},
-	PrintResource: func(_ context.Context, _ hcapi2.Client, _ *cobra.Command, _ any) {
-		// no-op
+		return result.PlacementGroup, util.Wrap("placement_group", hcloud.SchemaFromPlacementGroup(result.PlacementGroup)), nil
 	},
 }

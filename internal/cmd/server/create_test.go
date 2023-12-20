@@ -13,7 +13,6 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/server"
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
-	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
 //go:embed testdata/create_response.json
@@ -92,68 +91,57 @@ func TestCreateJSON(t *testing.T) {
 	)
 	fx.ExpectEnsureToken()
 
-	response, err := testutil.MockResponse(&schema.ServerCreateResponse{
-		Server: schema.Server{
-			ID:   1234,
-			Name: "cli-test",
-			PublicNet: schema.ServerPublicNet{
-				IPv4: schema.ServerPublicNetIPv4{
-					IP: "192.0.2.1",
-				},
+	srv := &hcloud.Server{
+		ID:   1234,
+		Name: "cli-test",
+		PublicNet: hcloud.ServerPublicNet{
+			IPv4: hcloud.ServerPublicNetIPv4{
+				IP: net.ParseIP("192.0.2.1"),
 			},
-			Created: time.Date(2016, 1, 30, 23, 50, 0, 0, time.UTC),
-			Labels:  make(map[string]string),
-			Datacenter: schema.Datacenter{
-				ID:   1,
-				Name: "fsn1-dc14",
-				Location: schema.Location{
-					ID:   1,
-					Name: "fsn1",
-				},
-			},
-			ServerType: schema.ServerType{
-				ID:           1,
-				Name:         "cx11",
-				Cores:        1,
-				CPUType:      "shared",
-				Memory:       2,
-				Disk:         20,
-				StorageType:  "local",
-				Architecture: string(hcloud.ArchitectureX86),
-			},
-			Image: &schema.Image{
-				ID:          1,
-				Type:        "system",
-				Status:      "available",
-				Name:        hcloud.Ptr("ubuntu-20.04"),
-				Description: "Ubuntu 20.04",
-				Deprecated:  nil,
-				Labels:      make(map[string]string),
-				OSFlavor:    "ubuntu",
-				OSVersion:   hcloud.Ptr("20.04"),
-				RapidDeploy: true,
-				Protection: schema.ImageProtection{
-					Delete: true,
-				},
-			},
-			ISO: &schema.ISO{
-				ID:          1,
-				Name:        "FreeBSD-11.0-RELEASE-amd64-dvd1",
-				Description: "FreeBSD 11.0 x64",
-				Type:        "public",
-				Deprecated:  nil,
-			},
-			RescueEnabled: true,
-			Locked:        true,
-			Status:        string(hcloud.ServerStatusRunning),
 		},
-		NextActions:  make([]schema.Action, 0),
-		RootPassword: hcloud.Ptr("secret"),
-		Action:       schema.Action{ID: 123},
-	})
-
-	if err != nil {
-		t.Fatal(err)
+		Created: time.Date(2016, 1, 30, 23, 50, 0, 0, time.UTC),
+		Labels:  make(map[string]string),
+		Datacenter: &hcloud.Datacenter{
+			ID:   1,
+			Name: "fsn1-dc14",
+			Location: &hcloud.Location{
+				ID:   1,
+				Name: "fsn1",
+			},
+		},
+		ServerType: &hcloud.ServerType{
+			ID:           1,
+			Name:         "cx11",
+			Cores:        1,
+			CPUType:      "shared",
+			Memory:       2,
+			Disk:         20,
+			StorageType:  "local",
+			Architecture: hcloud.ArchitectureX86,
+		},
+		Image: &hcloud.Image{
+			ID:          1,
+			Type:        "system",
+			Status:      "available",
+			Name:        "ubuntu-20.04",
+			Description: "Ubuntu 20.04",
+			Labels:      make(map[string]string),
+			OSFlavor:    "ubuntu",
+			OSVersion:   "20.04",
+			RapidDeploy: true,
+			Protection: hcloud.ImageProtection{
+				Delete: true,
+			},
+		},
+		ISO: &hcloud.ISO{
+			ID:          1,
+			Name:        "FreeBSD-11.0-RELEASE-amd64-dvd1",
+			Description: "FreeBSD 11.0 x64",
+			Type:        "public",
+		},
+		RescueEnabled: true,
+		Locked:        true,
+		Status:        hcloud.ServerStatusRunning,
 	}
 
 	fx.Client.ServerTypeClient.EXPECT().
@@ -168,27 +156,14 @@ func TestCreateJSON(t *testing.T) {
 			assert.Equal(t, "cli-test", opts.Name)
 		}).
 		Return(hcloud.ServerCreateResult{
-			Server: &hcloud.Server{
-				ID: 1234,
-				PublicNet: hcloud.ServerPublicNet{
-					IPv4: hcloud.ServerPublicNetIPv4{
-						IP: net.ParseIP("192.0.2.1"),
-					},
-				},
-			},
-			Action:      &hcloud.Action{ID: 123},
-			NextActions: []*hcloud.Action{{ID: 234}},
-		}, response, nil)
+			Server:       srv,
+			RootPassword: "secret",
+			Action:       &hcloud.Action{ID: 123},
+			NextActions:  []*hcloud.Action{{ID: 234}},
+		}, nil, nil)
 	fx.Client.ServerClient.EXPECT().
 		GetByID(gomock.Any(), int64(1234)).
-		Return(&hcloud.Server{
-			ID: 1234,
-			PublicNet: hcloud.ServerPublicNet{
-				IPv4: hcloud.ServerPublicNetIPv4{
-					IP: net.ParseIP("192.0.2.1"),
-				},
-			},
-		}, nil, nil)
+		Return(srv, nil, nil)
 	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), &hcloud.Action{ID: 123}).Return(nil)
 	fx.ActionWaiter.EXPECT().WaitForActions(gomock.Any(), []*hcloud.Action{{ID: 234}}).Return(nil)
 
@@ -199,6 +174,7 @@ func TestCreateJSON(t *testing.T) {
 
 	assert.NoError(t, err)
 	assert.Equal(t, expOut, out)
+
 	assert.JSONEq(t, createResponseJson, jsonOut)
 }
 

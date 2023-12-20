@@ -9,6 +9,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -44,7 +45,7 @@ var CreateCmd = base.CreateCmd{
 
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) (*hcloud.Response, any, error) {
+	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) (any, any, error) {
 		typ, _ := cmd.Flags().GetString("type")
 		if typ == "" {
 			return nil, nil, errors.New("type is required")
@@ -89,7 +90,7 @@ var CreateCmd = base.CreateCmd{
 			createOpts.Server = server
 		}
 
-		result, response, err := client.FloatingIP().Create(ctx, createOpts)
+		result, _, err := client.FloatingIP().Create(ctx, createOpts)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -106,7 +107,7 @@ var CreateCmd = base.CreateCmd{
 			return nil, nil, err
 		}
 
-		return response, result.FloatingIP, nil
+		return result.FloatingIP, util.Wrap("floating_ip", hcloud.SchemaFromFloatingIP(result.FloatingIP)), nil
 	},
 
 	PrintResource: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, resource any) {

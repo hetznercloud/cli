@@ -41,26 +41,26 @@ var CreateCmd = base.CreateCmd{
 
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, strings []string) (*hcloud.Response, any, error) {
+	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, strings []string) (any, any, error) {
 		certType, err := cmd.Flags().GetString("type")
 		if err != nil {
 			return nil, nil, err
 		}
+		var cert *hcloud.Certificate
 		switch hcloud.CertificateType(certType) {
 		case hcloud.CertificateTypeManaged:
-			response, err := createManaged(ctx, client, waiter, cmd)
-			return response, nil, err
+			cert, err = createManaged(ctx, client, waiter, cmd)
 		default: // Uploaded
-			response, err := createUploaded(ctx, client, cmd)
-			return response, nil, err
+			cert, err = createUploaded(ctx, client, cmd)
 		}
-	},
-	PrintResource: func(_ context.Context, _ hcapi2.Client, _ *cobra.Command, _ any) {
-		// no-op
+		if err != nil {
+			return nil, nil, err
+		}
+		return cert, util.Wrap("certificate", hcloud.SchemaFromCertificate(cert)), nil
 	},
 }
 
-func createUploaded(ctx context.Context, client hcapi2.Client, cmd *cobra.Command) (*hcloud.Response, error) {
+func createUploaded(ctx context.Context, client hcapi2.Client, cmd *cobra.Command) (*hcloud.Certificate, error) {
 	var (
 		name              string
 		certFile, keyFile string
@@ -96,15 +96,15 @@ func createUploaded(ctx context.Context, client hcapi2.Client, cmd *cobra.Comman
 		Certificate: string(certPEM),
 		PrivateKey:  string(keyPEM),
 	}
-	cert, response, err := client.Certificate().Create(ctx, createOpts)
+	cert, _, err = client.Certificate().Create(ctx, createOpts)
 	if err != nil {
 		return nil, err
 	}
 	cmd.Printf("Certificate %d created\n", cert.ID)
-	return response, nil
+	return cert, nil
 }
 
-func createManaged(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command) (*hcloud.Response, error) {
+func createManaged(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command) (*hcloud.Certificate, error) {
 	var (
 		name    string
 		domains []string
@@ -127,7 +127,7 @@ func createManaged(ctx context.Context, client hcapi2.Client, waiter state.Actio
 		Type:        hcloud.CertificateTypeManaged,
 		DomainNames: domains,
 	}
-	res, response, err := client.Certificate().CreateCertificate(ctx, createOpts)
+	res, _, err = client.Certificate().CreateCertificate(ctx, createOpts)
 	if err != nil {
 		return nil, err
 	}
@@ -135,5 +135,5 @@ func createManaged(ctx context.Context, client hcapi2.Client, waiter state.Actio
 		return nil, err
 	}
 	cmd.Printf("Certificate %d created\n", res.Certificate.ID)
-	return response, nil
+	return res.Certificate, nil
 }

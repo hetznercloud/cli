@@ -165,6 +165,13 @@ func DescribeYAML(object interface{}) error {
 	return enc.Encode(object)
 }
 
+// Wrap wraps the passed value in a map with the passed key.
+//
+// This is useful when working with JSON objects.
+func Wrap(key string, value any) map[string]any {
+	return map[string]any{key: value}
+}
+
 // ValidateRequiredFlags ensures that flags has values for all flags with
 // the passed names.
 //

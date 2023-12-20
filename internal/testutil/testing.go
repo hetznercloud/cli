@@ -2,13 +2,9 @@ package testutil
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
 	"io"
-	"net/http/httptest"
 	"os"
-
-	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 // CaptureOutStreams redirects stdout & stderr while running fn and returns the outputs as a string.
@@ -65,25 +61,4 @@ func CaptureOutStreams(fn func() error) (string, string, error) {
 	}
 
 	return outBuf.String(), errBuf.String(), err
-}
-
-// MockResponse returns a *hcloud.Response with the given value as JSON body.
-func MockResponse[V any](v V) (*hcloud.Response, error) {
-
-	responseBytes, err := json.MarshalIndent(v, "", "  ")
-	if err != nil {
-		return nil, err
-	}
-
-	responseRecorder := httptest.NewRecorder()
-	responseRecorder.WriteHeader(200)
-
-	_, err = responseRecorder.Write(responseBytes)
-	if err != nil {
-		return nil, err
-	}
-
-	return &hcloud.Response{
-		Response: responseRecorder.Result(),
-	}, nil
 }

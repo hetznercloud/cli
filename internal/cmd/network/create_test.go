@@ -12,7 +12,6 @@ import (
 
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
-	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
 //go:embed testdata/create_response.json
@@ -63,23 +62,6 @@ func TestCreateJSON(t *testing.T) {
 		fx.ActionWaiter)
 	fx.ExpectEnsureToken()
 
-	response, err := testutil.MockResponse(&schema.NetworkCreateResponse{
-		Network: schema.Network{
-			ID:      123,
-			Name:    "myNetwork",
-			IPRange: "10.0.0.0/24",
-			Created: time.Date(2016, 1, 30, 23, 50, 0, 0, time.UTC),
-			Labels:  make(map[string]string),
-			Servers: []int64{1, 2, 3},
-			Routes:  make([]schema.NetworkRoute, 0),
-			Subnets: make([]schema.NetworkSubnet, 0),
-		},
-	})
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
 	_, ipRange, _ := net.ParseCIDR("10.0.0.0/24")
 	fx.Client.NetworkClient.EXPECT().
 		Create(gomock.Any(), hcloud.NetworkCreateOpts{
@@ -91,7 +73,12 @@ func TestCreateJSON(t *testing.T) {
 			ID:      123,
 			Name:    "myNetwork",
 			IPRange: ipRange,
-		}, response, nil)
+			Created: time.Date(2016, 1, 30, 23, 50, 0, 0, time.UTC),
+			Labels:  make(map[string]string),
+			Servers: []*hcloud.Server{{ID: 1}, {ID: 2}, {ID: 3}},
+			Routes:  []hcloud.NetworkRoute{},
+			Subnets: []hcloud.NetworkSubnet{},
+		}, nil, nil)
 
 	jsonOut, out, err := fx.Run(cmd, []string{"-o=json", "--name", "myNetwork", "--ip-range", "10.0.0.0/24"})
 

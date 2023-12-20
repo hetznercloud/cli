@@ -7,6 +7,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -40,7 +41,7 @@ var CreateCmd = base.CreateCmd{
 
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) (*hcloud.Response, any, error) {
+	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) (any, any, error) {
 		typ, _ := cmd.Flags().GetString("type")
 		name, _ := cmd.Flags().GetString("name")
 		assigneeID, _ := cmd.Flags().GetInt64("assignee-id")
@@ -62,7 +63,7 @@ var CreateCmd = base.CreateCmd{
 			createOpts.AssigneeID = &assigneeID
 		}
 
-		result, response, err := client.PrimaryIP().Create(ctx, createOpts)
+		result, _, err := client.PrimaryIP().Create(ctx, createOpts)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -81,7 +82,7 @@ var CreateCmd = base.CreateCmd{
 			}
 		}
 
-		return response, result.PrimaryIP, nil
+		return result.PrimaryIP, util.Wrap("primary_ip", hcloud.SchemaFromPrimaryIP(result.PrimaryIP)), nil
 	},
 	PrintResource: func(_ context.Context, _ hcapi2.Client, cmd *cobra.Command, resource any) {
 		primaryIP := resource.(*hcloud.PrimaryIP)

@@ -11,7 +11,6 @@ import (
 
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
-	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
 //go:embed testdata/create_response.json
@@ -71,30 +70,6 @@ func TestCreateJSON(t *testing.T) {
 		fx.ActionWaiter)
 	fx.ExpectEnsureToken()
 
-	response, err := testutil.MockResponse(&schema.VolumeCreateResponse{
-		Volume: schema.Volume{
-			ID:       123,
-			Name:     "test",
-			Size:     20,
-			Location: schema.Location{Name: "fsn1"},
-			Labels:   make(map[string]string),
-			Created:  time.Date(2016, 1, 30, 23, 50, 0, 0, time.UTC),
-			Status:   string(hcloud.VolumeStatusAvailable),
-			Protection: schema.VolumeProtection{
-				Delete: true,
-			},
-			Server: hcloud.Ptr(int64(123)),
-		},
-		Action: &schema.Action{
-			ID: 321,
-		},
-		NextActions: make([]schema.Action, 0),
-	})
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
 	fx.Client.VolumeClient.EXPECT().
 		Create(gomock.Any(), hcloud.VolumeCreateOpts{
 			Name:     "test",
@@ -108,10 +83,17 @@ func TestCreateJSON(t *testing.T) {
 				Name:     "test",
 				Size:     20,
 				Location: &hcloud.Location{Name: "fsn1"},
+				Labels:   make(map[string]string),
+				Created:  time.Date(2016, 1, 30, 23, 50, 0, 0, time.UTC),
+				Status:   hcloud.VolumeStatusAvailable,
+				Protection: hcloud.VolumeProtection{
+					Delete: true,
+				},
+				Server: &hcloud.Server{ID: 123},
 			},
 			Action:      &hcloud.Action{ID: 321},
 			NextActions: []*hcloud.Action{{ID: 1}, {ID: 2}, {ID: 3}},
-		}, response, nil)
+		}, nil, nil)
 	fx.ActionWaiter.EXPECT().
 		ActionProgress(gomock.Any(), &hcloud.Action{ID: 321})
 	fx.ActionWaiter.EXPECT().

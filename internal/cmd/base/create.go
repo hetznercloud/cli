@@ -2,8 +2,6 @@ package base
 
 import (
 	"context"
-	"encoding/json"
-	"io"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -12,14 +10,15 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
-	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 // CreateCmd allows defining commands for resource creation
 type CreateCmd struct {
 	BaseCobraCommand func(hcapi2.Client) *cobra.Command
-	Run              func(context.Context, hcapi2.Client, state.ActionWaiter, *cobra.Command, []string) (*hcloud.Response, any, error)
-	PrintResource    func(context.Context, hcapi2.Client, *cobra.Command, any)
+	// Run is the function that will be called when the command is executed.
+	// It should return the created resource, the schema of the resource and an error.
+	Run           func(context.Context, hcapi2.Client, state.ActionWaiter, *cobra.Command, []string) (any, any, error)
+	PrintResource func(context.Context, hcapi2.Client, *cobra.Command, any)
 }
 
 // CobraCommand creates a command that can be registered with cobra.
@@ -53,29 +52,18 @@ func (cc *CreateCmd) CobraCommand(
 			cmd.SetOut(os.Stdout)
 		}
 
-		response, resource, err := cc.Run(ctx, client, actionWaiter, cmd, args)
+		resource, schema, err := cc.Run(ctx, client, actionWaiter, cmd, args)
 		if err != nil {
 			return err
 		}
 
 		if isSchema {
-			bytes, _ := io.ReadAll(response.Body)
-
-			var schema map[string]any
-			if err := json.Unmarshal(bytes, &schema); err != nil {
-				return err
-			}
-
-			delete(schema, "action")
-			delete(schema, "actions")
-			delete(schema, "next_actions")
-
 			if outputFlags.IsSet("json") {
 				return util.DescribeJSON(schema)
 			} else {
 				return util.DescribeYAML(schema)
 			}
-		} else if resource != nil {
+		} else if cc.PrintResource != nil && resource != nil {
 			cc.PrintResource(ctx, client, cmd, resource)
 		}
 		return nil
