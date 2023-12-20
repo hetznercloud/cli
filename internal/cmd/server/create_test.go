@@ -3,7 +3,6 @@ package server_test
 import (
 	"context"
 	_ "embed"
-	"fmt"
 	"net"
 	"testing"
 	"time"
@@ -175,8 +174,6 @@ func TestCreateJSON(t *testing.T) {
 
 	assert.NoError(t, err)
 	assert.Equal(t, expOut, out)
-
-	fmt.Println(jsonOut)
 
 	assert.JSONEq(t, createResponseJson, jsonOut)
 }
