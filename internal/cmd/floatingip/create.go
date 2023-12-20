@@ -9,10 +9,10 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
-	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
 var CreateCmd = base.CreateCmd{
@@ -107,11 +107,7 @@ var CreateCmd = base.CreateCmd{
 			return nil, nil, err
 		}
 
-		return res.FloatingIP, struct {
-			FloatingIP schema.FloatingIP `json:"floating_ip"`
-		}{
-			FloatingIP: hcloud.SchemaFromFloatingIP(res.FloatingIP),
-		}, nil
+		return res.FloatingIP, util.Wrap("floating_ip", hcloud.SchemaFromFloatingIP(res.FloatingIP)), nil
 	},
 
 	PrintResource: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, resource any) {

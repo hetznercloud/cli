@@ -11,6 +11,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -89,10 +90,6 @@ var CreateCmd = base.CreateCmd{
 
 		cmd.Printf("Firewall %d created\n", res.Firewall.ID)
 
-		return res.Firewall, struct {
-			Firewall schema.Firewall `json:"firewall"`
-		}{
-			Firewall: hcloud.SchemaFromFirewall(res.Firewall),
-		}, err
+		return res.Firewall, util.Wrap("firewall", hcloud.SchemaFromFirewall(res.Firewall)), err
 	},
 }

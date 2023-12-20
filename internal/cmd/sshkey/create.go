@@ -8,10 +8,10 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
-	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
 var CreateCmd = base.CreateCmd{
@@ -65,10 +65,6 @@ var CreateCmd = base.CreateCmd{
 
 		cmd.Printf("SSH key %d created\n", sshKey.ID)
 
-		return sshKey, struct {
-			SSHKey schema.SSHKey `json:"ssh_key"`
-		}{
-			SSHKey: hcloud.SchemaFromSSHKey(sshKey),
-		}, nil
+		return sshKey, util.Wrap("ssh_key", hcloud.SchemaFromSSHKey(sshKey)), nil
 	},
 }

@@ -7,10 +7,10 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
-	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
 var CreateCmd = base.CreateCmd{
@@ -96,11 +96,7 @@ var CreateCmd = base.CreateCmd{
 			return nil, nil, err
 		}
 
-		return loadBalancer, struct {
-			LoadBalancer schema.LoadBalancer `json:"load_balancer"`
-		}{
-			LoadBalancer: hcloud.SchemaFromLoadBalancer(loadBalancer),
-		}, nil
+		return loadBalancer, util.Wrap("load_balancer", hcloud.SchemaFromLoadBalancer(loadBalancer)), nil
 	},
 
 	PrintResource: func(_ context.Context, _ hcapi2.Client, cmd *cobra.Command, resource any) {

@@ -56,7 +56,7 @@ var CreateCmd = base.CreateCmd{
 		if err != nil {
 			return nil, nil, err
 		}
-		return cert, util.WrapSchema("certificate", hcloud.SchemaFromCertificate(cert)), nil
+		return cert, util.Wrap("certificate", hcloud.SchemaFromCertificate(cert)), nil
 	},
 }
 

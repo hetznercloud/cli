@@ -165,10 +165,10 @@ func DescribeYAML(object interface{}) error {
 	return enc.Encode(object)
 }
 
-// WrapSchema return a map wrapping the schema (value) in a dict (`{ key: value }`).
+// Wrap wraps the passed value in a map with the passed key.
 //
-// Used to reduce boilerplate.
-func WrapSchema(key string, value any) map[string]any {
+// This is useful when working with JSON objects.
+func Wrap(key string, value any) map[string]any {
 	return map[string]any{key: value}
 }
 

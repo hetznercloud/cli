@@ -9,10 +9,10 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
-	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
 var CreateCmd = base.CreateCmd{
@@ -111,10 +111,6 @@ var CreateCmd = base.CreateCmd{
 			return nil, nil, err
 		}
 
-		return res.Volume, struct {
-			Volume schema.Volume `json:"volume"`
-		}{
-			Volume: hcloud.SchemaFromVolume(res.Volume),
-		}, nil
+		return res.Volume, util.Wrap("volume", hcloud.SchemaFromVolume(res.Volume)), nil
 	},
 }

@@ -7,10 +7,10 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
-	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
 var CreateCmd = base.CreateCmd{
@@ -82,11 +82,7 @@ var CreateCmd = base.CreateCmd{
 			}
 		}
 
-		return res.PrimaryIP, struct {
-			PrimaryIP schema.PrimaryIP `json:"primary_ip"`
-		}{
-			PrimaryIP: hcloud.SchemaFromPrimaryIP(res.PrimaryIP),
-		}, nil
+		return res.PrimaryIP, util.Wrap("primary_ip", hcloud.SchemaFromPrimaryIP(res.PrimaryIP)), nil
 	},
 	PrintResource: func(_ context.Context, _ hcapi2.Client, cmd *cobra.Command, resource any) {
 		primaryIP := resource.(*hcloud.PrimaryIP)
