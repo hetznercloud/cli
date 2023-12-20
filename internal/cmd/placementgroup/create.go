@@ -38,19 +38,19 @@ var CreateCmd = base.CreateCmd{
 			Type:   hcloud.PlacementGroupType(placementGroupType),
 		}
 
-		res, _, err := client.PlacementGroup().Create(ctx, opts)
+		result, _, err := client.PlacementGroup().Create(ctx, opts)
 		if err != nil {
 			return nil, nil, err
 		}
 
-		if res.Action != nil {
-			if err := waiter.ActionProgress(ctx, res.Action); err != nil {
+		if result.Action != nil {
+			if err := waiter.ActionProgress(ctx, result.Action); err != nil {
 				return nil, nil, err
 			}
 		}
 
-		cmd.Printf("Placement group %d created\n", res.PlacementGroup.ID)
+		cmd.Printf("Placement group %d created\n", result.PlacementGroup.ID)
 
-		return res.PlacementGroup, util.Wrap("placement_group", hcloud.SchemaFromPlacementGroup(res.PlacementGroup)), nil
+		return result.PlacementGroup, util.Wrap("placement_group", hcloud.SchemaFromPlacementGroup(result.PlacementGroup)), nil
 	},
 }

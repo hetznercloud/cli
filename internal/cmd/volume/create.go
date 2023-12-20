@@ -94,23 +94,23 @@ var CreateCmd = base.CreateCmd{
 			createOpts.Format = &format
 		}
 
-		res, _, err := client.Volume().Create(ctx, createOpts)
+		result, _, err := client.Volume().Create(ctx, createOpts)
 		if err != nil {
 			return nil, nil, err
 		}
 
-		if err := waiter.ActionProgress(ctx, res.Action); err != nil {
+		if err := waiter.ActionProgress(ctx, result.Action); err != nil {
 			return nil, nil, err
 		}
-		if err := waiter.WaitForActions(ctx, res.NextActions); err != nil {
+		if err := waiter.WaitForActions(ctx, result.NextActions); err != nil {
 			return nil, nil, err
 		}
-		cmd.Printf("Volume %d created\n", res.Volume.ID)
+		cmd.Printf("Volume %d created\n", result.Volume.ID)
 
-		if err := changeProtection(ctx, client, waiter, cmd, res.Volume, true, protectionOpts); err != nil {
+		if err := changeProtection(ctx, client, waiter, cmd, result.Volume, true, protectionOpts); err != nil {
 			return nil, nil, err
 		}
 
-		return res.Volume, util.Wrap("volume", hcloud.SchemaFromVolume(res.Volume)), nil
+		return result.Volume, util.Wrap("volume", hcloud.SchemaFromVolume(result.Volume)), nil
 	},
 }

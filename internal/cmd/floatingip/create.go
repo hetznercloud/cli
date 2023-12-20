@@ -90,24 +90,24 @@ var CreateCmd = base.CreateCmd{
 			createOpts.Server = server
 		}
 
-		res, _, err := client.FloatingIP().Create(ctx, createOpts)
+		result, _, err := client.FloatingIP().Create(ctx, createOpts)
 		if err != nil {
 			return nil, nil, err
 		}
 
-		if res.Action != nil {
-			if err := waiter.ActionProgress(ctx, res.Action); err != nil {
+		if result.Action != nil {
+			if err := waiter.ActionProgress(ctx, result.Action); err != nil {
 				return nil, nil, err
 			}
 		}
 
-		cmd.Printf("Floating IP %d created\n", res.FloatingIP.ID)
+		cmd.Printf("Floating IP %d created\n", result.FloatingIP.ID)
 
-		if err := changeProtection(ctx, client, waiter, cmd, res.FloatingIP, true, protectionOps); err != nil {
+		if err := changeProtection(ctx, client, waiter, cmd, result.FloatingIP, true, protectionOps); err != nil {
 			return nil, nil, err
 		}
 
-		return res.FloatingIP, util.Wrap("floating_ip", hcloud.SchemaFromFloatingIP(res.FloatingIP)), nil
+		return result.FloatingIP, util.Wrap("floating_ip", hcloud.SchemaFromFloatingIP(result.FloatingIP)), nil
 	},
 
 	PrintResource: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, resource any) {

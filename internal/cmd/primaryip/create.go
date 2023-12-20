@@ -63,26 +63,26 @@ var CreateCmd = base.CreateCmd{
 			createOpts.AssigneeID = &assigneeID
 		}
 
-		res, _, err := client.PrimaryIP().Create(ctx, createOpts)
+		result, _, err := client.PrimaryIP().Create(ctx, createOpts)
 		if err != nil {
 			return nil, nil, err
 		}
 
-		if res.Action != nil {
-			if err := waiter.ActionProgress(ctx, res.Action); err != nil {
+		if result.Action != nil {
+			if err := waiter.ActionProgress(ctx, result.Action); err != nil {
 				return nil, nil, err
 			}
 		}
 
-		cmd.Printf("Primary IP %d created\n", res.PrimaryIP.ID)
+		cmd.Printf("Primary IP %d created\n", result.PrimaryIP.ID)
 
 		if len(protection) > 0 {
-			if err := changeProtection(ctx, client, waiter, cmd, res.PrimaryIP, true, protectionOpts); err != nil {
+			if err := changeProtection(ctx, client, waiter, cmd, result.PrimaryIP, true, protectionOpts); err != nil {
 				return nil, nil, err
 			}
 		}
 
-		return res.PrimaryIP, util.Wrap("primary_ip", hcloud.SchemaFromPrimaryIP(res.PrimaryIP)), nil
+		return result.PrimaryIP, util.Wrap("primary_ip", hcloud.SchemaFromPrimaryIP(result.PrimaryIP)), nil
 	},
 	PrintResource: func(_ context.Context, _ hcapi2.Client, cmd *cobra.Command, resource any) {
 		primaryIP := resource.(*hcloud.PrimaryIP)

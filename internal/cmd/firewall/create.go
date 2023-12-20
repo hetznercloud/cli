@@ -79,17 +79,17 @@ var CreateCmd = base.CreateCmd{
 			}
 		}
 
-		res, _, err := client.Firewall().Create(ctx, opts)
+		result, _, err := client.Firewall().Create(ctx, opts)
 		if err != nil {
 			return nil, nil, err
 		}
 
-		if err := waiter.WaitForActions(ctx, res.Actions); err != nil {
+		if err := waiter.WaitForActions(ctx, result.Actions); err != nil {
 			return nil, nil, err
 		}
 
-		cmd.Printf("Firewall %d created\n", res.Firewall.ID)
+		cmd.Printf("Firewall %d created\n", result.Firewall.ID)
 
-		return res.Firewall, util.Wrap("firewall", hcloud.SchemaFromFirewall(res.Firewall)), err
+		return result.Firewall, util.Wrap("firewall", hcloud.SchemaFromFirewall(result.Firewall)), err
 	},
 }
