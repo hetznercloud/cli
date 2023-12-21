@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.41.1](https://github.com/hetznercloud/cli/compare/v1.41.0...v1.41.1) (2023-12-21)
+
+
+### Bug Fixes
+
+* allow multiple --type flags for metrics commands ([#649](https://github.com/hetznercloud/cli/issues/649)) ([69346f7](https://github.com/hetznercloud/cli/commit/69346f7a1b45480dd834f86788315f725516ae47)), closes [#642](https://github.com/hetznercloud/cli/issues/642)
+* integer fields are displayed as floats when using create with o=yaml ([#651](https://github.com/hetznercloud/cli/issues/651)) ([2d42fcd](https://github.com/hetznercloud/cli/commit/2d42fcdc6095ed00cdda496ecc11f22803f73c46))
+* integer fields are displayed as floats when using describe with -o=yaml ([#650](https://github.com/hetznercloud/cli/issues/650)) ([ee4c51e](https://github.com/hetznercloud/cli/commit/ee4c51ef2a3ced38988630645f0be9198f2bc222)), closes [#638](https://github.com/hetznercloud/cli/issues/638)
+* wording when metrics are not yet available ([#639](https://github.com/hetznercloud/cli/issues/639)) ([9298c46](https://github.com/hetznercloud/cli/commit/9298c46b11bf3ab3b5a25eb571c95a89471b20f8))
+
 ## [1.41.0](https://github.com/hetznercloud/cli/compare/v1.40.0...v1.41.0) (2023-12-13)
 
 
