@@ -45,7 +45,7 @@ builds:
           output: true
 
 snapshot:
-  name_template: "{{ .Version }}"
+  name_template: "{{ .Version }}-dev+{{ .ShortCommit }}"
 
 checksum:
   name_template: checksums.txt
