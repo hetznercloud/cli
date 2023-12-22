@@ -19,6 +19,6 @@ func NewCommand(cli *state.State) *cobra.Command {
 }
 
 func runVersion(cli *state.State, cmd *cobra.Command, args []string) error {
-	cmd.Printf("hcloud %s\n", version.FullVersion)
+	cmd.Printf("hcloud %s\n", version.Version)
 	return nil
 }

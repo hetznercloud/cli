@@ -1,23 +1,19 @@
 package version
 
 var (
-	// Version is the main version number that is being run at the moment.
-	Version = "1.41.1" // x-release-please-version
+	// version is a semver version (https://semver.org).
+	version = "1.41.1" // x-release-please-version
 
-	// Tag is A pre-release marker for the Version. If this is ""
-	// (empty string) then it means that it is a final release. Otherwise, this
-	// is a pre-release such as "dev" (in development), "beta", "rc1", etc.
+	// versionPrerelease is a semver version pre-release identifier (https://semver.org).
 	//
-	// For releases, GoReleaser will automatically set this to an empty string.
-	Tag = "dev"
+	// For final releases, we set this to an empty string.
+	versionPrerelease = "dev"
 
-	// FullVersion is the full version string, including the prerelease tag.
-	// This is dynamically generated based on the Version and Tag variables.
-	FullVersion = func() string {
-		s := Version
-		if Tag != "" {
-			s += "-" + Tag
+	// Version of the hcloud CLI.
+	Version = func() string {
+		if versionPrerelease != "" {
+			return version + "-" + versionPrerelease
 		}
-		return s
+		return version
 	}()
 )

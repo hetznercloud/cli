@@ -8,8 +8,8 @@ builds:
     binary: hcloud
     ldflags:
       - -w
-      - -X {{ .ModulePath }}/internal/version.Version={{ .Version }}
-      - -X {{ .ModulePath }}/internal/version.VersionPrerelease={{- if .IsSnapshot -}}dev+{{ .ShortCommit }}{{- end -}}
+      - -X {{ .ModulePath }}/internal/version.version={{ .Version }}
+      - -X {{ .ModulePath }}/internal/version.versionPrerelease={{- if .IsSnapshot -}}dev+{{ .ShortCommit }}{{- end -}}
     env:
       - CGO_ENABLED=0
     goos:
@@ -30,8 +30,8 @@ builds:
     binary: hcloud
     ldflags:
       - -w
-      - -X {{ .ModulePath }}/internal/version.Version={{ .Version }}
-      - -X {{ .ModulePath }}/internal/version.VersionPrerelease={{- if .IsSnapshot -}}dev+{{ .ShortCommit }}{{- end -}}
+      - -X {{ .ModulePath }}/internal/version.version={{ .Version }}
+      - -X {{ .ModulePath }}/internal/version.versionPrerelease={{- if .IsSnapshot -}}dev+{{ .ShortCommit }}{{- end -}}
     env:
       - CGO_ENABLED=0
     goos:
