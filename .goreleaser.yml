@@ -7,7 +7,9 @@ builds:
     main: ./cmd/hcloud/main.go
     binary: hcloud
     ldflags:
-      - -w -X github.com/hetznercloud/cli/internal/version.Version={{.Version}}
+      - -w
+      - -X {{ .ModulePath }}/internal/version.Version={{ .Version }}
+      - -X {{ .ModulePath }}/internal/version.VersionPrerelease={{- if .IsSnapshot -}}dev+{{ .ShortCommit }}{{- end -}}
     env:
       - CGO_ENABLED=0
     goos:
@@ -27,7 +29,9 @@ builds:
     main: ./cmd/hcloud/main.go
     binary: hcloud
     ldflags:
-      - -w -X github.com/hetznercloud/cli/internal/version.Version={{.Version}}
+      - -w
+      - -X {{ .ModulePath }}/internal/version.Version={{ .Version }}
+      - -X {{ .ModulePath }}/internal/version.VersionPrerelease={{- if .IsSnapshot -}}dev+{{ .ShortCommit }}{{- end -}}
     env:
       - CGO_ENABLED=0
     goos:
@@ -39,6 +43,9 @@ builds:
       post:
         - cmd: bash script/gon.sh "{{ .Path }}"
           output: true
+
+snapshot:
+  name_template: "{{ .Version }}"
 
 checksum:
   name_template: checksums.txt
