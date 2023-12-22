@@ -6,7 +6,8 @@
   "packages": {
     ".": {
       "release-type": "go",
-      "package-name": "hcloud-cli"
+      "package-name": "hcloud-cli",
+      "extra-files": ["internal/version/version.go"]
     }
   }
 }
