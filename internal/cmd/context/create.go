@@ -1,24 +1,22 @@
 package context
 
 import (
-	"bufio"
-	"bytes"
 	"errors"
+	"fmt"
 	"os"
 	"strings"
-	"syscall"
 
+	"github.com/charmbracelet/huh"
 	"github.com/spf13/cobra"
-	"golang.org/x/term"
 
 	"github.com/hetznercloud/cli/internal/state"
 )
 
 func newCreateCommand(cli *state.State) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   "create [FLAGS] NAME",
+		Use:                   "create [FLAGS] [NAME]",
 		Short:                 "Create a new context",
-		Args:                  cobra.ExactArgs(1),
+		Args:                  cobra.MaximumNArgs(1),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		RunE:                  cli.Wrap(runCreate),
@@ -31,64 +29,115 @@ func runCreate(cli *state.State, cmd *cobra.Command, args []string) error {
 		return errors.New("context create is an interactive command")
 	}
 
-	name := strings.TrimSpace(args[0])
-	if name == "" {
-		return errors.New("invalid name")
+	var name string
+	if len(args) > 0 {
+		name = strings.TrimSpace(args[0])
+		if err := validateContextName(cli, name); err != nil {
+			return err
+		}
 	}
-	if cli.Config.ContextByName(name) != nil {
-		return errors.New("name already used")
+
+	if name == "" {
+		err := huh.NewForm(huh.NewGroup(
+			huh.NewInput().
+				Title("Context name").
+				Validate(func(s string) error {
+					return validateContextName(cli, s)
+				}).
+				Value(&name),
+		)).Run()
+		if err != nil {
+			return err
+		}
 	}
 
 	context := &state.ConfigContext{Name: name}
 
-	var token string
-
-	envToken := os.Getenv("HCLOUD_TOKEN")
-	if envToken != "" {
+	if envToken := os.Getenv("HCLOUD_TOKEN"); envToken != "" {
+		var (
+			group       *huh.Group
+			useEnvToken bool
+		)
 		if len(envToken) != 64 {
-			cmd.Println("Warning: HCLOUD_TOKEN is set, but token is invalid (must be exactly 64 characters long)")
+			group = huh.NewGroup(
+				huh.NewNote().
+					Title("Warning").
+					Description("The HCLOUD_TOKEN environment variable is set, but token is invalid (must be exactly 64 characters long)"),
+			)
 		} else {
-			cmd.Print("The HCLOUD_TOKEN environment variable is set. Do you want to use the token from HCLOUD_TOKEN for the new context? (Y/n): ")
-			scanner := bufio.NewScanner(os.Stdin)
-			scanner.Scan()
-			if s := strings.ToLower(scanner.Text()); s == "" || s == "y" || s == "yes" {
-				token = envToken
-			}
+			useEnvToken = true
+			group = huh.NewGroup(
+				huh.NewConfirm().
+					Title("Use HCLOUD_TOKEN").
+					Description("The HCLOUD_TOKEN environment variable is set. Do you want to use the token from HCLOUD_TOKEN for the new context?").
+					Value(&useEnvToken),
+			)
+		}
+		err := huh.NewForm(group).Run()
+		if err != nil {
+			return err
+		}
+		if useEnvToken {
+			context.Token = envToken
 		}
 	}
 
-	if token == "" {
-		for {
-			cmd.Printf("Token: ")
-			// Conversion needed for compilation on Windows
-			//                               vvv
-			btoken, err := term.ReadPassword(int(syscall.Stdin))
-			cmd.Print("\n")
-			if err != nil {
-				return err
-			}
-			token = string(bytes.TrimSpace(btoken))
-			if token == "" {
-				continue
-			}
-			if len(token) != 64 {
-				cmd.Print("Entered token is invalid (must be exactly 64 characters long)\n")
-				continue
-			}
-			break
+	if context.Token == "" {
+		err := huh.NewForm(huh.NewGroup(
+			huh.NewInput().
+				Title("API Token").
+				Description("Get your Hetzner Cloud API Token here:\nhttps://console.hetzner.cloud/").
+				Password(true).
+				Validate(func(s string) error {
+					if len(s) != 64 {
+						return fmt.Errorf("invalid token")
+					}
+					return nil
+				}).
+				Value(&context.Token),
+		)).Run()
+		if err != nil {
+			return err
 		}
 	}
-
-	context.Token = token
 
 	cli.Config.Contexts = append(cli.Config.Contexts, context)
-	cli.Config.ActiveContext = context
+
+	activateContext := true
+	if len(cli.Config.Contexts) > 1 {
+		err := huh.NewForm(huh.NewGroup(
+			huh.NewConfirm().
+				Title("Activate context").
+				Description("Do you want to activate the new context?\nIf not, you can activate it later using `hcloud context use`.").
+				Value(&activateContext),
+		)).Run()
+		if err != nil {
+			return err
+		}
+	}
+
+	msg := "Context \"%s\" created"
+	if activateContext {
+		cli.Config.ActiveContext = context
+		msg += " and activated"
+	}
 
 	if err := cli.WriteConfig(); err != nil {
 		return err
 	}
 
-	cmd.Printf("Context %s created and activated\n", name)
+	return huh.Run(huh.NewNote().
+		Title("Success").
+		Description(fmt.Sprintf(msg, name)),
+	)
+}
 
+func validateContextName(cli *state.State, name string) error {
+	if name == "" {
+		return errors.New("name must not be empty")
+	}
+	if cli.Config.ContextByName(name) != nil {
+		return errors.New("name already used")
+	}
 	return nil
 }
