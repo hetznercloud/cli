@@ -99,10 +99,10 @@ var CreateCmd = base.CreateCmd{
 			return nil, nil, err
 		}
 
-		if err := waiter.ActionProgress(ctx, result.Action); err != nil {
+		if err := waiter.ActionProgress(cmd, ctx, result.Action); err != nil {
 			return nil, nil, err
 		}
-		if err := waiter.WaitForActions(ctx, result.NextActions); err != nil {
+		if err := waiter.WaitForActions(cmd, ctx, result.NextActions); err != nil {
 			return nil, nil, err
 		}
 		cmd.Printf("Volume %d created\n", result.Volume.ID)

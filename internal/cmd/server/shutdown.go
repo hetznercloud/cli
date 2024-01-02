@@ -57,7 +57,7 @@ var ShutdownCmd = base.Cmd{
 			return err
 		}
 
-		if err := waiter.ActionProgress(ctx, action); err != nil {
+		if err := waiter.ActionProgress(cmd, ctx, action); err != nil {
 			return err
 		}
 
@@ -93,7 +93,7 @@ var ShutdownCmd = base.Cmd{
 				errCh <- nil
 			}()
 
-			if err := state.DisplayProgressCircle(errCh, "Waiting for server to shut down"); err != nil {
+			if err := state.DisplayProgressCircle(cmd, errCh, "Waiting for server to shut down"); err != nil {
 				return err
 			}
 

@@ -41,7 +41,7 @@ var UnAssignCmd = base.Cmd{
 			return err
 		}
 
-		if err := actionWaiter.ActionProgress(ctx, action); err != nil {
+		if err := actionWaiter.ActionProgress(cmd, ctx, action); err != nil {
 			return err
 		}
 

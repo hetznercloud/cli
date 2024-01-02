@@ -89,7 +89,7 @@ var RemoveTargetCmd = base.Cmd{
 			return fmt.Errorf("specify one of --server, --label-selector, or --ip")
 		}
 
-		if err := waiter.ActionProgress(ctx, action); err != nil {
+		if err := waiter.ActionProgress(cmd, ctx, action); err != nil {
 			return err
 		}
 		cmd.Printf("Target removed from Load Balancer %d\n", loadBalancer.ID)

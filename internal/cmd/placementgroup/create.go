@@ -44,7 +44,7 @@ var CreateCmd = base.CreateCmd{
 		}
 
 		if result.Action != nil {
-			if err := waiter.ActionProgress(ctx, result.Action); err != nil {
+			if err := waiter.ActionProgress(cmd, ctx, result.Action); err != nil {
 				return nil, nil, err
 			}
 		}

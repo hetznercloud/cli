@@ -55,7 +55,7 @@ func TestUpdateService(t *testing.T) {
 		}).
 		Return(&hcloud.Action{ID: 321}, nil, nil)
 	fx.ActionWaiter.EXPECT().
-		ActionProgress(gomock.Any(), &hcloud.Action{ID: 321}).
+		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321}).
 		Return(nil)
 
 	out, _, err := fx.Run(cmd, []string{

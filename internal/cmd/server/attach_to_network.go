@@ -69,7 +69,7 @@ var AttachToNetworkCmd = base.Cmd{
 			return err
 		}
 
-		if err := waiter.ActionProgress(ctx, action); err != nil {
+		if err := waiter.ActionProgress(cmd, ctx, action); err != nil {
 			return err
 		}
 

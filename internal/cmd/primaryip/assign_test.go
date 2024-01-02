@@ -54,7 +54,7 @@ func TestAssign(t *testing.T) {
 			nil,
 		)
 
-	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), action).Return(nil)
+	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), gomock.Any(), action).Return(nil)
 
 	out, _, err := fx.Run(cmd, []string{"13", "--server", "15"})
 
