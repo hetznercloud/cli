@@ -39,7 +39,7 @@ func TestCreate(t *testing.T) {
 			LoadBalancer: &hcloud.LoadBalancer{ID: 123},
 			Action:       &hcloud.Action{ID: 321},
 		}, nil, nil)
-	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), &hcloud.Action{ID: 321}).Return(nil)
+	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321}).Return(nil)
 	fx.Client.LoadBalancerClient.EXPECT().
 		GetByID(gomock.Any(), int64(123)).
 		Return(&hcloud.LoadBalancer{
@@ -105,7 +105,7 @@ func TestCreateJSON(t *testing.T) {
 			LoadBalancer: lb,
 			Action:       &hcloud.Action{ID: 321},
 		}, nil, nil)
-	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), &hcloud.Action{ID: 321}).Return(nil)
+	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321}).Return(nil)
 	fx.Client.LoadBalancerClient.EXPECT().
 		GetByID(gomock.Any(), int64(123)).
 		Return(lb, nil, nil)
@@ -153,7 +153,7 @@ func TestCreateProtection(t *testing.T) {
 			LoadBalancer: &hcloud.LoadBalancer{ID: 123},
 			Action:       &hcloud.Action{ID: 321},
 		}, nil, nil)
-	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), &hcloud.Action{ID: 321}).Return(nil)
+	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321}).Return(nil)
 	fx.Client.LoadBalancerClient.EXPECT().
 		GetByID(gomock.Any(), int64(123)).
 		Return(loadBalancer, nil, nil)
@@ -162,7 +162,7 @@ func TestCreateProtection(t *testing.T) {
 			Delete: hcloud.Ptr(true),
 		}).
 		Return(&hcloud.Action{ID: 333}, nil, nil)
-	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), &hcloud.Action{ID: 333}).Return(nil)
+	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 333}).Return(nil)
 
 	out, _, err := fx.Run(cmd, []string{"--name", "myLoadBalancer", "--type", "lb11", "--location", "fsn1", "--enable-protection", "delete"})
 

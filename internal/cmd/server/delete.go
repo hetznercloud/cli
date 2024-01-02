@@ -25,7 +25,7 @@ var DeleteCmd = base.DeleteCmd{
 			return err
 		}
 
-		if err := actionWaiter.ActionProgress(ctx, result.Action); err != nil {
+		if err := actionWaiter.ActionProgress(cmd, ctx, result.Action); err != nil {
 			return err
 		}
 

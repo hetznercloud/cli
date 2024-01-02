@@ -84,7 +84,7 @@ var CreateCmd = base.CreateCmd{
 			return nil, nil, err
 		}
 
-		if err := waiter.WaitForActions(ctx, result.Actions); err != nil {
+		if err := waiter.WaitForActions(cmd, ctx, result.Actions); err != nil {
 			return nil, nil, err
 		}
 

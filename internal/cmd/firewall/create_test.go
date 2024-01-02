@@ -41,7 +41,7 @@ func TestCreate(t *testing.T) {
 			Actions: []*hcloud.Action{{ID: 321}},
 		}, nil, nil)
 	fx.ActionWaiter.EXPECT().
-		WaitForActions(gomock.Any(), []*hcloud.Action{{ID: 321}})
+		WaitForActions(gomock.Any(), gomock.Any(), []*hcloud.Action{{ID: 321}})
 
 	out, _, err := fx.Run(cmd, []string{"--name", "test"})
 
@@ -90,7 +90,7 @@ func TestCreateJSON(t *testing.T) {
 			Actions: []*hcloud.Action{{ID: 321}},
 		}, nil, nil)
 	fx.ActionWaiter.EXPECT().
-		WaitForActions(gomock.Any(), []*hcloud.Action{{ID: 321}})
+		WaitForActions(gomock.Any(), gomock.Any(), []*hcloud.Action{{ID: 321}})
 
 	jsonOut, out, err := fx.Run(cmd, []string{"-o=json", "--name", "test"})
 

@@ -121,7 +121,7 @@ var DeleteRuleCmd = base.Cmd{
 		if err != nil {
 			return err
 		}
-		if err := waiter.WaitForActions(ctx, actions); err != nil {
+		if err := waiter.WaitForActions(cmd, ctx, actions); err != nil {
 			return err
 		}
 		cmd.Printf("Firewall Rules for Firewall %d updated\n", firewall.ID)

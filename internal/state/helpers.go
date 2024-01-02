@@ -59,11 +59,11 @@ func StdoutIsTerminal() bool {
 	return terminal.IsTerminal(int(os.Stdout.Fd()))
 }
 
-func (c *State) ActionProgress(ctx context.Context, action *hcloud.Action) error {
-	return c.ActionsProgresses(ctx, []*hcloud.Action{action})
+func (c *State) ActionProgress(cmd *cobra.Command, ctx context.Context, action *hcloud.Action) error {
+	return c.ActionsProgresses(cmd, ctx, []*hcloud.Action{action})
 }
 
-func (c *State) ActionsProgresses(ctx context.Context, actions []*hcloud.Action) error {
+func (c *State) ActionsProgresses(cmd *cobra.Command, ctx context.Context, actions []*hcloud.Action) error {
 	progressCh, errCh := c.Client().Action.WatchOverallProgress(ctx, actions)
 
 	if StdoutIsTerminal() {
@@ -96,7 +96,7 @@ func (c *State) EnsureToken(_ *cobra.Command, _ []string) error {
 	return nil
 }
 
-func (c *State) WaitForActions(ctx context.Context, actions []*hcloud.Action) error {
+func (c *State) WaitForActions(cmd *cobra.Command, ctx context.Context, actions []*hcloud.Action) error {
 	for _, action := range actions {
 		resources := make(map[string]int64)
 		for _, resource := range action.Resources {
@@ -115,7 +115,7 @@ func (c *State) WaitForActions(ctx context.Context, actions []*hcloud.Action) er
 
 		_, errCh := c.Client().Action.WatchProgress(ctx, action)
 
-		err := DisplayProgressCircle(errCh, waitingFor)
+		err := DisplayProgressCircle(cmd, errCh, waitingFor)
 		if err != nil {
 			return err
 		}
@@ -124,7 +124,7 @@ func (c *State) WaitForActions(ctx context.Context, actions []*hcloud.Action) er
 	return nil
 }
 
-func DisplayProgressCircle(errCh <-chan error, waitingFor string) error {
+func DisplayProgressCircle(cmd *cobra.Command, errCh <-chan error, waitingFor string) error {
 	const (
 		done     = "done"
 		failed   = "failed"

@@ -11,8 +11,8 @@ import (
 //go:generate mockgen -package state -destination command_helper_mocks.go . ActionWaiter,TokenEnsurer
 
 type ActionWaiter interface {
-	ActionProgress(context.Context, *hcloud.Action) error
-	WaitForActions(context.Context, []*hcloud.Action) error
+	ActionProgress(*cobra.Command, context.Context, *hcloud.Action) error
+	WaitForActions(*cobra.Command, context.Context, []*hcloud.Action) error
 }
 
 type TokenEnsurer interface {

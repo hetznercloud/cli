@@ -34,7 +34,7 @@ func TestAttachToNetwork(t *testing.T) {
 		}).
 		Return(&hcloud.Action{ID: 123}, nil, nil)
 	fx.ActionWaiter.EXPECT().
-		ActionProgress(gomock.Any(), &hcloud.Action{ID: 123}).
+		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).
 		Return(nil)
 
 	out, _, err := fx.Run(cmd, []string{"123", "--network", "my-network"})

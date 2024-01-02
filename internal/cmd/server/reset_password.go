@@ -38,7 +38,7 @@ var ResetPasswordCmd = base.Cmd{
 			return err
 		}
 
-		if err := waiter.ActionProgress(ctx, result.Action); err != nil {
+		if err := waiter.ActionProgress(cmd, ctx, result.Action); err != nil {
 			return err
 		}
 

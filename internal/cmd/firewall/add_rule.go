@@ -113,7 +113,7 @@ var AddRuleCmd = base.Cmd{
 		if err != nil {
 			return err
 		}
-		if err := waiter.WaitForActions(ctx, actions); err != nil {
+		if err := waiter.WaitForActions(cmd, ctx, actions); err != nil {
 			return err
 		}
 

@@ -42,7 +42,7 @@ func TestAddToPlacementGroup(t *testing.T) {
 		Return(&placementGroup, nil, nil)
 	fx.Client.ServerClient.EXPECT().
 		AddToPlacementGroup(gomock.Any(), &server, &placementGroup)
-	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), nil)
+	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), gomock.Any(), nil)
 
 	out, _, err := fx.Run(cmd, []string{"-g", placementGroup.Name, server.Name})
 

@@ -108,10 +108,10 @@ var CreateCmd = base.CreateCmd{
 			return nil, nil, err
 		}
 
-		if err := actionWaiter.ActionProgress(ctx, result.Action); err != nil {
+		if err := actionWaiter.ActionProgress(cmd, ctx, result.Action); err != nil {
 			return nil, nil, err
 		}
-		if err := actionWaiter.WaitForActions(ctx, result.NextActions); err != nil {
+		if err := actionWaiter.WaitForActions(cmd, ctx, result.NextActions); err != nil {
 			return nil, nil, err
 		}
 
@@ -133,7 +133,7 @@ var CreateCmd = base.CreateCmd{
 				return nil, nil, err
 			}
 
-			if err := actionWaiter.ActionProgress(ctx, action); err != nil {
+			if err := actionWaiter.ActionProgress(cmd, ctx, action); err != nil {
 				return nil, nil, err
 			}
 

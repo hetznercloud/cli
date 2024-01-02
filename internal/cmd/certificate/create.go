@@ -131,7 +131,7 @@ func createManaged(ctx context.Context, client hcapi2.Client, waiter state.Actio
 	if err != nil {
 		return nil, err
 	}
-	if err := waiter.ActionProgress(ctx, res.Action); err != nil {
+	if err := waiter.ActionProgress(cmd, ctx, res.Action); err != nil {
 		return nil, err
 	}
 	cmd.Printf("Certificate %d created\n", res.Certificate.ID)

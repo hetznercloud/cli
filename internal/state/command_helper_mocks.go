@@ -37,31 +37,31 @@ func (m *MockActionWaiter) EXPECT() *MockActionWaiterMockRecorder {
 }
 
 // ActionProgress mocks base method.
-func (m *MockActionWaiter) ActionProgress(arg0 context.Context, arg1 *hcloud.Action) error {
+func (m *MockActionWaiter) ActionProgress(arg0 *cobra.Command, arg1 context.Context, arg2 *hcloud.Action) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ActionProgress", arg0, arg1)
+	ret := m.ctrl.Call(m, "ActionProgress", arg0, arg1, arg2)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // ActionProgress indicates an expected call of ActionProgress.
-func (mr *MockActionWaiterMockRecorder) ActionProgress(arg0, arg1 interface{}) *gomock.Call {
+func (mr *MockActionWaiterMockRecorder) ActionProgress(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ActionProgress", reflect.TypeOf((*MockActionWaiter)(nil).ActionProgress), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ActionProgress", reflect.TypeOf((*MockActionWaiter)(nil).ActionProgress), arg0, arg1, arg2)
 }
 
 // WaitForActions mocks base method.
-func (m *MockActionWaiter) WaitForActions(arg0 context.Context, arg1 []*hcloud.Action) error {
+func (m *MockActionWaiter) WaitForActions(arg0 *cobra.Command, arg1 context.Context, arg2 []*hcloud.Action) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "WaitForActions", arg0, arg1)
+	ret := m.ctrl.Call(m, "WaitForActions", arg0, arg1, arg2)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // WaitForActions indicates an expected call of WaitForActions.
-func (mr *MockActionWaiterMockRecorder) WaitForActions(arg0, arg1 interface{}) *gomock.Call {
+func (mr *MockActionWaiterMockRecorder) WaitForActions(arg0, arg1, arg2 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WaitForActions", reflect.TypeOf((*MockActionWaiter)(nil).WaitForActions), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WaitForActions", reflect.TypeOf((*MockActionWaiter)(nil).WaitForActions), arg0, arg1, arg2)
 }
 
 // MockTokenEnsurer is a mock of TokenEnsurer interface.

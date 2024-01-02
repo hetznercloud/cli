@@ -42,7 +42,7 @@ func TestApplyToServer(t *testing.T) {
 		}}).
 		Return([]*hcloud.Action{{ID: 123}, {ID: 321}}, nil, nil)
 	fx.ActionWaiter.EXPECT().
-		WaitForActions(gomock.Any(), []*hcloud.Action{{ID: 123}, {ID: 321}}).
+		WaitForActions(gomock.Any(), gomock.Any(), []*hcloud.Action{{ID: 123}, {ID: 321}}).
 		Return(nil)
 
 	out, _, err := fx.Run(cmd, []string{"--type", "server", "--server", "my-server", "test"})
@@ -81,7 +81,7 @@ func TestApplyToLabelSelector(t *testing.T) {
 		}}).
 		Return([]*hcloud.Action{{ID: 123}, {ID: 321}}, nil, nil)
 	fx.ActionWaiter.EXPECT().
-		WaitForActions(gomock.Any(), []*hcloud.Action{{ID: 123}, {ID: 321}}).
+		WaitForActions(gomock.Any(), gomock.Any(), []*hcloud.Action{{ID: 123}, {ID: 321}}).
 		Return(nil)
 
 	out, _, err := fx.Run(cmd, []string{"--type", "label_selector", "--label-selector", "my-label", "test"})

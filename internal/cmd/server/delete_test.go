@@ -36,7 +36,7 @@ func TestDelete(t *testing.T) {
 			Action: &hcloud.Action{ID: 321},
 		}, nil, nil)
 	fx.ActionWaiter.EXPECT().
-		ActionProgress(gomock.Any(), &hcloud.Action{ID: 321})
+		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321})
 
 	out, _, err := fx.Run(cmd, []string{"test"})
 
