@@ -3,11 +3,10 @@ package certificate
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 )
 
-func NewCommand(cli *state.State, client hcapi2.Client) *cobra.Command {
+func NewCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "certificate",
 		Short:                 "Manage certificates",
@@ -16,13 +15,13 @@ func NewCommand(cli *state.State, client hcapi2.Client) *cobra.Command {
 		DisableFlagsInUseLine: true,
 	}
 	cmd.AddCommand(
-		ListCmd.CobraCommand(cli.Context, client, cli),
-		CreateCmd.CobraCommand(cli.Context, client, cli, cli),
-		UpdateCmd.CobraCommand(cli.Context, client, cli),
-		LabelCmds.AddCobraCommand(cli.Context, client, cli),
-		LabelCmds.RemoveCobraCommand(cli.Context, client, cli),
-		DeleteCmd.CobraCommand(cli.Context, client, cli, cli),
-		DescribeCmd.CobraCommand(cli.Context, client, cli),
+		ListCmd.CobraCommand(s),
+		CreateCmd.CobraCommand(s),
+		UpdateCmd.CobraCommand(s),
+		LabelCmds.AddCobraCommand(s),
+		LabelCmds.RemoveCobraCommand(s),
+		DeleteCmd.CobraCommand(s),
+		DescribeCmd.CobraCommand(s),
 	)
 
 	return cmd

@@ -3,11 +3,10 @@ package all
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 )
 
-func NewCommand(cli *state.State, client hcapi2.Client) *cobra.Command {
+func NewCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "all",
 		Short:                 "Commands that apply to all resources",
@@ -16,7 +15,7 @@ func NewCommand(cli *state.State, client hcapi2.Client) *cobra.Command {
 		DisableFlagsInUseLine: true,
 	}
 	cmd.AddCommand(
-		listCmd.CobraCommand(cli.Context, client, cli, cli),
+		listCmd.CobraCommand(s),
 	)
 	return cmd
 }

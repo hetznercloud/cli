@@ -1,7 +1,6 @@
 package volume
 
 import (
-	"context"
 	"fmt"
 	"strconv"
 
@@ -48,7 +47,7 @@ var CreateCmd = base.CreateCmd{
 
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) (any, any, error) {
+	Run: func(s state.State, cmd *cobra.Command, args []string) (any, any, error) {
 		name, _ := cmd.Flags().GetString("name")
 		serverIDOrName, _ := cmd.Flags().GetString("server")
 		size, _ := cmd.Flags().GetInt("size")
@@ -78,7 +77,7 @@ var CreateCmd = base.CreateCmd{
 			}
 		}
 		if serverIDOrName != "" {
-			server, _, err := client.Server().Get(ctx, serverIDOrName)
+			server, _, err := s.Server().Get(s, serverIDOrName)
 			if err != nil {
 				return nil, nil, err
 			}
@@ -94,20 +93,20 @@ var CreateCmd = base.CreateCmd{
 			createOpts.Format = &format
 		}
 
-		result, _, err := client.Volume().Create(ctx, createOpts)
+		result, _, err := s.Volume().Create(s, createOpts)
 		if err != nil {
 			return nil, nil, err
 		}
 
-		if err := waiter.ActionProgress(cmd, ctx, result.Action); err != nil {
+		if err := s.ActionProgress(cmd, s, result.Action); err != nil {
 			return nil, nil, err
 		}
-		if err := waiter.WaitForActions(cmd, ctx, result.NextActions); err != nil {
+		if err := s.WaitForActions(cmd, s, result.NextActions); err != nil {
 			return nil, nil, err
 		}
 		cmd.Printf("Volume %d created\n", result.Volume.ID)
 
-		if err := changeProtection(ctx, client, waiter, cmd, result.Volume, true, protectionOpts); err != nil {
+		if err := changeProtection(s, cmd, result.Volume, true, protectionOpts); err != nil {
 			return nil, nil, err
 		}
 

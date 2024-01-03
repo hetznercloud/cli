@@ -1,8 +1,6 @@
 package placementgroup
 
 import (
-	"context"
-
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
@@ -27,7 +25,7 @@ var CreateCmd = base.CreateCmd{
 		cmd.MarkFlagRequired("type")
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) (any, any, error) {
+	Run: func(s state.State, cmd *cobra.Command, args []string) (any, any, error) {
 		name, _ := cmd.Flags().GetString("name")
 		labels, _ := cmd.Flags().GetStringToString("label")
 		placementGroupType, _ := cmd.Flags().GetString("type")
@@ -38,13 +36,13 @@ var CreateCmd = base.CreateCmd{
 			Type:   hcloud.PlacementGroupType(placementGroupType),
 		}
 
-		result, _, err := client.PlacementGroup().Create(ctx, opts)
+		result, _, err := s.PlacementGroup().Create(s, opts)
 		if err != nil {
 			return nil, nil, err
 		}
 
 		if result.Action != nil {
-			if err := waiter.ActionProgress(cmd, ctx, result.Action); err != nil {
+			if err := s.ActionProgress(cmd, s, result.Action); err != nil {
 				return nil, nil, err
 			}
 		}

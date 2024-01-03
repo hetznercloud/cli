@@ -1,7 +1,6 @@
 package iso
 
 import (
-	"context"
 	"fmt"
 	"slices"
 	"strings"
@@ -13,6 +12,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/hcapi2"
+	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
@@ -31,7 +31,7 @@ var ListCmd = base.ListCmd{
 		cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("public", "private"))
 	},
 
-	Fetch: func(ctx context.Context, client hcapi2.Client, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
+	Fetch: func(s state.State, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
 		opts := hcloud.ISOListOpts{ListOpts: listOpts}
 
 		types, _ := flags.GetStringSlice("type")
@@ -65,7 +65,7 @@ var ListCmd = base.ListCmd{
 			opts.Sort = sorts
 		}
 
-		isos, err := client.ISO().AllWithOpts(ctx, opts)
+		isos, err := s.ISO().AllWithOpts(s, opts)
 
 		var resources []interface{}
 		for _, iso := range isos {

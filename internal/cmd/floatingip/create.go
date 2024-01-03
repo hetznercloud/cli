@@ -1,7 +1,6 @@
 package floatingip
 
 import (
-	"context"
 	"errors"
 	"fmt"
 
@@ -45,7 +44,7 @@ var CreateCmd = base.CreateCmd{
 
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) (any, any, error) {
+	Run: func(s state.State, cmd *cobra.Command, args []string) (any, any, error) {
 		typ, _ := cmd.Flags().GetString("type")
 		if typ == "" {
 			return nil, nil, errors.New("type is required")
@@ -80,7 +79,7 @@ var CreateCmd = base.CreateCmd{
 			createOpts.HomeLocation = &hcloud.Location{Name: homeLocation}
 		}
 		if serverNameOrID != "" {
-			server, _, err := client.Server().Get(ctx, serverNameOrID)
+			server, _, err := s.Server().Get(s, serverNameOrID)
 			if err != nil {
 				return nil, nil, err
 			}
@@ -90,27 +89,27 @@ var CreateCmd = base.CreateCmd{
 			createOpts.Server = server
 		}
 
-		result, _, err := client.FloatingIP().Create(ctx, createOpts)
+		result, _, err := s.FloatingIP().Create(s, createOpts)
 		if err != nil {
 			return nil, nil, err
 		}
 
 		if result.Action != nil {
-			if err := waiter.ActionProgress(cmd, ctx, result.Action); err != nil {
+			if err := s.ActionProgress(cmd, s, result.Action); err != nil {
 				return nil, nil, err
 			}
 		}
 
 		cmd.Printf("Floating IP %d created\n", result.FloatingIP.ID)
 
-		if err := changeProtection(ctx, client, waiter, cmd, result.FloatingIP, true, protectionOps); err != nil {
+		if err := changeProtection(s, cmd, result.FloatingIP, true, protectionOps); err != nil {
 			return nil, nil, err
 		}
 
 		return result.FloatingIP, util.Wrap("floating_ip", hcloud.SchemaFromFloatingIP(result.FloatingIP)), nil
 	},
 
-	PrintResource: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, resource any) {
+	PrintResource: func(s state.State, cmd *cobra.Command, resource any) {
 		floatingIP := resource.(*hcloud.FloatingIP)
 		cmd.Printf("IP%s: %s\n", floatingIP.Type[2:], floatingIP.IP)
 	},

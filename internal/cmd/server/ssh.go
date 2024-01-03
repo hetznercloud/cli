@@ -1,7 +1,6 @@
 package server
 
 import (
-	"context"
 	"fmt"
 	"os"
 	"os/exec"
@@ -32,9 +31,9 @@ var SSHCmd = base.Cmd{
 		cmd.Flags().IntP("port", "p", 22, "Port for SSH connection")
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		server, _, err := client.Server().Get(ctx, idOrName)
+		server, _, err := s.Server().Get(s, idOrName)
 		if err != nil {
 			return err
 		}

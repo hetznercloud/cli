@@ -1,7 +1,6 @@
 package placementgroup_test
 
 import (
-	"context"
 	"testing"
 	"time"
 
@@ -17,10 +16,7 @@ func TestList(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := placementgroup.ListCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer)
+	cmd := placementgroup.ListCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.PlacementGroupClient.EXPECT().

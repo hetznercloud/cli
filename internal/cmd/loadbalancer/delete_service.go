@@ -1,7 +1,6 @@
 package loadbalancer
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -27,17 +26,17 @@ var DeleteServiceCmd = base.Cmd{
 		cmd.MarkFlagRequired("listen-port")
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		listenPort, _ := cmd.Flags().GetInt("listen-port")
 		idOrName := args[0]
-		loadBalancer, _, err := client.LoadBalancer().Get(ctx, idOrName)
+		loadBalancer, _, err := s.LoadBalancer().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
 		if loadBalancer == nil {
 			return fmt.Errorf("Load Balancer not found: %s", idOrName)
 		}
-		_, _, err = client.LoadBalancer().DeleteService(ctx, loadBalancer, listenPort)
+		_, _, err = s.LoadBalancer().DeleteService(s, loadBalancer, listenPort)
 		if err != nil {
 			return err
 		}

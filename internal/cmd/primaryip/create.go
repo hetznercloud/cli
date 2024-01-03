@@ -1,8 +1,6 @@
 package primaryip
 
 import (
-	"context"
-
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
@@ -41,7 +39,7 @@ var CreateCmd = base.CreateCmd{
 
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) (any, any, error) {
+	Run: func(s state.State, cmd *cobra.Command, args []string) (any, any, error) {
 		typ, _ := cmd.Flags().GetString("type")
 		name, _ := cmd.Flags().GetString("name")
 		assigneeID, _ := cmd.Flags().GetInt64("assignee-id")
@@ -63,13 +61,13 @@ var CreateCmd = base.CreateCmd{
 			createOpts.AssigneeID = &assigneeID
 		}
 
-		result, _, err := client.PrimaryIP().Create(ctx, createOpts)
+		result, _, err := s.PrimaryIP().Create(s, createOpts)
 		if err != nil {
 			return nil, nil, err
 		}
 
 		if result.Action != nil {
-			if err := waiter.ActionProgress(cmd, ctx, result.Action); err != nil {
+			if err := s.ActionProgress(cmd, s, result.Action); err != nil {
 				return nil, nil, err
 			}
 		}
@@ -77,14 +75,14 @@ var CreateCmd = base.CreateCmd{
 		cmd.Printf("Primary IP %d created\n", result.PrimaryIP.ID)
 
 		if len(protection) > 0 {
-			if err := changeProtection(ctx, client, waiter, cmd, result.PrimaryIP, true, protectionOpts); err != nil {
+			if err := changeProtection(s, cmd, result.PrimaryIP, true, protectionOpts); err != nil {
 				return nil, nil, err
 			}
 		}
 
 		return result.PrimaryIP, util.Wrap("primary_ip", hcloud.SchemaFromPrimaryIP(result.PrimaryIP)), nil
 	},
-	PrintResource: func(_ context.Context, _ hcapi2.Client, cmd *cobra.Command, resource any) {
+	PrintResource: func(_ state.State, cmd *cobra.Command, resource any) {
 		primaryIP := resource.(*hcloud.PrimaryIP)
 		cmd.Printf("IP%s: %s\n", primaryIP.Type[2:], primaryIP.IP)
 	},

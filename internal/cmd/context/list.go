@@ -22,7 +22,7 @@ func init() {
 		RemoveAllowedField("token")
 }
 
-func newListCommand(cli *state.State) *cobra.Command {
+func newListCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "list [FLAGS]",
 		Short: "List contexts",
@@ -33,13 +33,13 @@ func newListCommand(cli *state.State) *cobra.Command {
 		Args:                  cobra.NoArgs,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE:                  cli.Wrap(runList),
+		RunE:                  state.Wrap(s, runList),
 	}
 	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(listTableOutput.Columns()))
 	return cmd
 }
 
-func runList(cli *state.State, cmd *cobra.Command, args []string) error {
+func runList(s state.State, cmd *cobra.Command, _ []string) error {
 	outOpts := output.FlagsForCommand(cmd)
 
 	cols := []string{"active", "name"}
@@ -55,13 +55,14 @@ func runList(cli *state.State, cmd *cobra.Command, args []string) error {
 	if !outOpts.IsSet("noheader") {
 		tw.WriteHeader(cols)
 	}
-	for _, context := range cli.Config.Contexts {
+	cfg := s.Config()
+	for _, context := range cfg.Contexts {
 		presentation := ContextPresentation{
 			Name:   context.Name,
 			Token:  context.Token,
 			Active: " ",
 		}
-		if cli.Config.ActiveContext != nil && cli.Config.ActiveContext.Name == context.Name {
+		if ctx := cfg.ActiveContext; ctx != nil && ctx.Name == context.Name {
 			presentation.Active = "*"
 		}
 

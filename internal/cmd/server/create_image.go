@@ -1,7 +1,6 @@
 package server
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -30,9 +29,9 @@ var CreateImageCmd = base.Cmd{
 
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		server, _, err := client.Server().Get(ctx, idOrName)
+		server, _, err := s.Server().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -56,12 +55,12 @@ var CreateImageCmd = base.Cmd{
 			Description: hcloud.Ptr(description),
 			Labels:      labels,
 		}
-		result, _, err := client.Server().CreateImage(ctx, server, opts)
+		result, _, err := s.Server().CreateImage(s, server, opts)
 		if err != nil {
 			return err
 		}
 
-		if err := waiter.ActionProgress(cmd, ctx, result.Action); err != nil {
+		if err := s.ActionProgress(cmd, s, result.Action); err != nil {
 			return err
 		}
 

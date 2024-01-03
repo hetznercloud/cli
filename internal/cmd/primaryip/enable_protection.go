@@ -1,7 +1,6 @@
 package primaryip
 
 import (
-	"context"
 	"fmt"
 	"strings"
 
@@ -34,17 +33,17 @@ func getChangeProtectionOpts(enable bool, flags []string) (hcloud.PrimaryIPChang
 	return opts, nil
 }
 
-func changeProtection(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command,
+func changeProtection(s state.State, cmd *cobra.Command,
 	primaryIp *hcloud.PrimaryIP, enable bool, opts hcloud.PrimaryIPChangeProtectionOpts) error {
 
 	opts.ID = primaryIp.ID
 
-	action, _, err := client.PrimaryIP().ChangeProtection(ctx, opts)
+	action, _, err := s.PrimaryIP().ChangeProtection(s, opts)
 	if err != nil {
 		return err
 	}
 
-	if err := waiter.ActionProgress(cmd, ctx, action); err != nil {
+	if err := s.ActionProgress(cmd, s, action); err != nil {
 		return err
 	}
 
@@ -71,9 +70,9 @@ var EnableProtectionCmd = base.Cmd{
 		}
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, actionWaiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		primaryIP, _, err := client.PrimaryIP().Get(ctx, idOrName)
+		primaryIP, _, err := s.PrimaryIP().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -92,6 +91,6 @@ var EnableProtectionCmd = base.Cmd{
 			return err
 		}
 
-		return changeProtection(ctx, client, actionWaiter, cmd, primaryIP, true, opts)
+		return changeProtection(s, cmd, primaryIP, true, opts)
 	},
 }

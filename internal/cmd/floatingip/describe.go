@@ -1,14 +1,13 @@
 package floatingip
 
 import (
-	"context"
-
 	"github.com/dustin/go-humanize"
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
+	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
@@ -18,14 +17,14 @@ var DescribeCmd = base.DescribeCmd{
 	JSONKeyGetByID:       "floating_ip",
 	JSONKeyGetByName:     "floating_ips",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.FloatingIP().Names },
-	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
-		ip, _, err := client.FloatingIP().Get(ctx, idOrName)
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
+		ip, _, err := s.FloatingIP().Get(s, idOrName)
 		if err != nil {
 			return nil, nil, err
 		}
 		return ip, hcloud.SchemaFromFloatingIP(ip), nil
 	},
-	PrintText: func(_ context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}) error {
+	PrintText: func(s state.State, cmd *cobra.Command, resource interface{}) error {
 		floatingIP := resource.(*hcloud.FloatingIP)
 
 		cmd.Printf("ID:\t\t%d\n", floatingIP.ID)
@@ -43,7 +42,7 @@ var DescribeCmd = base.DescribeCmd{
 		if floatingIP.Server != nil {
 			cmd.Printf("Server:\n")
 			cmd.Printf("  ID:\t%d\n", floatingIP.Server.ID)
-			cmd.Printf("  Name:\t%s\n", client.Server().ServerName(floatingIP.Server.ID))
+			cmd.Printf("  Name:\t%s\n", s.Server().ServerName(floatingIP.Server.ID))
 		} else {
 			cmd.Print("Server:\n  Not assigned\n")
 		}

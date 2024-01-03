@@ -1,7 +1,6 @@
 package server
 
 import (
-	"context"
 	"fmt"
 	"slices"
 	"strconv"
@@ -17,6 +16,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
+	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
@@ -44,7 +44,7 @@ var ListCmd = base.ListCmd{
 		_ = cmd.RegisterFlagCompletionFunc("status", cmpl.SuggestCandidates(serverStatusStrings...))
 	},
 
-	Fetch: func(ctx context.Context, client hcapi2.Client, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
+	Fetch: func(s state.State, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
 		statuses, _ := flags.GetStringSlice("status")
 
 		opts := hcloud.ServerListOpts{ListOpts: listOpts}
@@ -60,7 +60,7 @@ var ListCmd = base.ListCmd{
 				}
 			}
 		}
-		servers, err := client.Server().AllWithOpts(ctx, opts)
+		servers, err := s.Server().AllWithOpts(s, opts)
 
 		var resources []interface{}
 		for _, r := range servers {

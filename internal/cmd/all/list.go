@@ -1,7 +1,6 @@
 package all
 
 import (
-	"context"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -67,7 +66,7 @@ Listed resources are:
 
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, actionWaiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 
 		paid, _ := cmd.Flags().GetBool("paid")
 		labelSelector, _ := cmd.Flags().GetString("selector")
@@ -133,7 +132,7 @@ Listed resources are:
 				// We pass an empty slice because we defined the flags earlier.
 				_ = flagSet.Parse([]string{})
 
-				result, err := lc.Fetch(ctx, client, flagSet, listOpts, []string{})
+				result, err := lc.Fetch(s, flagSet, listOpts, []string{})
 				ch <- response{result, err}
 			}()
 		}
@@ -162,7 +161,7 @@ Listed resources are:
 
 		for i, lc := range cmds {
 			cols := lc.DefaultColumns
-			table := lc.OutputTable(client)
+			table := lc.OutputTable(s)
 			table.WriteHeader(cols)
 
 			if len(resources[i]) == 0 {

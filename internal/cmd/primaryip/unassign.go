@@ -1,7 +1,6 @@
 package primaryip
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -26,9 +25,9 @@ var UnAssignCmd = base.Cmd{
 		}
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, actionWaiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		primaryIP, _, err := client.PrimaryIP().Get(ctx, idOrName)
+		primaryIP, _, err := s.PrimaryIP().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -36,12 +35,12 @@ var UnAssignCmd = base.Cmd{
 			return fmt.Errorf("Primary IP not found: %v", idOrName)
 		}
 
-		action, _, err := client.PrimaryIP().Unassign(ctx, primaryIP.ID)
+		action, _, err := s.PrimaryIP().Unassign(s, primaryIP.ID)
 		if err != nil {
 			return err
 		}
 
-		if err := actionWaiter.ActionProgress(cmd, ctx, action); err != nil {
+		if err := s.ActionProgress(cmd, s, action); err != nil {
 			return err
 		}
 

@@ -1,7 +1,6 @@
 package network_test
 
 import (
-	"context"
 	"net"
 	"testing"
 	"time"
@@ -18,7 +17,7 @@ func TestList(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := network.ListCmd.CobraCommand(context.Background(), fx.Client, fx.TokenEnsurer)
+	cmd := network.ListCmd.CobraCommand(fx.State())
 
 	fx.ExpectEnsureToken()
 	fx.Client.NetworkClient.EXPECT().

@@ -1,7 +1,6 @@
 package primaryip
 
 import (
-	"context"
 	"fmt"
 	"testing"
 
@@ -16,7 +15,7 @@ func TestAssign(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := AssignCmd.CobraCommand(context.Background(), fx.Client, fx.TokenEnsurer, fx.ActionWaiter)
+	cmd := AssignCmd.CobraCommand(fx.State())
 	action := &hcloud.Action{ID: 1}
 	fx.ExpectEnsureToken()
 	var (

@@ -1,7 +1,6 @@
 package loadbalancer
 
 import (
-	"context"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -15,11 +14,7 @@ func TestDelete(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := DeleteCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter)
+	cmd := DeleteCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	loadBalancer := &hcloud.LoadBalancer{

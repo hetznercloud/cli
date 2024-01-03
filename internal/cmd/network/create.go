@@ -1,7 +1,6 @@
 package network
 
 import (
-	"context"
 	"net"
 
 	"github.com/spf13/cobra"
@@ -36,7 +35,7 @@ var CreateCmd = base.CreateCmd{
 		cmd.RegisterFlagCompletionFunc("enable-protection", cmpl.SuggestCandidates("delete"))
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) (any, any, error) {
+	Run: func(s state.State, cmd *cobra.Command, args []string) (any, any, error) {
 		name, _ := cmd.Flags().GetString("name")
 		ipRange, _ := cmd.Flags().GetIPNet("ip-range")
 		labels, _ := cmd.Flags().GetStringToString("label")
@@ -55,14 +54,14 @@ var CreateCmd = base.CreateCmd{
 			ExposeRoutesToVSwitch: exposeRoutesToVSwitch,
 		}
 
-		network, _, err := client.Network().Create(ctx, createOpts)
+		network, _, err := s.Network().Create(s, createOpts)
 		if err != nil {
 			return nil, nil, err
 		}
 
 		cmd.Printf("Network %d created\n", network.ID)
 
-		if err := changeProtection(ctx, client, waiter, cmd, network, true, protectionOpts); err != nil {
+		if err := changeProtection(s, cmd, network, true, protectionOpts); err != nil {
 			return nil, nil, err
 		}
 

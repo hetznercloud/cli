@@ -1,7 +1,6 @@
 package network
 
 import (
-	"context"
 	"fmt"
 	"net"
 
@@ -33,11 +32,11 @@ var RemoveRouteCmd = base.Cmd{
 
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		gateway, _ := cmd.Flags().GetIP("gateway")
 		destination, _ := cmd.Flags().GetIPNet("destination")
 		idOrName := args[0]
-		network, _, err := client.Network().Get(ctx, idOrName)
+		network, _, err := s.Network().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -51,11 +50,11 @@ var RemoveRouteCmd = base.Cmd{
 				Destination: &destination,
 			},
 		}
-		action, _, err := client.Network().DeleteRoute(ctx, network, opts)
+		action, _, err := s.Network().DeleteRoute(s, network, opts)
 		if err != nil {
 			return err
 		}
-		if err := waiter.ActionProgress(cmd, ctx, action); err != nil {
+		if err := s.ActionProgress(cmd, s, action); err != nil {
 			return err
 		}
 		cmd.Printf("Route removed from network %d\n", network.ID)

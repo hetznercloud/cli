@@ -1,7 +1,6 @@
 package loadbalancer
 
 import (
-	"context"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -15,11 +14,7 @@ func TestChangeType(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := ChangeTypeCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter)
+	cmd := ChangeTypeCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	lbType := &hcloud.LoadBalancerType{ID: 321, Name: "lb21"}

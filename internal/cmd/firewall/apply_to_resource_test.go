@@ -1,7 +1,6 @@
 package firewall
 
 import (
-	"context"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -15,11 +14,7 @@ func TestApplyToServer(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := ApplyToResourceCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter)
+	cmd := ApplyToResourceCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	firewall := &hcloud.Firewall{
@@ -57,11 +52,7 @@ func TestApplyToLabelSelector(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := ApplyToResourceCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter)
+	cmd := ApplyToResourceCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	firewall := &hcloud.Firewall{

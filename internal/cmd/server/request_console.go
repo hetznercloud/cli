@@ -1,7 +1,6 @@
 package server
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -27,10 +26,10 @@ var RequestConsoleCmd = base.Cmd{
 		output.AddFlag(cmd, output.OptionJSON(), output.OptionYAML())
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		outOpts := output.FlagsForCommand(cmd)
 		idOrName := args[0]
-		server, _, err := client.Server().Get(ctx, idOrName)
+		server, _, err := s.Server().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -38,12 +37,12 @@ var RequestConsoleCmd = base.Cmd{
 			return fmt.Errorf("server not found: %s", idOrName)
 		}
 
-		result, _, err := client.Server().RequestConsole(ctx, server)
+		result, _, err := s.Server().RequestConsole(s, server)
 		if err != nil {
 			return err
 		}
 
-		if err := waiter.ActionProgress(cmd, ctx, result.Action); err != nil {
+		if err := s.ActionProgress(cmd, s, result.Action); err != nil {
 			return err
 		}
 

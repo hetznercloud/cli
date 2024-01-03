@@ -1,13 +1,12 @@
 package iso
 
 import (
-	"context"
-
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
+	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
@@ -18,14 +17,14 @@ var DescribeCmd = base.DescribeCmd{
 	JSONKeyGetByID:       "iso",
 	JSONKeyGetByName:     "isos",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Location().Names },
-	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
-		iso, _, err := client.ISO().Get(ctx, idOrName)
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
+		iso, _, err := s.ISO().Get(s, idOrName)
 		if err != nil {
 			return nil, nil, err
 		}
 		return iso, hcloud.SchemaFromISO(iso), nil
 	},
-	PrintText: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}) error {
+	PrintText: func(s state.State, cmd *cobra.Command, resource interface{}) error {
 		iso := resource.(*hcloud.ISO)
 
 		cmd.Printf("ID:\t\t%d\n", iso.ID)

@@ -1,7 +1,6 @@
 package loadbalancertype
 
 import (
-	"context"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -15,10 +14,7 @@ func TestDescribe(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := DescribeCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer)
+	cmd := DescribeCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.LoadBalancerTypeClient.EXPECT().

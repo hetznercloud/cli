@@ -2,7 +2,6 @@ package server
 
 import (
 	"bytes"
-	"context"
 	"encoding/base64"
 	"fmt"
 	"io/ioutil"
@@ -97,43 +96,43 @@ var CreateCmd = base.CreateCmd{
 		return cmd
 	},
 
-	Run: func(ctx context.Context, client hcapi2.Client, actionWaiter state.ActionWaiter, cmd *cobra.Command, args []string) (any, any, error) {
-		createOpts, protectionOpts, err := createOptsFromFlags(ctx, client, cmd)
+	Run: func(s state.State, cmd *cobra.Command, args []string) (any, any, error) {
+		createOpts, protectionOpts, err := createOptsFromFlags(s, cmd)
 		if err != nil {
 			return nil, nil, err
 		}
 
-		result, _, err := client.Server().Create(ctx, createOpts)
+		result, _, err := s.Server().Create(s, createOpts)
 		if err != nil {
 			return nil, nil, err
 		}
 
-		if err := actionWaiter.ActionProgress(cmd, ctx, result.Action); err != nil {
+		if err := s.ActionProgress(cmd, s, result.Action); err != nil {
 			return nil, nil, err
 		}
-		if err := actionWaiter.WaitForActions(cmd, ctx, result.NextActions); err != nil {
+		if err := s.WaitForActions(cmd, s, result.NextActions); err != nil {
 			return nil, nil, err
 		}
 
-		server, _, err := client.Server().GetByID(ctx, result.Server.ID)
+		server, _, err := s.Server().GetByID(s, result.Server.ID)
 		if err != nil {
 			return nil, nil, err
 		}
 
 		cmd.Printf("Server %d created\n", result.Server.ID)
 
-		if err := changeProtection(ctx, client, actionWaiter, cmd, server, true, protectionOpts); err != nil {
+		if err := changeProtection(s, cmd, server, true, protectionOpts); err != nil {
 			return nil, nil, err
 		}
 
 		enableBackup, _ := cmd.Flags().GetBool("enable-backup")
 		if enableBackup {
-			action, _, err := client.Server().EnableBackup(ctx, server, "")
+			action, _, err := s.Server().EnableBackup(s, server, "")
 			if err != nil {
 				return nil, nil, err
 			}
 
-			if err := actionWaiter.ActionProgress(cmd, ctx, action); err != nil {
+			if err := s.ActionProgress(cmd, s, action); err != nil {
 				return nil, nil, err
 			}
 
@@ -144,7 +143,7 @@ var CreateCmd = base.CreateCmd{
 			createResultSchema{Server: hcloud.SchemaFromServer(server), RootPassword: result.RootPassword}, nil
 	},
 
-	PrintResource: func(_ context.Context, client hcapi2.Client, cmd *cobra.Command, resource any) {
+	PrintResource: func(s state.State, cmd *cobra.Command, resource any) {
 		result := resource.(createResult)
 		server := result.Server
 
@@ -158,7 +157,7 @@ var CreateCmd = base.CreateCmd{
 		if len(server.PrivateNet) > 0 {
 			var networks []string
 			for _, network := range server.PrivateNet {
-				networks = append(networks, fmt.Sprintf("- %s (%s)", network.IP.String(), client.Network().Name(network.Network.ID)))
+				networks = append(networks, fmt.Sprintf("- %s (%s)", network.IP.String(), s.Network().Name(network.Network.ID)))
 			}
 			cmd.Printf("Private Networks:\n\t%s\n", strings.Join(networks, "\n"))
 		}
@@ -238,7 +237,7 @@ func buildUserData(files []string) (string, error) {
 }
 
 func createOptsFromFlags(
-	ctx context.Context, client hcapi2.Client, cmd *cobra.Command,
+	s state.State, cmd *cobra.Command,
 ) (createOpts hcloud.ServerCreateOpts, protectionOps hcloud.ServerChangeProtectionOpts, err error) {
 	flags := cmd.Flags()
 	name, _ := flags.GetString("name")
@@ -262,7 +261,7 @@ func createOptsFromFlags(
 	primaryIPv6IDorName, _ := flags.GetString("primary-ipv6")
 	protection, _ := flags.GetStringSlice("enable-protection")
 
-	serverType, _, err := client.ServerType().Get(ctx, serverTypeName)
+	serverType, _, err := s.ServerType().Get(s, serverTypeName)
 	if err != nil {
 		return
 	}
@@ -276,7 +275,7 @@ func createOptsFromFlags(
 	}
 
 	// Select correct image based on server type architecture
-	image, _, err := client.Image().GetForArchitecture(ctx, imageIDorName, serverType.Architecture)
+	image, _, err := s.Image().GetForArchitecture(s, imageIDorName, serverType.Architecture)
 	if err != nil {
 		return
 	}
@@ -316,7 +315,7 @@ func createOptsFromFlags(
 	}
 	if primaryIPv4IDorName != "" {
 		var primaryIPv4 *hcloud.PrimaryIP
-		primaryIPv4, _, err = client.PrimaryIP().Get(ctx, primaryIPv4IDorName)
+		primaryIPv4, _, err = s.PrimaryIP().Get(s, primaryIPv4IDorName)
 		if err != nil {
 			return
 		}
@@ -328,7 +327,7 @@ func createOptsFromFlags(
 	}
 	if primaryIPv6IDorName != "" {
 		var primaryIPv6 *hcloud.PrimaryIP
-		primaryIPv6, _, err = client.PrimaryIP().Get(ctx, primaryIPv6IDorName)
+		primaryIPv6, _, err = s.PrimaryIP().Get(s, primaryIPv6IDorName)
 		if err != nil {
 			return
 		}
@@ -359,13 +358,13 @@ func createOptsFromFlags(
 
 	for _, sshKeyIDOrName := range sshKeys {
 		var sshKey *hcloud.SSHKey
-		sshKey, _, err = client.SSHKey().Get(ctx, sshKeyIDOrName)
+		sshKey, _, err = s.SSHKey().Get(s, sshKeyIDOrName)
 		if err != nil {
 			return
 		}
 
 		if sshKey == nil {
-			sshKey, err = getSSHKeyForFingerprint(ctx, client, sshKeyIDOrName)
+			sshKey, err = getSSHKeyForFingerprint(s, sshKeyIDOrName)
 			if err != nil {
 				return
 			}
@@ -379,7 +378,7 @@ func createOptsFromFlags(
 	}
 	for _, volumeIDOrName := range volumes {
 		var volume *hcloud.Volume
-		volume, _, err = client.Volume().Get(ctx, volumeIDOrName)
+		volume, _, err = s.Volume().Get(s, volumeIDOrName)
 		if err != nil {
 			return
 		}
@@ -392,7 +391,7 @@ func createOptsFromFlags(
 	}
 	for _, networkIDOrName := range networks {
 		var network *hcloud.Network
-		network, _, err = client.Network().Get(ctx, networkIDOrName)
+		network, _, err = s.Network().Get(s, networkIDOrName)
 		if err != nil {
 			return
 		}
@@ -405,7 +404,7 @@ func createOptsFromFlags(
 	}
 	for _, firewallIDOrName := range firewalls {
 		var firewall *hcloud.Firewall
-		firewall, _, err = client.Firewall().Get(ctx, firewallIDOrName)
+		firewall, _, err = s.Firewall().Get(s, firewallIDOrName)
 		if err != nil {
 			return
 		}
@@ -425,7 +424,7 @@ func createOptsFromFlags(
 	}
 	if placementGroupIDorName != "" {
 		var placementGroup *hcloud.PlacementGroup
-		placementGroup, _, err = client.PlacementGroup().Get(ctx, placementGroupIDorName)
+		placementGroup, _, err = s.PlacementGroup().Get(s, placementGroupIDorName)
 		if err != nil {
 			return
 		}
@@ -441,7 +440,7 @@ func createOptsFromFlags(
 }
 
 func getSSHKeyForFingerprint(
-	ctx context.Context, client hcapi2.Client, file string,
+	s state.State, file string,
 ) (sshKey *hcloud.SSHKey, err error) {
 	var (
 		fileContent []byte
@@ -460,7 +459,7 @@ func getSSHKeyForFingerprint(
 		err = fmt.Errorf("lookup SSH key by fingerprint: %v", err)
 		return
 	}
-	sshKey, _, err = client.SSHKey().GetByFingerprint(ctx, ssh.FingerprintLegacyMD5(publicKey))
+	sshKey, _, err = s.SSHKey().GetByFingerprint(s, ssh.FingerprintLegacyMD5(publicKey))
 	if err != nil {
 		err = fmt.Errorf("lookup SSH key by fingerprint: %v", err)
 		return

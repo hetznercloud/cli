@@ -1,7 +1,6 @@
 package volume
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -26,8 +25,8 @@ var ResizeCmd = base.Cmd{
 		cmd.MarkFlagRequired("size")
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
-		volume, _, err := client.Volume().Get(ctx, args[0])
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
+		volume, _, err := s.Volume().Get(s, args[0])
 		if err != nil {
 			return err
 		}
@@ -36,12 +35,12 @@ var ResizeCmd = base.Cmd{
 		}
 
 		size, _ := cmd.Flags().GetInt("size")
-		action, _, err := client.Volume().Resize(ctx, volume, size)
+		action, _, err := s.Volume().Resize(s, volume, size)
 		if err != nil {
 			return err
 		}
 
-		if err := waiter.ActionProgress(cmd, ctx, action); err != nil {
+		if err := s.ActionProgress(cmd, s, action); err != nil {
 			return err
 		}
 

@@ -1,14 +1,13 @@
 package certificate
 
 import (
-	"context"
-
 	"github.com/dustin/go-humanize"
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
+	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
@@ -18,14 +17,14 @@ var DescribeCmd = base.DescribeCmd{
 	JSONKeyGetByID:       "certificate",
 	JSONKeyGetByName:     "certificates",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Certificate().Names },
-	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
-		cert, _, err := client.Certificate().Get(ctx, idOrName)
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
+		cert, _, err := s.Certificate().Get(s, idOrName)
 		if err != nil {
 			return nil, nil, err
 		}
 		return cert, hcloud.SchemaFromCertificate(cert), nil
 	},
-	PrintText: func(_ context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}) error {
+	PrintText: func(s state.State, cmd *cobra.Command, resource interface{}) error {
 		cert := resource.(*hcloud.Certificate)
 		cmd.Printf("ID:\t\t\t%d\n", cert.ID)
 		cmd.Printf("Name:\t\t\t%s\n", cert.Name)
@@ -67,7 +66,7 @@ var DescribeCmd = base.DescribeCmd{
 					cmd.Printf("  - ID: %d\n", ub.ID)
 					continue
 				}
-				cmd.Printf("  - Name: %s\n", client.LoadBalancer().LoadBalancerName(ub.ID))
+				cmd.Printf("  - Name: %s\n", s.LoadBalancer().LoadBalancerName(ub.ID))
 			}
 		}
 		return nil

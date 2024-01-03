@@ -1,7 +1,6 @@
 package loadbalancer
 
 import (
-	"context"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -15,11 +14,7 @@ func TestAddService(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := AddServiceCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter)
+	cmd := AddServiceCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.LoadBalancerClient.EXPECT().

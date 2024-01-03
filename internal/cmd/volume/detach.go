@@ -1,7 +1,6 @@
 package volume
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -23,8 +22,8 @@ var DetachCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
-		volume, _, err := client.Volume().Get(ctx, args[0])
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
+		volume, _, err := s.Volume().Get(s, args[0])
 		if err != nil {
 			return err
 		}
@@ -32,12 +31,12 @@ var DetachCmd = base.Cmd{
 			return fmt.Errorf("volume not found: %s", args[0])
 		}
 
-		action, _, err := client.Volume().Detach(ctx, volume)
+		action, _, err := s.Volume().Detach(s, volume)
 		if err != nil {
 			return err
 		}
 
-		if err := waiter.ActionProgress(cmd, ctx, action); err != nil {
+		if err := s.ActionProgress(cmd, s, action); err != nil {
 			return err
 		}
 

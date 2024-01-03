@@ -2,42 +2,65 @@ package state
 
 import (
 	"context"
-	"errors"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
 	"path/filepath"
+	"time"
 
+	"github.com/hetznercloud/cli/internal/hcapi2"
+	"github.com/hetznercloud/cli/internal/version"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-type State struct {
+type State interface {
+	TokenEnsurer
+	ActionWaiter
+	context.Context
+	hcapi2.Client
+
+	WriteConfig() error
+	Config() *Config
+}
+
+type state struct {
+	context.Context
+	hcapi2.Client
+
 	Token         string
 	Endpoint      string
-	Context       context.Context
-	Config        *Config
 	ConfigPath    string
 	Debug         bool
 	DebugFilePath string
 
-	client *hcloud.Client
+	hcloudClient *hcloud.Client
+	config       *Config
 }
 
-func New() *State {
-	s := &State{
+func New() (State, error) {
+	s := &state{
 		Context:    context.Background(),
-		Config:     &Config{},
+		config:     &Config{},
 		ConfigPath: DefaultConfigPath,
 	}
 	if p := os.Getenv("HCLOUD_CONFIG"); p != "" {
 		s.ConfigPath = p
 	}
-	return s
+	if err := s.readConfig(); err != nil {
+		return nil, fmt.Errorf("unable to read config file %q: %s\n", s.ConfigPath, err)
+	}
+	s.readEnv()
+	s.hcloudClient = s.newClient()
+	s.Client = hcapi2.NewClient(s.hcloudClient)
+	return s, nil
 }
 
-var ErrConfigPathUnknown = errors.New("config file path unknown")
+func (c *state) Config() *Config {
+	return c.config
+}
 
-func (c *State) ReadEnv() {
+func (c *state) readEnv() {
 	if s := os.Getenv("HCLOUD_TOKEN"); s != "" {
 		c.Token = s
 	}
@@ -50,9 +73,9 @@ func (c *State) ReadEnv() {
 	if s := os.Getenv("HCLOUD_DEBUG_FILE"); s != "" {
 		c.DebugFilePath = s
 	}
-	if s := os.Getenv("HCLOUD_CONTEXT"); s != "" && c.Config != nil {
-		if cfgCtx := c.Config.ContextByName(s); cfgCtx != nil {
-			c.Config.ActiveContext = cfgCtx
+	if s := os.Getenv("HCLOUD_CONTEXT"); s != "" && c.config != nil {
+		if cfgCtx := c.config.ContextByName(s); cfgCtx != nil {
+			c.config.ActiveContext = cfgCtx
 			c.Token = cfgCtx.Token
 		} else {
 			log.Printf("warning: context %q specified in HCLOUD_CONTEXT does not exist\n", s)
@@ -60,39 +83,60 @@ func (c *State) ReadEnv() {
 	}
 }
 
-func (c *State) ReadConfig() error {
-	if c.ConfigPath == "" {
-		return ErrConfigPathUnknown
+func (c *state) readConfig() error {
+	_, err := os.Stat(c.ConfigPath)
+	if err != nil && !os.IsNotExist(err) {
+		return err
 	}
 
-	data, err := ioutil.ReadFile(c.ConfigPath)
+	data, err := os.ReadFile(c.ConfigPath)
 	if err != nil {
 		return err
 	}
-
-	if err = UnmarshalConfig(c.Config, data); err != nil {
+	if err = UnmarshalConfig(c.config, data); err != nil {
 		return err
 	}
 
-	if c.Config.ActiveContext != nil {
-		c.Token = c.Config.ActiveContext.Token
+	if c.config.ActiveContext != nil {
+		c.Token = c.config.ActiveContext.Token
 	}
-	if c.Config.Endpoint != "" {
-		c.Endpoint = c.Config.Endpoint
+	if c.config.Endpoint != "" {
+		c.Endpoint = c.config.Endpoint
 	}
-
 	return nil
 }
 
-func (c *State) WriteConfig() error {
-	if c.ConfigPath == "" {
-		return ErrConfigPathUnknown
+func (c *state) newClient() *hcloud.Client {
+	opts := []hcloud.ClientOption{
+		hcloud.WithToken(c.Token),
+		hcloud.WithApplication("hcloud-cli", version.Version),
 	}
-	if c.Config == nil {
+	if c.Endpoint != "" {
+		opts = append(opts, hcloud.WithEndpoint(c.Endpoint))
+	}
+	if c.Debug {
+		if c.DebugFilePath == "" {
+			opts = append(opts, hcloud.WithDebugWriter(os.Stderr))
+		} else {
+			writer, _ := os.Create(c.DebugFilePath)
+			opts = append(opts, hcloud.WithDebugWriter(writer))
+		}
+	}
+	// TODO Somehow pass here
+	// pollInterval, _ := c.RootCommand.PersistentFlags().GetDuration("poll-interval")
+	pollInterval := 500 * time.Millisecond
+	if pollInterval > 0 {
+		opts = append(opts, hcloud.WithPollInterval(pollInterval))
+	}
+	return hcloud.NewClient(opts...)
+}
+
+func (c *state) WriteConfig() error {
+	if c.config == nil {
 		return nil
 	}
 
-	data, err := MarshalConfig(c.Config)
+	data, err := MarshalConfig(c.config)
 	if err != nil {
 		return err
 	}

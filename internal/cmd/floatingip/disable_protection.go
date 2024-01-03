@@ -1,7 +1,6 @@
 package floatingip
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -26,9 +25,9 @@ var DisableProtectionCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		floatingIP, _, err := client.FloatingIP().Get(ctx, idOrName)
+		floatingIP, _, err := s.FloatingIP().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -41,6 +40,6 @@ var DisableProtectionCmd = base.Cmd{
 			return err
 		}
 
-		return changeProtection(ctx, client, waiter, cmd, floatingIP, false, opts)
+		return changeProtection(s, cmd, floatingIP, false, opts)
 	},
 }

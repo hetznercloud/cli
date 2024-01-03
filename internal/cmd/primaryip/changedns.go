@@ -1,7 +1,6 @@
 package primaryip
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -31,9 +30,9 @@ var ChangeDNSCmd = base.Cmd{
 		cmd.MarkFlagRequired("ip")
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, actionWaiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		primaryIP, _, err := client.PrimaryIP().Get(ctx, idOrName)
+		primaryIP, _, err := s.PrimaryIP().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -49,12 +48,12 @@ var ChangeDNSCmd = base.Cmd{
 			IP:     ip,
 		}
 
-		action, _, err := client.PrimaryIP().ChangeDNSPtr(ctx, opts)
+		action, _, err := s.PrimaryIP().ChangeDNSPtr(s, opts)
 		if err != nil {
 			return err
 		}
 
-		if err := actionWaiter.ActionProgress(cmd, ctx, action); err != nil {
+		if err := s.ActionProgress(cmd, s, action); err != nil {
 			return err
 		}
 

@@ -1,7 +1,6 @@
 package loadbalancer
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -26,9 +25,9 @@ var DisableProtectionCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		loadBalancer, _, err := client.LoadBalancer().Get(ctx, idOrName)
+		loadBalancer, _, err := s.LoadBalancer().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -41,6 +40,6 @@ var DisableProtectionCmd = base.Cmd{
 			return err
 		}
 
-		return changeProtection(ctx, client, waiter, cmd, loadBalancer, false, opts)
+		return changeProtection(s, cmd, loadBalancer, false, opts)
 	},
 }

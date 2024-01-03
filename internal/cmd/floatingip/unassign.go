@@ -1,7 +1,6 @@
 package floatingip
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -23,9 +22,9 @@ var UnassignCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		floatingIP, _, err := client.FloatingIP().Get(ctx, idOrName)
+		floatingIP, _, err := s.FloatingIP().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -33,12 +32,12 @@ var UnassignCmd = base.Cmd{
 			return fmt.Errorf("Floating IP not found: %v", idOrName)
 		}
 
-		action, _, err := client.FloatingIP().Unassign(ctx, floatingIP)
+		action, _, err := s.FloatingIP().Unassign(s, floatingIP)
 		if err != nil {
 			return err
 		}
 
-		if err := waiter.ActionProgress(cmd, ctx, action); err != nil {
+		if err := s.ActionProgress(cmd, s, action); err != nil {
 			return err
 		}
 

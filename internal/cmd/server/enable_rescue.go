@@ -1,7 +1,6 @@
 package server
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -30,9 +29,9 @@ var EnableRescueCmd = base.Cmd{
 		cmd.RegisterFlagCompletionFunc("ssh-key", cmpl.SuggestCandidatesF(client.SSHKey().Names))
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		server, _, err := client.Server().Get(ctx, idOrName)
+		server, _, err := s.Server().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -48,7 +47,7 @@ var EnableRescueCmd = base.Cmd{
 
 		sshKeys, _ := cmd.Flags().GetStringSlice("ssh-key")
 		for _, sshKeyIDOrName := range sshKeys {
-			sshKey, _, err := client.SSHKey().Get(ctx, sshKeyIDOrName)
+			sshKey, _, err := s.SSHKey().Get(s, sshKeyIDOrName)
 			if err != nil {
 				return err
 			}
@@ -58,12 +57,12 @@ var EnableRescueCmd = base.Cmd{
 			opts.SSHKeys = append(opts.SSHKeys, sshKey)
 		}
 
-		result, _, err := client.Server().EnableRescue(ctx, server, opts)
+		result, _, err := s.Server().EnableRescue(s, server, opts)
 		if err != nil {
 			return err
 		}
 
-		if err := waiter.ActionProgress(cmd, ctx, result.Action); err != nil {
+		if err := s.ActionProgress(cmd, s, result.Action); err != nil {
 			return err
 		}
 

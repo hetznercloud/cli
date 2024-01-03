@@ -1,12 +1,11 @@
 package datacenter
 
 import (
-	"context"
-
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/hcapi2"
+	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
@@ -16,14 +15,14 @@ var DescribeCmd = base.DescribeCmd{
 	JSONKeyGetByID:       "datacenter",
 	JSONKeyGetByName:     "datacenters",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Datacenter().Names },
-	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
-		dc, _, err := client.Datacenter().Get(ctx, idOrName)
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
+		dc, _, err := s.Datacenter().Get(s, idOrName)
 		if err != nil {
 			return nil, nil, err
 		}
 		return dc, hcloud.SchemaFromDatacenter(dc), nil
 	},
-	PrintText: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}) error {
+	PrintText: func(s state.State, cmd *cobra.Command, resource interface{}) error {
 		datacenter := resource.(*hcloud.Datacenter)
 
 		cmd.Printf("ID:\t\t%d\n", datacenter.ID)
@@ -41,8 +40,8 @@ var DescribeCmd = base.DescribeCmd{
 		printServerTypes := func(list []*hcloud.ServerType) {
 			for _, t := range list {
 				cmd.Printf("  - ID:\t\t %d\n", t.ID)
-				cmd.Printf("    Name:\t %s\n", client.ServerType().ServerTypeName(t.ID))
-				cmd.Printf("    Description: %s\n", client.ServerType().ServerTypeDescription(t.ID))
+				cmd.Printf("    Name:\t %s\n", s.ServerType().ServerTypeName(t.ID))
+				cmd.Printf("    Description: %s\n", s.ServerType().ServerTypeDescription(t.ID))
 			}
 		}
 

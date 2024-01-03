@@ -1,7 +1,6 @@
 package servertype
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/spf13/pflag"
@@ -10,6 +9,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
+	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
@@ -20,12 +20,12 @@ var ListCmd = base.ListCmd{
 
 	DefaultColumns: []string{"id", "name", "cores", "cpu_type", "architecture", "memory", "disk", "storage_type", "traffic"},
 
-	Fetch: func(ctx context.Context, client hcapi2.Client, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
+	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
 		opts := hcloud.ServerTypeListOpts{ListOpts: listOpts}
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		servers, err := client.ServerType().AllWithOpts(ctx, opts)
+		servers, err := s.ServerType().AllWithOpts(s, opts)
 
 		var resources []interface{}
 		for _, r := range servers {

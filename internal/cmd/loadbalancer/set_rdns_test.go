@@ -1,7 +1,6 @@
 package loadbalancer
 
 import (
-	"context"
 	"net"
 	"testing"
 
@@ -16,11 +15,7 @@ func TestSetRDNS(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := SetRDNSCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter)
+	cmd := SetRDNSCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	loadBalancer := &hcloud.LoadBalancer{

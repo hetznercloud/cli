@@ -1,7 +1,6 @@
 package base
 
 import (
-	"context"
 	"fmt"
 	"reflect"
 	"strings"
@@ -26,24 +25,22 @@ type DescribeCmd struct {
 	AdditionalFlags  func(*cobra.Command)
 	// Fetch is called to fetch the resource to describe.
 	// The first returned interface is the resource itself as a hcloud struct, the second is the schema for the resource.
-	Fetch     func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error)
-	PrintText func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}) error
+	Fetch     func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error)
+	PrintText func(s state.State, cmd *cobra.Command, resource interface{}) error
 }
 
 // CobraCommand creates a command that can be registered with cobra.
-func (dc *DescribeCmd) CobraCommand(
-	ctx context.Context, client hcapi2.Client, tokenEnsurer state.TokenEnsurer,
-) *cobra.Command {
+func (dc *DescribeCmd) CobraCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   fmt.Sprintf("describe [FLAGS] %s", strings.ToUpper(dc.ResourceNameSingular)),
 		Short:                 dc.ShortDescription,
 		Args:                  cobra.ExactArgs(1),
-		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(dc.NameSuggestions(client))),
+		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(dc.NameSuggestions(s))),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		PreRunE:               util.ChainRunE(tokenEnsurer.EnsureToken),
+		PreRunE:               util.ChainRunE(s.EnsureToken),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return dc.Run(ctx, client, cmd, args)
+			return dc.Run(s, cmd, args)
 		},
 	}
 	output.AddFlag(cmd, output.OptionJSON(), output.OptionYAML(), output.OptionFormat())
@@ -54,11 +51,11 @@ func (dc *DescribeCmd) CobraCommand(
 }
 
 // Run executes a describe command.
-func (dc *DescribeCmd) Run(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, args []string) error {
+func (dc *DescribeCmd) Run(s state.State, cmd *cobra.Command, args []string) error {
 	outputFlags := output.FlagsForCommand(cmd)
 
 	idOrName := args[0]
-	resource, schema, err := dc.Fetch(ctx, client, cmd, idOrName)
+	resource, schema, err := dc.Fetch(s, cmd, idOrName)
 	if err != nil {
 		return err
 	}
@@ -77,6 +74,6 @@ func (dc *DescribeCmd) Run(ctx context.Context, client hcapi2.Client, cmd *cobra
 	case outputFlags.IsSet("format"):
 		return util.DescribeFormat(resource, outputFlags["format"][0])
 	default:
-		return dc.PrintText(ctx, client, cmd, resource)
+		return dc.PrintText(s, cmd, resource)
 	}
 }

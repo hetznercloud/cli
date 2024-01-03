@@ -1,7 +1,6 @@
 package loadbalancer
 
 import (
-	"context"
 	"fmt"
 	"net"
 
@@ -35,7 +34,7 @@ var AddTargetCmd = base.Cmd{
 		cmd.Flags().String("ip", "", "Use the passed IP address as target")
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		var (
 			action       *hcloud.Action
 			loadBalancer *hcloud.LoadBalancer
@@ -51,7 +50,7 @@ var AddTargetCmd = base.Cmd{
 		if !util.ExactlyOneSet(serverIDOrName, labelSelector, ipAddr) {
 			return fmt.Errorf("--server, --label-selector, and --ip are mutually exclusive")
 		}
-		if loadBalancer, _, err = client.LoadBalancer().Get(ctx, idOrName); err != nil {
+		if loadBalancer, _, err = s.LoadBalancer().Get(s, idOrName); err != nil {
 			return err
 		}
 		if loadBalancer == nil {
@@ -60,14 +59,14 @@ var AddTargetCmd = base.Cmd{
 
 		switch {
 		case serverIDOrName != "":
-			server, _, err := client.Server().Get(ctx, serverIDOrName)
+			server, _, err := s.Server().Get(s, serverIDOrName)
 			if err != nil {
 				return err
 			}
 			if server == nil {
 				return fmt.Errorf("server not found: %s", serverIDOrName)
 			}
-			action, _, err = client.LoadBalancer().AddServerTarget(ctx, loadBalancer, hcloud.LoadBalancerAddServerTargetOpts{
+			action, _, err = s.LoadBalancer().AddServerTarget(s, loadBalancer, hcloud.LoadBalancerAddServerTargetOpts{
 				Server:       server,
 				UsePrivateIP: hcloud.Bool(usePrivateIP),
 			})
@@ -75,7 +74,7 @@ var AddTargetCmd = base.Cmd{
 				return err
 			}
 		case labelSelector != "":
-			action, _, err = client.LoadBalancer().AddLabelSelectorTarget(ctx, loadBalancer, hcloud.LoadBalancerAddLabelSelectorTargetOpts{
+			action, _, err = s.LoadBalancer().AddLabelSelectorTarget(s, loadBalancer, hcloud.LoadBalancerAddLabelSelectorTargetOpts{
 				Selector:     labelSelector,
 				UsePrivateIP: hcloud.Bool(usePrivateIP),
 			})
@@ -87,7 +86,7 @@ var AddTargetCmd = base.Cmd{
 			if ip == nil {
 				return fmt.Errorf("invalid ip provided")
 			}
-			action, _, err = client.LoadBalancer().AddIPTarget(ctx, loadBalancer, hcloud.LoadBalancerAddIPTargetOpts{
+			action, _, err = s.LoadBalancer().AddIPTarget(s, loadBalancer, hcloud.LoadBalancerAddIPTargetOpts{
 				IP: ip,
 			})
 			if err != nil {
@@ -97,7 +96,7 @@ var AddTargetCmd = base.Cmd{
 			return fmt.Errorf("specify one of --server, --label-selector, or --ip")
 		}
 
-		if err := waiter.ActionProgress(cmd, ctx, action); err != nil {
+		if err := s.ActionProgress(cmd, s, action); err != nil {
 			return err
 		}
 		cmd.Printf("Target added to Load Balancer %d\n", loadBalancer.ID)

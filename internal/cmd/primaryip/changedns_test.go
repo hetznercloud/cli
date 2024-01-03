@@ -1,7 +1,6 @@
 package primaryip
 
 import (
-	"context"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -15,7 +14,7 @@ func TestChangeDNS(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := ChangeDNSCmd.CobraCommand(context.Background(), fx.Client, fx.TokenEnsurer, fx.ActionWaiter)
+	cmd := ChangeDNSCmd.CobraCommand(fx.State())
 	action := &hcloud.Action{ID: 1}
 	fx.ExpectEnsureToken()
 	fx.Client.PrimaryIPClient.EXPECT().

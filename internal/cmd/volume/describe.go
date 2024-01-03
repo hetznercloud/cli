@@ -1,14 +1,13 @@
 package volume
 
 import (
-	"context"
-
 	humanize "github.com/dustin/go-humanize"
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
+	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
@@ -18,14 +17,14 @@ var DescribeCmd = base.DescribeCmd{
 	JSONKeyGetByID:       "volume",
 	JSONKeyGetByName:     "volumes",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Volume().Names },
-	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
-		v, _, err := client.Volume().Get(ctx, idOrName)
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
+		v, _, err := s.Volume().Get(s, idOrName)
 		if err != nil {
 			return nil, nil, err
 		}
 		return v, hcloud.SchemaFromVolume(v), nil
 	},
-	PrintText: func(_ context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}) error {
+	PrintText: func(s state.State, cmd *cobra.Command, resource interface{}) error {
 		volume := resource.(*hcloud.Volume)
 
 		cmd.Printf("ID:\t\t%d\n", volume.ID)
@@ -43,7 +42,7 @@ var DescribeCmd = base.DescribeCmd{
 		if volume.Server != nil {
 			cmd.Printf("Server:\n")
 			cmd.Printf("  ID:\t\t%d\n", volume.Server.ID)
-			cmd.Printf("  Name:\t\t%s\n", client.Server().ServerName(volume.Server.ID))
+			cmd.Printf("  Name:\t\t%s\n", s.Server().ServerName(volume.Server.ID))
 		} else {
 			cmd.Print("Server:\n  Not attached\n")
 		}

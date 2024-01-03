@@ -1,7 +1,6 @@
 package certificate
 
 import (
-	"context"
 	_ "embed"
 	"testing"
 	"time"
@@ -23,11 +22,7 @@ func TestCreateManaged(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := CreateCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter)
+	cmd := CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.CertificateClient.EXPECT().
@@ -60,11 +55,7 @@ func TestCreateManagedJSON(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := CreateCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter)
+	cmd := CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.CertificateClient.EXPECT().
@@ -113,11 +104,7 @@ func TestCreateUploaded(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := CreateCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter)
+	cmd := CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.CertificateClient.EXPECT().
@@ -145,11 +132,7 @@ func TestCreateUploadedJSON(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := CreateCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter)
+	cmd := CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.CertificateClient.EXPECT().

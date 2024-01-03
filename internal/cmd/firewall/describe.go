@@ -1,7 +1,6 @@
 package firewall
 
 import (
-	"context"
 	"net"
 
 	"github.com/dustin/go-humanize"
@@ -10,6 +9,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
+	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
@@ -19,14 +19,14 @@ var DescribeCmd = base.DescribeCmd{
 	JSONKeyGetByID:       "firewall",
 	JSONKeyGetByName:     "firewalls",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Firewall().Names },
-	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
-		fw, _, err := client.Firewall().Get(ctx, idOrName)
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
+		fw, _, err := s.Firewall().Get(s, idOrName)
 		if err != nil {
 			return nil, nil, err
 		}
 		return fw, hcloud.SchemaFromFirewall(fw), nil
 	},
-	PrintText: func(_ context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}) error {
+	PrintText: func(s state.State, cmd *cobra.Command, resource interface{}) error {
 		firewall := resource.(*hcloud.Firewall)
 
 		cmd.Printf("ID:\t\t%d\n", firewall.ID)
@@ -80,7 +80,7 @@ var DescribeCmd = base.DescribeCmd{
 				switch resource.Type {
 				case hcloud.FirewallResourceTypeServer:
 					cmd.Printf("    Server ID:\t\t%d\n", resource.Server.ID)
-					cmd.Printf("    Server Name:\t%s\n", client.Server().ServerName(resource.Server.ID))
+					cmd.Printf("    Server Name:\t%s\n", s.Server().ServerName(resource.Server.ID))
 				case hcloud.FirewallResourceTypeLabelSelector:
 					cmd.Printf("    Label Selector:\t%s\n", resource.LabelSelector.Selector)
 				}

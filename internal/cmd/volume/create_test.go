@@ -1,7 +1,6 @@
 package volume
 
 import (
-	"context"
 	_ "embed"
 	"testing"
 	"time"
@@ -20,11 +19,7 @@ func TestCreate(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := CreateCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter)
+	cmd := CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.VolumeClient.EXPECT().
@@ -63,11 +58,7 @@ func TestCreateJSON(t *testing.T) {
 
 	time.Local = time.UTC
 
-	cmd := CreateCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter)
+	cmd := CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.VolumeClient.EXPECT().
@@ -112,11 +103,7 @@ func TestCreateProtection(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := CreateCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter)
+	cmd := CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	volume := &hcloud.Volume{

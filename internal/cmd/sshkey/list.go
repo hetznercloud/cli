@@ -1,7 +1,6 @@
 package sshkey
 
 import (
-	"context"
 	"time"
 
 	"github.com/spf13/pflag"
@@ -10,6 +9,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
+	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
@@ -19,12 +19,12 @@ var ListCmd = base.ListCmd{
 	JSONKeyGetByName:   "ssh_keys",
 	DefaultColumns:     []string{"id", "name", "fingerprint", "age"},
 
-	Fetch: func(ctx context.Context, client hcapi2.Client, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
+	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
 		opts := hcloud.SSHKeyListOpts{ListOpts: listOpts}
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		sshKeys, err := client.SSHKey().AllWithOpts(ctx, opts)
+		sshKeys, err := s.SSHKey().AllWithOpts(s, opts)
 
 		var resources []interface{}
 		for _, n := range sshKeys {

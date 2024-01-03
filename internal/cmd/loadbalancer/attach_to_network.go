@@ -1,7 +1,6 @@
 package loadbalancer
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -32,9 +31,9 @@ var AttachToNetworkCmd = base.Cmd{
 
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		loadBalancer, _, err := client.LoadBalancer().Get(ctx, idOrName)
+		loadBalancer, _, err := s.LoadBalancer().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -43,7 +42,7 @@ var AttachToNetworkCmd = base.Cmd{
 		}
 
 		networkIDOrName, _ := cmd.Flags().GetString("network")
-		network, _, err := client.Network().Get(ctx, networkIDOrName)
+		network, _, err := s.Network().Get(s, networkIDOrName)
 		if err != nil {
 			return err
 		}
@@ -57,13 +56,13 @@ var AttachToNetworkCmd = base.Cmd{
 			Network: network,
 			IP:      ip,
 		}
-		action, _, err := client.LoadBalancer().AttachToNetwork(ctx, loadBalancer, opts)
+		action, _, err := s.LoadBalancer().AttachToNetwork(s, loadBalancer, opts)
 
 		if err != nil {
 			return err
 		}
 
-		if err := waiter.ActionProgress(cmd, ctx, action); err != nil {
+		if err := s.ActionProgress(cmd, s, action); err != nil {
 			return err
 		}
 

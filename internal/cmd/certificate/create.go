@@ -1,7 +1,6 @@
 package certificate
 
 import (
-	"context"
 	"fmt"
 	"os"
 
@@ -41,7 +40,7 @@ var CreateCmd = base.CreateCmd{
 
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, strings []string) (any, any, error) {
+	Run: func(s state.State, cmd *cobra.Command, strings []string) (any, any, error) {
 		certType, err := cmd.Flags().GetString("type")
 		if err != nil {
 			return nil, nil, err
@@ -49,9 +48,9 @@ var CreateCmd = base.CreateCmd{
 		var cert *hcloud.Certificate
 		switch hcloud.CertificateType(certType) {
 		case hcloud.CertificateTypeManaged:
-			cert, err = createManaged(ctx, client, waiter, cmd)
+			cert, err = createManaged(s, cmd)
 		default: // Uploaded
-			cert, err = createUploaded(ctx, client, cmd)
+			cert, err = createUploaded(s, cmd)
 		}
 		if err != nil {
 			return nil, nil, err
@@ -60,7 +59,7 @@ var CreateCmd = base.CreateCmd{
 	},
 }
 
-func createUploaded(ctx context.Context, client hcapi2.Client, cmd *cobra.Command) (*hcloud.Certificate, error) {
+func createUploaded(s state.State, cmd *cobra.Command) (*hcloud.Certificate, error) {
 	var (
 		name              string
 		certFile, keyFile string
@@ -96,7 +95,7 @@ func createUploaded(ctx context.Context, client hcapi2.Client, cmd *cobra.Comman
 		Certificate: string(certPEM),
 		PrivateKey:  string(keyPEM),
 	}
-	cert, _, err = client.Certificate().Create(ctx, createOpts)
+	cert, _, err = s.Certificate().Create(s, createOpts)
 	if err != nil {
 		return nil, err
 	}
@@ -104,7 +103,7 @@ func createUploaded(ctx context.Context, client hcapi2.Client, cmd *cobra.Comman
 	return cert, nil
 }
 
-func createManaged(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command) (*hcloud.Certificate, error) {
+func createManaged(s state.State, cmd *cobra.Command) (*hcloud.Certificate, error) {
 	var (
 		name    string
 		domains []string
@@ -127,11 +126,11 @@ func createManaged(ctx context.Context, client hcapi2.Client, waiter state.Actio
 		Type:        hcloud.CertificateTypeManaged,
 		DomainNames: domains,
 	}
-	res, _, err = client.Certificate().CreateCertificate(ctx, createOpts)
+	res, _, err = s.Certificate().CreateCertificate(s, createOpts)
 	if err != nil {
 		return nil, err
 	}
-	if err := waiter.ActionProgress(cmd, ctx, res.Action); err != nil {
+	if err := s.ActionProgress(cmd, s, res.Action); err != nil {
 		return nil, err
 	}
 	cmd.Printf("Certificate %d created\n", res.Certificate.ID)

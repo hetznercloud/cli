@@ -1,7 +1,6 @@
 package firewall
 
 import (
-	"context"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -15,11 +14,7 @@ func TestRemoveFromServer(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := RemoveFromResourceCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter)
+	cmd := RemoveFromResourceCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	firewall := &hcloud.Firewall{
@@ -57,11 +52,7 @@ func TestRemoveFromLabelSelector(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := RemoveFromResourceCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter)
+	cmd := RemoveFromResourceCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	firewall := &hcloud.Firewall{

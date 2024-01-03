@@ -1,7 +1,6 @@
 package loadbalancer
 
 import (
-	"context"
 	_ "embed"
 	"net"
 	"testing"
@@ -21,11 +20,7 @@ func TestCreate(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := CreateCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter)
+	cmd := CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.LoadBalancerClient.EXPECT().
@@ -69,11 +64,7 @@ func TestCreateJSON(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := CreateCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter)
+	cmd := CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	lb := &hcloud.LoadBalancer{
@@ -123,11 +114,7 @@ func TestCreateProtection(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := CreateCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter)
+	cmd := CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	loadBalancer := &hcloud.LoadBalancer{

@@ -1,7 +1,6 @@
 package loadbalancer
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -23,9 +22,9 @@ var EnablePublicInterfaceCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		loadBalancer, _, err := client.LoadBalancer().Get(ctx, idOrName)
+		loadBalancer, _, err := s.LoadBalancer().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -33,12 +32,12 @@ var EnablePublicInterfaceCmd = base.Cmd{
 			return fmt.Errorf("Load Balancer not found: %s", idOrName)
 		}
 
-		action, _, err := client.LoadBalancer().EnablePublicInterface(ctx, loadBalancer)
+		action, _, err := s.LoadBalancer().EnablePublicInterface(s, loadBalancer)
 		if err != nil {
 			return err
 		}
 
-		if err := waiter.ActionProgress(cmd, ctx, action); err != nil {
+		if err := s.ActionProgress(cmd, s, action); err != nil {
 			return err
 		}
 

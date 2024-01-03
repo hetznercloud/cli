@@ -1,8 +1,6 @@
 package primaryip
 
 import (
-	"context"
-
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
@@ -15,12 +13,12 @@ var DeleteCmd = base.DeleteCmd{
 	ResourceNameSingular: "Primary IP",
 	ShortDescription:     "Delete a Primary IP",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.PrimaryIP().Names },
-	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
-		return client.PrimaryIP().Get(ctx, idOrName)
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
+		return s.PrimaryIP().Get(s, idOrName)
 	},
-	Delete: func(ctx context.Context, client hcapi2.Client, _ state.ActionWaiter, cmd *cobra.Command, resource interface{}) error {
+	Delete: func(s state.State, cmd *cobra.Command, resource interface{}) error {
 		primaryIP := resource.(*hcloud.PrimaryIP)
-		if _, err := client.PrimaryIP().Delete(ctx, primaryIP); err != nil {
+		if _, err := s.PrimaryIP().Delete(s, primaryIP); err != nil {
 			return err
 		}
 		return nil

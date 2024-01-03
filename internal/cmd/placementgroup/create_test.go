@@ -1,7 +1,6 @@
 package placementgroup_test
 
 import (
-	"context"
 	_ "embed"
 	"testing"
 	"time"
@@ -21,11 +20,7 @@ func TestCreate(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := placementgroup.CreateCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter)
+	cmd := placementgroup.CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	opts := hcloud.PlacementGroupCreateOpts{
@@ -64,11 +59,7 @@ func TestCreateJSON(t *testing.T) {
 
 	time.Local = time.UTC
 
-	cmd := placementgroup.CreateCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter)
+	cmd := placementgroup.CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	opts := hcloud.PlacementGroupCreateOpts{

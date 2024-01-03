@@ -1,7 +1,6 @@
 package base
 
 import (
-	"context"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -17,15 +16,13 @@ type CreateCmd struct {
 	BaseCobraCommand func(hcapi2.Client) *cobra.Command
 	// Run is the function that will be called when the command is executed.
 	// It should return the created resource, the schema of the resource and an error.
-	Run           func(context.Context, hcapi2.Client, state.ActionWaiter, *cobra.Command, []string) (any, any, error)
-	PrintResource func(context.Context, hcapi2.Client, *cobra.Command, any)
+	Run           func(state.State, *cobra.Command, []string) (any, any, error)
+	PrintResource func(state.State, *cobra.Command, any)
 }
 
 // CobraCommand creates a command that can be registered with cobra.
-func (cc *CreateCmd) CobraCommand(
-	ctx context.Context, client hcapi2.Client, tokenEnsurer state.TokenEnsurer, actionWaiter state.ActionWaiter,
-) *cobra.Command {
-	cmd := cc.BaseCobraCommand(client)
+func (cc *CreateCmd) CobraCommand(s state.State) *cobra.Command {
+	cmd := cc.BaseCobraCommand(s)
 
 	output.AddFlag(cmd, output.OptionJSON(), output.OptionYAML())
 
@@ -37,9 +34,9 @@ func (cc *CreateCmd) CobraCommand(
 	cmd.DisableFlagsInUseLine = true
 
 	if cmd.PreRunE != nil {
-		cmd.PreRunE = util.ChainRunE(cmd.PreRunE, tokenEnsurer.EnsureToken)
+		cmd.PreRunE = util.ChainRunE(cmd.PreRunE, s.EnsureToken)
 	} else {
-		cmd.PreRunE = tokenEnsurer.EnsureToken
+		cmd.PreRunE = s.EnsureToken
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
@@ -52,7 +49,7 @@ func (cc *CreateCmd) CobraCommand(
 			cmd.SetOut(os.Stdout)
 		}
 
-		resource, schema, err := cc.Run(ctx, client, actionWaiter, cmd, args)
+		resource, schema, err := cc.Run(s, cmd, args)
 		if err != nil {
 			return err
 		}
@@ -64,7 +61,7 @@ func (cc *CreateCmd) CobraCommand(
 				return util.DescribeYAML(schema)
 			}
 		} else if cc.PrintResource != nil && resource != nil {
-			cc.PrintResource(ctx, client, cmd, resource)
+			cc.PrintResource(s, cmd, resource)
 		}
 		return nil
 	}

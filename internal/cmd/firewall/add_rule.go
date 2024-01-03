@@ -1,7 +1,6 @@
 package firewall
 
 import (
-	"context"
 	"fmt"
 	"net"
 
@@ -41,7 +40,7 @@ var AddRuleCmd = base.Cmd{
 		cmd.Flags().String("description", "", "Description of the firewall rule")
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		direction, _ := cmd.Flags().GetString("direction")
 		protocol, _ := cmd.Flags().GetString("protocol")
 		sourceIPs, _ := cmd.Flags().GetStringArray("source-ips")
@@ -50,7 +49,7 @@ var AddRuleCmd = base.Cmd{
 		description, _ := cmd.Flags().GetString("description")
 
 		idOrName := args[0]
-		firewall, _, err := client.Firewall().Get(ctx, idOrName)
+		firewall, _, err := s.Firewall().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -107,13 +106,13 @@ var AddRuleCmd = base.Cmd{
 
 		rules := append(firewall.Rules, rule)
 
-		actions, _, err := client.Firewall().SetRules(ctx, firewall,
+		actions, _, err := s.Firewall().SetRules(s, firewall,
 			hcloud.FirewallSetRulesOpts{Rules: rules},
 		)
 		if err != nil {
 			return err
 		}
-		if err := waiter.WaitForActions(cmd, ctx, actions); err != nil {
+		if err := s.WaitForActions(cmd, s, actions); err != nil {
 			return err
 		}
 

@@ -1,7 +1,6 @@
 package sshkey
 
 import (
-	"context"
 	"io"
 	"os"
 
@@ -31,7 +30,7 @@ var CreateCmd = base.CreateCmd{
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) (any, any, error) {
+	Run: func(s state.State, cmd *cobra.Command, args []string) (any, any, error) {
 		name, _ := cmd.Flags().GetString("name")
 		publicKey, _ := cmd.Flags().GetString("public-key")
 		publicKeyFile, _ := cmd.Flags().GetString("public-key-from-file")
@@ -58,7 +57,7 @@ var CreateCmd = base.CreateCmd{
 			PublicKey: publicKey,
 			Labels:    labels,
 		}
-		sshKey, _, err := client.SSHKey().Create(ctx, opts)
+		sshKey, _, err := s.SSHKey().Create(s, opts)
 		if err != nil {
 			return nil, nil, err
 		}

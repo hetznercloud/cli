@@ -1,7 +1,6 @@
 package server
 
 import (
-	"context"
 	"fmt"
 	"testing"
 	"time"
@@ -21,10 +20,7 @@ func TestDescribe(t *testing.T) {
 
 	time.Local = time.UTC
 
-	cmd := DescribeCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer)
+	cmd := DescribeCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	srv := &hcloud.Server{

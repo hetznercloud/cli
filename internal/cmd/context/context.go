@@ -6,7 +6,7 @@ import (
 	"github.com/hetznercloud/cli/internal/state"
 )
 
-func NewCommand(cli *state.State) *cobra.Command {
+func NewCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "context [FLAGS]",
 		Short:                 "Manage contexts",
@@ -15,11 +15,11 @@ func NewCommand(cli *state.State) *cobra.Command {
 		DisableFlagsInUseLine: true,
 	}
 	cmd.AddCommand(
-		newCreateCommand(cli),
-		newActiveCommand(cli),
-		newUseCommand(cli),
-		newDeleteCommand(cli),
-		newListCommand(cli),
+		newCreateCommand(s),
+		newActiveCommand(s),
+		newUseCommand(s),
+		newDeleteCommand(s),
+		newListCommand(s),
 	)
 	return cmd
 }

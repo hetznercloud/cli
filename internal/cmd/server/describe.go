@@ -1,7 +1,6 @@
 package server
 
 import (
-	"context"
 	"fmt"
 
 	humanize "github.com/dustin/go-humanize"
@@ -10,6 +9,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
+	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
@@ -19,14 +19,14 @@ var DescribeCmd = base.DescribeCmd{
 	JSONKeyGetByID:       "server",
 	JSONKeyGetByName:     "servers",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Server().Names },
-	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
-		srv, _, err := client.Server().Get(ctx, idOrName)
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
+		srv, _, err := s.Server().Get(s, idOrName)
 		if err != nil {
 			return nil, nil, err
 		}
 		return srv, hcloud.SchemaFromServer(srv), nil
 	},
-	PrintText: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}) error {
+	PrintText: func(s state.State, cmd *cobra.Command, resource interface{}) error {
 		server := resource.(*hcloud.Server)
 
 		cmd.Printf("ID:\t\t%d\n", server.ID)
@@ -67,7 +67,7 @@ var DescribeCmd = base.DescribeCmd{
 		cmd.Printf("  Floating IPs:\n")
 		if len(server.PublicNet.FloatingIPs) > 0 {
 			for _, f := range server.PublicNet.FloatingIPs {
-				floatingIP, _, err := client.FloatingIP().GetByID(ctx, f.ID)
+				floatingIP, _, err := s.FloatingIP().GetByID(s, f.ID)
 				if err != nil {
 					return fmt.Errorf("error fetching Floating IP: %v", err)
 				}
@@ -82,7 +82,7 @@ var DescribeCmd = base.DescribeCmd{
 		cmd.Printf("Private Net:\n")
 		if len(server.PrivateNet) > 0 {
 			for _, n := range server.PrivateNet {
-				network, _, err := client.Network().GetByID(ctx, n.Network.ID)
+				network, _, err := s.Network().GetByID(s, n.Network.ID)
 				if err != nil {
 					return fmt.Errorf("error fetching network: %v", err)
 				}
@@ -106,7 +106,7 @@ var DescribeCmd = base.DescribeCmd{
 		cmd.Printf("Volumes:\n")
 		if len(server.Volumes) > 0 {
 			for _, v := range server.Volumes {
-				volume, _, err := client.Volume().GetByID(ctx, v.ID)
+				volume, _, err := s.Volume().GetByID(s, v.ID)
 				if err != nil {
 					return fmt.Errorf("error fetching Volume: %v", err)
 				}

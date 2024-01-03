@@ -1,12 +1,15 @@
 package testutil
 
 import (
+	"context"
+	"errors"
 	"os"
 	"testing"
 
 	"github.com/golang/mock/gomock"
 	"github.com/spf13/cobra"
 
+	"github.com/hetznercloud/cli/internal/hcapi2"
 	hcapi2_mock "github.com/hetznercloud/cli/internal/hcapi2/mock"
 	"github.com/hetznercloud/cli/internal/state"
 )
@@ -52,4 +55,30 @@ func (f *Fixture) Run(cmd *cobra.Command, args []string) (string, string, error)
 // creating the Fixture.
 func (f *Fixture) Finish() {
 	f.MockController.Finish()
+}
+
+// fixtureState implements state.State for testing purposes.
+type fixtureState struct {
+	state.TokenEnsurer
+	state.ActionWaiter
+	context.Context
+	hcapi2.Client
+}
+
+func (fixtureState) WriteConfig() error {
+	return errors.New("not implemented")
+}
+
+func (fixtureState) Config() *state.Config {
+	return nil
+}
+
+// State returns a state.State implementation for testing purposes.
+func (f *Fixture) State() state.State {
+	return fixtureState{
+		TokenEnsurer: f.TokenEnsurer,
+		ActionWaiter: f.ActionWaiter,
+		Context:      context.Background(),
+		Client:       f.Client,
+	}
 }

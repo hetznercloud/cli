@@ -1,7 +1,6 @@
 package loadbalancer
 
 import (
-	"context"
 	"testing"
 	"time"
 
@@ -16,11 +15,7 @@ func TestMetrics(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := MetricsCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter)
+	cmd := MetricsCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	start := time.Date(2022, 11, 1, 0, 0, 0, 0, time.UTC)

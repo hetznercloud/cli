@@ -1,7 +1,6 @@
 package loadbalancer
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -28,9 +27,9 @@ var DetachFromNetworkCmd = base.Cmd{
 		cmd.MarkFlagRequired("network")
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		loadBalancer, _, err := client.LoadBalancer().Get(ctx, idOrName)
+		loadBalancer, _, err := s.LoadBalancer().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -38,7 +37,7 @@ var DetachFromNetworkCmd = base.Cmd{
 			return fmt.Errorf("Load Balancer not found: %s", idOrName)
 		}
 		networkIDOrName, _ := cmd.Flags().GetString("network")
-		network, _, err := client.Network().Get(ctx, networkIDOrName)
+		network, _, err := s.Network().Get(s, networkIDOrName)
 		if err != nil {
 			return err
 		}
@@ -49,12 +48,12 @@ var DetachFromNetworkCmd = base.Cmd{
 		opts := hcloud.LoadBalancerDetachFromNetworkOpts{
 			Network: network,
 		}
-		action, _, err := client.LoadBalancer().DetachFromNetwork(ctx, loadBalancer, opts)
+		action, _, err := s.LoadBalancer().DetachFromNetwork(s, loadBalancer, opts)
 		if err != nil {
 			return err
 		}
 
-		if err := waiter.ActionProgress(cmd, ctx, action); err != nil {
+		if err := s.ActionProgress(cmd, s, action); err != nil {
 			return err
 		}
 

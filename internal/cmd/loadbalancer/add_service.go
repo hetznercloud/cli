@@ -1,7 +1,6 @@
 package loadbalancer
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -38,7 +37,7 @@ var AddServiceCmd = base.Cmd{
 
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		protocol, _ := cmd.Flags().GetString("protocol")
 		listenPort, _ := cmd.Flags().GetInt("listen-port")
 		destinationPort, _ := cmd.Flags().GetInt("destination-port")
@@ -83,7 +82,7 @@ var AddServiceCmd = base.Cmd{
 		httpCookieLifetime, _ := cmd.Flags().GetDuration("http-cookie-lifetime")
 		httpRedirect, _ := cmd.Flags().GetBool("http-redirect-http")
 
-		loadBalancer, _, err := client.LoadBalancer().Get(ctx, idOrName)
+		loadBalancer, _, err := s.LoadBalancer().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -118,11 +117,11 @@ var AddServiceCmd = base.Cmd{
 				opts.HTTP.Certificates = append(opts.HTTP.Certificates, &hcloud.Certificate{ID: certificateID})
 			}
 		}
-		action, _, err := client.LoadBalancer().AddService(ctx, loadBalancer, opts)
+		action, _, err := s.LoadBalancer().AddService(s, loadBalancer, opts)
 		if err != nil {
 			return err
 		}
-		if err := waiter.ActionProgress(cmd, ctx, action); err != nil {
+		if err := s.ActionProgress(cmd, s, action); err != nil {
 			return err
 		}
 		cmd.Printf("Service was added to Load Balancer %d\n", loadBalancer.ID)

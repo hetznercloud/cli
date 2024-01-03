@@ -1,7 +1,6 @@
 package loadbalancer
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"slices"
@@ -49,11 +48,11 @@ var MetricsCmd = base.Cmd{
 		output.AddFlag(cmd, output.OptionJSON(), output.OptionYAML())
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		outputFlags := output.FlagsForCommand(cmd)
 
 		idOrName := args[0]
-		LoadBalancer, _, err := client.LoadBalancer().Get(ctx, idOrName)
+		LoadBalancer, _, err := s.LoadBalancer().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -89,7 +88,7 @@ var MetricsCmd = base.Cmd{
 			}
 		}
 
-		m, resp, err := client.LoadBalancer().GetMetrics(ctx, LoadBalancer, hcloud.LoadBalancerGetMetricsOpts{
+		m, resp, err := s.LoadBalancer().GetMetrics(s, LoadBalancer, hcloud.LoadBalancerGetMetricsOpts{
 			Types: metricTypes,
 			Start: startTime,
 			End:   endTime,

@@ -31,7 +31,7 @@ import (
 // 	source <(hcloud completion zsh)`
 // )
 
-func NewCommand(cli *state.State) *cobra.Command {
+func NewCommand(_ state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "completion [FLAGS] SHELL",
 		Short: "Output shell completion code for the specified shell",
