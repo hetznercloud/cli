@@ -4,9 +4,7 @@ import (
 	"testing"
 
 	"github.com/spf13/cobra"
-	"github.com/stretchr/testify/assert"
 
-	"github.com/hetznercloud/cli/internal/cli"
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
@@ -19,9 +17,7 @@ type fakeResource struct {
 	Name string `json:"name"`
 }
 
-var commandCalled bool
-
-var fakeCreateCmd = base.CreateCmd{
+var fakeCreateCmd = &base.CreateCmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		return &cobra.Command{
 			Use: "create",
@@ -29,7 +25,6 @@ var fakeCreateCmd = base.CreateCmd{
 	},
 	Run: func(s state.State, cmd *cobra.Command, strings []string) (any, any, error) {
 		cmd.Println("Creating fake resource")
-		commandCalled = true
 
 		resource := &fakeResource{
 			ID:   123,
@@ -41,115 +36,36 @@ var fakeCreateCmd = base.CreateCmd{
 }
 
 func TestCreate(t *testing.T) {
-	commandCalled = false
-
-	fx := testutil.NewFixture(t)
-	defer fx.Finish()
-
-	cmd := cli.NewRootCommand(fx.State())
-	fx.ExpectEnsureToken()
-
-	cmd.AddCommand(fakeCreateCmd.CobraCommand(fx.State()))
-
-	out, errOut, err := fx.Run(cmd, []string{"create"})
-
-	assert.Equal(t, true, commandCalled)
-	assert.NoError(t, err)
-	assert.Equal(t, "Creating fake resource\n", out)
-	assert.Empty(t, errOut)
-}
-
-func TestCreateJSON(t *testing.T) {
-	commandCalled = false
-
-	fx := testutil.NewFixture(t)
-	defer fx.Finish()
-
-	cmd := cli.NewRootCommand(fx.State())
-	fx.ExpectEnsureToken()
-
-	cmd.AddCommand(fakeCreateCmd.CobraCommand(fx.State()))
-
-	out, errOut, err := fx.Run(cmd, []string{"create", "-o=json"})
-
-	assert.Equal(t, true, commandCalled)
-	assert.NoError(t, err)
-	assert.JSONEq(t, `{"resource": {"id": 123, "name": "test"}}`, out)
-	assert.Equal(t, "Creating fake resource\n", errOut)
-}
-
-func TestCreateYAML(t *testing.T) {
-	commandCalled = false
-
-	fx := testutil.NewFixture(t)
-	defer fx.Finish()
-
-	cmd := cli.NewRootCommand(fx.State())
-	fx.ExpectEnsureToken()
-
-	cmd.AddCommand(fakeCreateCmd.CobraCommand(fx.State()))
-
-	out, errOut, err := fx.Run(cmd, []string{"create", "-o=yaml"})
-
-	assert.Equal(t, true, commandCalled)
-	assert.NoError(t, err)
-	assert.YAMLEq(t, `{"resource": {"id": 123, "name": "test"}}`, out)
-	assert.Equal(t, "Creating fake resource\n", errOut)
-}
-
-func TestCreateQuiet(t *testing.T) {
-	commandCalled = false
-
-	fx := testutil.NewFixture(t)
-	defer fx.Finish()
-
-	cmd := cli.NewRootCommand(fx.State())
-	fx.ExpectEnsureToken()
-
-	cmd.AddCommand(fakeCreateCmd.CobraCommand(fx.State()))
-
-	out, errOut, err := fx.Run(cmd, []string{"create", "--quiet"})
-
-	assert.Equal(t, true, commandCalled)
-	assert.NoError(t, err)
-	assert.Empty(t, out)
-	assert.Empty(t, errOut)
-}
-
-func TestCreateJSONQuiet(t *testing.T) {
-	commandCalled = false
-
-	fx := testutil.NewFixture(t)
-	defer fx.Finish()
-
-	cmd := cli.NewRootCommand(fx.State())
-	fx.ExpectEnsureToken()
-
-	cmd.AddCommand(fakeCreateCmd.CobraCommand(fx.State()))
-
-	out, errOut, err := fx.Run(cmd, []string{"create", "-o=json", "--quiet"})
-
-	assert.Equal(t, true, commandCalled)
-	assert.NoError(t, err)
-	assert.JSONEq(t, `{"resource": {"id": 123, "name": "test"}}`, out)
-	assert.Empty(t, errOut)
-}
-
-func TestCreateYAMLQuiet(t *testing.T) {
-	commandCalled = false
-
-	fx := testutil.NewFixture(t)
-	defer fx.Finish()
-
-	cmd := cli.NewRootCommand(fx.State())
-	fx.ExpectEnsureToken()
-
-	cmd.AddCommand(fakeCreateCmd.CobraCommand(fx.State()))
-
-	out, errOut, err := fx.Run(cmd, []string{"create", "-o=yaml", "--quiet"})
-
-	assert.Equal(t, true, commandCalled)
-	assert.NoError(t, err)
-	assert.YAMLEq(t, `{"resource": {"id": 123, "name": "test"}}`, out)
-	assert.Empty(t, errOut)
+	const resourceSchema = `{"resource": {"id": 123, "name": "test"}}`
+	testutil.TestCommand(t, fakeCreateCmd, map[string]testutil.TestCase{
+		"no flags": {
+			Args:   []string{"create"},
+			ExpOut: "Creating fake resource\n",
+		},
+		"json": {
+			Args:       []string{"create", "-o=json"},
+			ExpOut:     resourceSchema,
+			ExpOutType: testutil.DataTypeJSON,
+			ExpErrOut:  "Creating fake resource\n",
+		},
+		"yaml": {
+			Args:       []string{"create", "-o=yaml"},
+			ExpOut:     resourceSchema,
+			ExpOutType: testutil.DataTypeYAML,
+			ExpErrOut:  "Creating fake resource\n",
+		},
+		"quiet": {
+			Args: []string{"create", "--quiet"},
+		},
+		"json quiet": {
+			Args:       []string{"create", "-o=json", "--quiet"},
+			ExpOut:     resourceSchema,
+			ExpOutType: testutil.DataTypeJSON,
+		},
+		"yaml quiet": {
+			Args:       []string{"create", "-o=yaml", "--quiet"},
+			ExpOut:     resourceSchema,
+			ExpOutType: testutil.DataTypeYAML,
+		},
+	})
 }

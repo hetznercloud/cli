@@ -4,9 +4,7 @@ import (
 	"testing"
 
 	"github.com/spf13/cobra"
-	"github.com/stretchr/testify/assert"
 
-	"github.com/hetznercloud/cli/internal/cli"
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
@@ -14,11 +12,10 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var fakeDeleteCmd = base.DeleteCmd{
+var fakeDeleteCmd = &base.DeleteCmd{
 	ResourceNameSingular: "Fake resource",
 	Delete: func(s state.State, cmd *cobra.Command, resource interface{}) error {
 		cmd.Println("Deleting fake resource")
-		commandCalled = true
 		return nil
 	},
 
@@ -39,42 +36,13 @@ var fakeDeleteCmd = base.DeleteCmd{
 }
 
 func TestDelete(t *testing.T) {
-	commandCalled = false
-
-	fx := testutil.NewFixture(t)
-	defer fx.Finish()
-
-	cmd := cli.NewRootCommand(fx.State())
-	fx.ExpectEnsureToken()
-
-	cmd.AddCommand(fakeDeleteCmd.CobraCommand(fx.State()))
-
-	out, errOut, err := fx.Run(cmd, []string{"delete", "123"})
-
-	assert.Equal(t, true, commandCalled)
-	assert.NoError(t, err)
-	assert.Equal(t, `Fetching fake resource
-Deleting fake resource
-Fake resource 123 deleted
-`, out)
-	assert.Empty(t, errOut)
-}
-
-func TestDeleteQuiet(t *testing.T) {
-	commandCalled = false
-
-	fx := testutil.NewFixture(t)
-	defer fx.Finish()
-
-	cmd := cli.NewRootCommand(fx.State())
-	fx.ExpectEnsureToken()
-
-	cmd.AddCommand(fakeDeleteCmd.CobraCommand(fx.State()))
-
-	out, errOut, err := fx.Run(cmd, []string{"delete", "123", "--quiet"})
-
-	assert.Equal(t, true, commandCalled)
-	assert.NoError(t, err)
-	assert.Empty(t, out)
-	assert.Empty(t, errOut)
+	testutil.TestCommand(t, fakeDeleteCmd, map[string]testutil.TestCase{
+		"no flags": {
+			Args:   []string{"delete", "123"},
+			ExpOut: "Fetching fake resource\nDeleting fake resource\nFake resource 123 deleted\n",
+		},
+		"quiet": {
+			Args: []string{"delete", "123", "--quiet"},
+		},
+	})
 }

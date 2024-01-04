@@ -4,9 +4,7 @@ import (
 	"testing"
 
 	"github.com/spf13/cobra"
-	"github.com/stretchr/testify/assert"
 
-	"github.com/hetznercloud/cli/internal/cli"
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
@@ -14,12 +12,11 @@ import (
 	"github.com/hetznercloud/cli/internal/testutil"
 )
 
-var fakeDescribeCmd = base.DescribeCmd{
+var fakeDescribeCmd = &base.DescribeCmd{
 	ResourceNameSingular: "Fake resource",
 
 	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
 		cmd.Println("Fetching fake resource")
-		commandCalled = true
 
 		resource := &fakeResource{
 			ID:   123,
@@ -42,118 +39,39 @@ var fakeDescribeCmd = base.DescribeCmd{
 }
 
 func TestDescribe(t *testing.T) {
-	commandCalled = false
-
-	fx := testutil.NewFixture(t)
-	defer fx.Finish()
-
-	cmd := cli.NewRootCommand(fx.State())
-	fx.ExpectEnsureToken()
-
-	cmd.AddCommand(fakeDescribeCmd.CobraCommand(fx.State()))
-
-	out, errOut, err := fx.Run(cmd, []string{"describe", "123"})
-
-	assert.Equal(t, true, commandCalled)
-	assert.NoError(t, err)
-	assert.Equal(t, `Fetching fake resource
+	const resourceSchema = `{"resource": {"id": 123, "name": "test"}}`
+	testutil.TestCommand(t, fakeDescribeCmd, map[string]testutil.TestCase{
+		"no flags": {
+			Args: []string{"describe", "123"},
+			ExpOut: `Fetching fake resource
 ID: 123
 Name: test
-`, out)
-	assert.Empty(t, errOut)
-}
-
-func TestDescribeJSON(t *testing.T) {
-	commandCalled = false
-
-	fx := testutil.NewFixture(t)
-	defer fx.Finish()
-
-	cmd := cli.NewRootCommand(fx.State())
-	fx.ExpectEnsureToken()
-
-	cmd.AddCommand(fakeDescribeCmd.CobraCommand(fx.State()))
-
-	out, errOut, err := fx.Run(cmd, []string{"describe", "123", "-o=json"})
-
-	assert.Equal(t, true, commandCalled)
-	assert.NoError(t, err)
-	assert.JSONEq(t, `{"resource": {"id": 123, "name": "test"}}`, out)
-	assert.Equal(t, "Fetching fake resource\n", errOut)
-}
-
-func TestDescribeYAML(t *testing.T) {
-	commandCalled = false
-
-	fx := testutil.NewFixture(t)
-	defer fx.Finish()
-
-	cmd := cli.NewRootCommand(fx.State())
-	fx.ExpectEnsureToken()
-
-	cmd.AddCommand(fakeDescribeCmd.CobraCommand(fx.State()))
-
-	out, errOut, err := fx.Run(cmd, []string{"describe", "123", "-o=yaml"})
-
-	assert.Equal(t, true, commandCalled)
-	assert.NoError(t, err)
-	assert.YAMLEq(t, `{"resource": {"id": 123, "name": "test"}}`, out)
-	assert.Equal(t, "Fetching fake resource\n", errOut)
-}
-
-func TestDescribeQuiet(t *testing.T) {
-	commandCalled = false
-
-	fx := testutil.NewFixture(t)
-	defer fx.Finish()
-
-	cmd := cli.NewRootCommand(fx.State())
-	fx.ExpectEnsureToken()
-
-	cmd.AddCommand(fakeDescribeCmd.CobraCommand(fx.State()))
-
-	out, errOut, err := fx.Run(cmd, []string{"describe", "123", "--quiet"})
-
-	assert.Equal(t, true, commandCalled)
-	assert.NoError(t, err)
-	assert.Empty(t, out)
-	assert.Empty(t, errOut)
-}
-
-func TestDescribeJSONQuiet(t *testing.T) {
-	commandCalled = false
-
-	fx := testutil.NewFixture(t)
-	defer fx.Finish()
-
-	cmd := cli.NewRootCommand(fx.State())
-	fx.ExpectEnsureToken()
-
-	cmd.AddCommand(fakeDescribeCmd.CobraCommand(fx.State()))
-
-	out, errOut, err := fx.Run(cmd, []string{"describe", "123", "-o=json", "--quiet"})
-
-	assert.Equal(t, true, commandCalled)
-	assert.NoError(t, err)
-	assert.JSONEq(t, `{"resource": {"id": 123, "name": "test"}}`, out)
-	assert.Empty(t, errOut)
-}
-
-func TestDescribeYAMLQuiet(t *testing.T) {
-	commandCalled = false
-
-	fx := testutil.NewFixture(t)
-	defer fx.Finish()
-
-	cmd := cli.NewRootCommand(fx.State())
-	fx.ExpectEnsureToken()
-
-	cmd.AddCommand(fakeDescribeCmd.CobraCommand(fx.State()))
-
-	out, errOut, err := fx.Run(cmd, []string{"describe", "123", "-o=yaml", "--quiet"})
-
-	assert.Equal(t, true, commandCalled)
-	assert.NoError(t, err)
-	assert.YAMLEq(t, `{"resource": {"id": 123, "name": "test"}}`, out)
-	assert.Empty(t, errOut)
+`,
+		},
+		"json": {
+			Args:       []string{"describe", "123", "-o=json"},
+			ExpOut:     resourceSchema,
+			ExpOutType: testutil.DataTypeJSON,
+			ExpErrOut:  "Fetching fake resource\n",
+		},
+		"yaml": {
+			Args:       []string{"describe", "123", "-o=yaml"},
+			ExpOut:     resourceSchema,
+			ExpOutType: testutil.DataTypeYAML,
+			ExpErrOut:  "Fetching fake resource\n",
+		},
+		"quiet": {
+			Args: []string{"describe", "123", "--quiet"},
+		},
+		"json quiet": {
+			Args:       []string{"describe", "123", "-o=json", "--quiet"},
+			ExpOut:     resourceSchema,
+			ExpOutType: testutil.DataTypeJSON,
+		},
+		"yaml quiet": {
+			Args:       []string{"describe", "123", "-o=yaml", "--quiet"},
+			ExpOut:     resourceSchema,
+			ExpOutType: testutil.DataTypeYAML,
+		},
+	})
 }
