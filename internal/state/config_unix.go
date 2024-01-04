@@ -1,5 +1,4 @@
 //go:build !windows
-// +build !windows
 
 package state
 
@@ -8,12 +7,13 @@ import (
 	"path/filepath"
 )
 
-func init() {
+func DefaultConfigPath() string {
 	usr, err := user.Current()
 	if err != nil {
-		return
+		return ""
 	}
 	if usr.HomeDir != "" {
-		DefaultConfigPath = filepath.Join(usr.HomeDir, ".config", "hcloud", "cli.toml")
+		return filepath.Join(usr.HomeDir, ".config", "hcloud", "cli.toml")
 	}
+	return ""
 }

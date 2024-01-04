@@ -8,8 +8,6 @@ import (
 	toml "github.com/pelletier/go-toml/v2"
 )
 
-var DefaultConfigPath string
-
 type Config struct {
 	Path          string
 	Endpoint      string

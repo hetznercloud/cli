@@ -2,7 +2,6 @@ package state
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"os"
 	"time"
@@ -34,17 +33,7 @@ type state struct {
 	config        *Config
 }
 
-func New() (State, error) {
-	configPath := os.Getenv("HCLOUD_CONFIG")
-	if configPath == "" {
-		configPath = DefaultConfigPath
-	}
-
-	cfg, err := readConfig(configPath)
-	if err != nil {
-		return nil, fmt.Errorf("unable to read config file %q: %s\n", configPath, err)
-	}
-
+func New(cfg *Config) (State, error) {
 	var (
 		token    string
 		endpoint string
@@ -67,6 +56,29 @@ func New() (State, error) {
 	s.hcloudClient = s.newClient()
 	s.client = hcapi2.NewClient(s.hcloudClient)
 	return s, nil
+}
+
+func ReadConfig(path string) (*Config, error) {
+	cfg := &Config{Path: path}
+
+	_, err := os.Stat(path)
+	if err != nil {
+		if os.IsNotExist(err) {
+			err = nil
+		}
+		return cfg, err
+	}
+
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+
+	if err = UnmarshalConfig(cfg, data); err != nil {
+		return nil, err
+	}
+
+	return cfg, nil
 }
 
 func (c *state) Client() hcapi2.Client {
@@ -98,29 +110,6 @@ func (c *state) readEnv() {
 			log.Printf("warning: context %q specified in HCLOUD_CONTEXT does not exist\n", s)
 		}
 	}
-}
-
-func readConfig(path string) (*Config, error) {
-	cfg := &Config{Path: path}
-
-	_, err := os.Stat(path)
-	if err != nil {
-		if os.IsNotExist(err) {
-			err = nil
-		}
-		return cfg, err
-	}
-
-	data, err := os.ReadFile(path)
-	if err != nil {
-		return nil, err
-	}
-
-	if err = UnmarshalConfig(cfg, data); err != nil {
-		return nil, err
-	}
-
-	return cfg, nil
 }
 
 func (c *state) newClient() *hcloud.Client {

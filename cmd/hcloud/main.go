@@ -15,7 +15,17 @@ func init() {
 }
 
 func main() {
-	s, err := state.New()
+	configPath := os.Getenv("HCLOUD_CONFIG")
+	if configPath == "" {
+		configPath = state.DefaultConfigPath()
+	}
+
+	cfg, err := state.ReadConfig(configPath)
+	if err != nil {
+		log.Fatalf("unable to read config file %q: %s\n", configPath, err)
+	}
+
+	s, err := state.New(cfg)
 	if err != nil {
 		log.Fatalln(err)
 	}
