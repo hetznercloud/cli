@@ -1,7 +1,6 @@
 package loadbalancer
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -33,10 +32,10 @@ var ChangeAlgorithmCmd = base.Cmd{
 
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
 		algorithm, _ := cmd.Flags().GetString("algorithm-type")
-		loadBalancer, _, err := client.LoadBalancer().Get(ctx, idOrName)
+		loadBalancer, _, err := s.Client().LoadBalancer().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -44,11 +43,11 @@ var ChangeAlgorithmCmd = base.Cmd{
 			return fmt.Errorf("Load Balancer not found: %s", idOrName)
 		}
 
-		action, _, err := client.LoadBalancer().ChangeAlgorithm(ctx, loadBalancer, hcloud.LoadBalancerChangeAlgorithmOpts{Type: hcloud.LoadBalancerAlgorithmType(algorithm)})
+		action, _, err := s.Client().LoadBalancer().ChangeAlgorithm(s, loadBalancer, hcloud.LoadBalancerChangeAlgorithmOpts{Type: hcloud.LoadBalancerAlgorithmType(algorithm)})
 		if err != nil {
 			return err
 		}
-		if err := waiter.ActionProgress(cmd, ctx, action); err != nil {
+		if err := s.ActionProgress(cmd, s, action); err != nil {
 			return err
 		}
 		cmd.Printf("Algorithm for Load Balancer %d was changed\n", loadBalancer.ID)

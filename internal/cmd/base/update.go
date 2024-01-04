@@ -1,7 +1,6 @@
 package base
 
 import (
-	"context"
 	"fmt"
 	"reflect"
 	"strings"
@@ -22,24 +21,22 @@ type UpdateCmd struct {
 	ShortDescription     string
 	NameSuggestions      func(client hcapi2.Client) func() []string
 	DefineFlags          func(*cobra.Command)
-	Fetch                func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error)
-	Update               func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}, flags map[string]pflag.Value) error
+	Fetch                func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error)
+	Update               func(s state.State, cmd *cobra.Command, resource interface{}, flags map[string]pflag.Value) error
 }
 
 // CobraCommand creates a command that can be registered with cobra.
-func (uc *UpdateCmd) CobraCommand(
-	ctx context.Context, client hcapi2.Client, tokenEnsurer state.TokenEnsurer,
-) *cobra.Command {
+func (uc *UpdateCmd) CobraCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   fmt.Sprintf("update [FLAGS] %s", strings.ToUpper(uc.ResourceNameSingular)),
 		Short:                 uc.ShortDescription,
 		Args:                  cobra.ExactArgs(1),
-		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(uc.NameSuggestions(client))),
+		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(uc.NameSuggestions(s.Client()))),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		PreRunE:               util.ChainRunE(tokenEnsurer.EnsureToken),
+		PreRunE:               util.ChainRunE(s.EnsureToken),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return uc.Run(ctx, client, cmd, args)
+			return uc.Run(s, cmd, args)
 		},
 	}
 	uc.DefineFlags(cmd)
@@ -47,10 +44,10 @@ func (uc *UpdateCmd) CobraCommand(
 }
 
 // Run executes a update command.
-func (uc *UpdateCmd) Run(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, args []string) error {
+func (uc *UpdateCmd) Run(s state.State, cmd *cobra.Command, args []string) error {
 
 	idOrName := args[0]
-	resource, _, err := uc.Fetch(ctx, client, cmd, idOrName)
+	resource, _, err := uc.Fetch(s, cmd, idOrName)
 	if err != nil {
 		return err
 	}
@@ -70,7 +67,7 @@ func (uc *UpdateCmd) Run(ctx context.Context, client hcapi2.Client, cmd *cobra.C
 		flags[flag.Name] = flag.Value
 	})
 
-	if err := uc.Update(ctx, client, cmd, resource, flags); err != nil {
+	if err := uc.Update(s, cmd, resource, flags); err != nil {
 		return fmt.Errorf("updating %s %s failed: %s", uc.ResourceNameSingular, idOrName, err)
 	}
 

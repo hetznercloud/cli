@@ -1,7 +1,6 @@
 package volume
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -30,8 +29,8 @@ var AttachCmd = base.Cmd{
 
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
-		volume, _, err := client.Volume().Get(ctx, args[0])
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
+		volume, _, err := s.Client().Volume().Get(s, args[0])
 		if err != nil {
 			return err
 		}
@@ -40,7 +39,7 @@ var AttachCmd = base.Cmd{
 		}
 
 		serverIDOrName, _ := cmd.Flags().GetString("server")
-		server, _, err := client.Server().Get(ctx, serverIDOrName)
+		server, _, err := s.Client().Server().Get(s, serverIDOrName)
 		if err != nil {
 			return err
 		}
@@ -48,7 +47,7 @@ var AttachCmd = base.Cmd{
 			return fmt.Errorf("server not found: %s", serverIDOrName)
 		}
 		automount, _ := cmd.Flags().GetBool("automount")
-		action, _, err := client.Volume().AttachWithOpts(ctx, volume, hcloud.VolumeAttachOpts{
+		action, _, err := s.Client().Volume().AttachWithOpts(s, volume, hcloud.VolumeAttachOpts{
 			Server:    server,
 			Automount: &automount,
 		})
@@ -57,7 +56,7 @@ var AttachCmd = base.Cmd{
 			return err
 		}
 
-		if err := waiter.ActionProgress(cmd, ctx, action); err != nil {
+		if err := s.ActionProgress(cmd, s, action); err != nil {
 			return err
 		}
 

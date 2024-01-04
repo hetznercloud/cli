@@ -1,7 +1,6 @@
 package base
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -19,17 +18,15 @@ type ListCmd struct {
 	ResourceNamePlural string // e.g. "servers"
 	JSONKeyGetByName   string // e.g. "servers"
 	DefaultColumns     []string
-	Fetch              func(context.Context, hcapi2.Client, *pflag.FlagSet, hcloud.ListOpts, []string) ([]interface{}, error)
+	Fetch              func(state.State, *pflag.FlagSet, hcloud.ListOpts, []string) ([]interface{}, error)
 	AdditionalFlags    func(*cobra.Command)
 	OutputTable        func(client hcapi2.Client) *output.Table
 	Schema             func([]interface{}) interface{}
 }
 
 // CobraCommand creates a command that can be registered with cobra.
-func (lc *ListCmd) CobraCommand(
-	ctx context.Context, client hcapi2.Client, tokenEnsurer state.TokenEnsurer,
-) *cobra.Command {
-	outputColumns := lc.OutputTable(client).Columns()
+func (lc *ListCmd) CobraCommand(s state.State) *cobra.Command {
+	outputColumns := lc.OutputTable(s.Client()).Columns()
 
 	cmd := &cobra.Command{
 		Use:   "list [FlAGS]",
@@ -40,9 +37,9 @@ func (lc *ListCmd) CobraCommand(
 		),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		PreRunE:               tokenEnsurer.EnsureToken,
+		PreRunE:               s.EnsureToken,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return lc.Run(ctx, client, cmd)
+			return lc.Run(s, cmd)
 		},
 	}
 	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(outputColumns), output.OptionJSON(), output.OptionYAML())
@@ -55,7 +52,7 @@ func (lc *ListCmd) CobraCommand(
 }
 
 // Run executes a list command
-func (lc *ListCmd) Run(ctx context.Context, client hcapi2.Client, cmd *cobra.Command) error {
+func (lc *ListCmd) Run(s state.State, cmd *cobra.Command) error {
 	outOpts := output.FlagsForCommand(cmd)
 
 	labelSelector, _ := cmd.Flags().GetString("selector")
@@ -65,7 +62,7 @@ func (lc *ListCmd) Run(ctx context.Context, client hcapi2.Client, cmd *cobra.Com
 	}
 	sorts, _ := cmd.Flags().GetStringSlice("sort")
 
-	resources, err := lc.Fetch(ctx, client, cmd.Flags(), listOpts, sorts)
+	resources, err := lc.Fetch(s, cmd.Flags(), listOpts, sorts)
 	if err != nil {
 		return err
 	}
@@ -84,7 +81,7 @@ func (lc *ListCmd) Run(ctx context.Context, client hcapi2.Client, cmd *cobra.Com
 		cols = outOpts["columns"]
 	}
 
-	table := lc.OutputTable(client)
+	table := lc.OutputTable(s.Client())
 	if !outOpts.IsSet("noheader") {
 		table.WriteHeader(cols)
 	}

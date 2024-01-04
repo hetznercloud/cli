@@ -3,11 +3,10 @@ package loadbalancer
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 )
 
-func NewCommand(cli *state.State, client hcapi2.Client) *cobra.Command {
+func NewCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "load-balancer",
 		Short:                 "Manage Load Balancers",
@@ -17,28 +16,28 @@ func NewCommand(cli *state.State, client hcapi2.Client) *cobra.Command {
 		DisableFlagsInUseLine: true,
 	}
 	cmd.AddCommand(
-		CreateCmd.CobraCommand(cli.Context, client, cli, cli),
-		ListCmd.CobraCommand(cli.Context, client, cli),
-		DescribeCmd.CobraCommand(cli.Context, client, cli),
-		DeleteCmd.CobraCommand(cli.Context, client, cli, cli),
-		UpdateCmd.CobraCommand(cli.Context, client, cli),
-		LabelCmds.AddCobraCommand(cli.Context, client, cli),
-		LabelCmds.RemoveCobraCommand(cli.Context, client, cli),
-		AddTargetCmd.CobraCommand(cli.Context, client, cli, cli),
-		RemoveTargetCmd.CobraCommand(cli.Context, client, cli, cli),
-		ChangeAlgorithmCmd.CobraCommand(cli.Context, client, cli, cli),
-		UpdateServiceCmd.CobraCommand(cli.Context, client, cli, cli),
-		DeleteServiceCmd.CobraCommand(cli.Context, client, cli, cli),
-		AddServiceCmd.CobraCommand(cli.Context, client, cli, cli),
-		EnableProtectionCmd.CobraCommand(cli.Context, client, cli, cli),
-		DisableProtectionCmd.CobraCommand(cli.Context, client, cli, cli),
-		AttachToNetworkCmd.CobraCommand(cli.Context, client, cli, cli),
-		DetachFromNetworkCmd.CobraCommand(cli.Context, client, cli, cli),
-		EnablePublicInterfaceCmd.CobraCommand(cli.Context, client, cli, cli),
-		DisablePublicInterfaceCmd.CobraCommand(cli.Context, client, cli, cli),
-		ChangeTypeCmd.CobraCommand(cli.Context, client, cli, cli),
-		MetricsCmd.CobraCommand(cli.Context, client, cli, cli),
-		SetRDNSCmd.CobraCommand(cli.Context, client, cli, cli),
+		CreateCmd.CobraCommand(s),
+		ListCmd.CobraCommand(s),
+		DescribeCmd.CobraCommand(s),
+		DeleteCmd.CobraCommand(s),
+		UpdateCmd.CobraCommand(s),
+		LabelCmds.AddCobraCommand(s),
+		LabelCmds.RemoveCobraCommand(s),
+		AddTargetCmd.CobraCommand(s),
+		RemoveTargetCmd.CobraCommand(s),
+		ChangeAlgorithmCmd.CobraCommand(s),
+		UpdateServiceCmd.CobraCommand(s),
+		DeleteServiceCmd.CobraCommand(s),
+		AddServiceCmd.CobraCommand(s),
+		EnableProtectionCmd.CobraCommand(s),
+		DisableProtectionCmd.CobraCommand(s),
+		AttachToNetworkCmd.CobraCommand(s),
+		DetachFromNetworkCmd.CobraCommand(s),
+		EnablePublicInterfaceCmd.CobraCommand(s),
+		DisablePublicInterfaceCmd.CobraCommand(s),
+		ChangeTypeCmd.CobraCommand(s),
+		MetricsCmd.CobraCommand(s),
+		SetRDNSCmd.CobraCommand(s),
 	)
 	return cmd
 }

@@ -1,7 +1,6 @@
 package primaryip
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -27,9 +26,9 @@ var DisableProtectionCmd = base.Cmd{
 		}
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, actionWaiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		primaryIP, _, err := client.PrimaryIP().Get(ctx, idOrName)
+		primaryIP, _, err := s.Client().PrimaryIP().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -48,6 +47,6 @@ var DisableProtectionCmd = base.Cmd{
 			return err
 		}
 
-		return changeProtection(ctx, client, actionWaiter, cmd, primaryIP, false, opts)
+		return changeProtection(s, cmd, primaryIP, false, opts)
 	},
 }

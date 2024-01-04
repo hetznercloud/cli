@@ -22,12 +22,7 @@ func TestCreate(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := server.CreateCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter,
-	)
+	cmd := server.CreateCmd.CobraCommand(fx.State())
 
 	fx.ExpectEnsureToken()
 
@@ -83,12 +78,7 @@ func TestCreateJSON(t *testing.T) {
 
 	time.Local = time.UTC
 
-	cmd := server.CreateCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter,
-	)
+	cmd := server.CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	srv := &hcloud.Server{
@@ -182,12 +172,7 @@ func TestCreateProtectionBackup(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := server.CreateCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter,
-	)
+	cmd := server.CreateCmd.CobraCommand(fx.State())
 
 	fx.ExpectEnsureToken()
 

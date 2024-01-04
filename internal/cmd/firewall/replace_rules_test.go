@@ -1,7 +1,6 @@
 package firewall
 
 import (
-	"context"
 	"net"
 	"testing"
 
@@ -16,11 +15,7 @@ func TestReplaceRules(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := ReplaceRulesCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter)
+	cmd := ReplaceRulesCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	firewall := &hcloud.Firewall{

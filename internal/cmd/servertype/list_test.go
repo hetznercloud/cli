@@ -1,7 +1,6 @@
 package servertype
 
 import (
-	"context"
 	"testing"
 	"time"
 
@@ -19,7 +18,7 @@ func TestList(t *testing.T) {
 
 	time.Local = time.UTC
 
-	cmd := ListCmd.CobraCommand(context.Background(), fx.Client, fx.TokenEnsurer)
+	cmd := ListCmd.CobraCommand(fx.State())
 
 	fx.ExpectEnsureToken()
 	fx.Client.ServerTypeClient.EXPECT().

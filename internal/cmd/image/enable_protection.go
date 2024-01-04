@@ -1,7 +1,6 @@
 package image
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"strconv"
@@ -36,19 +35,19 @@ func getChangeProtectionOpts(enable bool, flags []string) (hcloud.ImageChangePro
 	return opts, nil
 }
 
-func changeProtection(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command,
+func changeProtection(s state.State, cmd *cobra.Command,
 	image *hcloud.Image, enable bool, opts hcloud.ImageChangeProtectionOpts) error {
 
 	if opts.Delete == nil {
 		return nil
 	}
 
-	action, _, err := client.Image().ChangeProtection(ctx, image, opts)
+	action, _, err := s.Client().Image().ChangeProtection(s, image, opts)
 	if err != nil {
 		return err
 	}
 
-	if err := waiter.ActionProgress(cmd, ctx, action); err != nil {
+	if err := s.ActionProgress(cmd, s, action); err != nil {
 		return err
 	}
 
@@ -75,7 +74,7 @@ var EnableProtectionCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		imageID, err := strconv.ParseInt(args[0], 10, 64)
 		if err != nil {
 			return errors.New("invalid image ID")
@@ -87,6 +86,6 @@ var EnableProtectionCmd = base.Cmd{
 			return err
 		}
 
-		return changeProtection(ctx, client, waiter, cmd, image, true, opts)
+		return changeProtection(s, cmd, image, true, opts)
 	},
 }

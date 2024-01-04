@@ -3,11 +3,10 @@ package image
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 )
 
-func NewCommand(cli *state.State, client hcapi2.Client) *cobra.Command {
+func NewCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "image",
 		Short:                 "Manage images",
@@ -16,14 +15,14 @@ func NewCommand(cli *state.State, client hcapi2.Client) *cobra.Command {
 		DisableFlagsInUseLine: true,
 	}
 	cmd.AddCommand(
-		ListCmd.CobraCommand(cli.Context, client, cli),
-		DeleteCmd.CobraCommand(cli.Context, client, cli, cli),
-		DescribeCmd.CobraCommand(cli.Context, client, cli),
-		UpdateCmd.CobraCommand(cli.Context, client, cli),
-		EnableProtectionCmd.CobraCommand(cli.Context, client, cli, cli),
-		DisableProtectionCmd.CobraCommand(cli.Context, client, cli, cli),
-		LabelCmds.AddCobraCommand(cli.Context, client, cli),
-		LabelCmds.RemoveCobraCommand(cli.Context, client, cli),
+		ListCmd.CobraCommand(s),
+		DeleteCmd.CobraCommand(s),
+		DescribeCmd.CobraCommand(s),
+		UpdateCmd.CobraCommand(s),
+		EnableProtectionCmd.CobraCommand(s),
+		DisableProtectionCmd.CobraCommand(s),
+		LabelCmds.AddCobraCommand(s),
+		LabelCmds.RemoveCobraCommand(s),
 	)
 	return cmd
 }

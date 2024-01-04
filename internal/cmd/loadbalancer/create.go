@@ -1,8 +1,6 @@
 package loadbalancer
 
 import (
-	"context"
-
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
@@ -48,7 +46,7 @@ var CreateCmd = base.CreateCmd{
 
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) (any, any, error) {
+	Run: func(s state.State, cmd *cobra.Command, args []string) (any, any, error) {
 		name, _ := cmd.Flags().GetString("name")
 		serverType, _ := cmd.Flags().GetString("type")
 		algorithmType, _ := cmd.Flags().GetString("algorithm-type")
@@ -78,28 +76,28 @@ var CreateCmd = base.CreateCmd{
 		if location != "" {
 			createOpts.Location = &hcloud.Location{Name: location}
 		}
-		result, _, err := client.LoadBalancer().Create(ctx, createOpts)
+		result, _, err := s.Client().LoadBalancer().Create(s, createOpts)
 		if err != nil {
 			return nil, nil, err
 		}
 
-		if err := waiter.ActionProgress(cmd, ctx, result.Action); err != nil {
+		if err := s.ActionProgress(cmd, s, result.Action); err != nil {
 			return nil, nil, err
 		}
-		loadBalancer, _, err := client.LoadBalancer().GetByID(ctx, result.LoadBalancer.ID)
+		loadBalancer, _, err := s.Client().LoadBalancer().GetByID(s, result.LoadBalancer.ID)
 		if err != nil {
 			return nil, nil, err
 		}
 		cmd.Printf("Load Balancer %d created\n", loadBalancer.ID)
 
-		if err := changeProtection(ctx, client, waiter, cmd, loadBalancer, true, protectionOpts); err != nil {
+		if err := changeProtection(s, cmd, loadBalancer, true, protectionOpts); err != nil {
 			return nil, nil, err
 		}
 
 		return loadBalancer, util.Wrap("load_balancer", hcloud.SchemaFromLoadBalancer(loadBalancer)), nil
 	},
 
-	PrintResource: func(_ context.Context, _ hcapi2.Client, cmd *cobra.Command, resource any) {
+	PrintResource: func(_ state.State, cmd *cobra.Command, resource any) {
 		loadBalancer := resource.(*hcloud.LoadBalancer)
 		cmd.Printf("IPv4: %s\n", loadBalancer.PublicNet.IPv4.IP.String())
 		cmd.Printf("IPv6: %s\n", loadBalancer.PublicNet.IPv6.IP.String())

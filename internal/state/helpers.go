@@ -5,13 +5,11 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"time"
 
 	"github.com/cheggaaa/pb/v3"
 	"github.com/spf13/cobra"
 	"golang.org/x/crypto/ssh/terminal"
 
-	"github.com/hetznercloud/cli/internal/version"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
@@ -20,38 +18,10 @@ const (
 	progressBarTpl    = `{{ etime . }} {{ bar . "" "=" }} {{ percent . }}`
 )
 
-func (c *State) Wrap(f func(*State, *cobra.Command, []string) error) func(*cobra.Command, []string) error {
+func Wrap(s State, f func(State, *cobra.Command, []string) error) func(*cobra.Command, []string) error {
 	return func(cmd *cobra.Command, args []string) error {
-		return f(c, cmd, args)
+		return f(s, cmd, args)
 	}
-}
-
-func (c *State) Client() *hcloud.Client {
-	if c.client == nil {
-		opts := []hcloud.ClientOption{
-			hcloud.WithToken(c.Token),
-			hcloud.WithApplication("hcloud-cli", version.Version),
-		}
-		if c.Endpoint != "" {
-			opts = append(opts, hcloud.WithEndpoint(c.Endpoint))
-		}
-		if c.Debug {
-			if c.DebugFilePath == "" {
-				opts = append(opts, hcloud.WithDebugWriter(os.Stderr))
-			} else {
-				writer, _ := os.Create(c.DebugFilePath)
-				opts = append(opts, hcloud.WithDebugWriter(writer))
-			}
-		}
-		// TODO Somehow pass here
-		// pollInterval, _ := c.RootCommand.PersistentFlags().GetDuration("poll-interval")
-		pollInterval := 500 * time.Millisecond
-		if pollInterval > 0 {
-			opts = append(opts, hcloud.WithPollInterval(pollInterval))
-		}
-		c.client = hcloud.NewClient(opts...)
-	}
-	return c.client
 }
 
 // StdoutIsTerminal returns whether the CLI is run in a terminal.
@@ -59,12 +29,12 @@ func StdoutIsTerminal() bool {
 	return terminal.IsTerminal(int(os.Stdout.Fd()))
 }
 
-func (c *State) ActionProgress(cmd *cobra.Command, ctx context.Context, action *hcloud.Action) error {
+func (c *state) ActionProgress(cmd *cobra.Command, ctx context.Context, action *hcloud.Action) error {
 	return c.ActionsProgresses(cmd, ctx, []*hcloud.Action{action})
 }
 
-func (c *State) ActionsProgresses(cmd *cobra.Command, ctx context.Context, actions []*hcloud.Action) error {
-	progressCh, errCh := c.Client().Action.WatchOverallProgress(ctx, actions)
+func (c *state) ActionsProgresses(cmd *cobra.Command, ctx context.Context, actions []*hcloud.Action) error {
+	progressCh, errCh := c.hcloudClient.Action.WatchOverallProgress(ctx, actions)
 
 	if StdoutIsTerminal() {
 		progress := pb.New(100)
@@ -89,14 +59,14 @@ func (c *State) ActionsProgresses(cmd *cobra.Command, ctx context.Context, actio
 	}
 }
 
-func (c *State) EnsureToken(_ *cobra.Command, _ []string) error {
-	if c.Token == "" {
+func (c *state) EnsureToken(_ *cobra.Command, _ []string) error {
+	if c.token == "" {
 		return errors.New("no active context or token (see `hcloud context --help`)")
 	}
 	return nil
 }
 
-func (c *State) WaitForActions(cmd *cobra.Command, ctx context.Context, actions []*hcloud.Action) error {
+func (c *state) WaitForActions(cmd *cobra.Command, ctx context.Context, actions []*hcloud.Action) error {
 	for _, action := range actions {
 		resources := make(map[string]int64)
 		for _, resource := range action.Resources {
@@ -113,7 +83,7 @@ func (c *State) WaitForActions(cmd *cobra.Command, ctx context.Context, actions 
 			waitingFor = fmt.Sprintf("Waiting for volume %d to have been attached to server %d", resources["volume"], resources["server"])
 		}
 
-		_, errCh := c.Client().Action.WatchProgress(ctx, action)
+		_, errCh := c.hcloudClient.Action.WatchProgress(ctx, action)
 
 		err := DisplayProgressCircle(cmd, errCh, waitingFor)
 		if err != nil {

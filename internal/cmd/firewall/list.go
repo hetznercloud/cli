@@ -1,7 +1,6 @@
 package firewall
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/spf13/pflag"
@@ -9,6 +8,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/hcapi2"
+	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
@@ -18,12 +18,12 @@ var ListCmd = base.ListCmd{
 	JSONKeyGetByName:   "firewalls",
 	DefaultColumns:     []string{"id", "name", "rules_count", "applied_to_count"},
 
-	Fetch: func(ctx context.Context, client hcapi2.Client, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
+	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
 		opts := hcloud.FirewallListOpts{ListOpts: listOpts}
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		firewalls, err := client.Firewall().AllWithOpts(ctx, opts)
+		firewalls, err := s.Client().Firewall().AllWithOpts(s, opts)
 
 		var resources []interface{}
 		for _, n := range firewalls {

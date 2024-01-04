@@ -1,13 +1,12 @@
 package location
 
 import (
-	"context"
-
 	"github.com/spf13/pflag"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/hcapi2"
+	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
@@ -17,12 +16,12 @@ var ListCmd = base.ListCmd{
 	JSONKeyGetByName:   "locations",
 	DefaultColumns:     []string{"id", "name", "description", "network_zone", "country", "city"},
 
-	Fetch: func(ctx context.Context, client hcapi2.Client, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
+	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
 		opts := hcloud.LocationListOpts{ListOpts: listOpts}
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		locations, err := client.Location().AllWithOpts(ctx, opts)
+		locations, err := s.Client().Location().AllWithOpts(s, opts)
 
 		var resources []interface{}
 		for _, n := range locations {

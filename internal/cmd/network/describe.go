@@ -1,14 +1,13 @@
 package network
 
 import (
-	"context"
-
 	humanize "github.com/dustin/go-humanize"
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
+	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
@@ -19,14 +18,14 @@ var DescribeCmd = base.DescribeCmd{
 	JSONKeyGetByID:       "network",
 	JSONKeyGetByName:     "networks",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Network().Names },
-	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
-		n, _, err := client.Network().Get(ctx, idOrName)
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
+		n, _, err := s.Client().Network().Get(s, idOrName)
 		if err != nil {
 			return nil, nil, err
 		}
 		return n, hcloud.SchemaFromNetwork(n), nil
 	},
-	PrintText: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}) error {
+	PrintText: func(s state.State, cmd *cobra.Command, resource interface{}) error {
 		network := resource.(*hcloud.Network)
 
 		cmd.Printf("ID:\t\t%d\n", network.ID)

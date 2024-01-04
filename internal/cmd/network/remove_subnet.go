@@ -1,7 +1,6 @@
 package network
 
 import (
-	"context"
 	"fmt"
 	"net"
 
@@ -28,10 +27,10 @@ var RemoveSubnetCmd = base.Cmd{
 		cmd.MarkFlagRequired("ip-range")
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		ipRange, _ := cmd.Flags().GetIPNet("ip-range")
 		idOrName := args[0]
-		network, _, err := client.Network().Get(ctx, idOrName)
+		network, _, err := s.Client().Network().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -44,11 +43,11 @@ var RemoveSubnetCmd = base.Cmd{
 				IPRange: &ipRange,
 			},
 		}
-		action, _, err := client.Network().DeleteSubnet(ctx, network, opts)
+		action, _, err := s.Client().Network().DeleteSubnet(s, network, opts)
 		if err != nil {
 			return err
 		}
-		if err := waiter.ActionProgress(cmd, ctx, action); err != nil {
+		if err := s.ActionProgress(cmd, s, action); err != nil {
 			return err
 		}
 		cmd.Printf("Subnet %s removed from network %d\n", ipRange.String(), network.ID)

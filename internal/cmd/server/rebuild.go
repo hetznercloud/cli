@@ -1,7 +1,6 @@
 package server
 
 import (
-	"context"
 	"fmt"
 	"time"
 
@@ -32,9 +31,9 @@ var RebuildCmd = base.Cmd{
 
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		serverIDOrName := args[0]
-		server, _, err := client.Server().Get(ctx, serverIDOrName)
+		server, _, err := s.Client().Server().Get(s, serverIDOrName)
 		if err != nil {
 			return err
 		}
@@ -44,7 +43,7 @@ var RebuildCmd = base.Cmd{
 
 		imageIDOrName, _ := cmd.Flags().GetString("image")
 		// Select correct image based on server type architecture
-		image, _, err := client.Image().GetForArchitecture(ctx, imageIDOrName, server.ServerType.Architecture)
+		image, _, err := s.Client().Image().GetForArchitecture(s, imageIDOrName, server.ServerType.Architecture)
 		if err != nil {
 			return err
 		}
@@ -65,12 +64,12 @@ var RebuildCmd = base.Cmd{
 		opts := hcloud.ServerRebuildOpts{
 			Image: image,
 		}
-		result, _, err := client.Server().RebuildWithResult(ctx, server, opts)
+		result, _, err := s.Client().Server().RebuildWithResult(s, server, opts)
 		if err != nil {
 			return err
 		}
 
-		if err := waiter.ActionProgress(cmd, ctx, result.Action); err != nil {
+		if err := s.ActionProgress(cmd, s, result.Action); err != nil {
 			return err
 		}
 

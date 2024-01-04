@@ -1,7 +1,6 @@
 package loadbalancer
 
 import (
-	"context"
 	"fmt"
 	"net"
 
@@ -35,7 +34,7 @@ var RemoveTargetCmd = base.Cmd{
 
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		var (
 			action       *hcloud.Action
 			loadBalancer *hcloud.LoadBalancer
@@ -48,7 +47,7 @@ var RemoveTargetCmd = base.Cmd{
 
 		idOrName := args[0]
 
-		loadBalancer, _, err = client.LoadBalancer().Get(ctx, idOrName)
+		loadBalancer, _, err = s.Client().LoadBalancer().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -61,19 +60,19 @@ var RemoveTargetCmd = base.Cmd{
 		}
 		switch {
 		case serverIDOrName != "":
-			server, _, err := client.Server().Get(ctx, serverIDOrName)
+			server, _, err := s.Client().Server().Get(s, serverIDOrName)
 			if err != nil {
 				return err
 			}
 			if server == nil {
 				return fmt.Errorf("server not found: %s", serverIDOrName)
 			}
-			action, _, err = client.LoadBalancer().RemoveServerTarget(ctx, loadBalancer, server)
+			action, _, err = s.Client().LoadBalancer().RemoveServerTarget(s, loadBalancer, server)
 			if err != nil {
 				return err
 			}
 		case labelSelector != "":
-			action, _, err = client.LoadBalancer().RemoveLabelSelectorTarget(ctx, loadBalancer, labelSelector)
+			action, _, err = s.Client().LoadBalancer().RemoveLabelSelectorTarget(s, loadBalancer, labelSelector)
 			if err != nil {
 				return err
 			}
@@ -82,14 +81,14 @@ var RemoveTargetCmd = base.Cmd{
 			if ip == nil {
 				return fmt.Errorf("invalid ip provided")
 			}
-			if action, _, err = client.LoadBalancer().RemoveIPTarget(ctx, loadBalancer, ip); err != nil {
+			if action, _, err = s.Client().LoadBalancer().RemoveIPTarget(s, loadBalancer, ip); err != nil {
 				return err
 			}
 		default:
 			return fmt.Errorf("specify one of --server, --label-selector, or --ip")
 		}
 
-		if err := waiter.ActionProgress(cmd, ctx, action); err != nil {
+		if err := s.ActionProgress(cmd, s, action); err != nil {
 			return err
 		}
 		cmd.Printf("Target removed from Load Balancer %d\n", loadBalancer.ID)

@@ -1,7 +1,6 @@
 package location_test
 
 import (
-	"context"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -16,10 +15,7 @@ func TestDescribe(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := location.DescribeCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer)
+	cmd := location.DescribeCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.LocationClient.EXPECT().

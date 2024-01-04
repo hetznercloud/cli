@@ -1,7 +1,6 @@
 package floatingip
 
 import (
-	"context"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -15,11 +14,7 @@ func TestAssign(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := AssignCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter)
+	cmd := AssignCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.FloatingIPClient.EXPECT().

@@ -5,7 +5,6 @@ import (
 	"os"
 
 	"github.com/hetznercloud/cli/internal/cli"
-	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 )
 
@@ -16,25 +15,22 @@ func init() {
 }
 
 func main() {
-	cliState := state.New()
-
-	if cliState.ConfigPath != "" {
-		_, err := os.Stat(cliState.ConfigPath)
-		switch {
-		case err == nil:
-			if err := cliState.ReadConfig(); err != nil {
-				log.Fatalf("unable to read config file %q: %s\n", cliState.ConfigPath, err)
-			}
-		case os.IsNotExist(err):
-			break
-		default:
-			log.Fatalf("unable to read config file %q: %s\n", cliState.ConfigPath, err)
-		}
+	configPath := os.Getenv("HCLOUD_CONFIG")
+	if configPath == "" {
+		configPath = state.DefaultConfigPath()
 	}
 
-	cliState.ReadEnv()
-	apiClient := hcapi2.NewClient(cliState.Client())
-	rootCommand := cli.NewRootCommand(cliState, apiClient)
+	cfg, err := state.ReadConfig(configPath)
+	if err != nil {
+		log.Fatalf("unable to read config file %q: %s\n", configPath, err)
+	}
+
+	s, err := state.New(cfg)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	rootCommand := cli.NewRootCommand(s)
 	if err := rootCommand.Execute(); err != nil {
 		log.Fatalln(err)
 	}

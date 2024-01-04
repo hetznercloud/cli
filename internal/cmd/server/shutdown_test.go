@@ -1,7 +1,6 @@
 package server
 
 import (
-	"context"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -16,11 +15,7 @@ func TestShutdown(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := ShutdownCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter)
+	cmd := ShutdownCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	var (
@@ -52,11 +47,7 @@ func TestShutdownWait(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := ShutdownCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter)
+	cmd := ShutdownCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	var (

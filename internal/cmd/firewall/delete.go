@@ -1,8 +1,6 @@
 package firewall
 
 import (
-	"context"
-
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
@@ -15,12 +13,12 @@ var DeleteCmd = base.DeleteCmd{
 	ResourceNameSingular: "firewall",
 	ShortDescription:     "Delete a firewall",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Firewall().Names },
-	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
-		return client.Firewall().Get(ctx, idOrName)
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
+		return s.Client().Firewall().Get(s, idOrName)
 	},
-	Delete: func(ctx context.Context, client hcapi2.Client, _ state.ActionWaiter, cmd *cobra.Command, resource interface{}) error {
+	Delete: func(s state.State, cmd *cobra.Command, resource interface{}) error {
 		firewall := resource.(*hcloud.Firewall)
-		if _, err := client.Firewall().Delete(ctx, firewall); err != nil {
+		if _, err := s.Client().Firewall().Delete(s, firewall); err != nil {
 			return err
 		}
 		return nil

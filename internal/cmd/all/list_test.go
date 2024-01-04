@@ -1,7 +1,6 @@
 package all
 
 import (
-	"context"
 	_ "embed"
 	"net"
 	"testing"
@@ -23,11 +22,7 @@ func TestListAll(t *testing.T) {
 
 	time.Local = time.UTC
 
-	cmd := listCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter)
+	cmd := listCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.ServerClient.EXPECT().
@@ -251,11 +246,7 @@ func TestListAllPaidJSON(t *testing.T) {
 
 	time.Local = time.UTC
 
-	cmd := listCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter)
+	cmd := listCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.ServerClient.EXPECT().

@@ -14,19 +14,20 @@ import (
 	"github.com/hetznercloud/cli/internal/state"
 )
 
-func newCreateCommand(cli *state.State) *cobra.Command {
+func newCreateCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "create [FLAGS] NAME",
 		Short:                 "Create a new context",
 		Args:                  cobra.ExactArgs(1),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE:                  cli.Wrap(runCreate),
+		RunE:                  state.Wrap(s, runCreate),
 	}
 	return cmd
 }
 
-func runCreate(cli *state.State, cmd *cobra.Command, args []string) error {
+func runCreate(s state.State, cmd *cobra.Command, args []string) error {
+	cfg := s.Config()
 	if !state.StdoutIsTerminal() {
 		return errors.New("context create is an interactive command")
 	}
@@ -35,7 +36,7 @@ func runCreate(cli *state.State, cmd *cobra.Command, args []string) error {
 	if name == "" {
 		return errors.New("invalid name")
 	}
-	if cli.Config.ContextByName(name) != nil {
+	if cfg.ContextByName(name) != nil {
 		return errors.New("name already used")
 	}
 
@@ -81,10 +82,10 @@ func runCreate(cli *state.State, cmd *cobra.Command, args []string) error {
 
 	context.Token = token
 
-	cli.Config.Contexts = append(cli.Config.Contexts, context)
-	cli.Config.ActiveContext = context
+	cfg.Contexts = append(cfg.Contexts, context)
+	cfg.ActiveContext = context
 
-	if err := cli.WriteConfig(); err != nil {
+	if err := cfg.Write(); err != nil {
 		return err
 	}
 

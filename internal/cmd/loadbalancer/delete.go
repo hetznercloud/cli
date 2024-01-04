@@ -1,8 +1,6 @@
 package loadbalancer
 
 import (
-	"context"
-
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
@@ -15,12 +13,12 @@ var DeleteCmd = base.DeleteCmd{
 	ResourceNameSingular: "Load Balancer",
 	ShortDescription:     "Delete a Load Balancer",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.LoadBalancer().Names },
-	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
-		return client.LoadBalancer().Get(ctx, idOrName)
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
+		return s.Client().LoadBalancer().Get(s, idOrName)
 	},
-	Delete: func(ctx context.Context, client hcapi2.Client, _ state.ActionWaiter, cmd *cobra.Command, resource interface{}) error {
+	Delete: func(s state.State, cmd *cobra.Command, resource interface{}) error {
 		loadBalancer := resource.(*hcloud.LoadBalancer)
-		if _, err := client.LoadBalancer().Delete(ctx, loadBalancer); err != nil {
+		if _, err := s.Client().LoadBalancer().Delete(s, loadBalancer); err != nil {
 			return err
 		}
 		return nil

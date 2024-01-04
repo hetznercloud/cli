@@ -1,7 +1,6 @@
 package server
 
 import (
-	"context"
 	"fmt"
 	"net"
 
@@ -34,9 +33,9 @@ var AttachToNetworkCmd = base.Cmd{
 
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		server, _, err := client.Server().Get(ctx, idOrName)
+		server, _, err := s.Client().Server().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -45,7 +44,7 @@ var AttachToNetworkCmd = base.Cmd{
 		}
 
 		networkIDOrName, _ := cmd.Flags().GetString("network")
-		network, _, err := client.Network().Get(ctx, networkIDOrName)
+		network, _, err := s.Client().Network().Get(s, networkIDOrName)
 		if err != nil {
 			return err
 		}
@@ -63,13 +62,13 @@ var AttachToNetworkCmd = base.Cmd{
 		for _, aliasIP := range aliasIPs {
 			opts.AliasIPs = append(opts.AliasIPs, aliasIP)
 		}
-		action, _, err := client.Server().AttachToNetwork(ctx, server, opts)
+		action, _, err := s.Client().Server().AttachToNetwork(s, server, opts)
 
 		if err != nil {
 			return err
 		}
 
-		if err := waiter.ActionProgress(cmd, ctx, action); err != nil {
+		if err := s.ActionProgress(cmd, s, action); err != nil {
 			return err
 		}
 

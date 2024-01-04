@@ -1,7 +1,6 @@
 package loadbalancer
 
 import (
-	"context"
 	"testing"
 	"time"
 
@@ -16,11 +15,7 @@ func TestUpdateService(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := UpdateServiceCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter)
+	cmd := UpdateServiceCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.LoadBalancerClient.EXPECT().

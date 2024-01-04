@@ -2,105 +2,137 @@ package state
 
 import (
 	"context"
-	"errors"
-	"io/ioutil"
 	"log"
 	"os"
-	"path/filepath"
+	"time"
 
+	"github.com/hetznercloud/cli/internal/hcapi2"
+	"github.com/hetznercloud/cli/internal/version"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-type State struct {
-	Token         string
-	Endpoint      string
-	Context       context.Context
-	Config        *Config
-	ConfigPath    string
-	Debug         bool
-	DebugFilePath string
+type State interface {
+	context.Context
 
-	client *hcloud.Client
+	TokenEnsurer
+	ActionWaiter
+
+	Client() hcapi2.Client
+	Config() *Config
 }
 
-func New() *State {
-	s := &State{
-		Context:    context.Background(),
-		Config:     &Config{},
-		ConfigPath: DefaultConfigPath,
-	}
-	if p := os.Getenv("HCLOUD_CONFIG"); p != "" {
-		s.ConfigPath = p
-	}
-	return s
+type state struct {
+	context.Context
+
+	token         string
+	endpoint      string
+	debug         bool
+	debugFilePath string
+	client        hcapi2.Client
+	hcloudClient  *hcloud.Client
+	config        *Config
 }
 
-var ErrConfigPathUnknown = errors.New("config file path unknown")
+func New(cfg *Config) (State, error) {
+	var (
+		token    string
+		endpoint string
+	)
+	if cfg.ActiveContext != nil {
+		token = cfg.ActiveContext.Token
+	}
+	if cfg.Endpoint != "" {
+		endpoint = cfg.Endpoint
+	}
 
-func (c *State) ReadEnv() {
+	s := &state{
+		Context:  context.Background(),
+		config:   cfg,
+		token:    token,
+		endpoint: endpoint,
+	}
+
+	s.readEnv()
+	s.hcloudClient = s.newClient()
+	s.client = hcapi2.NewClient(s.hcloudClient)
+	return s, nil
+}
+
+func ReadConfig(path string) (*Config, error) {
+	cfg := &Config{Path: path}
+
+	_, err := os.Stat(path)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return cfg, nil
+		}
+		return cfg, err
+	}
+
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return nil, err
+	}
+
+	if err = UnmarshalConfig(cfg, data); err != nil {
+		return nil, err
+	}
+
+	return cfg, nil
+}
+
+func (c *state) Client() hcapi2.Client {
+	return c.client
+}
+
+func (c *state) Config() *Config {
+	return c.config
+}
+
+func (c *state) readEnv() {
 	if s := os.Getenv("HCLOUD_TOKEN"); s != "" {
-		c.Token = s
+		c.token = s
 	}
 	if s := os.Getenv("HCLOUD_ENDPOINT"); s != "" {
-		c.Endpoint = s
+		c.endpoint = s
 	}
 	if s := os.Getenv("HCLOUD_DEBUG"); s != "" {
-		c.Debug = true
+		c.debug = true
 	}
 	if s := os.Getenv("HCLOUD_DEBUG_FILE"); s != "" {
-		c.DebugFilePath = s
+		c.debugFilePath = s
 	}
-	if s := os.Getenv("HCLOUD_CONTEXT"); s != "" && c.Config != nil {
-		if cfgCtx := c.Config.ContextByName(s); cfgCtx != nil {
-			c.Config.ActiveContext = cfgCtx
-			c.Token = cfgCtx.Token
+	if s := os.Getenv("HCLOUD_CONTEXT"); s != "" && c.config != nil {
+		if cfgCtx := c.config.ContextByName(s); cfgCtx != nil {
+			c.config.ActiveContext = cfgCtx
+			c.token = cfgCtx.Token
 		} else {
 			log.Printf("warning: context %q specified in HCLOUD_CONTEXT does not exist\n", s)
 		}
 	}
 }
 
-func (c *State) ReadConfig() error {
-	if c.ConfigPath == "" {
-		return ErrConfigPathUnknown
+func (c *state) newClient() *hcloud.Client {
+	opts := []hcloud.ClientOption{
+		hcloud.WithToken(c.token),
+		hcloud.WithApplication("hcloud-cli", version.Version),
 	}
-
-	data, err := ioutil.ReadFile(c.ConfigPath)
-	if err != nil {
-		return err
+	if c.endpoint != "" {
+		opts = append(opts, hcloud.WithEndpoint(c.endpoint))
 	}
-
-	if err = UnmarshalConfig(c.Config, data); err != nil {
-		return err
+	if c.debug {
+		if c.debugFilePath == "" {
+			opts = append(opts, hcloud.WithDebugWriter(os.Stderr))
+		} else {
+			writer, _ := os.Create(c.debugFilePath)
+			opts = append(opts, hcloud.WithDebugWriter(writer))
+		}
 	}
-
-	if c.Config.ActiveContext != nil {
-		c.Token = c.Config.ActiveContext.Token
+	// TODO Somehow pass here
+	// pollInterval, _ := c.RootCommand.PersistentFlags().GetDuration("poll-interval")
+	pollInterval := 500 * time.Millisecond
+	if pollInterval > 0 {
+		opts = append(opts, hcloud.WithPollInterval(pollInterval))
 	}
-	if c.Config.Endpoint != "" {
-		c.Endpoint = c.Config.Endpoint
-	}
-
-	return nil
-}
-
-func (c *State) WriteConfig() error {
-	if c.ConfigPath == "" {
-		return ErrConfigPathUnknown
-	}
-	if c.Config == nil {
-		return nil
-	}
-
-	data, err := MarshalConfig(c.Config)
-	if err != nil {
-		return err
-	}
-	if err := os.MkdirAll(filepath.Dir(c.ConfigPath), 0777); err != nil {
-		return err
-	}
-	if err := ioutil.WriteFile(c.ConfigPath, data, 0600); err != nil {
-		return err
-	}
-	return nil
+	return hcloud.NewClient(opts...)
 }

@@ -1,14 +1,13 @@
 package loadbalancer
 
 import (
-	"context"
-
 	humanize "github.com/dustin/go-humanize"
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
+	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
@@ -19,8 +18,8 @@ var DescribeCmd = base.DescribeCmd{
 	JSONKeyGetByID:       "load_balancer",
 	JSONKeyGetByName:     "load_balancers",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.LoadBalancer().Names },
-	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
-		lb, _, err := client.LoadBalancer().Get(ctx, idOrName)
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
+		lb, _, err := s.Client().LoadBalancer().Get(s, idOrName)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -29,7 +28,7 @@ var DescribeCmd = base.DescribeCmd{
 	AdditionalFlags: func(cmd *cobra.Command) {
 		cmd.Flags().Bool("expand-targets", false, "Expand all label_selector targets")
 	},
-	PrintText: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}) error {
+	PrintText: func(s state.State, cmd *cobra.Command, resource interface{}) error {
 		withLabelSelectorTargets, _ := cmd.Flags().GetBool("expand-targets")
 		loadBalancer := resource.(*hcloud.LoadBalancer)
 		cmd.Printf("ID:\t\t\t\t%d\n", loadBalancer.ID)
@@ -46,7 +45,7 @@ var DescribeCmd = base.DescribeCmd{
 		if len(loadBalancer.PrivateNet) > 0 {
 			for _, n := range loadBalancer.PrivateNet {
 				cmd.Printf("  - ID:\t\t\t%d\n", n.Network.ID)
-				cmd.Printf("    Name:\t\t%s\n", client.Network().Name(n.Network.ID))
+				cmd.Printf("    Name:\t\t%s\n", s.Client().Network().Name(n.Network.ID))
 				cmd.Printf("    IP:\t\t\t%s\n", n.IP.String())
 			}
 		} else {
@@ -111,7 +110,7 @@ var DescribeCmd = base.DescribeCmd{
 			case hcloud.LoadBalancerTargetTypeServer:
 				cmd.Printf("    Server:\n")
 				cmd.Printf("      ID:\t\t\t%d\n", target.Server.Server.ID)
-				cmd.Printf("      Name:\t\t\t%s\n", client.Server().ServerName(target.Server.Server.ID))
+				cmd.Printf("      Name:\t\t\t%s\n", s.Client().Server().ServerName(target.Server.Server.ID))
 				cmd.Printf("    Use Private IP:\t\t%s\n", util.YesNo(target.UsePrivateIP))
 				cmd.Printf("    Status:\n")
 				for _, healthStatus := range target.HealthStatus {

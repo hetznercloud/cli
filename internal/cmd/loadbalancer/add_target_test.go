@@ -1,7 +1,6 @@
 package loadbalancer
 
 import (
-	"context"
 	"net"
 	"testing"
 
@@ -16,11 +15,7 @@ func TestAddTargetServer(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := AddTargetCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter)
+	cmd := AddTargetCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.LoadBalancerClient.EXPECT().
@@ -51,11 +46,7 @@ func TestAddTargetLabelSelector(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := AddTargetCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter)
+	cmd := AddTargetCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.LoadBalancerClient.EXPECT().
@@ -83,11 +74,7 @@ func TestAddTargetIP(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := AddTargetCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter)
+	cmd := AddTargetCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.LoadBalancerClient.EXPECT().

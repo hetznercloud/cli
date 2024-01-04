@@ -1,7 +1,6 @@
 package base
 
 import (
-	"context"
 	"fmt"
 	"net"
 	"reflect"
@@ -22,24 +21,22 @@ type SetRdnsCmd struct {
 	ShortDescription     string
 	NameSuggestions      func(client hcapi2.Client) func() []string
 	AdditionalFlags      func(*cobra.Command)
-	Fetch                func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error)
+	Fetch                func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error)
 	GetDefaultIP         func(resource interface{}) net.IP
 }
 
 // CobraCommand creates a command that can be registered with cobra.
-func (rc *SetRdnsCmd) CobraCommand(
-	ctx context.Context, client hcapi2.Client, tokenEnsurer state.TokenEnsurer, actionWaiter state.ActionWaiter,
-) *cobra.Command {
+func (rc *SetRdnsCmd) CobraCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   fmt.Sprintf("set-rdns [FLAGS] %s", strings.ToUpper(rc.ResourceNameSingular)),
 		Short:                 rc.ShortDescription,
 		Args:                  cobra.ExactArgs(1),
-		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(rc.NameSuggestions(client))),
+		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(rc.NameSuggestions(s.Client()))),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		PreRunE:               util.ChainRunE(tokenEnsurer.EnsureToken),
+		PreRunE:               util.ChainRunE(s.EnsureToken),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return rc.Run(ctx, client, cmd, actionWaiter, args)
+			return rc.Run(s, cmd, args)
 		},
 	}
 	cmd.Flags().StringP("hostname", "r", "", "Hostname to set as a reverse DNS PTR entry (required)")
@@ -53,10 +50,10 @@ func (rc *SetRdnsCmd) CobraCommand(
 }
 
 // Run executes a setRDNS command.
-func (rc *SetRdnsCmd) Run(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, actionWaiter state.ActionWaiter, args []string) error {
+func (rc *SetRdnsCmd) Run(s state.State, cmd *cobra.Command, args []string) error {
 
 	idOrName := args[0]
-	resource, _, err := rc.Fetch(ctx, client, cmd, idOrName)
+	resource, _, err := rc.Fetch(s, cmd, idOrName)
 	if err != nil {
 		return err
 	}
@@ -72,12 +69,12 @@ func (rc *SetRdnsCmd) Run(ctx context.Context, client hcapi2.Client, cmd *cobra.
 		ip = rc.GetDefaultIP(resource)
 	}
 	hostname, _ := cmd.Flags().GetString("hostname")
-	action, _, err := client.RDNS().ChangeDNSPtr(ctx, resource.(hcloud.RDNSSupporter), ip, hcloud.String(hostname))
+	action, _, err := s.Client().RDNS().ChangeDNSPtr(s, resource.(hcloud.RDNSSupporter), ip, hcloud.String(hostname))
 	if err != nil {
 		return err
 	}
 
-	if err := actionWaiter.ActionProgress(cmd, ctx, action); err != nil {
+	if err := s.ActionProgress(cmd, s, action); err != nil {
 		return err
 	}
 

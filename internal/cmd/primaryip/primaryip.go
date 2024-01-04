@@ -3,11 +3,10 @@ package primaryip
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 )
 
-func NewCommand(cli *state.State, client hcapi2.Client) *cobra.Command {
+func NewCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "primary-ip",
 		Short:                 "Manage Primary IPs",
@@ -16,18 +15,18 @@ func NewCommand(cli *state.State, client hcapi2.Client) *cobra.Command {
 		DisableFlagsInUseLine: true,
 	}
 	cmd.AddCommand(
-		ListCmd.CobraCommand(cli.Context, client, cli),
-		DescribeCmd.CobraCommand(cli.Context, client, cli),
-		CreateCmd.CobraCommand(cli.Context, client, cli, cli),
-		updateCmd.CobraCommand(cli.Context, client, cli),
-		DeleteCmd.CobraCommand(cli.Context, client, cli, cli),
-		AssignCmd.CobraCommand(cli.Context, client, cli, cli),
-		UnAssignCmd.CobraCommand(cli.Context, client, cli, cli),
-		ChangeDNSCmd.CobraCommand(cli.Context, client, cli, cli),
-		EnableProtectionCmd.CobraCommand(cli.Context, client, cli, cli),
-		DisableProtectionCmd.CobraCommand(cli.Context, client, cli, cli),
-		LabelCmds.AddCobraCommand(cli.Context, client, cli),
-		LabelCmds.RemoveCobraCommand(cli.Context, client, cli),
+		ListCmd.CobraCommand(s),
+		DescribeCmd.CobraCommand(s),
+		CreateCmd.CobraCommand(s),
+		updateCmd.CobraCommand(s),
+		DeleteCmd.CobraCommand(s),
+		AssignCmd.CobraCommand(s),
+		UnAssignCmd.CobraCommand(s),
+		ChangeDNSCmd.CobraCommand(s),
+		EnableProtectionCmd.CobraCommand(s),
+		DisableProtectionCmd.CobraCommand(s),
+		LabelCmds.AddCobraCommand(s),
+		LabelCmds.RemoveCobraCommand(s),
 	)
 	return cmd
 }

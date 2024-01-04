@@ -1,14 +1,13 @@
 package primaryip
 
 import (
-	"context"
-
 	"github.com/dustin/go-humanize"
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
+	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
@@ -18,14 +17,14 @@ var DescribeCmd = base.DescribeCmd{
 	JSONKeyGetByID:       "primary_ip",
 	JSONKeyGetByName:     "primary_ips",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.PrimaryIP().Names },
-	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
-		ip, _, err := client.PrimaryIP().Get(ctx, idOrName)
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
+		ip, _, err := s.Client().PrimaryIP().Get(s, idOrName)
 		if err != nil {
 			return nil, nil, err
 		}
 		return ip, hcloud.SchemaFromPrimaryIP(ip), nil
 	},
-	PrintText: func(_ context.Context, client hcapi2.Client, cmd *cobra.Command, resource interface{}) error {
+	PrintText: func(s state.State, cmd *cobra.Command, resource interface{}) error {
 		primaryIP := resource.(*hcloud.PrimaryIP)
 
 		cmd.Printf("ID:\t\t%d\n", primaryIP.ID)

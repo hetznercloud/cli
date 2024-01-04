@@ -1,7 +1,6 @@
 package primaryip
 
 import (
-	"context"
 	_ "embed"
 	"net"
 	"testing"
@@ -21,7 +20,7 @@ func TestCreate(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := CreateCmd.CobraCommand(context.Background(), fx.Client, fx.TokenEnsurer, fx.ActionWaiter)
+	cmd := CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 	fx.Client.PrimaryIPClient.EXPECT().
 		Create(
@@ -65,11 +64,7 @@ func TestCreateJSON(t *testing.T) {
 
 	time.Local = time.UTC
 
-	cmd := CreateCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter)
+	cmd := CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.PrimaryIPClient.EXPECT().

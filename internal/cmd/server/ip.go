@@ -1,7 +1,6 @@
 package server
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -25,10 +24,10 @@ var IPCmd = base.Cmd{
 		cmd.Flags().BoolP("ipv6", "6", false, "Print the first address of the IPv6 public server network")
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		ipv6, err := cmd.Flags().GetBool("ipv6")
 		idOrName := args[0]
-		server, _, err := client.Server().Get(ctx, idOrName)
+		server, _, err := s.Client().Server().Get(s, idOrName)
 		if err != nil {
 			return err
 		}

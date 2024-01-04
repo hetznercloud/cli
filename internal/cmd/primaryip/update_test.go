@@ -1,7 +1,6 @@
 package primaryip
 
 import (
-	"context"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -15,10 +14,7 @@ func TestUpdateName(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := updateCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer)
+	cmd := updateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.PrimaryIPClient.EXPECT().
@@ -42,10 +38,7 @@ func TestUpdateAutoDelete(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := updateCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer)
+	cmd := updateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.PrimaryIPClient.EXPECT().

@@ -26,11 +26,10 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/sshkey"
 	"github.com/hetznercloud/cli/internal/cmd/version"
 	"github.com/hetznercloud/cli/internal/cmd/volume"
-	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 )
 
-func NewRootCommand(state *state.State, client hcapi2.Client) *cobra.Command {
+func NewRootCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "hcloud",
 		Short:                 "Hetzner Cloud CLI",
@@ -41,26 +40,26 @@ func NewRootCommand(state *state.State, client hcapi2.Client) *cobra.Command {
 		DisableFlagsInUseLine: true,
 	}
 	cmd.AddCommand(
-		all.NewCommand(state, client),
-		floatingip.NewCommand(state, client),
-		image.NewCommand(state, client),
-		server.NewCommand(state, client),
-		sshkey.NewCommand(state, client),
-		version.NewCommand(state),
-		completion.NewCommand(state),
-		servertype.NewCommand(state, client),
-		context.NewCommand(state),
-		datacenter.NewCommand(state, client),
-		location.NewCommand(state, client),
-		iso.NewCommand(state, client),
-		volume.NewCommand(state, client),
-		network.NewCommand(state, client),
-		loadbalancer.NewCommand(state, client),
-		loadbalancertype.NewCommand(state, client),
-		certificate.NewCommand(state, client),
-		firewall.NewCommand(state, client),
-		placementgroup.NewCommand(state, client),
-		primaryip.NewCommand(state, client),
+		all.NewCommand(s),
+		floatingip.NewCommand(s),
+		image.NewCommand(s),
+		server.NewCommand(s),
+		sshkey.NewCommand(s),
+		version.NewCommand(s),
+		completion.NewCommand(s),
+		servertype.NewCommand(s),
+		context.NewCommand(s),
+		datacenter.NewCommand(s),
+		location.NewCommand(s),
+		iso.NewCommand(s),
+		volume.NewCommand(s),
+		network.NewCommand(s),
+		loadbalancer.NewCommand(s),
+		loadbalancertype.NewCommand(s),
+		certificate.NewCommand(s),
+		firewall.NewCommand(s),
+		placementgroup.NewCommand(s),
+		primaryip.NewCommand(s),
 	)
 	cmd.PersistentFlags().Duration("poll-interval", 500*time.Millisecond, "Interval at which to poll information, for example action progress")
 	cmd.SetOut(os.Stdout)

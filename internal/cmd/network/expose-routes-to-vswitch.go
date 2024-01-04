@@ -1,7 +1,6 @@
 package network
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -29,9 +28,9 @@ var ExposeRoutesToVSwitchCmd = base.Cmd{
 
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		network, _, err := client.Network().Get(ctx, idOrName)
+		network, _, err := s.Client().Network().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -44,7 +43,7 @@ var ExposeRoutesToVSwitchCmd = base.Cmd{
 			ExposeRoutesToVSwitch: hcloud.Ptr(!disable),
 		}
 
-		_, _, err = client.Network().Update(ctx, network, opts)
+		_, _, err = s.Client().Network().Update(s, network, opts)
 		if err != nil {
 			return err
 		}

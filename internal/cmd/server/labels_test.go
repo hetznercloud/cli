@@ -1,7 +1,6 @@
 package server
 
 import (
-	"context"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -15,10 +14,7 @@ func TestLabelAdd(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := LabelCmds.AddCobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer)
+	cmd := LabelCmds.AddCobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.ServerClient.EXPECT().
@@ -43,10 +39,7 @@ func TestLabelRemove(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := LabelCmds.RemoveCobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer)
+	cmd := LabelCmds.RemoveCobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.ServerClient.EXPECT().

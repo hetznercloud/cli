@@ -1,7 +1,6 @@
 package primaryip
 
 import (
-	"context"
 	"net"
 	"testing"
 	"time"
@@ -17,7 +16,7 @@ func TestList(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := ListCmd.CobraCommand(context.Background(), fx.Client, fx.TokenEnsurer)
+	cmd := ListCmd.CobraCommand(fx.State())
 
 	fx.ExpectEnsureToken()
 	fx.Client.PrimaryIPClient.EXPECT().

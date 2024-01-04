@@ -1,7 +1,6 @@
 package network
 
 import (
-	"context"
 	"fmt"
 	"net"
 
@@ -38,14 +37,14 @@ var AddSubnetCmd = base.Cmd{
 		cmd.Flags().Int64("vswitch-id", 0, "ID of the vSwitch")
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		subnetType, _ := cmd.Flags().GetString("type")
 		networkZone, _ := cmd.Flags().GetString("network-zone")
 		ipRange, _ := cmd.Flags().GetIPNet("ip-range")
 		vSwitchID, _ := cmd.Flags().GetInt64("vswitch-id")
 		idOrName := args[0]
 
-		network, _, err := client.Network().Get(ctx, idOrName)
+		network, _, err := s.Client().Network().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -67,11 +66,11 @@ var AddSubnetCmd = base.Cmd{
 		opts := hcloud.NetworkAddSubnetOpts{
 			Subnet: subnet,
 		}
-		action, _, err := client.Network().AddSubnet(ctx, network, opts)
+		action, _, err := s.Client().Network().AddSubnet(s, network, opts)
 		if err != nil {
 			return err
 		}
-		if err := waiter.ActionProgress(cmd, ctx, action); err != nil {
+		if err := s.ActionProgress(cmd, s, action); err != nil {
 			return err
 		}
 		cmd.Printf("Subnet added to network %d\n", network.ID)

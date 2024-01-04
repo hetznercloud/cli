@@ -1,7 +1,6 @@
 package loadbalancer
 
 import (
-	"context"
 	"fmt"
 	"time"
 
@@ -53,11 +52,11 @@ var UpdateServiceCmd = base.Cmd{
 		cmd.Flags().Bool("health-check-http-tls", false, "Determine if the health check should verify if the target answers with a valid TLS certificate")
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
 		listenPort, _ := cmd.Flags().GetInt("listen-port")
 
-		loadBalancer, _, err := client.LoadBalancer().Get(ctx, idOrName)
+		loadBalancer, _, err := s.Client().LoadBalancer().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -160,11 +159,11 @@ var UpdateServiceCmd = base.Cmd{
 			}
 		}
 
-		action, _, err := client.LoadBalancer().UpdateService(ctx, loadBalancer, listenPort, opts)
+		action, _, err := s.Client().LoadBalancer().UpdateService(s, loadBalancer, listenPort, opts)
 		if err != nil {
 			return err
 		}
-		if err := waiter.ActionProgress(cmd, ctx, action); err != nil {
+		if err := s.ActionProgress(cmd, s, action); err != nil {
 			return err
 		}
 		cmd.Printf("Service %d on Load Balancer %d was updated\n", listenPort, loadBalancer.ID)

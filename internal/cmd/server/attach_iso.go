@@ -1,7 +1,6 @@
 package server
 
 import (
-	"context"
 	"errors"
 	"fmt"
 
@@ -27,9 +26,9 @@ var AttachISOCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		server, _, err := client.Server().Get(ctx, idOrName)
+		server, _, err := s.Client().Server().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -38,7 +37,7 @@ var AttachISOCmd = base.Cmd{
 		}
 
 		isoIDOrName := args[1]
-		iso, _, err := client.ISO().Get(ctx, isoIDOrName)
+		iso, _, err := s.Client().ISO().Get(s, isoIDOrName)
 		if err != nil {
 			return err
 		}
@@ -52,12 +51,12 @@ var AttachISOCmd = base.Cmd{
 			return errors.New("failed to attach iso: iso has a different architecture than the server")
 		}
 
-		action, _, err := client.Server().AttachISO(ctx, server, iso)
+		action, _, err := s.Client().Server().AttachISO(s, server, iso)
 		if err != nil {
 			return err
 		}
 
-		if err := waiter.ActionProgress(cmd, ctx, action); err != nil {
+		if err := s.ActionProgress(cmd, s, action); err != nil {
 			return err
 		}
 

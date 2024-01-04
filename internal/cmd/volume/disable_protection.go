@@ -1,7 +1,6 @@
 package volume
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -26,8 +25,8 @@ var DisableProtectionCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
-		volume, _, err := client.Volume().Get(ctx, args[0])
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
+		volume, _, err := s.Client().Volume().Get(s, args[0])
 		if err != nil {
 			return err
 		}
@@ -40,6 +39,6 @@ var DisableProtectionCmd = base.Cmd{
 			return err
 		}
 
-		return changeProtection(ctx, client, waiter, cmd, volume, false, opts)
+		return changeProtection(s, cmd, volume, false, opts)
 	},
 }

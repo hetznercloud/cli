@@ -1,7 +1,6 @@
 package server
 
 import (
-	"context"
 	"fmt"
 	"strings"
 
@@ -36,19 +35,19 @@ func getChangeProtectionOpts(enable bool, flags []string) (hcloud.ServerChangePr
 	return opts, nil
 }
 
-func changeProtection(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command,
+func changeProtection(s state.State, cmd *cobra.Command,
 	server *hcloud.Server, enable bool, opts hcloud.ServerChangeProtectionOpts) error {
 
 	if opts.Delete == nil && opts.Rebuild == nil {
 		return nil
 	}
 
-	action, _, err := client.Server().ChangeProtection(ctx, server, opts)
+	action, _, err := s.Client().Server().ChangeProtection(s, server, opts)
 	if err != nil {
 		return err
 	}
 
-	if err := waiter.ActionProgress(cmd, ctx, action); err != nil {
+	if err := s.ActionProgress(cmd, s, action); err != nil {
 		return err
 	}
 
@@ -74,9 +73,9 @@ var EnableProtectionCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		server, _, err := client.Server().Get(ctx, idOrName)
+		server, _, err := s.Client().Server().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -89,6 +88,6 @@ var EnableProtectionCmd = base.Cmd{
 			return err
 		}
 
-		return changeProtection(ctx, client, waiter, cmd, server, true, opts)
+		return changeProtection(s, cmd, server, true, opts)
 	},
 }

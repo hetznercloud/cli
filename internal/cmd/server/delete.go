@@ -1,8 +1,6 @@
 package server
 
 import (
-	"context"
-
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
@@ -15,17 +13,17 @@ var DeleteCmd = base.DeleteCmd{
 	ResourceNameSingular: "Server",
 	ShortDescription:     "Delete a server",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Server().Names },
-	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
-		return client.Server().Get(ctx, idOrName)
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
+		return s.Client().Server().Get(s, idOrName)
 	},
-	Delete: func(ctx context.Context, client hcapi2.Client, actionWaiter state.ActionWaiter, cmd *cobra.Command, resource interface{}) error {
+	Delete: func(s state.State, cmd *cobra.Command, resource interface{}) error {
 		server := resource.(*hcloud.Server)
-		result, _, err := client.Server().DeleteWithResult(ctx, server)
+		result, _, err := s.Client().Server().DeleteWithResult(s, server)
 		if err != nil {
 			return err
 		}
 
-		if err := actionWaiter.ActionProgress(cmd, ctx, result.Action); err != nil {
+		if err := s.ActionProgress(cmd, s, result.Action); err != nil {
 			return err
 		}
 

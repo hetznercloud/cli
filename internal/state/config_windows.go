@@ -1,5 +1,4 @@
 //go:build windows
-// +build windows
 
 package state
 
@@ -8,9 +7,10 @@ import (
 	"path/filepath"
 )
 
-func init() {
+func DefaultConfigPath() string {
 	dir := os.Getenv("APPDATA")
 	if dir != "" {
-		DefaultConfigPath = filepath.Join(dir, "hcloud", "cli.toml")
+		return filepath.Join(dir, "hcloud", "cli.toml")
 	}
+	return ""
 }

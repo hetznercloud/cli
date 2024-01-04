@@ -1,7 +1,6 @@
 package placementgroup_test
 
 import (
-	"context"
 	"fmt"
 	"testing"
 	"time"
@@ -22,10 +21,7 @@ func TestDescribe(t *testing.T) {
 
 	time.Local = time.UTC
 
-	cmd := placementgroup.DescribeCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer)
+	cmd := placementgroup.DescribeCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	placementGroup := hcloud.PlacementGroup{

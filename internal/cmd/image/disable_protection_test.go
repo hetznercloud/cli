@@ -1,7 +1,6 @@
 package image
 
 import (
-	"context"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -15,11 +14,7 @@ func TestDisableProtection(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := DisableProtectionCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter)
+	cmd := DisableProtectionCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.ImageClient.EXPECT().

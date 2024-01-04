@@ -1,7 +1,6 @@
 package server
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"slices"
@@ -48,11 +47,11 @@ var MetricsCmd = base.Cmd{
 		output.AddFlag(cmd, output.OptionJSON(), output.OptionYAML())
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		outputFlags := output.FlagsForCommand(cmd)
 
 		idOrName := args[0]
-		server, _, err := client.Server().Get(ctx, idOrName)
+		server, _, err := s.Client().Server().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -88,7 +87,7 @@ var MetricsCmd = base.Cmd{
 			}
 		}
 
-		m, resp, err := client.Server().GetMetrics(ctx, server, hcloud.ServerGetMetricsOpts{
+		m, resp, err := s.Client().Server().GetMetrics(s, server, hcloud.ServerGetMetricsOpts{
 			Types: metricTypes,
 			Start: startTime,
 			End:   endTime,

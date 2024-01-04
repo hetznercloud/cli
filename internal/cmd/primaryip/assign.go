@@ -1,7 +1,6 @@
 package primaryip
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -30,9 +29,9 @@ var AssignCmd = base.Cmd{
 		cmd.MarkFlagRequired("server")
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, actionWaiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		primaryIP, _, err := client.PrimaryIP().Get(ctx, idOrName)
+		primaryIP, _, err := s.Client().PrimaryIP().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -42,7 +41,7 @@ var AssignCmd = base.Cmd{
 
 		serverIDOrName, _ := cmd.Flags().GetString("server")
 
-		server, _, err := client.Server().Get(ctx, serverIDOrName)
+		server, _, err := s.Client().Server().Get(s, serverIDOrName)
 		if err != nil {
 			return err
 		}
@@ -55,12 +54,12 @@ var AssignCmd = base.Cmd{
 			AssigneeID:   server.ID,
 		}
 
-		action, _, err := client.PrimaryIP().Assign(ctx, opts)
+		action, _, err := s.Client().PrimaryIP().Assign(s, opts)
 		if err != nil {
 			return err
 		}
 
-		if err := actionWaiter.ActionProgress(cmd, ctx, action); err != nil {
+		if err := s.ActionProgress(cmd, s, action); err != nil {
 			return err
 		}
 

@@ -1,7 +1,6 @@
 package server
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -23,9 +22,9 @@ var PoweronCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		server, _, err := client.Server().Get(ctx, idOrName)
+		server, _, err := s.Client().Server().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -33,12 +32,12 @@ var PoweronCmd = base.Cmd{
 			return fmt.Errorf("server not found: %s", idOrName)
 		}
 
-		action, _, err := client.Server().Poweron(ctx, server)
+		action, _, err := s.Client().Server().Poweron(s, server)
 		if err != nil {
 			return err
 		}
 
-		if err := waiter.ActionProgress(cmd, ctx, action); err != nil {
+		if err := s.ActionProgress(cmd, s, action); err != nil {
 			return err
 		}
 

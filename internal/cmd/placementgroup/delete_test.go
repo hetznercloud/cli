@@ -1,7 +1,6 @@
 package placementgroup_test
 
 import (
-	"context"
 	"testing"
 	"time"
 
@@ -17,11 +16,7 @@ func TestDelete(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := placementgroup.DeleteCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter)
+	cmd := placementgroup.DeleteCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	placementGroup := hcloud.PlacementGroup{

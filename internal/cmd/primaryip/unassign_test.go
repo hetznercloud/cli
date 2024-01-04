@@ -1,7 +1,6 @@
 package primaryip
 
 import (
-	"context"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -15,7 +14,7 @@ func TestUnAssign(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := UnAssignCmd.CobraCommand(context.Background(), fx.Client, fx.TokenEnsurer, fx.ActionWaiter)
+	cmd := UnAssignCmd.CobraCommand(fx.State())
 	action := &hcloud.Action{ID: 1}
 	fx.ExpectEnsureToken()
 	fx.Client.PrimaryIPClient.EXPECT().

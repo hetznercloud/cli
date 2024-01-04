@@ -1,7 +1,6 @@
 package image
 
 import (
-	"context"
 	"fmt"
 	"strings"
 	"time"
@@ -15,6 +14,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
+	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
@@ -30,7 +30,7 @@ var ListCmd = base.ListCmd{
 		cmd.Flags().StringSliceP("architecture", "a", []string{}, "Only show images of given architecture: x86|arm")
 		cmd.RegisterFlagCompletionFunc("architecture", cmpl.SuggestCandidates(string(hcloud.ArchitectureX86), string(hcloud.ArchitectureARM)))
 	},
-	Fetch: func(ctx context.Context, client hcapi2.Client, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
+	Fetch: func(s state.State, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
 		opts := hcloud.ImageListOpts{ListOpts: listOpts, IncludeDeprecated: true}
 
 		types, _ := flags.GetStringSlice("type")
@@ -60,7 +60,7 @@ var ListCmd = base.ListCmd{
 			opts.Sort = sorts
 		}
 
-		images, err := client.Image().AllWithOpts(ctx, opts)
+		images, err := s.Client().Image().AllWithOpts(s, opts)
 
 		var resources []interface{}
 		for _, n := range images {

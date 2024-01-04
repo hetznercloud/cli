@@ -1,7 +1,6 @@
 package floatingip
 
 import (
-	"context"
 	_ "embed"
 	"net"
 	"testing"
@@ -20,11 +19,7 @@ func TestCreate(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := CreateCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter)
+	cmd := CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.FloatingIPClient.EXPECT().
@@ -59,11 +54,7 @@ func TestCreateJSON(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := CreateCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter)
+	cmd := CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.FloatingIPClient.EXPECT().
@@ -99,11 +90,7 @@ func TestCreateProtection(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := CreateCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter)
+	cmd := CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	floatingIp := &hcloud.FloatingIP{

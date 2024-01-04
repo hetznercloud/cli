@@ -1,11 +1,11 @@
 package volume
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/hcapi2"
+	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
@@ -15,8 +15,8 @@ var LabelCmds = base.LabelCmds{
 	ShortDescriptionRemove: "Remove a label from a Volume",
 	NameSuggestions:        func(c hcapi2.Client) func() []string { return c.Volume().Names },
 	LabelKeySuggestions:    func(c hcapi2.Client) func(idOrName string) []string { return c.Volume().LabelKeys },
-	FetchLabels: func(ctx context.Context, client hcapi2.Client, idOrName string) (map[string]string, int64, error) {
-		volume, _, err := client.Volume().Get(ctx, idOrName)
+	FetchLabels: func(s state.State, idOrName string) (map[string]string, int64, error) {
+		volume, _, err := s.Client().Volume().Get(s, idOrName)
 		if err != nil {
 			return nil, 0, err
 		}
@@ -25,11 +25,11 @@ var LabelCmds = base.LabelCmds{
 		}
 		return volume.Labels, volume.ID, nil
 	},
-	SetLabels: func(ctx context.Context, client hcapi2.Client, id int64, labels map[string]string) error {
+	SetLabels: func(s state.State, id int64, labels map[string]string) error {
 		opts := hcloud.VolumeUpdateOpts{
 			Labels: labels,
 		}
-		_, _, err := client.Volume().Update(ctx, &hcloud.Volume{ID: id}, opts)
+		_, _, err := s.Client().Volume().Update(s, &hcloud.Volume{ID: id}, opts)
 		return err
 	},
 }

@@ -1,7 +1,6 @@
 package firewall
 
 import (
-	"context"
 	"net"
 	"testing"
 
@@ -16,11 +15,7 @@ func TestDeleteRule(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := DeleteRuleCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter)
+	cmd := DeleteRuleCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	firewall := &hcloud.Firewall{

@@ -1,7 +1,6 @@
 package firewall
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -33,7 +32,7 @@ var RemoveFromResourceCmd = base.Cmd{
 		cmd.Flags().StringP("label-selector", "l", "", "Label Selector")
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		resourceType, _ := cmd.Flags().GetString("type")
 
 		switch resourceType {
@@ -54,7 +53,7 @@ var RemoveFromResourceCmd = base.Cmd{
 		labelSelector, _ := cmd.Flags().GetString("label-selector")
 
 		idOrName := args[0]
-		firewall, _, err := client.Firewall().Get(ctx, idOrName)
+		firewall, _, err := s.Client().Firewall().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -65,7 +64,7 @@ var RemoveFromResourceCmd = base.Cmd{
 
 		switch opts.Type {
 		case hcloud.FirewallResourceTypeServer:
-			server, _, err := client.Server().Get(ctx, serverIdOrName)
+			server, _, err := s.Client().Server().Get(s, serverIdOrName)
 			if err != nil {
 				return err
 			}
@@ -78,11 +77,11 @@ var RemoveFromResourceCmd = base.Cmd{
 		default:
 			return fmt.Errorf("unknown type %s", opts.Type)
 		}
-		actions, _, err := client.Firewall().RemoveResources(ctx, firewall, []hcloud.FirewallResource{opts})
+		actions, _, err := s.Client().Firewall().RemoveResources(s, firewall, []hcloud.FirewallResource{opts})
 		if err != nil {
 			return err
 		}
-		if err := waiter.WaitForActions(cmd, ctx, actions); err != nil {
+		if err := s.WaitForActions(cmd, s, actions); err != nil {
 			return err
 		}
 		cmd.Printf("Firewall %d applied\n", firewall.ID)

@@ -1,7 +1,6 @@
 package base
 
 import (
-	"context"
 	"errors"
 	"fmt"
 	"strings"
@@ -21,24 +20,22 @@ type LabelCmds struct {
 	ShortDescriptionRemove string
 	NameSuggestions        func(client hcapi2.Client) func() []string
 	LabelKeySuggestions    func(client hcapi2.Client) func(idOrName string) []string
-	FetchLabels            func(ctx context.Context, client hcapi2.Client, idOrName string) (map[string]string, int64, error)
-	SetLabels              func(ctx context.Context, client hcapi2.Client, id int64, labels map[string]string) error
+	FetchLabels            func(s state.State, idOrName string) (map[string]string, int64, error)
+	SetLabels              func(s state.State, id int64, labels map[string]string) error
 }
 
 // AddCobraCommand creates a command that can be registered with cobra.
-func (lc *LabelCmds) AddCobraCommand(
-	ctx context.Context, client hcapi2.Client, tokenEnsurer state.TokenEnsurer,
-) *cobra.Command {
+func (lc *LabelCmds) AddCobraCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   fmt.Sprintf("add-label [FLAGS] %s LABEL", strings.ToUpper(lc.ResourceNameSingular)),
 		Short:                 lc.ShortDescriptionAdd,
 		Args:                  cobra.ExactArgs(2),
-		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(lc.NameSuggestions(client))),
+		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(lc.NameSuggestions(s.Client()))),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		PreRunE:               util.ChainRunE(validateAddLabel, tokenEnsurer.EnsureToken),
+		PreRunE:               util.ChainRunE(validateAddLabel, s.EnsureToken),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return lc.RunAdd(ctx, client, cmd, args)
+			return lc.RunAdd(s, cmd, args)
 		},
 	}
 	cmd.Flags().BoolP("overwrite", "o", false, "Overwrite label if it exists already")
@@ -46,11 +43,11 @@ func (lc *LabelCmds) AddCobraCommand(
 }
 
 // RunAdd executes an add label command
-func (lc *LabelCmds) RunAdd(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, args []string) error {
+func (lc *LabelCmds) RunAdd(s state.State, cmd *cobra.Command, args []string) error {
 	overwrite, _ := cmd.Flags().GetBool("overwrite")
 	idOrName := args[0]
 
-	labels, id, err := lc.FetchLabels(ctx, client, idOrName)
+	labels, id, err := lc.FetchLabels(s, idOrName)
 	if err != nil {
 		return err
 	}
@@ -67,7 +64,7 @@ func (lc *LabelCmds) RunAdd(ctx context.Context, client hcapi2.Client, cmd *cobr
 
 	labels[key] = val
 
-	if err := lc.SetLabels(ctx, client, id, labels); err != nil {
+	if err := lc.SetLabels(s, id, labels); err != nil {
 		return err
 	}
 
@@ -75,7 +72,7 @@ func (lc *LabelCmds) RunAdd(ctx context.Context, client hcapi2.Client, cmd *cobr
 	return nil
 }
 
-func validateAddLabel(cmd *cobra.Command, args []string) error {
+func validateAddLabel(_ *cobra.Command, args []string) error {
 	label := util.SplitLabel(args[1])
 	if len(label) != 2 {
 		return fmt.Errorf("invalid label: %s", args[1])
@@ -85,27 +82,25 @@ func validateAddLabel(cmd *cobra.Command, args []string) error {
 }
 
 // RemoveCobraCommand creates a command that can be registered with cobra.
-func (lc *LabelCmds) RemoveCobraCommand(
-	ctx context.Context, client hcapi2.Client, tokenEnsurer state.TokenEnsurer,
-) *cobra.Command {
+func (lc *LabelCmds) RemoveCobraCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   fmt.Sprintf("remove-label [FLAGS] %s LABEL", strings.ToUpper(lc.ResourceNameSingular)),
 		Short: lc.ShortDescriptionRemove,
 		Args:  cobra.RangeArgs(1, 2),
 		ValidArgsFunction: cmpl.SuggestArgs(
-			cmpl.SuggestCandidatesF(lc.NameSuggestions(client)),
+			cmpl.SuggestCandidatesF(lc.NameSuggestions(s.Client())),
 			cmpl.SuggestCandidatesCtx(func(_ *cobra.Command, args []string) []string {
 				if len(args) != 1 {
 					return nil
 				}
-				return lc.LabelKeySuggestions(client)(args[0])
+				return lc.LabelKeySuggestions(s.Client())(args[0])
 			}),
 		),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		PreRunE:               util.ChainRunE(validateRemoveLabel, tokenEnsurer.EnsureToken),
+		PreRunE:               util.ChainRunE(validateRemoveLabel, s.EnsureToken),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return lc.RunRemove(ctx, client, cmd, args)
+			return lc.RunRemove(s, cmd, args)
 		},
 	}
 	cmd.Flags().BoolP("all", "a", false, "Remove all labels")
@@ -113,11 +108,11 @@ func (lc *LabelCmds) RemoveCobraCommand(
 }
 
 // RunRemove executes a remove label command
-func (lc *LabelCmds) RunRemove(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, args []string) error {
+func (lc *LabelCmds) RunRemove(s state.State, cmd *cobra.Command, args []string) error {
 	all, _ := cmd.Flags().GetBool("all")
 	idOrName := args[0]
 
-	labels, id, err := lc.FetchLabels(ctx, client, idOrName)
+	labels, id, err := lc.FetchLabels(s, idOrName)
 	if err != nil {
 		return err
 	}
@@ -132,7 +127,7 @@ func (lc *LabelCmds) RunRemove(ctx context.Context, client hcapi2.Client, cmd *c
 		delete(labels, key)
 	}
 
-	if err := lc.SetLabels(ctx, client, id, labels); err != nil {
+	if err := lc.SetLabels(s, id, labels); err != nil {
 		return err
 	}
 

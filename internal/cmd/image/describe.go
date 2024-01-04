@@ -1,7 +1,6 @@
 package image
 
 import (
-	"context"
 	"fmt"
 	"os"
 
@@ -12,6 +11,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
+	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
@@ -26,7 +26,7 @@ var DescribeCmd = base.DescribeCmd{
 
 	},
 	NameSuggestions: func(c hcapi2.Client) func() []string { return c.Image().Names },
-	Fetch: func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
 		arch, err := cmd.Flags().GetString("architecture")
 		if err != nil {
 			return nil, nil, err
@@ -34,13 +34,13 @@ var DescribeCmd = base.DescribeCmd{
 		if !cmd.Flags().Changed("architecture") {
 			_, _ = fmt.Fprintln(os.Stderr, "INFO: This command only returns x86 images by default. Explicitly set the --architecture=x86|arm flag to hide this message.")
 		}
-		img, _, err := client.Image().GetForArchitecture(ctx, idOrName, hcloud.Architecture(arch))
+		img, _, err := s.Client().Image().GetForArchitecture(s, idOrName, hcloud.Architecture(arch))
 		if err != nil {
 			return nil, nil, err
 		}
 		return img, hcloud.SchemaFromImage(img), nil
 	},
-	PrintText: func(_ context.Context, _ hcapi2.Client, cmd *cobra.Command, resource interface{}) error {
+	PrintText: func(_ state.State, cmd *cobra.Command, resource interface{}) error {
 		image := resource.(*hcloud.Image)
 
 		cmd.Printf("ID:\t\t%d\n", image.ID)

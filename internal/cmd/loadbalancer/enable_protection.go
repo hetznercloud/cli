@@ -1,7 +1,6 @@
 package loadbalancer
 
 import (
-	"context"
 	"fmt"
 	"strings"
 
@@ -34,19 +33,19 @@ func getChangeProtectionOpts(enable bool, flags []string) (hcloud.LoadBalancerCh
 	return opts, nil
 }
 
-func changeProtection(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command,
+func changeProtection(s state.State, cmd *cobra.Command,
 	loadBalancer *hcloud.LoadBalancer, enable bool, opts hcloud.LoadBalancerChangeProtectionOpts) error {
 
 	if opts.Delete == nil {
 		return nil
 	}
 
-	action, _, err := client.LoadBalancer().ChangeProtection(ctx, loadBalancer, opts)
+	action, _, err := s.Client().LoadBalancer().ChangeProtection(s, loadBalancer, opts)
 	if err != nil {
 		return err
 	}
 
-	if err := waiter.ActionProgress(cmd, ctx, action); err != nil {
+	if err := s.ActionProgress(cmd, s, action); err != nil {
 		return err
 	}
 
@@ -72,9 +71,9 @@ var EnableProtectionCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		loadBalancer, _, err := client.LoadBalancer().Get(ctx, idOrName)
+		loadBalancer, _, err := s.Client().LoadBalancer().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -87,6 +86,6 @@ var EnableProtectionCmd = base.Cmd{
 			return err
 		}
 
-		return changeProtection(ctx, client, waiter, cmd, loadBalancer, true, opts)
+		return changeProtection(s, cmd, loadBalancer, true, opts)
 	},
 }

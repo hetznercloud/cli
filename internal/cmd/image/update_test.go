@@ -1,7 +1,6 @@
 package image
 
 import (
-	"context"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -15,10 +14,7 @@ func TestUpdateDescription(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := UpdateCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer)
+	cmd := UpdateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.ImageClient.EXPECT().
@@ -41,10 +37,7 @@ func TestUpdateType(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := UpdateCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer)
+	cmd := UpdateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.ImageClient.EXPECT().

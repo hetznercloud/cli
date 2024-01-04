@@ -1,7 +1,6 @@
 package firewall
 
 import (
-	"context"
 	"fmt"
 	"net"
 	"reflect"
@@ -42,7 +41,7 @@ var DeleteRuleCmd = base.Cmd{
 		cmd.Flags().String("description", "", "Description of the firewall rule")
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		direction, _ := cmd.Flags().GetString("direction")
 		protocol, _ := cmd.Flags().GetString("protocol")
 		sourceIPs, _ := cmd.Flags().GetStringArray("source-ips")
@@ -51,7 +50,7 @@ var DeleteRuleCmd = base.Cmd{
 		description, _ := cmd.Flags().GetString("description")
 
 		idOrName := args[0]
-		firewall, _, err := client.Firewall().Get(ctx, idOrName)
+		firewall, _, err := s.Client().Firewall().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -115,13 +114,13 @@ var DeleteRuleCmd = base.Cmd{
 		if len(rules) == len(firewall.Rules) {
 			return fmt.Errorf("the specified rule was not found in the ruleset of Firewall %d", firewall.ID)
 		}
-		actions, _, err := client.Firewall().SetRules(ctx, firewall,
+		actions, _, err := s.Client().Firewall().SetRules(s, firewall,
 			hcloud.FirewallSetRulesOpts{Rules: rules},
 		)
 		if err != nil {
 			return err
 		}
-		if err := waiter.WaitForActions(cmd, ctx, actions); err != nil {
+		if err := s.WaitForActions(cmd, s, actions); err != nil {
 			return err
 		}
 		cmd.Printf("Firewall Rules for Firewall %d updated\n", firewall.ID)

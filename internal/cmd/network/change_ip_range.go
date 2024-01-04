@@ -1,7 +1,6 @@
 package network
 
 import (
-	"context"
 	"fmt"
 	"net"
 
@@ -30,9 +29,9 @@ var ChangeIPRangeCmd = base.Cmd{
 
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		network, _, err := client.Network().Get(ctx, idOrName)
+		network, _, err := s.Client().Network().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -45,12 +44,12 @@ var ChangeIPRangeCmd = base.Cmd{
 			IPRange: &ipRange,
 		}
 
-		action, _, err := client.Network().ChangeIPRange(ctx, network, opts)
+		action, _, err := s.Client().Network().ChangeIPRange(s, network, opts)
 		if err != nil {
 			return err
 		}
 
-		if err := waiter.ActionProgress(cmd, ctx, action); err != nil {
+		if err := s.ActionProgress(cmd, s, action); err != nil {
 			return err
 		}
 		cmd.Printf("IP range of network %d changed\n", network.ID)

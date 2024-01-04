@@ -1,7 +1,6 @@
 package base
 
 import (
-	"context"
 	"fmt"
 	"reflect"
 	"strings"
@@ -21,24 +20,22 @@ type DeleteCmd struct {
 	ShortDescription     string
 	NameSuggestions      func(client hcapi2.Client) func() []string
 	AdditionalFlags      func(*cobra.Command)
-	Fetch                func(ctx context.Context, client hcapi2.Client, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error)
-	Delete               func(ctx context.Context, client hcapi2.Client, actionWaiter state.ActionWaiter, cmd *cobra.Command, resource interface{}) error
+	Fetch                func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error)
+	Delete               func(s state.State, cmd *cobra.Command, resource interface{}) error
 }
 
 // CobraCommand creates a command that can be registered with cobra.
-func (dc *DeleteCmd) CobraCommand(
-	ctx context.Context, client hcapi2.Client, tokenEnsurer state.TokenEnsurer, actionWaiter state.ActionWaiter,
-) *cobra.Command {
+func (dc *DeleteCmd) CobraCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   fmt.Sprintf("delete [FLAGS] %s", strings.ToUpper(dc.ResourceNameSingular)),
 		Short:                 dc.ShortDescription,
 		Args:                  cobra.ExactArgs(1),
-		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(dc.NameSuggestions(client))),
+		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(dc.NameSuggestions(s.Client()))),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		PreRunE:               util.ChainRunE(tokenEnsurer.EnsureToken),
+		PreRunE:               util.ChainRunE(s.EnsureToken),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return dc.Run(ctx, client, actionWaiter, cmd, args)
+			return dc.Run(s, cmd, args)
 		},
 	}
 	if dc.AdditionalFlags != nil {
@@ -48,10 +45,10 @@ func (dc *DeleteCmd) CobraCommand(
 }
 
 // Run executes a describe command.
-func (dc *DeleteCmd) Run(ctx context.Context, client hcapi2.Client, actionWaiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+func (dc *DeleteCmd) Run(s state.State, cmd *cobra.Command, args []string) error {
 
 	idOrName := args[0]
-	resource, _, err := dc.Fetch(ctx, client, cmd, idOrName)
+	resource, _, err := dc.Fetch(s, cmd, idOrName)
 	if err != nil {
 		return err
 	}
@@ -62,7 +59,7 @@ func (dc *DeleteCmd) Run(ctx context.Context, client hcapi2.Client, actionWaiter
 		return fmt.Errorf("%s not found: %s", dc.ResourceNameSingular, idOrName)
 	}
 
-	if err := dc.Delete(ctx, client, actionWaiter, cmd, resource); err != nil {
+	if err := dc.Delete(s, cmd, resource); err != nil {
 		return fmt.Errorf("deleting %s %s failed: %s", dc.ResourceNameSingular, idOrName, err)
 	}
 	cmd.Printf("%s %v deleted\n", dc.ResourceNameSingular, idOrName)

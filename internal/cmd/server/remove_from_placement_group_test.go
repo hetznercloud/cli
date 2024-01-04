@@ -1,7 +1,6 @@
 package server_test
 
 import (
-	"context"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -16,11 +15,7 @@ func TestRemoveFromPlacementGroup(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := server.RemoveFromPlacementGroupCmd.CobraCommand(
-		context.Background(),
-		fx.Client,
-		fx.TokenEnsurer,
-		fx.ActionWaiter)
+	cmd := server.RemoveFromPlacementGroupCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	server := hcloud.Server{

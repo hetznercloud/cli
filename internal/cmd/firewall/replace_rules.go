@@ -1,7 +1,6 @@
 package firewall
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -32,9 +31,9 @@ var ReplaceRulesCmd = base.Cmd{
 		cmd.MarkFlagRequired("rules-file")
 		return cmd
 	},
-	Run: func(ctx context.Context, client hcapi2.Client, waiter state.ActionWaiter, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		firewall, _, err := client.Firewall().Get(ctx, idOrName)
+		firewall, _, err := s.Client().Firewall().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -91,11 +90,11 @@ var ReplaceRulesCmd = base.Cmd{
 			opts.Rules = append(opts.Rules, r)
 		}
 
-		actions, _, err := client.Firewall().SetRules(ctx, firewall, opts)
+		actions, _, err := s.Client().Firewall().SetRules(s, firewall, opts)
 		if err != nil {
 			return err
 		}
-		if err := waiter.WaitForActions(cmd, ctx, actions); err != nil {
+		if err := s.WaitForActions(cmd, s, actions); err != nil {
 			return err
 		}
 		cmd.Printf("Firewall Rules for Firewall %d updated\n", firewall.ID)
