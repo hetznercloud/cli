@@ -64,7 +64,7 @@ func NewRootCommand(s state.State) *cobra.Command {
 	)
 	cmd.PersistentFlags().Duration("poll-interval", 500*time.Millisecond, "Interval at which to poll information, for example action progress")
 	cmd.PersistentFlags().Bool("quiet", false, "Only print error messages")
-	cmd.SetOut(os.Stdout)
+
 	cmd.PersistentPreRunE = func(cmd *cobra.Command, args []string) error {
 		pollInterval, err := cmd.Flags().GetDuration("poll-interval")
 		if err != nil {
@@ -72,13 +72,14 @@ func NewRootCommand(s state.State) *cobra.Command {
 		}
 		s.Client().WithOpts(hcloud.WithPollBackoffFunc(hcloud.ConstantBackoff(pollInterval)))
 
+		out := os.Stdout
 		if quiet, _ := cmd.Flags().GetBool("quiet"); quiet {
-			f, err := os.Open(os.DevNull)
+			out, err = os.Open(os.DevNull)
 			if err != nil {
 				return err
 			}
-			cmd.SetOut(f)
 		}
+		cmd.SetOut(out)
 		return nil
 	}
 	return cmd
