@@ -35,7 +35,7 @@ var AttachToNetworkCmd = base.Cmd{
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		server, _, err := s.Server().Get(s, idOrName)
+		server, _, err := s.Client().Server().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -44,7 +44,7 @@ var AttachToNetworkCmd = base.Cmd{
 		}
 
 		networkIDOrName, _ := cmd.Flags().GetString("network")
-		network, _, err := s.Network().Get(s, networkIDOrName)
+		network, _, err := s.Client().Network().Get(s, networkIDOrName)
 		if err != nil {
 			return err
 		}
@@ -62,7 +62,7 @@ var AttachToNetworkCmd = base.Cmd{
 		for _, aliasIP := range aliasIPs {
 			opts.AliasIPs = append(opts.AliasIPs, aliasIP)
 		}
-		action, _, err := s.Server().AttachToNetwork(s, server, opts)
+		action, _, err := s.Client().Server().AttachToNetwork(s, server, opts)
 
 		if err != nil {
 			return err

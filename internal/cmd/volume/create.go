@@ -77,7 +77,7 @@ var CreateCmd = base.CreateCmd{
 			}
 		}
 		if serverIDOrName != "" {
-			server, _, err := s.Server().Get(s, serverIDOrName)
+			server, _, err := s.Client().Server().Get(s, serverIDOrName)
 			if err != nil {
 				return nil, nil, err
 			}
@@ -93,7 +93,7 @@ var CreateCmd = base.CreateCmd{
 			createOpts.Format = &format
 		}
 
-		result, _, err := s.Volume().Create(s, createOpts)
+		result, _, err := s.Client().Volume().Create(s, createOpts)
 		if err != nil {
 			return nil, nil, err
 		}

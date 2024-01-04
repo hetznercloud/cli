@@ -16,7 +16,7 @@ var LabelCmds = base.LabelCmds{
 	NameSuggestions:        func(c hcapi2.Client) func() []string { return c.LoadBalancer().Names },
 	LabelKeySuggestions:    func(c hcapi2.Client) func(idOrName string) []string { return c.LoadBalancer().LabelKeys },
 	FetchLabels: func(s state.State, idOrName string) (map[string]string, int64, error) {
-		loadBalancer, _, err := s.LoadBalancer().Get(s, idOrName)
+		loadBalancer, _, err := s.Client().LoadBalancer().Get(s, idOrName)
 		if err != nil {
 			return nil, 0, err
 		}
@@ -29,7 +29,7 @@ var LabelCmds = base.LabelCmds{
 		opts := hcloud.LoadBalancerUpdateOpts{
 			Labels: labels,
 		}
-		_, _, err := s.LoadBalancer().Update(s, &hcloud.LoadBalancer{ID: id}, opts)
+		_, _, err := s.Client().LoadBalancer().Update(s, &hcloud.LoadBalancer{ID: id}, opts)
 		return err
 	},
 }

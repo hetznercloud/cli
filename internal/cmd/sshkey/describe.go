@@ -20,7 +20,7 @@ var DescribeCmd = base.DescribeCmd{
 	JSONKeyGetByName:     "ssh_keys",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.SSHKey().Names },
 	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
-		key, _, err := s.SSHKey().Get(s, idOrName)
+		key, _, err := s.Client().SSHKey().Get(s, idOrName)
 		if err != nil {
 			return nil, nil, err
 		}

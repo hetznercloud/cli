@@ -33,7 +33,7 @@ var RebuildCmd = base.Cmd{
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		serverIDOrName := args[0]
-		server, _, err := s.Server().Get(s, serverIDOrName)
+		server, _, err := s.Client().Server().Get(s, serverIDOrName)
 		if err != nil {
 			return err
 		}
@@ -43,7 +43,7 @@ var RebuildCmd = base.Cmd{
 
 		imageIDOrName, _ := cmd.Flags().GetString("image")
 		// Select correct image based on server type architecture
-		image, _, err := s.Image().GetForArchitecture(s, imageIDOrName, server.ServerType.Architecture)
+		image, _, err := s.Client().Image().GetForArchitecture(s, imageIDOrName, server.ServerType.Architecture)
 		if err != nil {
 			return err
 		}
@@ -64,7 +64,7 @@ var RebuildCmd = base.Cmd{
 		opts := hcloud.ServerRebuildOpts{
 			Image: image,
 		}
-		result, _, err := s.Server().RebuildWithResult(s, server, opts)
+		result, _, err := s.Client().Server().RebuildWithResult(s, server, opts)
 		if err != nil {
 			return err
 		}

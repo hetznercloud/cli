@@ -14,11 +14,11 @@ var DeleteCmd = base.DeleteCmd{
 	ShortDescription:     "Delete an image",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Image().Names },
 	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
-		return s.Image().Get(s, idOrName)
+		return s.Client().Image().Get(s, idOrName)
 	},
 	Delete: func(s state.State, cmd *cobra.Command, resource interface{}) error {
 		image := resource.(*hcloud.Image)
-		if _, err := s.Image().Delete(s, image); err != nil {
+		if _, err := s.Client().Image().Delete(s, image); err != nil {
 			return err
 		}
 		return nil

@@ -25,7 +25,7 @@ var ListCmd = base.ListCmd{
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		placementGroups, err := s.PlacementGroup().AllWithOpts(s, opts)
+		placementGroups, err := s.Client().PlacementGroup().AllWithOpts(s, opts)
 
 		var resources []interface{}
 		for _, n := range placementGroups {

@@ -56,7 +56,7 @@ var UpdateServiceCmd = base.Cmd{
 		idOrName := args[0]
 		listenPort, _ := cmd.Flags().GetInt("listen-port")
 
-		loadBalancer, _, err := s.LoadBalancer().Get(s, idOrName)
+		loadBalancer, _, err := s.Client().LoadBalancer().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -159,7 +159,7 @@ var UpdateServiceCmd = base.Cmd{
 			}
 		}
 
-		action, _, err := s.LoadBalancer().UpdateService(s, loadBalancer, listenPort, opts)
+		action, _, err := s.Client().LoadBalancer().UpdateService(s, loadBalancer, listenPort, opts)
 		if err != nil {
 			return err
 		}

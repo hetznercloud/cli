@@ -30,7 +30,7 @@ func (lc *LabelCmds) AddCobraCommand(s state.State) *cobra.Command {
 		Use:                   fmt.Sprintf("add-label [FLAGS] %s LABEL", strings.ToUpper(lc.ResourceNameSingular)),
 		Short:                 lc.ShortDescriptionAdd,
 		Args:                  cobra.ExactArgs(2),
-		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(lc.NameSuggestions(s))),
+		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(lc.NameSuggestions(s.Client()))),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               util.ChainRunE(validateAddLabel, s.EnsureToken),
@@ -88,12 +88,12 @@ func (lc *LabelCmds) RemoveCobraCommand(s state.State) *cobra.Command {
 		Short: lc.ShortDescriptionRemove,
 		Args:  cobra.RangeArgs(1, 2),
 		ValidArgsFunction: cmpl.SuggestArgs(
-			cmpl.SuggestCandidatesF(lc.NameSuggestions(s)),
+			cmpl.SuggestCandidatesF(lc.NameSuggestions(s.Client())),
 			cmpl.SuggestCandidatesCtx(func(_ *cobra.Command, args []string) []string {
 				if len(args) != 1 {
 					return nil
 				}
-				return lc.LabelKeySuggestions(s)(args[0])
+				return lc.LabelKeySuggestions(s.Client())(args[0])
 			}),
 		),
 		TraverseChildren:      true,

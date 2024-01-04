@@ -53,7 +53,7 @@ var ApplyToResourceCmd = base.Cmd{
 		serverIdOrName, _ := cmd.Flags().GetString("server")
 		labelSelector, _ := cmd.Flags().GetString("label-selector")
 		idOrName := args[0]
-		firewall, _, err := s.Firewall().Get(s, idOrName)
+		firewall, _, err := s.Client().Firewall().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -64,7 +64,7 @@ var ApplyToResourceCmd = base.Cmd{
 
 		switch opts.Type {
 		case hcloud.FirewallResourceTypeServer:
-			server, _, err := s.Server().Get(s, serverIdOrName)
+			server, _, err := s.Client().Server().Get(s, serverIdOrName)
 			if err != nil {
 				return err
 			}
@@ -78,7 +78,7 @@ var ApplyToResourceCmd = base.Cmd{
 			return fmt.Errorf("unknown type %s", opts.Type)
 		}
 
-		actions, _, err := s.Firewall().ApplyResources(s, firewall, []hcloud.FirewallResource{opts})
+		actions, _, err := s.Client().Firewall().ApplyResources(s, firewall, []hcloud.FirewallResource{opts})
 		if err != nil {
 			return err
 		}

@@ -16,7 +16,7 @@ var LabelCmds = base.LabelCmds{
 	NameSuggestions:        func(c hcapi2.Client) func() []string { return c.Network().Names },
 	LabelKeySuggestions:    func(c hcapi2.Client) func(idOrName string) []string { return c.Network().LabelKeys },
 	FetchLabels: func(s state.State, idOrName string) (map[string]string, int64, error) {
-		network, _, err := s.Network().Get(s, idOrName)
+		network, _, err := s.Client().Network().Get(s, idOrName)
 		if err != nil {
 			return nil, 0, err
 		}
@@ -29,7 +29,7 @@ var LabelCmds = base.LabelCmds{
 		opts := hcloud.NetworkUpdateOpts{
 			Labels: labels,
 		}
-		_, _, err := s.Network().Update(s, &hcloud.Network{ID: id}, opts)
+		_, _, err := s.Client().Network().Update(s, &hcloud.Network{ID: id}, opts)
 		return err
 	},
 }

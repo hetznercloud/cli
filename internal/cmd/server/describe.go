@@ -20,7 +20,7 @@ var DescribeCmd = base.DescribeCmd{
 	JSONKeyGetByName:     "servers",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Server().Names },
 	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
-		srv, _, err := s.Server().Get(s, idOrName)
+		srv, _, err := s.Client().Server().Get(s, idOrName)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -67,7 +67,7 @@ var DescribeCmd = base.DescribeCmd{
 		cmd.Printf("  Floating IPs:\n")
 		if len(server.PublicNet.FloatingIPs) > 0 {
 			for _, f := range server.PublicNet.FloatingIPs {
-				floatingIP, _, err := s.FloatingIP().GetByID(s, f.ID)
+				floatingIP, _, err := s.Client().FloatingIP().GetByID(s, f.ID)
 				if err != nil {
 					return fmt.Errorf("error fetching Floating IP: %v", err)
 				}
@@ -82,7 +82,7 @@ var DescribeCmd = base.DescribeCmd{
 		cmd.Printf("Private Net:\n")
 		if len(server.PrivateNet) > 0 {
 			for _, n := range server.PrivateNet {
-				network, _, err := s.Network().GetByID(s, n.Network.ID)
+				network, _, err := s.Client().Network().GetByID(s, n.Network.ID)
 				if err != nil {
 					return fmt.Errorf("error fetching network: %v", err)
 				}
@@ -106,7 +106,7 @@ var DescribeCmd = base.DescribeCmd{
 		cmd.Printf("Volumes:\n")
 		if len(server.Volumes) > 0 {
 			for _, v := range server.Volumes {
-				volume, _, err := s.Volume().GetByID(s, v.ID)
+				volume, _, err := s.Client().Volume().GetByID(s, v.ID)
 				if err != nil {
 					return fmt.Errorf("error fetching Volume: %v", err)
 				}

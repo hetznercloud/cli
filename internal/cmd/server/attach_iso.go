@@ -28,7 +28,7 @@ var AttachISOCmd = base.Cmd{
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		server, _, err := s.Server().Get(s, idOrName)
+		server, _, err := s.Client().Server().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -37,7 +37,7 @@ var AttachISOCmd = base.Cmd{
 		}
 
 		isoIDOrName := args[1]
-		iso, _, err := s.ISO().Get(s, isoIDOrName)
+		iso, _, err := s.Client().ISO().Get(s, isoIDOrName)
 		if err != nil {
 			return err
 		}
@@ -51,7 +51,7 @@ var AttachISOCmd = base.Cmd{
 			return errors.New("failed to attach iso: iso has a different architecture than the server")
 		}
 
-		action, _, err := s.Server().AttachISO(s, server, iso)
+		action, _, err := s.Client().Server().AttachISO(s, server, iso)
 		if err != nil {
 			return err
 		}

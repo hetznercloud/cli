@@ -95,7 +95,7 @@ func createUploaded(s state.State, cmd *cobra.Command) (*hcloud.Certificate, err
 		Certificate: string(certPEM),
 		PrivateKey:  string(keyPEM),
 	}
-	cert, _, err = s.Certificate().Create(s, createOpts)
+	cert, _, err = s.Client().Certificate().Create(s, createOpts)
 	if err != nil {
 		return nil, err
 	}
@@ -126,7 +126,7 @@ func createManaged(s state.State, cmd *cobra.Command) (*hcloud.Certificate, erro
 		Type:        hcloud.CertificateTypeManaged,
 		DomainNames: domains,
 	}
-	res, _, err = s.Certificate().CreateCertificate(s, createOpts)
+	res, _, err = s.Client().Certificate().CreateCertificate(s, createOpts)
 	if err != nil {
 		return nil, err
 	}

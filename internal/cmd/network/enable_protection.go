@@ -40,7 +40,7 @@ func changeProtection(s state.State, cmd *cobra.Command,
 		return nil
 	}
 
-	action, _, err := s.Network().ChangeProtection(s, network, opts)
+	action, _, err := s.Client().Network().ChangeProtection(s, network, opts)
 	if err != nil {
 		return err
 	}
@@ -73,7 +73,7 @@ var EnableProtectionCmd = base.Cmd{
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		network, _, err := s.Network().Get(s, idOrName)
+		network, _, err := s.Client().Network().Get(s, idOrName)
 		if err != nil {
 			return err
 		}

@@ -3,10 +3,8 @@ package state
 import (
 	"context"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"os"
-	"path/filepath"
 	"time"
 
 	"github.com/hetznercloud/cli/internal/hcapi2"
@@ -15,45 +13,64 @@ import (
 )
 
 type State interface {
+	context.Context
+
 	TokenEnsurer
 	ActionWaiter
-	context.Context
-	hcapi2.Client
 
-	WriteConfig() error
+	Client() hcapi2.Client
 	Config() *Config
 }
 
 type state struct {
 	context.Context
-	hcapi2.Client
 
-	Token         string
-	Endpoint      string
-	ConfigPath    string
-	Debug         bool
-	DebugFilePath string
-
-	hcloudClient *hcloud.Client
-	config       *Config
+	token         string
+	endpoint      string
+	debug         bool
+	debugFilePath string
+	client        hcapi2.Client
+	hcloudClient  *hcloud.Client
+	config        *Config
 }
 
 func New() (State, error) {
+	configPath := os.Getenv("HCLOUD_CONFIG")
+	if configPath == "" {
+		configPath = DefaultConfigPath
+	}
+
+	cfg, err := readConfig(configPath)
+	if err != nil {
+		return nil, fmt.Errorf("unable to read config file %q: %s\n", configPath, err)
+	}
+
+	var (
+		token    string
+		endpoint string
+	)
+	if cfg.ActiveContext != nil {
+		token = cfg.ActiveContext.Token
+	}
+	if cfg.Endpoint != "" {
+		endpoint = cfg.Endpoint
+	}
+
 	s := &state{
-		Context:    context.Background(),
-		config:     &Config{},
-		ConfigPath: DefaultConfigPath,
+		Context:  context.Background(),
+		config:   cfg,
+		token:    token,
+		endpoint: endpoint,
 	}
-	if p := os.Getenv("HCLOUD_CONFIG"); p != "" {
-		s.ConfigPath = p
-	}
-	if err := s.readConfig(); err != nil {
-		return nil, fmt.Errorf("unable to read config file %q: %s\n", s.ConfigPath, err)
-	}
+
 	s.readEnv()
 	s.hcloudClient = s.newClient()
-	s.Client = hcapi2.NewClient(s.hcloudClient)
+	s.client = hcapi2.NewClient(s.hcloudClient)
 	return s, nil
+}
+
+func (c *state) Client() hcapi2.Client {
+	return c.client
 }
 
 func (c *state) Config() *Config {
@@ -62,63 +79,59 @@ func (c *state) Config() *Config {
 
 func (c *state) readEnv() {
 	if s := os.Getenv("HCLOUD_TOKEN"); s != "" {
-		c.Token = s
+		c.token = s
 	}
 	if s := os.Getenv("HCLOUD_ENDPOINT"); s != "" {
-		c.Endpoint = s
+		c.endpoint = s
 	}
 	if s := os.Getenv("HCLOUD_DEBUG"); s != "" {
-		c.Debug = true
+		c.debug = true
 	}
 	if s := os.Getenv("HCLOUD_DEBUG_FILE"); s != "" {
-		c.DebugFilePath = s
+		c.debugFilePath = s
 	}
 	if s := os.Getenv("HCLOUD_CONTEXT"); s != "" && c.config != nil {
 		if cfgCtx := c.config.ContextByName(s); cfgCtx != nil {
 			c.config.ActiveContext = cfgCtx
-			c.Token = cfgCtx.Token
+			c.token = cfgCtx.Token
 		} else {
 			log.Printf("warning: context %q specified in HCLOUD_CONTEXT does not exist\n", s)
 		}
 	}
 }
 
-func (c *state) readConfig() error {
-	_, err := os.Stat(c.ConfigPath)
+func readConfig(path string) (*Config, error) {
+	_, err := os.Stat(path)
 	if err != nil && !os.IsNotExist(err) {
-		return err
+		return nil, err
 	}
 
-	data, err := os.ReadFile(c.ConfigPath)
+	data, err := os.ReadFile(path)
 	if err != nil {
-		return err
-	}
-	if err = UnmarshalConfig(c.config, data); err != nil {
-		return err
+		return nil, err
 	}
 
-	if c.config.ActiveContext != nil {
-		c.Token = c.config.ActiveContext.Token
+	cfg := &Config{Path: path}
+	if err = UnmarshalConfig(cfg, data); err != nil {
+		return nil, err
 	}
-	if c.config.Endpoint != "" {
-		c.Endpoint = c.config.Endpoint
-	}
-	return nil
+
+	return cfg, nil
 }
 
 func (c *state) newClient() *hcloud.Client {
 	opts := []hcloud.ClientOption{
-		hcloud.WithToken(c.Token),
+		hcloud.WithToken(c.token),
 		hcloud.WithApplication("hcloud-cli", version.Version),
 	}
-	if c.Endpoint != "" {
-		opts = append(opts, hcloud.WithEndpoint(c.Endpoint))
+	if c.endpoint != "" {
+		opts = append(opts, hcloud.WithEndpoint(c.endpoint))
 	}
-	if c.Debug {
-		if c.DebugFilePath == "" {
+	if c.debug {
+		if c.debugFilePath == "" {
 			opts = append(opts, hcloud.WithDebugWriter(os.Stderr))
 		} else {
-			writer, _ := os.Create(c.DebugFilePath)
+			writer, _ := os.Create(c.debugFilePath)
 			opts = append(opts, hcloud.WithDebugWriter(writer))
 		}
 	}
@@ -129,22 +142,4 @@ func (c *state) newClient() *hcloud.Client {
 		opts = append(opts, hcloud.WithPollInterval(pollInterval))
 	}
 	return hcloud.NewClient(opts...)
-}
-
-func (c *state) WriteConfig() error {
-	if c.config == nil {
-		return nil
-	}
-
-	data, err := MarshalConfig(c.config)
-	if err != nil {
-		return err
-	}
-	if err := os.MkdirAll(filepath.Dir(c.ConfigPath), 0777); err != nil {
-		return err
-	}
-	if err := ioutil.WriteFile(c.ConfigPath, data, 0600); err != nil {
-		return err
-	}
-	return nil
 }

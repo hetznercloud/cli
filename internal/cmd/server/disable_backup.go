@@ -24,7 +24,7 @@ var DisableBackupCmd = base.Cmd{
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		server, _, err := s.Server().Get(s, idOrName)
+		server, _, err := s.Client().Server().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -32,7 +32,7 @@ var DisableBackupCmd = base.Cmd{
 			return fmt.Errorf("server not found: %s", idOrName)
 		}
 
-		action, _, err := s.Server().DisableBackup(s, server)
+		action, _, err := s.Client().Server().DisableBackup(s, server)
 		if err != nil {
 			return err
 		}

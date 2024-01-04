@@ -102,7 +102,7 @@ var CreateCmd = base.CreateCmd{
 			return nil, nil, err
 		}
 
-		result, _, err := s.Server().Create(s, createOpts)
+		result, _, err := s.Client().Server().Create(s, createOpts)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -114,7 +114,7 @@ var CreateCmd = base.CreateCmd{
 			return nil, nil, err
 		}
 
-		server, _, err := s.Server().GetByID(s, result.Server.ID)
+		server, _, err := s.Client().Server().GetByID(s, result.Server.ID)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -127,7 +127,7 @@ var CreateCmd = base.CreateCmd{
 
 		enableBackup, _ := cmd.Flags().GetBool("enable-backup")
 		if enableBackup {
-			action, _, err := s.Server().EnableBackup(s, server, "")
+			action, _, err := s.Client().Server().EnableBackup(s, server, "")
 			if err != nil {
 				return nil, nil, err
 			}
@@ -157,7 +157,7 @@ var CreateCmd = base.CreateCmd{
 		if len(server.PrivateNet) > 0 {
 			var networks []string
 			for _, network := range server.PrivateNet {
-				networks = append(networks, fmt.Sprintf("- %s (%s)", network.IP.String(), s.Network().Name(network.Network.ID)))
+				networks = append(networks, fmt.Sprintf("- %s (%s)", network.IP.String(), s.Client().Network().Name(network.Network.ID)))
 			}
 			cmd.Printf("Private Networks:\n\t%s\n", strings.Join(networks, "\n"))
 		}
@@ -261,7 +261,7 @@ func createOptsFromFlags(
 	primaryIPv6IDorName, _ := flags.GetString("primary-ipv6")
 	protection, _ := flags.GetStringSlice("enable-protection")
 
-	serverType, _, err := s.ServerType().Get(s, serverTypeName)
+	serverType, _, err := s.Client().ServerType().Get(s, serverTypeName)
 	if err != nil {
 		return
 	}
@@ -275,7 +275,7 @@ func createOptsFromFlags(
 	}
 
 	// Select correct image based on server type architecture
-	image, _, err := s.Image().GetForArchitecture(s, imageIDorName, serverType.Architecture)
+	image, _, err := s.Client().Image().GetForArchitecture(s, imageIDorName, serverType.Architecture)
 	if err != nil {
 		return
 	}
@@ -315,7 +315,7 @@ func createOptsFromFlags(
 	}
 	if primaryIPv4IDorName != "" {
 		var primaryIPv4 *hcloud.PrimaryIP
-		primaryIPv4, _, err = s.PrimaryIP().Get(s, primaryIPv4IDorName)
+		primaryIPv4, _, err = s.Client().PrimaryIP().Get(s, primaryIPv4IDorName)
 		if err != nil {
 			return
 		}
@@ -327,7 +327,7 @@ func createOptsFromFlags(
 	}
 	if primaryIPv6IDorName != "" {
 		var primaryIPv6 *hcloud.PrimaryIP
-		primaryIPv6, _, err = s.PrimaryIP().Get(s, primaryIPv6IDorName)
+		primaryIPv6, _, err = s.Client().PrimaryIP().Get(s, primaryIPv6IDorName)
 		if err != nil {
 			return
 		}
@@ -358,7 +358,7 @@ func createOptsFromFlags(
 
 	for _, sshKeyIDOrName := range sshKeys {
 		var sshKey *hcloud.SSHKey
-		sshKey, _, err = s.SSHKey().Get(s, sshKeyIDOrName)
+		sshKey, _, err = s.Client().SSHKey().Get(s, sshKeyIDOrName)
 		if err != nil {
 			return
 		}
@@ -378,7 +378,7 @@ func createOptsFromFlags(
 	}
 	for _, volumeIDOrName := range volumes {
 		var volume *hcloud.Volume
-		volume, _, err = s.Volume().Get(s, volumeIDOrName)
+		volume, _, err = s.Client().Volume().Get(s, volumeIDOrName)
 		if err != nil {
 			return
 		}
@@ -391,7 +391,7 @@ func createOptsFromFlags(
 	}
 	for _, networkIDOrName := range networks {
 		var network *hcloud.Network
-		network, _, err = s.Network().Get(s, networkIDOrName)
+		network, _, err = s.Client().Network().Get(s, networkIDOrName)
 		if err != nil {
 			return
 		}
@@ -404,7 +404,7 @@ func createOptsFromFlags(
 	}
 	for _, firewallIDOrName := range firewalls {
 		var firewall *hcloud.Firewall
-		firewall, _, err = s.Firewall().Get(s, firewallIDOrName)
+		firewall, _, err = s.Client().Firewall().Get(s, firewallIDOrName)
 		if err != nil {
 			return
 		}
@@ -424,7 +424,7 @@ func createOptsFromFlags(
 	}
 	if placementGroupIDorName != "" {
 		var placementGroup *hcloud.PlacementGroup
-		placementGroup, _, err = s.PlacementGroup().Get(s, placementGroupIDorName)
+		placementGroup, _, err = s.Client().PlacementGroup().Get(s, placementGroupIDorName)
 		if err != nil {
 			return
 		}
@@ -459,7 +459,7 @@ func getSSHKeyForFingerprint(
 		err = fmt.Errorf("lookup SSH key by fingerprint: %v", err)
 		return
 	}
-	sshKey, _, err = s.SSHKey().GetByFingerprint(s, ssh.FingerprintLegacyMD5(publicKey))
+	sshKey, _, err = s.Client().SSHKey().GetByFingerprint(s, ssh.FingerprintLegacyMD5(publicKey))
 	if err != nil {
 		err = fmt.Errorf("lookup SSH key by fingerprint: %v", err)
 		return

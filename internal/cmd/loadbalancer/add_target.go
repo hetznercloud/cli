@@ -50,7 +50,7 @@ var AddTargetCmd = base.Cmd{
 		if !util.ExactlyOneSet(serverIDOrName, labelSelector, ipAddr) {
 			return fmt.Errorf("--server, --label-selector, and --ip are mutually exclusive")
 		}
-		if loadBalancer, _, err = s.LoadBalancer().Get(s, idOrName); err != nil {
+		if loadBalancer, _, err = s.Client().LoadBalancer().Get(s, idOrName); err != nil {
 			return err
 		}
 		if loadBalancer == nil {
@@ -59,14 +59,14 @@ var AddTargetCmd = base.Cmd{
 
 		switch {
 		case serverIDOrName != "":
-			server, _, err := s.Server().Get(s, serverIDOrName)
+			server, _, err := s.Client().Server().Get(s, serverIDOrName)
 			if err != nil {
 				return err
 			}
 			if server == nil {
 				return fmt.Errorf("server not found: %s", serverIDOrName)
 			}
-			action, _, err = s.LoadBalancer().AddServerTarget(s, loadBalancer, hcloud.LoadBalancerAddServerTargetOpts{
+			action, _, err = s.Client().LoadBalancer().AddServerTarget(s, loadBalancer, hcloud.LoadBalancerAddServerTargetOpts{
 				Server:       server,
 				UsePrivateIP: hcloud.Bool(usePrivateIP),
 			})
@@ -74,7 +74,7 @@ var AddTargetCmd = base.Cmd{
 				return err
 			}
 		case labelSelector != "":
-			action, _, err = s.LoadBalancer().AddLabelSelectorTarget(s, loadBalancer, hcloud.LoadBalancerAddLabelSelectorTargetOpts{
+			action, _, err = s.Client().LoadBalancer().AddLabelSelectorTarget(s, loadBalancer, hcloud.LoadBalancerAddLabelSelectorTargetOpts{
 				Selector:     labelSelector,
 				UsePrivateIP: hcloud.Bool(usePrivateIP),
 			})
@@ -86,7 +86,7 @@ var AddTargetCmd = base.Cmd{
 			if ip == nil {
 				return fmt.Errorf("invalid ip provided")
 			}
-			action, _, err = s.LoadBalancer().AddIPTarget(s, loadBalancer, hcloud.LoadBalancerAddIPTargetOpts{
+			action, _, err = s.Client().LoadBalancer().AddIPTarget(s, loadBalancer, hcloud.LoadBalancerAddIPTargetOpts{
 				IP: ip,
 			})
 			if err != nil {

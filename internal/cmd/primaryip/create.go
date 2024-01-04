@@ -61,7 +61,7 @@ var CreateCmd = base.CreateCmd{
 			createOpts.AssigneeID = &assigneeID
 		}
 
-		result, _, err := s.PrimaryIP().Create(s, createOpts)
+		result, _, err := s.Client().PrimaryIP().Create(s, createOpts)
 		if err != nil {
 			return nil, nil, err
 		}

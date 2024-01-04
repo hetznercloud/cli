@@ -16,7 +16,7 @@ type Cmd struct {
 
 // CobraCommand creates a command that can be registered with cobra.
 func (gc *Cmd) CobraCommand(s state.State) *cobra.Command {
-	cmd := gc.BaseCobraCommand(s)
+	cmd := gc.BaseCobraCommand(s.Client())
 
 	if cmd.Args == nil {
 		cmd.Args = cobra.NoArgs

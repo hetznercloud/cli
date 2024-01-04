@@ -26,7 +26,7 @@ var ResizeCmd = base.Cmd{
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
-		volume, _, err := s.Volume().Get(s, args[0])
+		volume, _, err := s.Client().Volume().Get(s, args[0])
 		if err != nil {
 			return err
 		}
@@ -35,7 +35,7 @@ var ResizeCmd = base.Cmd{
 		}
 
 		size, _ := cmd.Flags().GetInt("size")
-		action, _, err := s.Volume().Resize(s, volume, size)
+		action, _, err := s.Client().Volume().Resize(s, volume, size)
 		if err != nil {
 			return err
 		}

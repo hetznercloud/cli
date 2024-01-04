@@ -57,7 +57,7 @@ var CreateCmd = base.CreateCmd{
 			PublicKey: publicKey,
 			Labels:    labels,
 		}
-		sshKey, _, err := s.SSHKey().Create(s, opts)
+		sshKey, _, err := s.Client().SSHKey().Create(s, opts)
 		if err != nil {
 			return nil, nil, err
 		}

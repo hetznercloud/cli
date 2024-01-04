@@ -31,7 +31,7 @@ var AssignCmd = base.Cmd{
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		primaryIP, _, err := s.PrimaryIP().Get(s, idOrName)
+		primaryIP, _, err := s.Client().PrimaryIP().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -41,7 +41,7 @@ var AssignCmd = base.Cmd{
 
 		serverIDOrName, _ := cmd.Flags().GetString("server")
 
-		server, _, err := s.Server().Get(s, serverIDOrName)
+		server, _, err := s.Client().Server().Get(s, serverIDOrName)
 		if err != nil {
 			return err
 		}
@@ -54,7 +54,7 @@ var AssignCmd = base.Cmd{
 			AssigneeID:   server.ID,
 		}
 
-		action, _, err := s.PrimaryIP().Assign(s, opts)
+		action, _, err := s.Client().PrimaryIP().Assign(s, opts)
 		if err != nil {
 			return err
 		}

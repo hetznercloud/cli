@@ -15,7 +15,7 @@ var UpdateCmd = base.UpdateCmd{
 	ShortDescription:     "Update a Floating IP",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.FloatingIP().Names },
 	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
-		return s.FloatingIP().Get(s, idOrName)
+		return s.Client().FloatingIP().Get(s, idOrName)
 	},
 	DefineFlags: func(cmd *cobra.Command) {
 		cmd.Flags().String("name", "", "Floating IP name")
@@ -27,7 +27,7 @@ var UpdateCmd = base.UpdateCmd{
 			Name:        flags["name"].String(),
 			Description: flags["description"].String(),
 		}
-		_, _, err := s.FloatingIP().Update(s, floatingIP, updOpts)
+		_, _, err := s.Client().FloatingIP().Update(s, floatingIP, updOpts)
 		if err != nil {
 			return err
 		}

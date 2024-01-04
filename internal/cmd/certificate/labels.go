@@ -16,7 +16,7 @@ var LabelCmds = base.LabelCmds{
 	NameSuggestions:        func(c hcapi2.Client) func() []string { return c.Certificate().Names },
 	LabelKeySuggestions:    func(c hcapi2.Client) func(idOrName string) []string { return c.Certificate().LabelKeys },
 	FetchLabels: func(s state.State, idOrName string) (map[string]string, int64, error) {
-		certificate, _, err := s.Certificate().Get(s, idOrName)
+		certificate, _, err := s.Client().Certificate().Get(s, idOrName)
 		if err != nil {
 			return nil, 0, err
 		}
@@ -29,7 +29,7 @@ var LabelCmds = base.LabelCmds{
 		opts := hcloud.CertificateUpdateOpts{
 			Labels: labels,
 		}
-		_, _, err := s.Certificate().Update(s, &hcloud.Certificate{ID: id}, opts)
+		_, _, err := s.Client().Certificate().Update(s, &hcloud.Certificate{ID: id}, opts)
 		return err
 	},
 }

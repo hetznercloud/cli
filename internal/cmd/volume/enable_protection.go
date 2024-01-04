@@ -40,7 +40,7 @@ func changeProtection(s state.State, cmd *cobra.Command,
 		return nil
 	}
 
-	action, _, err := s.Volume().ChangeProtection(s, volume, opts)
+	action, _, err := s.Client().Volume().ChangeProtection(s, volume, opts)
 	if err != nil {
 		return err
 	}
@@ -72,7 +72,7 @@ var EnableProtectionCmd = base.Cmd{
 		}
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
-		volume, _, err := s.Volume().Get(s, args[0])
+		volume, _, err := s.Client().Volume().Get(s, args[0])
 		if err != nil {
 			return err
 		}

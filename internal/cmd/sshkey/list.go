@@ -24,7 +24,7 @@ var ListCmd = base.ListCmd{
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		sshKeys, err := s.SSHKey().AllWithOpts(s, opts)
+		sshKeys, err := s.Client().SSHKey().AllWithOpts(s, opts)
 
 		var resources []interface{}
 		for _, n := range sshKeys {

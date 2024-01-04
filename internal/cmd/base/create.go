@@ -22,7 +22,7 @@ type CreateCmd struct {
 
 // CobraCommand creates a command that can be registered with cobra.
 func (cc *CreateCmd) CobraCommand(s state.State) *cobra.Command {
-	cmd := cc.BaseCobraCommand(s)
+	cmd := cc.BaseCobraCommand(s.Client())
 
 	output.AddFlag(cmd, output.OptionJSON(), output.OptionYAML())
 

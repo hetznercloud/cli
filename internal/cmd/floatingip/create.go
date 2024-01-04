@@ -79,7 +79,7 @@ var CreateCmd = base.CreateCmd{
 			createOpts.HomeLocation = &hcloud.Location{Name: homeLocation}
 		}
 		if serverNameOrID != "" {
-			server, _, err := s.Server().Get(s, serverNameOrID)
+			server, _, err := s.Client().Server().Get(s, serverNameOrID)
 			if err != nil {
 				return nil, nil, err
 			}
@@ -89,7 +89,7 @@ var CreateCmd = base.CreateCmd{
 			createOpts.Server = server
 		}
 
-		result, _, err := s.FloatingIP().Create(s, createOpts)
+		result, _, err := s.Client().FloatingIP().Create(s, createOpts)
 		if err != nil {
 			return nil, nil, err
 		}

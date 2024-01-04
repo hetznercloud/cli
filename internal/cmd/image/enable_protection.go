@@ -42,7 +42,7 @@ func changeProtection(s state.State, cmd *cobra.Command,
 		return nil
 	}
 
-	action, _, err := s.Image().ChangeProtection(s, image, opts)
+	action, _, err := s.Client().Image().ChangeProtection(s, image, opts)
 	if err != nil {
 		return err
 	}

@@ -60,7 +60,7 @@ var ListCmd = base.ListCmd{
 				}
 			}
 		}
-		servers, err := s.Server().AllWithOpts(s, opts)
+		servers, err := s.Client().Server().AllWithOpts(s, opts)
 
 		var resources []interface{}
 		for _, r := range servers {

@@ -26,7 +26,7 @@ var ListCmd = base.ListCmd{
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		networks, err := s.Network().AllWithOpts(s, opts)
+		networks, err := s.Client().Network().AllWithOpts(s, opts)
 
 		var resources []interface{}
 		for _, n := range networks {

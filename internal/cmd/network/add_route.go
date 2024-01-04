@@ -37,7 +37,7 @@ var AddRouteCmd = base.Cmd{
 		destination, _ := cmd.Flags().GetIPNet("destination")
 		idOrName := args[0]
 
-		network, _, err := s.Network().Get(s, idOrName)
+		network, _, err := s.Client().Network().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -51,7 +51,7 @@ var AddRouteCmd = base.Cmd{
 				Destination: &destination,
 			},
 		}
-		action, _, err := s.Network().AddRoute(s, network, opts)
+		action, _, err := s.Client().Network().AddRoute(s, network, opts)
 		if err != nil {
 			return err
 		}

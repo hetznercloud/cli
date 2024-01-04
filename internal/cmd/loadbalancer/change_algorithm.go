@@ -35,7 +35,7 @@ var ChangeAlgorithmCmd = base.Cmd{
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
 		algorithm, _ := cmd.Flags().GetString("algorithm-type")
-		loadBalancer, _, err := s.LoadBalancer().Get(s, idOrName)
+		loadBalancer, _, err := s.Client().LoadBalancer().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -43,7 +43,7 @@ var ChangeAlgorithmCmd = base.Cmd{
 			return fmt.Errorf("Load Balancer not found: %s", idOrName)
 		}
 
-		action, _, err := s.LoadBalancer().ChangeAlgorithm(s, loadBalancer, hcloud.LoadBalancerChangeAlgorithmOpts{Type: hcloud.LoadBalancerAlgorithmType(algorithm)})
+		action, _, err := s.Client().LoadBalancer().ChangeAlgorithm(s, loadBalancer, hcloud.LoadBalancerChangeAlgorithmOpts{Type: hcloud.LoadBalancerAlgorithmType(algorithm)})
 		if err != nil {
 			return err
 		}

@@ -15,7 +15,7 @@ var UpdateCmd = base.UpdateCmd{
 	ShortDescription:     "Update a Volume",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Volume().Names },
 	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
-		return s.Volume().Get(s, idOrName)
+		return s.Client().Volume().Get(s, idOrName)
 	},
 	DefineFlags: func(cmd *cobra.Command) {
 		cmd.Flags().String("name", "", "Volume name")
@@ -25,7 +25,7 @@ var UpdateCmd = base.UpdateCmd{
 		updOpts := hcloud.VolumeUpdateOpts{
 			Name: flags["name"].String(),
 		}
-		_, _, err := s.Volume().Update(s, floatingIP, updOpts)
+		_, _, err := s.Client().Volume().Update(s, floatingIP, updOpts)
 		if err != nil {
 			return err
 		}

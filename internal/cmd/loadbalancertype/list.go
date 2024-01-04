@@ -22,7 +22,7 @@ var ListCmd = base.ListCmd{
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		loadBalancerTypes, err := s.LoadBalancerType().AllWithOpts(s, opts)
+		loadBalancerTypes, err := s.Client().LoadBalancerType().AllWithOpts(s, opts)
 
 		var resources []interface{}
 		for _, r := range loadBalancerTypes {

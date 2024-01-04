@@ -27,7 +27,7 @@ var AssignCmd = base.Cmd{
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		floatingIP, _, err := s.FloatingIP().Get(s, idOrName)
+		floatingIP, _, err := s.Client().FloatingIP().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -36,7 +36,7 @@ var AssignCmd = base.Cmd{
 		}
 
 		serverIDOrName := args[1]
-		server, _, err := s.Server().Get(s, serverIDOrName)
+		server, _, err := s.Client().Server().Get(s, serverIDOrName)
 		if err != nil {
 			return err
 		}
@@ -44,7 +44,7 @@ var AssignCmd = base.Cmd{
 			return fmt.Errorf("server not found: %s", serverIDOrName)
 		}
 
-		action, _, err := s.FloatingIP().Assign(s, floatingIP, server)
+		action, _, err := s.Client().FloatingIP().Assign(s, floatingIP, server)
 		if err != nil {
 			return err
 		}

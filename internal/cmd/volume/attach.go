@@ -30,7 +30,7 @@ var AttachCmd = base.Cmd{
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
-		volume, _, err := s.Volume().Get(s, args[0])
+		volume, _, err := s.Client().Volume().Get(s, args[0])
 		if err != nil {
 			return err
 		}
@@ -39,7 +39,7 @@ var AttachCmd = base.Cmd{
 		}
 
 		serverIDOrName, _ := cmd.Flags().GetString("server")
-		server, _, err := s.Server().Get(s, serverIDOrName)
+		server, _, err := s.Client().Server().Get(s, serverIDOrName)
 		if err != nil {
 			return err
 		}
@@ -47,7 +47,7 @@ var AttachCmd = base.Cmd{
 			return fmt.Errorf("server not found: %s", serverIDOrName)
 		}
 		automount, _ := cmd.Flags().GetBool("automount")
-		action, _, err := s.Volume().AttachWithOpts(s, volume, hcloud.VolumeAttachOpts{
+		action, _, err := s.Client().Volume().AttachWithOpts(s, volume, hcloud.VolumeAttachOpts{
 			Server:    server,
 			Automount: &automount,
 		})

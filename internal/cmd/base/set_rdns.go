@@ -31,7 +31,7 @@ func (rc *SetRdnsCmd) CobraCommand(s state.State) *cobra.Command {
 		Use:                   fmt.Sprintf("set-rdns [FLAGS] %s", strings.ToUpper(rc.ResourceNameSingular)),
 		Short:                 rc.ShortDescription,
 		Args:                  cobra.ExactArgs(1),
-		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(rc.NameSuggestions(s))),
+		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(rc.NameSuggestions(s.Client()))),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               util.ChainRunE(s.EnsureToken),
@@ -69,7 +69,7 @@ func (rc *SetRdnsCmd) Run(s state.State, cmd *cobra.Command, args []string) erro
 		ip = rc.GetDefaultIP(resource)
 	}
 	hostname, _ := cmd.Flags().GetString("hostname")
-	action, _, err := s.RDNS().ChangeDNSPtr(s, resource.(hcloud.RDNSSupporter), ip, hcloud.String(hostname))
+	action, _, err := s.Client().RDNS().ChangeDNSPtr(s, resource.(hcloud.RDNSSupporter), ip, hcloud.String(hostname))
 	if err != nil {
 		return err
 	}

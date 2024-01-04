@@ -28,7 +28,7 @@ var ChangeTypeCmd = base.Cmd{
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		loadBalancer, _, err := s.LoadBalancer().Get(s, idOrName)
+		loadBalancer, _, err := s.Client().LoadBalancer().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -37,7 +37,7 @@ var ChangeTypeCmd = base.Cmd{
 		}
 
 		loadBalancerTypeIDOrName := args[1]
-		loadBalancerType, _, err := s.LoadBalancerType().Get(s, loadBalancerTypeIDOrName)
+		loadBalancerType, _, err := s.Client().LoadBalancerType().Get(s, loadBalancerTypeIDOrName)
 		if err != nil {
 			return err
 		}
@@ -48,7 +48,7 @@ var ChangeTypeCmd = base.Cmd{
 		opts := hcloud.LoadBalancerChangeTypeOpts{
 			LoadBalancerType: loadBalancerType,
 		}
-		action, _, err := s.LoadBalancer().ChangeType(s, loadBalancer, opts)
+		action, _, err := s.Client().LoadBalancer().ChangeType(s, loadBalancer, opts)
 		if err != nil {
 			return err
 		}

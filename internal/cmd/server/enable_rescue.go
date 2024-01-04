@@ -31,7 +31,7 @@ var EnableRescueCmd = base.Cmd{
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		server, _, err := s.Server().Get(s, idOrName)
+		server, _, err := s.Client().Server().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -47,7 +47,7 @@ var EnableRescueCmd = base.Cmd{
 
 		sshKeys, _ := cmd.Flags().GetStringSlice("ssh-key")
 		for _, sshKeyIDOrName := range sshKeys {
-			sshKey, _, err := s.SSHKey().Get(s, sshKeyIDOrName)
+			sshKey, _, err := s.Client().SSHKey().Get(s, sshKeyIDOrName)
 			if err != nil {
 				return err
 			}
@@ -57,7 +57,7 @@ var EnableRescueCmd = base.Cmd{
 			opts.SSHKeys = append(opts.SSHKeys, sshKey)
 		}
 
-		result, _, err := s.Server().EnableRescue(s, server, opts)
+		result, _, err := s.Client().Server().EnableRescue(s, server, opts)
 		if err != nil {
 			return err
 		}

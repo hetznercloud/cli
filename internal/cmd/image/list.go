@@ -60,7 +60,7 @@ var ListCmd = base.ListCmd{
 			opts.Sort = sorts
 		}
 
-		images, err := s.Image().AllWithOpts(s, opts)
+		images, err := s.Client().Image().AllWithOpts(s, opts)
 
 		var resources []interface{}
 		for _, n := range images {

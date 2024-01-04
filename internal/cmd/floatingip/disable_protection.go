@@ -27,7 +27,7 @@ var DisableProtectionCmd = base.Cmd{
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		floatingIP, _, err := s.FloatingIP().Get(s, idOrName)
+		floatingIP, _, err := s.Client().FloatingIP().Get(s, idOrName)
 		if err != nil {
 			return err
 		}

@@ -78,7 +78,7 @@ var CreateCmd = base.CreateCmd{
 			}
 		}
 
-		result, _, err := s.Firewall().Create(s, opts)
+		result, _, err := s.Client().Firewall().Create(s, opts)
 		if err != nil {
 			return nil, nil, err
 		}

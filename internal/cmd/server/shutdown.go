@@ -43,7 +43,7 @@ var ShutdownCmd = base.Cmd{
 		timeout, _ := cmd.Flags().GetDuration("wait-timeout")
 
 		idOrName := args[0]
-		server, _, err := s.Server().Get(s, idOrName)
+		server, _, err := s.Client().Server().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -51,7 +51,7 @@ var ShutdownCmd = base.Cmd{
 			return fmt.Errorf("server not found: %s", idOrName)
 		}
 
-		action, _, err := s.Server().Shutdown(s, server)
+		action, _, err := s.Client().Server().Shutdown(s, server)
 		if err != nil {
 			return err
 		}
@@ -82,7 +82,7 @@ var ShutdownCmd = base.Cmd{
 						errCh <- errors.New("failed to shut down server")
 						return
 					}
-					server, _, err = s.Server().GetByID(s, server.ID)
+					server, _, err = s.Client().Server().GetByID(s, server.ID)
 					if err != nil {
 						errCh <- err
 						return

@@ -16,7 +16,7 @@ var LabelCmds = base.LabelCmds{
 	NameSuggestions:        func(c hcapi2.Client) func() []string { return c.PlacementGroup().Names },
 	LabelKeySuggestions:    func(c hcapi2.Client) func(idOrName string) []string { return c.PlacementGroup().LabelKeys },
 	FetchLabels: func(s state.State, idOrName string) (map[string]string, int64, error) {
-		placementGroup, _, err := s.PlacementGroup().Get(s, idOrName)
+		placementGroup, _, err := s.Client().PlacementGroup().Get(s, idOrName)
 		if err != nil {
 			return nil, 0, err
 		}
@@ -29,7 +29,7 @@ var LabelCmds = base.LabelCmds{
 		opts := hcloud.PlacementGroupUpdateOpts{
 			Labels: labels,
 		}
-		_, _, err := s.PlacementGroup().Update(s, &hcloud.PlacementGroup{ID: id}, opts)
+		_, _, err := s.Client().PlacementGroup().Update(s, &hcloud.PlacementGroup{ID: id}, opts)
 		return err
 	},
 }

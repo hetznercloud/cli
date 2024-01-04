@@ -16,7 +16,7 @@ var LabelCmds = base.LabelCmds{
 	NameSuggestions:        func(c hcapi2.Client) func() []string { return c.SSHKey().Names },
 	LabelKeySuggestions:    func(c hcapi2.Client) func(idOrName string) []string { return c.SSHKey().LabelKeys },
 	FetchLabels: func(s state.State, idOrName string) (map[string]string, int64, error) {
-		sshKey, _, err := s.SSHKey().Get(s, idOrName)
+		sshKey, _, err := s.Client().SSHKey().Get(s, idOrName)
 		if err != nil {
 			return nil, 0, err
 		}
@@ -29,7 +29,7 @@ var LabelCmds = base.LabelCmds{
 		opts := hcloud.SSHKeyUpdateOpts{
 			Labels: labels,
 		}
-		_, _, err := s.SSHKey().Update(s, &hcloud.SSHKey{ID: id}, opts)
+		_, _, err := s.Client().SSHKey().Update(s, &hcloud.SSHKey{ID: id}, opts)
 		return err
 	},
 }

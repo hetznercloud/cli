@@ -36,7 +36,7 @@ var CreateCmd = base.CreateCmd{
 			Type:   hcloud.PlacementGroupType(placementGroupType),
 		}
 
-		result, _, err := s.PlacementGroup().Create(s, opts)
+		result, _, err := s.Client().PlacementGroup().Create(s, opts)
 		if err != nil {
 			return nil, nil, err
 		}

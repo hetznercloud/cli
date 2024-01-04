@@ -21,7 +21,7 @@ var ListCmd = base.ListCmd{
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		datacenters, err := s.Datacenter().AllWithOpts(s, opts)
+		datacenters, err := s.Client().Datacenter().AllWithOpts(s, opts)
 		var resources []interface{}
 		for _, n := range datacenters {
 			resources = append(resources, n)

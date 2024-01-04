@@ -18,7 +18,7 @@ var DescribeCmd = base.DescribeCmd{
 	JSONKeyGetByName:     "placement_groups",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.PlacementGroup().Names },
 	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
-		pg, _, err := s.PlacementGroup().Get(s, idOrName)
+		pg, _, err := s.Client().PlacementGroup().Get(s, idOrName)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -43,7 +43,7 @@ var DescribeCmd = base.DescribeCmd{
 		cmd.Print("Servers:\n")
 		for _, serverID := range placementGroup.Servers {
 			cmd.Printf("  - Server ID:\t\t%d\n", serverID)
-			cmd.Printf("    Server Name:\t%s\n", s.Server().ServerName(serverID))
+			cmd.Printf("    Server Name:\t%s\n", s.Client().Server().ServerName(serverID))
 		}
 
 		cmd.Printf("Type:\t\t%s\n", placementGroup.Type)

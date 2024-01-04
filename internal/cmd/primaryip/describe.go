@@ -18,7 +18,7 @@ var DescribeCmd = base.DescribeCmd{
 	JSONKeyGetByName:     "primary_ips",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.PrimaryIP().Names },
 	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
-		ip, _, err := s.PrimaryIP().Get(s, idOrName)
+		ip, _, err := s.Client().PrimaryIP().Get(s, idOrName)
 		if err != nil {
 			return nil, nil, err
 		}

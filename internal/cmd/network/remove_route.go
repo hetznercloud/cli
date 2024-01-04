@@ -36,7 +36,7 @@ var RemoveRouteCmd = base.Cmd{
 		gateway, _ := cmd.Flags().GetIP("gateway")
 		destination, _ := cmd.Flags().GetIPNet("destination")
 		idOrName := args[0]
-		network, _, err := s.Network().Get(s, idOrName)
+		network, _, err := s.Client().Network().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -50,7 +50,7 @@ var RemoveRouteCmd = base.Cmd{
 				Destination: &destination,
 			},
 		}
-		action, _, err := s.Network().DeleteRoute(s, network, opts)
+		action, _, err := s.Client().Network().DeleteRoute(s, network, opts)
 		if err != nil {
 			return err
 		}

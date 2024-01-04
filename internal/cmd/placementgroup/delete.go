@@ -14,11 +14,11 @@ var DeleteCmd = base.DeleteCmd{
 	ShortDescription:     "Delete a placement group",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.PlacementGroup().Names },
 	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
-		return s.PlacementGroup().Get(s, idOrName)
+		return s.Client().PlacementGroup().Get(s, idOrName)
 	},
 	Delete: func(s state.State, cmd *cobra.Command, resource interface{}) error {
 		placementGroup := resource.(*hcloud.PlacementGroup)
-		if _, err := s.PlacementGroup().Delete(s, placementGroup); err != nil {
+		if _, err := s.Client().PlacementGroup().Delete(s, placementGroup); err != nil {
 			return err
 		}
 		return nil

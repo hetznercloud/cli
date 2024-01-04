@@ -21,7 +21,7 @@ var ListCmd = base.ListCmd{
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		locations, err := s.Location().AllWithOpts(s, opts)
+		locations, err := s.Client().Location().AllWithOpts(s, opts)
 
 		var resources []interface{}
 		for _, n := range locations {

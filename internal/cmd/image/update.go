@@ -16,7 +16,7 @@ var UpdateCmd = base.UpdateCmd{
 	ShortDescription:     "Update an image",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Image().Names },
 	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
-		return s.Image().Get(s, idOrName)
+		return s.Client().Image().Get(s, idOrName)
 	},
 	DefineFlags: func(cmd *cobra.Command) {
 		cmd.Flags().String("description", "", "Image description")
@@ -29,7 +29,7 @@ var UpdateCmd = base.UpdateCmd{
 			Description: hcloud.String(flags["description"].String()),
 			Type:        hcloud.ImageType(flags["type"].String()),
 		}
-		_, _, err := s.Image().Update(s, image, updOpts)
+		_, _, err := s.Client().Image().Update(s, image, updOpts)
 		if err != nil {
 			return err
 		}

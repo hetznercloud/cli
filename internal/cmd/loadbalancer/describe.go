@@ -19,7 +19,7 @@ var DescribeCmd = base.DescribeCmd{
 	JSONKeyGetByName:     "load_balancers",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.LoadBalancer().Names },
 	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
-		lb, _, err := s.LoadBalancer().Get(s, idOrName)
+		lb, _, err := s.Client().LoadBalancer().Get(s, idOrName)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -45,7 +45,7 @@ var DescribeCmd = base.DescribeCmd{
 		if len(loadBalancer.PrivateNet) > 0 {
 			for _, n := range loadBalancer.PrivateNet {
 				cmd.Printf("  - ID:\t\t\t%d\n", n.Network.ID)
-				cmd.Printf("    Name:\t\t%s\n", s.Network().Name(n.Network.ID))
+				cmd.Printf("    Name:\t\t%s\n", s.Client().Network().Name(n.Network.ID))
 				cmd.Printf("    IP:\t\t\t%s\n", n.IP.String())
 			}
 		} else {
@@ -110,7 +110,7 @@ var DescribeCmd = base.DescribeCmd{
 			case hcloud.LoadBalancerTargetTypeServer:
 				cmd.Printf("    Server:\n")
 				cmd.Printf("      ID:\t\t\t%d\n", target.Server.Server.ID)
-				cmd.Printf("      Name:\t\t\t%s\n", s.Server().ServerName(target.Server.Server.ID))
+				cmd.Printf("      Name:\t\t\t%s\n", s.Client().Server().ServerName(target.Server.Server.ID))
 				cmd.Printf("    Use Private IP:\t\t%s\n", util.YesNo(target.UsePrivateIP))
 				cmd.Printf("    Status:\n")
 				for _, healthStatus := range target.HealthStatus {

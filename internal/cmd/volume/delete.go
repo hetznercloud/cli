@@ -14,11 +14,11 @@ var DeleteCmd = base.DeleteCmd{
 	ShortDescription:     "Delete a Volume",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Volume().Names },
 	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
-		return s.Volume().Get(s, idOrName)
+		return s.Client().Volume().Get(s, idOrName)
 	},
 	Delete: func(s state.State, cmd *cobra.Command, resource interface{}) error {
 		volume := resource.(*hcloud.Volume)
-		if _, err := s.Volume().Delete(s, volume); err != nil {
+		if _, err := s.Client().Volume().Delete(s, volume); err != nil {
 			return err
 		}
 		return nil

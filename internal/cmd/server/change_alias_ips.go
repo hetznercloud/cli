@@ -36,7 +36,7 @@ var ChangeAliasIPsCmd = base.Cmd{
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		clear, _ := cmd.Flags().GetBool("clear")
 		idOrName := args[0]
-		server, _, err := s.Server().Get(s, idOrName)
+		server, _, err := s.Client().Server().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -45,7 +45,7 @@ var ChangeAliasIPsCmd = base.Cmd{
 		}
 
 		networkIDOrName, _ := cmd.Flags().GetString("network")
-		network, _, err := s.Network().Get(s, networkIDOrName)
+		network, _, err := s.Client().Network().Get(s, networkIDOrName)
 		if err != nil {
 			return err
 		}
@@ -65,7 +65,7 @@ var ChangeAliasIPsCmd = base.Cmd{
 				opts.AliasIPs = append(opts.AliasIPs, net.ParseIP(aliasIP))
 			}
 		}
-		action, _, err := s.Server().ChangeAliasIPs(s, server, opts)
+		action, _, err := s.Client().Server().ChangeAliasIPs(s, server, opts)
 
 		if err != nil {
 			return err

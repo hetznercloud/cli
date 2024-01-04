@@ -15,7 +15,7 @@ var UpdateCmd = base.UpdateCmd{
 	ShortDescription:     "Update a placement group",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.PlacementGroup().Names },
 	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
-		return s.PlacementGroup().Get(s, idOrName)
+		return s.Client().PlacementGroup().Get(s, idOrName)
 	},
 	DefineFlags: func(cmd *cobra.Command) {
 		cmd.Flags().String("name", "", "Placement group name")
@@ -25,7 +25,7 @@ var UpdateCmd = base.UpdateCmd{
 		updOpts := hcloud.PlacementGroupUpdateOpts{
 			Name: flags["name"].String(),
 		}
-		_, _, err := s.PlacementGroup().Update(s, placementGroup, updOpts)
+		_, _, err := s.Client().PlacementGroup().Update(s, placementGroup, updOpts)
 		if err != nil {
 			return err
 		}

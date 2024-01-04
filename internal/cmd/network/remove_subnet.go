@@ -30,7 +30,7 @@ var RemoveSubnetCmd = base.Cmd{
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		ipRange, _ := cmd.Flags().GetIPNet("ip-range")
 		idOrName := args[0]
-		network, _, err := s.Network().Get(s, idOrName)
+		network, _, err := s.Client().Network().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -43,7 +43,7 @@ var RemoveSubnetCmd = base.Cmd{
 				IPRange: &ipRange,
 			},
 		}
-		action, _, err := s.Network().DeleteSubnet(s, network, opts)
+		action, _, err := s.Client().Network().DeleteSubnet(s, network, opts)
 		if err != nil {
 			return err
 		}

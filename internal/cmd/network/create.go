@@ -54,7 +54,7 @@ var CreateCmd = base.CreateCmd{
 			ExposeRoutesToVSwitch: exposeRoutesToVSwitch,
 		}
 
-		network, _, err := s.Network().Create(s, createOpts)
+		network, _, err := s.Client().Network().Create(s, createOpts)
 		if err != nil {
 			return nil, nil, err
 		}

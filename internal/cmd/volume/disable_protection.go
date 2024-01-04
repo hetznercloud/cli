@@ -26,7 +26,7 @@ var DisableProtectionCmd = base.Cmd{
 		}
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
-		volume, _, err := s.Volume().Get(s, args[0])
+		volume, _, err := s.Client().Volume().Get(s, args[0])
 		if err != nil {
 			return err
 		}

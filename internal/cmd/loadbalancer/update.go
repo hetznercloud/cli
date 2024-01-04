@@ -15,7 +15,7 @@ var UpdateCmd = base.UpdateCmd{
 	ShortDescription:     "Update a Load Balancer",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.LoadBalancer().Names },
 	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
-		return s.LoadBalancer().Get(s, idOrName)
+		return s.Client().LoadBalancer().Get(s, idOrName)
 	},
 	DefineFlags: func(cmd *cobra.Command) {
 		cmd.Flags().String("name", "", "LoadBalancer name")
@@ -25,7 +25,7 @@ var UpdateCmd = base.UpdateCmd{
 		updOpts := hcloud.LoadBalancerUpdateOpts{
 			Name: flags["name"].String(),
 		}
-		_, _, err := s.LoadBalancer().Update(s, floatingIP, updOpts)
+		_, _, err := s.Client().LoadBalancer().Update(s, floatingIP, updOpts)
 		if err != nil {
 			return err
 		}

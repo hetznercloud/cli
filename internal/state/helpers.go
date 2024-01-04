@@ -60,7 +60,7 @@ func (c *state) ActionsProgresses(cmd *cobra.Command, ctx context.Context, actio
 }
 
 func (c *state) EnsureToken(_ *cobra.Command, _ []string) error {
-	if c.Token == "" {
+	if c.token == "" {
 		return errors.New("no active context or token (see `hcloud context --help`)")
 	}
 	return nil

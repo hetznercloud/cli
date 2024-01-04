@@ -82,7 +82,7 @@ var AddServiceCmd = base.Cmd{
 		httpCookieLifetime, _ := cmd.Flags().GetDuration("http-cookie-lifetime")
 		httpRedirect, _ := cmd.Flags().GetBool("http-redirect-http")
 
-		loadBalancer, _, err := s.LoadBalancer().Get(s, idOrName)
+		loadBalancer, _, err := s.Client().LoadBalancer().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -117,7 +117,7 @@ var AddServiceCmd = base.Cmd{
 				opts.HTTP.Certificates = append(opts.HTTP.Certificates, &hcloud.Certificate{ID: certificateID})
 			}
 		}
-		action, _, err := s.LoadBalancer().AddService(s, loadBalancer, opts)
+		action, _, err := s.Client().LoadBalancer().AddService(s, loadBalancer, opts)
 		if err != nil {
 			return err
 		}

@@ -26,7 +26,7 @@ type ListCmd struct {
 
 // CobraCommand creates a command that can be registered with cobra.
 func (lc *ListCmd) CobraCommand(s state.State) *cobra.Command {
-	outputColumns := lc.OutputTable(s).Columns()
+	outputColumns := lc.OutputTable(s.Client()).Columns()
 
 	cmd := &cobra.Command{
 		Use:   "list [FlAGS]",
@@ -81,7 +81,7 @@ func (lc *ListCmd) Run(s state.State, cmd *cobra.Command) error {
 		cols = outOpts["columns"]
 	}
 
-	table := lc.OutputTable(s)
+	table := lc.OutputTable(s.Client())
 	if !outOpts.IsSet("noheader") {
 		table.WriteHeader(cols)
 	}

@@ -17,7 +17,7 @@ var DescribeCmd = base.DescribeCmd{
 	JSONKeyGetByName:     "locations",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Location().Names },
 	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
-		l, _, err := s.Location().Get(s, idOrName)
+		l, _, err := s.Client().Location().Get(s, idOrName)
 		if err != nil {
 			return nil, nil, err
 		}

@@ -16,7 +16,7 @@ var DescribeCmd = base.DescribeCmd{
 	JSONKeyGetByName:     "datacenters",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Datacenter().Names },
 	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
-		dc, _, err := s.Datacenter().Get(s, idOrName)
+		dc, _, err := s.Client().Datacenter().Get(s, idOrName)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -40,8 +40,8 @@ var DescribeCmd = base.DescribeCmd{
 		printServerTypes := func(list []*hcloud.ServerType) {
 			for _, t := range list {
 				cmd.Printf("  - ID:\t\t %d\n", t.ID)
-				cmd.Printf("    Name:\t %s\n", s.ServerType().ServerTypeName(t.ID))
-				cmd.Printf("    Description: %s\n", s.ServerType().ServerTypeDescription(t.ID))
+				cmd.Printf("    Name:\t %s\n", s.Client().ServerType().ServerTypeName(t.ID))
+				cmd.Printf("    Description: %s\n", s.Client().ServerType().ServerTypeDescription(t.ID))
 			}
 		}
 

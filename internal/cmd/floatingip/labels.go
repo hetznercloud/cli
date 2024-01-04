@@ -16,7 +16,7 @@ var LabelCmds = base.LabelCmds{
 	NameSuggestions:        func(c hcapi2.Client) func() []string { return c.FloatingIP().Names },
 	LabelKeySuggestions:    func(c hcapi2.Client) func(idOrName string) []string { return c.FloatingIP().LabelKeys },
 	FetchLabels: func(s state.State, idOrName string) (map[string]string, int64, error) {
-		floatingIP, _, err := s.FloatingIP().Get(s, idOrName)
+		floatingIP, _, err := s.Client().FloatingIP().Get(s, idOrName)
 		if err != nil {
 			return nil, 0, err
 		}
@@ -29,7 +29,7 @@ var LabelCmds = base.LabelCmds{
 		opts := hcloud.FloatingIPUpdateOpts{
 			Labels: labels,
 		}
-		_, _, err := s.FloatingIP().Update(s, &hcloud.FloatingIP{ID: id}, opts)
+		_, _, err := s.Client().FloatingIP().Update(s, &hcloud.FloatingIP{ID: id}, opts)
 		return err
 	},
 }

@@ -34,5 +34,5 @@ func runUse(s state.State, _ *cobra.Command, args []string) error {
 		return fmt.Errorf("context not found: %v", name)
 	}
 	cfg.ActiveContext = context
-	return s.WriteConfig()
+	return cfg.Write()
 }

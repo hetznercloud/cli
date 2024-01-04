@@ -49,7 +49,7 @@ var AddRuleCmd = base.Cmd{
 		description, _ := cmd.Flags().GetString("description")
 
 		idOrName := args[0]
-		firewall, _, err := s.Firewall().Get(s, idOrName)
+		firewall, _, err := s.Client().Firewall().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -106,7 +106,7 @@ var AddRuleCmd = base.Cmd{
 
 		rules := append(firewall.Rules, rule)
 
-		actions, _, err := s.Firewall().SetRules(s, firewall,
+		actions, _, err := s.Client().Firewall().SetRules(s, firewall,
 			hcloud.FirewallSetRulesOpts{Rules: rules},
 		)
 		if err != nil {

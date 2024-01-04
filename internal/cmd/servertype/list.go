@@ -25,7 +25,7 @@ var ListCmd = base.ListCmd{
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		servers, err := s.ServerType().AllWithOpts(s, opts)
+		servers, err := s.Client().ServerType().AllWithOpts(s, opts)
 
 		var resources []interface{}
 		for _, r := range servers {

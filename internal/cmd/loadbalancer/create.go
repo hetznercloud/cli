@@ -76,7 +76,7 @@ var CreateCmd = base.CreateCmd{
 		if location != "" {
 			createOpts.Location = &hcloud.Location{Name: location}
 		}
-		result, _, err := s.LoadBalancer().Create(s, createOpts)
+		result, _, err := s.Client().LoadBalancer().Create(s, createOpts)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -84,7 +84,7 @@ var CreateCmd = base.CreateCmd{
 		if err := s.ActionProgress(cmd, s, result.Action); err != nil {
 			return nil, nil, err
 		}
-		loadBalancer, _, err := s.LoadBalancer().GetByID(s, result.LoadBalancer.ID)
+		loadBalancer, _, err := s.Client().LoadBalancer().GetByID(s, result.LoadBalancer.ID)
 		if err != nil {
 			return nil, nil, err
 		}

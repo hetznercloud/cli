@@ -51,7 +51,7 @@ var MetricsCmd = base.Cmd{
 		outputFlags := output.FlagsForCommand(cmd)
 
 		idOrName := args[0]
-		server, _, err := s.Server().Get(s, idOrName)
+		server, _, err := s.Client().Server().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -87,7 +87,7 @@ var MetricsCmd = base.Cmd{
 			}
 		}
 
-		m, resp, err := s.Server().GetMetrics(s, server, hcloud.ServerGetMetricsOpts{
+		m, resp, err := s.Client().Server().GetMetrics(s, server, hcloud.ServerGetMetricsOpts{
 			Types: metricTypes,
 			Start: startTime,
 			End:   endTime,

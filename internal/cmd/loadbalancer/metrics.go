@@ -52,7 +52,7 @@ var MetricsCmd = base.Cmd{
 		outputFlags := output.FlagsForCommand(cmd)
 
 		idOrName := args[0]
-		LoadBalancer, _, err := s.LoadBalancer().Get(s, idOrName)
+		LoadBalancer, _, err := s.Client().LoadBalancer().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -88,7 +88,7 @@ var MetricsCmd = base.Cmd{
 			}
 		}
 
-		m, resp, err := s.LoadBalancer().GetMetrics(s, LoadBalancer, hcloud.LoadBalancerGetMetricsOpts{
+		m, resp, err := s.Client().LoadBalancer().GetMetrics(s, LoadBalancer, hcloud.LoadBalancerGetMetricsOpts{
 			Types: metricTypes,
 			Start: startTime,
 			End:   endTime,

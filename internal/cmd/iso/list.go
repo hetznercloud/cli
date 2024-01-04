@@ -65,7 +65,7 @@ var ListCmd = base.ListCmd{
 			opts.Sort = sorts
 		}
 
-		isos, err := s.ISO().AllWithOpts(s, opts)
+		isos, err := s.Client().ISO().AllWithOpts(s, opts)
 
 		var resources []interface{}
 		for _, iso := range isos {

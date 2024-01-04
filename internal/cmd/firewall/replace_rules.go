@@ -33,7 +33,7 @@ var ReplaceRulesCmd = base.Cmd{
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		firewall, _, err := s.Firewall().Get(s, idOrName)
+		firewall, _, err := s.Client().Firewall().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -90,7 +90,7 @@ var ReplaceRulesCmd = base.Cmd{
 			opts.Rules = append(opts.Rules, r)
 		}
 
-		actions, _, err := s.Firewall().SetRules(s, firewall, opts)
+		actions, _, err := s.Client().Firewall().SetRules(s, firewall, opts)
 		if err != nil {
 			return err
 		}

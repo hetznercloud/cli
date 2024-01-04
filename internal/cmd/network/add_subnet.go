@@ -44,7 +44,7 @@ var AddSubnetCmd = base.Cmd{
 		vSwitchID, _ := cmd.Flags().GetInt64("vswitch-id")
 		idOrName := args[0]
 
-		network, _, err := s.Network().Get(s, idOrName)
+		network, _, err := s.Client().Network().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -66,7 +66,7 @@ var AddSubnetCmd = base.Cmd{
 		opts := hcloud.NetworkAddSubnetOpts{
 			Subnet: subnet,
 		}
-		action, _, err := s.Network().AddSubnet(s, network, opts)
+		action, _, err := s.Client().Network().AddSubnet(s, network, opts)
 		if err != nil {
 			return err
 		}

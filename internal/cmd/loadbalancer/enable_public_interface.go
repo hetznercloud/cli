@@ -24,7 +24,7 @@ var EnablePublicInterfaceCmd = base.Cmd{
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		loadBalancer, _, err := s.LoadBalancer().Get(s, idOrName)
+		loadBalancer, _, err := s.Client().LoadBalancer().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -32,7 +32,7 @@ var EnablePublicInterfaceCmd = base.Cmd{
 			return fmt.Errorf("Load Balancer not found: %s", idOrName)
 		}
 
-		action, _, err := s.LoadBalancer().EnablePublicInterface(s, loadBalancer)
+		action, _, err := s.Client().LoadBalancer().EnablePublicInterface(s, loadBalancer)
 		if err != nil {
 			return err
 		}

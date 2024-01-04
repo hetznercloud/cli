@@ -47,7 +47,7 @@ var RemoveTargetCmd = base.Cmd{
 
 		idOrName := args[0]
 
-		loadBalancer, _, err = s.LoadBalancer().Get(s, idOrName)
+		loadBalancer, _, err = s.Client().LoadBalancer().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -60,19 +60,19 @@ var RemoveTargetCmd = base.Cmd{
 		}
 		switch {
 		case serverIDOrName != "":
-			server, _, err := s.Server().Get(s, serverIDOrName)
+			server, _, err := s.Client().Server().Get(s, serverIDOrName)
 			if err != nil {
 				return err
 			}
 			if server == nil {
 				return fmt.Errorf("server not found: %s", serverIDOrName)
 			}
-			action, _, err = s.LoadBalancer().RemoveServerTarget(s, loadBalancer, server)
+			action, _, err = s.Client().LoadBalancer().RemoveServerTarget(s, loadBalancer, server)
 			if err != nil {
 				return err
 			}
 		case labelSelector != "":
-			action, _, err = s.LoadBalancer().RemoveLabelSelectorTarget(s, loadBalancer, labelSelector)
+			action, _, err = s.Client().LoadBalancer().RemoveLabelSelectorTarget(s, loadBalancer, labelSelector)
 			if err != nil {
 				return err
 			}
@@ -81,7 +81,7 @@ var RemoveTargetCmd = base.Cmd{
 			if ip == nil {
 				return fmt.Errorf("invalid ip provided")
 			}
-			if action, _, err = s.LoadBalancer().RemoveIPTarget(s, loadBalancer, ip); err != nil {
+			if action, _, err = s.Client().LoadBalancer().RemoveIPTarget(s, loadBalancer, ip); err != nil {
 				return err
 			}
 		default:

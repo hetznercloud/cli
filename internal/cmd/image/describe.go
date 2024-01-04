@@ -34,7 +34,7 @@ var DescribeCmd = base.DescribeCmd{
 		if !cmd.Flags().Changed("architecture") {
 			_, _ = fmt.Fprintln(os.Stderr, "INFO: This command only returns x86 images by default. Explicitly set the --architecture=x86|arm flag to hide this message.")
 		}
-		img, _, err := s.Image().GetForArchitecture(s, idOrName, hcloud.Architecture(arch))
+		img, _, err := s.Client().Image().GetForArchitecture(s, idOrName, hcloud.Architecture(arch))
 		if err != nil {
 			return nil, nil, err
 		}

@@ -59,26 +59,31 @@ func (f *Fixture) Finish() {
 
 // fixtureState implements state.State for testing purposes.
 type fixtureState struct {
+	context.Context
 	state.TokenEnsurer
 	state.ActionWaiter
-	context.Context
-	hcapi2.Client
+
+	client hcapi2.Client
 }
 
-func (fixtureState) WriteConfig() error {
+func (*fixtureState) WriteConfig() error {
 	return errors.New("not implemented")
 }
 
-func (fixtureState) Config() *state.Config {
+func (s *fixtureState) Client() hcapi2.Client {
+	return s.client
+}
+
+func (*fixtureState) Config() *state.Config {
 	return nil
 }
 
 // State returns a state.State implementation for testing purposes.
 func (f *Fixture) State() state.State {
-	return fixtureState{
+	return &fixtureState{
+		Context:      context.Background(),
 		TokenEnsurer: f.TokenEnsurer,
 		ActionWaiter: f.ActionWaiter,
-		Context:      context.Background(),
-		Client:       f.Client,
+		client:       f.Client,
 	}
 }

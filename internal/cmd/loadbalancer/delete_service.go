@@ -29,14 +29,14 @@ var DeleteServiceCmd = base.Cmd{
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		listenPort, _ := cmd.Flags().GetInt("listen-port")
 		idOrName := args[0]
-		loadBalancer, _, err := s.LoadBalancer().Get(s, idOrName)
+		loadBalancer, _, err := s.Client().LoadBalancer().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
 		if loadBalancer == nil {
 			return fmt.Errorf("Load Balancer not found: %s", idOrName)
 		}
-		_, _, err = s.LoadBalancer().DeleteService(s, loadBalancer, listenPort)
+		_, _, err = s.Client().LoadBalancer().DeleteService(s, loadBalancer, listenPort)
 		if err != nil {
 			return err
 		}

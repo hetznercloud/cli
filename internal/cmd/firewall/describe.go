@@ -20,7 +20,7 @@ var DescribeCmd = base.DescribeCmd{
 	JSONKeyGetByName:     "firewalls",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Firewall().Names },
 	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
-		fw, _, err := s.Firewall().Get(s, idOrName)
+		fw, _, err := s.Client().Firewall().Get(s, idOrName)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -80,7 +80,7 @@ var DescribeCmd = base.DescribeCmd{
 				switch resource.Type {
 				case hcloud.FirewallResourceTypeServer:
 					cmd.Printf("    Server ID:\t\t%d\n", resource.Server.ID)
-					cmd.Printf("    Server Name:\t%s\n", s.Server().ServerName(resource.Server.ID))
+					cmd.Printf("    Server Name:\t%s\n", s.Client().Server().ServerName(resource.Server.ID))
 				case hcloud.FirewallResourceTypeLabelSelector:
 					cmd.Printf("    Label Selector:\t%s\n", resource.LabelSelector.Selector)
 				}

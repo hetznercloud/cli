@@ -31,7 +31,7 @@ var CreateImageCmd = base.Cmd{
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		server, _, err := s.Server().Get(s, idOrName)
+		server, _, err := s.Client().Server().Get(s, idOrName)
 		if err != nil {
 			return err
 		}
@@ -55,7 +55,7 @@ var CreateImageCmd = base.Cmd{
 			Description: hcloud.Ptr(description),
 			Labels:      labels,
 		}
-		result, _, err := s.Server().CreateImage(s, server, opts)
+		result, _, err := s.Client().Server().CreateImage(s, server, opts)
 		if err != nil {
 			return err
 		}

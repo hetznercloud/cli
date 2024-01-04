@@ -18,7 +18,7 @@ var DescribeCmd = base.DescribeCmd{
 	JSONKeyGetByName:     "volumes",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Volume().Names },
 	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
-		v, _, err := s.Volume().Get(s, idOrName)
+		v, _, err := s.Client().Volume().Get(s, idOrName)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -42,7 +42,7 @@ var DescribeCmd = base.DescribeCmd{
 		if volume.Server != nil {
 			cmd.Printf("Server:\n")
 			cmd.Printf("  ID:\t\t%d\n", volume.Server.ID)
-			cmd.Printf("  Name:\t\t%s\n", s.Server().ServerName(volume.Server.ID))
+			cmd.Printf("  Name:\t\t%s\n", s.Client().Server().ServerName(volume.Server.ID))
 		} else {
 			cmd.Print("Server:\n  Not attached\n")
 		}

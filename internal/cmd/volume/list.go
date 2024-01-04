@@ -26,7 +26,7 @@ var ListCmd = base.ListCmd{
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		volumes, err := s.Volume().AllWithOpts(s, opts)
+		volumes, err := s.Client().Volume().AllWithOpts(s, opts)
 
 		var resources []interface{}
 		for _, n := range volumes {

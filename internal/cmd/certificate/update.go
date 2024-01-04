@@ -15,7 +15,7 @@ var UpdateCmd = base.UpdateCmd{
 	ShortDescription:     "Update a certificate",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Firewall().Names },
 	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
-		return s.Certificate().Get(s, idOrName)
+		return s.Client().Certificate().Get(s, idOrName)
 	},
 	DefineFlags: func(cmd *cobra.Command) {
 		cmd.Flags().String("name", "", "Certificate Name")
@@ -25,7 +25,7 @@ var UpdateCmd = base.UpdateCmd{
 		updOpts := hcloud.CertificateUpdateOpts{
 			Name: flags["name"].String(),
 		}
-		_, _, err := s.Certificate().Update(s, certificate, updOpts)
+		_, _, err := s.Client().Certificate().Update(s, certificate, updOpts)
 		if err != nil {
 			return err
 		}

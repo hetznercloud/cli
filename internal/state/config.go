@@ -2,6 +2,8 @@ package state
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 
 	toml "github.com/pelletier/go-toml/v2"
 )
@@ -9,6 +11,7 @@ import (
 var DefaultConfigPath string
 
 type Config struct {
+	Path          string
 	Endpoint      string
 	ActiveContext *ConfigContext
 	Contexts      []*ConfigContext
@@ -17,6 +20,20 @@ type Config struct {
 type ConfigContext struct {
 	Name  string
 	Token string
+}
+
+func (config *Config) Write() error {
+	data, err := MarshalConfig(config)
+	if err != nil {
+		return err
+	}
+	if err := os.MkdirAll(filepath.Dir(config.Path), 0777); err != nil {
+		return err
+	}
+	if err := os.WriteFile(config.Path, data, 0600); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (config *Config) ContextNames() []string {

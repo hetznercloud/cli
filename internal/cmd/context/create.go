@@ -85,7 +85,7 @@ func runCreate(s state.State, cmd *cobra.Command, args []string) error {
 	cfg.Contexts = append(cfg.Contexts, context)
 	cfg.ActiveContext = context
 
-	if err := s.WriteConfig(); err != nil {
+	if err := cfg.Write(); err != nil {
 		return err
 	}
 
