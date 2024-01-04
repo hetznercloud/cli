@@ -1,4 +1,4 @@
-package primaryip
+package primaryip_test
 
 import (
 	"testing"
@@ -6,6 +6,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 
+	"github.com/hetznercloud/cli/internal/cmd/primaryip"
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -14,8 +15,8 @@ func TestDelete(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := DeleteCmd.CobraCommand(fx.State())
-	primaryip := &hcloud.PrimaryIP{ID: 13}
+	cmd := primaryip.DeleteCmd.CobraCommand(fx.State())
+	ip := &hcloud.PrimaryIP{ID: 13}
 	fx.ExpectEnsureToken()
 	fx.Client.PrimaryIPClient.EXPECT().
 		Get(
@@ -23,14 +24,14 @@ func TestDelete(t *testing.T) {
 			"13",
 		).
 		Return(
-			primaryip,
+			ip,
 			&hcloud.Response{},
 			nil,
 		)
 	fx.Client.PrimaryIPClient.EXPECT().
 		Delete(
 			gomock.Any(),
-			primaryip,
+			ip,
 		).
 		Return(
 			&hcloud.Response{},

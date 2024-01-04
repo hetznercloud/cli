@@ -1,4 +1,4 @@
-package primaryip
+package primaryip_test
 
 import (
 	"testing"
@@ -6,6 +6,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 
+	"github.com/hetznercloud/cli/internal/cmd/primaryip"
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -14,9 +15,9 @@ func TestEnable(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := DisableProtectionCmd.CobraCommand(fx.State())
+	cmd := primaryip.DisableProtectionCmd.CobraCommand(fx.State())
 	action := &hcloud.Action{ID: 1}
-	primaryip := &hcloud.PrimaryIP{ID: 13}
+	ip := &hcloud.PrimaryIP{ID: 13}
 	fx.ExpectEnsureToken()
 	fx.Client.PrimaryIPClient.EXPECT().
 		Get(
@@ -24,7 +25,7 @@ func TestEnable(t *testing.T) {
 			"13",
 		).
 		Return(
-			primaryip,
+			ip,
 			&hcloud.Response{},
 			nil,
 		)

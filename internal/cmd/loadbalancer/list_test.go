@@ -1,10 +1,11 @@
-package loadbalancer
+package loadbalancer_test
 
 import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 
+	"github.com/hetznercloud/cli/internal/cmd/loadbalancer"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
@@ -197,7 +198,7 @@ func TestLoadBalancerHealth(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		res := loadBalancerHealth(test.lb)
+		res := loadbalancer.Health(test.lb)
 		assert.Equal(t, test.expected, res, test.name)
 	}
 }

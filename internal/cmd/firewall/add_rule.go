@@ -87,7 +87,7 @@ var AddRuleCmd = base.Cmd{
 		case hcloud.FirewallRuleDirectionOut:
 			rule.DestinationIPs = make([]net.IPNet, len(destinationIPs))
 			for i, ip := range destinationIPs {
-				n, err := validateFirewallIP(ip)
+				n, err := ValidateFirewallIP(ip)
 				if err != nil {
 					return fmt.Errorf("destination error on index %d: %s", i, err)
 				}
@@ -96,7 +96,7 @@ var AddRuleCmd = base.Cmd{
 		case hcloud.FirewallRuleDirectionIn:
 			rule.SourceIPs = make([]net.IPNet, len(sourceIPs))
 			for i, ip := range sourceIPs {
-				n, err := validateFirewallIP(ip)
+				n, err := ValidateFirewallIP(ip)
 				if err != nil {
 					return fmt.Errorf("source ips error on index %d: %s", i, err)
 				}

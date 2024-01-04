@@ -1,4 +1,4 @@
-package primaryip
+package primaryip_test
 
 import (
 	"net"
@@ -8,6 +8,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 
+	"github.com/hetznercloud/cli/internal/cmd/primaryip"
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -16,7 +17,7 @@ func TestList(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := ListCmd.CobraCommand(fx.State())
+	cmd := primaryip.ListCmd.CobraCommand(fx.State())
 
 	fx.ExpectEnsureToken()
 	fx.Client.PrimaryIPClient.EXPECT().

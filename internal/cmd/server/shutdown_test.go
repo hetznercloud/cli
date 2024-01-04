@@ -1,4 +1,4 @@
-package server
+package server_test
 
 import (
 	"testing"
@@ -6,6 +6,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 
+	"github.com/hetznercloud/cli/internal/cmd/server"
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -15,26 +16,24 @@ func TestShutdown(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := ShutdownCmd.CobraCommand(fx.State())
+	cmd := server.ShutdownCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	var (
-		server = hcloud.Server{
-			ID:     42,
-			Name:   "my server",
-			Status: hcloud.ServerStatusRunning,
-		}
-	)
+	srv := hcloud.Server{
+		ID:     42,
+		Name:   "my server",
+		Status: hcloud.ServerStatusRunning,
+	}
 
 	fx.Client.ServerClient.EXPECT().
-		Get(gomock.Any(), server.Name).
-		Return(&server, nil, nil)
+		Get(gomock.Any(), srv.Name).
+		Return(&srv, nil, nil)
 
 	fx.Client.ServerClient.EXPECT().
-		Shutdown(gomock.Any(), &server)
+		Shutdown(gomock.Any(), &srv)
 	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), gomock.Any(), nil)
 
-	out, _, err := fx.Run(cmd, []string{server.Name})
+	out, _, err := fx.Run(cmd, []string{srv.Name})
 
 	expOut := "Sent shutdown signal to server 42\n"
 
@@ -47,32 +46,30 @@ func TestShutdownWait(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := ShutdownCmd.CobraCommand(fx.State())
+	cmd := server.ShutdownCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	var (
-		server = hcloud.Server{
-			ID:     42,
-			Name:   "my server",
-			Status: hcloud.ServerStatusRunning,
-		}
-	)
+	srv := hcloud.Server{
+		ID:     42,
+		Name:   "my server",
+		Status: hcloud.ServerStatusRunning,
+	}
 
 	fx.Client.ServerClient.EXPECT().
-		Get(gomock.Any(), server.Name).
-		Return(&server, nil, nil)
+		Get(gomock.Any(), srv.Name).
+		Return(&srv, nil, nil)
 
 	fx.Client.ServerClient.EXPECT().
-		Shutdown(gomock.Any(), &server)
+		Shutdown(gomock.Any(), &srv)
 	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), gomock.Any(), nil)
 
 	fx.Client.ServerClient.EXPECT().
-		GetByID(gomock.Any(), server.ID).
-		Return(&server, nil, nil).
-		Return(&server, nil, nil).
-		Return(&hcloud.Server{ID: server.ID, Name: server.Name, Status: hcloud.ServerStatusOff}, nil, nil)
+		GetByID(gomock.Any(), srv.ID).
+		Return(&srv, nil, nil).
+		Return(&srv, nil, nil).
+		Return(&hcloud.Server{ID: srv.ID, Name: srv.Name, Status: hcloud.ServerStatusOff}, nil, nil)
 
-	out, _, err := fx.Run(cmd, []string{server.Name, "--wait"})
+	out, _, err := fx.Run(cmd, []string{srv.Name, "--wait"})
 
 	expOut := "Sent shutdown signal to server 42\nServer 42 shut down\n"
 

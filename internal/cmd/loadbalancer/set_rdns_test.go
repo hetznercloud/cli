@@ -1,4 +1,4 @@
-package loadbalancer
+package loadbalancer_test
 
 import (
 	"net"
@@ -7,6 +7,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 
+	"github.com/hetznercloud/cli/internal/cmd/loadbalancer"
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -15,7 +16,7 @@ func TestSetRDNS(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := SetRDNSCmd.CobraCommand(fx.State())
+	cmd := loadbalancer.SetRDNSCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	loadBalancer := &hcloud.LoadBalancer{

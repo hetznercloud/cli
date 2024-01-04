@@ -78,7 +78,7 @@ var ListCmd = base.ListCmd{
 			})).
 			AddFieldFn("health", output.FieldFn(func(obj interface{}) string {
 				loadBalancer := obj.(*hcloud.LoadBalancer)
-				return loadBalancerHealth(loadBalancer)
+				return Health(loadBalancer)
 			}))
 	},
 
@@ -92,7 +92,7 @@ var ListCmd = base.ListCmd{
 	},
 }
 
-func loadBalancerHealth(l *hcloud.LoadBalancer) string {
+func Health(l *hcloud.LoadBalancer) string {
 	healthyCount := 0
 	unhealthyCount := 0
 	unknownCount := 0

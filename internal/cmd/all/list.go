@@ -41,7 +41,7 @@ var allCmds = []base.ListCmd{
 	sshkey.ListCmd,
 }
 
-var listCmd = base.Cmd{
+var ListCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 
 		var resources []string

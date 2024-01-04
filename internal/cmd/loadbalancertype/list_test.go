@@ -1,4 +1,4 @@
-package loadbalancertype
+package loadbalancertype_test
 
 import (
 	"testing"
@@ -7,6 +7,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 
+	"github.com/hetznercloud/cli/internal/cmd/loadbalancertype"
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -17,7 +18,7 @@ func TestList(t *testing.T) {
 
 	time.Local = time.UTC
 
-	cmd := ListCmd.CobraCommand(fx.State())
+	cmd := loadbalancertype.ListCmd.CobraCommand(fx.State())
 
 	fx.ExpectEnsureToken()
 	fx.Client.LoadBalancerTypeClient.EXPECT().

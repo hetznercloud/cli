@@ -1,4 +1,4 @@
-package all
+package all_test
 
 import (
 	_ "embed"
@@ -9,6 +9,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 
+	"github.com/hetznercloud/cli/internal/cmd/all"
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -22,7 +23,7 @@ func TestListAll(t *testing.T) {
 
 	time.Local = time.UTC
 
-	cmd := listCmd.CobraCommand(fx.State())
+	cmd := all.ListCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.ServerClient.EXPECT().
@@ -246,7 +247,7 @@ func TestListAllPaidJSON(t *testing.T) {
 
 	time.Local = time.UTC
 
-	cmd := listCmd.CobraCommand(fx.State())
+	cmd := all.ListCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.ServerClient.EXPECT().

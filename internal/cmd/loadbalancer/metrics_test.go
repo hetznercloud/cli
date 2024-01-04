@@ -1,4 +1,4 @@
-package loadbalancer
+package loadbalancer_test
 
 import (
 	"testing"
@@ -7,6 +7,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 
+	"github.com/hetznercloud/cli/internal/cmd/loadbalancer"
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -15,7 +16,7 @@ func TestMetrics(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := MetricsCmd.CobraCommand(fx.State())
+	cmd := loadbalancer.MetricsCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	start := time.Date(2022, 11, 1, 0, 0, 0, 0, time.UTC)
