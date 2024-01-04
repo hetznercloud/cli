@@ -101,9 +101,14 @@ func (c *state) readEnv() {
 }
 
 func readConfig(path string) (*Config, error) {
+	cfg := &Config{Path: path}
+
 	_, err := os.Stat(path)
-	if err != nil && !os.IsNotExist(err) {
-		return nil, err
+	if err != nil {
+		if os.IsNotExist(err) {
+			err = nil
+		}
+		return cfg, err
 	}
 
 	data, err := os.ReadFile(path)
@@ -111,7 +116,6 @@ func readConfig(path string) (*Config, error) {
 		return nil, err
 	}
 
-	cfg := &Config{Path: path}
 	if err = UnmarshalConfig(cfg, data); err != nil {
 		return nil, err
 	}
