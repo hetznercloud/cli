@@ -27,6 +27,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/version"
 	"github.com/hetznercloud/cli/internal/cmd/volume"
 	"github.com/hetznercloud/cli/internal/state"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 func NewRootCommand(s state.State) *cobra.Command {
@@ -63,5 +64,13 @@ func NewRootCommand(s state.State) *cobra.Command {
 	)
 	cmd.PersistentFlags().Duration("poll-interval", 500*time.Millisecond, "Interval at which to poll information, for example action progress")
 	cmd.SetOut(os.Stdout)
+	cmd.PersistentPreRunE = func(cmd *cobra.Command, args []string) error {
+		pollInterval, err := cmd.Flags().GetDuration("poll-interval")
+		if err != nil {
+			return err
+		}
+		s.Client().WithOpts(hcloud.WithPollBackoffFunc(hcloud.ConstantBackoff(pollInterval)))
+		return nil
+	}
 	return cmd
 }

@@ -4,9 +4,11 @@ import (
 	"github.com/golang/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/hcapi2"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 type MockClient struct {
+	ActionClient           *MockActionClient
 	CertificateClient      *MockCertificateClient
 	DatacenterClient       *MockDatacenterClient
 	FirewallClient         *MockFirewallClient
@@ -28,6 +30,7 @@ type MockClient struct {
 
 func NewMockClient(ctrl *gomock.Controller) *MockClient {
 	return &MockClient{
+		ActionClient:           NewMockActionClient(ctrl),
 		CertificateClient:      NewMockCertificateClient(ctrl),
 		DatacenterClient:       NewMockDatacenterClient(ctrl),
 		FirewallClient:         NewMockFirewallClient(ctrl),
@@ -47,9 +50,15 @@ func NewMockClient(ctrl *gomock.Controller) *MockClient {
 		RDNSClient:             NewMockRDNSClient(ctrl),
 	}
 }
+
+func (c *MockClient) Action() hcapi2.ActionClient {
+	return c.ActionClient
+}
+
 func (c *MockClient) Certificate() hcapi2.CertificateClient {
 	return c.CertificateClient
 }
+
 func (c *MockClient) Datacenter() hcapi2.DatacenterClient {
 	return c.DatacenterClient
 }
@@ -111,4 +120,8 @@ func (c *MockClient) RDNS() hcapi2.RDNSClient {
 
 func (c *MockClient) PlacementGroup() hcapi2.PlacementGroupClient {
 	return c.PlacementGroupClient
+}
+
+func (*MockClient) WithOpts(...hcloud.ClientOption) {
+	// no-op
 }
