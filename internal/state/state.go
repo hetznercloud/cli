@@ -64,7 +64,7 @@ func ReadConfig(path string) (*Config, error) {
 	_, err := os.Stat(path)
 	if err != nil {
 		if os.IsNotExist(err) {
-			err = nil
+			return cfg, nil
 		}
 		return cfg, err
 	}
