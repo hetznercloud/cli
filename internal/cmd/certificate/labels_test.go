@@ -29,7 +29,7 @@ func TestLabelAdd(t *testing.T) {
 
 	out, _, err := fx.Run(cmd, []string{"123", "key=value"})
 
-	expOut := "Label key added to certificate 123\n"
+	expOut := "Label(s) key added to certificate 123\n"
 
 	assert.NoError(t, err)
 	assert.Equal(t, expOut, out)
@@ -57,7 +57,7 @@ func TestLabelRemove(t *testing.T) {
 
 	out, _, err := fx.Run(cmd, []string{"123", "key"})
 
-	expOut := "Label key removed from certificate 123\n"
+	expOut := "Label(s) key removed from certificate 123\n"
 
 	assert.NoError(t, err)
 	assert.Equal(t, expOut, out)
