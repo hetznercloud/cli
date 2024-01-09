@@ -34,7 +34,7 @@ func (c *state) ActionProgress(cmd *cobra.Command, ctx context.Context, action *
 }
 
 func (c *state) ActionsProgresses(cmd *cobra.Command, ctx context.Context, actions []*hcloud.Action) error {
-	progressCh, errCh := c.hcloudClient.Action.WatchOverallProgress(ctx, actions)
+	progressCh, errCh := c.Client().Action().WatchOverallProgress(ctx, actions)
 
 	if StdoutIsTerminal() {
 		progress := pb.New(100)
@@ -83,7 +83,7 @@ func (c *state) WaitForActions(cmd *cobra.Command, ctx context.Context, actions 
 			waitingFor = fmt.Sprintf("Waiting for volume %d to have been attached to server %d", resources["volume"], resources["server"])
 		}
 
-		_, errCh := c.hcloudClient.Action.WatchProgress(ctx, action)
+		_, errCh := c.Client().Action().WatchProgress(ctx, action)
 
 		err := DisplayProgressCircle(cmd, errCh, waitingFor)
 		if err != nil {

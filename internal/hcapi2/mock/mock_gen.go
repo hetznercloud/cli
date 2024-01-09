@@ -1,5 +1,6 @@
 package hcapi2_mock
 
+//go:generate mockgen -package hcapi2_mock -destination zz_action_client_mock.go github.com/hetznercloud/cli/internal/hcapi2 ActionClient
 //go:generate mockgen -package hcapi2_mock -destination zz_certificate_client_mock.go github.com/hetznercloud/cli/internal/hcapi2 CertificateClient
 //go:generate mockgen -package hcapi2_mock -destination zz_datacenter_client_mock.go github.com/hetznercloud/cli/internal/hcapi2 DatacenterClient
 //go:generate mockgen -package hcapi2_mock -destination zz_image_client_mock.go github.com/hetznercloud/cli/internal/hcapi2 ImageClient

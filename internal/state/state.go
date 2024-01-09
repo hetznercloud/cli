@@ -4,7 +4,6 @@ import (
 	"context"
 	"log"
 	"os"
-	"time"
 
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/version"
@@ -29,7 +28,6 @@ type state struct {
 	debug         bool
 	debugFilePath string
 	client        hcapi2.Client
-	hcloudClient  *hcloud.Client
 	config        *Config
 }
 
@@ -53,8 +51,7 @@ func New(cfg *Config) (State, error) {
 	}
 
 	s.readEnv()
-	s.hcloudClient = s.newClient()
-	s.client = hcapi2.NewClient(s.hcloudClient)
+	s.client = s.newClient()
 	return s, nil
 }
 
@@ -112,7 +109,7 @@ func (c *state) readEnv() {
 	}
 }
 
-func (c *state) newClient() *hcloud.Client {
+func (c *state) newClient() hcapi2.Client {
 	opts := []hcloud.ClientOption{
 		hcloud.WithToken(c.token),
 		hcloud.WithApplication("hcloud-cli", version.Version),
@@ -128,11 +125,5 @@ func (c *state) newClient() *hcloud.Client {
 			opts = append(opts, hcloud.WithDebugWriter(writer))
 		}
 	}
-	// TODO Somehow pass here
-	// pollInterval, _ := c.RootCommand.PersistentFlags().GetDuration("poll-interval")
-	pollInterval := 500 * time.Millisecond
-	if pollInterval > 0 {
-		opts = append(opts, hcloud.WithPollInterval(pollInterval))
-	}
-	return hcloud.NewClient(opts...)
+	return hcapi2.NewClient(opts...)
 }
