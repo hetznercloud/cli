@@ -50,7 +50,6 @@
     "ingoing_traffic": null,
     "iso": {
       "architecture": null,
-      "deprecated": null,
       "deprecation": null,
       "description": "FreeBSD 11.0 x64",
       "id": 1,
