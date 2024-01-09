@@ -27,9 +27,9 @@ type LabelCmds struct {
 // AddCobraCommand creates a command that can be registered with cobra.
 func (lc *LabelCmds) AddCobraCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   fmt.Sprintf("add-label [FLAGS] %s LABEL", strings.ToUpper(lc.ResourceNameSingular)),
+		Use:                   fmt.Sprintf("add-label [FLAGS] %s LABEL...", strings.ToUpper(lc.ResourceNameSingular)),
 		Short:                 lc.ShortDescriptionAdd,
-		Args:                  cobra.ExactArgs(2),
+		Args:                  cobra.MinimumNArgs(2),
 		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(lc.NameSuggestions(s.Client()))),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
@@ -56,26 +56,31 @@ func (lc *LabelCmds) RunAdd(s state.State, cmd *cobra.Command, args []string) er
 		labels = map[string]string{}
 	}
 
-	key, val := util.SplitLabelVars(args[1])
+	var keys []string
+	for _, label := range args[1:] {
+		key, val := util.SplitLabelVars(label)
+		keys = append(keys, key)
 
-	if _, ok := labels[key]; ok && !overwrite {
-		return fmt.Errorf("label %s on %s %d already exists", key, lc.ResourceNameSingular, id)
+		if _, ok := labels[key]; ok && !overwrite {
+			return fmt.Errorf("label %s on %s %d already exists", key, lc.ResourceNameSingular, id)
+		}
+
+		labels[key] = val
 	}
-
-	labels[key] = val
 
 	if err := lc.SetLabels(s, id, labels); err != nil {
 		return err
 	}
 
-	cmd.Printf("Label %s added to %s %d\n", key, lc.ResourceNameSingular, id)
+	cmd.Printf("Label(s) %s added to %s %d\n", strings.Join(keys, ", "), lc.ResourceNameSingular, id)
 	return nil
 }
 
 func validateAddLabel(_ *cobra.Command, args []string) error {
-	label := util.SplitLabel(args[1])
-	if len(label) != 2 {
-		return fmt.Errorf("invalid label: %s", args[1])
+	for _, label := range args[1:] {
+		if len(util.SplitLabel(label)) != 2 {
+			return fmt.Errorf("invalid label: %s", label)
+		}
 	}
 
 	return nil
@@ -84,9 +89,9 @@ func validateAddLabel(_ *cobra.Command, args []string) error {
 // RemoveCobraCommand creates a command that can be registered with cobra.
 func (lc *LabelCmds) RemoveCobraCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   fmt.Sprintf("remove-label [FLAGS] %s LABEL", strings.ToUpper(lc.ResourceNameSingular)),
+		Use:   fmt.Sprintf("remove-label [FLAGS] %s LABEL...", strings.ToUpper(lc.ResourceNameSingular)),
 		Short: lc.ShortDescriptionRemove,
-		Args:  cobra.RangeArgs(1, 2),
+		Args:  cobra.MinimumNArgs(1),
 		ValidArgsFunction: cmpl.SuggestArgs(
 			cmpl.SuggestCandidatesF(lc.NameSuggestions(s.Client())),
 			cmpl.SuggestCandidatesCtx(func(_ *cobra.Command, args []string) []string {
@@ -120,11 +125,12 @@ func (lc *LabelCmds) RunRemove(s state.State, cmd *cobra.Command, args []string)
 	if all {
 		labels = make(map[string]string)
 	} else {
-		key := args[1]
-		if _, ok := labels[key]; !ok {
-			return fmt.Errorf("label %s on %s %d does not exist", key, lc.ResourceNameSingular, id)
+		for _, key := range args[1:] {
+			if _, ok := labels[key]; !ok {
+				return fmt.Errorf("label %s on %s %d does not exist", key, lc.ResourceNameSingular, id)
+			}
+			delete(labels, key)
 		}
-		delete(labels, key)
 	}
 
 	if err := lc.SetLabels(s, id, labels); err != nil {
@@ -134,7 +140,7 @@ func (lc *LabelCmds) RunRemove(s state.State, cmd *cobra.Command, args []string)
 	if all {
 		cmd.Printf("All labels removed from %s %d\n", lc.ResourceNameSingular, id)
 	} else {
-		cmd.Printf("Label %s removed from %s %d\n", args[1], lc.ResourceNameSingular, id)
+		cmd.Printf("Label(s) %s removed from %s %d\n", strings.Join(args[1:], ", "), lc.ResourceNameSingular, id)
 	}
 
 	return nil
@@ -143,10 +149,10 @@ func (lc *LabelCmds) RunRemove(s state.State, cmd *cobra.Command, args []string)
 func validateRemoveLabel(cmd *cobra.Command, args []string) error {
 	all, _ := cmd.Flags().GetBool("all")
 
-	if all && len(args) == 2 {
+	if all && len(args) > 1 {
 		return errors.New("must not specify a label key when using --all/-a")
 	}
-	if !all && len(args) != 2 {
+	if !all && len(args) <= 1 {
 		return errors.New("must specify a label key when not using --all/-a")
 	}
 
