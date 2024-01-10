@@ -1,4 +1,4 @@
-package floatingip
+package floatingip_test
 
 import (
 	_ "embed"
@@ -8,6 +8,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 
+	"github.com/hetznercloud/cli/internal/cmd/floatingip"
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -19,7 +20,7 @@ func TestCreate(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := CreateCmd.CobraCommand(fx.State())
+	cmd := floatingip.CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.FloatingIPClient.EXPECT().
@@ -54,7 +55,7 @@ func TestCreateJSON(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := CreateCmd.CobraCommand(fx.State())
+	cmd := floatingip.CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.FloatingIPClient.EXPECT().
@@ -90,7 +91,7 @@ func TestCreateProtection(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := CreateCmd.CobraCommand(fx.State())
+	cmd := floatingip.CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	floatingIp := &hcloud.FloatingIP{

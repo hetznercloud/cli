@@ -1,4 +1,4 @@
-package network
+package network_test
 
 import (
 	_ "embed"
@@ -9,6 +9,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 
+	"github.com/hetznercloud/cli/internal/cmd/network"
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -20,7 +21,7 @@ func TestCreate(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := CreateCmd.CobraCommand(fx.State())
+	cmd := network.CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	_, ipRange, _ := net.ParseCIDR("10.0.0.0/24")
@@ -50,7 +51,7 @@ func TestCreateJSON(t *testing.T) {
 
 	time.Local = time.UTC
 
-	cmd := CreateCmd.CobraCommand(fx.State())
+	cmd := network.CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	_, ipRange, _ := net.ParseCIDR("10.0.0.0/24")
@@ -84,11 +85,11 @@ func TestCreateProtection(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := CreateCmd.CobraCommand(fx.State())
+	cmd := network.CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	_, ipRange, _ := net.ParseCIDR("10.0.0.0/24")
-	network := &hcloud.Network{
+	n := &hcloud.Network{
 		ID:      123,
 		Name:    "myNetwork",
 		IPRange: ipRange,
@@ -100,9 +101,9 @@ func TestCreateProtection(t *testing.T) {
 			IPRange: ipRange,
 			Labels:  make(map[string]string),
 		}).
-		Return(network, nil, nil)
+		Return(n, nil, nil)
 	fx.Client.NetworkClient.EXPECT().
-		ChangeProtection(gomock.Any(), network, hcloud.NetworkChangeProtectionOpts{
+		ChangeProtection(gomock.Any(), n, hcloud.NetworkChangeProtectionOpts{
 			Delete: hcloud.Ptr(true),
 		}).
 		Return(&hcloud.Action{ID: 123}, nil, nil)

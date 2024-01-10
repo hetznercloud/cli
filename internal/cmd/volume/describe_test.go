@@ -1,4 +1,4 @@
-package volume
+package volume_test
 
 import (
 	"fmt"
@@ -10,6 +10,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/hetznercloud/cli/internal/cmd/util"
+	"github.com/hetznercloud/cli/internal/cmd/volume"
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -20,10 +21,10 @@ func TestDescribe(t *testing.T) {
 
 	time.Local = time.UTC
 
-	cmd := DescribeCmd.CobraCommand(fx.State())
+	cmd := volume.DescribeCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	volume := &hcloud.Volume{
+	v := &hcloud.Volume{
 		ID:     123,
 		Name:   "test",
 		Size:   50,
@@ -43,7 +44,7 @@ func TestDescribe(t *testing.T) {
 
 	fx.Client.VolumeClient.EXPECT().
 		Get(gomock.Any(), "test").
-		Return(volume, nil, nil)
+		Return(v, nil, nil)
 	fx.Client.ServerClient.EXPECT().
 		ServerName(int64(321)).
 		Return("myServer")
@@ -69,7 +70,7 @@ Protection:
   Delete:	no
 Labels:
   No labels
-`, util.Datetime(volume.Created), humanize.Time(volume.Created))
+`, util.Datetime(v.Created), humanize.Time(v.Created))
 
 	assert.NoError(t, err)
 	assert.Equal(t, expOut, out)

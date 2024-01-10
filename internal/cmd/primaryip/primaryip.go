@@ -18,7 +18,7 @@ func NewCommand(s state.State) *cobra.Command {
 		ListCmd.CobraCommand(s),
 		DescribeCmd.CobraCommand(s),
 		CreateCmd.CobraCommand(s),
-		updateCmd.CobraCommand(s),
+		UpdateCmd.CobraCommand(s),
 		DeleteCmd.CobraCommand(s),
 		AssignCmd.CobraCommand(s),
 		UnAssignCmd.CobraCommand(s),

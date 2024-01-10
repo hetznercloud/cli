@@ -1,4 +1,4 @@
-package certificate
+package certificate_test
 
 import (
 	_ "embed"
@@ -8,6 +8,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 
+	"github.com/hetznercloud/cli/internal/cmd/certificate"
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -22,7 +23,7 @@ func TestCreateManaged(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := CreateCmd.CobraCommand(fx.State())
+	cmd := certificate.CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.CertificateClient.EXPECT().
@@ -55,7 +56,7 @@ func TestCreateManagedJSON(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := CreateCmd.CobraCommand(fx.State())
+	cmd := certificate.CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.CertificateClient.EXPECT().
@@ -104,7 +105,7 @@ func TestCreateUploaded(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := CreateCmd.CobraCommand(fx.State())
+	cmd := certificate.CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.CertificateClient.EXPECT().
@@ -132,7 +133,7 @@ func TestCreateUploadedJSON(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := CreateCmd.CobraCommand(fx.State())
+	cmd := certificate.CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.CertificateClient.EXPECT().

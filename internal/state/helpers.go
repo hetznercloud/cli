@@ -36,6 +36,10 @@ func (c *state) ActionProgress(cmd *cobra.Command, ctx context.Context, action *
 func (c *state) ActionsProgresses(cmd *cobra.Command, ctx context.Context, actions []*hcloud.Action) error {
 	progressCh, errCh := c.Client().Action().WatchOverallProgress(ctx, actions)
 
+	if quiet, _ := cmd.Flags().GetBool("quiet"); quiet {
+		return <-errCh
+	}
+
 	if StdoutIsTerminal() {
 		progress := pb.New(100)
 		progress.SetMaxWidth(50) // width of progress bar is too large by default
@@ -100,6 +104,10 @@ func DisplayProgressCircle(cmd *cobra.Command, errCh <-chan error, waitingFor st
 		failed   = "failed"
 		ellipsis = " ... "
 	)
+
+	if quiet, _ := cmd.Flags().GetBool("quiet"); quiet {
+		return <-errCh
+	}
 
 	if StdoutIsTerminal() {
 		_, _ = fmt.Fprintln(os.Stderr, waitingFor)

@@ -1,4 +1,4 @@
-package firewall
+package firewall_test
 
 import (
 	"fmt"
@@ -9,6 +9,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 
+	"github.com/hetznercloud/cli/internal/cmd/firewall"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -20,10 +21,10 @@ func TestDescribe(t *testing.T) {
 
 	time.Local = time.UTC
 
-	cmd := DescribeCmd.CobraCommand(fx.State())
+	cmd := firewall.DescribeCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	firewall := &hcloud.Firewall{
+	fw := &hcloud.Firewall{
 		ID:   123,
 		Name: "test",
 		Rules: []hcloud.FirewallRule{
@@ -50,7 +51,7 @@ func TestDescribe(t *testing.T) {
 
 	fx.Client.FirewallClient.EXPECT().
 		Get(gomock.Any(), "test").
-		Return(firewall, nil, nil)
+		Return(fw, nil, nil)
 	fx.Client.ServerClient.EXPECT().
 		ServerName(int64(321)).
 		Return("myServer")
@@ -72,7 +73,7 @@ Applied To:
   - Type:		server
     Server ID:		321
     Server Name:	myServer
-`, util.Datetime(firewall.Created), humanize.Time(firewall.Created))
+`, util.Datetime(fw.Created), humanize.Time(fw.Created))
 
 	assert.NoError(t, err)
 	assert.Equal(t, expOut, out)

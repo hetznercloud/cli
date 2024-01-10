@@ -1,4 +1,4 @@
-package loadbalancer
+package loadbalancer_test
 
 import (
 	"testing"
@@ -6,6 +6,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 
+	"github.com/hetznercloud/cli/internal/cmd/loadbalancer"
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -14,7 +15,7 @@ func TestChangeType(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := ChangeTypeCmd.CobraCommand(fx.State())
+	cmd := loadbalancer.ChangeTypeCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	lbType := &hcloud.LoadBalancerType{ID: 321, Name: "lb21"}

@@ -1,4 +1,4 @@
-package certificate
+package certificate_test
 
 import (
 	"testing"
@@ -6,6 +6,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 
+	"github.com/hetznercloud/cli/internal/cmd/certificate"
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -14,7 +15,7 @@ func TestLabelAdd(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := LabelCmds.AddCobraCommand(fx.State())
+	cmd := certificate.LabelCmds.AddCobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.CertificateClient.EXPECT().
@@ -39,7 +40,7 @@ func TestLabelRemove(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := LabelCmds.RemoveCobraCommand(fx.State())
+	cmd := certificate.LabelCmds.RemoveCobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.CertificateClient.EXPECT().

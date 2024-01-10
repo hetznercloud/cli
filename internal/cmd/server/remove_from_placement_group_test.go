@@ -18,19 +18,19 @@ func TestRemoveFromPlacementGroup(t *testing.T) {
 	cmd := server.RemoveFromPlacementGroupCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	server := hcloud.Server{
+	srv := hcloud.Server{
 		ID:   42,
 		Name: "my server",
 	}
 
 	fx.Client.ServerClient.EXPECT().
-		Get(gomock.Any(), server.Name).
-		Return(&server, nil, nil)
+		Get(gomock.Any(), srv.Name).
+		Return(&srv, nil, nil)
 	fx.Client.ServerClient.EXPECT().
-		RemoveFromPlacementGroup(gomock.Any(), &server)
+		RemoveFromPlacementGroup(gomock.Any(), &srv)
 	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), gomock.Any(), nil)
 
-	out, _, err := fx.Run(cmd, []string{server.Name})
+	out, _, err := fx.Run(cmd, []string{srv.Name})
 
 	expOut := `Server 42 removed from placement group
 `

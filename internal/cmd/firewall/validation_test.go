@@ -1,10 +1,12 @@
-package firewall
+package firewall_test
 
 import (
 	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+
+	"github.com/hetznercloud/cli/internal/cmd/firewall"
 )
 
 func TestValidateFirewallIP(t *testing.T) {
@@ -49,7 +51,7 @@ func TestValidateFirewallIP(t *testing.T) {
 	}
 	for _, test := range tests {
 		t.Run(test.name, func(t *testing.T) {
-			net, err := validateFirewallIP(test.ip)
+			net, err := firewall.ValidateFirewallIP(test.ip)
 
 			if test.err != nil {
 				assert.Equal(t, err, test.err)

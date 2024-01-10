@@ -1,4 +1,4 @@
-package primaryip
+package primaryip_test
 
 import (
 	_ "embed"
@@ -9,6 +9,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 
+	"github.com/hetznercloud/cli/internal/cmd/primaryip"
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -20,7 +21,7 @@ func TestCreate(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := CreateCmd.CobraCommand(fx.State())
+	cmd := primaryip.CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 	fx.Client.PrimaryIPClient.EXPECT().
 		Create(
@@ -64,7 +65,7 @@ func TestCreateJSON(t *testing.T) {
 
 	time.Local = time.UTC
 
-	cmd := CreateCmd.CobraCommand(fx.State())
+	cmd := primaryip.CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.PrimaryIPClient.EXPECT().

@@ -1,4 +1,4 @@
-package certificate
+package certificate_test
 
 import (
 	"testing"
@@ -6,6 +6,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 
+	"github.com/hetznercloud/cli/internal/cmd/certificate"
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -14,7 +15,7 @@ func TestDelete(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := DeleteCmd.CobraCommand(fx.State())
+	cmd := certificate.DeleteCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	cert := &hcloud.Certificate{

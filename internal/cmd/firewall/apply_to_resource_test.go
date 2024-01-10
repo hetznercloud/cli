@@ -1,4 +1,4 @@
-package firewall
+package firewall_test
 
 import (
 	"testing"
@@ -6,6 +6,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 
+	"github.com/hetznercloud/cli/internal/cmd/firewall"
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -14,22 +15,22 @@ func TestApplyToServer(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := ApplyToResourceCmd.CobraCommand(fx.State())
+	cmd := firewall.ApplyToResourceCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	firewall := &hcloud.Firewall{
+	fw := &hcloud.Firewall{
 		ID:   123,
 		Name: "test",
 	}
 
 	fx.Client.FirewallClient.EXPECT().
 		Get(gomock.Any(), "test").
-		Return(firewall, nil, nil)
+		Return(fw, nil, nil)
 	fx.Client.ServerClient.EXPECT().
 		Get(gomock.Any(), "my-server").
 		Return(&hcloud.Server{ID: 456}, nil, nil)
 	fx.Client.FirewallClient.EXPECT().
-		ApplyResources(gomock.Any(), firewall, []hcloud.FirewallResource{{
+		ApplyResources(gomock.Any(), fw, []hcloud.FirewallResource{{
 			Type: hcloud.FirewallResourceTypeServer,
 			Server: &hcloud.FirewallResourceServer{
 				ID: 456,
@@ -52,19 +53,19 @@ func TestApplyToLabelSelector(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := ApplyToResourceCmd.CobraCommand(fx.State())
+	cmd := firewall.ApplyToResourceCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	firewall := &hcloud.Firewall{
+	fw := &hcloud.Firewall{
 		ID:   123,
 		Name: "test",
 	}
 
 	fx.Client.FirewallClient.EXPECT().
 		Get(gomock.Any(), "test").
-		Return(firewall, nil, nil)
+		Return(fw, nil, nil)
 	fx.Client.FirewallClient.EXPECT().
-		ApplyResources(gomock.Any(), firewall, []hcloud.FirewallResource{{
+		ApplyResources(gomock.Any(), fw, []hcloud.FirewallResource{{
 			Type: hcloud.FirewallResourceTypeLabelSelector,
 			LabelSelector: &hcloud.FirewallResourceLabelSelector{
 				Selector: "my-label",

@@ -1,4 +1,4 @@
-package network
+package network_test
 
 import (
 	"fmt"
@@ -10,6 +10,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 
+	"github.com/hetznercloud/cli/internal/cmd/network"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -21,10 +22,10 @@ func TestDescribe(t *testing.T) {
 
 	time.Local = time.UTC
 
-	cmd := DescribeCmd.CobraCommand(fx.State())
+	cmd := network.DescribeCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	network := &hcloud.Network{
+	n := &hcloud.Network{
 		ID:         123,
 		Name:       "test",
 		Created:    time.Date(2036, 8, 12, 12, 0, 0, 0, time.UTC),
@@ -35,7 +36,7 @@ func TestDescribe(t *testing.T) {
 
 	fx.Client.NetworkClient.EXPECT().
 		Get(gomock.Any(), "test").
-		Return(network, nil, nil)
+		Return(n, nil, nil)
 
 	out, _, err := fx.Run(cmd, []string{"test"})
 
@@ -52,7 +53,7 @@ Protection:
   Delete:	yes
 Labels:
   key: value
-`, util.Datetime(network.Created), humanize.Time(network.Created))
+`, util.Datetime(n.Created), humanize.Time(n.Created))
 
 	assert.NoError(t, err)
 	assert.Equal(t, expOut, out)

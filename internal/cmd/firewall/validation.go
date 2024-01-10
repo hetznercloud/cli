@@ -5,7 +5,7 @@ import (
 	"net"
 )
 
-func validateFirewallIP(ip string) (*net.IPNet, error) {
+func ValidateFirewallIP(ip string) (*net.IPNet, error) {
 	i, n, err := net.ParseCIDR(ip)
 	if err != nil {
 		return nil, fmt.Errorf("%s", err)

@@ -1,4 +1,4 @@
-package datacenter
+package datacenter_test
 
 import (
 	"testing"
@@ -6,6 +6,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 
+	"github.com/hetznercloud/cli/internal/cmd/datacenter"
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -14,7 +15,7 @@ func TestDescribe(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := DescribeCmd.CobraCommand(fx.State())
+	cmd := datacenter.DescribeCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.DatacenterClient.EXPECT().

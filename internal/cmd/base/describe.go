@@ -2,6 +2,7 @@ package base
 
 import (
 	"fmt"
+	"os"
 	"reflect"
 	"strings"
 
@@ -53,6 +54,13 @@ func (dc *DescribeCmd) CobraCommand(s state.State) *cobra.Command {
 // Run executes a describe command.
 func (dc *DescribeCmd) Run(s state.State, cmd *cobra.Command, args []string) error {
 	outputFlags := output.FlagsForCommand(cmd)
+
+	quiet, _ := cmd.Flags().GetBool("quiet")
+
+	isSchema := outputFlags.IsSet("json") || outputFlags.IsSet("yaml")
+	if isSchema && !quiet {
+		cmd.SetOut(os.Stderr)
+	}
 
 	idOrName := args[0]
 	resource, schema, err := dc.Fetch(s, cmd, idOrName)

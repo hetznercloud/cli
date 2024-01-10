@@ -1,4 +1,4 @@
-package certificate
+package certificate_test
 
 import (
 	"testing"
@@ -7,6 +7,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 
+	"github.com/hetznercloud/cli/internal/cmd/certificate"
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -17,7 +18,7 @@ func TestList(t *testing.T) {
 
 	time.Local = time.UTC
 
-	cmd := ListCmd.CobraCommand(fx.State())
+	cmd := certificate.ListCmd.CobraCommand(fx.State())
 
 	fx.ExpectEnsureToken()
 	fx.Client.CertificateClient.EXPECT().

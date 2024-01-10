@@ -1,4 +1,4 @@
-package network
+package network_test
 
 import (
 	"testing"
@@ -6,6 +6,7 @@ import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 
+	"github.com/hetznercloud/cli/internal/cmd/network"
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -14,7 +15,7 @@ func TestLabelAdd(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := LabelCmds.AddCobraCommand(fx.State())
+	cmd := network.LabelCmds.AddCobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.NetworkClient.EXPECT().
@@ -39,7 +40,7 @@ func TestLabelRemove(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := LabelCmds.RemoveCobraCommand(fx.State())
+	cmd := network.LabelCmds.RemoveCobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.NetworkClient.EXPECT().
