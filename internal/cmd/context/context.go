@@ -20,6 +20,7 @@ func NewCommand(s state.State) *cobra.Command {
 		newUseCommand(s),
 		newDeleteCommand(s),
 		newListCommand(s),
+		newSSHKeyCommand(s),
 	)
 	return cmd
 }
