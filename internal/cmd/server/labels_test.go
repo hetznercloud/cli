@@ -40,7 +40,7 @@ func TestMultiLabelAdd(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := LabelCmds.AddCobraCommand(fx.State())
+	cmd := server.LabelCmds.AddCobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.ServerClient.EXPECT().
@@ -94,7 +94,7 @@ func TestMultiLabelRemove(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := LabelCmds.RemoveCobraCommand(fx.State())
+	cmd := server.LabelCmds.RemoveCobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.ServerClient.EXPECT().
