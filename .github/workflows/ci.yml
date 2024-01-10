@@ -16,6 +16,7 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version-file: go.mod
+          cache: false
 
       - name: Run gofmt
         run: diff -u <(echo -n) <(gofmt -d -s .)
