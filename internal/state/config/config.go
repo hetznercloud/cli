@@ -12,7 +12,6 @@ import (
 
 type Config interface {
 	Write() error
-	Marshal() ([]byte, error)
 
 	ActiveContext() *Context
 	SetActiveContext(*Context)
@@ -62,7 +61,7 @@ func ReadConfig(path string) (Config, error) {
 }
 
 func (cfg *config) Write() error {
-	data, err := cfg.Marshal()
+	data, err := cfg.marshal()
 	if err != nil {
 		return err
 	}
@@ -73,31 +72,6 @@ func (cfg *config) Write() error {
 		return err
 	}
 	return nil
-}
-
-type rawConfig struct {
-	activeContext string
-	contexts      []rawConfigContext
-}
-
-type rawConfigContext struct {
-	Name  string `toml:"name"`
-	Token string `toml:"token"`
-}
-
-func (cfg *config) Marshal() ([]byte, error) {
-
-	var raw rawConfig
-	if cfg.activeContext != nil {
-		raw.activeContext = cfg.activeContext.Name
-	}
-	for _, context := range cfg.contexts {
-		raw.contexts = append(raw.contexts, rawConfigContext{
-			Name:  context.Name,
-			Token: context.Token,
-		})
-	}
-	return toml.Marshal(raw)
 }
 
 func (cfg *config) ActiveContext() *Context {
@@ -151,6 +125,30 @@ func (cfg *config) RemoveContext(context *Context) {
 			return
 		}
 	}
+}
+
+type rawConfig struct {
+	activeContext string
+	contexts      []rawConfigContext
+}
+
+type rawConfigContext struct {
+	Name  string `toml:"name"`
+	Token string `toml:"token"`
+}
+
+func (cfg *config) marshal() ([]byte, error) {
+	var raw rawConfig
+	if cfg.activeContext != nil {
+		raw.activeContext = cfg.activeContext.Name
+	}
+	for _, context := range cfg.contexts {
+		raw.contexts = append(raw.contexts, rawConfigContext{
+			Name:  context.Name,
+			Token: context.Token,
+		})
+	}
+	return toml.Marshal(raw)
 }
 
 func (cfg *config) unmarshal(data []byte) error {

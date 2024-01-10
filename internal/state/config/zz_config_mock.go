@@ -103,21 +103,6 @@ func (mr *MockConfigMockRecorder) Endpoint() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Endpoint", reflect.TypeOf((*MockConfig)(nil).Endpoint))
 }
 
-// Marshal mocks base method.
-func (m *MockConfig) Marshal() ([]byte, error) {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Marshal")
-	ret0, _ := ret[0].([]byte)
-	ret1, _ := ret[1].(error)
-	return ret0, ret1
-}
-
-// Marshal indicates an expected call of Marshal.
-func (mr *MockConfigMockRecorder) Marshal() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Marshal", reflect.TypeOf((*MockConfig)(nil).Marshal))
-}
-
 // RemoveContext mocks base method.
 func (m *MockConfig) RemoveContext(arg0 *Context) {
 	m.ctrl.T.Helper()
