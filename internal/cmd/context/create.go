@@ -12,6 +12,7 @@ import (
 	"golang.org/x/term"
 
 	"github.com/hetznercloud/cli/internal/state"
+	"github.com/hetznercloud/cli/internal/state/config"
 )
 
 func newCreateCommand(s state.State) *cobra.Command {
@@ -40,7 +41,7 @@ func runCreate(s state.State, cmd *cobra.Command, args []string) error {
 		return errors.New("name already used")
 	}
 
-	context := &state.ConfigContext{Name: name}
+	context := &config.Context{Name: name}
 
 	var token string
 
@@ -82,8 +83,8 @@ func runCreate(s state.State, cmd *cobra.Command, args []string) error {
 
 	context.Token = token
 
-	cfg.Contexts = append(cfg.Contexts, context)
-	cfg.ActiveContext = context
+	cfg.SetContexts(append(cfg.Contexts(), context))
+	cfg.SetActiveContext(context)
 
 	if err := cfg.Write(); err != nil {
 		return err

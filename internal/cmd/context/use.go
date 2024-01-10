@@ -33,6 +33,6 @@ func runUse(s state.State, _ *cobra.Command, args []string) error {
 	if context == nil {
 		return fmt.Errorf("context not found: %v", name)
 	}
-	cfg.ActiveContext = context
+	cfg.SetActiveContext(context)
 	return cfg.Write()
 }

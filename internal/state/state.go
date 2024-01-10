@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/hetznercloud/cli/internal/hcapi2"
+	"github.com/hetznercloud/cli/internal/state/config"
 	"github.com/hetznercloud/cli/internal/version"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -17,7 +18,7 @@ type State interface {
 	ActionWaiter
 
 	Client() hcapi2.Client
-	Config() *Config
+	Config() config.Config
 }
 
 type state struct {
@@ -28,19 +29,19 @@ type state struct {
 	debug         bool
 	debugFilePath string
 	client        hcapi2.Client
-	config        *Config
+	config        config.Config
 }
 
-func New(cfg *Config) (State, error) {
+func New(cfg config.Config) (State, error) {
 	var (
 		token    string
 		endpoint string
 	)
-	if cfg.ActiveContext != nil {
-		token = cfg.ActiveContext.Token
+	if ctx := cfg.ActiveContext(); ctx != nil {
+		token = ctx.Token
 	}
-	if cfg.Endpoint != "" {
-		endpoint = cfg.Endpoint
+	if ep := cfg.Endpoint(); ep != "" {
+		endpoint = ep
 	}
 
 	s := &state{
@@ -55,34 +56,11 @@ func New(cfg *Config) (State, error) {
 	return s, nil
 }
 
-func ReadConfig(path string) (*Config, error) {
-	cfg := &Config{Path: path}
-
-	_, err := os.Stat(path)
-	if err != nil {
-		if os.IsNotExist(err) {
-			return cfg, nil
-		}
-		return cfg, err
-	}
-
-	data, err := os.ReadFile(path)
-	if err != nil {
-		return nil, err
-	}
-
-	if err = UnmarshalConfig(cfg, data); err != nil {
-		return nil, err
-	}
-
-	return cfg, nil
-}
-
 func (c *state) Client() hcapi2.Client {
 	return c.client
 }
 
-func (c *state) Config() *Config {
+func (c *state) Config() config.Config {
 	return c.config
 }
 
@@ -101,7 +79,7 @@ func (c *state) readEnv() {
 	}
 	if s := os.Getenv("HCLOUD_CONTEXT"); s != "" && c.config != nil {
 		if cfgCtx := c.config.ContextByName(s); cfgCtx != nil {
-			c.config.ActiveContext = cfgCtx
+			c.config.SetActiveContext(cfgCtx)
 			c.token = cfgCtx.Token
 		} else {
 			log.Printf("warning: context %q specified in HCLOUD_CONTEXT does not exist\n", s)
