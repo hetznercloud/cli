@@ -32,11 +32,13 @@ func newSSHKeyCommand(s state.State) *cobra.Command {
 func newSSHKeyAddCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "add SSH-KEY...",
+		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(s.Client().SSHKey().Names)),
 		Short:                 "Add a default SSH key to the context",
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		RunE:                  state.Wrap(s, runSSHKeyAdd),
 	}
+
 	cmd.Flags().String("context", "", "Name of the context to add the default SSH key(s) to")
 	_ = cmd.RegisterFlagCompletionFunc("context", cmpl.SuggestCandidates(config.ContextNames(s.Config())...))
 
@@ -112,6 +114,7 @@ func runSSHKeyAdd(s state.State, cmd *cobra.Command, args []string) error {
 func newSSHKeyRemoveCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "remove SSH-KEY...",
+		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidates(config.ContextNames(s.Config())...)),
 		Short:                 "Remove a default SSH key from the context",
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
