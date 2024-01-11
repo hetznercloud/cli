@@ -141,8 +141,9 @@ func (cfg *config) marshal() ([]byte, error) {
 	}
 	for _, context := range cfg.contexts {
 		raw.Contexts = append(raw.Contexts, rawConfigContext{
-			Name:  context.Name,
-			Token: context.Token,
+			Name:    context.Name,
+			Token:   context.Token,
+			SSHKeys: context.SSHKeys,
 		})
 	}
 	return toml.Marshal(raw)
