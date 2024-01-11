@@ -263,7 +263,8 @@ func createOptsFromFlags(
 
 	// check if ssh-key flag was set, otherwise set to defaults
 	if !flags.Changed("ssh-key") {
-		if ctx := s.Config().ActiveContext(); ctx != nil {
+		if ctx := s.Config().ActiveContext(); ctx != nil && len(ctx.SSHKeys) > 0 {
+			cmd.Println("Using default SSH key(s) from active context")
 			sshKeys = ctx.SSHKeys
 		}
 	}
