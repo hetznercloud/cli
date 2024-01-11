@@ -123,8 +123,8 @@ func RemoveContext(cfg Config, context *Context) {
 }
 
 type rawConfig struct {
-	activeContext string
-	contexts      []rawConfigContext
+	ActiveContext string             `toml:"active_context,omitempty"`
+	Contexts      []rawConfigContext `toml:"contexts"`
 }
 
 type rawConfigContext struct {
@@ -135,10 +135,10 @@ type rawConfigContext struct {
 func (cfg *config) marshal() ([]byte, error) {
 	var raw rawConfig
 	if cfg.activeContext != nil {
-		raw.activeContext = cfg.activeContext.Name
+		raw.ActiveContext = cfg.activeContext.Name
 	}
 	for _, context := range cfg.contexts {
-		raw.contexts = append(raw.contexts, rawConfigContext{
+		raw.Contexts = append(raw.Contexts, rawConfigContext{
 			Name:  context.Name,
 			Token: context.Token,
 		})
@@ -151,21 +151,21 @@ func (cfg *config) unmarshal(data []byte) error {
 	if err := toml.Unmarshal(data, &raw); err != nil {
 		return err
 	}
-	for _, rawContext := range raw.contexts {
+	for _, rawContext := range raw.Contexts {
 		cfg.contexts = append(cfg.contexts, &Context{
 			Name:  rawContext.Name,
 			Token: rawContext.Token,
 		})
 	}
-	if raw.activeContext != "" {
+	if raw.ActiveContext != "" {
 		for _, c := range cfg.contexts {
-			if c.Name == raw.activeContext {
+			if c.Name == raw.ActiveContext {
 				cfg.activeContext = c
 				break
 			}
 		}
 		if cfg.activeContext == nil {
-			return fmt.Errorf("active context %s not found", raw.activeContext)
+			return fmt.Errorf("active context %s not found", raw.ActiveContext)
 		}
 	}
 	return nil
