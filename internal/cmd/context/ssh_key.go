@@ -23,6 +23,10 @@ func newSSHKeyCommand(s state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 	}
+
+	cmd.PersistentFlags().String("context", "", "Name of the context to manage the default SSH keys for (Default: Active Context)")
+	_ = cmd.RegisterFlagCompletionFunc("context", cmpl.SuggestCandidates(config.ContextNames(s.Config())...))
+
 	cmd.AddCommand(newSSHKeyAddCommand(s))
 	cmd.AddCommand(newSSHKeyRemoveCommand(s))
 	cmd.AddCommand(newSSHKeyListCommand(s))
@@ -38,9 +42,6 @@ func newSSHKeyAddCommand(s state.State) *cobra.Command {
 		DisableFlagsInUseLine: true,
 		RunE:                  state.Wrap(s, runSSHKeyAdd),
 	}
-
-	cmd.Flags().String("context", "", "Name of the context to add the default SSH key(s) to")
-	_ = cmd.RegisterFlagCompletionFunc("context", cmpl.SuggestCandidates(config.ContextNames(s.Config())...))
 
 	cmd.Flags().Bool("all", false, "Add all available SSH keys to the context")
 	_ = cmd.RegisterFlagCompletionFunc("all", cmpl.SuggestCandidates("true", "false"))
@@ -120,8 +121,6 @@ func newSSHKeyRemoveCommand(s state.State) *cobra.Command {
 		DisableFlagsInUseLine: true,
 		RunE:                  state.Wrap(s, runSSHKeyRemove),
 	}
-	cmd.Flags().String("context", "", "Name of the context to remove the default SSH key(s) from")
-	_ = cmd.RegisterFlagCompletionFunc("context", cmpl.SuggestCandidates(config.ContextNames(s.Config())...))
 
 	cmd.Flags().Bool("all", false, "Remove all SSH keys from the context")
 	_ = cmd.RegisterFlagCompletionFunc("all", cmpl.SuggestCandidates("true", "false"))
@@ -169,8 +168,6 @@ func newSSHKeyListCommand(s state.State) *cobra.Command {
 		DisableFlagsInUseLine: true,
 		RunE:                  state.Wrap(s, runSSHKeyList),
 	}
-	cmd.Flags().String("context", "", "Name of the context to list the default SSH keys from")
-	_ = cmd.RegisterFlagCompletionFunc("context", cmpl.SuggestCandidates(config.ContextNames(s.Config())...))
 	return cmd
 }
 
