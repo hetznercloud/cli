@@ -8,6 +8,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/cli/internal/state"
+	"github.com/hetznercloud/cli/internal/state/config"
 )
 
 func newDeleteCommand(s state.State) *cobra.Command {
@@ -15,7 +16,7 @@ func newDeleteCommand(s state.State) *cobra.Command {
 		Use:                   "delete [FLAGS] NAME",
 		Short:                 "Delete a context",
 		Args:                  cobra.ExactArgs(1),
-		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(s.Config().ContextNames)),
+		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidates(config.ContextNames(s.Config())...)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		RunE:                  state.Wrap(s, runDelete),
@@ -26,14 +27,14 @@ func newDeleteCommand(s state.State) *cobra.Command {
 func runDelete(s state.State, _ *cobra.Command, args []string) error {
 	name := args[0]
 	cfg := s.Config()
-	context := cfg.ContextByName(name)
+	context := config.ContextByName(cfg, name)
 	if context == nil {
 		return fmt.Errorf("context not found: %v", name)
 	}
-	if cfg.ActiveContext == context {
+	if cfg.ActiveContext() == context {
 		_, _ = fmt.Fprintln(os.Stderr, "Warning: You are deleting the currently active context. Please select a new active context.")
-		cfg.ActiveContext = nil
+		cfg.SetActiveContext(nil)
 	}
-	cfg.RemoveContext(context)
+	config.RemoveContext(cfg, context)
 	return cfg.Write()
 }

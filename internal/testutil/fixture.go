@@ -12,6 +12,7 @@ import (
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	hcapi2_mock "github.com/hetznercloud/cli/internal/hcapi2/mock"
 	"github.com/hetznercloud/cli/internal/state"
+	"github.com/hetznercloud/cli/internal/state/config"
 )
 
 // Fixture provides affordances for testing CLI commands.
@@ -20,6 +21,7 @@ type Fixture struct {
 	Client         *hcapi2_mock.MockClient
 	ActionWaiter   *state.MockActionWaiter
 	TokenEnsurer   *state.MockTokenEnsurer
+	Config         *config.MockConfig
 }
 
 // NewFixture creates a new Fixture.
@@ -31,6 +33,7 @@ func NewFixture(t *testing.T) *Fixture {
 		Client:         hcapi2_mock.NewMockClient(ctrl),
 		ActionWaiter:   state.NewMockActionWaiter(ctrl),
 		TokenEnsurer:   state.NewMockTokenEnsurer(ctrl),
+		Config:         config.NewMockConfig(ctrl),
 	}
 }
 
@@ -64,6 +67,7 @@ type fixtureState struct {
 	state.ActionWaiter
 
 	client hcapi2.Client
+	config config.Config
 }
 
 func (*fixtureState) WriteConfig() error {
@@ -74,8 +78,8 @@ func (s *fixtureState) Client() hcapi2.Client {
 	return s.client
 }
 
-func (*fixtureState) Config() *state.Config {
-	return nil
+func (s *fixtureState) Config() config.Config {
+	return s.config
 }
 
 // State returns a state.State implementation for testing purposes.
@@ -85,5 +89,6 @@ func (f *Fixture) State() state.State {
 		TokenEnsurer: f.TokenEnsurer,
 		ActionWaiter: f.ActionWaiter,
 		client:       f.Client,
+		config:       f.Config,
 	}
 }

@@ -25,8 +25,8 @@ func runActive(s state.State, cmd *cobra.Command, _ []string) error {
 	if os.Getenv("HCLOUD_TOKEN") != "" {
 		_, _ = fmt.Fprintln(os.Stderr, "Warning: HCLOUD_TOKEN is set. The active context will have no effect.")
 	}
-	if cfg := s.Config(); cfg.ActiveContext != nil {
-		cmd.Println(cfg.ActiveContext.Name)
+	if ctx := s.Config().ActiveContext(); ctx != nil {
+		cmd.Println(ctx.Name)
 	}
 	return nil
 }
