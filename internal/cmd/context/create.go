@@ -37,7 +37,7 @@ func runCreate(s state.State, cmd *cobra.Command, args []string) error {
 	if name == "" {
 		return errors.New("invalid name")
 	}
-	if cfg.ContextByName(name) != nil {
+	if config.ContextByName(cfg, name) != nil {
 		return errors.New("name already used")
 	}
 

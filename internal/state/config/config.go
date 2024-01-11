@@ -19,10 +19,6 @@ type Config interface {
 	SetContexts([]*Context)
 	Endpoint() string
 	SetEndpoint(string)
-
-	ContextNames() []string
-	ContextByName(name string) *Context
-	RemoveContext(context *Context)
 }
 
 type Context struct {
@@ -98,19 +94,17 @@ func (cfg *config) SetEndpoint(endpoint string) {
 	cfg.endpoint = endpoint
 }
 
-func (cfg *config) ContextNames() []string {
-	if len(cfg.contexts) == 0 {
-		return nil
-	}
-	names := make([]string, len(cfg.contexts))
-	for i, ctx := range cfg.contexts {
+func ContextNames(cfg Config) []string {
+	ctxs := cfg.Contexts()
+	names := make([]string, len(ctxs))
+	for i, ctx := range ctxs {
 		names[i] = ctx.Name
 	}
 	return names
 }
 
-func (cfg *config) ContextByName(name string) *Context {
-	for _, c := range cfg.contexts {
+func ContextByName(cfg Config, name string) *Context {
+	for _, c := range cfg.Contexts() {
 		if c.Name == name {
 			return c
 		}
@@ -118,13 +112,14 @@ func (cfg *config) ContextByName(name string) *Context {
 	return nil
 }
 
-func (cfg *config) RemoveContext(context *Context) {
-	for i, c := range cfg.contexts {
-		if c == context {
-			cfg.contexts = append(cfg.contexts[:i], cfg.contexts[i+1:]...)
-			return
+func RemoveContext(cfg Config, context *Context) {
+	var filtered []*Context
+	for _, c := range cfg.Contexts() {
+		if c != context {
+			filtered = append(filtered, c)
 		}
 	}
+	cfg.SetContexts(filtered)
 }
 
 type rawConfig struct {

@@ -78,7 +78,7 @@ func (c *state) readEnv() {
 		c.debugFilePath = s
 	}
 	if s := os.Getenv("HCLOUD_CONTEXT"); s != "" && c.config != nil {
-		if cfgCtx := c.config.ContextByName(s); cfgCtx != nil {
+		if cfgCtx := config.ContextByName(c.config, s); cfgCtx != nil {
 			c.config.SetActiveContext(cfgCtx)
 			c.token = cfgCtx.Token
 		} else {
