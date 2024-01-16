@@ -70,11 +70,12 @@ func TestCreate(t *testing.T) {
 	fx.ActionWaiter.EXPECT().
 		WaitForActions(gomock.Any(), gomock.Any(), []*hcloud.Action{{ID: 321}})
 
-	out, _, err := fx.Run(cmd, []string{"--name", "test", "--rules-file", "testdata/rules.json"})
+	out, errOut, err := fx.Run(cmd, []string{"--name", "test", "--rules-file", "testdata/rules.json"})
 
 	expOut := "Firewall 123 created\n"
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
 

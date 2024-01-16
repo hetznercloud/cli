@@ -46,12 +46,13 @@ func TestList(t *testing.T) {
 			},
 		}, nil)
 
-	out, _, err := fx.Run(cmd, []string{"--status", "running"})
+	out, errOut, err := fx.Run(cmd, []string{"--status", "running"})
 
 	expOut := `ID    NAME   STATUS    IPV4          IPV6   PRIVATE NET   DATACENTER   AGE
 123   test   running   192.168.2.1   -      -             fsn1-dc14    20s
 `
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

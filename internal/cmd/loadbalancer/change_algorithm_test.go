@@ -30,10 +30,11 @@ func TestChangeAlgorithm(t *testing.T) {
 		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).
 		Return(nil)
 
-	out, _, err := fx.Run(cmd, []string{"123", "--algorithm-type", "least_connections"})
+	out, errOut, err := fx.Run(cmd, []string{"123", "--algorithm-type", "least_connections"})
 
 	expOut := "Algorithm for Load Balancer 123 was changed\n"
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

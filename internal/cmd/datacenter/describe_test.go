@@ -27,7 +27,7 @@ func TestDescribe(t *testing.T) {
 			Description: "Falkenstein 1 virtual DC 14",
 		}, nil, nil)
 
-	out, _, err := fx.Run(cmd, []string{"test"})
+	out, errOut, err := fx.Run(cmd, []string{"test"})
 
 	expOut := `ID:		4
 Name:		fsn1-dc14
@@ -47,6 +47,7 @@ Server Types:
 `
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
 
@@ -109,7 +110,7 @@ func TestDescribeWithTypes(t *testing.T) {
 		}
 	}
 
-	out, _, err := fx.Run(cmd, []string{"test"})
+	out, errOut, err := fx.Run(cmd, []string{"test"})
 
 	expOut := `ID:		4
 Name:		fsn1-dc14
@@ -157,5 +158,6 @@ Server Types:
 `
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

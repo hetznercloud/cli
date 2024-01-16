@@ -45,11 +45,12 @@ func TestCreate(t *testing.T) {
 	fx.ActionWaiter.EXPECT().
 		WaitForActions(gomock.Any(), gomock.Any(), []*hcloud.Action{{ID: 1}, {ID: 2}, {ID: 3}})
 
-	out, _, err := fx.Run(cmd, []string{"--name", "test", "--size", "20", "--location", "fsn1"})
+	out, errOut, err := fx.Run(cmd, []string{"--name", "test", "--size", "20", "--location", "fsn1"})
 
 	expOut := "Volume 123 created\n"
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
 
@@ -138,12 +139,13 @@ func TestCreateProtection(t *testing.T) {
 	fx.ActionWaiter.EXPECT().
 		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123})
 
-	out, _, err := fx.Run(cmd, []string{"--name", "test", "--size", "20", "--location", "fsn1", "--enable-protection", "delete"})
+	out, errOut, err := fx.Run(cmd, []string{"--name", "test", "--size", "20", "--location", "fsn1", "--enable-protection", "delete"})
 
 	expOut := `Volume 123 created
 Resource protection enabled for volume 123
 `
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

@@ -34,7 +34,11 @@ func TestDelete(t *testing.T) {
 	fx.Client.PlacementGroupClient.EXPECT().
 		Delete(gomock.Any(), &placementGroup)
 
-	_, _, err := fx.Run(cmd, []string{placementGroup.Name})
+	out, errOut, err := fx.Run(cmd, []string{placementGroup.Name})
+
+	expOut := "placement group my Placement Group deleted\n"
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
+	assert.Equal(t, expOut, out)
 }

@@ -54,7 +54,7 @@ func TestDescribe(t *testing.T) {
 		LoadBalancerName(int64(123)).
 		Return("test")
 
-	out, _, err := fx.Run(cmd, []string{"test"})
+	out, errOut, err := fx.Run(cmd, []string{"test"})
 
 	expOut := fmt.Sprintf(`ID:			123
 Name:			test
@@ -80,5 +80,6 @@ Used By:
 		util.Datetime(cert.NotValidAfter), humanize.Time(cert.NotValidAfter))
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

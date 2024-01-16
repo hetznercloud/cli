@@ -38,10 +38,11 @@ func TestDelete(t *testing.T) {
 			nil,
 		)
 
-	out, _, err := fx.Run(cmd, []string{"13"})
+	out, errOut, err := fx.Run(cmd, []string{"13"})
 
 	expOut := "Primary IP 13 deleted\n"
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

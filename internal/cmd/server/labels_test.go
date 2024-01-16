@@ -28,11 +28,12 @@ func TestLabelAdd(t *testing.T) {
 			},
 		})
 
-	out, _, err := fx.Run(cmd, []string{"123", "key=value"})
+	out, errOut, err := fx.Run(cmd, []string{"123", "key=value"})
 
 	expOut := "Label(s) key added to server 123\n"
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
 
@@ -54,11 +55,12 @@ func TestMultiLabelAdd(t *testing.T) {
 			},
 		})
 
-	out, _, err := fx.Run(cmd, []string{"123", "foo=bar", "baz=qux"})
+	out, errOut, err := fx.Run(cmd, []string{"123", "foo=bar", "baz=qux"})
 
 	expOut := "Label(s) foo, baz added to server 123\n"
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
 
@@ -82,11 +84,12 @@ func TestLabelRemove(t *testing.T) {
 			Labels: make(map[string]string),
 		})
 
-	out, _, err := fx.Run(cmd, []string{"123", "key"})
+	out, errOut, err := fx.Run(cmd, []string{"123", "key"})
 
 	expOut := "Label(s) key removed from server 123\n"
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
 
@@ -114,10 +117,11 @@ func TestMultiLabelRemove(t *testing.T) {
 			},
 		})
 
-	out, _, err := fx.Run(cmd, []string{"123", "foo", "baz"})
+	out, errOut, err := fx.Run(cmd, []string{"123", "foo", "baz"})
 
 	expOut := "Label(s) foo, baz removed from server 123\n"
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

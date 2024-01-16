@@ -28,10 +28,11 @@ func TestUnassign(t *testing.T) {
 		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).
 		Return(nil)
 
-	out, _, err := fx.Run(cmd, []string{"my-ip"})
+	out, errOut, err := fx.Run(cmd, []string{"my-ip"})
 
 	expOut := "Floating IP 123 unassigned\n"
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

@@ -33,11 +33,12 @@ func TestShutdown(t *testing.T) {
 		Shutdown(gomock.Any(), &srv)
 	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), gomock.Any(), nil)
 
-	out, _, err := fx.Run(cmd, []string{srv.Name})
+	out, errOut, err := fx.Run(cmd, []string{srv.Name})
 
 	expOut := "Sent shutdown signal to server 42\n"
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
 
@@ -69,10 +70,12 @@ func TestShutdownWait(t *testing.T) {
 		Return(&srv, nil, nil).
 		Return(&hcloud.Server{ID: srv.ID, Name: srv.Name, Status: hcloud.ServerStatusOff}, nil, nil)
 
-	out, _, err := fx.Run(cmd, []string{srv.Name, "--wait"})
+	out, errOut, err := fx.Run(cmd, []string{srv.Name, "--wait"})
 
 	expOut := "Sent shutdown signal to server 42\nServer 42 shut down\n"
+	expErrOut := "Waiting for server to shut down ... done\n"
 
 	assert.NoError(t, err)
+	assert.Equal(t, expErrOut, errOut)
 	assert.Equal(t, expOut, out)
 }

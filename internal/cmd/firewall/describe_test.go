@@ -56,7 +56,7 @@ func TestDescribe(t *testing.T) {
 		ServerName(int64(321)).
 		Return("myServer")
 
-	out, _, err := fx.Run(cmd, []string{"test"})
+	out, errOut, err := fx.Run(cmd, []string{"test"})
 
 	expOut := fmt.Sprintf(`ID:		123
 Name:		test
@@ -76,5 +76,6 @@ Applied To:
 `, util.Datetime(fw.Created), humanize.Time(fw.Created))
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

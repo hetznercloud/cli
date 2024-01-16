@@ -35,10 +35,11 @@ func TestChangeType(t *testing.T) {
 		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).
 		Return(nil)
 
-	out, _, err := fx.Run(cmd, []string{"123", "lb21"})
+	out, errOut, err := fx.Run(cmd, []string{"123", "lb21"})
 
 	expOut := "LoadBalancer 123 changed to type lb21\n"
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

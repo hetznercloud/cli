@@ -44,10 +44,11 @@ func TestSetRDNS(t *testing.T) {
 
 	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), gomock.Any(), action).Return(nil)
 
-	out, _, err := fx.Run(cmd, []string{"--hostname=server.your-host.de", "--ip=192.168.0.1", "13"})
+	out, errOut, err := fx.Run(cmd, []string{"--hostname=server.your-host.de", "--ip=192.168.0.1", "13"})
 
 	expOut := "Reverse DNS of Primary IP 13 changed\n"
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

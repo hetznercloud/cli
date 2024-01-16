@@ -37,10 +37,11 @@ func TestAddService(t *testing.T) {
 		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).
 		Return(nil)
 
-	out, _, err := fx.Run(cmd, []string{"123", "--protocol", "http", "--listen-port", "80", "--destination-port", "8080"})
+	out, errOut, err := fx.Run(cmd, []string{"123", "--protocol", "http", "--listen-port", "80", "--destination-port", "8080"})
 
 	expOut := "Service was added to Load Balancer 123\n"
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

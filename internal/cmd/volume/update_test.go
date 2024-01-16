@@ -26,10 +26,11 @@ func TestUpdateName(t *testing.T) {
 			Name: "new-name",
 		})
 
-	out, _, err := fx.Run(cmd, []string{"123", "--name", "new-name"})
+	out, errOut, err := fx.Run(cmd, []string{"123", "--name", "new-name"})
 
 	expOut := "Volume 123 updated\n"
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

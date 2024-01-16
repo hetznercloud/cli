@@ -32,11 +32,12 @@ func TestRemoveTargetServer(t *testing.T) {
 		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).
 		Return(nil)
 
-	out, _, err := fx.Run(cmd, []string{"123", "--server", "my-server"})
+	out, errOut, err := fx.Run(cmd, []string{"123", "--server", "my-server"})
 
 	expOut := "Target removed from Load Balancer 123\n"
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
 
@@ -57,11 +58,12 @@ func TestRemoveTargetLabelSelector(t *testing.T) {
 		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).
 		Return(nil)
 
-	out, _, err := fx.Run(cmd, []string{"123", "--label-selector", "my-label"})
+	out, errOut, err := fx.Run(cmd, []string{"123", "--label-selector", "my-label"})
 
 	expOut := "Target removed from Load Balancer 123\n"
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
 
@@ -82,10 +84,11 @@ func TestRemoveTargetIP(t *testing.T) {
 		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).
 		Return(nil)
 
-	out, _, err := fx.Run(cmd, []string{"123", "--ip", "192.168.2.1"})
+	out, errOut, err := fx.Run(cmd, []string{"123", "--ip", "192.168.2.1"})
 
 	expOut := "Target removed from Load Balancer 123\n"
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

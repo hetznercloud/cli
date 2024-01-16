@@ -49,13 +49,14 @@ func TestCreate(t *testing.T) {
 	fx.ActionWaiter.EXPECT().
 		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321})
 
-	out, _, err := fx.Run(cmd, []string{"--name=my-ip", "--type=ipv4", "--datacenter=fsn1-dc14"})
+	out, errOut, err := fx.Run(cmd, []string{"--name=my-ip", "--type=ipv4", "--datacenter=fsn1-dc14"})
 
 	expOut := `Primary IP 1 created
 IPv4: 192.168.2.1
 `
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
 

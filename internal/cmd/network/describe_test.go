@@ -38,7 +38,7 @@ func TestDescribe(t *testing.T) {
 		Get(gomock.Any(), "test").
 		Return(n, nil, nil)
 
-	out, _, err := fx.Run(cmd, []string{"test"})
+	out, errOut, err := fx.Run(cmd, []string{"test"})
 
 	expOut := fmt.Sprintf(`ID:		123
 Name:		test
@@ -56,5 +56,6 @@ Labels:
 `, util.Datetime(n.Created), humanize.Time(n.Created))
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

@@ -54,7 +54,7 @@ func TestUpdateService(t *testing.T) {
 		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321}).
 		Return(nil)
 
-	out, _, err := fx.Run(cmd, []string{
+	out, errOut, err := fx.Run(cmd, []string{
 		"123",
 		"--listen-port", "80",
 		"--destination-port", "8080",
@@ -80,5 +80,6 @@ func TestUpdateService(t *testing.T) {
 	expOut := "Service 80 on Load Balancer 123 was updated\n"
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

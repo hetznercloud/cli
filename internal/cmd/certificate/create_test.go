@@ -52,11 +52,12 @@ func TestCreateManaged(t *testing.T) {
 			DomainNames: []string{"example.com"},
 		}, nil, nil)
 
-	out, _, err := fx.Run(cmd, []string{"--name", "test", "--type", "managed", "--domain", "example.com"})
+	out, errOut, err := fx.Run(cmd, []string{"--name", "test", "--type", "managed", "--domain", "example.com"})
 
 	expOut := "Certificate 123 created\n"
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
 
@@ -149,11 +150,12 @@ func TestCreateUploaded(t *testing.T) {
 			Type: hcloud.CertificateTypeUploaded,
 		}, nil, nil)
 
-	out, _, err := fx.Run(cmd, []string{"--name", "test", "--key-file", "testdata/key.pem", "--cert-file", "testdata/cert.pem"})
+	out, errOut, err := fx.Run(cmd, []string{"--name", "test", "--key-file", "testdata/key.pem", "--cert-file", "testdata/cert.pem"})
 
 	expOut := "Certificate 123 created\n"
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
 

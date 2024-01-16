@@ -66,10 +66,11 @@ func TestReplaceRules(t *testing.T) {
 		WaitForActions(gomock.Any(), gomock.Any(), []*hcloud.Action{{ID: 123}, {ID: 321}}).
 		Return(nil)
 
-	out, _, err := fx.Run(cmd, []string{"--rules-file", "testdata/rules.json", "test"})
+	out, errOut, err := fx.Run(cmd, []string{"--rules-file", "testdata/rules.json", "test"})
 
 	expOut := "Firewall Rules for Firewall 123 updated\n"
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

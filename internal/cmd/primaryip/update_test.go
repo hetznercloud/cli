@@ -27,11 +27,12 @@ func TestUpdateName(t *testing.T) {
 			AutoDelete: nil,
 		})
 
-	out, _, err := fx.Run(cmd, []string{"123", "--name", "new-name"})
+	out, errOut, err := fx.Run(cmd, []string{"123", "--name", "new-name"})
 
 	expOut := "Primary IP 123 updated\n"
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
 
@@ -50,10 +51,11 @@ func TestUpdateAutoDelete(t *testing.T) {
 			AutoDelete: hcloud.Ptr(false),
 		})
 
-	out, _, err := fx.Run(cmd, []string{"123", "--auto-delete=false"})
+	out, errOut, err := fx.Run(cmd, []string{"123", "--auto-delete=false"})
 
 	expOut := "Primary IP 123 updated\n"
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

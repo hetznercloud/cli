@@ -38,13 +38,14 @@ func TestList(t *testing.T) {
 			},
 		}, nil)
 
-	out, _, err := fx.Run(cmd, []string{})
+	out, errOut, err := fx.Run(cmd, []string{})
 
 	expOut := `ID   NAME        DESCRIPTION                   LOCATION
 4    fsn1-dc14   Falkenstein 1 virtual DC 14   fsn1
 `
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
 
@@ -74,9 +75,10 @@ func TestListJSON(t *testing.T) {
 			},
 		}, nil)
 
-	out, _, err := fx.Run(cmd, []string{"-o=json"})
+	out, errOut, err := fx.Run(cmd, []string{"-o=json"})
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.JSONEq(t, out, `
 [
   {

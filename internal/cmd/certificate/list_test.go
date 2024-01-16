@@ -40,12 +40,13 @@ func TestList(t *testing.T) {
 			},
 		}, nil)
 
-	out, _, err := fx.Run(cmd, []string{})
+	out, errOut, err := fx.Run(cmd, []string{})
 
 	expOut := `ID    NAME   TYPE      DOMAIN NAMES   NOT VALID AFTER                AGE
 123   test   managed   example.com    Wed Aug 20 12:00:00 UTC 2036   20m
 `
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

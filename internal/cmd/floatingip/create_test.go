@@ -41,13 +41,14 @@ func TestCreate(t *testing.T) {
 			Action: nil,
 		}, nil, nil)
 
-	out, _, err := fx.Run(cmd, []string{"--name", "myFloatingIP", "--type", "ipv4", "--home-location", "fsn1"})
+	out, errOut, err := fx.Run(cmd, []string{"--name", "myFloatingIP", "--type", "ipv4", "--home-location", "fsn1"})
 
 	expOut := `Floating IP 123 created
 IPv4: 192.168.2.1
 `
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
 
@@ -124,7 +125,7 @@ func TestCreateProtection(t *testing.T) {
 		Return(&hcloud.Action{ID: 333}, nil, nil)
 	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 333}).Return(nil)
 
-	out, _, err := fx.Run(cmd, []string{"--name", "myFloatingIP", "--type", "ipv4", "--home-location", "fsn1", "--enable-protection", "delete"})
+	out, errOut, err := fx.Run(cmd, []string{"--name", "myFloatingIP", "--type", "ipv4", "--home-location", "fsn1", "--enable-protection", "delete"})
 
 	expOut := `Floating IP 123 created
 Resource protection enabled for floating IP 123
@@ -132,5 +133,6 @@ IPv4: 192.168.2.1
 `
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

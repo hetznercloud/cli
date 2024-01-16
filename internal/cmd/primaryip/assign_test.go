@@ -56,10 +56,11 @@ func TestAssign(t *testing.T) {
 
 	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), gomock.Any(), action).Return(nil)
 
-	out, _, err := fx.Run(cmd, []string{"13", "--server", "15"})
+	out, errOut, err := fx.Run(cmd, []string{"13", "--server", "15"})
 
 	expOut := "Primary IP 13 assigned to server 15\n"
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
