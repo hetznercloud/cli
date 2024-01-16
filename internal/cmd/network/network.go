@@ -3,6 +3,7 @@ package network
 import (
 	"github.com/spf13/cobra"
 
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 )
 
@@ -14,22 +15,29 @@ func NewCommand(s state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 	}
+	cmd.AddGroup(&cobra.Group{ID: "general", Title: "General"})
+	cmd.AddGroup(&cobra.Group{ID: "protection", Title: "Protection"})
+	cmd.AddGroup(&cobra.Group{ID: "route", Title: "Routes"})
+	cmd.AddGroup(&cobra.Group{ID: "subnet", Title: "Subnets"})
+
 	cmd.AddCommand(
-		ListCmd.CobraCommand(s),
-		DescribeCmd.CobraCommand(s),
-		CreateCmd.CobraCommand(s),
-		UpdateCmd.CobraCommand(s),
-		DeleteCmd.CobraCommand(s),
-		ChangeIPRangeCmd.CobraCommand(s),
-		AddRouteCmd.CobraCommand(s),
-		RemoveRouteCmd.CobraCommand(s),
-		AddSubnetCmd.CobraCommand(s),
-		RemoveSubnetCmd.CobraCommand(s),
-		LabelCmds.AddCobraCommand(s),
-		LabelCmds.RemoveCobraCommand(s),
-		EnableProtectionCmd.CobraCommand(s),
-		DisableProtectionCmd.CobraCommand(s),
-		ExposeRoutesToVSwitchCmd.CobraCommand(s),
+		util.WithGroup("general", ListCmd.CobraCommand(s)),
+		util.WithGroup("general", DescribeCmd.CobraCommand(s)),
+		util.WithGroup("general", DeleteCmd.CobraCommand(s)),
+		util.WithGroup("general", UpdateCmd.CobraCommand(s)),
+		util.WithGroup("general", LabelCmds.AddCobraCommand(s)),
+		util.WithGroup("general", LabelCmds.RemoveCobraCommand(s)),
+		util.WithGroup("general", ChangeIPRangeCmd.CobraCommand(s)),
+
+		util.WithGroup("protection", EnableProtectionCmd.CobraCommand(s)),
+		util.WithGroup("protection", DisableProtectionCmd.CobraCommand(s)),
+
+		util.WithGroup("route", AddRouteCmd.CobraCommand(s)),
+		util.WithGroup("route", RemoveRouteCmd.CobraCommand(s)),
+		util.WithGroup("route", ExposeRoutesToVSwitchCmd.CobraCommand(s)),
+
+		util.WithGroup("subnet", AddSubnetCmd.CobraCommand(s)),
+		util.WithGroup("subnet", RemoveSubnetCmd.CobraCommand(s)),
 	)
 	return cmd
 }

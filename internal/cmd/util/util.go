@@ -192,3 +192,9 @@ func ValidateRequiredFlags(flags *pflag.FlagSet, names ...string) error {
 	}
 	return nil
 }
+
+// WithGroup sets the GroupID field on the passed command.
+func WithGroup(groupId string, cmd *cobra.Command) *cobra.Command {
+	cmd.GroupID = groupId
+	return cmd
+}
