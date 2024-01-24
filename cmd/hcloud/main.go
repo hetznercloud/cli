@@ -8,7 +8,6 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/all"
 	"github.com/hetznercloud/cli/internal/cmd/certificate"
 	"github.com/hetznercloud/cli/internal/cmd/completion"
-	"github.com/hetznercloud/cli/internal/cmd/context"
 	"github.com/hetznercloud/cli/internal/cmd/datacenter"
 	"github.com/hetznercloud/cli/internal/cmd/firewall"
 	"github.com/hetznercloud/cli/internal/cmd/floatingip"
@@ -36,14 +35,10 @@ func init() {
 }
 
 func main() {
-	configPath := os.Getenv("HCLOUD_CONFIG")
-	if configPath == "" {
-		configPath = config.DefaultConfigPath()
-	}
 
-	cfg, err := config.ReadConfig(configPath)
+	cfg, err := config.ReadConfig()
 	if err != nil {
-		log.Fatalf("unable to read config file %q: %s\n", configPath, err)
+		log.Fatalf("unable to read config file %s\n", err)
 	}
 
 	s, err := state.New(cfg)
@@ -61,7 +56,7 @@ func main() {
 		version.NewCommand(s),
 		completion.NewCommand(s),
 		servertype.NewCommand(s),
-		context.NewCommand(s),
+		//		context.NewCommand(s),
 		datacenter.NewCommand(s),
 		location.NewCommand(s),
 		iso.NewCommand(s),
@@ -74,6 +69,8 @@ func main() {
 		placementgroup.NewCommand(s),
 		primaryip.NewCommand(s),
 	)
+
+	rootCommand.Flags().AddFlagSet(s.Config().FlagSet())
 
 	if err := rootCommand.Execute(); err != nil {
 		log.Fatalln(err)

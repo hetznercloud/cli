@@ -1,13 +1,12 @@
 package cli
 
 import (
+	"fmt"
 	"os"
-	"time"
 
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/state"
-	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 func NewRootCommand(s state.State) *cobra.Command {
@@ -20,18 +19,29 @@ func NewRootCommand(s state.State) *cobra.Command {
 		SilenceErrors:         true,
 		DisableFlagsInUseLine: true,
 	}
-	cmd.PersistentFlags().Duration("poll-interval", 500*time.Millisecond, "Interval at which to poll information, for example action progress")
-	cmd.PersistentFlags().Bool("quiet", false, "Only print error messages")
+	cmd.PersistentFlags().String("context", "", "Context to use")
+	cmd.PersistentFlags().String("config", "", "Config file path")
+
+	cmd.PersistentFlags().String("token", "", "Hetzner Cloud API token")
+	cmd.PersistentFlags().String("endpoint", "", "Hetzner Cloud API endpoint")
+	cmd.PersistentFlags().Bool("debug", false, "Enable debug output")
+	cmd.PersistentFlags().String("debug-file", "", "Write debug output to file")
+	cmd.PersistentFlags().Bool("quiet", false, "Only show command output")
+	cmd.PersistentFlags().Duration("poll-interval", 0, "Interval for polling resources")
 
 	cmd.PersistentPreRunE = func(cmd *cobra.Command, args []string) error {
-		pollInterval, err := cmd.Flags().GetDuration("poll-interval")
-		if err != nil {
+		// flags have now been parsed into viper; active context might have changed
+		/*if err := s.Config().LoadActiveContext(); err != nil {
 			return err
 		}
-		s.Client().WithOpts(hcloud.WithPollBackoffFunc(hcloud.ConstantBackoff(pollInterval)))
+		s.Client().FromConfig(s.Config())*/
+
+		var err error
+
+		fmt.Println("ssh keys:", s.Config().GetStringSlice("ssh-keys"))
 
 		out := os.Stdout
-		if quiet, _ := cmd.Flags().GetBool("quiet"); quiet {
+		if quiet := s.Config().GetBool("quiet"); quiet {
 			out, err = os.Open(os.DevNull)
 			if err != nil {
 				return err

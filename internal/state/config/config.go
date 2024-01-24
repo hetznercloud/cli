@@ -1,11 +1,14 @@
 package config
 
 import (
+	"bytes"
 	"fmt"
 	"os"
-	"path/filepath"
+	"time"
 
-	toml "github.com/pelletier/go-toml/v2"
+	"github.com/pelletier/go-toml/v2"
+	"github.com/spf13/pflag"
+	"github.com/spf13/viper"
 )
 
 //go:generate mockgen -package config -destination zz_config_mock.go github.com/hetznercloud/cli/internal/state/config Config
@@ -13,12 +16,21 @@ import (
 type Config interface {
 	Write() error
 
+	// LoadActiveContext loads values from the active context
+	LoadActiveContext() error
+
 	ActiveContext() *Context
 	SetActiveContext(*Context)
 	Contexts() []*Context
 	SetContexts([]*Context)
-	Endpoint() string
-	SetEndpoint(string)
+
+	FlagSet() *pflag.FlagSet
+
+	Get(key string) any
+	GetString(key string) string
+	GetBool(key string) bool
+	GetDuration(key string) time.Duration
+	GetStringSlice(key string) []string
 }
 
 type Context struct {
@@ -27,71 +39,125 @@ type Context struct {
 }
 
 type config struct {
-	path          string
-	endpoint      string
-	activeContext *Context   `toml:"active_context,omitempty"`
-	contexts      []*Context `toml:"contexts"`
+	flagSet *pflag.FlagSet
+	Config
 }
 
-func ReadConfig(path string) (Config, error) {
-	cfg := &config{path: path}
+func ReadConfig() (Config, error) {
 
-	_, err := os.Stat(path)
-	if err != nil {
-		if os.IsNotExist(err) {
-			return cfg, nil
-		}
-		return cfg, err
+	cfg := &config{
+		flagSet: pflag.NewFlagSet("hcloud", pflag.ContinueOnError),
 	}
 
-	data, err := os.ReadFile(path)
-	if err != nil {
+	viper.SetConfigType("toml")
+	viper.SetEnvPrefix("HCLOUD")
+
+	addFlag(cfg.flagSet.String, "config", DefaultConfigPath(), "Config file path")
+	addFlag(cfg.flagSet.String, "token", "", "Hetzner Cloud API token")
+	addFlag(cfg.flagSet.String, "endpoint", "", "Hetzner Cloud API endpoint")
+	addFlag(cfg.flagSet.Bool, "debug", false, "Enable debug output")
+	addFlag(cfg.flagSet.String, "debug-file", "", "Write debug output to file")
+	addFlag(cfg.flagSet.String, "context", "", "Active context")
+	addFlag(cfg.flagSet.Duration, "poll-interval", 500*time.Millisecond, "Interval at which to poll information, for example action progress")
+	addFlag(cfg.flagSet.Bool, "quiet", false, "Only print error messages")
+	addFlag(cfg.flagSet.StringSlice, "default-ssh-keys", nil, "Default SSH keys for new servers")
+
+	if err := cfg.flagSet.Parse(os.Args[1:]); err != nil {
+		return nil, err
+	}
+	if err := viper.BindPFlags(cfg.flagSet); err != nil {
 		return nil, err
 	}
 
-	if err = cfg.unmarshal(data); err != nil {
+	// load env already so we can determine the active context
+	viper.AutomaticEnv()
+
+	// load active context
+	if err := cfg.LoadActiveContext(); err != nil {
 		return nil, err
 	}
 
 	return cfg, nil
 }
 
-func (cfg *config) Write() error {
-	data, err := cfg.marshal()
+func (*config) LoadActiveContext() error {
+
+	var schema struct {
+		ActiveContext string           `toml:"active_context"`
+		Contexts      []map[string]any `toml:"contexts"`
+	}
+
+	// read config file
+	cfgBytes, err := os.ReadFile(viper.GetString("config"))
 	if err != nil {
 		return err
 	}
-	if err := os.MkdirAll(filepath.Dir(cfg.path), 0777); err != nil {
+	if err := toml.Unmarshal(cfgBytes, &schema); err != nil {
 		return err
 	}
-	if err := os.WriteFile(cfg.path, data, 0600); err != nil {
+
+	// read config file into viper (particularly active_context)
+	if err := viper.ReadConfig(bytes.NewReader(cfgBytes)); err != nil {
+		return err
+	}
+
+	// read active context from viper
+	if ctx := viper.GetString("context"); ctx != "" {
+		schema.ActiveContext = ctx
+	}
+
+	// find active context in schema
+	var activeContext any
+	for _, ctx := range schema.Contexts {
+		if name, ok := ctx["name"].(string); ok && name == schema.ActiveContext {
+			activeContext = ctx
+			break
+		}
+	}
+
+	if activeContext == nil {
+		_, _ = fmt.Fprintf(os.Stderr, "Warning: active context %q not found\n", schema.ActiveContext)
+	}
+
+	// merge active context into viper
+	ctxBytes, err := toml.Marshal(activeContext)
+	if err := viper.MergeConfig(bytes.NewReader(ctxBytes)); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (cfg *config) ActiveContext() *Context {
-	return cfg.activeContext
+func addFlag[T any](f func(string, T, string) *T, key string, defaultVal T, usage string) {
+	f(key, defaultVal, usage)
+	viper.SetDefault(key, defaultVal)
 }
 
-func (cfg *config) SetActiveContext(context *Context) {
-	cfg.activeContext = context
+func (cfg *config) FlagSet() *pflag.FlagSet {
+	return cfg.flagSet
 }
 
-func (cfg *config) Contexts() []*Context {
-	return cfg.contexts
+func (*config) Get(key string) any {
+	return viper.Get(key)
 }
 
-func (cfg *config) SetContexts(contexts []*Context) {
-	cfg.contexts = contexts
+func (*config) GetString(key string) string {
+	return viper.GetString(key)
 }
 
-func (cfg *config) Endpoint() string {
-	return cfg.endpoint
+func (*config) GetBool(key string) bool {
+	return viper.GetBool(key)
 }
 
-func (cfg *config) SetEndpoint(endpoint string) {
-	cfg.endpoint = endpoint
+func (*config) GetDuration(key string) time.Duration {
+	return viper.GetDuration(key)
+}
+
+func (*config) GetStringSlice(key string) []string {
+	return viper.GetStringSlice(key)
+}
+
+func (cfg *config) Write() error {
+	return fmt.Errorf("not implemented")
 }
 
 func ContextNames(cfg Config) []string {
@@ -120,53 +186,4 @@ func RemoveContext(cfg Config, context *Context) {
 		}
 	}
 	cfg.SetContexts(filtered)
-}
-
-type rawConfig struct {
-	ActiveContext string             `toml:"active_context,omitempty"`
-	Contexts      []rawConfigContext `toml:"contexts"`
-}
-
-type rawConfigContext struct {
-	Name  string `toml:"name"`
-	Token string `toml:"token"`
-}
-
-func (cfg *config) marshal() ([]byte, error) {
-	var raw rawConfig
-	if cfg.activeContext != nil {
-		raw.ActiveContext = cfg.activeContext.Name
-	}
-	for _, context := range cfg.contexts {
-		raw.Contexts = append(raw.Contexts, rawConfigContext{
-			Name:  context.Name,
-			Token: context.Token,
-		})
-	}
-	return toml.Marshal(raw)
-}
-
-func (cfg *config) unmarshal(data []byte) error {
-	var raw rawConfig
-	if err := toml.Unmarshal(data, &raw); err != nil {
-		return err
-	}
-	for _, rawContext := range raw.Contexts {
-		cfg.contexts = append(cfg.contexts, &Context{
-			Name:  rawContext.Name,
-			Token: rawContext.Token,
-		})
-	}
-	if raw.ActiveContext != "" {
-		for _, c := range cfg.contexts {
-			if c.Name == raw.ActiveContext {
-				cfg.activeContext = c
-				break
-			}
-		}
-		if cfg.activeContext == nil {
-			return fmt.Errorf("active context %s not found", raw.ActiveContext)
-		}
-	}
-	return nil
 }

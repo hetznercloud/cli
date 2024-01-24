@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"golang.org/x/crypto/ssh"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
@@ -76,6 +77,8 @@ var CreateCmd = base.CreateCmd{
 		cmd.RegisterFlagCompletionFunc("firewall", cmpl.SuggestCandidatesF(client.Firewall().Names))
 
 		cmd.Flags().Bool("automount", false, "Automount volumes after attach (default: false)")
+		viper.BindPFlag("server.create.automount", cmd.Flags().Lookup("automount"))
+
 		cmd.Flags().Bool("allow-deprecated-image", false, "Enable the use of deprecated images (default: false)")
 
 		cmd.Flags().String("placement-group", "", "Placement Group (ID of name)")

@@ -1,8 +1,10 @@
 package hcapi2
 
 import (
+	"os"
 	"sync"
 
+	"github.com/hetznercloud/cli/internal/state/config"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
@@ -26,7 +28,7 @@ type Client interface {
 	PlacementGroup() PlacementGroupClient
 	RDNS() RDNSClient
 	PrimaryIP() PrimaryIPClient
-	WithOpts(...hcloud.ClientOption)
+	FromConfig(config.Config)
 }
 
 type clientCache struct {
@@ -54,28 +56,40 @@ type client struct {
 	client *hcloud.Client
 	cache  clientCache
 
-	mu   sync.Mutex
-	opts []hcloud.ClientOption
+	mu          sync.Mutex
+	initialOpts []hcloud.ClientOption
 }
 
 // NewClient creates a new CLI API client extending hcloud.Client.
-func NewClient(opts ...hcloud.ClientOption) Client {
+func NewClient(initialOpts ...hcloud.ClientOption) Client {
 	c := &client{
-		opts: opts,
+		initialOpts: initialOpts,
 	}
-	c.update()
 	return c
 }
 
-func (c *client) WithOpts(opts ...hcloud.ClientOption) {
+func (c *client) FromConfig(cfg config.Config) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
-	c.opts = append(c.opts, opts...)
-	c.update()
-}
 
-func (c *client) update() {
-	c.client = hcloud.NewClient(c.opts...)
+	opts := append(c.initialOpts, hcloud.WithToken(cfg.GetString("token")))
+	if ep := cfg.GetString("endpoint"); ep != "" {
+		opts = append(opts, hcloud.WithEndpoint(ep))
+	}
+	if cfg.GetBool("debug") {
+		if filePath := cfg.GetString("debug_file"); filePath == "" {
+			opts = append(opts, hcloud.WithDebugWriter(os.Stderr))
+		} else {
+			writer, _ := os.Create(filePath)
+			opts = append(opts, hcloud.WithDebugWriter(writer))
+		}
+	}
+	pollInterval := cfg.GetDuration("poll_interval")
+	if pollInterval > 0 {
+		opts = append(opts, hcloud.WithBackoffFunc(hcloud.ConstantBackoff(pollInterval)))
+	}
+
+	c.client = hcloud.NewClient(opts...)
 	c.cache = clientCache{}
 }
 
