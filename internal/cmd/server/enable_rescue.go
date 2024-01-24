@@ -23,7 +23,7 @@ var EnableRescueCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 		cmd.Flags().String("type", "linux64", "Rescue type")
-		cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("linux64", "linux32"))
+		cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("linux64"))
 
 		cmd.Flags().StringSlice("ssh-key", nil, "ID or name of SSH key to inject (can be specified multiple times)")
 		cmd.RegisterFlagCompletionFunc("ssh-key", cmpl.SuggestCandidatesF(client.SSHKey().Names))
@@ -43,7 +43,16 @@ var EnableRescueCmd = base.Cmd{
 			opts hcloud.ServerEnableRescueOpts
 		)
 		rescueType, _ := cmd.Flags().GetString("type")
+
 		opts.Type = hcloud.ServerRescueType(rescueType)
+		switch opts.Type {
+		case hcloud.ServerRescueTypeLinux64:
+			break
+		case hcloud.ServerRescueTypeLinux32:
+			return fmt.Errorf("rescue type not supported anymore: %s", opts.Type)
+		default:
+			return fmt.Errorf("invalid rescue type: %s", opts.Type)
+		}
 
 		sshKeys, _ := cmd.Flags().GetStringSlice("ssh-key")
 		for _, sshKeyIDOrName := range sshKeys {
