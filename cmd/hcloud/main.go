@@ -8,6 +8,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/all"
 	"github.com/hetznercloud/cli/internal/cmd/certificate"
 	"github.com/hetznercloud/cli/internal/cmd/completion"
+	configCmd "github.com/hetznercloud/cli/internal/cmd/config"
 	"github.com/hetznercloud/cli/internal/cmd/context"
 	"github.com/hetznercloud/cli/internal/cmd/datacenter"
 	"github.com/hetznercloud/cli/internal/cmd/firewall"
@@ -37,14 +38,10 @@ func init() {
 }
 
 func main() {
-	configPath := os.Getenv("HCLOUD_CONFIG")
-	if configPath == "" {
-		configPath = config.DefaultConfigPath()
-	}
 
-	cfg, err := config.ReadConfig(configPath)
-	if err != nil {
-		log.Fatalf("unable to read config file %q: %s\n", configPath, err)
+	cfg := config.NewConfig()
+	if err := config.ReadConfig(cfg); err != nil {
+		log.Fatalf("unable to read config file %s\n", err)
 	}
 
 	s, err := state.New(cfg)
@@ -78,6 +75,7 @@ func main() {
 		version.NewCommand(s),
 		completion.NewCommand(s),
 		context.NewCommand(s),
+		configCmd.NewCommand(s),
 	)
 
 	if err := rootCommand.Execute(); err != nil {

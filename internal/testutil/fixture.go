@@ -8,6 +8,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	hcapi2_mock "github.com/hetznercloud/cli/internal/hcapi2/mock"
@@ -28,12 +29,20 @@ type Fixture struct {
 func NewFixture(t *testing.T) *Fixture {
 	ctrl := gomock.NewController(t)
 
+	viper.Reset()
+	config.ResetFlags()
+	cfg := &config.MockConfig{}
+
+	if err := config.ReadConfig(cfg); err != nil {
+		t.Fatal(err)
+	}
+
 	return &Fixture{
 		MockController: ctrl,
 		Client:         hcapi2_mock.NewMockClient(ctrl),
 		ActionWaiter:   state.NewMockActionWaiter(ctrl),
 		TokenEnsurer:   state.NewMockTokenEnsurer(ctrl),
-		Config:         config.NewMockConfig(ctrl),
+		Config:         cfg,
 	}
 }
 

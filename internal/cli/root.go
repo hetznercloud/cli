@@ -2,12 +2,11 @@ package cli
 
 import (
 	"os"
-	"time"
 
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/state"
-	"github.com/hetznercloud/hcloud-go/v2/hcloud"
+	"github.com/hetznercloud/cli/internal/state/config"
 )
 
 func NewRootCommand(s state.State) *cobra.Command {
@@ -20,18 +19,14 @@ func NewRootCommand(s state.State) *cobra.Command {
 		SilenceErrors:         true,
 		DisableFlagsInUseLine: true,
 	}
-	cmd.PersistentFlags().Duration("poll-interval", 500*time.Millisecond, "Interval at which to poll information, for example action progress")
-	cmd.PersistentFlags().Bool("quiet", false, "Only print error messages")
+
+	cmd.PersistentFlags().AddFlagSet(config.FlagSet)
 
 	cmd.PersistentPreRunE = func(cmd *cobra.Command, args []string) error {
-		pollInterval, err := cmd.Flags().GetDuration("poll-interval")
-		if err != nil {
-			return err
-		}
-		s.Client().WithOpts(hcloud.WithPollBackoffFunc(hcloud.ConstantBackoff(pollInterval)))
-
+		var err error
 		out := os.Stdout
-		if quiet, _ := cmd.Flags().GetBool("quiet"); quiet {
+		if quiet := config.OptionQuiet.Value(); quiet {
+			//if quiet := viper.GetBool("quiet"); quiet {
 			out, err = os.Open(os.DevNull)
 			if err != nil {
 				return err

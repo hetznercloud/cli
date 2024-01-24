@@ -7,6 +7,7 @@ import (
 	"github.com/golang/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/server"
+	"github.com/hetznercloud/cli/internal/state/config"
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -28,7 +29,7 @@ func TestSSH(t *testing.T) {
 			Get(gomock.Any(), srv.Name).
 			Return(&srv, nil, nil)
 
-		fx.Config.EXPECT().SSHPath().Return("echo")
+		config.OptionSSHPath.SetValue("echo")
 	}
 
 	testutil.TestCommand(t, &server.SSHCmd, map[string]testutil.TestCase{
