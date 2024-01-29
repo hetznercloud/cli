@@ -1,11 +1,11 @@
 {
   "certificate": {
-    "certificate": "",
+    "certificate": "certificate data placeholder",
     "created": "2020-08-24T12:00:00Z",
     "domain_names": [
       "example.com"
     ],
-    "fingerprint": "",
+    "fingerprint": "fingerprint placeholder",
     "id": 123,
     "labels": {
       "key": "value"
@@ -14,14 +14,8 @@
     "not_valid_after": "2036-08-12T12:00:00Z",
     "not_valid_before": "2020-08-24T12:00:00Z",
     "status": {
-      "error": {
-        "Details": null,
-        "code": "cert_error",
-        "details": null,
-        "message": "Certificate error"
-      },
-      "issuance": "",
-      "renewal": ""
+      "issuance": "completed",
+      "renewal": "unavailable"
     },
     "type": "managed",
     "used_by": [

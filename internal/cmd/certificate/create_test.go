@@ -43,6 +43,14 @@ func TestCreateManaged(t *testing.T) {
 		}, nil, nil)
 	fx.ActionWaiter.EXPECT().
 		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321})
+	fx.Client.CertificateClient.EXPECT().
+		GetByID(gomock.Any(), int64(123)).
+		Return(&hcloud.Certificate{
+			ID:          123,
+			Name:        "test",
+			Type:        hcloud.CertificateTypeManaged,
+			DomainNames: []string{"example.com"},
+		}, nil, nil)
 
 	out, _, err := fx.Run(cmd, []string{"--name", "test", "--type", "managed", "--domain", "example.com"})
 
@@ -71,8 +79,8 @@ func TestCreateManagedJSON(t *testing.T) {
 				Name:           "test",
 				Type:           hcloud.CertificateTypeManaged,
 				Created:        time.Date(2020, 8, 24, 12, 0, 0, 0, time.UTC),
-				NotValidBefore: time.Date(2020, 8, 24, 12, 0, 0, 0, time.UTC),
-				NotValidAfter:  time.Date(2036, 8, 12, 12, 0, 0, 0, time.UTC),
+				NotValidBefore: time.Time{},
+				NotValidAfter:  time.Time{},
 				DomainNames:    []string{"example.com"},
 				Labels:         map[string]string{"key": "value"},
 				UsedBy: []hcloud.CertificateUsedByRef{{
@@ -80,16 +88,36 @@ func TestCreateManagedJSON(t *testing.T) {
 					Type: hcloud.CertificateUsedByRefTypeLoadBalancer,
 				}},
 				Status: &hcloud.CertificateStatus{
-					Error: &hcloud.Error{
-						Code:    "cert_error",
-						Message: "Certificate error",
-					},
+					Issuance: hcloud.CertificateStatusTypePending,
+					Renewal:  hcloud.CertificateStatusTypeUnavailable,
 				},
 			},
 			Action: &hcloud.Action{ID: 321},
 		}, nil, nil)
 	fx.ActionWaiter.EXPECT().
 		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321})
+	fx.Client.CertificateClient.EXPECT().
+		GetByID(gomock.Any(), int64(123)).
+		Return(&hcloud.Certificate{
+			ID:             123,
+			Name:           "test",
+			Type:           hcloud.CertificateTypeManaged,
+			Created:        time.Date(2020, 8, 24, 12, 0, 0, 0, time.UTC),
+			NotValidBefore: time.Date(2020, 8, 24, 12, 0, 0, 0, time.UTC),
+			NotValidAfter:  time.Date(2036, 8, 12, 12, 0, 0, 0, time.UTC),
+			DomainNames:    []string{"example.com"},
+			Labels:         map[string]string{"key": "value"},
+			UsedBy: []hcloud.CertificateUsedByRef{{
+				ID:   123,
+				Type: hcloud.CertificateUsedByRefTypeLoadBalancer,
+			}},
+			Status: &hcloud.CertificateStatus{
+				Issuance: hcloud.CertificateStatusTypeCompleted,
+				Renewal:  hcloud.CertificateStatusTypeUnavailable,
+			},
+			Fingerprint: "fingerprint placeholder",
+			Certificate: "certificate data placeholder",
+		}, nil, nil)
 
 	jsonOut, out, err := fx.Run(cmd, []string{"-o=json", "--name", "test", "--type", "managed", "--domain", "example.com"})
 
