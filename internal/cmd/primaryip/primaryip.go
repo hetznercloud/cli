@@ -22,7 +22,7 @@ func NewCommand(s state.State) *cobra.Command {
 		DeleteCmd.CobraCommand(s),
 		AssignCmd.CobraCommand(s),
 		UnAssignCmd.CobraCommand(s),
-		ChangeDNSCmd.CobraCommand(s),
+		SetRDNSCmd.CobraCommand(s),
 		EnableProtectionCmd.CobraCommand(s),
 		DisableProtectionCmd.CobraCommand(s),
 		LabelCmds.AddCobraCommand(s),
