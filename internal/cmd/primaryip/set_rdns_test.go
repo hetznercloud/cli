@@ -1,6 +1,7 @@
 package primaryip_test
 
 import (
+	"net"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -11,11 +12,11 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-func TestChangeDNS(t *testing.T) {
+func TestSetRDNS(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := primaryip.ChangeDNSCmd.CobraCommand(fx.State())
+	cmd := primaryip.SetRDNSCmd.CobraCommand(fx.State())
 	action := &hcloud.Action{ID: 1}
 	fx.ExpectEnsureToken()
 	fx.Client.PrimaryIPClient.EXPECT().
@@ -28,14 +29,12 @@ func TestChangeDNS(t *testing.T) {
 			&hcloud.Response{},
 			nil,
 		)
-	fx.Client.PrimaryIPClient.EXPECT().
+	fx.Client.RDNSClient.EXPECT().
 		ChangeDNSPtr(
 			gomock.Any(),
-			hcloud.PrimaryIPChangeDNSPtrOpts{
-				ID:     13,
-				DNSPtr: "server.your-host.de",
-				IP:     "192.168.0.1",
-			},
+			&hcloud.PrimaryIP{ID: 13},
+			net.ParseIP("192.168.0.1"),
+			hcloud.Ptr("server.your-host.de"),
 		).
 		Return(
 			action,
@@ -47,7 +46,7 @@ func TestChangeDNS(t *testing.T) {
 
 	out, _, err := fx.Run(cmd, []string{"--hostname=server.your-host.de", "--ip=192.168.0.1", "13"})
 
-	expOut := "Primary IP 13 DNS pointer: server.your-host.de associated to 192.168.0.1\n"
+	expOut := "Reverse DNS of Primary IP 13 changed\n"
 
 	assert.NoError(t, err)
 	assert.Equal(t, expOut, out)
