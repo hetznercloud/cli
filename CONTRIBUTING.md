@@ -13,7 +13,7 @@ when making changes to the code.
 
 ## Unit tests
 
-Unit tests are located in the `internal` directory. Run them with
+Unit tests are located in the `internal` directory. Run them with:
 
 ```sh
 go test ./...
@@ -21,7 +21,7 @@ go test ./...
 
 ## Build
 
-To build the binary, run
+To build the binary, run:
 
 ```sh
 go build -o hcloud-cli ./cmd/hcloud
