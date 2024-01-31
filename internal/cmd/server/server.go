@@ -15,58 +15,66 @@ func NewCommand(s state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 	}
-	cmd.AddGroup(&cobra.Group{ID: "general", Title: "General"})
-	cmd.AddGroup(&cobra.Group{ID: "protection", Title: "Protection"})
-	cmd.AddGroup(&cobra.Group{ID: "rescue", Title: "Rescue"})
-	cmd.AddGroup(&cobra.Group{ID: "power", Title: "Power/Reboot"})
-	cmd.AddGroup(&cobra.Group{ID: "network", Title: "Networks"})
-	cmd.AddGroup(&cobra.Group{ID: "iso", Title: "ISO"})
-	cmd.AddGroup(&cobra.Group{ID: "placement-group", Title: "Placement Groups"})
-	cmd.AddGroup(&cobra.Group{ID: "backup", Title: "Backup"})
+
+	util.AddGroup(cmd, "general", "General",
+		ListCmd.CobraCommand(s),
+		DescribeCmd.CobraCommand(s),
+		CreateCmd.CobraCommand(s),
+		DeleteCmd.CobraCommand(s),
+		UpdateCmd.CobraCommand(s),
+		CreateImageCmd.CobraCommand(s),
+		ChangeTypeCmd.CobraCommand(s),
+		RebuildCmd.CobraCommand(s),
+		LabelCmds.AddCobraCommand(s),
+		LabelCmds.RemoveCobraCommand(s),
+	)
+
+	util.AddGroup(cmd, "protection", "Protection",
+		EnableProtectionCmd.CobraCommand(s),
+		DisableProtectionCmd.CobraCommand(s),
+	)
+
+	util.AddGroup(cmd, "rescue", "Rescue",
+		EnableRescueCmd.CobraCommand(s),
+		DisableRescueCmd.CobraCommand(s),
+	)
+
+	util.AddGroup(cmd, "power", "Power/Reboot",
+		PoweronCmd.CobraCommand(s),
+		PoweroffCmd.CobraCommand(s),
+		RebootCmd.CobraCommand(s),
+		ShutdownCmd.CobraCommand(s),
+		ResetCmd.CobraCommand(s),
+	)
+
+	util.AddGroup(cmd, "network", "Networks",
+		AttachToNetworkCmd.CobraCommand(s),
+		DetachFromNetworkCmd.CobraCommand(s),
+		ChangeAliasIPsCmd.CobraCommand(s),
+		SetRDNSCmd.CobraCommand(s),
+	)
+
+	util.AddGroup(cmd, "iso", "ISO",
+		AttachISOCmd.CobraCommand(s),
+		DetachISOCmd.CobraCommand(s),
+	)
+
+	util.AddGroup(cmd, "placement-group", "Placement Groups",
+		AddToPlacementGroupCmd.CobraCommand(s),
+		RemoveFromPlacementGroupCmd.CobraCommand(s),
+	)
+
+	util.AddGroup(cmd, "backup", "Backup",
+		EnableBackupCmd.CobraCommand(s),
+		DisableBackupCmd.CobraCommand(s),
+	)
 
 	cmd.AddCommand(
-		util.WithGroup("general", ListCmd.CobraCommand(s)),
-		util.WithGroup("general", DescribeCmd.CobraCommand(s)),
-		util.WithGroup("general", CreateCmd.CobraCommand(s)),
-		util.WithGroup("general", DeleteCmd.CobraCommand(s)),
-		util.WithGroup("general", UpdateCmd.CobraCommand(s)),
-		util.WithGroup("general", CreateImageCmd.CobraCommand(s)),
-		util.WithGroup("general", ChangeTypeCmd.CobraCommand(s)),
-		util.WithGroup("general", RebuildCmd.CobraCommand(s)),
-		util.WithGroup("general", LabelCmds.AddCobraCommand(s)),
-		util.WithGroup("general", LabelCmds.RemoveCobraCommand(s)),
-
-		util.WithGroup("protection", EnableProtectionCmd.CobraCommand(s)),
-		util.WithGroup("protection", DisableProtectionCmd.CobraCommand(s)),
-
-		util.WithGroup("rescue", EnableRescueCmd.CobraCommand(s)),
-		util.WithGroup("rescue", DisableRescueCmd.CobraCommand(s)),
-
-		util.WithGroup("power", PoweronCmd.CobraCommand(s)),
-		util.WithGroup("power", PoweroffCmd.CobraCommand(s)),
-		util.WithGroup("power", RebootCmd.CobraCommand(s)),
-		util.WithGroup("power", ShutdownCmd.CobraCommand(s)),
-		util.WithGroup("power", ResetCmd.CobraCommand(s)),
-
-		util.WithGroup("network", AttachToNetworkCmd.CobraCommand(s)),
-		util.WithGroup("network", DetachFromNetworkCmd.CobraCommand(s)),
-		util.WithGroup("network", ChangeAliasIPsCmd.CobraCommand(s)),
-		util.WithGroup("network", SetRDNSCmd.CobraCommand(s)),
-
-		util.WithGroup("iso", AttachISOCmd.CobraCommand(s)),
-		util.WithGroup("iso", DetachISOCmd.CobraCommand(s)),
-
-		util.WithGroup("placement-group", AddToPlacementGroupCmd.CobraCommand(s)),
-		util.WithGroup("placement-group", RemoveFromPlacementGroupCmd.CobraCommand(s)),
-
-		util.WithGroup("backup", EnableBackupCmd.CobraCommand(s)),
-		util.WithGroup("backup", DisableBackupCmd.CobraCommand(s)),
-
-		util.WithGroup("", SSHCmd.CobraCommand(s)),
-		util.WithGroup("", IPCmd.CobraCommand(s)),
-		util.WithGroup("", RequestConsoleCmd.CobraCommand(s)),
-		util.WithGroup("", ResetPasswordCmd.CobraCommand(s)),
-		util.WithGroup("", MetricsCmd.CobraCommand(s)),
+		SSHCmd.CobraCommand(s),
+		IPCmd.CobraCommand(s),
+		RequestConsoleCmd.CobraCommand(s),
+		ResetPasswordCmd.CobraCommand(s),
+		MetricsCmd.CobraCommand(s),
 	)
 	return cmd
 }

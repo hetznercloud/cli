@@ -15,19 +15,19 @@ func NewCommand(s state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 	}
-	cmd.AddGroup(&cobra.Group{ID: "general", Title: "General"})
-	cmd.AddGroup(&cobra.Group{ID: "protection", Title: "Protection"})
 
-	cmd.AddCommand(
-		util.WithGroup("general", ListCmd.CobraCommand(s)),
-		util.WithGroup("general", DescribeCmd.CobraCommand(s)),
-		util.WithGroup("general", DeleteCmd.CobraCommand(s)),
-		util.WithGroup("general", UpdateCmd.CobraCommand(s)),
-		util.WithGroup("general", LabelCmds.AddCobraCommand(s)),
-		util.WithGroup("general", LabelCmds.RemoveCobraCommand(s)),
+	util.AddGroup(cmd, "general", "General",
+		ListCmd.CobraCommand(s),
+		DescribeCmd.CobraCommand(s),
+		DeleteCmd.CobraCommand(s),
+		UpdateCmd.CobraCommand(s),
+		LabelCmds.AddCobraCommand(s),
+		LabelCmds.RemoveCobraCommand(s),
+	)
 
-		util.WithGroup("protection", EnableProtectionCmd.CobraCommand(s)),
-		util.WithGroup("protection", DisableProtectionCmd.CobraCommand(s)),
+	util.AddGroup(cmd, "protection", "Protection",
+		EnableProtectionCmd.CobraCommand(s),
+		DisableProtectionCmd.CobraCommand(s),
 	)
 	return cmd
 }

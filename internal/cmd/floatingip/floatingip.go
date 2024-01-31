@@ -15,26 +15,27 @@ func NewCommand(s state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 	}
-	cmd.AddGroup(&cobra.Group{ID: "general", Title: "General"})
-	cmd.AddGroup(&cobra.Group{ID: "protection", Title: "Protection"})
-	cmd.AddGroup(&cobra.Group{ID: "assign", Title: "Assign"})
 
-	cmd.AddCommand(
-		util.WithGroup("general", ListCmd.CobraCommand(s)),
-		util.WithGroup("general", DescribeCmd.CobraCommand(s)),
-		util.WithGroup("general", CreateCmd.CobraCommand(s)),
-		util.WithGroup("general", DeleteCmd.CobraCommand(s)),
-		util.WithGroup("general", UpdateCmd.CobraCommand(s)),
-		util.WithGroup("general", LabelCmds.AddCobraCommand(s)),
-		util.WithGroup("general", LabelCmds.RemoveCobraCommand(s)),
-
-		util.WithGroup("protection", EnableProtectionCmd.CobraCommand(s)),
-		util.WithGroup("protection", DisableProtectionCmd.CobraCommand(s)),
-
-		util.WithGroup("assign", AssignCmd.CobraCommand(s)),
-		util.WithGroup("assign", UnassignCmd.CobraCommand(s)),
-
-		util.WithGroup("", SetRDNSCmd.CobraCommand(s)),
+	util.AddGroup(cmd, "general", "General",
+		ListCmd.CobraCommand(s),
+		DescribeCmd.CobraCommand(s),
+		CreateCmd.CobraCommand(s),
+		DeleteCmd.CobraCommand(s),
+		UpdateCmd.CobraCommand(s),
+		LabelCmds.AddCobraCommand(s),
+		LabelCmds.RemoveCobraCommand(s),
 	)
+
+	util.AddGroup(cmd, "protection", "Protection",
+		EnableProtectionCmd.CobraCommand(s),
+		DisableProtectionCmd.CobraCommand(s),
+	)
+
+	util.AddGroup(cmd, "assign", "Assign",
+		AssignCmd.CobraCommand(s),
+		UnassignCmd.CobraCommand(s),
+	)
+
+	cmd.AddCommand(SetRDNSCmd.CobraCommand(s))
 	return cmd
 }

@@ -193,8 +193,11 @@ func ValidateRequiredFlags(flags *pflag.FlagSet, names ...string) error {
 	return nil
 }
 
-// WithGroup sets the GroupID field on the passed command.
-func WithGroup(groupId string, cmd *cobra.Command) *cobra.Command {
-	cmd.GroupID = groupId
-	return cmd
+// AddGroup adds a group to the passed command and adds the passed commands to the group.
+func AddGroup(cmd *cobra.Command, id string, title string, groupCmds ...*cobra.Command) {
+	cmd.AddGroup(&cobra.Group{ID: id, Title: title})
+	for _, groupCmd := range groupCmds {
+		groupCmd.GroupID = id
+	}
+	cmd.AddCommand(groupCmds...)
 }
