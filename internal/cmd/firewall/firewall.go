@@ -3,6 +3,7 @@ package firewall
 import (
 	"github.com/spf13/cobra"
 
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 )
 
@@ -14,19 +15,26 @@ func NewCommand(s state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 	}
-	cmd.AddCommand(
+
+	util.AddGroup(cmd, "general", "General",
 		ListCmd.CobraCommand(s),
 		DescribeCmd.CobraCommand(s),
 		CreateCmd.CobraCommand(s),
-		UpdateCmd.CobraCommand(s),
-		ReplaceRulesCmd.CobraCommand(s),
 		DeleteCmd.CobraCommand(s),
-		AddRuleCmd.CobraCommand(s),
-		DeleteRuleCmd.CobraCommand(s),
-		ApplyToResourceCmd.CobraCommand(s),
-		RemoveFromResourceCmd.CobraCommand(s),
+		UpdateCmd.CobraCommand(s),
 		LabelCmds.AddCobraCommand(s),
 		LabelCmds.RemoveCobraCommand(s),
+	)
+
+	util.AddGroup(cmd, "rule", "Rules",
+		ReplaceRulesCmd.CobraCommand(s),
+		AddRuleCmd.CobraCommand(s),
+		DeleteRuleCmd.CobraCommand(s),
+	)
+
+	util.AddGroup(cmd, "resource", "Resources",
+		ApplyToResourceCmd.CobraCommand(s),
+		RemoveFromResourceCmd.CobraCommand(s),
 	)
 	return cmd
 }

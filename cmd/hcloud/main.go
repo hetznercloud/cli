@@ -23,6 +23,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/server"
 	"github.com/hetznercloud/cli/internal/cmd/servertype"
 	"github.com/hetznercloud/cli/internal/cmd/sshkey"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/cmd/version"
 	"github.com/hetznercloud/cli/internal/cmd/volume"
 	"github.com/hetznercloud/cli/internal/state"
@@ -52,16 +53,14 @@ func main() {
 	}
 
 	rootCommand := cli.NewRootCommand(s)
-	rootCommand.AddCommand(
+
+	util.AddGroup(rootCommand, "resource", "Resources",
 		all.NewCommand(s),
 		floatingip.NewCommand(s),
 		image.NewCommand(s),
 		server.NewCommand(s),
 		sshkey.NewCommand(s),
-		version.NewCommand(s),
-		completion.NewCommand(s),
 		servertype.NewCommand(s),
-		context.NewCommand(s),
 		datacenter.NewCommand(s),
 		location.NewCommand(s),
 		iso.NewCommand(s),
@@ -73,6 +72,12 @@ func main() {
 		firewall.NewCommand(s),
 		placementgroup.NewCommand(s),
 		primaryip.NewCommand(s),
+	)
+
+	rootCommand.AddCommand(
+		version.NewCommand(s),
+		completion.NewCommand(s),
+		context.NewCommand(s),
 	)
 
 	if err := rootCommand.Execute(); err != nil {
