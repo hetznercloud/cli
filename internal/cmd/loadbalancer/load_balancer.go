@@ -19,6 +19,7 @@ func NewCommand(s state.State) *cobra.Command {
 
 	util.AddGroup(cmd, "general", "General",
 		ListCmd.CobraCommand(s),
+		CreateCmd.CobraCommand(s),
 		DescribeCmd.CobraCommand(s),
 		DeleteCmd.CobraCommand(s),
 		UpdateCmd.CobraCommand(s),
