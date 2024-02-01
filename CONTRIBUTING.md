@@ -60,19 +60,23 @@ Cobra offers the functionality to group subcommands. The conventions on when and
 Here is how to create a group:
 
 ```go
-cmd.AddGroup(&cobra.Group{ID: "general", Title: "General"})
-// ...
+// General
+util.AddGroup(cmd, "general", "General",
+   SomeGeneralCommand.CobraCommand(s),
+   // ...
+)
 
+// Additional commands
 cmd.AddCommand(
-util.WithGroup("general", ListCmd.CobraCommand(s)),
-// ...
+   SomeUtilCommand.CobraCommand(s),
+   // ...
 )
 ```
 
 Example of the `hcloud server` command groups:
 
 ```
-General
+General:
   add-label                   Add a label to a server
   change-type                 Change type of a server
   create                      Create a server
@@ -84,36 +88,35 @@ General
   remove-label                Remove a label from a server
   update                      Update a Server
 
-Protection
+Protection:
   disable-protection          Disable resource protection for a server
   enable-protection           Enable resource protection for a server
 
-Rescue
+Rescue:
   disable-rescue              Disable rescue for a server
   enable-rescue               Enable rescue for a server
 
-Power/Reboot
+Power/Reboot:
   poweroff                    Poweroff a server
   poweron                     Poweron a server
   reboot                      Reboot a server
   reset                       Reset a server
   shutdown                    Shutdown a server
 
-Networks
+Networks:
   attach-to-network           Attach a server to a network
   change-alias-ips            Change a server's alias IPs in a network
   detach-from-network         Detach a server from a network
-  set-rdns                    Change reverse DNS of a Server
 
-ISO
+ISO:
   attach-iso                  Attach an ISO to a server
   detach-iso                  Detach an ISO from a server
 
-Placement Groups
+Placement Groups:
   add-to-placement-group      Add a server to a placement group
   remove-from-placement-group Removes a server from a placement group
 
-Backup
+Backup:
   disable-backup              Disable backup for a server
   enable-backup               Enable backup for a server
 
@@ -122,5 +125,6 @@ Additional Commands:
   metrics                     [ALPHA] Metrics from a Server
   request-console             Request a WebSocket VNC console for a server
   reset-password              Reset the root password of a server
+  set-rdns                    Change reverse DNS of a Server
   ssh                         Spawn an SSH connection for the server
 ```
