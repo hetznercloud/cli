@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.42.0](https://github.com/hetznercloud/cli/compare/v1.41.1...v1.42.0) (2024-02-01)
+
+
+### Features
+
+* add global --quiet flag to hide non-error messages ([#656](https://github.com/hetznercloud/cli/issues/656)) ([25fcbbf](https://github.com/hetznercloud/cli/commit/25fcbbfe33680a61b9483956a30dd5403d471c3d)), closes [#644](https://github.com/hetznercloud/cli/issues/644)
+* allow adding/removing multiple labels at once ([#665](https://github.com/hetznercloud/cli/issues/665)) ([919c446](https://github.com/hetznercloud/cli/commit/919c44649eec16e219954cbac4cc1b66a7f53380)), closes [#662](https://github.com/hetznercloud/cli/issues/662)
+* group subcommands in command help ([#675](https://github.com/hetznercloud/cli/issues/675)) ([0cb271f](https://github.com/hetznercloud/cli/commit/0cb271f9859dab9bcf04e8b1be13ee4580356517))
+* **server:** remove unsupported linux32 rescue type ([#679](https://github.com/hetznercloud/cli/issues/679)) ([5bb0350](https://github.com/hetznercloud/cli/commit/5bb03504474ac0ff35dd9fd550b6786a37eb39dd))
+
+
+### Bug Fixes
+
+* refetch after creating managed certificate ([#685](https://github.com/hetznercloud/cli/issues/685)) ([4864553](https://github.com/hetznercloud/cli/commit/4864553c53716a61a35b6c2b6ab0d1ed1156720a))
+* **server:** fix typo in ip subcommand ([#678](https://github.com/hetznercloud/cli/issues/678)) ([c5e3f00](https://github.com/hetznercloud/cli/commit/c5e3f001236f2a2ef07b8181687e037d8f7b83a2))
+* use --poll-interval flag ([#660](https://github.com/hetznercloud/cli/issues/660)) ([b9328a6](https://github.com/hetznercloud/cli/commit/b9328a6500837d92ac8632a6232f9d1f23338863))
+
 ## [1.41.1](https://github.com/hetznercloud/cli/compare/v1.41.0...v1.41.1) (2023-12-21)
 
 
