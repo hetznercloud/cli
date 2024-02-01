@@ -1,7 +1,6 @@
 package server_test
 
 import (
-	_ "embed"
 	"net"
 	"testing"
 
@@ -13,7 +12,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-func TestSetRdns(t *testing.T) {
+func TestSetRDNS(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 

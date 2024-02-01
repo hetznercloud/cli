@@ -1,7 +1,6 @@
 package network_test
 
 import (
-	_ "embed"
 	"testing"
 
 	"github.com/golang/mock/gomock"

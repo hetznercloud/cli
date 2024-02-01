@@ -2,7 +2,6 @@ package server_test
 
 import (
 	"crypto/rand"
-	_ "embed"
 	"net"
 	"testing"
 
