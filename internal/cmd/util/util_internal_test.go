@@ -1,8 +1,11 @@
 package util
 
 import (
+	"encoding/json"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestOnlyOneSet(t *testing.T) {
@@ -104,4 +107,12 @@ func TestAge(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestWrap(t *testing.T) {
+	wrapped := Wrap("json", map[string]interface{}{
+		"foo": "bar",
+	})
+	jsonString, _ := json.Marshal(wrapped)
+	assert.JSONEq(t, `{"json": {"foo": "bar"}}`, string(jsonString))
 }
