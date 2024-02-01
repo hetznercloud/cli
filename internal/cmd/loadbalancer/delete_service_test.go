@@ -25,10 +25,11 @@ func TestDeleteService(t *testing.T) {
 		DeleteService(gomock.Any(), &hcloud.LoadBalancer{ID: 123}, 80).
 		Return(&hcloud.Action{ID: 123}, nil, nil)
 
-	out, _, err := fx.Run(cmd, []string{"123", "--listen-port", "80"})
+	out, errOut, err := fx.Run(cmd, []string{"123", "--listen-port", "80"})
 
 	expOut := "Service on port 80 deleted from Load Balancer 123\n"
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

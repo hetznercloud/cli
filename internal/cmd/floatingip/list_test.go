@@ -41,12 +41,13 @@ func TestList(t *testing.T) {
 			},
 		}, nil)
 
-	out, _, err := fx.Run(cmd, []string{})
+	out, errOut, err := fx.Run(cmd, []string{})
 
 	expOut := `ID    TYPE   NAME   DESCRIPTION   IP            HOME   SERVER   DNS   AGE
 123   ipv4   test   -             192.168.2.1   fsn1   -        -     10m
 `
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

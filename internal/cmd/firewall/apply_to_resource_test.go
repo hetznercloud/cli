@@ -41,11 +41,12 @@ func TestApplyToServer(t *testing.T) {
 		WaitForActions(gomock.Any(), gomock.Any(), []*hcloud.Action{{ID: 123}, {ID: 321}}).
 		Return(nil)
 
-	out, _, err := fx.Run(cmd, []string{"--type", "server", "--server", "my-server", "test"})
+	out, errOut, err := fx.Run(cmd, []string{"--type", "server", "--server", "my-server", "test"})
 
 	expOut := "Firewall 123 applied\n"
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
 
@@ -76,10 +77,11 @@ func TestApplyToLabelSelector(t *testing.T) {
 		WaitForActions(gomock.Any(), gomock.Any(), []*hcloud.Action{{ID: 123}, {ID: 321}}).
 		Return(nil)
 
-	out, _, err := fx.Run(cmd, []string{"--type", "label_selector", "--label-selector", "my-label", "test"})
+	out, errOut, err := fx.Run(cmd, []string{"--type", "label_selector", "--label-selector", "my-label", "test"})
 
 	expOut := "Firewall 123 applied\n"
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

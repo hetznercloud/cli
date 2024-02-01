@@ -75,7 +75,7 @@ func TestDescribe(t *testing.T) {
 		Get(gomock.Any(), "test").
 		Return(srv, nil, nil)
 
-	out, _, err := fx.Run(cmd, []string{"test"})
+	out, errOut, err := fx.Run(cmd, []string{"test"})
 
 	expOut := fmt.Sprintf(`ID:		123
 Name:		test
@@ -144,5 +144,6 @@ Placement Group:
 		util.Datetime(srv.Image.Created), humanize.Time(srv.Image.Created))
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

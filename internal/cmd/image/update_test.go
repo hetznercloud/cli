@@ -26,11 +26,12 @@ func TestUpdateDescription(t *testing.T) {
 			Description: hcloud.Ptr("new-description"),
 		})
 
-	out, _, err := fx.Run(cmd, []string{"123", "--description", "new-description"})
+	out, errOut, err := fx.Run(cmd, []string{"123", "--description", "new-description"})
 
 	expOut := "Image 123 updated\n"
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
 
@@ -50,10 +51,11 @@ func TestUpdateType(t *testing.T) {
 			Type:        hcloud.ImageTypeSnapshot,
 		})
 
-	out, _, err := fx.Run(cmd, []string{"123", "--type", "snapshot"})
+	out, errOut, err := fx.Run(cmd, []string{"123", "--type", "snapshot"})
 
 	expOut := "Image 123 updated\n"
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

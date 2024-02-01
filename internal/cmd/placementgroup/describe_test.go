@@ -43,7 +43,7 @@ func TestDescribe(t *testing.T) {
 		ServerName(int64(4712)).
 		Return("server2")
 
-	out, _, err := fx.Run(cmd, []string{placementGroup.Name})
+	out, errOut, err := fx.Run(cmd, []string{placementGroup.Name})
 
 	expOut := fmt.Sprintf(`ID:		897
 Name:		my Placement Group
@@ -59,5 +59,6 @@ Type:		spread
 `, util.Datetime(placementGroup.Created), humanize.Time(placementGroup.Created))
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

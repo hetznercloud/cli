@@ -39,12 +39,13 @@ func TestList(t *testing.T) {
 			},
 		}, nil)
 
-	out, _, err := fx.Run(cmd, []string{})
+	out, errOut, err := fx.Run(cmd, []string{})
 
 	expOut := `ID    NAME   DESCRIPTION   MAX SERVICES   MAX CONNECTIONS   MAX TARGETS
 123   test   -             12             100               5
 `
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

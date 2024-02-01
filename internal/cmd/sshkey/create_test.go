@@ -35,11 +35,12 @@ func TestCreate(t *testing.T) {
 			PublicKey: "test",
 		}, nil, nil)
 
-	out, _, err := fx.Run(cmd, []string{"--name", "test", "--public-key", "test"})
+	out, errOut, err := fx.Run(cmd, []string{"--name", "test", "--public-key", "test"})
 
 	expOut := "SSH key 123 created\n"
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
 

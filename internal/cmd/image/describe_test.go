@@ -43,7 +43,7 @@ func TestDescribe(t *testing.T) {
 		GetForArchitecture(gomock.Any(), "test", hcloud.ArchitectureX86).
 		Return(img, nil, nil)
 
-	out, _, err := fx.Run(cmd, []string{"test"})
+	out, errOut, err := fx.Run(cmd, []string{"test", "--architecture", "x86"})
 
 	expOut := fmt.Sprintf(`ID:		123
 Type:		system
@@ -64,5 +64,6 @@ Labels:
 `, util.Datetime(img.Created), humanize.Time(img.Created))
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

@@ -42,12 +42,13 @@ func TestList(t *testing.T) {
 		},
 			nil)
 
-	out, _, err := fx.Run(cmd, []string{"--selector", "foo=bar"})
+	out, errOut, err := fx.Run(cmd, []string{"--selector", "foo=bar"})
 
 	expOut := `ID    NAME       IP RANGE       SERVERS    AGE
 123   test-net   192.0.2.1/24   1 server   10s
 `
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

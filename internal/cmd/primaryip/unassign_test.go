@@ -41,10 +41,11 @@ func TestUnAssign(t *testing.T) {
 
 	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), gomock.Any(), action).Return(nil)
 
-	out, _, err := fx.Run(cmd, []string{"13"})
+	out, errOut, err := fx.Run(cmd, []string{"13"})
 
 	expOut := "Primary IP 13 was unassigned successfully\n"
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

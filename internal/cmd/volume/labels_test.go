@@ -28,11 +28,12 @@ func TestLabelAdd(t *testing.T) {
 			},
 		})
 
-	out, _, err := fx.Run(cmd, []string{"123", "key=value"})
+	out, errOut, err := fx.Run(cmd, []string{"123", "key=value"})
 
 	expOut := "Label(s) key added to Volume 123\n"
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
 
@@ -56,10 +57,11 @@ func TestLabelRemove(t *testing.T) {
 			Labels: make(map[string]string),
 		})
 
-	out, _, err := fx.Run(cmd, []string{"123", "key"})
+	out, errOut, err := fx.Run(cmd, []string{"123", "key"})
 
 	expOut := "Label(s) key removed from Volume 123\n"
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

@@ -66,7 +66,7 @@ func TestMetrics(t *testing.T) {
 			},
 		}, nil, nil)
 
-	out, _, err := fx.Run(cmd, []string{"123", "--type", "open_connections", "--start", "2022-11-01T00:00:00Z", "--end", "2022-11-01T01:00:00Z"})
+	out, errOut, err := fx.Run(cmd, []string{"123", "--type", "open_connections", "--start", "2022-11-01T00:00:00Z", "--end", "2022-11-01T01:00:00Z"})
 
 	expOut := `Load Balancer:  	 Metric: open_connections 	 Start: 0001-01-01 00:00:00 +0000 UTC 	 End: 0001-01-01 00:00:00 +0000 UTC
  6.00 ┤                                                                 ╭─╮
@@ -95,5 +95,6 @@ func TestMetrics(t *testing.T) {
 `
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

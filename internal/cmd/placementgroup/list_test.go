@@ -41,12 +41,13 @@ func TestList(t *testing.T) {
 			},
 		}, nil)
 
-	out, _, err := fx.Run(cmd, []string{"--selector", "foo=bar"})
+	out, errOut, err := fx.Run(cmd, []string{"--selector", "foo=bar"})
 
 	expOut := `ID    NAME                 SERVERS     TYPE     AGE
 897   my Placement Group   2 servers   spread   10s
 `
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

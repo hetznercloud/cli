@@ -44,12 +44,13 @@ func TestList(t *testing.T) {
 			},
 		}, nil)
 
-	out, _, err := fx.Run(cmd, []string{})
+	out, errOut, err := fx.Run(cmd, []string{})
 
 	expOut := `ID    NAME   CORES   CPU TYPE   ARCHITECTURE   MEMORY   DISK    STORAGE TYPE   TRAFFIC
 123   test   2       shared     arm            8.0 GB   80 GB   local          20 TB
 `
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

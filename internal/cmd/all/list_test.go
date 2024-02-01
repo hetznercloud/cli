@@ -173,7 +173,7 @@ func TestListAll(t *testing.T) {
 			},
 		}, nil)
 
-	out, _, err := fx.Run(cmd, []string{})
+	out, errOut, err := fx.Run(cmd, []string{})
 
 	expOut := `SERVERS
 ---
@@ -238,6 +238,7 @@ ID    NAME   FINGERPRINT   AGE
 `
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
 
@@ -283,8 +284,9 @@ func TestListAllPaidJSON(t *testing.T) {
 		AllWithOpts(gomock.Any(), hcloud.VolumeListOpts{}).
 		Return([]*hcloud.Volume{}, nil)
 
-	jsonOut, _, err := fx.Run(cmd, []string{"--paid", "-o=json"})
+	jsonOut, errOut, err := fx.Run(cmd, []string{"--paid", "-o=json"})
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.JSONEq(t, allListResponseJson, jsonOut)
 }

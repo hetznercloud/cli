@@ -28,7 +28,7 @@ func TestDescribe(t *testing.T) {
 			Architecture: hcloud.Ptr(hcloud.ArchitectureX86),
 		}, nil, nil)
 
-	out, _, err := fx.Run(cmd, []string{"test"})
+	out, errOut, err := fx.Run(cmd, []string{"test"})
 
 	expOut := `ID:		123
 Name:		test
@@ -38,5 +38,6 @@ Architecture:	x86
 `
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

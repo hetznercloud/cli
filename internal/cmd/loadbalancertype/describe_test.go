@@ -30,7 +30,7 @@ func TestDescribe(t *testing.T) {
 			MaxAssignedCertificates: 10,
 		}, nil, nil)
 
-	out, _, err := fx.Run(cmd, []string{"lb11"})
+	out, errOut, err := fx.Run(cmd, []string{"lb11"})
 
 	expOut := `ID:				123
 Name:				lb11
@@ -43,5 +43,6 @@ Pricings per Location:
 `
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

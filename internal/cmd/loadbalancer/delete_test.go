@@ -30,10 +30,11 @@ func TestDelete(t *testing.T) {
 		Delete(gomock.Any(), loadBalancer).
 		Return(nil, nil)
 
-	out, _, err := fx.Run(cmd, []string{"test"})
+	out, errOut, err := fx.Run(cmd, []string{"test"})
 
 	expOut := "Load Balancer test deleted\n"
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

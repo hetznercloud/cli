@@ -45,7 +45,7 @@ func TestDescribe(t *testing.T) {
 		ServerName(int64(321)).
 		Return("myServer")
 
-	out, _, err := fx.Run(cmd, []string{"test"})
+	out, errOut, err := fx.Run(cmd, []string{"test"})
 
 	expOut := fmt.Sprintf(`ID:		123
 Type:		ipv4
@@ -67,5 +67,6 @@ Labels:
 `, util.Datetime(floatingIP.Created), humanize.Time(floatingIP.Created))
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

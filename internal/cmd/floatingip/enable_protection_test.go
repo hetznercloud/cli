@@ -30,10 +30,11 @@ func TestEnableProtection(t *testing.T) {
 		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).
 		Return(nil)
 
-	out, _, err := fx.Run(cmd, []string{"test", "delete"})
+	out, errOut, err := fx.Run(cmd, []string{"test", "delete"})
 
 	expOut := "Resource protection enabled for floating IP 123\n"
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

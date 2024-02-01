@@ -39,12 +39,85 @@ func TestList(t *testing.T) {
 			},
 		}, nil)
 
-	out, _, err := fx.Run(cmd, []string{})
+	out, errOut, err := fx.Run(cmd, []string{})
 
 	expOut := `ID    NAME   RULES COUNT   APPLIED TO COUNT
 123   test   5 Rules       2 Servers | 0 Label Selectors
 `
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
+}
+
+func TestListJSON(t *testing.T) {
+	fx := testutil.NewFixture(t)
+	defer fx.Finish()
+
+	time.Local = time.UTC
+
+	cmd := firewall.ListCmd.CobraCommand(fx.State())
+
+	fx.ExpectEnsureToken()
+	fx.Client.FirewallClient.EXPECT().
+		AllWithOpts(
+			gomock.Any(),
+			hcloud.FirewallListOpts{
+				ListOpts: hcloud.ListOpts{PerPage: 50},
+				Sort:     []string{"id:asc"},
+			},
+		).
+		Return([]*hcloud.Firewall{
+			{
+				ID:        123,
+				Name:      "test",
+				Rules:     make([]hcloud.FirewallRule, 5),
+				AppliedTo: make([]hcloud.FirewallResource, 2),
+				Labels:    make(map[string]string),
+			},
+		}, nil)
+
+	out, errOut, err := fx.Run(cmd, []string{"-o=json"})
+
+	assert.NoError(t, err)
+	assert.Empty(t, errOut)
+	assert.JSONEq(t, out, `
+[
+  {
+    "id": 123,
+    "name": "test",
+    "labels": {},
+    "created": "0001-01-01T00:00:00Z",
+    "rules": [
+      {
+        "direction": "",
+        "protocol": ""
+      },
+      {
+        "direction": "",
+        "protocol": ""
+      },
+      {
+        "direction": "",
+        "protocol": ""
+      },
+      {
+        "direction": "",
+        "protocol": ""
+      },
+      {
+        "direction": "",
+        "protocol": ""
+      }
+    ],
+    "applied_to": [
+      {
+        "type": ""
+      },
+      {
+        "type": ""
+      }
+    ]
+  }
+]`)
 }

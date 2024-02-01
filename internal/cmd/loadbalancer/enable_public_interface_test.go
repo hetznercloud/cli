@@ -28,10 +28,11 @@ func TestEnablePublicInterface(t *testing.T) {
 		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).
 		Return(nil)
 
-	out, _, err := fx.Run(cmd, []string{"123"})
+	out, errOut, err := fx.Run(cmd, []string{"123"})
 
 	expOut := "Public interface of Load Balancer 123 was enabled\n"
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

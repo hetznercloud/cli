@@ -50,7 +50,7 @@ func TestCreate(t *testing.T) {
 			},
 		}, nil, nil)
 
-	out, _, err := fx.Run(cmd, []string{"--name", "myLoadBalancer", "--type", "lb11", "--location", "fsn1"})
+	out, errOut, err := fx.Run(cmd, []string{"--name", "myLoadBalancer", "--type", "lb11", "--location", "fsn1"})
 
 	expOut := `Load Balancer 123 created
 IPv4: 192.168.2.1
@@ -58,6 +58,7 @@ IPv6: ::
 `
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
 
@@ -152,7 +153,7 @@ func TestCreateProtection(t *testing.T) {
 		Return(&hcloud.Action{ID: 333}, nil, nil)
 	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 333}).Return(nil)
 
-	out, _, err := fx.Run(cmd, []string{"--name", "myLoadBalancer", "--type", "lb11", "--location", "fsn1", "--enable-protection", "delete"})
+	out, errOut, err := fx.Run(cmd, []string{"--name", "myLoadBalancer", "--type", "lb11", "--location", "fsn1", "--enable-protection", "delete"})
 
 	expOut := `Load Balancer 123 created
 Resource protection enabled for Load Balancer 123
@@ -161,5 +162,6 @@ IPv6: ::
 `
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

@@ -31,7 +31,7 @@ func TestDescribe(t *testing.T) {
 			Longitude:   24.938379,
 		}, nil, nil)
 
-	out, _, err := fx.Run(cmd, []string{"hel1"})
+	out, errOut, err := fx.Run(cmd, []string{"hel1"})
 
 	expOut := `ID:		3
 Name:		hel1
@@ -44,5 +44,6 @@ Longitude:	24.938379
 `
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

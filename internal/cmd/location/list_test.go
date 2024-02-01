@@ -39,12 +39,13 @@ func TestList(t *testing.T) {
 			},
 		}, nil)
 
-	out, _, err := fx.Run(cmd, []string{})
+	out, errOut, err := fx.Run(cmd, []string{})
 
 	expOut := `ID   NAME   DESCRIPTION   NETWORK ZONE   COUNTRY   CITY
 1    fsn1   -             eu-central     DE        Falkenstein
 `
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

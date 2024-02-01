@@ -41,7 +41,7 @@ func TestDescribe(t *testing.T) {
 		Get(gomock.Any(), "10").
 		Return(primaryIP, nil, nil)
 
-	out, _, err := fx.Run(cmd, []string{"10"})
+	out, errOut, err := fx.Run(cmd, []string{"10"})
 
 	expOut := fmt.Sprintf(`ID:		10
 Name:		test-net
@@ -72,5 +72,6 @@ Datacenter:
 `, util.Datetime(primaryIP.Created), humanize.Time(primaryIP.Created))
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

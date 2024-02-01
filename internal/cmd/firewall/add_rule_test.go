@@ -43,10 +43,11 @@ func TestAddRule(t *testing.T) {
 		WaitForActions(gomock.Any(), gomock.Any(), []*hcloud.Action{{ID: 123}, {ID: 321}}).
 		Return(nil)
 
-	out, _, err := fx.Run(cmd, []string{"--direction", "in", "--protocol", "tcp", "--source-ips", "0.0.0.0/0", "--port", "80", "--description", "http", "test"})
+	out, errOut, err := fx.Run(cmd, []string{"--direction", "in", "--protocol", "tcp", "--source-ips", "0.0.0.0/0", "--port", "80", "--description", "http", "test"})
 
 	expOut := "Firewall Rules for Firewall 123 updated\n"
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

@@ -26,11 +26,12 @@ func TestUpdateName(t *testing.T) {
 			Name: "new-name",
 		})
 
-	out, _, err := fx.Run(cmd, []string{"123", "--name", "new-name"})
+	out, errOut, err := fx.Run(cmd, []string{"123", "--name", "new-name"})
 
 	expOut := "Floating IP 123 updated\n"
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
 
@@ -49,10 +50,11 @@ func TestUpdateDescription(t *testing.T) {
 			Description: "new-description",
 		})
 
-	out, _, err := fx.Run(cmd, []string{"123", "--description", "new-description"})
+	out, errOut, err := fx.Run(cmd, []string{"123", "--description", "new-description"})
 
 	expOut := "Floating IP 123 updated\n"
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

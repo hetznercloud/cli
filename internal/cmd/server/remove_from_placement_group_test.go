@@ -30,11 +30,12 @@ func TestRemoveFromPlacementGroup(t *testing.T) {
 		RemoveFromPlacementGroup(gomock.Any(), &srv)
 	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), gomock.Any(), nil)
 
-	out, _, err := fx.Run(cmd, []string{srv.Name})
+	out, errOut, err := fx.Run(cmd, []string{srv.Name})
 
 	expOut := `Server 42 removed from placement group
 `
 
 	assert.NoError(t, err)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
