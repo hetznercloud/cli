@@ -51,7 +51,6 @@ func NewCommand(s state.State) *cobra.Command {
 		AttachToNetworkCmd.CobraCommand(s),
 		DetachFromNetworkCmd.CobraCommand(s),
 		ChangeAliasIPsCmd.CobraCommand(s),
-		SetRDNSCmd.CobraCommand(s),
 	)
 
 	util.AddGroup(cmd, "iso", "ISO",
@@ -75,6 +74,7 @@ func NewCommand(s state.State) *cobra.Command {
 		RequestConsoleCmd.CobraCommand(s),
 		ResetPasswordCmd.CobraCommand(s),
 		MetricsCmd.CobraCommand(s),
+		SetRDNSCmd.CobraCommand(s),
 	)
 	return cmd
 }
