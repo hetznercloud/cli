@@ -24,7 +24,7 @@ var ListCmd = base.ListCmd{
 	JSONKeyGetByName:   "images",
 	DefaultColumns:     []string{"id", "type", "name", "description", "architecture", "image_size", "disk_size", "created", "deprecated"},
 	AdditionalFlags: func(cmd *cobra.Command) {
-		cmd.Flags().StringSliceP("type", "t", []string{}, "Only show images of given type")
+		cmd.Flags().StringSliceP("type", "t", []string{}, "Only show images of given type: system|app|snapshot|backup")
 		cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("backup", "snapshot", "system", "app"))
 
 		cmd.Flags().StringSliceP("architecture", "a", []string{}, "Only show images of given architecture: x86|arm")
