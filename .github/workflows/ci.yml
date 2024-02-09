@@ -22,7 +22,7 @@ jobs:
         run: diff -u <(echo -n) <(gofmt -d -s .)
 
       - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v3
+        uses: golangci/golangci-lint-action@v4
         with:
           # Required: the version of golangci-lint is required and must be specified with patch version
           version: v1.55.2 # renovate: datasource=github-releases depName=golangci/golangci-lint
