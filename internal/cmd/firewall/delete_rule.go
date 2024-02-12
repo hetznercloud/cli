@@ -114,6 +114,9 @@ var DeleteRuleCmd = base.Cmd{
 		if len(rules) == len(firewall.Rules) {
 			return fmt.Errorf("the specified rule was not found in the ruleset of Firewall %d", firewall.ID)
 		}
+		if len(rules) == 0 {
+			rules = []hcloud.FirewallRule{}
+		}
 		actions, _, err := s.Client().Firewall().SetRules(s, firewall,
 			hcloud.FirewallSetRulesOpts{Rules: rules},
 		)
