@@ -36,7 +36,7 @@ func TestDeleteRule(t *testing.T) {
 		Get(gomock.Any(), "test").
 		Return(fw, nil, nil)
 	fx.Client.FirewallClient.EXPECT().
-		SetRules(gomock.Any(), fw, hcloud.FirewallSetRulesOpts{Rules: nil}).
+		SetRules(gomock.Any(), fw, hcloud.FirewallSetRulesOpts{Rules: []hcloud.FirewallRule{}}).
 		Return([]*hcloud.Action{{ID: 123}, {ID: 321}}, nil, nil)
 	fx.ActionWaiter.EXPECT().
 		WaitForActions(gomock.Any(), gomock.Any(), []*hcloud.Action{{ID: 123}, {ID: 321}}).

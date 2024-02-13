@@ -105,7 +105,7 @@ var DeleteRuleCmd = base.Cmd{
 			}
 		}
 
-		var rules []hcloud.FirewallRule
+		var rules = make([]hcloud.FirewallRule, 0)
 		for _, existingRule := range firewall.Rules {
 			if !reflect.DeepEqual(existingRule, rule) {
 				rules = append(rules, existingRule)
