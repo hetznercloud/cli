@@ -28,6 +28,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/volume"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/cli/internal/state/config"
+	update "github.com/hetznercloud/cli/internal/version"
 )
 
 func init() {
@@ -46,6 +47,8 @@ func main() {
 	if err != nil {
 		log.Fatalf("unable to read config file %q: %s\n", configPath, err)
 	}
+
+	update.CheckForUpdate(cfg)
 
 	s, err := state.New(cfg)
 	if err != nil {
