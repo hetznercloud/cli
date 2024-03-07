@@ -36,7 +36,7 @@ type createResultSchema struct {
 var CreateCmd = base.CreateCmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:   "create FLAGS",
+			Use:   "create [options] --name <name> --type <server-type> --image <image>",
 			Short: "Create a server",
 		}
 

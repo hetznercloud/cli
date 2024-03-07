@@ -17,7 +17,7 @@ import (
 
 func newCreateCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   "create [FLAGS] NAME",
+		Use:                   "create <name>",
 		Short:                 "Create a new context",
 		Args:                  cobra.ExactArgs(1),
 		TraverseChildren:      true,

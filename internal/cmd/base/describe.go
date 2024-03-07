@@ -33,7 +33,7 @@ type DescribeCmd struct {
 // CobraCommand creates a command that can be registered with cobra.
 func (dc *DescribeCmd) CobraCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   fmt.Sprintf("describe [FLAGS] %s", strings.ToUpper(dc.ResourceNameSingular)),
+		Use:                   fmt.Sprintf("describe [options] <%s>", strings.ToLower(dc.ResourceNameSingular)),
 		Short:                 dc.ShortDescription,
 		Args:                  cobra.ExactArgs(1),
 		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(dc.NameSuggestions(s.Client()))),

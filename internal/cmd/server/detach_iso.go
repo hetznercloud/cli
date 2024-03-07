@@ -14,7 +14,7 @@ import (
 var DetachISOCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		return &cobra.Command{
-			Use:                   "detach-iso [FLAGS] SERVER",
+			Use:                   "detach-iso <server>",
 			Short:                 "Detach an ISO from a server",
 			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),

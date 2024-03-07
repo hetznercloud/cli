@@ -33,7 +33,7 @@ import (
 
 func NewCommand(_ state.State) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "completion [FLAGS] SHELL",
+		Use:   "completion <shell>",
 		Short: "Output shell completion code for the specified shell",
 		Long: `To load completions:
 

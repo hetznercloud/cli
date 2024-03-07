@@ -28,7 +28,7 @@ type UpdateCmd struct {
 // CobraCommand creates a command that can be registered with cobra.
 func (uc *UpdateCmd) CobraCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   fmt.Sprintf("update [FLAGS] %s", strings.ToUpper(uc.ResourceNameSingular)),
+		Use:                   fmt.Sprintf("update [options] <%s>", strings.ToLower(uc.ResourceNameSingular)),
 		Short:                 uc.ShortDescription,
 		Args:                  cobra.ExactArgs(1),
 		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(uc.NameSuggestions(s.Client()))),

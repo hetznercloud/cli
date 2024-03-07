@@ -11,7 +11,7 @@ import (
 
 func newActiveCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   "active [FLAGS]",
+		Use:                   "active",
 		Short:                 "Show active context",
 		Args:                  cobra.NoArgs,
 		TraverseChildren:      true,

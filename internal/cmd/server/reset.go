@@ -14,7 +14,7 @@ import (
 var ResetCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		return &cobra.Command{
-			Use:                   "reset [FLAGS] SERVER",
+			Use:                   "reset [options] <server>",
 			Short:                 "Reset a server",
 			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),

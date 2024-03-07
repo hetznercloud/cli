@@ -14,7 +14,7 @@ import (
 var CreateCmd = base.CreateCmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:                   "create FLAGS",
+			Use:                   "create [options] --type <ipv4|ipv6> --name <name>",
 			Short:                 "Create a Primary IP",
 			Args:                  cobra.NoArgs,
 			TraverseChildren:      true,

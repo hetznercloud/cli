@@ -14,7 +14,7 @@ import (
 var UnAssignCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:   "unassign [FLAGS] PRIMARYIP",
+			Use:   "unassign <primary-ip>",
 			Short: "Unassign a Primary IP from an assignee (usually a server)",
 			Args:  cobra.ExactArgs(1),
 			ValidArgsFunction: cmpl.SuggestArgs(

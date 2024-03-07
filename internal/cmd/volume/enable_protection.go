@@ -60,7 +60,7 @@ func changeProtection(s state.State, cmd *cobra.Command,
 var EnableProtectionCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		return &cobra.Command{
-			Use:   "enable-protection [FLAGS] VOLUME PROTECTIONLEVEL [PROTECTIONLEVEL...]",
+			Use:   "enable-protection <volume> <protection-level>...",
 			Short: "Enable resource protection for a volume",
 			Args:  cobra.MinimumNArgs(2),
 			ValidArgsFunction: cmpl.SuggestArgs(

@@ -14,7 +14,7 @@ import (
 var RemoveFromPlacementGroupCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:               "remove-from-placement-group SERVER",
+			Use:               "remove-from-placement-group <server>",
 			Short:             "Removes a server from a placement group",
 			Args:              cobra.ExactArgs(1),
 			ValidArgsFunction: cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
