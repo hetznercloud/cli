@@ -18,7 +18,7 @@ import (
 var SSHCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:                   "ssh [FLAGS] SERVER [COMMAND...]",
+			Use:                   "ssh [options] <server> [command]",
 			Short:                 "Spawn an SSH connection for the server",
 			Args:                  cobra.MinimumNArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),

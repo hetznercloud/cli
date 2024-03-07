@@ -14,7 +14,7 @@ import (
 var EnableBackupCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:                   "enable-backup [FLAGS] SERVER",
+			Use:                   "enable-backup <server>",
 			Short:                 "Enable backup for a server",
 			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),

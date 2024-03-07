@@ -14,7 +14,7 @@ import (
 var DisableProtectionCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		return &cobra.Command{
-			Use:   "disable-protection [FLAGS] FLOATINGIP PROTECTIONLEVEL [PROTECTIONLEVEL...]",
+			Use:   "disable-protection <floating-ip> <protection-level>...",
 			Short: "Disable resource protection for a Floating IP",
 			Args:  cobra.MinimumNArgs(2),
 			ValidArgsFunction: cmpl.SuggestArgs(

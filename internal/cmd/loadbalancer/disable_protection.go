@@ -14,7 +14,7 @@ import (
 var DisableProtectionCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		return &cobra.Command{
-			Use:   "disable-protection [FLAGS] LOADBALANCER PROTECTIONLEVEL [PROTECTIONLEVEL...]",
+			Use:   "disable-protection <load-balancer> <protection-level>...",
 			Short: "Disable resource protection for a Load Balancer",
 			Args:  cobra.MinimumNArgs(2),
 			ValidArgsFunction: cmpl.SuggestArgs(

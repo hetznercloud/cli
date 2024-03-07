@@ -14,7 +14,7 @@ import (
 var IPCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:                   "ip SERVER FLAGS",
+			Use:                   "ip [--ipv6] <server>",
 			Short:                 "Print a server's IP address",
 			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),

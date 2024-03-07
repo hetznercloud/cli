@@ -26,8 +26,13 @@ type DeleteCmd struct {
 
 // CobraCommand creates a command that can be registered with cobra.
 func (dc *DeleteCmd) CobraCommand(s state.State) *cobra.Command {
+	opts := ""
+	if dc.AdditionalFlags != nil {
+		opts = "[options] "
+	}
+
 	cmd := &cobra.Command{
-		Use:                   fmt.Sprintf("delete [FLAGS] %s", strings.ToUpper(dc.ResourceNameSingular)),
+		Use:                   fmt.Sprintf("delete %s<%s>", opts, strings.ToLower(dc.ResourceNameSingular)),
 		Short:                 dc.ShortDescription,
 		Args:                  cobra.ExactArgs(1),
 		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(dc.NameSuggestions(s.Client()))),

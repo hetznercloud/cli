@@ -15,7 +15,7 @@ import (
 var DetachFromNetworkCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:                   "detach-from-network [FLAGS] LOADBALANCER",
+			Use:                   "detach-from-network <load-balancer> --network <network>",
 			Short:                 "Detach a Load Balancer from a Network",
 			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.LoadBalancer().Names)),

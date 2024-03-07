@@ -13,7 +13,7 @@ import (
 
 func newDeleteCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   "delete [FLAGS] NAME",
+		Use:                   "delete <context>",
 		Short:                 "Delete a context",
 		Args:                  cobra.ExactArgs(1),
 		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidates(config.ContextNames(s.Config())...)),

@@ -14,7 +14,7 @@ import (
 var PoweronCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		return &cobra.Command{
-			Use:                   "poweron [FLAGS] SERVER",
+			Use:                   "poweron <server>",
 			Short:                 "Poweron a server",
 			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),

@@ -15,7 +15,7 @@ import (
 var AttachToNetworkCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:                   "attach-to-network [FLAGS] LOADBALANCER",
+			Use:                   "attach-to-network [--ip <ip>] <load-balancer> --network <network>",
 			Short:                 "Attach a Load Balancer to a Network",
 			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.LoadBalancer().Names)),

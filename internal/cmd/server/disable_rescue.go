@@ -14,7 +14,7 @@ import (
 var DisableRescueCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		return &cobra.Command{
-			Use:                   "disable-rescue [FLAGS] SERVER",
+			Use:                   "disable-rescue <server>",
 			Short:                 "Disable rescue for a server",
 			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),

@@ -17,7 +17,7 @@ import (
 var AddTargetCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:                   "add-target LOADBALANCER FLAGS",
+			Use:                   "add-target [options] <load-balancer>",
 			Short:                 "Add a target to a Load Balancer",
 			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.LoadBalancer().Names)),

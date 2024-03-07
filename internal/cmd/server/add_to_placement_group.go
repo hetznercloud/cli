@@ -14,7 +14,7 @@ import (
 var AddToPlacementGroupCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:               "add-to-placement-group [FLAGS] SERVER",
+			Use:               "add-to-placement-group <server> --placement-group <placement-group>",
 			Short:             "Add a server to a placement group",
 			Args:              cobra.ExactArgs(1),
 			ValidArgsFunction: cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),

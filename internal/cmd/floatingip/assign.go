@@ -14,7 +14,7 @@ import (
 var AssignCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		return &cobra.Command{
-			Use:   "assign [FLAGS] FLOATINGIP SERVER",
+			Use:   "assign <floating-ip> <server>",
 			Short: "Assign a Floating IP to a server",
 			Args:  cobra.ExactArgs(2),
 			ValidArgsFunction: cmpl.SuggestArgs(
