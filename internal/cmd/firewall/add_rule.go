@@ -8,6 +8,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -18,7 +19,7 @@ var AddRuleCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:                   "add-rule [options] (--direction in --source-ips <ips> | --direction out --destination-ips <ips>) --protocol <icmp|udp|tcp|esp|gre> <firewall>",
 			Short:                 "Add a single rule to a firewall",
-			Args:                  cobra.ExactArgs(1),
+			Args:                  util.Validate,
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Firewall().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

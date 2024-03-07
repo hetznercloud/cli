@@ -7,6 +7,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 )
@@ -16,7 +17,7 @@ var RemoveFromPlacementGroupCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:               "remove-from-placement-group <server>",
 			Short:             "Removes a server from a placement group",
-			Args:              cobra.ExactArgs(1),
+			Args:              util.Validate,
 			ValidArgsFunction: cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
 		}
 

@@ -7,6 +7,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -18,7 +19,7 @@ var ExposeRoutesToVSwitchCmd = base.Cmd{
 			Use:                   "expose-routes-to-vswitch [--disable] <network>",
 			Short:                 "Expose routes to connected vSwitch",
 			Long:                  "Enabling this will expose routes to the connected vSwitch. Set the --disable flag to remove the exposed routes.",
-			Args:                  cobra.ExactArgs(1),
+			Args:                  util.Validate,
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Network().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

@@ -7,6 +7,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 )
@@ -16,7 +17,7 @@ var AssignCmd = base.Cmd{
 		return &cobra.Command{
 			Use:   "assign <floating-ip> <server>",
 			Short: "Assign a Floating IP to a server",
-			Args:  cobra.ExactArgs(2),
+			Args:  util.Validate,
 			ValidArgsFunction: cmpl.SuggestArgs(
 				cmpl.SuggestCandidatesF(client.FloatingIP().Names),
 				cmpl.SuggestCandidatesF(client.Server().Names),

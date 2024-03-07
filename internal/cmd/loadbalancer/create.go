@@ -16,7 +16,7 @@ var CreateCmd = base.CreateCmd{
 		cmd := &cobra.Command{
 			Use:                   "create [options] --name <name> --type <type>",
 			Short:                 "Create a Load Balancer",
-			Args:                  cobra.NoArgs,
+			Args:                  util.Validate,
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
 		}

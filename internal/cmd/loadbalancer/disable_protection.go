@@ -7,6 +7,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 )
@@ -16,7 +17,7 @@ var DisableProtectionCmd = base.Cmd{
 		return &cobra.Command{
 			Use:   "disable-protection <load-balancer> <protection-level>...",
 			Short: "Disable resource protection for a Load Balancer",
-			Args:  cobra.MinimumNArgs(2),
+			Args:  util.Validate,
 			ValidArgsFunction: cmpl.SuggestArgs(
 				cmpl.SuggestCandidatesF(client.LoadBalancer().Names),
 				cmpl.SuggestCandidates("delete"),

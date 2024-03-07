@@ -8,6 +8,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -60,7 +61,7 @@ var EnableProtectionCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:   "enable-protection <primary-ip> [<protection-level>...]", // optional because of backwards compatibility
 			Short: "Enable Protection for a Primary IP",
-			Args:  cobra.MinimumNArgs(1),
+			Args:  util.Validate,
 			ValidArgsFunction: cmpl.SuggestArgs(
 				cmpl.SuggestCandidatesF(client.PrimaryIP().Names),
 				cmpl.SuggestCandidates("delete"),

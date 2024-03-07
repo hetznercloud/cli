@@ -7,6 +7,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 )
@@ -16,7 +17,7 @@ var ResizeCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:                   "resize --size <size> <volume>",
 			Short:                 "Resize a volume",
-			Args:                  cobra.ExactArgs(1),
+			Args:                  util.Validate,
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Volume().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

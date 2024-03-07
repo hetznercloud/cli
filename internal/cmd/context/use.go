@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/cli/internal/state/config"
 )
@@ -15,7 +16,7 @@ func newUseCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "use <context>",
 		Short:                 "Use a context",
-		Args:                  cobra.ExactArgs(1),
+		Args:                  util.Validate,
 		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidates(config.ContextNames(s.Config())...)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,

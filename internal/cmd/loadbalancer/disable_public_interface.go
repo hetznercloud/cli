@@ -7,6 +7,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 )
@@ -16,7 +17,7 @@ var DisablePublicInterfaceCmd = base.Cmd{
 		return &cobra.Command{
 			Use:                   "disable-public-interface <load-balancer>",
 			Short:                 "Disable the public interface of a Load Balancer",
-			Args:                  cobra.ExactArgs(1),
+			Args:                  util.Validate,
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.LoadBalancer().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

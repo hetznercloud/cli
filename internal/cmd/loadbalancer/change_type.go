@@ -7,6 +7,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -17,7 +18,7 @@ var ChangeTypeCmd = base.Cmd{
 		return &cobra.Command{
 			Use:   "change-type <load-balancer> <load-balancer-type>",
 			Short: "Change type of a Load Balancer",
-			Args:  cobra.ExactArgs(2),
+			Args:  util.Validate,
 			ValidArgsFunction: cmpl.SuggestArgs(
 				cmpl.SuggestCandidatesF(client.LoadBalancer().Names),
 				cmpl.SuggestCandidatesF(client.LoadBalancerType().Names),

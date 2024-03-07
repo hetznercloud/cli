@@ -9,6 +9,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -19,7 +20,7 @@ var DeleteRuleCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:                   "delete-rule [options] (--direction in --source-ips <ips> | --direction out --destination-ips <ips>) --protocol <icmp|esp|gre|udp|tcp> <firewall>",
 			Short:                 "Delete a single rule to a firewall",
-			Args:                  cobra.ExactArgs(1),
+			Args:                  util.Validate,
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Firewall().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
