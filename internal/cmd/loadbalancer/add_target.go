@@ -19,7 +19,7 @@ var AddTargetCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:                   "add-target [options] (--server <server> | --label-selector <label-selector> | --ip <ip>) <load-balancer>",
 			Short:                 "Add a target to a Load Balancer",
-			Args:                  util.Validate,
+			Args:                  util.ValidateExact,
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.LoadBalancer().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

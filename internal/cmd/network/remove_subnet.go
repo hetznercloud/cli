@@ -19,7 +19,7 @@ var RemoveSubnetCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:                   "remove-subnet --ip-range <ip-range> <network>",
 			Short:                 "Remove a subnet from a network",
-			Args:                  util.Validate,
+			Args:                  util.ValidateExact,
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Network().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

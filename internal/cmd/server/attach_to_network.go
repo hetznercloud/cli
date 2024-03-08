@@ -19,7 +19,7 @@ var AttachToNetworkCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:                   "attach-to-network [options] --network <network> <server>",
 			Short:                 "Attach a server to a network",
-			Args:                  util.Validate,
+			Args:                  util.ValidateExact,
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

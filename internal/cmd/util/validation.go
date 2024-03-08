@@ -11,7 +11,15 @@ import (
 
 var posArgRegex = regexp.MustCompile(`\[.*?]|\(.*?\)|--.*?<.*?>|<(.*?)>`) // matches all positional args in group 1
 
+func ValidateExact(cmd *cobra.Command, args []string) error {
+	return validate(cmd, args, true)
+}
+
 func Validate(cmd *cobra.Command, args []string) error {
+	return validate(cmd, args, false)
+}
+
+func validate(cmd *cobra.Command, args []string, exact bool) error {
 	matches := posArgRegex.FindAllStringSubmatch(cmd.Use, -1)
 	var expected []string
 	for _, match := range matches {
@@ -19,7 +27,7 @@ func Validate(cmd *cobra.Command, args []string) error {
 			expected = append(expected, match[1])
 		}
 	}
-	if len(args) > len(expected) {
+	if len(args) > len(expected) && exact {
 		return fmt.Errorf("expected exactly %d positional arguments, but got %d", len(expected), len(args))
 	}
 	for i := 0; i < len(expected); i++ {
@@ -29,7 +37,7 @@ func Validate(cmd *cobra.Command, args []string) error {
 				_, _ = fmt.Fprintln(os.Stderr, cmd.Use)
 				_, _ = fmt.Fprintln(os.Stderr, strings.Repeat(" ", idx+1)+strings.Repeat("^", len(expected[i])))
 			}
-			return fmt.Errorf("expected argument %s at position %d", strings.ReplaceAll(expected[i], "-", " "), i+1)
+			return fmt.Errorf("expected argument %s at position %d", expected[i], i+1)
 		}
 	}
 	return nil

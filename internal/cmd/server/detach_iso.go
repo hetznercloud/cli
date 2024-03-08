@@ -17,7 +17,7 @@ var DetachISOCmd = base.Cmd{
 		return &cobra.Command{
 			Use:                   "detach-iso <server>",
 			Short:                 "Detach an ISO from a server",
-			Args:                  util.Validate,
+			Args:                  util.ValidateExact,
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

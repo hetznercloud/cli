@@ -19,7 +19,7 @@ var AddSubnetCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:                   "add-subnet [options] --type <cloud|server|vswitch> --network-zone <zone> <network>",
 			Short:                 "Add a subnet to a network",
-			Args:                  util.Validate,
+			Args:                  util.ValidateExact,
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Network().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

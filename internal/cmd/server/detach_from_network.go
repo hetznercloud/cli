@@ -18,7 +18,7 @@ var DetachFromNetworkCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:                   "detach-from-network --network <network> <server>",
 			Short:                 "Detach a server from a network",
-			Args:                  util.Validate,
+			Args:                  util.ValidateExact,
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

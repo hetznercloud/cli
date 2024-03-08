@@ -11,7 +11,7 @@ func NewCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "context",
 		Short:                 "Manage contexts",
-		Args:                  util.Validate,
+		Args:                  util.ValidateExact,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 	}

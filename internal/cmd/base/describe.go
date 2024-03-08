@@ -35,7 +35,7 @@ func (dc *DescribeCmd) CobraCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   fmt.Sprintf("describe [options] <%s>", strings.ToLower(dc.ResourceNameSingular)),
 		Short:                 dc.ShortDescription,
-		Args:                  util.Validate,
+		Args:                  util.ValidateExact,
 		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(dc.NameSuggestions(s.Client()))),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,

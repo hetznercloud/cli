@@ -17,7 +17,7 @@ var UnassignCmd = base.Cmd{
 		return &cobra.Command{
 			Use:                   "unassign <floating-ip>",
 			Short:                 "Unassign a Floating IP",
-			Args:                  util.Validate,
+			Args:                  util.ValidateExact,
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.FloatingIP().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

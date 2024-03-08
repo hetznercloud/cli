@@ -12,7 +12,7 @@ func NewCommand(_ state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "version",
 		Short:                 "Print version information",
-		Args:                  util.Validate,
+		Args:                  util.ValidateExact,
 		DisableFlagsInUseLine: true,
 		RunE:                  runVersion,
 	}

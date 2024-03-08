@@ -17,7 +17,7 @@ var PoweronCmd = base.Cmd{
 		return &cobra.Command{
 			Use:                   "poweron <server>",
 			Short:                 "Poweron a server",
-			Args:                  util.Validate,
+			Args:                  util.ValidateExact,
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

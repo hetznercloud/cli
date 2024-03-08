@@ -23,7 +23,7 @@ var ReplaceRulesCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:                   "replace-rules --rules-file <file> <firewall>",
 			Short:                 "Replaces all rules from a Firewall from a file",
-			Args:                  util.Validate,
+			Args:                  util.ValidateExact,
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Firewall().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

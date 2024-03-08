@@ -19,7 +19,7 @@ var RemoveRouteCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:                   "remove-route --destination <destination> --gateway <ip> <network>",
 			Short:                 "Remove a route from a network",
-			Args:                  util.Validate,
+			Args:                  util.ValidateExact,
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Network().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

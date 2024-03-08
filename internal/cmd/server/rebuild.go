@@ -19,7 +19,7 @@ var RebuildCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:                   "rebuild [--allow-deprecated-image] --image <image> <server>",
 			Short:                 "Rebuild a server",
-			Args:                  util.Validate,
+			Args:                  util.ValidateExact,
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

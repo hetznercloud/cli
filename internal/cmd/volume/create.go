@@ -19,7 +19,7 @@ var CreateCmd = base.CreateCmd{
 		cmd := &cobra.Command{
 			Use:                   "create [options] --name <name> --size <size>",
 			Short:                 "Create a volume",
-			Args:                  util.Validate,
+			Args:                  util.ValidateExact,
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
 		}

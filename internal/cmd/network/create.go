@@ -18,7 +18,7 @@ var CreateCmd = base.CreateCmd{
 		cmd := &cobra.Command{
 			Use:   "create [options] --name <name> --ip-range <ip-range>",
 			Short: "Create a network",
-			Args:  util.Validate,
+			Args:  util.ValidateExact,
 		}
 
 		cmd.Flags().String("name", "", "Network name (required)")

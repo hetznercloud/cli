@@ -18,7 +18,7 @@ var RequestConsoleCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:                   "request-console [options] <server>",
 			Short:                 "Request a WebSocket VNC console for a server",
-			Args:                  util.Validate,
+			Args:                  util.ValidateExact,
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

@@ -18,7 +18,7 @@ var ChangeTypeCmd = base.Cmd{
 		return &cobra.Command{
 			Use:   "change-type <load-balancer> <load-balancer-type>",
 			Short: "Change type of a Load Balancer",
-			Args:  util.Validate,
+			Args:  util.ValidateExact,
 			ValidArgsFunction: cmpl.SuggestArgs(
 				cmpl.SuggestCandidatesF(client.LoadBalancer().Names),
 				cmpl.SuggestCandidatesF(client.LoadBalancerType().Names),

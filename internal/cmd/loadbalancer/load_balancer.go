@@ -12,7 +12,7 @@ func NewCommand(s state.State) *cobra.Command {
 		Use:                   "load-balancer",
 		Short:                 "Manage Load Balancers",
 		Aliases:               []string{"loadbalancer"},
-		Args:                  util.Validate,
+		Args:                  util.ValidateExact,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 	}

@@ -16,7 +16,7 @@ func newUseCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "use <context>",
 		Short:                 "Use a context",
-		Args:                  util.Validate,
+		Args:                  util.ValidateExact,
 		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidates(config.ContextNames(s.Config())...)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,

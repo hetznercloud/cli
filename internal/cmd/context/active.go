@@ -14,7 +14,7 @@ func newActiveCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "active",
 		Short:                 "Show active context",
-		Args:                  util.Validate,
+		Args:                  util.ValidateExact,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		RunE:                  state.Wrap(s, runActive),

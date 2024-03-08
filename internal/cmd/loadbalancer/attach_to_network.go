@@ -18,7 +18,7 @@ var AttachToNetworkCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:                   "attach-to-network [--ip <ip>] --network <network> <load-balancer>",
 			Short:                 "Attach a Load Balancer to a Network",
-			Args:                  util.Validate,
+			Args:                  util.ValidateExact,
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.LoadBalancer().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

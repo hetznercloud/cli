@@ -19,7 +19,7 @@ var AddRouteCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:                   "add-route --destination <destination> --gateway <ip> <network>",
 			Short:                 "Add a route to a network",
-			Args:                  util.Validate,
+			Args:                  util.ValidateExact,
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Network().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

@@ -17,7 +17,7 @@ var DisableBackupCmd = base.Cmd{
 		return &cobra.Command{
 			Use:                   "disable-backup <server>",
 			Short:                 "Disable backup for a server",
-			Args:                  util.Validate,
+			Args:                  util.ValidateExact,
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

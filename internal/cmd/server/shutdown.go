@@ -27,7 +27,7 @@ var ShutdownCmd = base.Cmd{
 			Use:                   "shutdown [options] <server>",
 			Short:                 "Shutdown a server",
 			Long:                  description,
-			Args:                  util.Validate,
+			Args:                  util.ValidateExact,
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
