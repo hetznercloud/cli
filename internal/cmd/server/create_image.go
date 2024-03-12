@@ -15,7 +15,7 @@ import (
 var CreateImageCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:   "create-image [options] <server>",
+			Use:   "create-image [options] <server> --type <snapshot|backup>",
 			Short: "Create an image from a server",
 			Args:  cobra.ExactArgs(1),
 		}
