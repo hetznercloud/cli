@@ -128,3 +128,9 @@ Additional Commands:
   set-rdns                    Change reverse DNS of a Server
   ssh                         Spawn an SSH connection for the server
 ```
+
+### Generated files
+
+Generated files (that are created by running `go generate`) should be prefixed with `zz_`. This is so that they are
+grouped together in the file list and are easy to identify as generated files. Also, it allows the CI to check if the
+generated files are up-to-date.
