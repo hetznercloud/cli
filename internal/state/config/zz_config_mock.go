@@ -47,34 +47,6 @@ func (mr *MockConfigMockRecorder) ActiveContext() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ActiveContext", reflect.TypeOf((*MockConfig)(nil).ActiveContext))
 }
 
-// ContextByName mocks base method.
-func (m *MockConfig) ContextByName(arg0 string) *Context {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ContextByName", arg0)
-	ret0, _ := ret[0].(*Context)
-	return ret0
-}
-
-// ContextByName indicates an expected call of ContextByName.
-func (mr *MockConfigMockRecorder) ContextByName(arg0 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ContextByName", reflect.TypeOf((*MockConfig)(nil).ContextByName), arg0)
-}
-
-// ContextNames mocks base method.
-func (m *MockConfig) ContextNames() []string {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ContextNames")
-	ret0, _ := ret[0].([]string)
-	return ret0
-}
-
-// ContextNames indicates an expected call of ContextNames.
-func (mr *MockConfigMockRecorder) ContextNames() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ContextNames", reflect.TypeOf((*MockConfig)(nil).ContextNames))
-}
-
 // Contexts mocks base method.
 func (m *MockConfig) Contexts() []*Context {
 	m.ctrl.T.Helper()
@@ -101,18 +73,6 @@ func (m *MockConfig) Endpoint() string {
 func (mr *MockConfigMockRecorder) Endpoint() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Endpoint", reflect.TypeOf((*MockConfig)(nil).Endpoint))
-}
-
-// RemoveContext mocks base method.
-func (m *MockConfig) RemoveContext(arg0 *Context) {
-	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "RemoveContext", arg0)
-}
-
-// RemoveContext indicates an expected call of RemoveContext.
-func (mr *MockConfigMockRecorder) RemoveContext(arg0 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveContext", reflect.TypeOf((*MockConfig)(nil).RemoveContext), arg0)
 }
 
 // SetActiveContext mocks base method.
