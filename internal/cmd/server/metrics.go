@@ -6,6 +6,7 @@ import (
 	"slices"
 	"sort"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/guptarohit/asciigraph"
@@ -29,7 +30,7 @@ var metricTypeStrings = []string{
 var MetricsCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:                   "metrics [options] <server>",
+			Use:                   fmt.Sprintf("metrics [options] <server> (--type <%s>)...", strings.Join(metricTypeStrings, "|")),
 			Short:                 "[ALPHA] Metrics from a Server",
 			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
