@@ -17,7 +17,7 @@ import (
 var CreateCmd = base.CreateCmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:   "create [options] --name <name> (--type managed | --type uploaded --cert-file <file> --key-file <file>)",
+			Use:   "create [options] --name <name> (--type managed --domain <domain> | --type uploaded --cert-file <file> --key-file <file>)",
 			Short: "Create or upload a Certificate",
 			Args:  cobra.ExactArgs(0),
 		}
