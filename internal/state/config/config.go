@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"time"
 
 	toml "github.com/pelletier/go-toml/v2"
 )
@@ -19,6 +20,8 @@ type Config interface {
 	SetContexts([]*Context)
 	Endpoint() string
 	SetEndpoint(string)
+	LastUpdateCheck() time.Time
+	SetLastUpdateCheck(time.Time)
 }
 
 type Context struct {
@@ -27,10 +30,11 @@ type Context struct {
 }
 
 type config struct {
-	path          string
-	endpoint      string
-	activeContext *Context   `toml:"active_context,omitempty"`
-	contexts      []*Context `toml:"contexts"`
+	path            string
+	endpoint        string
+	activeContext   *Context   `toml:"active_context,omitempty"`
+	contexts        []*Context `toml:"contexts"`
+	lastUpdateCheck time.Time  `toml:"last_update_check"`
 }
 
 func ReadConfig(path string) (Config, error) {
@@ -94,6 +98,14 @@ func (cfg *config) SetEndpoint(endpoint string) {
 	cfg.endpoint = endpoint
 }
 
+func (cfg *config) LastUpdateCheck() time.Time {
+	return cfg.lastUpdateCheck
+}
+
+func (cfg *config) SetLastUpdateCheck(t time.Time) {
+	cfg.lastUpdateCheck = t
+}
+
 func ContextNames(cfg Config) []string {
 	ctxs := cfg.Contexts()
 	names := make([]string, len(ctxs))
@@ -123,8 +135,9 @@ func RemoveContext(cfg Config, context *Context) {
 }
 
 type rawConfig struct {
-	ActiveContext string             `toml:"active_context,omitempty"`
-	Contexts      []rawConfigContext `toml:"contexts"`
+	ActiveContext   string             `toml:"active_context,omitempty"`
+	Contexts        []rawConfigContext `toml:"contexts"`
+	LastUpdateCheck time.Time          `toml:"last_update_check"`
 }
 
 type rawConfigContext struct {
@@ -133,7 +146,9 @@ type rawConfigContext struct {
 }
 
 func (cfg *config) marshal() ([]byte, error) {
-	var raw rawConfig
+	raw := rawConfig{
+		LastUpdateCheck: cfg.lastUpdateCheck,
+	}
 	if cfg.activeContext != nil {
 		raw.ActiveContext = cfg.activeContext.Name
 	}
@@ -151,6 +166,7 @@ func (cfg *config) unmarshal(data []byte) error {
 	if err := toml.Unmarshal(data, &raw); err != nil {
 		return err
 	}
+	cfg.lastUpdateCheck = raw.LastUpdateCheck
 	for _, rawContext := range raw.Contexts {
 		cfg.contexts = append(cfg.contexts, &Context{
 			Name:  rawContext.Name,

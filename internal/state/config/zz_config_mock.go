@@ -6,6 +6,7 @@ package config
 
 import (
 	reflect "reflect"
+	time "time"
 
 	gomock "github.com/golang/mock/gomock"
 )
@@ -47,34 +48,6 @@ func (mr *MockConfigMockRecorder) ActiveContext() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ActiveContext", reflect.TypeOf((*MockConfig)(nil).ActiveContext))
 }
 
-// ContextByName mocks base method.
-func (m *MockConfig) ContextByName(arg0 string) *Context {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ContextByName", arg0)
-	ret0, _ := ret[0].(*Context)
-	return ret0
-}
-
-// ContextByName indicates an expected call of ContextByName.
-func (mr *MockConfigMockRecorder) ContextByName(arg0 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ContextByName", reflect.TypeOf((*MockConfig)(nil).ContextByName), arg0)
-}
-
-// ContextNames mocks base method.
-func (m *MockConfig) ContextNames() []string {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ContextNames")
-	ret0, _ := ret[0].([]string)
-	return ret0
-}
-
-// ContextNames indicates an expected call of ContextNames.
-func (mr *MockConfigMockRecorder) ContextNames() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ContextNames", reflect.TypeOf((*MockConfig)(nil).ContextNames))
-}
-
 // Contexts mocks base method.
 func (m *MockConfig) Contexts() []*Context {
 	m.ctrl.T.Helper()
@@ -103,16 +76,18 @@ func (mr *MockConfigMockRecorder) Endpoint() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Endpoint", reflect.TypeOf((*MockConfig)(nil).Endpoint))
 }
 
-// RemoveContext mocks base method.
-func (m *MockConfig) RemoveContext(arg0 *Context) {
+// LastUpdateCheck mocks base method.
+func (m *MockConfig) LastUpdateCheck() time.Time {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "RemoveContext", arg0)
+	ret := m.ctrl.Call(m, "LastUpdateCheck")
+	ret0, _ := ret[0].(time.Time)
+	return ret0
 }
 
-// RemoveContext indicates an expected call of RemoveContext.
-func (mr *MockConfigMockRecorder) RemoveContext(arg0 interface{}) *gomock.Call {
+// LastUpdateCheck indicates an expected call of LastUpdateCheck.
+func (mr *MockConfigMockRecorder) LastUpdateCheck() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RemoveContext", reflect.TypeOf((*MockConfig)(nil).RemoveContext), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LastUpdateCheck", reflect.TypeOf((*MockConfig)(nil).LastUpdateCheck))
 }
 
 // SetActiveContext mocks base method.
@@ -149,6 +124,18 @@ func (m *MockConfig) SetEndpoint(arg0 string) {
 func (mr *MockConfigMockRecorder) SetEndpoint(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetEndpoint", reflect.TypeOf((*MockConfig)(nil).SetEndpoint), arg0)
+}
+
+// SetLastUpdateCheck mocks base method.
+func (m *MockConfig) SetLastUpdateCheck(arg0 time.Time) {
+	m.ctrl.T.Helper()
+	m.ctrl.Call(m, "SetLastUpdateCheck", arg0)
+}
+
+// SetLastUpdateCheck indicates an expected call of SetLastUpdateCheck.
+func (mr *MockConfigMockRecorder) SetLastUpdateCheck(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SetLastUpdateCheck", reflect.TypeOf((*MockConfig)(nil).SetLastUpdateCheck), arg0)
 }
 
 // Write mocks base method.
