@@ -8,7 +8,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-//go:generate mockgen -package state -destination command_helper_mocks.go . ActionWaiter,TokenEnsurer
+//go:generate go run github.com/golang/mock/mockgen -package state -destination zz_command_helper_mock.go . ActionWaiter,TokenEnsurer
 
 type ActionWaiter interface {
 	ActionProgress(*cobra.Command, context.Context, *hcloud.Action) error

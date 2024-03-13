@@ -47,3 +47,26 @@ jobs:
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
+
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: Delete old generated files
+        run: find . -name 'zz_*.go' -delete
+
+      - name: Run go generate
+        run: go generate ./...
+
+      - name: Check uncommitted changes
+        run: git diff --exit-code
+
+      - if: failure()
+        run: echo "::error::Check failed, please run 'go generate ./...' and commit the changes."
