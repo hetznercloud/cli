@@ -15,7 +15,7 @@ import (
 var RemoveFromResourceCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:                   "remove-from-resource <firewall> (--type server --server <server> | --type label_selector --label-selector <label-selector>)",
+			Use:                   "remove-from-resource (--type server --server <server> | --type label_selector --label-selector <label-selector>) <firewall>",
 			Short:                 "Removes a Firewall from a single resource",
 			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Firewall().Names)),

@@ -42,7 +42,8 @@ Command usage descriptions (namely `cobra.Command.Use`) should follow the [docop
 Additionally:
 - Optional flags should be the first in the usage string.
   - If there is more than one optional flag, you can use `[options]` to abbreviate.
-- Required flags should always be documented explicitly and after the positional arguments.
+- Required flags should always be documented explicitly and before the positional arguments, but after the 
+  optional flags.
 
 ### Subcommand groups
 

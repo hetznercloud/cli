@@ -16,7 +16,7 @@ import (
 var ChangeIPRangeCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:                   "change-ip-range <network> --ip-range <ip-range>",
+			Use:                   "change-ip-range --ip-range <ip-range> <network>",
 			Short:                 "Change the IP range of a network",
 			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Network().Names)),

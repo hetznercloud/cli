@@ -16,7 +16,7 @@ import (
 var UpdateServiceCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:                   "update-service [options] <load-balancer> --listen-port <1-65535>",
+			Use:                   "update-service [options] --listen-port <1-65535> <load-balancer>",
 			Short:                 "Updates a service from a Load Balancer",
 			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.LoadBalancer().Names)),

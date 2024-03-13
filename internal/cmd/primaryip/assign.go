@@ -15,7 +15,7 @@ import (
 var AssignCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:   "assign <primary-ip> --server <server>",
+			Use:   "assign --server <server> <primary-ip>",
 			Short: "Assign a Primary IP to an assignee (usually a server)",
 			Args:  cobra.ExactArgs(1),
 			ValidArgsFunction: cmpl.SuggestArgs(

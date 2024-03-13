@@ -14,7 +14,7 @@ import (
 var ResizeCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:                   "resize <volume> --size <size>",
+			Use:                   "resize --size <size> <volume>",
 			Short:                 "Resize a volume",
 			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Volume().Names)),

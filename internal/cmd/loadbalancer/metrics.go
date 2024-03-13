@@ -31,7 +31,7 @@ var metricTypeStrings = []string{
 var MetricsCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:                   fmt.Sprintf("metrics [options] <load-balancer> (--type <%s>)...", strings.Join(metricTypeStrings, "|")),
+			Use:                   fmt.Sprintf("metrics [options] (--type <%s>)... <load-balancer>", strings.Join(metricTypeStrings, "|")),
 			Short:                 "[ALPHA] Metrics from a Load Balancer",
 			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.LoadBalancer().Names)),

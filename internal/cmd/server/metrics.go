@@ -30,7 +30,7 @@ var metricTypeStrings = []string{
 var MetricsCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:                   fmt.Sprintf("metrics [options] <server> (--type <%s>)...", strings.Join(metricTypeStrings, "|")),
+			Use:                   fmt.Sprintf("metrics [options] (--type <%s>)... <server>", strings.Join(metricTypeStrings, "|")),
 			Short:                 "[ALPHA] Metrics from a Server",
 			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),

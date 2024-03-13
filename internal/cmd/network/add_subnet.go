@@ -16,7 +16,7 @@ import (
 var AddSubnetCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:                   "add-subnet [options] <network> --type <cloud|server|vswitch> --network-zone <zone>",
+			Use:                   "add-subnet [options] --type <cloud|server|vswitch> --network-zone <zone> <network>",
 			Short:                 "Add a subnet to a network",
 			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Network().Names)),

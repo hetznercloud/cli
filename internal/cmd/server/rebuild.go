@@ -16,7 +16,7 @@ import (
 var RebuildCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:                   "rebuild [--allow-deprecated-image] <server> --image <image>",
+			Use:                   "rebuild [--allow-deprecated-image] --image <image> <server>",
 			Short:                 "Rebuild a server",
 			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
