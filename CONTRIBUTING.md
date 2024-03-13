@@ -131,6 +131,6 @@ Additional Commands:
 
 ### Generated files
 
-Generated files (that are created by running `go generate`) should be prefixed with `zz_`. This is so that they are
-grouped together in the file list and are easy to identify as generated files. Also, it allows the CI to check if the
+Generated files (that are created by running `go generate`) should be prefixed with `zz_`. This is to group them 
+together in the file list and to easily identify them as generated files. Also, it allows the CI to check if the
 generated files are up-to-date.
