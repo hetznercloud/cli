@@ -16,7 +16,6 @@ var CreateCmd = base.CreateCmd{
 		cmd := &cobra.Command{
 			Use:                   "create [options] --type <ipv4|ipv6> --name <name>",
 			Short:                 "Create a Primary IP",
-			Args:                  util.Validate,
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
 		}

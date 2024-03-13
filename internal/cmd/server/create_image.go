@@ -7,7 +7,6 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
-	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -18,7 +17,6 @@ var CreateImageCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:   "create-image [options] --type <snapshot|backup> <server>",
 			Short: "Create an image from a server",
-			Args:  util.Validate,
 		}
 		cmd.Flags().String("type", "", "Image type (required)")
 		cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("backup", "snapshot"))

@@ -33,7 +33,6 @@ var MetricsCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:                   fmt.Sprintf("metrics [options] (--type <%s>)... <load-balancer>", strings.Join(metricTypeStrings, "|")),
 			Short:                 "[ALPHA] Metrics from a Load Balancer",
-			Args:                  util.Validate,
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.LoadBalancer().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

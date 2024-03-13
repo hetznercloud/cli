@@ -7,7 +7,6 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
-	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 )
@@ -17,7 +16,6 @@ var UnassignCmd = base.Cmd{
 		return &cobra.Command{
 			Use:                   "unassign <floating-ip>",
 			Short:                 "Unassign a Floating IP",
-			Args:                  util.Validate,
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.FloatingIP().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

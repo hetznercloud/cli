@@ -18,7 +18,6 @@ var CreateCmd = base.CreateCmd{
 		cmd := &cobra.Command{
 			Use:   "create [options] --name <name> (--public-key <key> | --public-key-from-file <file>)",
 			Short: "Create a SSH key",
-			Args:  util.Validate,
 		}
 		cmd.Flags().String("name", "", "Key name (required)")
 		_ = cmd.MarkFlagRequired("name")

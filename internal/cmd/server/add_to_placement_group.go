@@ -7,7 +7,6 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
-	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 )
@@ -17,7 +16,6 @@ var AddToPlacementGroupCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:               "add-to-placement-group --placement-group <placement-group> <server>",
 			Short:             "Add a server to a placement group",
-			Args:              util.Validate,
 			ValidArgsFunction: cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
 		}
 

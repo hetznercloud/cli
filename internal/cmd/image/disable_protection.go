@@ -8,7 +8,6 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
-	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -19,7 +18,6 @@ var DisableProtectionCmd = base.Cmd{
 		return &cobra.Command{
 			Use:   "disable-protection <image> <protection-level>...",
 			Short: "Disable resource protection for an image",
-			Args:  util.Validate,
 			ValidArgsFunction: cmpl.SuggestArgs(
 				cmpl.SuggestCandidatesF(client.Image().Names),
 				cmpl.SuggestCandidates("delete"),

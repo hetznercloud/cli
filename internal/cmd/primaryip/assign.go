@@ -7,7 +7,6 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
-	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -18,7 +17,6 @@ var AssignCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:   "assign --server <server> <primary-ip>",
 			Short: "Assign a Primary IP to an assignee (usually a server)",
-			Args:  util.Validate,
 			ValidArgsFunction: cmpl.SuggestArgs(
 				cmpl.SuggestCandidatesF(client.PrimaryIP().Names),
 			),

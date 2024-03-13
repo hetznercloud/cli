@@ -8,7 +8,6 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
-	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -19,7 +18,6 @@ var RemoveSubnetCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:                   "remove-subnet --ip-range <ip-range> <network>",
 			Short:                 "Remove a subnet from a network",
-			Args:                  util.Validate,
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Network().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

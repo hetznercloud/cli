@@ -35,6 +35,7 @@ func (lc *ListCmd) CobraCommand(s state.State) *cobra.Command {
 			fmt.Sprintf("Displays a list of %s.", lc.ResourceNamePlural),
 			outputColumns,
 		),
+		Args:                  util.Validate,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               s.EnsureToken,

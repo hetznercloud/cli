@@ -19,7 +19,6 @@ var CreateCmd = base.CreateCmd{
 		cmd := &cobra.Command{
 			Use:                   "create [options] --type <ipv4|ipv6> (--home-location <location> | --server <server>)",
 			Short:                 "Create a Floating IP",
-			Args:                  util.Validate,
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
 		}
