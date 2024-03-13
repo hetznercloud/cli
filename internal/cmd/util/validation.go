@@ -20,6 +20,7 @@ func Validate(cmd *cobra.Command, args []string) error {
 }
 
 func validate(cmd *cobra.Command, args []string, exact bool) error {
+
 	matches := posArgRegex.FindAllStringSubmatch(cmd.Use, -1)
 	var expected []string
 	for _, match := range matches {
@@ -30,11 +31,19 @@ func validate(cmd *cobra.Command, args []string, exact bool) error {
 	if len(args) > len(expected) && exact {
 		return fmt.Errorf("expected exactly %d positional arguments, but got %d", len(expected), len(args))
 	}
+
+	use := cmd.Use
+	paren := cmd.Parent()
+	for paren != nil {
+		use = paren.Use + " " + use
+		paren = paren.Parent()
+	}
+
 	for i := 0; i < len(expected); i++ {
 		if i >= len(args) {
-			idx := strings.Index(cmd.Use, "<"+expected[i]+">")
+			idx := strings.Index(use, "<"+expected[i]+">")
 			if idx != -1 {
-				_, _ = fmt.Fprintln(os.Stderr, cmd.Use)
+				_, _ = fmt.Fprintln(os.Stderr, use)
 				_, _ = fmt.Fprintln(os.Stderr, strings.Repeat(" ", idx+1)+strings.Repeat("^", len(expected[i])))
 			}
 			return fmt.Errorf("expected argument %s at position %d", expected[i], i+1)
