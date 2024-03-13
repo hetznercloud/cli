@@ -11,7 +11,7 @@ func NewCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "floating-ip",
 		Short:                 "Manage Floating IPs",
-		Args:                  util.ValidateExact,
+		Args:                  util.Validate,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 	}

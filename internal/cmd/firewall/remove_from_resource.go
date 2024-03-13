@@ -18,7 +18,7 @@ var RemoveFromResourceCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:                   "remove-from-resource (--type server --server <server> | --type label_selector --label-selector <label-selector>) <firewall>",
 			Short:                 "Removes a Firewall from a single resource",
-			Args:                  util.ValidateExact,
+			Args:                  util.Validate,
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Firewall().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

@@ -17,7 +17,7 @@ var RemoveFromPlacementGroupCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:               "remove-from-placement-group <server>",
 			Short:             "Removes a server from a placement group",
-			Args:              util.ValidateExact,
+			Args:              util.Validate,
 			ValidArgsFunction: cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
 		}
 

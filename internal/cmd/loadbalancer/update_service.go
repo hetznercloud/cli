@@ -19,7 +19,7 @@ var UpdateServiceCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:                   "update-service [options] --listen-port <1-65535> <load-balancer>",
 			Short:                 "Updates a service from a Load Balancer",
-			Args:                  util.ValidateExact,
+			Args:                  util.Validate,
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.LoadBalancer().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

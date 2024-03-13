@@ -20,7 +20,7 @@ func newCreateCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "create <name>",
 		Short:                 "Create a new context",
-		Args:                  util.ValidateExact,
+		Args:                  util.Validate,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		RunE:                  state.Wrap(s, runCreate),

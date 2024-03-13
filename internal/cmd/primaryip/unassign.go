@@ -17,7 +17,7 @@ var UnAssignCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:   "unassign <primary-ip>",
 			Short: "Unassign a Primary IP from an assignee (usually a server)",
-			Args:  util.ValidateExact,
+			Args:  util.Validate,
 			ValidArgsFunction: cmpl.SuggestArgs(
 				cmpl.SuggestCandidatesF(client.PrimaryIP().Names),
 			),

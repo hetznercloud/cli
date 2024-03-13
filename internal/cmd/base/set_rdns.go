@@ -30,7 +30,7 @@ func (rc *SetRdnsCmd) CobraCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   fmt.Sprintf("set-rdns [options] --hostname <hostname> <%s>", strings.ToLower(rc.ResourceNameSingular)),
 		Short:                 rc.ShortDescription,
-		Args:                  util.ValidateExact,
+		Args:                  util.Validate,
 		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(rc.NameSuggestions(s.Client()))),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,

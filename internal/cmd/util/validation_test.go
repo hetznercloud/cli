@@ -14,7 +14,7 @@ func TestValidate(t *testing.T) {
 		name           string
 		use            string
 		args           []string
-		exact          bool
+		lenient        bool
 		expectedStdout string
 		expectedStderr string
 		expectedErr    string
@@ -25,76 +25,62 @@ func TestValidate(t *testing.T) {
 			args: []string{"arg1", "arg2"},
 		},
 		{
-			name:  "correct usage exact",
-			use:   "test <arg1> <arg2>",
-			args:  []string{"arg1", "arg2"},
-			exact: true,
-		},
-		{
 			name:           "missing arg",
 			use:            "test <arg1> <arg2>",
 			args:           []string{"arg1"},
 			expectedStderr: "test <arg1> <arg2>\n             ^^^^\n",
-			expectedErr:    "expected argument arg2 at position 2",
+			expectedErr:    "expected argument(s) arg2 at position 2",
 		},
 		{
-			name:           "missing arg exact",
-			use:            "test <arg1> <arg2>",
+			name:           "missing arg variadic",
+			use:            "test <arg1> <arg2>...",
 			args:           []string{"arg1"},
-			expectedStderr: "test <arg1> <arg2>\n             ^^^^\n",
-			expectedErr:    "expected argument arg2 at position 2",
-			exact:          true,
+			expectedStderr: "test <arg1> <arg2>...\n             ^^^^\n",
+			expectedErr:    "expected argument(s) arg2 at position 2",
 		},
 		{
-			name: "too many args",
-			use:  "test <arg1> <arg2>",
-			args: []string{"arg1", "arg2", "arg3"},
+			name:           "too many args",
+			use:            "test <arg1> <arg2>",
+			args:           []string{"arg1", "arg2", "arg3"},
+			expectedStderr: "test <arg1> <arg2>\n                   ^\n",
+			expectedErr:    "expected exactly 2 positional argument(s), but got 3",
 		},
 		{
-			name:        "too many args exact",
-			use:         "test <arg1> <arg2>",
-			args:        []string{"arg1", "arg2", "arg3"},
-			exact:       true,
-			expectedErr: "expected exactly 2 positional arguments, but got 3",
-		},
-		{
-			name: "correct usage complex",
-			use:  "test [options] [<optional-arg>] <arg1> --flag <not-an-arg> <arg2> [<arg3>]",
+			name: "complex correct usage",
+			use:  "test [options] <arg1> --flag <not-an-arg> <arg2> [<arg3>]",
 			args: []string{"arg1", "arg2"},
 		},
 		{
-			name:  "correct usage complex exact",
-			use:   "test [options] [<optional-arg>] <arg1> --flag <not-an-arg> <arg2> [<arg3>]",
-			args:  []string{"arg1", "arg2"},
-			exact: true,
+			name: "complex correct usage variadic",
+			use:  "test [options] <arg1> --flag <not-an-arg> <arg2>... [<arg3>]",
+			args: []string{"arg1", "arg2", "arg3"},
 		},
 		{
 			name:           "complex missing arg",
-			use:            "test [options] [<optional-arg>] <arg1> --flag <not-an-arg> <arg2> [<arg3>]",
+			use:            "test [options] <arg1> --flag <not-an-arg> <arg2> [<arg3>]",
 			args:           []string{"arg1"},
-			expectedStderr: "test [options] [<optional-arg>] <arg1> --flag <not-an-arg> <arg2> [<arg3>]\n                                                            ^^^^\n",
-			expectedErr:    "expected argument arg2 at position 2",
+			expectedStderr: "test [options] <arg1> --flag <not-an-arg> <arg2> [<arg3>]\n                                           ^^^^\n",
+			expectedErr:    "expected argument(s) arg2 at position 2",
 		},
 		{
-			name:           "complex missing arg exact",
-			use:            "test [options] [<optional-arg>] <arg1> --flag <not-an-arg> <arg2> [<arg3>]",
+			name:           "complex missing arg variadic",
+			use:            "test [options] <arg1> --flag <not-an-arg> <arg2>... [<arg3>]",
 			args:           []string{"arg1"},
-			exact:          true,
-			expectedStderr: "test [options] [<optional-arg>] <arg1> --flag <not-an-arg> <arg2> [<arg3>]\n                                                            ^^^^\n",
-			expectedErr:    "expected argument arg2 at position 2",
+			expectedStderr: "test [options] <arg1> --flag <not-an-arg> <arg2>... [<arg3>]\n                                           ^^^^\n",
+			expectedErr:    "expected argument(s) arg2 at position 2",
+		},
+		{ // note: ValidateLenient should be used here, because there are optional positional arguments; this is just for testing
+			name:           "complex too many args not lenient",
+			use:            "test [options] <arg1> --flag <not-an-arg> <arg2> [<arg3>]",
+			args:           []string{"arg1", "arg2", "arg3"},
+			expectedStderr: "test [options] <arg1> --flag <not-an-arg> <arg2> [<arg3>]\n                                                          ^\n",
+			expectedErr:    "expected exactly 2 positional argument(s), but got 3",
 		},
 		{
-			name: "complex too many args",
-			use:  "test [options] [<optional-arg>] <arg1> --flag <not-an-arg> <arg2> [<arg3>]",
-			args: []string{"arg1", "arg2", "arg3"},
-		},
-
-		{
-			name:        "complex too many args exact",
-			use:         "test [options] [<optional-arg>] <arg1> --flag <not-an-arg> <arg2> [<arg3>]",
-			args:        []string{"arg1", "arg2", "arg3"},
-			exact:       true,
-			expectedErr: "expected exactly 2 positional arguments, but got 3",
+			name:    "complex too many args lenient",
+			use:     "test [options] <arg1> --flag <not-an-arg> <arg2> [<arg3>]",
+			args:    []string{"arg1", "arg2", "arg3"},
+			lenient: true,
 		},
 	}
 
@@ -103,8 +89,8 @@ func TestValidate(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			stdout, stderr, err := testutil.CaptureOutStreams(func() error {
 				cmd := &cobra.Command{Use: test.use}
-				if test.exact {
-					return ValidateExact(cmd, test.args)
+				if test.lenient {
+					return ValidateLenient(cmd, test.args)
 				} else {
 					return Validate(cmd, test.args)
 				}

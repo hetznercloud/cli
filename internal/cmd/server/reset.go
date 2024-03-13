@@ -17,7 +17,7 @@ var ResetCmd = base.Cmd{
 		return &cobra.Command{
 			Use:                   "reset [options] <server>",
 			Short:                 "Reset a server",
-			Args:                  util.ValidateExact,
+			Args:                  util.Validate,
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

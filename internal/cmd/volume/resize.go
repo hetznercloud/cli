@@ -17,7 +17,7 @@ var ResizeCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:                   "resize --size <size> <volume>",
 			Short:                 "Resize a volume",
-			Args:                  util.ValidateExact,
+			Args:                  util.Validate,
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Volume().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

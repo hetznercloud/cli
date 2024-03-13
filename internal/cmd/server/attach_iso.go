@@ -18,7 +18,7 @@ var AttachISOCmd = base.Cmd{
 		return &cobra.Command{
 			Use:              "attach-iso <server> <iso>",
 			Short:            "Attach an ISO to a server",
-			Args:             util.ValidateExact,
+			Args:             util.Validate,
 			TraverseChildren: true,
 			ValidArgsFunction: cmpl.SuggestArgs(
 				cmpl.SuggestCandidatesF(client.Server().Names),

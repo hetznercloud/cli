@@ -18,7 +18,7 @@ var ChangeTypeCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:   "change-type [--keep-disk] <server> <server-type>",
 			Short: "Change type of a server",
-			Args:  util.ValidateExact,
+			Args:  util.Validate,
 			ValidArgsFunction: cmpl.SuggestArgs(
 				cmpl.SuggestCandidatesF(client.Server().Names),
 				cmpl.SuggestCandidatesF(client.ServerType().Names),

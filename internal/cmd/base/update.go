@@ -30,7 +30,7 @@ func (uc *UpdateCmd) CobraCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   fmt.Sprintf("update [options] <%s>", strings.ToLower(uc.ResourceNameSingular)),
 		Short:                 uc.ShortDescription,
-		Args:                  util.ValidateExact,
+		Args:                  util.Validate,
 		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(uc.NameSuggestions(s.Client()))),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,

@@ -19,7 +19,7 @@ var ChangeAliasIPsCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:                   "change-alias-ips [options] --network <network> <server>",
 			Short:                 "Change a server's alias IPs in a network",
-			Args:                  util.ValidateExact,
+			Args:                  util.Validate,
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

@@ -30,7 +30,7 @@ func newListCommand(s state.State) *cobra.Command {
 			"Displays a list of contexts.",
 			listTableOutput.Columns(),
 		),
-		Args:                  util.ValidateExact,
+		Args:                  util.Validate,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		RunE:                  state.Wrap(s, runList),

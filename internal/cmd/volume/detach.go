@@ -17,7 +17,7 @@ var DetachCmd = base.Cmd{
 		return &cobra.Command{
 			Use:                   "detach <volume>",
 			Short:                 "Detach a volume",
-			Args:                  util.ValidateExact,
+			Args:                  util.Validate,
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Volume().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

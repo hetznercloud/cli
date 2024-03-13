@@ -18,7 +18,7 @@ var EnableRescueCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:                   "enable-rescue [options] <server>",
 			Short:                 "Enable rescue for a server",
-			Args:                  util.ValidateExact,
+			Args:                  util.Validate,
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

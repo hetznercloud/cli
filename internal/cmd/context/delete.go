@@ -16,7 +16,7 @@ func newDeleteCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "delete <context>",
 		Short:                 "Delete a context",
-		Args:                  util.ValidateExact,
+		Args:                  util.Validate,
 		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidates(config.ContextNames(s.Config())...)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,

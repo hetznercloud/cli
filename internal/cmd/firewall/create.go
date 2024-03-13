@@ -22,7 +22,7 @@ var CreateCmd = base.CreateCmd{
 		cmd := &cobra.Command{
 			Use:   "create [options] --name <name>",
 			Short: "Create a Firewall",
-			Args:  util.ValidateExact,
+			Args:  util.Validate,
 		}
 		cmd.Flags().String("name", "", "Name")
 		cmd.MarkFlagRequired("name")

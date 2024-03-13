@@ -95,7 +95,7 @@ and source this file from your PowerShell profile.
 
   PS> hcloud completion powershell > hcloud.ps1
 `,
-		Args:                  util.ValidateExact,
+		Args:                  util.Validate,
 		ValidArgs:             []string{"bash", "fish", "zsh", "powershell"},
 		DisableFlagsInUseLine: true,
 		RunE: func(cmd *cobra.Command, args []string) error {

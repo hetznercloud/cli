@@ -19,7 +19,7 @@ var RemoveTargetCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:                   "remove-target [options] <load-balancer>",
 			Short:                 "Remove a target from a Load Balancer",
-			Args:                  util.ValidateExact,
+			Args:                  util.Validate,
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.LoadBalancer().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

@@ -18,7 +18,7 @@ var CreateImageCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:   "create-image [options] --type <snapshot|backup> <server>",
 			Short: "Create an image from a server",
-			Args:  util.ValidateExact,
+			Args:  util.Validate,
 		}
 		cmd.Flags().String("type", "", "Image type (required)")
 		cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("backup", "snapshot"))

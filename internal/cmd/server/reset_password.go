@@ -17,7 +17,7 @@ var ResetPasswordCmd = base.Cmd{
 		return &cobra.Command{
 			Use:                   "reset-password <server>",
 			Short:                 "Reset the root password of a server",
-			Args:                  util.ValidateExact,
+			Args:                  util.Validate,
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
