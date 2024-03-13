@@ -3,7 +3,6 @@ package base
 import (
 	"fmt"
 	"reflect"
-	"strings"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -28,7 +27,7 @@ type UpdateCmd struct {
 // CobraCommand creates a command that can be registered with cobra.
 func (uc *UpdateCmd) CobraCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   fmt.Sprintf("update [options] <%s>", strings.ToLower(uc.ResourceNameSingular)),
+		Use:                   fmt.Sprintf("update [options] <%s>", util.ToKebabCase(uc.ResourceNameSingular)),
 		Short:                 uc.ShortDescription,
 		Args:                  util.Validate,
 		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(uc.NameSuggestions(s.Client()))),

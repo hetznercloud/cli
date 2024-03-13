@@ -27,7 +27,7 @@ type LabelCmds struct {
 // AddCobraCommand creates a command that can be registered with cobra.
 func (lc *LabelCmds) AddCobraCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   fmt.Sprintf("add-label [--overwrite] <%s> <label>...", strings.ToLower(lc.ResourceNameSingular)),
+		Use:                   fmt.Sprintf("add-label [--overwrite] <%s> <label>...", util.ToKebabCase(lc.ResourceNameSingular)),
 		Short:                 lc.ShortDescriptionAdd,
 		Args:                  util.Validate,
 		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(lc.NameSuggestions(s.Client()))),
@@ -89,9 +89,9 @@ func validateAddLabel(_ *cobra.Command, args []string) error {
 // RemoveCobraCommand creates a command that can be registered with cobra.
 func (lc *LabelCmds) RemoveCobraCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   fmt.Sprintf("remove-label <%s> (--all | <label>...)", strings.ToLower(lc.ResourceNameSingular)),
+		Use:   fmt.Sprintf("remove-label <%s> (--all | <label>...)", util.ToKebabCase(lc.ResourceNameSingular)),
 		Short: lc.ShortDescriptionRemove,
-		Args:  util.Validate,
+		Args:  util.ValidateLenient,
 		ValidArgsFunction: cmpl.SuggestArgs(
 			cmpl.SuggestCandidatesF(lc.NameSuggestions(s.Client())),
 			cmpl.SuggestCandidatesCtx(func(_ *cobra.Command, args []string) []string {
