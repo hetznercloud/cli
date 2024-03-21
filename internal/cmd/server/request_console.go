@@ -16,7 +16,7 @@ import (
 var RequestConsoleCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:                   "request-console [FLAGS] SERVER",
+			Use:                   "request-console [options] <server>",
 			Short:                 "Request a WebSocket VNC console for a server",
 			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),

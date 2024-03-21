@@ -24,7 +24,7 @@ func init() {
 
 func newListCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:   "list [FLAGS]",
+		Use:   "list [options]",
 		Short: "List contexts",
 		Long: util.ListLongDescription(
 			"Displays a list of contexts.",

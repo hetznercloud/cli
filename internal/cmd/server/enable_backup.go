@@ -14,16 +14,13 @@ import (
 var EnableBackupCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:                   "enable-backup [FLAGS] SERVER",
+			Use:                   "enable-backup <server>",
 			Short:                 "Enable backup for a server",
 			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
 		}
-		cmd.Flags().String(
-			"window", "",
-			"(deprecated) The time window for the daily backup to run. All times are in UTC. 22-02 means that the backup will be started between 10 PM and 2 AM.")
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
@@ -34,11 +31,6 @@ var EnableBackupCmd = base.Cmd{
 		}
 		if server == nil {
 			return fmt.Errorf("server not found: %s", idOrName)
-		}
-
-		window, _ := cmd.Flags().GetString("window")
-		if window != "" {
-			cmd.Print("[WARN] The ability to specify a backup window when enabling backups has been removed. Ignoring flag.\n")
 		}
 
 		action, _, err := s.Client().Server().EnableBackup(s, server, "")

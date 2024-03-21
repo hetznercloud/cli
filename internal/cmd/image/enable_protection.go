@@ -63,7 +63,7 @@ var EnableProtectionCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 
 		return &cobra.Command{
-			Use:   "enable-protection [FLAGS] IMAGE PROTECTIONLEVEL [PROTECTIONLEVEL...]",
+			Use:   "enable-protection <image> <protection-level>...",
 			Short: "Enable resource protection for an image",
 			Args:  cobra.MinimumNArgs(2),
 			ValidArgsFunction: cmpl.SuggestArgs(

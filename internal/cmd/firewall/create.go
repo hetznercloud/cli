@@ -20,7 +20,7 @@ import (
 var CreateCmd = base.CreateCmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:   "create FLAGS",
+			Use:   "create [options] --name <name>",
 			Short: "Create a Firewall",
 			Args:  cobra.NoArgs,
 		}

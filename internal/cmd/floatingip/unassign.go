@@ -14,7 +14,7 @@ import (
 var UnassignCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		return &cobra.Command{
-			Use:                   "unassign [FLAGS] FLOATINGIP",
+			Use:                   "unassign <floating-ip>",
 			Short:                 "Unassign a Floating IP",
 			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.FloatingIP().Names)),

@@ -15,7 +15,7 @@ import (
 var ChangeTypeCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		return &cobra.Command{
-			Use:   "change-type [FLAGS] LOADBALANCER LOADBALANCERTYPE",
+			Use:   "change-type <load-balancer> <load-balancer-type>",
 			Short: "Change type of a Load Balancer",
 			Args:  cobra.ExactArgs(2),
 			ValidArgsFunction: cmpl.SuggestArgs(
