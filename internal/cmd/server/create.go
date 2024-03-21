@@ -261,6 +261,14 @@ func createOptsFromFlags(
 	primaryIPv6IDorName, _ := flags.GetString("primary-ipv6")
 	protection, _ := flags.GetStringSlice("enable-protection")
 
+	// check if ssh-key flag was set, otherwise set to defaults
+	if !flags.Changed("ssh-key") {
+		if ctx := s.Config().ActiveContext(); ctx != nil && len(ctx.SSHKeys) > 0 {
+			cmd.Println("Using default SSH key(s) from active context")
+			sshKeys = ctx.SSHKeys
+		}
+	}
+
 	serverType, _, err := s.Client().ServerType().Get(s, serverTypeName)
 	if err != nil {
 		return

@@ -55,6 +55,15 @@ var EnableRescueCmd = base.Cmd{
 		}
 
 		sshKeys, _ := cmd.Flags().GetStringSlice("ssh-key")
+
+		// check if ssh-key flag was set, otherwise set to defaults
+		if !cmd.Flags().Changed("ssh-key") {
+			if ctx := s.Config().ActiveContext(); ctx != nil && len(ctx.SSHKeys) > 0 {
+				cmd.Println("Using default SSH key(s) from active context")
+				sshKeys = ctx.SSHKeys
+			}
+		}
+
 		for _, sshKeyIDOrName := range sshKeys {
 			sshKey, _, err := s.Client().SSHKey().Get(s, sshKeyIDOrName)
 			if err != nil {

@@ -22,8 +22,9 @@ type Config interface {
 }
 
 type Context struct {
-	Name  string
-	Token string
+	Name    string
+	Token   string
+	SSHKeys []string
 }
 
 type config struct {
@@ -128,8 +129,9 @@ type rawConfig struct {
 }
 
 type rawConfigContext struct {
-	Name  string `toml:"name"`
-	Token string `toml:"token"`
+	Name    string   `toml:"name"`
+	Token   string   `toml:"token"`
+	SSHKeys []string `toml:"ssh_keys"`
 }
 
 func (cfg *config) marshal() ([]byte, error) {
@@ -139,8 +141,9 @@ func (cfg *config) marshal() ([]byte, error) {
 	}
 	for _, context := range cfg.contexts {
 		raw.Contexts = append(raw.Contexts, rawConfigContext{
-			Name:  context.Name,
-			Token: context.Token,
+			Name:    context.Name,
+			Token:   context.Token,
+			SSHKeys: context.SSHKeys,
 		})
 	}
 	return toml.Marshal(raw)
@@ -153,8 +156,9 @@ func (cfg *config) unmarshal(data []byte) error {
 	}
 	for _, rawContext := range raw.Contexts {
 		cfg.contexts = append(cfg.contexts, &Context{
-			Name:  rawContext.Name,
-			Token: rawContext.Token,
+			Name:    rawContext.Name,
+			Token:   rawContext.Token,
+			SSHKeys: rawContext.SSHKeys,
 		})
 	}
 	if raw.ActiveContext != "" {

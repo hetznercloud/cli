@@ -26,6 +26,9 @@ func TestCreate(t *testing.T) {
 
 	fx.ExpectEnsureToken()
 
+	fx.Config.EXPECT().
+		ActiveContext().
+		Return(nil)
 	fx.Client.ServerTypeClient.EXPECT().
 		Get(gomock.Any(), "cx11").
 		Return(&hcloud.ServerType{Architecture: hcloud.ArchitectureX86}, nil, nil)
@@ -135,6 +138,9 @@ func TestCreateJSON(t *testing.T) {
 		Status:        hcloud.ServerStatusRunning,
 	}
 
+	fx.Config.EXPECT().
+		ActiveContext().
+		Return(nil)
 	fx.Client.ServerTypeClient.EXPECT().
 		Get(gomock.Any(), "cx11").
 		Return(&hcloud.ServerType{Architecture: hcloud.ArchitectureX86}, nil, nil)
@@ -177,6 +183,9 @@ func TestCreateProtectionBackup(t *testing.T) {
 
 	fx.ExpectEnsureToken()
 
+	fx.Config.EXPECT().
+		ActiveContext().
+		Return(nil)
 	fx.Client.ServerTypeClient.EXPECT().
 		Get(gomock.Any(), "cx11").
 		Return(&hcloud.ServerType{Architecture: hcloud.ArchitectureX86}, nil, nil)
