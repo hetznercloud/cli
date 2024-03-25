@@ -65,7 +65,6 @@ var EnableProtectionCmd = base.Cmd{
 		return &cobra.Command{
 			Use:   "enable-protection <image> <protection-level>...",
 			Short: "Enable resource protection for an image",
-			Args:  cobra.MinimumNArgs(2),
 			ValidArgsFunction: cmpl.SuggestArgs(
 				cmpl.SuggestCandidatesF(client.Image().Names),
 				cmpl.SuggestCandidates("delete"),

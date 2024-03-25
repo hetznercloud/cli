@@ -16,7 +16,6 @@ var RebootCmd = base.Cmd{
 		return &cobra.Command{
 			Use:                   "reboot <server>",
 			Short:                 "Reboot a server",
-			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

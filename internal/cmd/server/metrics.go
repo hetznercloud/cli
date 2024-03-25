@@ -32,7 +32,6 @@ var MetricsCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:                   fmt.Sprintf("metrics [options] (--type <%s>)... <server>", strings.Join(metricTypeStrings, "|")),
 			Short:                 "[ALPHA] Metrics from a Server",
-			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

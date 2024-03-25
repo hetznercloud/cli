@@ -16,7 +16,6 @@ var PoweroffCmd = base.Cmd{
 		return &cobra.Command{
 			Use:                   "poweroff <server>",
 			Short:                 "Poweroff a server",
-			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

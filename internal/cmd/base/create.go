@@ -27,7 +27,7 @@ func (cc *CreateCmd) CobraCommand(s state.State) *cobra.Command {
 	output.AddFlag(cmd, output.OptionJSON(), output.OptionYAML())
 
 	if cmd.Args == nil {
-		cmd.Args = cobra.NoArgs
+		cmd.Args = util.Validate
 	}
 
 	cmd.TraverseChildren = true

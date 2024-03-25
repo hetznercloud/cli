@@ -204,3 +204,8 @@ func AddGroup(cmd *cobra.Command, id string, title string, groupCmds ...*cobra.C
 	}
 	cmd.AddCommand(groupCmds...)
 }
+
+// ToKebabCase converts the passed string to kebab-case.
+func ToKebabCase(s string) string {
+	return strings.ReplaceAll(strings.ToLower(s), " ", "-")
+}

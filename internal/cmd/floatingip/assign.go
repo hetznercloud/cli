@@ -16,7 +16,6 @@ var AssignCmd = base.Cmd{
 		return &cobra.Command{
 			Use:   "assign <floating-ip> <server>",
 			Short: "Assign a Floating IP to a server",
-			Args:  cobra.ExactArgs(2),
 			ValidArgsFunction: cmpl.SuggestArgs(
 				cmpl.SuggestCandidatesF(client.FloatingIP().Names),
 				cmpl.SuggestCandidatesF(client.Server().Names),

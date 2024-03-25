@@ -11,6 +11,7 @@ import (
 	"github.com/spf13/cobra"
 	"golang.org/x/term"
 
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/cli/internal/state/config"
 )
@@ -19,7 +20,7 @@ func newCreateCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "create <name>",
 		Short:                 "Create a new context",
-		Args:                  cobra.ExactArgs(1),
+		Args:                  util.Validate,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		RunE:                  state.Wrap(s, runCreate),

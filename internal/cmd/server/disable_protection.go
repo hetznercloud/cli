@@ -16,7 +16,6 @@ var DisableProtectionCmd = base.Cmd{
 		return &cobra.Command{
 			Use:   "disable-protection <server> <protection-level>...",
 			Short: "Disable resource protection for a server",
-			Args:  cobra.MinimumNArgs(2),
 			ValidArgsFunction: cmpl.SuggestArgs(
 				cmpl.SuggestCandidatesF(client.Server().Names),
 				cmpl.SuggestCandidates("delete", "rebuild"),

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net"
 	"reflect"
-	"strings"
 
 	"github.com/spf13/cobra"
 
@@ -28,9 +27,9 @@ type SetRdnsCmd struct {
 // CobraCommand creates a command that can be registered with cobra.
 func (rc *SetRdnsCmd) CobraCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   fmt.Sprintf("set-rdns [options] --hostname <hostname> <%s>", strings.ToLower(rc.ResourceNameSingular)),
+		Use:                   fmt.Sprintf("set-rdns [options] --hostname <hostname> <%s>", util.ToKebabCase(rc.ResourceNameSingular)),
 		Short:                 rc.ShortDescription,
-		Args:                  cobra.ExactArgs(1),
+		Args:                  util.Validate,
 		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(rc.NameSuggestions(s.Client()))),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,

@@ -62,7 +62,6 @@ var EnableProtectionCmd = base.Cmd{
 		return &cobra.Command{
 			Use:   "enable-protection <floating-ip> <protection-level>...",
 			Short: "Enable resource protection for a Floating IP",
-			Args:  cobra.MinimumNArgs(2),
 			ValidArgsFunction: cmpl.SuggestArgs(
 				cmpl.SuggestCandidatesF(client.FloatingIP().Names),
 				cmpl.SuggestCandidates("delete"),

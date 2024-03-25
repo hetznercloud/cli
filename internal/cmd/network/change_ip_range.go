@@ -18,7 +18,6 @@ var ChangeIPRangeCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:                   "change-ip-range --ip-range <ip-range> <network>",
 			Short:                 "Change the IP range of a network",
-			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Network().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

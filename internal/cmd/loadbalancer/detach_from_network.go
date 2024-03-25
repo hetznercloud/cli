@@ -17,7 +17,6 @@ var DetachFromNetworkCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:                   "detach-from-network --network <network> <load-balancer>",
 			Short:                 "Detach a Load Balancer from a Network",
-			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.LoadBalancer().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

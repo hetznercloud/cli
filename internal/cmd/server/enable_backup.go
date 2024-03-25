@@ -16,7 +16,6 @@ var EnableBackupCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:                   "enable-backup <server>",
 			Short:                 "Enable backup for a server",
-			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

@@ -17,7 +17,6 @@ var AssignCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:   "assign --server <server> <primary-ip>",
 			Short: "Assign a Primary IP to an assignee (usually a server)",
-			Args:  cobra.ExactArgs(1),
 			ValidArgsFunction: cmpl.SuggestArgs(
 				cmpl.SuggestCandidatesF(client.PrimaryIP().Names),
 			),

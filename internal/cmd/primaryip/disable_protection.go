@@ -16,7 +16,6 @@ var DisableProtectionCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:   "disable-protection <primary-ip> [<protection-level>...]", // optional because of backwards compatibility
 			Short: "Disable Protection for a Primary IP",
-			Args:  cobra.MinimumNArgs(1),
 			ValidArgsFunction: cmpl.SuggestArgs(
 				cmpl.SuggestCandidatesF(client.PrimaryIP().Names),
 				cmpl.SuggestCandidates("delete"),

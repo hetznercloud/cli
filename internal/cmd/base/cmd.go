@@ -19,7 +19,7 @@ func (gc *Cmd) CobraCommand(s state.State) *cobra.Command {
 	cmd := gc.BaseCobraCommand(s.Client())
 
 	if cmd.Args == nil {
-		cmd.Args = cobra.NoArgs
+		cmd.Args = util.Validate
 	}
 
 	cmd.TraverseChildren = true

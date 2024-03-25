@@ -6,6 +6,7 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 )
 
@@ -13,7 +14,7 @@ func newActiveCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "active",
 		Short:                 "Show active context",
-		Args:                  cobra.NoArgs,
+		Args:                  util.Validate,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		RunE:                  state.Wrap(s, runActive),

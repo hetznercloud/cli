@@ -6,6 +6,7 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 )
 
@@ -94,7 +95,7 @@ and source this file from your PowerShell profile.
 
   PS> hcloud completion powershell > hcloud.ps1
 `,
-		Args:                  cobra.ExactArgs(1),
+		Args:                  util.Validate,
 		ValidArgs:             []string{"bash", "fish", "zsh", "powershell"},
 		DisableFlagsInUseLine: true,
 		RunE: func(cmd *cobra.Command, args []string) error {

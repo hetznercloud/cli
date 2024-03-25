@@ -16,7 +16,6 @@ var IPCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:                   "ip [--ipv6] <server>",
 			Short:                 "Print a server's IP address",
-			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

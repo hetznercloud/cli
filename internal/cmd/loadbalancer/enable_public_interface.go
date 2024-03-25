@@ -16,7 +16,6 @@ var EnablePublicInterfaceCmd = base.Cmd{
 		return &cobra.Command{
 			Use:                   "enable-public-interface <load-balancer>",
 			Short:                 "Enable the public interface of a Load Balancer",
-			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.LoadBalancer().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

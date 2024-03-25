@@ -16,7 +16,6 @@ var DisableProtectionCmd = base.Cmd{
 		return &cobra.Command{
 			Use:   "disable-protection <load-balancer> <protection-level>...",
 			Short: "Disable resource protection for a Load Balancer",
-			Args:  cobra.MinimumNArgs(2),
 			ValidArgsFunction: cmpl.SuggestArgs(
 				cmpl.SuggestCandidatesF(client.LoadBalancer().Names),
 				cmpl.SuggestCandidates("delete"),

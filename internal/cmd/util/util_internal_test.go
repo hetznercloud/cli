@@ -116,3 +116,8 @@ func TestWrap(t *testing.T) {
 	jsonString, _ := json.Marshal(wrapped)
 	assert.JSONEq(t, `{"json": {"foo": "bar"}}`, string(jsonString))
 }
+
+func TestToKebabCase(t *testing.T) {
+	assert.Equal(t, "foo-bar", ToKebabCase("Foo Bar"))
+	assert.Equal(t, "foo", ToKebabCase("Foo"))
+}

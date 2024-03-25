@@ -16,7 +16,6 @@ var DisableRescueCmd = base.Cmd{
 		return &cobra.Command{
 			Use:                   "disable-rescue <server>",
 			Short:                 "Disable rescue for a server",
-			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
