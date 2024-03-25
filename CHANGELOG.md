@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.42.1](https://github.com/hetznercloud/cli/compare/v1.42.0...v1.42.1) (2024-03-25)
+
+
+### Bug Fixes
+
+* removing last rule from firewall fails with invalid_input error ([#696](https://github.com/hetznercloud/cli/issues/696)) ([acab17c](https://github.com/hetznercloud/cli/commit/acab17c361373e5bd3b689708195fa48f18dbafb))
+
 ## [1.42.0](https://github.com/hetznercloud/cli/compare/v1.41.1...v1.42.0) (2024-02-01)
 
 
