@@ -14,7 +14,7 @@ import (
 var ResetPasswordCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		return &cobra.Command{
-			Use:                   "reset-password [FLAGS] SERVER",
+			Use:                   "reset-password <server>",
 			Short:                 "Reset the root password of a server",
 			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),

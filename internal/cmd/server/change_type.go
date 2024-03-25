@@ -15,7 +15,7 @@ import (
 var ChangeTypeCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:   "change-type [FLAGS] SERVER SERVERTYPE",
+			Use:   "change-type [--keep-disk] <server> <server-type>",
 			Short: "Change type of a server",
 			Args:  cobra.ExactArgs(2),
 			ValidArgsFunction: cmpl.SuggestArgs(

@@ -20,7 +20,7 @@ import (
 var ReplaceRulesCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:                   "replace-rules FIREWALL FLAGS",
+			Use:                   "replace-rules --rules-file <file> <firewall>",
 			Short:                 "Replaces all rules from a Firewall from a file",
 			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Firewall().Names)),

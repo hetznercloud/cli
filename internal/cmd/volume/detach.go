@@ -14,7 +14,7 @@ import (
 var DetachCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		return &cobra.Command{
-			Use:                   "detach [FLAGS] VOLUME",
+			Use:                   "detach <volume>",
 			Short:                 "Detach a volume",
 			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Volume().Names)),

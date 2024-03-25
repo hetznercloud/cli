@@ -23,7 +23,7 @@ var ShutdownCmd = base.Cmd{
 			"server to shut down before returning."
 
 		cmd := &cobra.Command{
-			Use:                   "shutdown [FLAGS] SERVER",
+			Use:                   "shutdown [options] <server>",
 			Short:                 "Shutdown a server",
 			Long:                  description,
 			Args:                  cobra.ExactArgs(1),

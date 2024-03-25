@@ -17,7 +17,7 @@ import (
 var DeleteRuleCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:                   "delete-rule FIREWALL FLAGS",
+			Use:                   "delete-rule [options] (--direction in --source-ips <ips> | --direction out --destination-ips <ips>) --protocol <icmp|esp|gre|udp|tcp> <firewall>",
 			Short:                 "Delete a single rule to a firewall",
 			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Firewall().Names)),

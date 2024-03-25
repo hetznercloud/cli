@@ -16,7 +16,7 @@ import (
 var RemoveRouteCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:                   "remove-route NETWORK FLAGS",
+			Use:                   "remove-route --destination <destination> --gateway <ip> <network>",
 			Short:                 "Remove a route from a network",
 			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Network().Names)),

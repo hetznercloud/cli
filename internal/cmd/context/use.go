@@ -13,7 +13,7 @@ import (
 
 func newUseCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   "use [FLAGS] NAME",
+		Use:                   "use <context>",
 		Short:                 "Use a context",
 		Args:                  cobra.ExactArgs(1),
 		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidates(config.ContextNames(s.Config())...)),

@@ -16,7 +16,7 @@ import (
 var AttachToNetworkCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:                   "attach-to-network [FLAGS] SERVER",
+			Use:                   "attach-to-network [options] --network <network> <server>",
 			Short:                 "Attach a server to a network",
 			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),

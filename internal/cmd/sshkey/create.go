@@ -16,7 +16,7 @@ import (
 var CreateCmd = base.CreateCmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:   "create FLAGS",
+			Use:   "create [options] --name <name> (--public-key <key> | --public-key-from-file <file>)",
 			Short: "Create a SSH key",
 			Args:  cobra.NoArgs,
 		}

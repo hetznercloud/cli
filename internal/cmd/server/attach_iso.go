@@ -15,7 +15,7 @@ import (
 var AttachISOCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		return &cobra.Command{
-			Use:              "attach-iso [FLAGS] SERVER ISO",
+			Use:              "attach-iso <server> <iso>",
 			Short:            "Attach an ISO to a server",
 			Args:             cobra.ExactArgs(2),
 			TraverseChildren: true,

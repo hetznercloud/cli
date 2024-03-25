@@ -35,6 +35,16 @@ goreleaser --snapshot --skip-publish --rm-dist
 
 ## Conventions
 
+### Command usage
+
+Command usage descriptions (namely `cobra.Command.Use`) should follow the [docopt](http://docopt.org/) syntax.
+
+Additionally:
+- Optional flags should be the first in the usage string.
+  - If there is more than one optional flag, you can use `[options]` to abbreviate.
+- Required flags should always be documented explicitly and before the positional arguments, but after the 
+  optional flags.
+
 ### Subcommand groups
 
 Cobra offers the functionality to group subcommands. The conventions on when and how to group commands are as follows:

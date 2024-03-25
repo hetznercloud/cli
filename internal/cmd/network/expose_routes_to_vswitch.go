@@ -15,7 +15,7 @@ import (
 var ExposeRoutesToVSwitchCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:                   "expose-routes-to-vswitch [flags] network",
+			Use:                   "expose-routes-to-vswitch [--disable] <network>",
 			Short:                 "Expose routes to connected vSwitch",
 			Long:                  "Enabling this will expose routes to the connected vSwitch. Set the --disable flag to remove the exposed routes.",
 			Args:                  cobra.ExactArgs(1),

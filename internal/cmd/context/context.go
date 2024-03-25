@@ -8,7 +8,7 @@ import (
 
 func NewCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   "context [FLAGS]",
+		Use:                   "context",
 		Short:                 "Manage contexts",
 		Args:                  cobra.NoArgs,
 		TraverseChildren:      true,

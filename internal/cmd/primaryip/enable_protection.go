@@ -58,7 +58,7 @@ func changeProtection(s state.State, cmd *cobra.Command,
 var EnableProtectionCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:   "enable-protection PRIMARYIP [PROTECTIONLEVEL...]",
+			Use:   "enable-protection <primary-ip> [<protection-level>...]", // optional because of backwards compatibility
 			Short: "Enable Protection for a Primary IP",
 			Args:  cobra.MinimumNArgs(1),
 			ValidArgsFunction: cmpl.SuggestArgs(

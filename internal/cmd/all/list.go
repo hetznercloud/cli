@@ -50,7 +50,7 @@ var ListCmd = base.Cmd{
 		}
 
 		cmd := &cobra.Command{
-			Use:   "list FLAGS",
+			Use:   "list [options]",
 			Short: "List all resources in the project",
 			Long: `List all resources in the project. This does not include static/public resources like locations, public ISOs, etc.
 

@@ -15,7 +15,7 @@ import (
 var EnableRescueCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:                   "enable-rescue [FLAGS] SERVER",
+			Use:                   "enable-rescue [options] <server>",
 			Short:                 "Enable rescue for a server",
 			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),

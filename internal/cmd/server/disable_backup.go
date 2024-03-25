@@ -14,7 +14,7 @@ import (
 var DisableBackupCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		return &cobra.Command{
-			Use:                   "disable-backup [FLAGS] SERVER",
+			Use:                   "disable-backup <server>",
 			Short:                 "Disable backup for a server",
 			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),

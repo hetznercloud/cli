@@ -16,7 +16,7 @@ import (
 var RemoveSubnetCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:                   "remove-subnet NETWORK FLAGS",
+			Use:                   "remove-subnet --ip-range <ip-range> <network>",
 			Short:                 "Remove a subnet from a network",
 			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Network().Names)),

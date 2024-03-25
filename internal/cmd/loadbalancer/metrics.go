@@ -6,6 +6,7 @@ import (
 	"slices"
 	"sort"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/guptarohit/asciigraph"
@@ -30,7 +31,7 @@ var metricTypeStrings = []string{
 var MetricsCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:                   "metrics [FLAGS] LOADBALANCER",
+			Use:                   fmt.Sprintf("metrics [options] (--type <%s>)... <load-balancer>", strings.Join(metricTypeStrings, "|")),
 			Short:                 "[ALPHA] Metrics from a Load Balancer",
 			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.LoadBalancer().Names)),

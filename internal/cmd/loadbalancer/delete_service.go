@@ -14,7 +14,7 @@ import (
 var DeleteServiceCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:                   "delete-service [FLAGS] LOADBALANCER",
+			Use:                   "delete-service --listen-port <1-65535> <load-balancer>",
 			Short:                 "Deletes a service from a Load Balancer",
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.LoadBalancer().Names)),
 			Args:                  cobra.RangeArgs(1, 2),

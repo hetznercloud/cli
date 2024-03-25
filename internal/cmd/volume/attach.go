@@ -15,7 +15,7 @@ import (
 var AttachCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:                   "attach [FLAGS] VOLUME",
+			Use:                   "attach [--automount] --server <server> <volume>",
 			Short:                 "Attach a volume to a server",
 			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Volume().Names)),

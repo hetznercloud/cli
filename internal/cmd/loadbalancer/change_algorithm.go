@@ -15,7 +15,7 @@ import (
 var ChangeAlgorithmCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:                   "change-algorithm LOADBALANCER FLAGS",
+			Use:                   "change-algorithm --algorithm-type <round_robin|least_connections> <load-balancer>",
 			Short:                 "Changes the algorithm of a Load Balancer",
 			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.LoadBalancer().Names)),

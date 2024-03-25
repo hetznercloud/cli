@@ -29,7 +29,7 @@ func (lc *ListCmd) CobraCommand(s state.State) *cobra.Command {
 	outputColumns := lc.OutputTable(s.Client()).Columns()
 
 	cmd := &cobra.Command{
-		Use:   "list [FlAGS]",
+		Use:   "list [options]",
 		Short: fmt.Sprintf("List %s", lc.ResourceNamePlural),
 		Long: util.ListLongDescription(
 			fmt.Sprintf("Displays a list of %s.", lc.ResourceNamePlural),

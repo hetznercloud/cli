@@ -14,7 +14,7 @@ import (
 var PoweroffCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		return &cobra.Command{
-			Use:                   "poweroff [FLAGS] SERVER",
+			Use:                   "poweroff <server>",
 			Short:                 "Poweroff a server",
 			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
