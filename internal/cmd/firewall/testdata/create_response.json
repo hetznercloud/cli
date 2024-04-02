@@ -1,22 +1,25 @@
 {
   "firewall": {
-    "applied_to": [
-      {
-        "server": {
-          "id": 1
-        },
-        "type": "server"
-      }
-    ],
-    "created": "2016-01-30T23:50:00Z",
     "id": 123,
-    "labels": {},
     "name": "test",
+    "labels": {},
+    "created": "2016-01-30T23:50:00Z",
     "rules": [
       {
         "direction": "in",
+        "source_ips": [],
+        "destination_ips": [],
+        "protocol": "tcp",
         "port": "22",
-        "protocol": "tcp"
+        "description": null
+      }
+    ],
+    "applied_to": [
+      {
+        "type": "server",
+        "server": {
+          "id": 1
+        }
       }
     ]
   }

@@ -1,25 +1,26 @@
 {
   "volume": {
-    "created": "2016-01-30T23:50:00Z",
     "id": 123,
-    "labels": {},
-    "linux_device": "",
+    "name": "test",
+    "server": 123,
+    "status": "available",
     "location": {
-      "city": "",
-      "country": "",
-      "description": "",
       "id": 0,
+      "name": "fsn1",
+      "description": "",
+      "country": "",
+      "city": "",
       "latitude": 0,
       "longitude": 0,
-      "name": "fsn1",
       "network_zone": ""
     },
-    "name": "test",
+    "size": 20,
+    "format": null,
     "protection": {
       "delete": true
     },
-    "server": 123,
-    "size": 20,
-    "status": "available"
+    "labels": {},
+    "linux_device": "",
+    "created": "2016-01-30T23:50:00Z"
   }
 }
