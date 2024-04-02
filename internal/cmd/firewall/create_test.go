@@ -104,10 +104,11 @@ func TestCreateJSON(t *testing.T) {
 				Labels: make(map[string]string),
 				Rules: []hcloud.FirewallRule{
 					{
-						Direction: "in",
-						SourceIPs: []net.IPNet{},
-						Protocol:  "tcp",
-						Port:      hcloud.Ptr("22"),
+						Direction:      "in",
+						SourceIPs:      []net.IPNet{},
+						DestinationIPs: []net.IPNet{},
+						Protocol:       "tcp",
+						Port:           hcloud.Ptr("22"),
 					},
 				},
 			},

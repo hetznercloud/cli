@@ -1,6 +1,7 @@
 package firewall_test
 
 import (
+	"net"
 	"testing"
 	"time"
 
@@ -69,11 +70,45 @@ func TestListJSON(t *testing.T) {
 		).
 		Return([]*hcloud.Firewall{
 			{
-				ID:        123,
-				Name:      "test",
-				Rules:     make([]hcloud.FirewallRule, 5),
-				AppliedTo: make([]hcloud.FirewallResource, 2),
-				Labels:    make(map[string]string),
+				ID:      42,
+				Name:    "my-resource",
+				Created: time.Date(2016, 1, 30, 23, 55, 0, 0, time.UTC),
+				Labels: map[string]string{
+					"environment":           "prod",
+					"example.com/my":        "label",
+					"just-a-key":            "",
+					"just-a-key-with-value": "value",
+				},
+				Rules: []hcloud.FirewallRule{
+					{
+						Direction: "in",
+						SourceIPs: []net.IPNet{
+							{
+								IP:   net.IP{28, 239, 13, 1},
+								Mask: net.IPMask{255, 255, 255, 255},
+							},
+							{
+								IP:   net.IP{28, 239, 14, 0},
+								Mask: net.IPMask{255, 255, 255, 0},
+							},
+							{
+								IP:   net.ParseIP("ff21:1eac:9a3b:ee58:5ca:990c:8bc9:c03b"),
+								Mask: net.CIDRMask(128, 128),
+							},
+						},
+						DestinationIPs: []net.IPNet{},
+						Protocol:       hcloud.FirewallRuleProtocolTCP,
+						Port:           hcloud.Ptr("80"),
+					},
+				},
+				AppliedTo: []hcloud.FirewallResource{
+					{
+						Type: "server",
+						Server: &hcloud.FirewallResourceServer{
+							ID: 42,
+						},
+					},
+				},
 			},
 		}, nil)
 
@@ -84,38 +119,35 @@ func TestListJSON(t *testing.T) {
 	assert.JSONEq(t, out, `
 [
   {
-    "id": 123,
-    "name": "test",
-    "labels": {},
-    "created": "0001-01-01T00:00:00Z",
+    "id": 42,
+    "name": "my-resource",
+    "labels": {
+      "environment": "prod",
+      "example.com/my": "label",
+      "just-a-key": "",
+      "just-a-key-with-value": "value"
+    },
+    "created": "2016-01-30T23:55:00Z",
     "rules": [
       {
-        "direction": "",
-        "protocol": ""
-      },
-      {
-        "direction": "",
-        "protocol": ""
-      },
-      {
-        "direction": "",
-        "protocol": ""
-      },
-      {
-        "direction": "",
-        "protocol": ""
-      },
-      {
-        "direction": "",
-        "protocol": ""
+        "direction": "in",
+        "source_ips": [
+          "28.239.13.1/32",
+          "28.239.14.0/24",
+          "ff21:1eac:9a3b:ee58:5ca:990c:8bc9:c03b/128"
+        ],
+        "destination_ips": [],
+        "protocol": "tcp",
+        "port": "80",
+        "description": null
       }
     ],
     "applied_to": [
       {
-        "type": ""
-      },
-      {
-        "type": ""
+        "type": "server",
+        "server": {
+          "id": 42
+        }
       }
     ]
   }
