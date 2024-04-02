@@ -1,6 +1,8 @@
 package image_test
 
 import (
+	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -33,6 +35,50 @@ func TestDelete(t *testing.T) {
 	out, errOut, err := fx.Run(cmd, []string{"test"})
 
 	expOut := "image test deleted\n"
+
+	assert.NoError(t, err)
+	assert.Empty(t, errOut)
+	assert.Equal(t, expOut, out)
+}
+
+func TestDeleteMultiple(t *testing.T) {
+	fx := testutil.NewFixture(t)
+	defer fx.Finish()
+
+	cmd := image.DeleteCmd.CobraCommand(fx.State())
+	fx.ExpectEnsureToken()
+
+	images := []*hcloud.Image{
+		{
+			ID:   123,
+			Name: "test1",
+		},
+		{
+			ID:   456,
+			Name: "test2",
+		},
+		{
+			ID:   789,
+			Name: "test3",
+		},
+	}
+
+	expOutBuilder := strings.Builder{}
+
+	var names []string
+	for _, img := range images {
+		names = append(names, img.Name)
+		expOutBuilder.WriteString(fmt.Sprintf("image %s deleted\n", img.Name))
+		fx.Client.ImageClient.EXPECT().
+			Get(gomock.Any(), img.Name).
+			Return(img, nil, nil)
+		fx.Client.ImageClient.EXPECT().
+			Delete(gomock.Any(), img).
+			Return(nil, nil)
+	}
+
+	out, errOut, err := fx.Run(cmd, names)
+	expOut := expOutBuilder.String()
 
 	assert.NoError(t, err)
 	assert.Empty(t, errOut)

@@ -1,6 +1,8 @@
 package certificate_test
 
 import (
+	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -33,6 +35,50 @@ func TestDelete(t *testing.T) {
 	out, errOut, err := fx.Run(cmd, []string{"test"})
 
 	expOut := "certificate test deleted\n"
+
+	assert.NoError(t, err)
+	assert.Empty(t, errOut)
+	assert.Equal(t, expOut, out)
+}
+
+func TestDeleteMultiple(t *testing.T) {
+	fx := testutil.NewFixture(t)
+	defer fx.Finish()
+
+	cmd := certificate.DeleteCmd.CobraCommand(fx.State())
+	fx.ExpectEnsureToken()
+
+	certs := []*hcloud.Certificate{
+		{
+			ID:   123,
+			Name: "test1",
+		},
+		{
+			ID:   456,
+			Name: "test2",
+		},
+		{
+			ID:   789,
+			Name: "test3",
+		},
+	}
+
+	expOutBuilder := strings.Builder{}
+
+	var names []string
+	for _, cert := range certs {
+		names = append(names, cert.Name)
+		expOutBuilder.WriteString(fmt.Sprintf("certificate %s deleted\n", cert.Name))
+		fx.Client.CertificateClient.EXPECT().
+			Get(gomock.Any(), cert.Name).
+			Return(cert, nil, nil)
+		fx.Client.CertificateClient.EXPECT().
+			Delete(gomock.Any(), cert).
+			Return(nil, nil)
+	}
+
+	out, errOut, err := fx.Run(cmd, names)
+	expOut := expOutBuilder.String()
 
 	assert.NoError(t, err)
 	assert.Empty(t, errOut)
