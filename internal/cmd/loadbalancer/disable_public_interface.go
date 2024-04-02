@@ -16,7 +16,6 @@ var DisablePublicInterfaceCmd = base.Cmd{
 		return &cobra.Command{
 			Use:                   "disable-public-interface <load-balancer>",
 			Short:                 "Disable the public interface of a Load Balancer",
-			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.LoadBalancer().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

@@ -26,7 +26,6 @@ var ShutdownCmd = base.Cmd{
 			Use:                   "shutdown [options] <server>",
 			Short:                 "Shutdown a server",
 			Long:                  description,
-			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

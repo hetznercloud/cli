@@ -17,7 +17,6 @@ var AttachCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:                   "attach [--automount] --server <server> <volume>",
 			Short:                 "Attach a volume to a server",
-			Args:                  cobra.ExactArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Volume().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

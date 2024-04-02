@@ -16,7 +16,6 @@ var AddToPlacementGroupCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:               "add-to-placement-group --placement-group <placement-group> <server>",
 			Short:             "Add a server to a placement group",
-			Args:              cobra.ExactArgs(1),
 			ValidArgsFunction: cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
 		}
 

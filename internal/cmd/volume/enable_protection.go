@@ -62,7 +62,6 @@ var EnableProtectionCmd = base.Cmd{
 		return &cobra.Command{
 			Use:   "enable-protection <volume> <protection-level>...",
 			Short: "Enable resource protection for a volume",
-			Args:  cobra.MinimumNArgs(2),
 			ValidArgsFunction: cmpl.SuggestArgs(
 				cmpl.SuggestCandidatesF(client.Volume().Names),
 				cmpl.SuggestCandidates("delete"),

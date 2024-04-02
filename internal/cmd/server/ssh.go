@@ -20,7 +20,6 @@ var SSHCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:                   "ssh [options] <server> [command]",
 			Short:                 "Spawn an SSH connection for the server",
-			Args:                  cobra.MinimumNArgs(1),
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

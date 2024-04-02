@@ -19,7 +19,6 @@ var CreateCmd = base.CreateCmd{
 		cmd := &cobra.Command{
 			Use:   "create [options] --name <name> (--type managed --domain <domain> | --type uploaded --cert-file <file> --key-file <file>)",
 			Short: "Create or upload a Certificate",
-			Args:  cobra.ExactArgs(0),
 		}
 
 		cmd.Flags().String("name", "", "Certificate name (required)")

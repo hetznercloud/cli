@@ -11,7 +11,7 @@ func NewCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "primary-ip",
 		Short:                 "Manage Primary IPs",
-		Args:                  cobra.NoArgs,
+		Args:                  util.Validate,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 	}

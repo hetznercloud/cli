@@ -139,8 +139,30 @@ Additional Commands:
   ssh                         Spawn an SSH connection for the server
 ```
 
+### Command validation
+
+Please use the `util.Validate` method to make sure the command is validated against its usage string during runtime.
+This can be done by setting the `Args` field of the `cobra.Command` struct to `util.Validate`:
+
+```go
+cmd := &cobra.Command{
+   Use:   "my-command [options]",
+   Args:  util.Validate,
+   Run: func(cmd *cobra.Command, args []string) {
+      // ...
+   },
+}
+```
+
+If you are using base commands like `base.Cmd` or `base.ListCmd` etc., this is already done for you.
+
+**Note:** Your command usage needs to follow the [docopt](http://docopt.org/) syntax for this to work.
+If your command uses optional positional arguments or other complicated usage that necessitates to disable
+argument count checking, you use `util.ValidateLenient` instead. It will not throw an error if there are
+more arguments than expected.
+
 ### Generated files
 
-Generated files (that are created by running `go generate`) should be prefixed with `zz_`. This is to group them 
+Generated files (that are created by running `go generate`) should be prefixed with `zz_`. This is to group them
 together in the file list and to easily identify them as generated files. Also, it allows the CI to check if the
 generated files are up-to-date.
