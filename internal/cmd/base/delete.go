@@ -35,7 +35,7 @@ func (dc *DeleteCmd) CobraCommand(s state.State) *cobra.Command {
 		Use:                   fmt.Sprintf("delete %s<%s>...", opts, util.ToKebabCase(dc.ResourceNameSingular)),
 		Short:                 dc.ShortDescription,
 		Args:                  util.Validate,
-		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(dc.NameSuggestions(s.Client()))),
+		ValidArgsFunction:     cmpl.SuggestCandidatesF(dc.NameSuggestions(s.Client())),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               util.ChainRunE(s.EnsureToken),
