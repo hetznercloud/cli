@@ -1,6 +1,7 @@
 package base
 
 import (
+	"errors"
 	"fmt"
 	"reflect"
 
@@ -31,10 +32,10 @@ func (dc *DeleteCmd) CobraCommand(s state.State) *cobra.Command {
 	}
 
 	cmd := &cobra.Command{
-		Use:                   fmt.Sprintf("delete %s<%s>", opts, util.ToKebabCase(dc.ResourceNameSingular)),
+		Use:                   fmt.Sprintf("delete %s<%s>...", opts, util.ToKebabCase(dc.ResourceNameSingular)),
 		Short:                 dc.ShortDescription,
 		Args:                  util.Validate,
-		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(dc.NameSuggestions(s.Client()))),
+		ValidArgsFunction:     cmpl.SuggestCandidatesF(dc.NameSuggestions(s.Client())),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               util.ChainRunE(s.EnsureToken),
@@ -50,22 +51,27 @@ func (dc *DeleteCmd) CobraCommand(s state.State) *cobra.Command {
 
 // Run executes a describe command.
 func (dc *DeleteCmd) Run(s state.State, cmd *cobra.Command, args []string) error {
+	var cmdErr error
 
-	idOrName := args[0]
-	resource, _, err := dc.Fetch(s, cmd, idOrName)
-	if err != nil {
-		return err
+	for _, idOrName := range args {
+		resource, _, err := dc.Fetch(s, cmd, idOrName)
+		if err != nil {
+			cmdErr = errors.Join(cmdErr, err)
+			continue
+		}
+
+		// resource is an interface that always has a type, so the interface is never nil
+		// (i.e. == nil) is always false.
+		if reflect.ValueOf(resource).IsNil() {
+			cmdErr = errors.Join(cmdErr, fmt.Errorf("%s not found: %s", dc.ResourceNameSingular, idOrName))
+			continue
+		}
+
+		if err = dc.Delete(s, cmd, resource); err != nil {
+			cmdErr = errors.Join(cmdErr, fmt.Errorf("deleting %s %s failed: %s", dc.ResourceNameSingular, idOrName, err))
+		}
+		cmd.Printf("%s %v deleted\n", dc.ResourceNameSingular, idOrName)
 	}
 
-	// resource is an interface that always has a type, so the interface is never nil
-	// (i.e. == nil) is always false.
-	if reflect.ValueOf(resource).IsNil() {
-		return fmt.Errorf("%s not found: %s", dc.ResourceNameSingular, idOrName)
-	}
-
-	if err := dc.Delete(s, cmd, resource); err != nil {
-		return fmt.Errorf("deleting %s %s failed: %s", dc.ResourceNameSingular, idOrName, err)
-	}
-	cmd.Printf("%s %v deleted\n", dc.ResourceNameSingular, idOrName)
-	return nil
+	return cmdErr
 }

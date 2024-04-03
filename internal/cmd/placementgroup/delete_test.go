@@ -1,6 +1,8 @@
 package placementgroup_test
 
 import (
+	"fmt"
+	"strings"
 	"testing"
 	"time"
 
@@ -37,6 +39,50 @@ func TestDelete(t *testing.T) {
 	out, errOut, err := fx.Run(cmd, []string{placementGroup.Name})
 
 	expOut := "placement group my Placement Group deleted\n"
+
+	assert.NoError(t, err)
+	assert.Empty(t, errOut)
+	assert.Equal(t, expOut, out)
+}
+
+func TestDeleteMultiple(t *testing.T) {
+	fx := testutil.NewFixture(t)
+	defer fx.Finish()
+
+	cmd := placementgroup.DeleteCmd.CobraCommand(fx.State())
+	fx.ExpectEnsureToken()
+
+	groups := []*hcloud.PlacementGroup{
+		{
+			ID:   123,
+			Name: "test1",
+		},
+		{
+			ID:   456,
+			Name: "test2",
+		},
+		{
+			ID:   789,
+			Name: "test3",
+		},
+	}
+
+	expOutBuilder := strings.Builder{}
+
+	var names []string
+	for _, pg := range groups {
+		names = append(names, pg.Name)
+		expOutBuilder.WriteString(fmt.Sprintf("placement group %s deleted\n", pg.Name))
+		fx.Client.PlacementGroupClient.EXPECT().
+			Get(gomock.Any(), pg.Name).
+			Return(pg, nil, nil)
+		fx.Client.PlacementGroupClient.EXPECT().
+			Delete(gomock.Any(), pg).
+			Return(nil, nil)
+	}
+
+	out, errOut, err := fx.Run(cmd, names)
+	expOut := expOutBuilder.String()
 
 	assert.NoError(t, err)
 	assert.Empty(t, errOut)

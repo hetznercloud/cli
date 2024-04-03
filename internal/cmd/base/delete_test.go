@@ -41,8 +41,16 @@ func TestDelete(t *testing.T) {
 			Args:   []string{"delete", "123"},
 			ExpOut: "Fetching fake resource\nDeleting fake resource\nFake resource 123 deleted\n",
 		},
+		"no flags multiple": {
+			Args: []string{"delete", "123", "456", "789"},
+			ExpOut: "Fetching fake resource\nDeleting fake resource\nFake resource 123 deleted\nFetching fake resource\n" +
+				"Deleting fake resource\nFake resource 456 deleted\nFetching fake resource\nDeleting fake resource\nFake resource 789 deleted\n",
+		},
 		"quiet": {
 			Args: []string{"delete", "123", "--quiet"},
+		},
+		"quiet multiple": {
+			Args: []string{"delete", "123", "456", "789", "--quiet"},
 		},
 	})
 }
