@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.43.0](https://github.com/hetznercloud/cli/compare/v1.42.0...v1.43.0) (2024-04-03)
+
+
+### Features
+
+* allow deletion of multiple resources at once ([#719](https://github.com/hetznercloud/cli/issues/719)) ([3b896fe](https://github.com/hetznercloud/cli/commit/3b896fef82f50bc27351eec9e2da38032615c6e0))
+* improve missing argument error messages ([#711](https://github.com/hetznercloud/cli/issues/711)) ([e7f9e74](https://github.com/hetznercloud/cli/commit/e7f9e74d22fa1c712ac8363d30efe0499916e859))
+* **server:** allow JSON & YAML output in reset-password ([#716](https://github.com/hetznercloud/cli/issues/716)) ([373287b](https://github.com/hetznercloud/cli/commit/373287b452f2d3cf27c9d32648c3393ca45ded3a)), closes [#715](https://github.com/hetznercloud/cli/issues/715)
+
+
+### Bug Fixes
+
+* removing last rule from firewall fails with invalid_input error ([#696](https://github.com/hetznercloud/cli/issues/696)) ([acab17c](https://github.com/hetznercloud/cli/commit/acab17c361373e5bd3b689708195fa48f18dbafb))
+
 ## [1.42.0](https://github.com/hetznercloud/cli/compare/v1.41.1...v1.42.0) (2024-02-01)
 
 
