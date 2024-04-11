@@ -75,6 +75,20 @@ func (mr *MockConfigMockRecorder) Endpoint() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Endpoint", reflect.TypeOf((*MockConfig)(nil).Endpoint))
 }
 
+// SSHPath mocks base method.
+func (m *MockConfig) SSHPath() string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SSHPath")
+	ret0, _ := ret[0].(string)
+	return ret0
+}
+
+// SSHPath indicates an expected call of SSHPath.
+func (mr *MockConfigMockRecorder) SSHPath() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SSHPath", reflect.TypeOf((*MockConfig)(nil).SSHPath))
+}
+
 // SetActiveContext mocks base method.
 func (m *MockConfig) SetActiveContext(arg0 *Context) {
 	m.ctrl.T.Helper()
