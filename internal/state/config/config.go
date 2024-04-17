@@ -19,6 +19,8 @@ type Config interface {
 	SetContexts([]*Context)
 	Endpoint() string
 	SetEndpoint(string)
+
+	SSHPath() string
 }
 
 type Context struct {
@@ -92,6 +94,10 @@ func (cfg *config) Endpoint() string {
 
 func (cfg *config) SetEndpoint(endpoint string) {
 	cfg.endpoint = endpoint
+}
+
+func (cfg *config) SSHPath() string {
+	return "ssh"
 }
 
 func ContextNames(cfg Config) []string {

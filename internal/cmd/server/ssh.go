@@ -11,6 +11,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 )
@@ -18,8 +19,9 @@ import (
 var SSHCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:                   "ssh [options] <server> [command]",
+			Use:                   "ssh [options] <server> [command...]",
 			Short:                 "Spawn an SSH connection for the server",
+			Args:                  util.ValidateLenient,
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
@@ -55,7 +57,7 @@ var SSHCmd = base.Cmd{
 		}
 
 		sshArgs := []string{"-l", user, "-p", strconv.Itoa(port), ipAddress.String()}
-		sshCommand := exec.Command("ssh", append(sshArgs, args[1:]...)...)
+		sshCommand := exec.Command(s.Config().SSHPath(), append(sshArgs, args[1:]...)...)
 		sshCommand.Stdin = os.Stdin
 		sshCommand.Stdout = os.Stdout
 		sshCommand.Stderr = os.Stderr

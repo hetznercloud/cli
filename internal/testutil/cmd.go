@@ -17,6 +17,7 @@ type TestableCommand interface {
 
 type TestCase struct {
 	Args          []string
+	PreRun        func(t *testing.T, fx *Fixture)
 	ExpOut        string
 	ExpOutType    DataType
 	ExpErrOut     string
@@ -64,6 +65,10 @@ func TestCommand(t *testing.T, cmd TestableCommand, cases map[string]TestCase) {
 			fx.ExpectEnsureToken()
 
 			rootCmd.AddCommand(cmd.CobraCommand(fx.State()))
+
+			if testCase.PreRun != nil {
+				testCase.PreRun(t, fx)
+			}
 
 			out, errOut, err := fx.Run(rootCmd, testCase.Args)
 
