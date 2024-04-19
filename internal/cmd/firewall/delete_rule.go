@@ -70,10 +70,9 @@ var DeleteRuleCmd = base.Cmd{
 		}
 
 		switch rule.Protocol {
-		case hcloud.FirewallRuleProtocolTCP:
-		case hcloud.FirewallRuleProtocolUDP:
+		case hcloud.FirewallRuleProtocolTCP, hcloud.FirewallRuleProtocolUDP:
 			if port == "" {
-				return fmt.Errorf("port is required")
+				return fmt.Errorf("port is required (--port)")
 			}
 		default:
 			if port != "" {
