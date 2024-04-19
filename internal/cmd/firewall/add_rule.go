@@ -16,7 +16,7 @@ import (
 var AddRuleCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:                   "add-rule [options] (--direction in --source-ips <ips> | --direction out --destination-ips <ips>) --protocol <icmp|udp|tcp|esp|gre> <firewall>",
+			Use:                   "add-rule [options] (--direction in --source-ips <ips> | --direction out --destination-ips <ips>) (--protocol <tcp|udp> --port <port> | --protocol <icmp|esp|gre>) <firewall>",
 			Short:                 "Add a single rule to a firewall",
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Firewall().Names)),
 			TraverseChildren:      true,
