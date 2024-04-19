@@ -71,10 +71,9 @@ var AddRuleCmd = base.Cmd{
 		}
 
 		switch rule.Protocol {
-		case hcloud.FirewallRuleProtocolTCP:
-		case hcloud.FirewallRuleProtocolUDP:
+		case hcloud.FirewallRuleProtocolUDP, hcloud.FirewallRuleProtocolTCP:
 			if port == "" {
-				return fmt.Errorf("port is required")
+				return fmt.Errorf("port is required (--port)")
 			}
 		default:
 			if port != "" {
