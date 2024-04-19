@@ -1,5 +1,15 @@
 # Changelog
 
+## [1.43.1](https://github.com/hetznercloud/cli/compare/v1.43.0...v1.43.1) (2024-04-19)
+
+
+### Bug Fixes
+
+* allow passing multiple args to server ssh command ([#729](https://github.com/hetznercloud/cli/issues/729)) ([d98aee5](https://github.com/hetznercloud/cli/commit/d98aee5cf6fc94cbfd470c5515132adde0523e48)), closes [#728](https://github.com/hetznercloud/cli/issues/728)
+* creating firewall with rules not working correctly ([64aeb23](https://github.com/hetznercloud/cli/commit/64aeb23f7f208d4fddd02d504fec9218c081dc04))
+* **firewall:** missing error when not setting port for tcp rule ([#734](https://github.com/hetznercloud/cli/issues/734)) ([c5ad470](https://github.com/hetznercloud/cli/commit/c5ad47001ceb65157978eec2651ee6b198ac8233))
+* **firewall:** setting rules not working correctly ([da1b684](https://github.com/hetznercloud/cli/commit/da1b6848ccf281cbf160cabf4cce2031245d52ab))
+
 ## [1.43.0](https://github.com/hetznercloud/cli/compare/v1.42.0...v1.43.0) (2024-04-03)
 
 
