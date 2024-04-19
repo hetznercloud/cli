@@ -36,6 +36,8 @@ github.com/hetznercloud/hcloud-go/v2 v2.7.0 h1:I+KpXC+Q2MIlOQYeQt3f02vhePPzboqmf
 github.com/hetznercloud/hcloud-go/v2 v2.7.0/go.mod h1:wkQHjFTzGBesBWaTSQ3BZCHd/st9J4X4JDuPokpjJlM=
 github.com/hetznercloud/hcloud-go/v2 v2.7.1 h1:D4domwRSLOyBL/bwzd1O7hunBbKmeEHZTa7GmCYrniY=
 github.com/hetznercloud/hcloud-go/v2 v2.7.1/go.mod h1:49tIV+pXRJTUC7fbFZ03s45LKqSQdOPP5y91eOnJo/k=
+github.com/hetznercloud/hcloud-go/v2 v2.7.2 h1:UlE7n1GQZacCfyjv9tDVUN7HZfOXErPIfM/M039u9A0=
+github.com/hetznercloud/hcloud-go/v2 v2.7.2/go.mod h1:49tIV+pXRJTUC7fbFZ03s45LKqSQdOPP5y91eOnJo/k=
 github.com/inconshreveable/mousetrap v1.1.0 h1:wN+x4NVGpMsO7ErUn/mUI3vEoE6Jt13X2s0bqwp9tc8=
 github.com/inconshreveable/mousetrap v1.1.0/go.mod h1:vpF70FUmC8bwa3OWnCshd2FqLfsEA9PFc4w1p2J65bw=
 github.com/kr/pretty v0.3.1 h1:flRD4NNwYAUpkphVc1HcthR4KEIFJ65n8Mw5qdRn3LE=
