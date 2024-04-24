@@ -41,7 +41,12 @@ builds:
       - arm64
     hooks:
       post:
-        - cmd: bash script/gon.sh "{{ .Path }}"
+        - cmd: >
+            rcodesign sign
+              --p12-file certificate.p12
+              --p12-password "{{ .Env.APPLE_CERTIFICATE_P12_PASSWORD }}"
+              --code-signature-flags runtime
+              "{{ .Path }}"
           output: true
 
 snapshot:
