@@ -42,11 +42,15 @@ builds:
     hooks:
       post:
         - cmd: >
+            {{- if index .Env "APPLE_CERTIFICATE_P12_PASSWORD" -}}
             rcodesign sign
               --p12-file certificate.p12
               --p12-password "{{ .Env.APPLE_CERTIFICATE_P12_PASSWORD }}"
               --code-signature-flags runtime
               "{{ .Path }}"
+            {{- else -}}
+            echo "skipping rcodesign sign hook!"
+            {{- end -}}
           output: true
 
 snapshot:
