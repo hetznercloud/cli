@@ -35,12 +35,7 @@ test:go-mod-tidy:
 test:go-generate:
   stage: test
   image: golang:1.21
-  variables:
-    GOBIN: "$CI_PROJECT_DIR/bin"
-  before_script:
-    - script/install_tools.sh
   script:
-    - export PATH="$GOBIN:$PATH"
     - go generate ./...
     - git diff --exit-code
 
@@ -54,8 +49,7 @@ test:tests:
               -coverprofile=$COVERAGE_FILE \
               ./...
     - go tool cover -func=$COVERAGE_FILE | tail -n1
-    - GOBIN="$CI_PROJECT_DIR/bin" script/install_tools.sh
-    - $CI_PROJECT_DIR/bin/gocover-cobertura < $COVERAGE_FILE > coverage.xml
+    - go run github.com/boumenot/gocover-cobertura < $COVERAGE_FILE > coverage.xml
 
   artifacts:
     reports:

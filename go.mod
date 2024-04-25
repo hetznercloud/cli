@@ -9,7 +9,6 @@ require (
 	github.com/fatih/structs v1.1.0
 	github.com/goccy/go-yaml v1.11.3
 	github.com/golang/mock v1.6.0
-	github.com/google/go-cmp v0.6.0
 	github.com/guptarohit/asciigraph v0.7.1
 	github.com/hetznercloud/hcloud-go/v2 v2.7.2
 	github.com/pelletier/go-toml/v2 v2.2.1
