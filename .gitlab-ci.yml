@@ -54,8 +54,7 @@ test:tests:
               -coverprofile=$COVERAGE_FILE \
               ./...
     - go tool cover -func=$COVERAGE_FILE | tail -n1
-    - GOBIN="$CI_PROJECT_DIR/bin" script/install_tools.sh
-    - $CI_PROJECT_DIR/bin/gocover-cobertura < $COVERAGE_FILE > coverage.xml
+    - go run github.com/boumenot/gocover-cobertura < $COVERAGE_FILE > coverage.xml
 
   artifacts:
     reports:
