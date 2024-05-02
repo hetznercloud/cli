@@ -20,13 +20,12 @@ func NewRootCommand(s state.State) *cobra.Command {
 		DisableFlagsInUseLine: true,
 	}
 
-	cmd.PersistentFlags().AddFlagSet(config.FlagSet)
+	cmd.PersistentFlags().AddFlagSet(s.Config().FlagSet())
 
 	cmd.PersistentPreRunE = func(cmd *cobra.Command, args []string) error {
 		var err error
 		out := os.Stdout
-		if quiet := config.OptionQuiet.Value(); quiet {
-			//if quiet := viper.GetBool("quiet"); quiet {
+		if quiet := config.OptionQuiet.Get(s.Config()); quiet {
 			out, err = os.Open(os.DevNull)
 			if err != nil {
 				return err

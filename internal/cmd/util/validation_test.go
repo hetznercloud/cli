@@ -1,4 +1,4 @@
-package util
+package util_test
 
 import (
 	"testing"
@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
 
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/testutil"
 )
 
@@ -90,9 +91,9 @@ func TestValidate(t *testing.T) {
 			stdout, stderr, err := testutil.CaptureOutStreams(func() error {
 				cmd := &cobra.Command{Use: test.use}
 				if test.lenient {
-					return ValidateLenient(cmd, test.args)
+					return util.ValidateLenient(cmd, test.args)
 				} else {
-					return Validate(cmd, test.args)
+					return util.Validate(cmd, test.args)
 				}
 			})
 

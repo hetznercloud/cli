@@ -1,0 +1,19 @@
+active_context = "test_context"
+
+[preferences]
+  debug = true
+  poll_interval = "1.234s"
+
+[[contexts]]
+  name = "test_context"
+  token = "super secret token"
+  [contexts.preferences]
+    default_ssh_keys = ["1", "2", "3"]
+    endpoint = "https://test-endpoint.com"
+    quiet = true
+
+[[contexts]]
+  name = "other_context"
+  token = "another super secret token"
+  [contexts.preferences]
+    poll_interval = "1.234s"

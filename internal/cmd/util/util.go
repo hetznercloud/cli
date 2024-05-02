@@ -1,10 +1,12 @@
 package util
 
 import (
+	"cmp"
 	"encoding/json"
 	"fmt"
 	"os"
 	"reflect"
+	"slices"
 	"sort"
 	"strings"
 	"text/template"
@@ -232,4 +234,22 @@ func FilterNil[T any](values []T) []T {
 		}
 	}
 	return filtered
+}
+
+// SliceDiff returns the difference between the two passed slices. The returned slice contains all elements that are present in a but not in b.
+// Note that it does not preserve order.
+func SliceDiff[S ~[]E, E cmp.Ordered](a, b []E) []E {
+	m := make(map[E]struct{})
+	for _, x := range a {
+		m[x] = struct{}{}
+	}
+	for _, x := range b {
+		delete(m, x)
+	}
+	var diff S
+	for x := range m {
+		diff = append(diff, x)
+	}
+	slices.Sort(diff)
+	return diff
 }

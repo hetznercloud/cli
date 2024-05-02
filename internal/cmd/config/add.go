@@ -2,6 +2,8 @@ package config
 
 import (
 	"fmt"
+	"os"
+	"reflect"
 
 	"github.com/spf13/cobra"
 
@@ -11,14 +13,14 @@ import (
 	"github.com/hetznercloud/cli/internal/state/config"
 )
 
-func NewSetCommand(s state.State) *cobra.Command {
+func NewAddCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   "set <key> <value>...",
+		Use:                   "add <key> <value>...",
 		Short:                 "Set a configuration value",
 		Args:                  util.Validate,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE:                  state.Wrap(s, runSet),
+		RunE:                  state.Wrap(s, runAdd),
 		ValidArgsFunction: cmpl.NoFileCompletion(cmpl.SuggestArgs(
 			cmpl.SuggestCandidatesF(func() []string {
 				var keys []string
@@ -42,7 +44,7 @@ func NewSetCommand(s state.State) *cobra.Command {
 	return cmd
 }
 
-func runSet(s state.State, cmd *cobra.Command, args []string) error {
+func runAdd(s state.State, cmd *cobra.Command, args []string) error {
 	global, _ := cmd.Flags().GetBool("global")
 
 	var prefs config.Preferences
@@ -51,16 +53,16 @@ func runSet(s state.State, cmd *cobra.Command, args []string) error {
 		prefs = s.Config().Preferences()
 	} else {
 		ctx := s.Config().ActiveContext()
-		if ctx == nil {
+		if reflect.ValueOf(ctx).IsNil() {
 			return fmt.Errorf("no active context (use --global flag to set a global option)")
 		}
 		prefs = ctx.Preferences()
 	}
 
 	key, values := args[0], args[1:]
-	if err := prefs.Set(key, values); err != nil {
+	if err := prefs.Add(key, values); err != nil {
 		return err
 	}
 
-	return s.Config().Write(nil)
+	return s.Config().Write(os.Stdout)
 }

@@ -43,7 +43,7 @@ func (cc *CreateCmd) CobraCommand(s state.State) *cobra.Command {
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
 		outputFlags := output.FlagsForCommand(cmd)
 
-		quiet := config.OptionQuiet.Value()
+		quiet := config.OptionQuiet.Get(s.Config())
 
 		isSchema := outputFlags.IsSet("json") || outputFlags.IsSet("yaml")
 		if isSchema && !quiet {

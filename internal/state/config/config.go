@@ -6,19 +6,19 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 
-	"github.com/pelletier/go-toml/v2"
+	"github.com/BurntSushi/toml"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
-
-	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 type Config interface {
 	// Write writes the config to the given writer. If w is nil, the config is written to the config file.
 	Write(w io.Writer) error
 
-	ParseConfig() error
+	Reset()
+	ParseConfigFile(f any) error
 
 	ActiveContext() Context
 	SetActiveContext(Context)
@@ -26,133 +26,151 @@ type Config interface {
 	SetContexts([]Context)
 
 	Preferences() Preferences
+	Viper() *viper.Viper
+	FlagSet() *pflag.FlagSet
 }
 
 type schema struct {
 	ActiveContext string      `toml:"active_context"`
-	Preferences   preferences `toml:"preferences"`
+	Preferences   Preferences `toml:"preferences"`
 	Contexts      []*context  `toml:"contexts"`
 }
 
 type config struct {
+	v             *viper.Viper
+	fs            *pflag.FlagSet
 	path          string
 	activeContext *context
 	contexts      []*context
-	preferences   preferences
+	preferences   Preferences
+	schema        schema
 }
 
-var FlagSet *pflag.FlagSet
-
-func init() {
-	ResetFlags()
+func NewConfig() Config {
+	cfg := &config{}
+	cfg.Reset()
+	return cfg
 }
 
-func ResetFlags() {
-	FlagSet = pflag.NewFlagSet("hcloud", pflag.ContinueOnError)
-	for _, o := range opts {
-		o.AddToFlagSet(FlagSet)
+func (cfg *config) Reset() {
+	cfg.v = viper.New()
+	cfg.v.SetConfigType("toml")
+	cfg.v.SetEnvPrefix("HCLOUD")
+	cfg.v.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
+
+	cfg.fs = pflag.NewFlagSet("hcloud", pflag.ContinueOnError)
+	for _, o := range Options {
+		o.addToFlagSet(cfg.fs)
 	}
-	if err := viper.BindPFlags(FlagSet); err != nil {
+	if err := cfg.v.BindPFlags(cfg.fs); err != nil {
 		panic(err)
 	}
 }
 
-func NewConfig() Config {
-	return &config{}
-}
-
-func ReadConfig(cfg Config) error {
-
-	viper.SetConfigType("toml")
-	viper.SetEnvPrefix("HCLOUD")
+// ReadConfig reads the config from the flags, env and the given config file f.
+// See [ParseConfigFile] for the supported types of f.
+func ReadConfig(cfg Config, f any) error {
 
 	// error is ignored since invalid flags are already handled by cobra
-	_ = FlagSet.Parse(os.Args[1:])
+	_ = cfg.FlagSet().Parse(os.Args[1:])
 
 	// load env already so we can determine the active context
-	viper.AutomaticEnv()
+	cfg.Viper().AutomaticEnv()
 
-	// load active context
-	if err := cfg.ParseConfig(); err != nil {
-		return err
-	}
-
-	return nil
+	return cfg.ParseConfigFile(f)
 }
 
-func (cfg *config) ParseConfig() error {
-	var s schema
+// ParseConfigFile parses the given config file f.
+// f can be of the following types:
+// - nil: the default config file is used
+// - string: the path to the config file
+// - io.Reader: the config is read from the reader
+// - []byte: the config is read from the byte slice
+// - any other type: an error is returned
+func (cfg *config) ParseConfigFile(f any) error {
+	var (
+		cfgBytes []byte
+		err      error
+	)
 
-	cfg.path = OptionConfig.Value()
-
-	// read config file
-	cfgBytes, err := os.ReadFile(cfg.path)
-	if err != nil {
-		return err
-	}
-	if err := toml.Unmarshal(cfgBytes, &s); err != nil {
-		return err
-	}
-
-	// read config file into viper (particularly active_context)
-	if err := viper.ReadConfig(bytes.NewReader(cfgBytes)); err != nil {
-		return err
-	}
-
-	// read active context from viper
-	if ctx := OptionContext.Value(); ctx != "" {
-		s.ActiveContext = ctx
+	cfg.path = OptionConfig.Get(cfg)
+	path, ok := f.(string)
+	if path != "" && ok {
+		cfg.path = path
 	}
 
-	cfg.contexts = s.Contexts
-	for i, ctx := range s.Contexts {
-		if ctx.ContextName == s.ActiveContext {
-			cfg.activeContext = cfg.contexts[i]
-		}
-	}
-
-	if s.ActiveContext != "" && cfg.activeContext == nil {
-		_, _ = fmt.Fprintf(os.Stderr, "Warning: active context %q not found\n", s.ActiveContext)
-	}
-
-	// load global preferences first so that contexts can override them
-	if err = cfg.loadPreferences(cfg.preferences); err != nil {
-		return err
-	}
-
-	// load context preferences
-	if cfg.activeContext != nil {
-		if err = cfg.loadPreferences(cfg.activeContext.ContextPreferences); err != nil {
-			return err
-		}
-		// read context into viper (particularly the token)
-		ctxBytes, err := toml.Marshal(cfg.activeContext)
+	if f == nil || ok {
+		// read config from file
+		cfgBytes, err = os.ReadFile(cfg.path)
 		if err != nil {
 			return err
 		}
-		if err = viper.ReadConfig(bytes.NewReader(ctxBytes)); err != nil {
+	} else {
+		switch f := f.(type) {
+		case io.Reader:
+			cfgBytes, err = io.ReadAll(f)
+			if err != nil {
+				return err
+			}
+		case []byte:
+			cfgBytes = f
+		default:
+			return fmt.Errorf("invalid config file type %T", f)
+		}
+	}
+
+	if err := toml.Unmarshal(cfgBytes, &cfg.schema); err != nil {
+		return err
+	}
+
+	if cfg.schema.ActiveContext != "" {
+		// ReadConfig resets the current config and reads the new values
+		// We don't use viper.Set here because of the value hierarchy. We want the env and flags to
+		// be able to override the currently active context. viper.Set would take precedence over
+		// env and flags.
+		err = cfg.v.ReadConfig(bytes.NewReader([]byte(fmt.Sprintf("context = %q\n", cfg.schema.ActiveContext))))
+		if err != nil {
+			return err
+		}
+	}
+
+	// read active context from viper
+	activeContext := cfg.schema.ActiveContext
+	if ctx := OptionContext.Get(cfg); ctx != "" {
+		activeContext = ctx
+	}
+
+	cfg.contexts = cfg.schema.Contexts
+	for i, ctx := range cfg.contexts {
+		if ctx.ContextName == activeContext {
+			cfg.activeContext = cfg.contexts[i]
+			break
+		}
+	}
+
+	if cfg.schema.ActiveContext != "" && cfg.activeContext == nil {
+		_, _ = fmt.Fprintf(os.Stderr, "Warning: active context %q not found\n", cfg.schema.ActiveContext)
+	}
+
+	// merge global preferences first so that contexts can override them
+	cfg.preferences = cfg.schema.Preferences
+	if err = cfg.preferences.merge(cfg.v); err != nil {
+		return err
+	}
+
+	if cfg.activeContext != nil {
+		// Merge preferences into viper
+		if err = cfg.activeContext.ContextPreferences.merge(cfg.v); err != nil {
+			return err
+		}
+		// Merge token into viper
+		// We use viper.MergeConfig here for the same reason as above, except for
+		// that we merge the config instead of replacing it.
+		if err = cfg.v.MergeConfig(bytes.NewReader([]byte(fmt.Sprintf(`token = "%s"`, cfg.activeContext.ContextToken)))); err != nil {
 			return err
 		}
 	}
 	return nil
-}
-
-func (cfg *config) loadPreferences(prefs preferences) error {
-	if err := prefs.validate(); err != nil {
-		return err
-	}
-	ctxBytes, err := toml.Marshal(prefs)
-	if err != nil {
-		return err
-	}
-	return viper.MergeConfig(bytes.NewReader(ctxBytes))
-}
-
-func addOption[T any](flagFunc func(string, T, string) *T, key string, defaultVal T, usage string) {
-	if flagFunc != nil {
-		flagFunc(key, defaultVal, usage)
-	}
-	viper.SetDefault(key, defaultVal)
 }
 
 func (cfg *config) Write(w io.Writer) (err error) {
@@ -167,15 +185,16 @@ func (cfg *config) Write(w io.Writer) (err error) {
 		w = f
 	}
 
-	var activeContext string
-	if cfg.activeContext != nil {
-		activeContext = cfg.activeContext.ContextName
-	}
+	s := cfg.schema
 
-	s := schema{
-		ActiveContext: activeContext,
-		Preferences:   cfg.preferences,
-		Contexts:      cfg.contexts,
+	// this is so that we don't marshal empty preferences (this could happen e.g. after the last key is removed)
+	if s.Preferences != nil && len(s.Preferences) == 0 {
+		s.Preferences = nil
+	}
+	for _, ctx := range s.Contexts {
+		if ctx.ContextPreferences != nil && len(ctx.ContextPreferences) == 0 {
+			ctx.ContextPreferences = nil
+		}
 	}
 
 	return toml.NewEncoder(w).Encode(s)
@@ -214,32 +233,16 @@ func (cfg *config) SetContexts(contexts []Context) {
 
 func (cfg *config) Preferences() Preferences {
 	if cfg.preferences == nil {
-		cfg.preferences = make(preferences)
+		cfg.preferences = make(Preferences)
+		cfg.schema.Preferences = cfg.preferences
 	}
 	return cfg.preferences
 }
 
-func GetHcloudOpts(cfg Config) []hcloud.ClientOption {
-	var opts []hcloud.ClientOption
+func (cfg *config) Viper() *viper.Viper {
+	return cfg.v
+}
 
-	token := OptionToken.Value()
-
-	opts = append(opts, hcloud.WithToken(token))
-	if ep := OptionEndpoint.Value(); ep != "" {
-		opts = append(opts, hcloud.WithEndpoint(ep))
-	}
-	if OptionDebug.Value() {
-		if filePath := OptionDebugFile.Value(); filePath == "" {
-			opts = append(opts, hcloud.WithDebugWriter(os.Stderr))
-		} else {
-			writer, _ := os.Create(filePath)
-			opts = append(opts, hcloud.WithDebugWriter(writer))
-		}
-	}
-	pollInterval := OptionPollInterval.Value()
-	if pollInterval > 0 {
-		opts = append(opts, hcloud.WithBackoffFunc(hcloud.ConstantBackoff(pollInterval)))
-	}
-
-	return opts
+func (cfg *config) FlagSet() *pflag.FlagSet {
+	return cfg.fs
 }

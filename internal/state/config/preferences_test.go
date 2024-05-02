@@ -8,24 +8,24 @@ import (
 
 func TestUnknownPreference(t *testing.T) {
 	t.Run("existing", func(t *testing.T) {
-		clear(opts)
-		newOpt("foo", "", "", OptionSourcePreference)
+		clear(Options)
+		newOpt("foo", "", "", OptionFlagPreference)
 
-		p := preferences{"foo": ""}
+		p := Preferences{"foo": ""}
 		assert.NoError(t, p.validate())
 	})
 
 	t.Run("existing but no preference", func(t *testing.T) {
-		clear(opts)
+		clear(Options)
 		newOpt("foo", "", "", 0)
 
-		p := preferences{"foo": ""}
+		p := Preferences{"foo": ""}
 		assert.EqualError(t, p.validate(), "unknown preference: foo")
 	})
 
 	t.Run("not existing", func(t *testing.T) {
-		clear(opts)
-		p := preferences{"foo": ""}
+		clear(Options)
+		p := Preferences{"foo": ""}
 		assert.EqualError(t, p.validate(), "unknown preference: foo")
 	})
 }

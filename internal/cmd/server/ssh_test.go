@@ -29,7 +29,7 @@ func TestSSH(t *testing.T) {
 			Get(gomock.Any(), srv.Name).
 			Return(&srv, nil, nil)
 
-		config.OptionSSHPath.SetValue("echo")
+		config.OptionSSHPath.Override(fx.Config, "echo")
 	}
 
 	testutil.TestCommand(t, &server.SSHCmd, map[string]testutil.TestCase{

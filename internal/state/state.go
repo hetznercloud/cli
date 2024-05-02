@@ -2,6 +2,7 @@ package state
 
 import (
 	"context"
+	"os"
 
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state/config"
@@ -45,7 +46,26 @@ func (c *state) Config() config.Config {
 }
 
 func (c *state) newClient() hcapi2.Client {
-	opts := config.GetHcloudOpts(c.Config())
+	var opts []hcloud.ClientOption
+
+	token := config.OptionToken.Get(c.config)
+	opts = append(opts, hcloud.WithToken(token))
+	if ep := config.OptionEndpoint.Get(c.config); ep != "" {
+		opts = append(opts, hcloud.WithEndpoint(ep))
+	}
+	if config.OptionDebug.Get(c.config) {
+		if filePath := config.OptionDebugFile.Get(c.config); filePath == "" {
+			opts = append(opts, hcloud.WithDebugWriter(os.Stderr))
+		} else {
+			writer, _ := os.Create(filePath)
+			opts = append(opts, hcloud.WithDebugWriter(writer))
+		}
+	}
+	pollInterval := config.OptionPollInterval.Get(c.config)
+	if pollInterval > 0 {
+		opts = append(opts, hcloud.WithBackoffFunc(hcloud.ConstantBackoff(pollInterval)))
+	}
+
 	opts = append(opts, hcloud.WithApplication("hcloud-cli", version.Version))
 	return hcapi2.NewClient(opts...)
 }

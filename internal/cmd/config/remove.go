@@ -2,6 +2,8 @@ package config
 
 import (
 	"fmt"
+	"os"
+	"reflect"
 
 	"github.com/spf13/cobra"
 
@@ -11,14 +13,14 @@ import (
 	"github.com/hetznercloud/cli/internal/state/config"
 )
 
-func NewSetCommand(s state.State) *cobra.Command {
+func NewRemoveCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   "set <key> <value>...",
-		Short:                 "Set a configuration value",
+		Use:                   "remove <key> <value>...",
+		Short:                 "Remove a configuration value",
 		Args:                  util.Validate,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE:                  state.Wrap(s, runSet),
+		RunE:                  state.Wrap(s, runRemove),
 		ValidArgsFunction: cmpl.NoFileCompletion(cmpl.SuggestArgs(
 			cmpl.SuggestCandidatesF(func() []string {
 				var keys []string
@@ -38,11 +40,11 @@ func NewSetCommand(s state.State) *cobra.Command {
 			}),
 		)),
 	}
-	cmd.Flags().Bool("global", false, "Set the value globally (for all contexts)")
+	cmd.Flags().Bool("global", false, "Remove the value(s) globally (for all contexts)")
 	return cmd
 }
 
-func runSet(s state.State, cmd *cobra.Command, args []string) error {
+func runRemove(s state.State, cmd *cobra.Command, args []string) error {
 	global, _ := cmd.Flags().GetBool("global")
 
 	var prefs config.Preferences
@@ -51,16 +53,16 @@ func runSet(s state.State, cmd *cobra.Command, args []string) error {
 		prefs = s.Config().Preferences()
 	} else {
 		ctx := s.Config().ActiveContext()
-		if ctx == nil {
-			return fmt.Errorf("no active context (use --global flag to set a global option)")
+		if reflect.ValueOf(ctx).IsNil() {
+			return fmt.Errorf("no active context (use --global to remove an option globally)")
 		}
 		prefs = ctx.Preferences()
 	}
 
 	key, values := args[0], args[1:]
-	if err := prefs.Set(key, values); err != nil {
+	if err := prefs.Remove(key, values); err != nil {
 		return err
 	}
 
-	return s.Config().Write(nil)
+	return s.Config().Write(os.Stdout)
 }

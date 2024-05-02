@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"reflect"
 
 	"github.com/spf13/cobra"
 
@@ -11,14 +12,14 @@ import (
 	"github.com/hetznercloud/cli/internal/state/config"
 )
 
-func NewSetCommand(s state.State) *cobra.Command {
+func NewUnsetCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   "set <key> <value>...",
-		Short:                 "Set a configuration value",
+		Use:                   "unset <key>",
+		Short:                 "Unset a configuration value",
 		Args:                  util.Validate,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
-		RunE:                  state.Wrap(s, runSet),
+		RunE:                  state.Wrap(s, runUnset),
 		ValidArgsFunction: cmpl.NoFileCompletion(cmpl.SuggestArgs(
 			cmpl.SuggestCandidatesF(func() []string {
 				var keys []string
@@ -29,20 +30,13 @@ func NewSetCommand(s state.State) *cobra.Command {
 				}
 				return keys
 			}),
-			cmpl.SuggestCandidatesCtx(func(_ *cobra.Command, args []string) []string {
-				var comps []string
-				if opt, ok := config.Options[args[0]]; ok {
-					comps = opt.Completions()
-				}
-				return comps
-			}),
 		)),
 	}
-	cmd.Flags().Bool("global", false, "Set the value globally (for all contexts)")
+	cmd.Flags().Bool("global", false, "Unset the value globally (for all contexts)")
 	return cmd
 }
 
-func runSet(s state.State, cmd *cobra.Command, args []string) error {
+func runUnset(s state.State, cmd *cobra.Command, args []string) error {
 	global, _ := cmd.Flags().GetBool("global")
 
 	var prefs config.Preferences
@@ -51,14 +45,14 @@ func runSet(s state.State, cmd *cobra.Command, args []string) error {
 		prefs = s.Config().Preferences()
 	} else {
 		ctx := s.Config().ActiveContext()
-		if ctx == nil {
-			return fmt.Errorf("no active context (use --global flag to set a global option)")
+		if reflect.ValueOf(ctx).IsNil() {
+			return fmt.Errorf("no active context (use --global flag to unset a global option)")
 		}
 		prefs = ctx.Preferences()
 	}
 
-	key, values := args[0], args[1:]
-	if err := prefs.Set(key, values); err != nil {
+	key := args[0]
+	if err := prefs.Unset(key); err != nil {
 		return err
 	}
 

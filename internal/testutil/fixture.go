@@ -8,7 +8,6 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	hcapi2_mock "github.com/hetznercloud/cli/internal/hcapi2/mock"
@@ -25,15 +24,18 @@ type Fixture struct {
 	Config         *config.MockConfig
 }
 
-// NewFixture creates a new Fixture.
+// NewFixture creates a new Fixture with default config file.
 func NewFixture(t *testing.T) *Fixture {
+	return NewFixtureWithConfigFile(t, nil)
+}
+
+// NewFixtureWithConfigFile creates a new Fixture with the given config file.
+// See Config#ParseConfigFile for the supported types of f.
+func NewFixtureWithConfigFile(t *testing.T, f any) *Fixture {
 	ctrl := gomock.NewController(t)
 
-	viper.Reset()
-	config.ResetFlags()
-	cfg := &config.MockConfig{}
-
-	if err := config.ReadConfig(cfg); err != nil {
+	cfg := config.NewConfig()
+	if err := config.ReadConfig(cfg, f); err != nil {
 		t.Fatal(err)
 	}
 
@@ -42,7 +44,7 @@ func NewFixture(t *testing.T) *Fixture {
 		Client:         hcapi2_mock.NewMockClient(ctrl),
 		ActionWaiter:   state.NewMockActionWaiter(ctrl),
 		TokenEnsurer:   state.NewMockTokenEnsurer(ctrl),
-		Config:         cfg,
+		Config:         &config.MockConfig{Config: cfg},
 	}
 }
 

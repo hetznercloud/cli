@@ -40,8 +40,8 @@ func init() {
 func main() {
 
 	cfg := config.NewConfig()
-	if err := config.ReadConfig(cfg); err != nil {
-		log.Fatalf("unable to read config file %s\n", err)
+	if err := config.ReadConfig(cfg, nil); err != nil {
+		log.Fatalf("unable to read config file: %s\n", err)
 	}
 
 	s, err := state.New(cfg)

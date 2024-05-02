@@ -58,7 +58,7 @@ var SSHCmd = base.Cmd{
 		}
 
 		sshArgs := []string{"-l", user, "-p", strconv.Itoa(port), ipAddress.String()}
-		sshCommand := exec.Command(config.OptionSSHPath.Value(), append(sshArgs, args[1:]...)...)
+		sshCommand := exec.Command(config.OptionSSHPath.Get(s.Config()), append(sshArgs, args[1:]...)...)
 		sshCommand.Stdin = os.Stdin
 		sshCommand.Stdout = os.Stdout
 		sshCommand.Stderr = os.Stderr

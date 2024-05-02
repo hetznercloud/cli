@@ -16,7 +16,7 @@ func NewContext(name, token string) Context {
 type context struct {
 	ContextName        string      `toml:"name"`
 	ContextToken       string      `toml:"token"`
-	ContextPreferences preferences `toml:"preferences"`
+	ContextPreferences Preferences `toml:"preferences"`
 }
 
 func (ctx *context) Name() string {
@@ -31,7 +31,7 @@ func (ctx *context) Token() string {
 
 func (ctx *context) Preferences() Preferences {
 	if ctx.ContextPreferences == nil {
-		ctx.ContextPreferences = make(preferences)
+		ctx.ContextPreferences = make(Preferences)
 	}
 	return ctx.ContextPreferences
 }

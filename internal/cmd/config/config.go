@@ -16,7 +16,12 @@ func NewCommand(s state.State) *cobra.Command {
 		DisableFlagsInUseLine: true,
 	}
 	cmd.AddCommand(
-		newSetCommand(s),
+		NewSetCommand(s),
+		NewGetCommand(s),
+		NewListCommand(s),
+		NewUnsetCommand(s),
+		NewAddCommand(s),
+		NewRemoveCommand(s),
 	)
 	return cmd
 }
