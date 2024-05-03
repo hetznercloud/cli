@@ -16,6 +16,7 @@ func NewAddCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "add <key> <value>...",
 		Short:                 "Add values to a list",
+		Long:                  "Add values to a list. For a list of all available configuration options, run 'hcloud help config'.",
 		Args:                  util.Validate,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,

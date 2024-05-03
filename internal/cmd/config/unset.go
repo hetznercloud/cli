@@ -16,6 +16,7 @@ func NewUnsetCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "unset <key>",
 		Short:                 "Unset a configuration value",
+		Long:                  "Unset a configuration value. For a list of all available configuration options, run 'hcloud help config'.",
 		Args:                  util.Validate,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,

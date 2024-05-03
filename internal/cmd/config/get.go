@@ -14,6 +14,7 @@ func NewGetCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "get <key>",
 		Short:                 "Get a configuration value",
+		Long:                  "Get a configuration value. For a list of all available configuration options, run 'hcloud help config'.",
 		Args:                  util.Validate,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,

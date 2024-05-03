@@ -20,10 +20,17 @@ func NewCommand(s state.State) *cobra.Command {
 		Use:   "config",
 		Short: "Manage configuration",
 		Long: `This command allows you to manage options for the Hetzner Cloud CLI. Options can be set inside the
-configuration file, through environment variables or with flags. Most options are 'preferences' -
-these options can be set globally and can additionally be overridden for each context. 
+configuration file, through environment variables or with flags. 
 
-Below is a list of all non-preference options:
+The hierarchy for configuration sources is as follows (from highest to lowest priority):
+1. Flags
+2. Environment variables
+3. Configuration file (context)
+4. Configuration file (global)
+5. Default values
+
+Most options are 'preferences' - these options can be set globally and can additionally be overridden
+for each context. Below is a list of all non-preference options:
 
 ` + nonPreferenceOptions +
 			`

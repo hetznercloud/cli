@@ -15,6 +15,7 @@ func NewSetCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "set <key> <value>...",
 		Short:                 "Set a configuration value",
+		Long:                  "Set a configuration value. For a list of all available configuration options, run 'hcloud help config'.",
 		Args:                  util.Validate,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,

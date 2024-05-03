@@ -16,6 +16,7 @@ func NewRemoveCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "remove <key> <value>...",
 		Short:                 "Remove values from a list",
+		Long:                  "Remove values from a list. For a list of all available configuration options, run 'hcloud help config'.",
 		Args:                  util.Validate,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
