@@ -2,7 +2,7 @@ package config
 
 import (
 	"fmt"
-	"reflect"
+	"os"
 
 	"github.com/spf13/cobra"
 
@@ -19,6 +19,7 @@ func NewUnsetCommand(s state.State) *cobra.Command {
 		Args:                  util.Validate,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
+		SilenceUsage:          true,
 		RunE:                  state.Wrap(s, runUnset),
 		ValidArgsFunction: cmpl.NoFileCompletion(cmpl.SuggestArgs(
 			cmpl.SuggestCandidatesF(func() []string {
@@ -39,22 +40,35 @@ func NewUnsetCommand(s state.State) *cobra.Command {
 func runUnset(s state.State, cmd *cobra.Command, args []string) error {
 	global, _ := cmd.Flags().GetBool("global")
 
-	var prefs config.Preferences
+	var (
+		ok    bool
+		err   error
+		ctx   config.Context
+		prefs config.Preferences
+	)
 
 	if global {
 		prefs = s.Config().Preferences()
 	} else {
-		ctx := s.Config().ActiveContext()
-		if reflect.ValueOf(ctx).IsNil() {
+		ctx = s.Config().ActiveContext()
+		if ctx == nil {
 			return fmt.Errorf("no active context (use --global flag to unset a global option)")
 		}
 		prefs = ctx.Preferences()
 	}
 
 	key := args[0]
-	if err := prefs.Unset(key); err != nil {
+	if ok, err = prefs.Unset(key); err != nil {
 		return err
 	}
 
+	if !ok {
+		_, _ = fmt.Fprintf(os.Stderr, "Warning: key '%s' was not set\n", key)
+	}
+	if ctx == nil {
+		cmd.Printf("Unset '%s' globally\n", key)
+	} else {
+		cmd.Printf("Unset '%s' in context '%s'\n", key, ctx.Name())
+	}
 	return s.Config().Write(nil)
 }

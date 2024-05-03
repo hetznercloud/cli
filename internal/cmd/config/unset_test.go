@@ -16,6 +16,7 @@ func TestUnset(t *testing.T) {
 		args    []string
 		expOut  string
 		expErr  string
+		err     string
 		preRun  func()
 		postRun func()
 	}
@@ -24,7 +25,8 @@ func TestUnset(t *testing.T) {
 		{
 			name: "unset in current context",
 			args: []string{"quiet"},
-			expOut: `active_context = "test_context"
+			expOut: `Unset 'quiet' in context 'test_context'
+active_context = "test_context"
 
 [preferences]
   debug = true
@@ -55,7 +57,8 @@ func TestUnset(t *testing.T) {
 				_ = os.Unsetenv("HCLOUD_CONTEXT")
 			},
 			args: []string{"poll-interval"},
-			expOut: `active_context = "test_context"
+			expOut: `Unset 'poll-interval' in context 'other_context'
+active_context = "test_context"
 
 [preferences]
   debug = true
@@ -77,9 +80,42 @@ func TestUnset(t *testing.T) {
 		{
 			name: "unset globally",
 			args: []string{"debug", "--global"},
-			expOut: `active_context = "test_context"
+			expOut: `Unset 'debug' globally
+active_context = "test_context"
 
 [preferences]
+  poll_interval = "1.234s"
+
+[[contexts]]
+  name = "test_context"
+  token = "super secret token"
+  [contexts.preferences]
+    default_ssh_keys = ["1", "2", "3"]
+    endpoint = "https://test-endpoint.com"
+    quiet = true
+
+[[contexts]]
+  name = "other_context"
+  token = "another super secret token"
+  [contexts.preferences]
+    poll_interval = "1.234s"
+`,
+		},
+		{
+			name:   "unset non existing",
+			args:   []string{"non-existing"},
+			err:    "unknown preference: non-existing",
+			expErr: "Error: unknown preference: non-existing\n",
+		},
+		{
+			name:   "unset not set",
+			args:   []string{"debug-file"},
+			expErr: "Warning: key 'debug-file' was not set\n",
+			expOut: `Unset 'debug-file' in context 'test_context'
+active_context = "test_context"
+
+[preferences]
+  debug = true
   poll_interval = "1.234s"
 
 [[contexts]]
@@ -115,7 +151,11 @@ func TestUnset(t *testing.T) {
 
 			out, errOut, err := fx.Run(cmd, tt.args)
 
-			assert.NoError(t, err)
+			if tt.err == "" {
+				assert.NoError(t, err)
+			} else {
+				assert.EqualError(t, err, tt.err)
+			}
 			assert.Equal(t, tt.expErr, errOut)
 			assert.Equal(t, tt.expOut, out)
 		})

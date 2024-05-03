@@ -7,9 +7,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/spf13/cast"
 	"github.com/spf13/pflag"
 
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
@@ -171,7 +171,7 @@ func (o *Option[T]) Get(c Config) T {
 		}
 	case []string:
 		if v, ok := val.([]any); ok {
-			val = cast.ToStringSlice(v)
+			val = util.ToStringSlice(v)
 		}
 	}
 	return val.(T)

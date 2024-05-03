@@ -3,7 +3,6 @@ package config
 import (
 	"fmt"
 	"os"
-	"reflect"
 
 	"github.com/spf13/cobra"
 
@@ -20,6 +19,7 @@ func NewAddCommand(s state.State) *cobra.Command {
 		Args:                  util.Validate,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
+		SilenceUsage:          true,
 		RunE:                  state.Wrap(s, runAdd),
 		ValidArgsFunction: cmpl.NoFileCompletion(cmpl.SuggestArgs(
 			cmpl.SuggestCandidatesF(func() []string {
@@ -47,22 +47,38 @@ func NewAddCommand(s state.State) *cobra.Command {
 func runAdd(s state.State, cmd *cobra.Command, args []string) error {
 	global, _ := cmd.Flags().GetBool("global")
 
-	var prefs config.Preferences
+	var (
+		added []any
+		err   error
+		ctx   config.Context
+		prefs config.Preferences
+	)
 
 	if global {
 		prefs = s.Config().Preferences()
 	} else {
-		ctx := s.Config().ActiveContext()
-		if reflect.ValueOf(ctx).IsNil() {
+		ctx = s.Config().ActiveContext()
+		if ctx == nil {
 			return fmt.Errorf("no active context (use --global flag to set a global option)")
 		}
 		prefs = ctx.Preferences()
 	}
 
 	key, values := args[0], args[1:]
-	if err := prefs.Add(key, values); err != nil {
+	if added, err = prefs.Add(key, values); err != nil {
 		return err
 	}
 
-	return s.Config().Write(os.Stdout)
+	if len(added) == 0 {
+		_, _ = fmt.Fprintln(os.Stderr, "Warning: no new values were added")
+	} else if len(added) < len(values) {
+		_, _ = fmt.Fprintln(os.Stderr, "Warning: some values were already present or duplicate")
+	}
+
+	if ctx == nil {
+		cmd.Printf("Added '%v' to '%s' globally\n", added, key)
+	} else {
+		cmd.Printf("Added '%v' to '%s' in context '%s'\n", added, key, ctx.Name())
+	}
+	return s.Config().Write(nil)
 }

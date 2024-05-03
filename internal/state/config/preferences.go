@@ -9,7 +9,6 @@ import (
 	"time"
 
 	"github.com/BurntSushi/toml"
-	"github.com/spf13/cast"
 	"github.com/spf13/viper"
 
 	"github.com/hetznercloud/cli/internal/cmd/util"
@@ -18,17 +17,17 @@ import (
 // Preferences are options that can be set in the config file, globally or per context
 type Preferences map[string]any
 
-func (p Preferences) Set(key string, values []string) error {
+func (p Preferences) Set(key string, values []string) (any, error) {
 	opt, ok := Options[key]
 	if !ok || !opt.HasFlag(OptionFlagPreference) {
-		return fmt.Errorf("unknown preference: %s", key)
+		return nil, fmt.Errorf("unknown preference: %s", key)
 	}
 
 	var val any
 	switch t := opt.T().(type) {
 	case bool:
 		if len(values) != 1 {
-			return fmt.Errorf("expected exactly one value")
+			return nil, fmt.Errorf("expected exactly one value")
 		}
 		value := values[0]
 		switch strings.ToLower(value) {
@@ -37,22 +36,22 @@ func (p Preferences) Set(key string, values []string) error {
 		case "false", "f", "no", "n", "0":
 			val = false
 		default:
-			return fmt.Errorf("invalid boolean value: %s", value)
+			return nil, fmt.Errorf("invalid boolean value: %s", value)
 		}
 	case string:
 		if len(values) != 1 {
-			return fmt.Errorf("expected exactly one value")
+			return nil, fmt.Errorf("expected exactly one value")
 		}
 		val = values[0]
 	case time.Duration:
 		if len(values) != 1 {
-			return fmt.Errorf("expected exactly one value")
+			return nil, fmt.Errorf("expected exactly one value")
 		}
 		value := values[0]
 		var err error
 		val, err = time.ParseDuration(value)
 		if err != nil {
-			return fmt.Errorf("invalid duration value: %s", value)
+			return nil, fmt.Errorf("invalid duration value: %s", value)
 		}
 	case []string:
 		newVal := values[:]
@@ -60,62 +59,71 @@ func (p Preferences) Set(key string, values []string) error {
 		newVal = slices.Compact(newVal)
 		val = newVal
 	default:
-		return fmt.Errorf("unsupported type %T", t)
+		return nil, fmt.Errorf("unsupported type %T", t)
 	}
 
 	configKey := strings.ReplaceAll(strings.ToLower(key), "-", "_")
 
 	p[configKey] = val
-	return nil
+	return val, nil
 }
 
-func (p Preferences) Unset(key string) error {
+func (p Preferences) Unset(key string) (bool, error) {
 	opt, ok := Options[key]
 	if !ok || !opt.HasFlag(OptionFlagPreference) {
-		return fmt.Errorf("unknown preference: %s", key)
+		return false, fmt.Errorf("unknown preference: %s", key)
 	}
 
 	configKey := strings.ReplaceAll(strings.ToLower(key), "-", "_")
+	_, ok = p[configKey]
 	delete(p, configKey)
-	return nil
+	return ok, nil
 }
 
-func (p Preferences) Add(key string, values []string) error {
+func (p Preferences) Add(key string, values []string) ([]any, error) {
 	opt, ok := Options[key]
 	if !ok || !opt.HasFlag(OptionFlagPreference) {
-		return fmt.Errorf("unknown preference: %s", key)
+		return nil, fmt.Errorf("unknown preference: %s", key)
 	}
+
+	var added []any
 
 	configKey := strings.ReplaceAll(strings.ToLower(key), "-", "_")
 	val := p[configKey]
 	switch opt.T().(type) {
 	case []string:
-		newVal := cast.ToStringSlice(val)
-		newVal = append(newVal, values...)
+		before := util.AnyToStringSlice(val)
+		newVal := append(before, values...)
 		slices.Sort(newVal)
 		newVal = slices.Compact(newVal)
 		val = newVal
+		added = util.ToAnySlice(util.SliceDiff[[]string](newVal, before))
 	default:
-		return fmt.Errorf("%s is not a list", key)
+		return nil, fmt.Errorf("%s is not a list", key)
 	}
 
 	p[configKey] = val
-	return nil
+	return added, nil
 }
 
-func (p Preferences) Remove(key string, values []string) error {
+func (p Preferences) Remove(key string, values []string) ([]any, error) {
 	opt, ok := Options[key]
 	if !ok || !opt.HasFlag(OptionFlagPreference) {
-		return fmt.Errorf("unknown preference: %s", key)
+		return nil, fmt.Errorf("unknown preference: %s", key)
 	}
+
+	var removed []any
 
 	configKey := strings.ReplaceAll(strings.ToLower(key), "-", "_")
 	val := p[configKey]
 	switch opt.T().(type) {
 	case []string:
-		val = util.SliceDiff[[]string](cast.ToStringSlice(val), values)
+		before := util.AnyToStringSlice(val)
+		diff := util.SliceDiff[[]string](before, values)
+		val = diff
+		removed = util.ToAnySlice(util.SliceDiff[[]string](before, diff))
 	default:
-		return fmt.Errorf("%s is not a list", key)
+		return nil, fmt.Errorf("%s is not a list", key)
 	}
 
 	if reflect.ValueOf(val).Len() == 0 {
@@ -123,7 +131,7 @@ func (p Preferences) Remove(key string, values []string) error {
 	} else {
 		p[configKey] = val
 	}
-	return nil
+	return removed, nil
 }
 
 func (p Preferences) merge(v *viper.Viper) error {

@@ -22,6 +22,7 @@ func NewListCommand(s state.State) *cobra.Command {
 		Args:                  util.Validate,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
+		SilenceUsage:          true,
 		RunE:                  state.Wrap(s, runList),
 	}
 	cmd.Flags().BoolP("all", "a", false, "Also show default values")

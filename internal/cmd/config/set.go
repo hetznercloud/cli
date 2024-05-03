@@ -18,6 +18,7 @@ func NewSetCommand(s state.State) *cobra.Command {
 		Args:                  util.Validate,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
+		SilenceUsage:          true,
 		RunE:                  state.Wrap(s, runSet),
 		ValidArgsFunction: cmpl.NoFileCompletion(cmpl.SuggestArgs(
 			cmpl.SuggestCandidatesF(func() []string {
@@ -45,12 +46,17 @@ func NewSetCommand(s state.State) *cobra.Command {
 func runSet(s state.State, cmd *cobra.Command, args []string) error {
 	global, _ := cmd.Flags().GetBool("global")
 
-	var prefs config.Preferences
+	var (
+		val   any
+		err   error
+		ctx   config.Context
+		prefs config.Preferences
+	)
 
 	if global {
 		prefs = s.Config().Preferences()
 	} else {
-		ctx := s.Config().ActiveContext()
+		ctx = s.Config().ActiveContext()
 		if ctx == nil {
 			return fmt.Errorf("no active context (use --global flag to set a global option)")
 		}
@@ -58,9 +64,14 @@ func runSet(s state.State, cmd *cobra.Command, args []string) error {
 	}
 
 	key, values := args[0], args[1:]
-	if err := prefs.Set(key, values); err != nil {
+	if val, err = prefs.Set(key, values); err != nil {
 		return err
 	}
 
+	if ctx == nil {
+		cmd.Printf("Set '%s' to '%v' globally\n", key, val)
+	} else {
+		cmd.Printf("Set '%s' to '%v' in context '%s'\n", key, val, ctx.Name())
+	}
 	return s.Config().Write(nil)
 }

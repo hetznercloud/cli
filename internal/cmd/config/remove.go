@@ -3,7 +3,6 @@ package config
 import (
 	"fmt"
 	"os"
-	"reflect"
 
 	"github.com/spf13/cobra"
 
@@ -20,6 +19,7 @@ func NewRemoveCommand(s state.State) *cobra.Command {
 		Args:                  util.Validate,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
+		SilenceUsage:          true,
 		RunE:                  state.Wrap(s, runRemove),
 		ValidArgsFunction: cmpl.NoFileCompletion(cmpl.SuggestArgs(
 			cmpl.SuggestCandidatesF(func() []string {
@@ -47,22 +47,38 @@ func NewRemoveCommand(s state.State) *cobra.Command {
 func runRemove(s state.State, cmd *cobra.Command, args []string) error {
 	global, _ := cmd.Flags().GetBool("global")
 
-	var prefs config.Preferences
+	var (
+		removed []any
+		err     error
+		ctx     config.Context
+		prefs   config.Preferences
+	)
 
 	if global {
 		prefs = s.Config().Preferences()
 	} else {
-		ctx := s.Config().ActiveContext()
-		if reflect.ValueOf(ctx).IsNil() {
+		ctx = s.Config().ActiveContext()
+		if ctx == nil {
 			return fmt.Errorf("no active context (use --global to remove an option globally)")
 		}
 		prefs = ctx.Preferences()
 	}
 
 	key, values := args[0], args[1:]
-	if err := prefs.Remove(key, values); err != nil {
+	if removed, err = prefs.Remove(key, values); err != nil {
 		return err
 	}
 
-	return s.Config().Write(os.Stdout)
+	if len(removed) == 0 {
+		_, _ = fmt.Fprintln(os.Stderr, "Warning: no values were removed")
+	} else if len(removed) < len(values) {
+		_, _ = fmt.Fprintln(os.Stderr, "Warning: some values were not removed")
+	}
+
+	if ctx == nil {
+		cmd.Printf("Removed '%v' from '%s' globally\n", removed, key)
+	} else {
+		cmd.Printf("Removed '%v' from '%s' in context '%s'\n", removed, key, ctx.Name())
+	}
+	return s.Config().Write(nil)
 }

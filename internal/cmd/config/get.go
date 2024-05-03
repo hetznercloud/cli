@@ -17,6 +17,7 @@ func NewGetCommand(s state.State) *cobra.Command {
 		Args:                  util.Validate,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
+		SilenceUsage:          true,
 		RunE:                  state.Wrap(s, runGet),
 	}
 	cmd.Flags().Bool("global", false, "Get the value globally")

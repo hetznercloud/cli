@@ -24,7 +24,8 @@ func TestSet(t *testing.T) {
 		{
 			name: "set in current context",
 			args: []string{"debug-file", "debug.log"},
-			expOut: `active_context = "test_context"
+			expOut: `Set 'debug-file' to 'debug.log' in context 'test_context'
+active_context = "test_context"
 
 [preferences]
   debug = true
@@ -57,7 +58,8 @@ func TestSet(t *testing.T) {
 				_ = os.Unsetenv("HCLOUD_CONTEXT")
 			},
 			args: []string{"default-ssh-keys", "a", "b", "c"},
-			expOut: `active_context = "test_context"
+			expOut: `Set 'default-ssh-keys' to '[a b c]' in context 'other_context'
+active_context = "test_context"
 
 [preferences]
   debug = true
@@ -82,7 +84,8 @@ func TestSet(t *testing.T) {
 		{
 			name: "set globally",
 			args: []string{"--global", "poll-interval", "50ms"},
-			expOut: `active_context = "test_context"
+			expOut: `Set 'poll-interval' to '50ms' globally
+active_context = "test_context"
 
 [preferences]
   debug = true

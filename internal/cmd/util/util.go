@@ -253,3 +253,39 @@ func SliceDiff[S ~[]E, E cmp.Ordered](a, b []E) []E {
 	slices.Sort(diff)
 	return diff
 }
+
+func AnyToAnySlice(a any) []any {
+	val := reflect.ValueOf(a)
+	if val.Kind() != reflect.Slice {
+		return nil
+	}
+	s := make([]any, val.Len())
+	for i := 0; i < val.Len(); i++ {
+		s[i] = val.Index(i).Interface()
+	}
+	return s
+}
+
+func AnyToStringSlice(a any) []string {
+	var s []string
+	for _, v := range AnyToAnySlice(a) {
+		s = append(s, fmt.Sprint(v))
+	}
+	return s
+}
+
+func ToStringSlice(a []any) []string {
+	var s []string
+	for _, v := range a {
+		s = append(s, fmt.Sprint(v))
+	}
+	return s
+}
+
+func ToAnySlice[T any](a []T) []any {
+	var s []any
+	for _, v := range a {
+		s = append(s, any(v))
+	}
+	return s
+}
