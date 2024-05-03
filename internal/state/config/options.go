@@ -14,6 +14,7 @@ import (
 
 type OptionFlag int
 
+// [⚠️] If you add an option, don't forget to document it in internal/cmd/config/config.go
 const (
 	// OptionFlagPreference indicates that the option can be set in the config file, globally or per context (in the preferences section)
 	OptionFlagPreference OptionFlag = 1 << iota
