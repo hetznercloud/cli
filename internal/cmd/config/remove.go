@@ -16,7 +16,7 @@ import (
 func NewRemoveCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "remove <key> <value>...",
-		Short:                 "Remove a configuration value",
+		Short:                 "Remove values from a list",
 		Args:                  util.Validate,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,

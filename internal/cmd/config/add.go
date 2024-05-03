@@ -16,7 +16,7 @@ import (
 func NewAddCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "add <key> <value>...",
-		Short:                 "Set a configuration value",
+		Short:                 "Add values to a list",
 		Args:                  util.Validate,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,

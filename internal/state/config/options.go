@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"reflect"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/spf13/cast"
@@ -32,6 +33,11 @@ const (
 
 type IOption interface {
 	addToFlagSet(fs *pflag.FlagSet)
+	GetName() string
+	GetDescription() string
+	ConfigKey() string
+	EnvVar() string
+	FlagName() string
 	HasFlag(src OptionFlag) bool
 	GetAsAny(c Config) any
 	OverrideAny(c Config, v any)
@@ -41,27 +47,103 @@ type IOption interface {
 	T() any
 }
 
+type overrides struct {
+	configKey string
+	envVar    string
+	flagName  string
+}
+
 var Options = make(map[string]IOption)
 
 // Note: &^ is the bit clear operator and is used to remove flags from the default flag set
 var (
-	OptionConfig         = newOpt("config", "Config file path", DefaultConfigPath(), OptionFlagPFlag|OptionFlagEnv)
-	OptionToken          = newOpt("token", "Hetzner Cloud API token", "", OptionFlagConfig|OptionFlagEnv|OptionFlagSensitive)
-	OptionContext        = newOpt("context", "Active context", "", OptionFlagConfig|OptionFlagEnv|OptionFlagPFlag)
-	OptionEndpoint       = newOpt("endpoint", "Hetzner Cloud API endpoint", hcloud.Endpoint, DefaultPreferenceFlags)
-	OptionDebug          = newOpt("debug", "Enable debug output", false, DefaultPreferenceFlags)
-	OptionDebugFile      = newOpt("debug-file", "Write debug output to file", "", DefaultPreferenceFlags)
-	OptionPollInterval   = newOpt("poll-interval", "Interval at which to poll information, for example action progress", 500*time.Millisecond, DefaultPreferenceFlags)
-	OptionQuiet          = newOpt("quiet", "Only print error messages", false, DefaultPreferenceFlags)
-	OptionDefaultSSHKeys = newOpt("default-ssh-keys", "Default SSH keys for new servers", []string{}, DefaultPreferenceFlags&^OptionFlagPFlag)
-	OptionSSHPath        = newOpt("ssh-path", "Path to the ssh binary", "ssh", DefaultPreferenceFlags)
+	OptionConfig = newOpt(
+		"config",
+		"Config file path",
+		DefaultConfigPath(),
+		OptionFlagPFlag|OptionFlagEnv,
+		nil,
+	)
+
+	OptionToken = newOpt(
+		"token",
+		"Hetzner Cloud API token",
+		"",
+		OptionFlagConfig|OptionFlagEnv|OptionFlagSensitive,
+		nil,
+	)
+
+	OptionContext = newOpt(
+		"context",
+		"Currently active context",
+		"",
+		OptionFlagConfig|OptionFlagEnv|OptionFlagPFlag,
+		&overrides{configKey: "active_context"},
+	)
+
+	OptionEndpoint = newOpt(
+		"endpoint",
+		"Hetzner Cloud API endpoint",
+		hcloud.Endpoint,
+		DefaultPreferenceFlags,
+		nil,
+	)
+
+	OptionDebug = newOpt(
+		"debug",
+		"Enable debug output",
+		false,
+		DefaultPreferenceFlags,
+		nil,
+	)
+
+	OptionDebugFile = newOpt(
+		"debug-file",
+		"File to write debug output to",
+		"",
+		DefaultPreferenceFlags,
+		nil,
+	)
+
+	OptionPollInterval = newOpt(
+		"poll-interval",
+		"Interval at which to poll information, for example action progress",
+		500*time.Millisecond,
+		DefaultPreferenceFlags,
+		nil,
+	)
+
+	OptionQuiet = newOpt(
+		"quiet",
+		"If true, only print error messages",
+		false,
+		DefaultPreferenceFlags,
+		nil,
+	)
+
+	OptionDefaultSSHKeys = newOpt(
+		"default-ssh-keys",
+		"Default SSH keys for new servers",
+		[]string{},
+		DefaultPreferenceFlags&^OptionFlagPFlag,
+		nil,
+	)
+
+	OptionSSHPath = newOpt(
+		"ssh-path",
+		"Path to the SSH binary (used by 'hcloud server ssh')",
+		"ssh",
+		DefaultPreferenceFlags,
+		nil,
+	)
 )
 
 type Option[T any] struct {
-	Name    string
-	Usage   string
-	Default T
-	Source  OptionFlag
+	Name        string
+	Description string
+	Default     T
+	Source      OptionFlag
+	overrides   *overrides
 }
 
 func (o *Option[T]) Get(c Config) T {
@@ -119,6 +201,44 @@ func (o *Option[T]) IsSlice() bool {
 	return reflect.TypeOf(o.T()).Kind() == reflect.Slice
 }
 
+func (o *Option[T]) GetName() string {
+	return o.Name
+}
+
+func (o *Option[T]) GetDescription() string {
+	return o.Description
+}
+
+func (o *Option[T]) ConfigKey() string {
+	if !o.HasFlag(OptionFlagConfig) {
+		return ""
+	}
+	if o.overrides != nil && o.overrides.configKey != "" {
+		return o.overrides.configKey
+	}
+	return strings.ReplaceAll(strings.ToLower(o.Name), "-", "_")
+}
+
+func (o *Option[T]) EnvVar() string {
+	if !o.HasFlag(OptionFlagEnv) {
+		return ""
+	}
+	if o.overrides != nil && o.overrides.envVar != "" {
+		return o.overrides.envVar
+	}
+	return "HCLOUD_" + strings.ReplaceAll(strings.ToUpper(o.Name), "-", "_")
+}
+
+func (o *Option[T]) FlagName() string {
+	if !o.HasFlag(OptionFlagPFlag) {
+		return ""
+	}
+	if o.overrides != nil && o.overrides.flagName != "" {
+		return o.overrides.flagName
+	}
+	return "--" + o.Name
+}
+
 func (o *Option[T]) Completions() []string {
 	var t T
 	switch any(t).(type) {
@@ -139,20 +259,20 @@ func (o *Option[T]) addToFlagSet(fs *pflag.FlagSet) {
 	}
 	switch v := any(o.Default).(type) {
 	case bool:
-		fs.Bool(o.Name, v, o.Usage)
+		fs.Bool(o.Name, v, o.Description)
 	case string:
-		fs.String(o.Name, v, o.Usage)
+		fs.String(o.Name, v, o.Description)
 	case time.Duration:
-		fs.Duration(o.Name, v, o.Usage)
+		fs.Duration(o.Name, v, o.Description)
 	case []string:
-		fs.StringSlice(o.Name, v, o.Usage)
+		fs.StringSlice(o.Name, v, o.Description)
 	default:
 		panic(fmt.Sprintf("unsupported type %T", v))
 	}
 }
 
-func newOpt[T any](name, usage string, def T, source OptionFlag) *Option[T] {
-	o := &Option[T]{Name: name, Usage: usage, Default: def, Source: source}
+func newOpt[T any](name, description string, def T, source OptionFlag, ov *overrides) *Option[T] {
+	o := &Option[T]{Name: name, Description: description, Default: def, Source: source, overrides: ov}
 	Options[name] = o
 	return o
 }
