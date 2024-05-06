@@ -10,7 +10,7 @@ require (
 	github.com/goccy/go-yaml v1.11.3
 	github.com/golang/mock v1.6.0
 	github.com/guptarohit/asciigraph v0.7.1
-	github.com/hetznercloud/hcloud-go/v2 v2.7.2
+	github.com/hetznercloud/hcloud-go/v2 v2.8.0
 	github.com/pelletier/go-toml/v2 v2.2.2
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/pflag v1.0.5
