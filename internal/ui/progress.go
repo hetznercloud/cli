@@ -10,8 +10,6 @@ type ProgressGroup interface {
 	Stop() error
 }
 
-type NewProgressGroupType func(output io.Writer) ProgressGroup
-
 func NewProgressGroup(output io.Writer) ProgressGroup {
 	if StdoutIsTerminal() {
 		return newTerminalProgressGroup(output)
