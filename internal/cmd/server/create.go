@@ -110,7 +110,7 @@ var CreateCmd = base.CreateCmd{
 		if err := s.WaitForActions(cmd, s, result.Action); err != nil {
 			return nil, nil, err
 		}
-		if err := s.WaitForActions(cmd, s, result.NextActions); err != nil {
+		if err := s.WaitForActions(cmd, s, result.NextActions...); err != nil {
 			return nil, nil, err
 		}
 
