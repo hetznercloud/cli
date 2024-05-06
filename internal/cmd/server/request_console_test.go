@@ -31,7 +31,7 @@ func TestRequestConsole(t *testing.T) {
 			WSSURL:   "wss://console.hetzner.cloud/?token=123",
 		}, nil, nil)
 	fx.ActionWaiter.EXPECT().
-		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 789}).
+		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 789}).
 		Return(nil)
 
 	args := []string{"my-server"}
@@ -62,7 +62,7 @@ func TestRequestConsoleJSON(t *testing.T) {
 			WSSURL:   "wss://console.hetzner.cloud/?token=123",
 		}, nil, nil)
 	fx.ActionWaiter.EXPECT().
-		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 789}).
+		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 789}).
 		Return(nil)
 
 	args := []string{"my-server", "-o=json"}

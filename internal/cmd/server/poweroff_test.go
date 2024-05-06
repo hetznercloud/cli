@@ -27,7 +27,7 @@ func TestPoweroff(t *testing.T) {
 		Poweroff(gomock.Any(), srv).
 		Return(&hcloud.Action{ID: 789}, nil, nil)
 	fx.ActionWaiter.EXPECT().
-		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 789}).
+		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 789}).
 		Return(nil)
 
 	args := []string{"my-server"}

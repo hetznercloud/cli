@@ -59,7 +59,7 @@ func TestCreate(t *testing.T) {
 				},
 			},
 		}, nil, nil)
-	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).Return(nil)
+	fx.ActionWaiter.EXPECT().WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).Return(nil)
 	fx.ActionWaiter.EXPECT().WaitForActions(gomock.Any(), gomock.Any(), []*hcloud.Action{{ID: 234}}).Return(nil)
 
 	args := []string{"--name", "cli-test", "--type", "cx11", "--image", "ubuntu-20.04"}
@@ -155,7 +155,7 @@ func TestCreateJSON(t *testing.T) {
 	fx.Client.ServerClient.EXPECT().
 		GetByID(gomock.Any(), int64(1234)).
 		Return(srv, nil, nil)
-	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).Return(nil)
+	fx.ActionWaiter.EXPECT().WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).Return(nil)
 	fx.ActionWaiter.EXPECT().WaitForActions(gomock.Any(), gomock.Any(), []*hcloud.Action{{ID: 234}}).Return(nil)
 
 	args := []string{"-o=json", "--name", "cli-test", "--type", "cx11", "--image", "ubuntu-20.04"}
@@ -217,7 +217,7 @@ func TestCreateProtectionBackup(t *testing.T) {
 	fx.Client.ServerClient.EXPECT().
 		GetByID(gomock.Any(), int64(1234)).
 		Return(srv, nil, nil)
-	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).Return(nil)
+	fx.ActionWaiter.EXPECT().WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).Return(nil)
 	fx.ActionWaiter.EXPECT().WaitForActions(gomock.Any(), gomock.Any(), []*hcloud.Action{{ID: 234}}).Return(nil)
 
 	fx.Client.ServerClient.EXPECT().
@@ -227,14 +227,14 @@ func TestCreateProtectionBackup(t *testing.T) {
 		Return(&hcloud.Action{
 			ID: 1337,
 		}, nil, nil)
-	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 1337}).Return(nil)
+	fx.ActionWaiter.EXPECT().WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 1337}).Return(nil)
 
 	fx.Client.ServerClient.EXPECT().
 		EnableBackup(gomock.Any(), srv, "").
 		Return(&hcloud.Action{
 			ID: 42,
 		}, nil, nil)
-	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 42}).Return(nil)
+	fx.ActionWaiter.EXPECT().WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 42}).Return(nil)
 
 	args := []string{"--name", "cli-test", "--type", "cx11", "--image", "ubuntu-20.04", "--enable-protection", "rebuild,delete", "--enable-backup"}
 	out, errOut, err := fx.Run(cmd, args)

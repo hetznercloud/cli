@@ -59,7 +59,7 @@ var CreateImageCmd = base.Cmd{
 			return err
 		}
 
-		if err := s.ActionProgress(cmd, s, result.Action); err != nil {
+		if err := s.WaitForActions(cmd, s, result.Action); err != nil {
 			return err
 		}
 

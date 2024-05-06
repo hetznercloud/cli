@@ -42,7 +42,7 @@ func TestSetRDNS(t *testing.T) {
 			nil,
 		)
 
-	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), gomock.Any(), action).Return(nil)
+	fx.ActionWaiter.EXPECT().WaitForActions(gomock.Any(), gomock.Any(), action).Return(nil)
 
 	out, errOut, err := fx.Run(cmd, []string{"--hostname=server.your-host.de", "--ip=192.168.0.1", "13"})
 

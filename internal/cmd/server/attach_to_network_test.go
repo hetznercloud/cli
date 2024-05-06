@@ -39,7 +39,7 @@ func TestAttachToNetwork(t *testing.T) {
 		}).
 		Return(&hcloud.Action{ID: 789}, nil, nil)
 	fx.ActionWaiter.EXPECT().
-		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 789}).
+		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 789}).
 		Return(nil)
 
 	args := []string{"my-server", "--network", "my-network", "--ip", "192.168.0.1", "--alias-ips", "10.0.1.2,10.0.1.3"}

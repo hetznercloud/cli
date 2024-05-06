@@ -95,7 +95,7 @@ var AddTargetCmd = base.Cmd{
 			return fmt.Errorf("specify one of --server, --label-selector, or --ip")
 		}
 
-		if err := s.ActionProgress(cmd, s, action); err != nil {
+		if err := s.WaitForActions(cmd, s, action); err != nil {
 			return err
 		}
 		cmd.Printf("Target added to Load Balancer %d\n", loadBalancer.ID)

@@ -34,7 +34,7 @@ func TestDelete(t *testing.T) {
 			Action: &hcloud.Action{ID: 321},
 		}, nil, nil)
 	fx.ActionWaiter.EXPECT().
-		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321})
+		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321})
 
 	out, errOut, err := fx.Run(cmd, []string{"test"})
 
@@ -82,7 +82,7 @@ func TestDeleteMultiple(t *testing.T) {
 				Action: &hcloud.Action{ID: int64(i)},
 			}, nil, nil)
 		fx.ActionWaiter.EXPECT().
-			ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: int64(i)})
+			WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: int64(i)})
 	}
 
 	out, errOut, err := fx.Run(cmd, names)

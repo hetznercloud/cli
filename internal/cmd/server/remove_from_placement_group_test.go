@@ -28,7 +28,7 @@ func TestRemoveFromPlacementGroup(t *testing.T) {
 		Return(&srv, nil, nil)
 	fx.Client.ServerClient.EXPECT().
 		RemoveFromPlacementGroup(gomock.Any(), &srv)
-	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), gomock.Any(), nil)
+	fx.ActionWaiter.EXPECT().WaitForActions(gomock.Any(), gomock.Any(), nil)
 
 	out, errOut, err := fx.Run(cmd, []string{srv.Name})
 

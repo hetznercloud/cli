@@ -80,7 +80,7 @@ var CreateCmd = base.CreateCmd{
 			return nil, nil, err
 		}
 
-		if err := s.ActionProgress(cmd, s, result.Action); err != nil {
+		if err := s.WaitForActions(cmd, s, result.Action); err != nil {
 			return nil, nil, err
 		}
 		loadBalancer, _, err := s.Client().LoadBalancer().GetByID(s, result.LoadBalancer.ID)

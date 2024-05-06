@@ -108,7 +108,7 @@ func TestCreateProtection(t *testing.T) {
 			Delete: hcloud.Ptr(true),
 		}).
 		Return(&hcloud.Action{ID: 123}, nil, nil)
-	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).Return(nil)
+	fx.ActionWaiter.EXPECT().WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).Return(nil)
 
 	out, errOut, err := fx.Run(cmd, []string{"--name", "myNetwork", "--ip-range", "10.0.0.0/24", "--enable-protection", "delete"})
 

@@ -107,7 +107,7 @@ var CreateCmd = base.CreateCmd{
 			return nil, nil, err
 		}
 
-		if err := s.ActionProgress(cmd, s, result.Action); err != nil {
+		if err := s.WaitForActions(cmd, s, result.Action); err != nil {
 			return nil, nil, err
 		}
 		if err := s.WaitForActions(cmd, s, result.NextActions); err != nil {
@@ -132,7 +132,7 @@ var CreateCmd = base.CreateCmd{
 				return nil, nil, err
 			}
 
-			if err := s.ActionProgress(cmd, s, action); err != nil {
+			if err := s.WaitForActions(cmd, s, action); err != nil {
 				return nil, nil, err
 			}
 

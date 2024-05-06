@@ -42,7 +42,7 @@ func TestCreate(t *testing.T) {
 		Return(hcloud.PlacementGroupCreateResult{PlacementGroup: &placementGroup, Action: &hcloud.Action{ID: 321}}, nil, nil)
 
 	fx.ActionWaiter.EXPECT().
-		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321})
+		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321})
 
 	out, errOut, err := fx.Run(cmd, []string{"--name", placementGroup.Name, "--type", string(placementGroup.Type)})
 
@@ -84,7 +84,7 @@ func TestCreateJSON(t *testing.T) {
 		}, nil, nil)
 
 	fx.ActionWaiter.EXPECT().
-		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321})
+		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321})
 
 	jsonOut, out, err := fx.Run(cmd, []string{"-o=json", "--name", "myPlacementGroup", "--type", "spread"})
 

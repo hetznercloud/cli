@@ -52,7 +52,7 @@ var DetachFromNetworkCmd = base.Cmd{
 			return err
 		}
 
-		if err := s.ActionProgress(cmd, s, action); err != nil {
+		if err := s.WaitForActions(cmd, s, action); err != nil {
 			return err
 		}
 

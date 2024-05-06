@@ -31,7 +31,7 @@ func TestShutdown(t *testing.T) {
 
 	fx.Client.ServerClient.EXPECT().
 		Shutdown(gomock.Any(), &srv)
-	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), gomock.Any(), nil)
+	fx.ActionWaiter.EXPECT().WaitForActions(gomock.Any(), gomock.Any(), nil)
 
 	out, errOut, err := fx.Run(cmd, []string{srv.Name})
 
@@ -62,7 +62,7 @@ func TestShutdownWait(t *testing.T) {
 
 	fx.Client.ServerClient.EXPECT().
 		Shutdown(gomock.Any(), &srv)
-	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), gomock.Any(), nil)
+	fx.ActionWaiter.EXPECT().WaitForActions(gomock.Any(), gomock.Any(), nil)
 
 	fx.Client.ServerClient.EXPECT().
 		GetByID(gomock.Any(), srv.ID).

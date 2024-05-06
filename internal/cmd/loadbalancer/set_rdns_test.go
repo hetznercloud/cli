@@ -35,7 +35,7 @@ func TestSetRDNS(t *testing.T) {
 		ChangeDNSPtr(gomock.Any(), loadBalancer, loadBalancer.PublicNet.IPv4.IP, hcloud.Ptr("example.com")).
 		Return(&hcloud.Action{ID: 123}, nil, nil)
 	fx.ActionWaiter.EXPECT().
-		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).
+		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).
 		Return(nil)
 
 	out, errOut, err := fx.Run(cmd, []string{"--hostname", "example.com", "test"})

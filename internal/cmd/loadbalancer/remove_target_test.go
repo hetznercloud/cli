@@ -29,7 +29,7 @@ func TestRemoveTargetServer(t *testing.T) {
 		RemoveServerTarget(gomock.Any(), &hcloud.LoadBalancer{ID: 123}, &hcloud.Server{ID: 321}).
 		Return(&hcloud.Action{ID: 123}, nil, nil)
 	fx.ActionWaiter.EXPECT().
-		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).
+		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).
 		Return(nil)
 
 	out, errOut, err := fx.Run(cmd, []string{"123", "--server", "my-server"})
@@ -55,7 +55,7 @@ func TestRemoveTargetLabelSelector(t *testing.T) {
 		RemoveLabelSelectorTarget(gomock.Any(), &hcloud.LoadBalancer{ID: 123}, "my-label").
 		Return(&hcloud.Action{ID: 123}, nil, nil)
 	fx.ActionWaiter.EXPECT().
-		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).
+		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).
 		Return(nil)
 
 	out, errOut, err := fx.Run(cmd, []string{"123", "--label-selector", "my-label"})
@@ -81,7 +81,7 @@ func TestRemoveTargetIP(t *testing.T) {
 		RemoveIPTarget(gomock.Any(), &hcloud.LoadBalancer{ID: 123}, net.ParseIP("192.168.2.1")).
 		Return(&hcloud.Action{ID: 123}, nil, nil)
 	fx.ActionWaiter.EXPECT().
-		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).
+		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).
 		Return(nil)
 
 	out, errOut, err := fx.Run(cmd, []string{"123", "--ip", "192.168.2.1"})
