@@ -30,9 +30,9 @@ func (p *terminalProgressGroup) Stop() error {
 }
 
 const (
-	terminalProgressRunningTpl = `{{ cycle . "⠋" "⠙" "⠹" "⠸" "⠼" "⠴" "⠦" "⠧" "⠇" "⠏" }} {{ string . "message" }} {{ percent . }}`
-	terminalProgressSuccessTpl = `{{ green "✓" }} {{ string . "message" }} {{ percent . }}`
-	terminalProgressErrorTpl   = `{{ red "✗" }} {{ string . "message" }} {{ percent . }}`
+	terminalProgressRunningTpl = ` {{ cycle . "⠋" "⠙" "⠹" "⠸" "⠼" "⠴" "⠦" "⠧" "⠇" "⠏" }} {{ string . "message" }} {{ percent . }}`
+	terminalProgressSuccessTpl = ` {{ green "✓" }} {{ string . "message" }} {{ percent . }}`
+	terminalProgressErrorTpl   = ` {{ red "✗" }} {{ string . "message" }} {{ percent . }}`
 )
 
 type terminalProgress struct {
