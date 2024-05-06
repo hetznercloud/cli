@@ -36,32 +36,23 @@ func (m *MockActionWaiter) EXPECT() *MockActionWaiterMockRecorder {
 	return m.recorder
 }
 
-// ActionProgress mocks base method.
-func (m *MockActionWaiter) ActionProgress(arg0 *cobra.Command, arg1 context.Context, arg2 *hcloud.Action) error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ActionProgress", arg0, arg1, arg2)
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// ActionProgress indicates an expected call of ActionProgress.
-func (mr *MockActionWaiterMockRecorder) ActionProgress(arg0, arg1, arg2 interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ActionProgress", reflect.TypeOf((*MockActionWaiter)(nil).ActionProgress), arg0, arg1, arg2)
-}
-
 // WaitForActions mocks base method.
-func (m *MockActionWaiter) WaitForActions(arg0 *cobra.Command, arg1 context.Context, arg2 []*hcloud.Action) error {
+func (m *MockActionWaiter) WaitForActions(arg0 *cobra.Command, arg1 context.Context, arg2 ...*hcloud.Action) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "WaitForActions", arg0, arg1, arg2)
+	varargs := []interface{}{arg0, arg1}
+	for _, a := range arg2 {
+		varargs = append(varargs, a)
+	}
+	ret := m.ctrl.Call(m, "WaitForActions", varargs...)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
 // WaitForActions indicates an expected call of WaitForActions.
-func (mr *MockActionWaiterMockRecorder) WaitForActions(arg0, arg1, arg2 interface{}) *gomock.Call {
+func (mr *MockActionWaiterMockRecorder) WaitForActions(arg0, arg1 interface{}, arg2 ...interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WaitForActions", reflect.TypeOf((*MockActionWaiter)(nil).WaitForActions), arg0, arg1, arg2)
+	varargs := append([]interface{}{arg0, arg1}, arg2...)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WaitForActions", reflect.TypeOf((*MockActionWaiter)(nil).WaitForActions), varargs...)
 }
 
 // MockTokenEnsurer is a mock of TokenEnsurer interface.
