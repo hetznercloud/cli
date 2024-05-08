@@ -2,6 +2,7 @@ package loadbalancer
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/spf13/cobra"
 
@@ -33,6 +34,18 @@ var AddServiceCmd = base.Cmd{
 		cmd.Flags().Duration("http-cookie-lifetime", 0, "Sticky Sessions: Lifetime of the cookie")
 		cmd.Flags().Int64Slice("http-certificates", []int64{}, "ID of Certificates which are attached to this Load Balancer")
 		cmd.Flags().Bool("http-redirect-http", false, "Redirect all traffic on port 80 to port 443")
+
+		cmd.Flags().String("health-check-protocol", "", "The protocol the health check is performed over")
+		cmd.Flags().Int("health-check-port", 0, "The port the health check is performed over")
+		cmd.Flags().Duration("health-check-interval", 15*time.Second, "The interval the health check is performed")
+		cmd.Flags().Duration("health-check-timeout", 10*time.Second, "The timeout after a health check is marked as failed")
+		cmd.Flags().Int("health-check-retries", 3, "Number of retries after a health check is marked as failed")
+
+		cmd.Flags().String("health-check-http-domain", "", "The domain we request when performing a http health check")
+		cmd.Flags().String("health-check-http-path", "", "The path we request when performing a http health check")
+		cmd.Flags().StringSlice("health-check-http-status-codes", []string{}, "List of status codes we expect to determine a target as healthy")
+		cmd.Flags().String("health-check-http-response", "", "The response we expect to determine a target as healthy")
+		cmd.Flags().Bool("health-check-http-tls", false, "Determine if the health check should verify if the target answers with a valid TLS certificate")
 
 		return cmd
 	},
@@ -116,6 +129,81 @@ var AddServiceCmd = base.Cmd{
 				opts.HTTP.Certificates = append(opts.HTTP.Certificates, &hcloud.Certificate{ID: certificateID})
 			}
 		}
+
+		// Health check
+		healthCheckProtocol, _ := cmd.Flags().GetString("health-check-protocol")
+		healthCheckPort, _ := cmd.Flags().GetInt("health-check-port")
+		healthCheckInterval, _ := cmd.Flags().GetDuration("health-check-interval")
+		healthCheckTimeout, _ := cmd.Flags().GetDuration("health-check-timeout")
+		healthCheckRetries, _ := cmd.Flags().GetInt("health-check-retries")
+
+		addHealthCheck := false
+		for _, f := range []string{"protocol", "port", "interval", "timeout", "retries"} {
+			if cmd.Flags().Changed("health-check-" + f) {
+				addHealthCheck = true
+				break
+			}
+		}
+
+		if addHealthCheck {
+			opts.HealthCheck = &hcloud.LoadBalancerAddServiceOptsHealthCheck{}
+			if healthCheckProtocol == "" {
+				return fmt.Errorf("required flag health-check-protocol not set")
+			}
+			switch proto := hcloud.LoadBalancerServiceProtocol(healthCheckProtocol); proto {
+			case hcloud.LoadBalancerServiceProtocolHTTP, hcloud.LoadBalancerServiceProtocolHTTPS, hcloud.LoadBalancerServiceProtocolTCP:
+				opts.HealthCheck.Protocol = proto
+				break
+			default:
+				return fmt.Errorf("invalid health check protocol: %s", healthCheckProtocol)
+			}
+
+			if healthCheckPort == 0 {
+				return fmt.Errorf("required flag health-check-port not set")
+			}
+			if healthCheckPort > 65535 {
+				return fmt.Errorf("invalid health check port: %d", healthCheckPort)
+			}
+			opts.HealthCheck.Port = &healthCheckPort
+
+			if cmd.Flags().Changed("health-check-interval") {
+				opts.HealthCheck.Interval = &healthCheckInterval
+			}
+			if cmd.Flags().Changed("health-check-timeout") {
+				opts.HealthCheck.Timeout = &healthCheckTimeout
+			}
+			if cmd.Flags().Changed("health-check-retries") {
+				opts.HealthCheck.Retries = &healthCheckRetries
+			}
+
+			if opts.HealthCheck.Protocol == hcloud.LoadBalancerServiceProtocolHTTP ||
+				opts.HealthCheck.Protocol == hcloud.LoadBalancerServiceProtocolHTTPS {
+
+				opts.HealthCheck.HTTP = &hcloud.LoadBalancerAddServiceOptsHealthCheckHTTP{}
+				healthCheckHTTPDomain, _ := cmd.Flags().GetString("health-check-http-domain")
+				healthCheckHTTPPath, _ := cmd.Flags().GetString("health-check-http-path")
+				healthCheckHTTPResponse, _ := cmd.Flags().GetString("health-check-http-response")
+				healthCheckHTTPStatusCodes, _ := cmd.Flags().GetStringSlice("health-check-http-status-codes")
+				healthCheckHTTPTLS, _ := cmd.Flags().GetBool("health-check-http-tls")
+
+				if cmd.Flags().Changed("health-check-http-domain") {
+					opts.HealthCheck.HTTP.Domain = &healthCheckHTTPDomain
+				}
+				if cmd.Flags().Changed("health-check-http-path") {
+					opts.HealthCheck.HTTP.Path = &healthCheckHTTPPath
+				}
+				if cmd.Flags().Changed("health-check-http-response") {
+					opts.HealthCheck.HTTP.Response = &healthCheckHTTPResponse
+				}
+				if cmd.Flags().Changed("health-check-http-status-codes") {
+					opts.HealthCheck.HTTP.StatusCodes = healthCheckHTTPStatusCodes
+				}
+				if cmd.Flags().Changed("health-check-http-tls") {
+					opts.HealthCheck.HTTP.TLS = &healthCheckHTTPTLS
+				}
+			}
+		}
+
 		action, _, err := s.Client().LoadBalancer().AddService(s, loadBalancer, opts)
 		if err != nil {
 			return err
