@@ -3,9 +3,7 @@ package state
 import (
 	"context"
 	"errors"
-	"fmt"
 	"os"
-	"strings"
 
 	"github.com/spf13/cobra"
 
@@ -26,7 +24,10 @@ func waitForActions(client hcapi2.ActionClient, ctx context.Context, actions ...
 	progressGroup := ui.NewProgressGroup(os.Stderr)
 	progressByAction := make(map[int64]ui.Progress, len(actions))
 	for _, action := range actions {
-		progress := progressGroup.Add(waitForActionMessage(action))
+		progress := progressGroup.Add(
+			ui.ActionMessage(action),
+			ui.ActionResourcesMessage(action.Resources...),
+		)
 		progressByAction[action.ID] = progress
 	}
 
@@ -50,12 +51,4 @@ func waitForActions(client hcapi2.ActionClient, ctx context.Context, actions ...
 
 		return nil
 	}, actions...)
-}
-
-func waitForActionMessage(action *hcloud.Action) string {
-	resources := make([]string, 0, len(action.Resources))
-	for _, resource := range action.Resources {
-		resources = append(resources, fmt.Sprintf("%s: %d", resource.Type, resource.ID))
-	}
-	return fmt.Sprintf("Waiting for action %s to complete (%v)", action.Command, strings.Join(resources, ", "))
 }

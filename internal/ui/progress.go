@@ -5,7 +5,7 @@ import (
 )
 
 type ProgressGroup interface {
-	Add(message string) Progress
+	Add(message string, resources string) Progress
 	Start() error
 	Stop() error
 }
@@ -25,10 +25,10 @@ type Progress interface {
 	SetError()
 }
 
-func NewProgress(output io.Writer, message string) Progress {
+func NewProgress(output io.Writer, message string, resources string) Progress {
 	if StdoutIsTerminal() {
-		return newTerminalProgress(output, message)
+		return newTerminalProgress(output, message, resources)
 	} else {
-		return newScriptProgress(output, message)
+		return newScriptProgress(output, message, resources)
 	}
 }

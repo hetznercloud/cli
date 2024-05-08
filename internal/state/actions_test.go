@@ -14,48 +14,6 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-func TestWaitForActionMessage(t *testing.T) {
-	testCases := []struct {
-		name   string
-		action hcloud.Action
-		want   string
-	}{
-		{
-			name: "create_server",
-			action: hcloud.Action{
-				ID:       1564532131,
-				Command:  "create_server",
-				Status:   hcloud.ActionStatusRunning,
-				Progress: 0,
-				Resources: []*hcloud.ActionResource{
-					{ID: 46830545, Type: hcloud.ActionResourceTypeServer},
-				},
-			},
-			want: "Waiting for action create_server to complete (server: 46830545)",
-		},
-		{
-			name: "attach_volume",
-			action: hcloud.Action{
-				ID:       1564532131,
-				Command:  "attach_volume",
-				Status:   hcloud.ActionStatusRunning,
-				Progress: 0,
-				Resources: []*hcloud.ActionResource{
-					{ID: 46830545, Type: hcloud.ActionResourceTypeServer},
-					{ID: 46830546, Type: hcloud.ActionResourceTypeVolume},
-				},
-			},
-			want: "Waiting for action attach_volume to complete (server: 46830545, volume: 46830546)",
-		},
-	}
-	for _, testCase := range testCases {
-		t.Run(testCase.name, func(t *testing.T) {
-			msg := waitForActionMessage(&testCase.action)
-			assert.Equal(t, testCase.want, msg)
-		})
-	}
-}
-
 func TestWaitForActionsSuccess(t *testing.T) {
 	ctrl := gomock.NewController(t)
 	defer ctrl.Finish()
@@ -91,8 +49,8 @@ func TestWaitForActionsSuccess(t *testing.T) {
 
 	assert.Equal(t,
 		strings.Join([]string{
-			"Waiting for action attach_volume to complete (server: 46830545, volume: 46830546) ...\n",
-			"Waiting for action attach_volume to complete (server: 46830545, volume: 46830546) ... done\n",
+			"Waiting for attach_volume to complete (server: 46830545, volume: 46830546) ...\n",
+			"Waiting for attach_volume to complete (server: 46830545, volume: 46830546) ... done\n",
 		}, ""),
 		stderr,
 	)
@@ -134,8 +92,8 @@ func TestWaitForActionsError(t *testing.T) {
 
 	assert.Equal(t,
 		strings.Join([]string{
-			"Waiting for action attach_volume to complete (server: 46830545, volume: 46830546) ...\n",
-			"Waiting for action attach_volume to complete (server: 46830545, volume: 46830546) ... failed\n",
+			"Waiting for attach_volume to complete (server: 46830545, volume: 46830546) ...\n",
+			"Waiting for attach_volume to complete (server: 46830545, volume: 46830546) ... failed\n",
 		}, ""),
 		stderr,
 	)

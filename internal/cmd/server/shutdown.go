@@ -74,7 +74,7 @@ var ShutdownCmd = base.Cmd{
 			ticker := time.NewTicker(interval)
 			defer ticker.Stop()
 
-			progress := ui.NewProgress(os.Stderr, "Waiting for server to shut down")
+			progress := ui.NewProgress(os.Stderr, "Waiting for server to shut down", ui.ActionResourcesMessage(&hcloud.ActionResource{ID: server.ID, Type: hcloud.ActionResourceTypeServer}))
 			for server.Status != hcloud.ServerStatusOff {
 				if now := <-ticker.C; now.Sub(start) >= timeout {
 					progress.SetError()

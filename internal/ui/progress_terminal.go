@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"fmt"
 	"io"
 
 	"github.com/cheggaaa/pb/v3"
@@ -15,8 +16,8 @@ func newTerminalProgressGroup(output io.Writer) *terminalProgressGroup {
 	return &terminalProgressGroup{output: output, el: pb.NewPool()}
 }
 
-func (p *terminalProgressGroup) Add(message string) Progress {
-	progress := newTerminalProgress(p.output, message)
+func (p *terminalProgressGroup) Add(message string, resources string) Progress {
+	progress := newTerminalProgress(p.output, message, resources)
 	p.el.Add(progress.el)
 	return progress
 }
@@ -30,20 +31,23 @@ func (p *terminalProgressGroup) Stop() error {
 }
 
 const (
-	terminalProgressRunningTpl = ` {{ cycle . "⠋" "⠙" "⠹" "⠸" "⠼" "⠴" "⠦" "⠧" "⠇" "⠏" }} {{ string . "message" }} {{ percent . }}`
-	terminalProgressSuccessTpl = ` {{ green "✓" }} {{ string . "message" }} {{ percent . }}`
-	terminalProgressErrorTpl   = ` {{ red "✗" }} {{ string . "message" }} {{ percent . }}`
+	terminalProgressTpl = `{{ string . "message" }} {{ percent . "%3.f%%" | magenta }} {{ etime . | magenta }} {{ string . "resources" | magenta }}`
+
+	terminalProgressRunningTpl = ` {{ cycle . "⠋" "⠙" "⠹" "⠸" "⠼" "⠴" "⠦" "⠧" "⠇" "⠏" | magenta }} ` + terminalProgressTpl
+	terminalProgressSuccessTpl = ` {{ green "✓" }} ` + terminalProgressTpl
+	terminalProgressErrorTpl   = ` {{ red "✗" }} ` + terminalProgressTpl
 )
 
 type terminalProgress struct {
 	el *pb.ProgressBar
 }
 
-func newTerminalProgress(output io.Writer, message string) *terminalProgress {
+func newTerminalProgress(output io.Writer, message string, resources string) *terminalProgress {
 	p := &terminalProgress{pb.New(100)}
 	p.el.SetWriter(output)
 	p.el.SetTemplateString(terminalProgressRunningTpl)
-	p.el.Set("message", message)
+	p.el.Set("message", fmt.Sprintf("%-60s", message))
+	p.el.Set("resources", resources)
 	return p
 }
 

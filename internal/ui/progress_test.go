@@ -11,9 +11,9 @@ func TestProgressGroup(t *testing.T) {
 	buffer := bytes.NewBuffer(nil)
 
 	progressGroup := NewProgressGroup(buffer)
-	progress1 := progressGroup.Add("progress 1")
-	progress2 := progressGroup.Add("progress 2")
-	progress3 := progressGroup.Add("progress 3")
+	progress1 := progressGroup.Add("progress 1", "")
+	progress2 := progressGroup.Add("progress 2", "")
+	progress3 := progressGroup.Add("progress 3", "")
 
 	if err := progressGroup.Start(); err != nil {
 		t.Fatal(err)
@@ -41,7 +41,7 @@ progress 2 ... done
 func TestProgress(t *testing.T) {
 	buffer := bytes.NewBuffer(nil)
 
-	progress1 := NewProgress(buffer, "progress 1")
+	progress1 := NewProgress(buffer, "progress 1", "")
 	progress1.Start()
 	progress1.SetSuccess()
 

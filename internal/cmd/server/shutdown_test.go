@@ -73,7 +73,7 @@ func TestShutdownWait(t *testing.T) {
 	out, errOut, err := fx.Run(cmd, []string{srv.Name, "--wait"})
 
 	expOut := "Sent shutdown signal to server 42\nServer 42 shut down\n"
-	expErrOut := "Waiting for server to shut down ... done\n"
+	expErrOut := "Waiting for server to shut down (server: 42) ... done\n"
 
 	assert.NoError(t, err)
 	assert.Equal(t, expErrOut, errOut)
