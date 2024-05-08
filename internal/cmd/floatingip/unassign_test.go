@@ -25,7 +25,7 @@ func TestUnassign(t *testing.T) {
 		Unassign(gomock.Any(), &hcloud.FloatingIP{ID: 123}).
 		Return(&hcloud.Action{ID: 123}, nil, nil)
 	fx.ActionWaiter.EXPECT().
-		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).
+		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).
 		Return(nil)
 
 	out, errOut, err := fx.Run(cmd, []string{"my-ip"})

@@ -14,6 +14,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/cli/internal/state/config"
+	"github.com/hetznercloud/cli/internal/ui"
 )
 
 func newCreateCommand(s state.State) *cobra.Command {
@@ -30,7 +31,7 @@ func newCreateCommand(s state.State) *cobra.Command {
 
 func runCreate(s state.State, cmd *cobra.Command, args []string) error {
 	cfg := s.Config()
-	if !state.StdoutIsTerminal() {
+	if !ui.StdoutIsTerminal() {
 		return errors.New("context create is an interactive command")
 	}
 

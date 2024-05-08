@@ -129,7 +129,7 @@ func createManaged(s state.State, cmd *cobra.Command) (*hcloud.Certificate, erro
 	if err != nil {
 		return nil, err
 	}
-	if err := s.ActionProgress(cmd, s, res.Action); err != nil {
+	if err := s.WaitForActions(cmd, s, res.Action); err != nil {
 		return nil, err
 	}
 	defer cmd.Printf("Certificate %d created\n", res.Certificate.ID)

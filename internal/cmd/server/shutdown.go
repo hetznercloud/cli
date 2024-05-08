@@ -3,6 +3,7 @@ package server
 import (
 	"errors"
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -11,6 +12,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
+	"github.com/hetznercloud/cli/internal/ui"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
@@ -55,7 +57,7 @@ var ShutdownCmd = base.Cmd{
 			return err
 		}
 
-		if err := s.ActionProgress(cmd, s, action); err != nil {
+		if err := s.WaitForActions(cmd, s, action); err != nil {
 			return err
 		}
 
@@ -63,37 +65,36 @@ var ShutdownCmd = base.Cmd{
 
 		if wait {
 			start := time.Now()
-			errCh := make(chan error)
 
 			interval, _ := cmd.Flags().GetDuration("poll-interval")
 			if interval < time.Second {
 				interval = time.Second
 			}
 
-			go func() {
-				defer close(errCh)
+			ticker := time.NewTicker(interval)
+			defer ticker.Stop()
 
-				ticker := time.NewTicker(interval)
-				defer ticker.Stop()
+			progress := ui.NewProgress(
+				os.Stderr,
+				ui.FakeActionMessage("Waiting for server to shut down"),
+				ui.ActionResourcesMessage(&hcloud.ActionResource{ID: server.ID, Type: hcloud.ActionResourceTypeServer}),
+			)
+			progress.Start()
 
-				for server.Status != hcloud.ServerStatusOff {
-					if now := <-ticker.C; now.Sub(start) >= timeout {
-						errCh <- errors.New("failed to shut down server")
-						return
-					}
-					server, _, err = s.Client().Server().GetByID(s, server.ID)
-					if err != nil {
-						errCh <- err
-						return
-					}
+			for server.Status != hcloud.ServerStatusOff {
+				if now := <-ticker.C; now.Sub(start) >= timeout {
+					progress.SetError()
+					return errors.New("failed to shut down server")
 				}
 
-				errCh <- nil
-			}()
-
-			if err := state.DisplayProgressCircle(cmd, errCh, "Waiting for server to shut down"); err != nil {
-				return err
+				server, _, err = s.Client().Server().GetByID(s, server.ID)
+				if err != nil {
+					progress.SetError()
+					return err
+				}
 			}
+
+			progress.SetSuccess()
 
 			cmd.Printf("Server %d shut down\n", server.ID)
 		}

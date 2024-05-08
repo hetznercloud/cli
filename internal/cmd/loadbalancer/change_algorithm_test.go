@@ -27,7 +27,7 @@ func TestChangeAlgorithm(t *testing.T) {
 		}).
 		Return(&hcloud.Action{ID: 123}, nil, nil)
 	fx.ActionWaiter.EXPECT().
-		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).
+		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).
 		Return(nil)
 
 	out, errOut, err := fx.Run(cmd, []string{"123", "--algorithm-type", "least_connections"})

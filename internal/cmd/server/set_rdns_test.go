@@ -32,7 +32,7 @@ func TestSetRDNS(t *testing.T) {
 		ChangeDNSPtr(gomock.Any(), srv, net.ParseIP("127.0.0.1"), hcloud.Ptr("s1.example.com")).
 		Return(&hcloud.Action{ID: 789}, nil, nil)
 	fx.ActionWaiter.EXPECT().
-		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 789}).
+		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 789}).
 		Return(nil)
 
 	args := []string{"my-server", "--hostname", "s1.example.com"}

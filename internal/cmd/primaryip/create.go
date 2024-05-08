@@ -66,7 +66,7 @@ var CreateCmd = base.CreateCmd{
 		}
 
 		if result.Action != nil {
-			if err := s.ActionProgress(cmd, s, result.Action); err != nil {
+			if err := s.WaitForActions(cmd, s, result.Action); err != nil {
 				return nil, nil, err
 			}
 		}

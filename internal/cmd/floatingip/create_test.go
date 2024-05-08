@@ -116,14 +116,14 @@ func TestCreateProtection(t *testing.T) {
 				ID: 321,
 			},
 		}, nil, nil)
-	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321}).Return(nil)
+	fx.ActionWaiter.EXPECT().WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321}).Return(nil)
 
 	fx.Client.FloatingIPClient.EXPECT().
 		ChangeProtection(gomock.Any(), floatingIp, hcloud.FloatingIPChangeProtectionOpts{
 			Delete: hcloud.Ptr(true),
 		}).
 		Return(&hcloud.Action{ID: 333}, nil, nil)
-	fx.ActionWaiter.EXPECT().ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 333}).Return(nil)
+	fx.ActionWaiter.EXPECT().WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 333}).Return(nil)
 
 	out, errOut, err := fx.Run(cmd, []string{"--name", "myFloatingIP", "--type", "ipv4", "--home-location", "fsn1", "--enable-protection", "delete"})
 

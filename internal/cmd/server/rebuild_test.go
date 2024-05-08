@@ -35,7 +35,7 @@ func TestRebuild(t *testing.T) {
 			RootPassword: "root-password",
 		}, nil, nil)
 	fx.ActionWaiter.EXPECT().
-		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 789}).
+		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 789}).
 		Return(nil)
 
 	args := []string{"my-server", "--image", "ubuntu-22.04"}

@@ -41,9 +41,7 @@ func TestCreate(t *testing.T) {
 			NextActions: []*hcloud.Action{{ID: 1}, {ID: 2}, {ID: 3}},
 		}, nil, nil)
 	fx.ActionWaiter.EXPECT().
-		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321})
-	fx.ActionWaiter.EXPECT().
-		WaitForActions(gomock.Any(), gomock.Any(), []*hcloud.Action{{ID: 1}, {ID: 2}, {ID: 3}})
+		WaitForActions(gomock.Any(), gomock.Any(), []*hcloud.Action{{ID: 321}, {ID: 1}, {ID: 2}, {ID: 3}})
 
 	out, errOut, err := fx.Run(cmd, []string{"--name", "test", "--size", "20", "--location", "fsn1"})
 
@@ -88,9 +86,7 @@ func TestCreateJSON(t *testing.T) {
 			NextActions: []*hcloud.Action{{ID: 1}, {ID: 2}, {ID: 3}},
 		}, nil, nil)
 	fx.ActionWaiter.EXPECT().
-		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321})
-	fx.ActionWaiter.EXPECT().
-		WaitForActions(gomock.Any(), gomock.Any(), []*hcloud.Action{{ID: 1}, {ID: 2}, {ID: 3}})
+		WaitForActions(gomock.Any(), gomock.Any(), []*hcloud.Action{{ID: 321}, {ID: 1}, {ID: 2}, {ID: 3}})
 
 	jsonOut, out, err := fx.Run(cmd, []string{"-o=json", "--name", "test", "--size", "20", "--location", "fsn1"})
 
@@ -128,16 +124,14 @@ func TestCreateProtection(t *testing.T) {
 			NextActions: []*hcloud.Action{{ID: 1}, {ID: 2}, {ID: 3}},
 		}, nil, nil)
 	fx.ActionWaiter.EXPECT().
-		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321})
-	fx.ActionWaiter.EXPECT().
-		WaitForActions(gomock.Any(), gomock.Any(), []*hcloud.Action{{ID: 1}, {ID: 2}, {ID: 3}})
+		WaitForActions(gomock.Any(), gomock.Any(), []*hcloud.Action{{ID: 321}, {ID: 1}, {ID: 2}, {ID: 3}})
 	fx.Client.VolumeClient.EXPECT().
 		ChangeProtection(gomock.Any(), v, hcloud.VolumeChangeProtectionOpts{
 			Delete: hcloud.Ptr(true),
 		}).
 		Return(&hcloud.Action{ID: 123}, nil, nil)
 	fx.ActionWaiter.EXPECT().
-		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123})
+		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123})
 
 	out, errOut, err := fx.Run(cmd, []string{"--name", "test", "--size", "20", "--location", "fsn1", "--enable-protection", "delete"})
 

@@ -16,6 +16,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -107,10 +108,7 @@ var CreateCmd = base.CreateCmd{
 			return nil, nil, err
 		}
 
-		if err := s.ActionProgress(cmd, s, result.Action); err != nil {
-			return nil, nil, err
-		}
-		if err := s.WaitForActions(cmd, s, result.NextActions); err != nil {
+		if err := s.WaitForActions(cmd, s, util.MergeNextActions(result.Action, result.NextActions)...); err != nil {
 			return nil, nil, err
 		}
 
@@ -132,7 +130,7 @@ var CreateCmd = base.CreateCmd{
 				return nil, nil, err
 			}
 
-			if err := s.ActionProgress(cmd, s, action); err != nil {
+			if err := s.WaitForActions(cmd, s, action); err != nil {
 				return nil, nil, err
 			}
 

@@ -31,7 +31,7 @@ func TestChangeIPRange(t *testing.T) {
 		}).
 		Return(&hcloud.Action{ID: 456}, nil, nil)
 	fx.ActionWaiter.EXPECT().
-		ActionProgress(gomock.Any(), fx.State(), &hcloud.Action{ID: 456}).
+		WaitForActions(gomock.Any(), fx.State(), &hcloud.Action{ID: 456}).
 		Return(nil)
 
 	out, errOut, err := fx.Run(cmd, []string{"123", "--ip-range", "10.0.0.0/24"})

@@ -73,7 +73,7 @@ func (rc *SetRdnsCmd) Run(s state.State, cmd *cobra.Command, args []string) erro
 		return err
 	}
 
-	if err := s.ActionProgress(cmd, s, action); err != nil {
+	if err := s.WaitForActions(cmd, s, action); err != nil {
 		return err
 	}
 

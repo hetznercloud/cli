@@ -162,7 +162,7 @@ var UpdateServiceCmd = base.Cmd{
 		if err != nil {
 			return err
 		}
-		if err := s.ActionProgress(cmd, s, action); err != nil {
+		if err := s.WaitForActions(cmd, s, action); err != nil {
 			return err
 		}
 		cmd.Printf("Service %d on Load Balancer %d was updated\n", listenPort, loadBalancer.ID)

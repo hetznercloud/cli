@@ -42,7 +42,7 @@ func TestCreateManaged(t *testing.T) {
 			Action: &hcloud.Action{ID: 321},
 		}, nil, nil)
 	fx.ActionWaiter.EXPECT().
-		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321})
+		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321})
 	fx.Client.CertificateClient.EXPECT().
 		GetByID(gomock.Any(), int64(123)).
 		Return(&hcloud.Certificate{
@@ -96,7 +96,7 @@ func TestCreateManagedJSON(t *testing.T) {
 			Action: &hcloud.Action{ID: 321},
 		}, nil, nil)
 	fx.ActionWaiter.EXPECT().
-		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321})
+		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321})
 	fx.Client.CertificateClient.EXPECT().
 		GetByID(gomock.Any(), int64(123)).
 		Return(&hcloud.Certificate{

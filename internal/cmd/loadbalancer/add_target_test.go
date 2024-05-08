@@ -32,7 +32,7 @@ func TestAddTargetServer(t *testing.T) {
 		}).
 		Return(&hcloud.Action{ID: 123}, nil, nil)
 	fx.ActionWaiter.EXPECT().
-		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).
+		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).
 		Return(nil)
 
 	out, errOut, err := fx.Run(cmd, []string{"123", "--server", "my-server"})
@@ -61,7 +61,7 @@ func TestAddTargetLabelSelector(t *testing.T) {
 		}).
 		Return(&hcloud.Action{ID: 123}, nil, nil)
 	fx.ActionWaiter.EXPECT().
-		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).
+		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).
 		Return(nil)
 
 	out, errOut, err := fx.Run(cmd, []string{"123", "--label-selector", "my-label"})
@@ -89,7 +89,7 @@ func TestAddTargetIP(t *testing.T) {
 		}).
 		Return(&hcloud.Action{ID: 123}, nil, nil)
 	fx.ActionWaiter.EXPECT().
-		ActionProgress(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).
+		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).
 		Return(nil)
 
 	out, errOut, err := fx.Run(cmd, []string{"123", "--ip", "192.168.2.1"})
