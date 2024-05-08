@@ -31,9 +31,9 @@ func (p *terminalProgressGroup) Stop() error {
 }
 
 const (
-	terminalProgressTpl = `{{ string . "message" }} {{ percent . "%3.f%%" | magenta }} {{ etime . | magenta }} {{ string . "resources" | magenta }}`
+	terminalProgressTpl = `{{ string . "message" }} {{ percent . "%3.f%%" | blue }} {{ etime . | blue }} {{ string . "resources" | blue }}`
 
-	terminalProgressRunningTpl = ` {{ cycle . "⠋" "⠙" "⠹" "⠸" "⠼" "⠴" "⠦" "⠧" "⠇" "⠏" | magenta }} ` + terminalProgressTpl
+	terminalProgressRunningTpl = ` {{ cycle . "⠋" "⠙" "⠹" "⠸" "⠼" "⠴" "⠦" "⠧" "⠇" "⠏" | blue }} ` + terminalProgressTpl
 	terminalProgressSuccessTpl = ` {{ green "✓" }} ` + terminalProgressTpl
 	terminalProgressErrorTpl   = ` {{ red "✗" }} ` + terminalProgressTpl
 )
