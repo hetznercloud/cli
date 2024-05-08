@@ -6,6 +6,7 @@ require (
 	github.com/boumenot/gocover-cobertura v1.2.0
 	github.com/cheggaaa/pb/v3 v3.1.5
 	github.com/dustin/go-humanize v1.0.1
+	github.com/fatih/color v1.16.0
 	github.com/fatih/structs v1.1.0
 	github.com/goccy/go-yaml v1.11.3
 	github.com/golang/mock v1.6.0
@@ -24,7 +25,6 @@ require (
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.2.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
-	github.com/fatih/color v1.16.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
