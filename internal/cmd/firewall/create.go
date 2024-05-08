@@ -67,12 +67,21 @@ var CreateCmd = base.CreateCmd{
 					}
 					sourceNets = append(sourceNets, *sourceNet)
 				}
+				var destNets []net.IPNet
+				for i, destIP := range rule.DestinationIPs {
+					_, destNet, err := net.ParseCIDR(destIP)
+					if err != nil {
+						return nil, nil, fmt.Errorf("invalid CIDR on index %d : %s", i, err)
+					}
+					destNets = append(destNets, *destNet)
+				}
 				opts.Rules = append(opts.Rules, hcloud.FirewallRule{
-					Direction:   hcloud.FirewallRuleDirection(rule.Direction),
-					SourceIPs:   sourceNets,
-					Protocol:    hcloud.FirewallRuleProtocol(rule.Protocol),
-					Port:        rule.Port,
-					Description: rule.Description,
+					Direction:      hcloud.FirewallRuleDirection(rule.Direction),
+					SourceIPs:      sourceNets,
+					DestinationIPs: destNets,
+					Protocol:       hcloud.FirewallRuleProtocol(rule.Protocol),
+					Port:           rule.Port,
+					Description:    rule.Description,
 				})
 			}
 		}
