@@ -31,11 +31,11 @@ func (p *terminalProgressGroup) Stop() error {
 }
 
 const (
-	terminalProgressTpl = `{{ string . "message" }} {{ percent . "%3.f%%" | blue }} {{ etime . | blue }} {{ string . "resources" | blue }}`
+	termProgressRunning = ` {{ cycle . "⠋" "⠙" "⠹" "⠸" "⠼" "⠴" "⠦" "⠧" "⠇" "⠏" | blue }} ` + termProgress
+	termProgressSuccess = ` {{ green "✓" }} ` + termProgress
+	termProgressError   = ` {{ red "✗" }} ` + termProgress
 
-	terminalProgressRunningTpl = ` {{ cycle . "⠋" "⠙" "⠹" "⠸" "⠼" "⠴" "⠦" "⠧" "⠇" "⠏" | blue }} ` + terminalProgressTpl
-	terminalProgressSuccessTpl = ` {{ green "✓" }} ` + terminalProgressTpl
-	terminalProgressErrorTpl   = ` {{ red "✗" }} ` + terminalProgressTpl
+	termProgress = `{{ string . "message" }} {{ percent . "%3.f%%" | blue }} {{ etime . | blue }} {{ string . "resources" | blue }}`
 )
 
 type terminalProgress struct {
@@ -45,7 +45,7 @@ type terminalProgress struct {
 func newTerminalProgress(output io.Writer, message string, resources string) *terminalProgress {
 	p := &terminalProgress{pb.New(100)}
 	p.el.SetWriter(output)
-	p.el.SetTemplateString(terminalProgressRunningTpl)
+	p.el.SetTemplateString(termProgressRunning)
 	p.el.Set("message", fmt.Sprintf("%-60s", message))
 	p.el.Set("resources", resources)
 	return p
@@ -61,12 +61,12 @@ func (p *terminalProgress) SetCurrent(value int) {
 
 func (p *terminalProgress) SetSuccess() {
 	p.el.SetCurrent(int64(100))
-	p.el.SetTemplateString(terminalProgressSuccessTpl)
+	p.el.SetTemplateString(termProgressSuccess)
 	p.el.Finish()
 }
 
 func (p *terminalProgress) SetError() {
 	p.el.SetCurrent(100)
-	p.el.SetTemplate(terminalProgressErrorTpl)
+	p.el.SetTemplate(termProgressError)
 	p.el.Finish()
 }

@@ -1,6 +1,7 @@
 package ui
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -65,4 +66,16 @@ func TestMessages(t *testing.T) {
 			assert.Equal(t, testCase.wantResources, actionResourcesMessage)
 		})
 	}
+}
+
+func TestFakeActionMessages(t *testing.T) {
+	actionMessage := ActionMessage(&hcloud.Action{Command: "create_server"})
+	fakeMessage := FakeActionMessage("Some random message")
+
+	// The padding is important
+	actionMessage = fmt.Sprintf("%-60s", actionMessage)
+	fakeMessage = fmt.Sprintf("%-60s", fakeMessage)
+
+	assert.Equal(t, actionMessage, "Waiting for create_server to complete                       ")
+	assert.Equal(t, fakeMessage, "Some random message                                         ")
 }
