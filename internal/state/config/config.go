@@ -31,9 +31,10 @@ type Config interface {
 	Viper() *viper.Viper
 	FlagSet() *pflag.FlagSet
 	Path() string
+	Schema() *Schema
 }
 
-type schema struct {
+type Schema struct {
 	ActiveContext string      `toml:"active_context"`
 	Preferences   Preferences `toml:"preferences"`
 	Contexts      []*context  `toml:"contexts"`
@@ -46,7 +47,7 @@ type config struct {
 	activeContext *context
 	contexts      []*context
 	preferences   Preferences
-	schema        schema
+	schema        Schema
 }
 
 func NewConfig() Config {
@@ -259,4 +260,8 @@ func (cfg *config) FlagSet() *pflag.FlagSet {
 
 func (cfg *config) Path() string {
 	return cfg.path
+}
+
+func (cfg *config) Schema() *Schema {
+	return &cfg.schema
 }
