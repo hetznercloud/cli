@@ -21,7 +21,7 @@ workflow:
 
 test:golangci-lint:
   stage: test
-  image: golangci/golangci-lint:v1.58.0
+  image: golangci/golangci-lint:v1.58.1
   script:
     - golangci-lint run -v
 
