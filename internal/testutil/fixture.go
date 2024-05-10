@@ -26,7 +26,7 @@ type Fixture struct {
 
 // NewFixture creates a new Fixture with default config file.
 func NewFixture(t *testing.T) *Fixture {
-	return NewFixtureWithConfigFile(t, nil)
+	return NewFixtureWithConfigFile(t, []byte{})
 }
 
 // NewFixtureWithConfigFile creates a new Fixture with the given config file.

@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"os"
+	"reflect"
 
 	"github.com/spf13/cobra"
 
@@ -50,7 +51,6 @@ func runRemove(s state.State, cmd *cobra.Command, args []string) error {
 
 	var (
 		removed []any
-		err     error
 		ctx     config.Context
 		prefs   config.Preferences
 	)
@@ -59,15 +59,34 @@ func runRemove(s state.State, cmd *cobra.Command, args []string) error {
 		prefs = s.Config().Preferences()
 	} else {
 		ctx = s.Config().ActiveContext()
-		if ctx == nil {
+		if util.IsNil(ctx) {
 			return fmt.Errorf("no active context (use --global to remove an option globally)")
 		}
 		prefs = ctx.Preferences()
 	}
 
 	key, values := args[0], args[1:]
-	if removed, err = prefs.Remove(key, values); err != nil {
-		return err
+	opt, ok := config.Options[key]
+	if !ok || !opt.HasFlag(config.OptionFlagPreference) {
+		return fmt.Errorf("unknown preference: %s", key)
+	}
+
+	val, _ := prefs.Get(key)
+
+	switch opt.T().(type) {
+	case []string:
+		before := util.AnyToStringSlice(val)
+		diff := util.SliceDiff[[]string](before, values)
+		val = diff
+		removed = util.ToAnySlice(util.SliceDiff[[]string](before, diff))
+	default:
+		return fmt.Errorf("%s is not a list", key)
+	}
+
+	if reflect.ValueOf(val).Len() == 0 {
+		prefs.Unset(key)
+	} else {
+		prefs.Set(key, val)
 	}
 
 	if len(removed) == 0 {
@@ -76,7 +95,7 @@ func runRemove(s state.State, cmd *cobra.Command, args []string) error {
 		_, _ = fmt.Fprintln(os.Stderr, "Warning: some values were not removed")
 	}
 
-	if ctx == nil {
+	if util.IsNil(ctx) {
 		cmd.Printf("Removed '%v' from '%s' globally\n", removed, key)
 	} else {
 		cmd.Printf("Removed '%v' from '%s' in context '%s'\n", removed, key, ctx.Name())

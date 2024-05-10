@@ -4,6 +4,8 @@ import (
 	"errors"
 
 	"github.com/spf13/cobra"
+
+	"github.com/hetznercloud/cli/internal/state/config"
 )
 
 func Wrap(s State, f func(State, *cobra.Command, []string) error) func(*cobra.Command, []string) error {

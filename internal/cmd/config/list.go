@@ -5,7 +5,6 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 
 	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
@@ -13,7 +12,7 @@ import (
 	"github.com/hetznercloud/cli/internal/state/config"
 )
 
-var outputColumns = []string{"key", "value", "origin"}
+var outputColumns = []string{"key", "value"}
 
 func NewListCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
@@ -49,9 +48,8 @@ func runList(s state.State, cmd *cobra.Command, _ []string) error {
 	}
 
 	type option struct {
-		Key    string `json:"key"`
-		Value  any    `json:"value"`
-		Origin string `json:"origin"`
+		Key   string `json:"key"`
+		Value any    `json:"value"`
 	}
 
 	var options []option
@@ -63,7 +61,7 @@ func runList(s state.State, cmd *cobra.Command, _ []string) error {
 		if !all && !opt.Changed(s.Config()) {
 			continue
 		}
-		options = append(options, option{name, val, originToString(s.Config().Viper().Origin(name))})
+		options = append(options, option{name, val})
 	}
 
 	// Sort options for reproducible output
@@ -94,21 +92,4 @@ func runList(s state.State, cmd *cobra.Command, _ []string) error {
 		t.Write(cols, opt)
 	}
 	return t.Flush()
-}
-
-func originToString(orig viper.ValueOrigin) string {
-	switch orig {
-	case viper.ValueOriginFlag:
-		return "flag"
-	case viper.ValueOriginEnv:
-		return "environment"
-	case viper.ValueOriginConfig:
-		return "config file"
-	case viper.ValueOriginKVStore:
-		return "key-value store"
-	case viper.ValueOriginOverride:
-		return "override"
-	default:
-		return "default"
-	}
 }

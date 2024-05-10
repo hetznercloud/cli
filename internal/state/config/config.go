@@ -8,9 +8,11 @@ import (
 	"os"
 	"strings"
 
-	"github.com/BurntSushi/toml"
+	"github.com/pelletier/go-toml/v2"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
+
+	"github.com/hetznercloud/cli/internal/cmd/util"
 )
 
 type Config interface {
@@ -28,6 +30,7 @@ type Config interface {
 	Preferences() Preferences
 	Viper() *viper.Viper
 	FlagSet() *pflag.FlagSet
+	Path() string
 }
 
 type schema struct {
@@ -205,10 +208,16 @@ func (cfg *config) ActiveContext() Context {
 }
 
 func (cfg *config) SetActiveContext(ctx Context) {
+	if util.IsNil(ctx) {
+		cfg.activeContext = nil
+		cfg.schema.ActiveContext = ""
+		return
+	}
 	if ctx, ok := ctx.(*context); !ok {
 		panic("invalid context type")
 	} else {
 		cfg.activeContext = ctx
+		cfg.schema.ActiveContext = ctx.ContextName
 	}
 }
 
@@ -229,6 +238,7 @@ func (cfg *config) SetContexts(contexts []Context) {
 			cfg.contexts = append(cfg.contexts, c)
 		}
 	}
+	cfg.schema.Contexts = cfg.contexts
 }
 
 func (cfg *config) Preferences() Preferences {
@@ -245,4 +255,8 @@ func (cfg *config) Viper() *viper.Viper {
 
 func (cfg *config) FlagSet() *pflag.FlagSet {
 	return cfg.fs
+}
+
+func (cfg *config) Path() string {
+	return cfg.path
 }

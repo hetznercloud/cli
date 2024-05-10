@@ -41,7 +41,7 @@ func main() {
 
 	cfg := config.NewConfig()
 	if err := config.ReadConfig(cfg, nil); err != nil {
-		log.Fatalf("unable to read config file: %s\n", err)
+		log.Fatalf("unable to read config file \"%s\": %s\n", cfg.Path(), err)
 	}
 
 	s, err := state.New(cfg)

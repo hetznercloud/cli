@@ -15,7 +15,6 @@ import (
 
 type OptionFlag int
 
-// [⚠️] If you add an option, don't forget to document it in internal/cmd/config/config.go
 const (
 	// OptionFlagPreference indicates that the option can be set in the config file, globally or per context (in the preferences section)
 	OptionFlagPreference OptionFlag = 1 << iota
@@ -120,29 +119,13 @@ var (
 		DefaultPreferenceFlags,
 		nil,
 	)
-
-	OptionDefaultSSHKeys = newOpt(
-		"default-ssh-keys",
-		"Default SSH keys for new servers",
-		[]string{},
-		DefaultPreferenceFlags&^OptionFlagPFlag,
-		nil,
-	)
-
-	OptionSSHPath = newOpt(
-		"ssh-path",
-		"Path to the SSH binary (used by 'hcloud server ssh')",
-		"ssh",
-		DefaultPreferenceFlags,
-		nil,
-	)
 )
 
 type Option[T any] struct {
 	Name        string
 	Description string
 	Default     T
-	Source      OptionFlag
+	Flags       OptionFlag
 	overrides   *overrides
 }
 
@@ -160,6 +143,9 @@ func (o *Option[T]) Get(c Config) T {
 				panic(err)
 			}
 			val = d
+		}
+		if v, ok := val.(int64); ok {
+			val = time.Duration(v)
 		}
 	case bool:
 		if v, ok := val.(string); ok {
@@ -194,7 +180,7 @@ func (o *Option[T]) Changed(c Config) bool {
 }
 
 func (o *Option[T]) HasFlag(src OptionFlag) bool {
-	return o.Source&src != 0
+	return o.Flags&src != 0
 }
 
 func (o *Option[T]) IsSlice() bool {
@@ -271,8 +257,16 @@ func (o *Option[T]) addToFlagSet(fs *pflag.FlagSet) {
 	}
 }
 
-func newOpt[T any](name, description string, def T, source OptionFlag, ov *overrides) *Option[T] {
-	o := &Option[T]{Name: name, Description: description, Default: def, Source: source, overrides: ov}
+func newOpt[T any](name, description string, def T, flags OptionFlag, ov *overrides) *Option[T] {
+	o := &Option[T]{Name: name, Description: description, Default: def, Flags: flags, overrides: ov}
 	Options[name] = o
 	return o
+}
+
+// NewTestOption is a helper function to create an option for testing purposes
+func NewTestOption[T any](name, description string, def T, flags OptionFlag, ov *overrides) (*Option[T], func()) {
+	opt := newOpt(name, description, def, flags, ov)
+	return opt, func() {
+		delete(Options, name)
+	}
 }

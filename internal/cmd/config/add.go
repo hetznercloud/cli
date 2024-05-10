@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"os"
+	"slices"
 
 	"github.com/spf13/cobra"
 
@@ -50,7 +51,6 @@ func runAdd(s state.State, cmd *cobra.Command, args []string) error {
 
 	var (
 		added []any
-		err   error
 		ctx   config.Context
 		prefs config.Preferences
 	)
@@ -59,16 +59,32 @@ func runAdd(s state.State, cmd *cobra.Command, args []string) error {
 		prefs = s.Config().Preferences()
 	} else {
 		ctx = s.Config().ActiveContext()
-		if ctx == nil {
+		if util.IsNil(ctx) {
 			return fmt.Errorf("no active context (use --global flag to set a global option)")
 		}
 		prefs = ctx.Preferences()
 	}
 
 	key, values := args[0], args[1:]
-	if added, err = prefs.Add(key, values); err != nil {
-		return err
+	opt, ok := config.Options[key]
+	if !ok || !opt.HasFlag(config.OptionFlagPreference) {
+		return fmt.Errorf("unknown preference: %s", key)
 	}
+
+	val, _ := prefs.Get(key)
+	switch opt.T().(type) {
+	case []string:
+		before := util.AnyToStringSlice(val)
+		newVal := append(before, values...)
+		slices.Sort(newVal)
+		newVal = slices.Compact(newVal)
+		val = newVal
+		added = util.ToAnySlice(util.SliceDiff[[]string](newVal, before))
+	default:
+		return fmt.Errorf("%s is not a list", key)
+	}
+
+	prefs.Set(key, val)
 
 	if len(added) == 0 {
 		_, _ = fmt.Fprintln(os.Stderr, "Warning: no new values were added")
@@ -76,7 +92,7 @@ func runAdd(s state.State, cmd *cobra.Command, args []string) error {
 		_, _ = fmt.Fprintln(os.Stderr, "Warning: some values were already present or duplicate")
 	}
 
-	if ctx == nil {
+	if util.IsNil(ctx) {
 		cmd.Printf("Added '%v' to '%s' globally\n", added, key)
 	} else {
 		cmd.Printf("Added '%v' to '%s' in context '%s'\n", added, key, ctx.Name())

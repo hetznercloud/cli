@@ -57,7 +57,3 @@ on disk, run 'hcloud config get config'.
 	)
 	return cmd
 }
-
-func gen() {
-
-}

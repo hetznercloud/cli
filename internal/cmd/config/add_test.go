@@ -7,13 +7,60 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	configCmd "github.com/hetznercloud/cli/internal/cmd/config"
+	"github.com/hetznercloud/cli/internal/state/config"
 	"github.com/hetznercloud/cli/internal/testutil"
 )
 
 func TestAdd(t *testing.T) {
+
+	_, deleteArrayOption := config.NewTestOption[[]string](
+		"array-option",
+		"array option",
+		nil,
+		config.OptionFlagPreference,
+		nil,
+	)
+	defer deleteArrayOption()
+
+	_, deleteNestedArrayOption := config.NewTestOption[[]string](
+		"nested.array-option",
+		"nested array option",
+		nil,
+		config.OptionFlagPreference,
+		nil,
+	)
+	defer deleteNestedArrayOption()
+
+	testConfig := `active_context = 'test_context'
+
+[preferences]
+debug = true
+poll_interval = 1234000000
+
+[[contexts]]
+name = 'test_context'
+token = 'super secret token'
+
+[contexts.preferences]
+array_option = ['1', '2', '3']
+endpoint = 'https://test-endpoint.com'
+quiet = true
+
+[contexts.preferences.nested]
+array_option = ['1', '2', '3']
+
+[[contexts]]
+name = 'other_context'
+token = 'another super secret token'
+
+[contexts.preferences]
+poll_interval = 1234000000
+`
+
 	type testCase struct {
 		name    string
 		args    []string
+		config  string
 		expOut  string
 		expErr  string
 		preRun  func()
@@ -22,77 +69,130 @@ func TestAdd(t *testing.T) {
 
 	testCases := []testCase{
 		{
-			name: "add to existing",
-			args: []string{"default-ssh-keys", "a", "b", "c"},
-			expOut: `active_context = "test_context"
+			name:   "add to existing",
+			args:   []string{"array-option", "a", "b", "c"},
+			config: testConfig,
+			expOut: `Added '[a b c]' to 'array-option' in context 'test_context'
+active_context = 'test_context'
 
 [preferences]
-  debug = true
-  poll_interval = "1.234s"
+debug = true
+poll_interval = 1234000000
 
 [[contexts]]
-  name = "test_context"
-  token = "super secret token"
-  [contexts.preferences]
-    default_ssh_keys = ["1", "2", "3", "a", "b", "c"]
-    endpoint = "https://test-endpoint.com"
-    quiet = true
+name = 'test_context'
+token = 'super secret token'
+
+[contexts.preferences]
+array_option = ['1', '2', '3', 'a', 'b', 'c']
+endpoint = 'https://test-endpoint.com'
+quiet = true
+
+[contexts.preferences.nested]
+array_option = ['1', '2', '3']
 
 [[contexts]]
-  name = "other_context"
-  token = "another super secret token"
-  [contexts.preferences]
-    poll_interval = "1.234s"
+name = 'other_context'
+token = 'another super secret token'
+
+[contexts.preferences]
+poll_interval = 1234000000
 `,
 		},
 		{
-			name: "global add to empty",
-			args: []string{"--global", "default-ssh-keys", "a", "b", "c"},
-			expOut: `active_context = "test_context"
+			name:   "add to nested",
+			args:   []string{"nested.array-option", "a", "b", "c"},
+			config: testConfig,
+			expOut: `Added '[a b c]' to 'nested.array-option' in context 'test_context'
+active_context = 'test_context'
 
 [preferences]
-  debug = true
-  default_ssh_keys = ["a", "b", "c"]
-  poll_interval = "1.234s"
+debug = true
+poll_interval = 1234000000
 
 [[contexts]]
-  name = "test_context"
-  token = "super secret token"
-  [contexts.preferences]
-    default_ssh_keys = ["1", "2", "3"]
-    endpoint = "https://test-endpoint.com"
-    quiet = true
+name = 'test_context'
+token = 'super secret token'
+
+[contexts.preferences]
+array_option = ['1', '2', '3']
+endpoint = 'https://test-endpoint.com'
+quiet = true
+
+[contexts.preferences.nested]
+array_option = ['1', '2', '3', 'a', 'b', 'c']
 
 [[contexts]]
-  name = "other_context"
-  token = "another super secret token"
-  [contexts.preferences]
-    poll_interval = "1.234s"
+name = 'other_context'
+token = 'another super secret token'
+
+[contexts.preferences]
+poll_interval = 1234000000
 `,
 		},
 		{
-			name: "global add to empty duplicate",
-			args: []string{"--global", "default-ssh-keys", "c", "b", "c", "a", "a"},
-			expOut: `active_context = "test_context"
+			name:   "global add to empty",
+			args:   []string{"--global", "array-option", "a", "b", "c"},
+			config: testConfig,
+			expOut: `Added '[a b c]' to 'array-option' globally
+active_context = 'test_context'
 
 [preferences]
-  debug = true
-  default_ssh_keys = ["a", "b", "c"]
-  poll_interval = "1.234s"
+array_option = ['a', 'b', 'c']
+debug = true
+poll_interval = 1234000000
 
 [[contexts]]
-  name = "test_context"
-  token = "super secret token"
-  [contexts.preferences]
-    default_ssh_keys = ["1", "2", "3"]
-    endpoint = "https://test-endpoint.com"
-    quiet = true
+name = 'test_context'
+token = 'super secret token'
+
+[contexts.preferences]
+array_option = ['1', '2', '3']
+endpoint = 'https://test-endpoint.com'
+quiet = true
+
+[contexts.preferences.nested]
+array_option = ['1', '2', '3']
 
 [[contexts]]
-  name = "other_context"
-  token = "another super secret token"
-  [contexts.preferences]
-    poll_interval = "1.234s"
+name = 'other_context'
+token = 'another super secret token'
+
+[contexts.preferences]
+poll_interval = 1234000000
+`,
+		},
+		{
+			name:   "global add to empty duplicate",
+			args:   []string{"--global", "array-option", "c", "b", "c", "a", "a"},
+			config: testConfig,
+			expErr: "Warning: some values were already present or duplicate\n",
+			expOut: `Added '[a b c]' to 'array-option' globally
+active_context = 'test_context'
+
+[preferences]
+array_option = ['a', 'b', 'c']
+debug = true
+poll_interval = 1234000000
+
+[[contexts]]
+name = 'test_context'
+token = 'super secret token'
+
+[contexts.preferences]
+array_option = ['1', '2', '3']
+endpoint = 'https://test-endpoint.com'
+quiet = true
+
+[contexts.preferences.nested]
+array_option = ['1', '2', '3']
+
+[[contexts]]
+name = 'other_context'
+token = 'another super secret token'
+
+[contexts.preferences]
+poll_interval = 1234000000
 `,
 		},
 		{
@@ -102,28 +202,35 @@ func TestAdd(t *testing.T) {
 			postRun: func() {
 				_ = os.Unsetenv("HCLOUD_CONTEXT")
 			},
-			name: "add to other context",
-			args: []string{"default-ssh-keys", "I", "II", "III"},
-			expOut: `active_context = "test_context"
+			name:   "add to other context",
+			args:   []string{"array-option", "I", "II", "III"},
+			config: testConfig,
+			expOut: `Added '[I II III]' to 'array-option' in context 'other_context'
+active_context = 'test_context'
 
 [preferences]
-  debug = true
-  poll_interval = "1.234s"
+debug = true
+poll_interval = 1234000000
 
 [[contexts]]
-  name = "test_context"
-  token = "super secret token"
-  [contexts.preferences]
-    default_ssh_keys = ["1", "2", "3"]
-    endpoint = "https://test-endpoint.com"
-    quiet = true
+name = 'test_context'
+token = 'super secret token'
+
+[contexts.preferences]
+array_option = ['1', '2', '3']
+endpoint = 'https://test-endpoint.com'
+quiet = true
+
+[contexts.preferences.nested]
+array_option = ['1', '2', '3']
 
 [[contexts]]
-  name = "other_context"
-  token = "another super secret token"
-  [contexts.preferences]
-    default_ssh_keys = ["I", "II", "III"]
-    poll_interval = "1.234s"
+name = 'other_context'
+token = 'another super secret token'
+
+[contexts.preferences]
+array_option = ['I', 'II', 'III']
+poll_interval = 1234000000
 `,
 		},
 	}
@@ -137,7 +244,7 @@ func TestAdd(t *testing.T) {
 				defer tt.postRun()
 			}
 
-			fx := testutil.NewFixtureWithConfigFile(t, "testdata/cli.toml")
+			fx := testutil.NewFixtureWithConfigFile(t, []byte(tt.config))
 			defer fx.Finish()
 
 			cmd := configCmd.NewAddCommand(fx.State())

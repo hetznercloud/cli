@@ -2,6 +2,9 @@ package config
 
 import (
 	"fmt"
+	"slices"
+	"strings"
+	"time"
 
 	"github.com/spf13/cobra"
 
@@ -49,7 +52,6 @@ func runSet(s state.State, cmd *cobra.Command, args []string) error {
 
 	var (
 		val   any
-		err   error
 		ctx   config.Context
 		prefs config.Preferences
 	)
@@ -58,18 +60,59 @@ func runSet(s state.State, cmd *cobra.Command, args []string) error {
 		prefs = s.Config().Preferences()
 	} else {
 		ctx = s.Config().ActiveContext()
-		if ctx == nil {
+		if util.IsNil(ctx) {
 			return fmt.Errorf("no active context (use --global flag to set a global option)")
 		}
 		prefs = ctx.Preferences()
 	}
 
 	key, values := args[0], args[1:]
-	if val, err = prefs.Set(key, values); err != nil {
-		return err
+	opt, ok := config.Options[key]
+	if !ok || !opt.HasFlag(config.OptionFlagPreference) {
+		return fmt.Errorf("unknown preference: %s", key)
 	}
 
-	if ctx == nil {
+	switch t := opt.T().(type) {
+	case bool:
+		if len(values) != 1 {
+			return fmt.Errorf("expected exactly one value")
+		}
+		value := values[0]
+		switch strings.ToLower(value) {
+		case "true", "t", "yes", "y", "1":
+			val = true
+		case "false", "f", "no", "n", "0":
+			val = false
+		default:
+			return fmt.Errorf("invalid boolean value: %s", value)
+		}
+	case string:
+		if len(values) != 1 {
+			return fmt.Errorf("expected exactly one value")
+		}
+		val = values[0]
+	case time.Duration:
+		if len(values) != 1 {
+			return fmt.Errorf("expected exactly one value")
+		}
+		value := values[0]
+		var err error
+		val, err = time.ParseDuration(value)
+		if err != nil {
+			return fmt.Errorf("invalid duration value: %s", value)
+		}
+	case []string:
+		newVal := values[:]
+		slices.Sort(newVal)
+		newVal = slices.Compact(newVal)
+		val = newVal
+	default:
+		return fmt.Errorf("unsupported type %T", t)
+	}
+
+	prefs.Set(key, val)
+
+	if util.IsNil(ctx) {
 		cmd.Printf("Set '%s' to '%v' globally\n", key, val)
 	} else {
 		cmd.Printf("Set '%s' to '%v' in context '%s'\n", key, val, ctx.Name())
