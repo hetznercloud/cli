@@ -78,8 +78,12 @@ func (p Preferences) Unset(key string) bool {
 	return false
 }
 
+func (p Preferences) Validate() error {
+	return validate(p, "")
+}
+
 func (p Preferences) merge(v *viper.Viper) error {
-	if err := p.validate(); err != nil {
+	if err := p.Validate(); err != nil {
 		return err
 	}
 	m := make(map[string]any)
@@ -92,10 +96,6 @@ func (p Preferences) merge(v *viper.Viper) error {
 		return err
 	}
 	return v.MergeConfig(&buf)
-}
-
-func (p Preferences) validate() error {
-	return validate(p, "")
 }
 
 func validate(m map[string]any, prefix string) error {
