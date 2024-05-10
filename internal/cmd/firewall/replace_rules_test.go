@@ -59,6 +59,20 @@ func TestReplaceRules(t *testing.T) {
 					Port:           hcloud.Ptr("443"),
 					Description:    hcloud.Ptr("Allow port 443"),
 				},
+				{
+					Direction: hcloud.FirewallRuleDirectionOut,
+					SourceIPs: nil,
+					DestinationIPs: []net.IPNet{
+						{IP: net.IP{28, 239, 13, 1}, Mask: net.IPMask{255, 255, 255, 255}},
+						{IP: net.IP{28, 239, 14, 0}, Mask: net.IPMask{255, 255, 255, 0}},
+						{
+							IP:   net.IP{0xff, 0x21, 0x1e, 0xac, 0x9a, 0x3b, 0xee, 0x58, 0x05, 0xca, 0x99, 0x0c, 0x8b, 0xc9, 0xc0, 0x3b},
+							Mask: net.IPMask{255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255},
+						},
+					},
+					Protocol: hcloud.FirewallRuleProtocolTCP,
+					Port:     hcloud.Ptr("80"),
+				},
 			},
 		}).
 		Return([]*hcloud.Action{{ID: 123}, {ID: 321}}, nil, nil)
