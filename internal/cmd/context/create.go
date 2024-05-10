@@ -9,21 +9,20 @@ import (
 	"syscall"
 
 	"github.com/spf13/cobra"
-	"golang.org/x/term"
 
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/cli/internal/state/config"
-	"github.com/hetznercloud/cli/internal/ui"
 )
 
-func newCreateCommand(s state.State) *cobra.Command {
+func NewCreateCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "create <name>",
 		Short:                 "Create a new context",
 		Args:                  util.Validate,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
+		SilenceUsage:          true,
 		RunE:                  state.Wrap(s, runCreate),
 	}
 	return cmd
@@ -31,7 +30,7 @@ func newCreateCommand(s state.State) *cobra.Command {
 
 func runCreate(s state.State, cmd *cobra.Command, args []string) error {
 	cfg := s.Config()
-	if !ui.StdoutIsTerminal() {
+	if !s.Terminal().StdoutIsTerminal() {
 		return errors.New("context create is an interactive command")
 	}
 
@@ -63,8 +62,8 @@ func runCreate(s state.State, cmd *cobra.Command, args []string) error {
 		for {
 			cmd.Printf("Token: ")
 			// Conversion needed for compilation on Windows
-			//                               vvv
-			btoken, err := term.ReadPassword(int(syscall.Stdin))
+			//                                       vvv
+			btoken, err := s.Terminal().ReadPassword(int(syscall.Stdin))
 			cmd.Print("\n")
 			if err != nil {
 				return err
