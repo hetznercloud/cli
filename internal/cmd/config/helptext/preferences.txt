@@ -1,26 +1,19 @@
-┌──────────────────┬──────────────────────┬──────────────────┬─────────────────────────┬─────────────────┐
-│ OPTION           │ DESCRIPTION          │ CONFIG KEY       │ ENVIRONMENT VARIABLE    │ FLAG            │
-├──────────────────┼──────────────────────┼──────────────────┼─────────────────────────┼─────────────────┤
-│ debug            │ Enable debug output  │ debug            │ HCLOUD_DEBUG            │ --debug         │
-├──────────────────┼──────────────────────┼──────────────────┼─────────────────────────┼─────────────────┤
-│ debug-file       │ File to write debug  │ debug_file       │ HCLOUD_DEBUG_FILE       │ --debug-file    │
-│                  │ output to            │                  │                         │                 │
-├──────────────────┼──────────────────────┼──────────────────┼─────────────────────────┼─────────────────┤
-│ default-ssh-keys │ Default SSH keys for │ default_ssh_keys │ HCLOUD_DEFAULT_SSH_KEYS │                 │
-│                  │ new servers          │                  │                         │                 │
-├──────────────────┼──────────────────────┼──────────────────┼─────────────────────────┼─────────────────┤
-│ endpoint         │ Hetzner Cloud API    │ endpoint         │ HCLOUD_ENDPOINT         │ --endpoint      │
-│                  │ endpoint             │                  │                         │                 │
-├──────────────────┼──────────────────────┼──────────────────┼─────────────────────────┼─────────────────┤
-│ poll-interval    │ Interval at which to │ poll_interval    │ HCLOUD_POLL_INTERVAL    │ --poll-interval │
-│                  │ poll information,    │                  │                         │                 │
-│                  │ for example action   │                  │                         │                 │
-│                  │ progress             │                  │                         │                 │
-├──────────────────┼──────────────────────┼──────────────────┼─────────────────────────┼─────────────────┤
-│ quiet            │ If true, only print  │ quiet            │ HCLOUD_QUIET            │ --quiet         │
-│                  │ error messages       │                  │                         │                 │
-├──────────────────┼──────────────────────┼──────────────────┼─────────────────────────┼─────────────────┤
-│ ssh-path         │ Path to the SSH      │ ssh_path         │ HCLOUD_SSH_PATH         │ --ssh-path      │
-│                  │ binary (used by      │                  │                         │                 │
-│                  │ 'hcloud server ssh') │                  │                         │                 │
-└──────────────────┴──────────────────────┴──────────────────┴─────────────────────────┴─────────────────┘
+┌───────────────┬──────────────────────┬───────────────┬──────────────────────┬─────────────────┐
+│ OPTION        │ DESCRIPTION          │ CONFIG KEY    │ ENVIRONMENT VARIABLE │ FLAG            │
+├───────────────┼──────────────────────┼───────────────┼──────────────────────┼─────────────────┤
+│ debug         │ Enable debug output  │ debug         │ HCLOUD_DEBUG         │ --debug         │
+├───────────────┼──────────────────────┼───────────────┼──────────────────────┼─────────────────┤
+│ debug-file    │ File to write debug  │ debug_file    │ HCLOUD_DEBUG_FILE    │ --debug-file    │
+│               │ output to            │               │                      │                 │
+├───────────────┼──────────────────────┼───────────────┼──────────────────────┼─────────────────┤
+│ endpoint      │ Hetzner Cloud API    │ endpoint      │ HCLOUD_ENDPOINT      │ --endpoint      │
+│               │ endpoint             │               │                      │                 │
+├───────────────┼──────────────────────┼───────────────┼──────────────────────┼─────────────────┤
+│ poll-interval │ Interval at which to │ poll_interval │ HCLOUD_POLL_INTERVAL │ --poll-interval │
+│               │ poll information,    │               │                      │                 │
+│               │ for example action   │               │                      │                 │
+│               │ progress             │               │                      │                 │
+├───────────────┼──────────────────────┼───────────────┼──────────────────────┼─────────────────┤
+│ quiet         │ If true, only print  │ quiet         │ HCLOUD_QUIET         │ --quiet         │
+│               │ error messages       │               │                      │                 │
+└───────────────┴──────────────────────┴───────────────┴──────────────────────┴─────────────────┘
