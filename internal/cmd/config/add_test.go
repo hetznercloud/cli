@@ -32,30 +32,27 @@ func TestAdd(t *testing.T) {
 	)
 	defer deleteNestedArrayOption()
 
-	testConfig := `active_context = 'test_context'
+	testConfig := `active_context = "test_context"
 
 [preferences]
-debug = true
-poll_interval = 1234000000
+  debug = true
+  poll_interval = "1.234s"
 
 [[contexts]]
-name = 'test_context'
-token = 'super secret token'
-
-[contexts.preferences]
-array_option = ['1', '2', '3']
-endpoint = 'https://test-endpoint.com'
-quiet = true
-
-[contexts.preferences.nested]
-array_option = ['1', '2', '3']
+  name = "test_context"
+  token = "super secret token"
+  [contexts.preferences]
+    array_option = ["1", "2", "3"]
+    endpoint = "https://test-endpoint.com"
+    quiet = true
+    [contexts.preferences.nested]
+      array_option = ["1", "2", "3"]
 
 [[contexts]]
-name = 'other_context'
-token = 'another super secret token'
-
-[contexts.preferences]
-poll_interval = 1234000000
+  name = "other_context"
+  token = "another super secret token"
+  [contexts.preferences]
+    poll_interval = "1.234s"
 `
 
 	type testCase struct {
@@ -74,30 +71,27 @@ poll_interval = 1234000000
 			args:   []string{"array-option", "a", "b", "c"},
 			config: testConfig,
 			expOut: `Added '[a b c]' to 'array-option' in context 'test_context'
-active_context = 'test_context'
+active_context = "test_context"
 
 [preferences]
-debug = true
-poll_interval = 1234000000
+  debug = true
+  poll_interval = "1.234s"
 
 [[contexts]]
-name = 'test_context'
-token = 'super secret token'
-
-[contexts.preferences]
-array_option = ['1', '2', '3', 'a', 'b', 'c']
-endpoint = 'https://test-endpoint.com'
-quiet = true
-
-[contexts.preferences.nested]
-array_option = ['1', '2', '3']
+  name = "test_context"
+  token = "super secret token"
+  [contexts.preferences]
+    array_option = ["1", "2", "3", "a", "b", "c"]
+    endpoint = "https://test-endpoint.com"
+    quiet = true
+    [contexts.preferences.nested]
+      array_option = ["1", "2", "3"]
 
 [[contexts]]
-name = 'other_context'
-token = 'another super secret token'
-
-[contexts.preferences]
-poll_interval = 1234000000
+  name = "other_context"
+  token = "another super secret token"
+  [contexts.preferences]
+    poll_interval = "1.234s"
 `,
 		},
 		{
@@ -105,30 +99,27 @@ poll_interval = 1234000000
 			args:   []string{"nested.array-option", "a", "b", "c"},
 			config: testConfig,
 			expOut: `Added '[a b c]' to 'nested.array-option' in context 'test_context'
-active_context = 'test_context'
+active_context = "test_context"
 
 [preferences]
-debug = true
-poll_interval = 1234000000
+  debug = true
+  poll_interval = "1.234s"
 
 [[contexts]]
-name = 'test_context'
-token = 'super secret token'
-
-[contexts.preferences]
-array_option = ['1', '2', '3']
-endpoint = 'https://test-endpoint.com'
-quiet = true
-
-[contexts.preferences.nested]
-array_option = ['1', '2', '3', 'a', 'b', 'c']
+  name = "test_context"
+  token = "super secret token"
+  [contexts.preferences]
+    array_option = ["1", "2", "3"]
+    endpoint = "https://test-endpoint.com"
+    quiet = true
+    [contexts.preferences.nested]
+      array_option = ["1", "2", "3", "a", "b", "c"]
 
 [[contexts]]
-name = 'other_context'
-token = 'another super secret token'
-
-[contexts.preferences]
-poll_interval = 1234000000
+  name = "other_context"
+  token = "another super secret token"
+  [contexts.preferences]
+    poll_interval = "1.234s"
 `,
 		},
 		{
@@ -136,31 +127,28 @@ poll_interval = 1234000000
 			args:   []string{"--global", "array-option", "a", "b", "c"},
 			config: testConfig,
 			expOut: `Added '[a b c]' to 'array-option' globally
-active_context = 'test_context'
+active_context = "test_context"
 
 [preferences]
-array_option = ['a', 'b', 'c']
-debug = true
-poll_interval = 1234000000
+  array_option = ["a", "b", "c"]
+  debug = true
+  poll_interval = "1.234s"
 
 [[contexts]]
-name = 'test_context'
-token = 'super secret token'
-
-[contexts.preferences]
-array_option = ['1', '2', '3']
-endpoint = 'https://test-endpoint.com'
-quiet = true
-
-[contexts.preferences.nested]
-array_option = ['1', '2', '3']
+  name = "test_context"
+  token = "super secret token"
+  [contexts.preferences]
+    array_option = ["1", "2", "3"]
+    endpoint = "https://test-endpoint.com"
+    quiet = true
+    [contexts.preferences.nested]
+      array_option = ["1", "2", "3"]
 
 [[contexts]]
-name = 'other_context'
-token = 'another super secret token'
-
-[contexts.preferences]
-poll_interval = 1234000000
+  name = "other_context"
+  token = "another super secret token"
+  [contexts.preferences]
+    poll_interval = "1.234s"
 `,
 		},
 		{
@@ -169,31 +157,28 @@ poll_interval = 1234000000
 			config: testConfig,
 			expErr: "Warning: some values were already present or duplicate\n",
 			expOut: `Added '[a b c]' to 'array-option' globally
-active_context = 'test_context'
+active_context = "test_context"
 
 [preferences]
-array_option = ['a', 'b', 'c']
-debug = true
-poll_interval = 1234000000
+  array_option = ["a", "b", "c"]
+  debug = true
+  poll_interval = "1.234s"
 
 [[contexts]]
-name = 'test_context'
-token = 'super secret token'
-
-[contexts.preferences]
-array_option = ['1', '2', '3']
-endpoint = 'https://test-endpoint.com'
-quiet = true
-
-[contexts.preferences.nested]
-array_option = ['1', '2', '3']
+  name = "test_context"
+  token = "super secret token"
+  [contexts.preferences]
+    array_option = ["1", "2", "3"]
+    endpoint = "https://test-endpoint.com"
+    quiet = true
+    [contexts.preferences.nested]
+      array_option = ["1", "2", "3"]
 
 [[contexts]]
-name = 'other_context'
-token = 'another super secret token'
-
-[contexts.preferences]
-poll_interval = 1234000000
+  name = "other_context"
+  token = "another super secret token"
+  [contexts.preferences]
+    poll_interval = "1.234s"
 `,
 		},
 		{
@@ -207,31 +192,28 @@ poll_interval = 1234000000
 			args:   []string{"array-option", "I", "II", "III"},
 			config: testConfig,
 			expOut: `Added '[I II III]' to 'array-option' in context 'other_context'
-active_context = 'test_context'
+active_context = "test_context"
 
 [preferences]
-debug = true
-poll_interval = 1234000000
+  debug = true
+  poll_interval = "1.234s"
 
 [[contexts]]
-name = 'test_context'
-token = 'super secret token'
-
-[contexts.preferences]
-array_option = ['1', '2', '3']
-endpoint = 'https://test-endpoint.com'
-quiet = true
-
-[contexts.preferences.nested]
-array_option = ['1', '2', '3']
+  name = "test_context"
+  token = "super secret token"
+  [contexts.preferences]
+    array_option = ["1", "2", "3"]
+    endpoint = "https://test-endpoint.com"
+    quiet = true
+    [contexts.preferences.nested]
+      array_option = ["1", "2", "3"]
 
 [[contexts]]
-name = 'other_context'
-token = 'another super secret token'
-
-[contexts.preferences]
-array_option = ['I', 'II', 'III']
-poll_interval = 1234000000
+  name = "other_context"
+  token = "another super secret token"
+  [contexts.preferences]
+    array_option = ["I", "II", "III"]
+    poll_interval = "1.234s"
 `,
 		},
 	}

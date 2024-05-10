@@ -41,26 +41,24 @@ func TestSet(t *testing.T) {
 	)
 	defer deleteArrayOption()
 
-	testConfig := `active_context = 'test_context'
+	testConfig := `active_context = "test_context"
 
 [preferences]
-debug = true
-poll_interval = 1234000000
+  debug = true
+  poll_interval = "1.234s"
 
 [[contexts]]
-name = 'test_context'
-token = 'super secret token'
-
-[contexts.preferences]
-endpoint = 'https://test-endpoint.com'
-quiet = true
+  name = "test_context"
+  token = "super secret token"
+  [contexts.preferences]
+    endpoint = "https://test-endpoint.com"
+    quiet = true
 
 [[contexts]]
-name = 'other_context'
-token = 'another super secret token'
-
-[contexts.preferences]
-poll_interval = 1234000000
+  name = "other_context"
+  token = "another super secret token"
+  [contexts.preferences]
+    poll_interval = "1.234s"
 `
 
 	type testCase struct {
@@ -80,27 +78,25 @@ poll_interval = 1234000000
 			args:   []string{"debug-file", "debug.log"},
 			config: testConfig,
 			expOut: `Set 'debug-file' to 'debug.log' in context 'test_context'
-active_context = 'test_context'
+active_context = "test_context"
 
 [preferences]
-debug = true
-poll_interval = 1234000000
+  debug = true
+  poll_interval = "1.234s"
 
 [[contexts]]
-name = 'test_context'
-token = 'super secret token'
-
-[contexts.preferences]
-debug_file = 'debug.log'
-endpoint = 'https://test-endpoint.com'
-quiet = true
+  name = "test_context"
+  token = "super secret token"
+  [contexts.preferences]
+    debug_file = "debug.log"
+    endpoint = "https://test-endpoint.com"
+    quiet = true
 
 [[contexts]]
-name = 'other_context'
-token = 'another super secret token'
-
-[contexts.preferences]
-poll_interval = 1234000000
+  name = "other_context"
+  token = "another super secret token"
+  [contexts.preferences]
+    poll_interval = "1.234s"
 `,
 		},
 		{
@@ -116,27 +112,25 @@ poll_interval = 1234000000
 			args:   []string{"debug", "false"},
 			config: testConfig,
 			expOut: `Set 'debug' to 'false' in context 'other_context'
-active_context = 'test_context'
+active_context = "test_context"
 
 [preferences]
-debug = true
-poll_interval = 1234000000
+  debug = true
+  poll_interval = "1.234s"
 
 [[contexts]]
-name = 'test_context'
-token = 'super secret token'
-
-[contexts.preferences]
-endpoint = 'https://test-endpoint.com'
-quiet = true
+  name = "test_context"
+  token = "super secret token"
+  [contexts.preferences]
+    endpoint = "https://test-endpoint.com"
+    quiet = true
 
 [[contexts]]
-name = 'other_context'
-token = 'another super secret token'
-
-[contexts.preferences]
-debug = false
-poll_interval = 1234000000
+  name = "other_context"
+  token = "another super secret token"
+  [contexts.preferences]
+    debug = false
+    poll_interval = "1.234s"
 `,
 		},
 		{
@@ -144,26 +138,24 @@ poll_interval = 1234000000
 			args:   []string{"--global", "poll-interval", "50ms"},
 			config: testConfig,
 			expOut: `Set 'poll-interval' to '50ms' globally
-active_context = 'test_context'
+active_context = "test_context"
 
 [preferences]
-debug = true
-poll_interval = 50000000
+  debug = true
+  poll_interval = "50ms"
 
 [[contexts]]
-name = 'test_context'
-token = 'super secret token'
-
-[contexts.preferences]
-endpoint = 'https://test-endpoint.com'
-quiet = true
+  name = "test_context"
+  token = "super secret token"
+  [contexts.preferences]
+    endpoint = "https://test-endpoint.com"
+    quiet = true
 
 [[contexts]]
-name = 'other_context'
-token = 'another super secret token'
-
-[contexts.preferences]
-poll_interval = 1234000000
+  name = "other_context"
+  token = "another super secret token"
+  [contexts.preferences]
+    poll_interval = "1.234s"
 `,
 		},
 		{
@@ -171,29 +163,26 @@ poll_interval = 1234000000
 			args:   []string{"nested.option", "bar"},
 			config: testConfig,
 			expOut: `Set 'nested.option' to 'bar' in context 'test_context'
-active_context = 'test_context'
+active_context = "test_context"
 
 [preferences]
-debug = true
-poll_interval = 1234000000
+  debug = true
+  poll_interval = "1.234s"
 
 [[contexts]]
-name = 'test_context'
-token = 'super secret token'
-
-[contexts.preferences]
-endpoint = 'https://test-endpoint.com'
-quiet = true
-
-[contexts.preferences.nested]
-option = 'bar'
+  name = "test_context"
+  token = "super secret token"
+  [contexts.preferences]
+    endpoint = "https://test-endpoint.com"
+    quiet = true
+    [contexts.preferences.nested]
+      option = "bar"
 
 [[contexts]]
-name = 'other_context'
-token = 'another super secret token'
-
-[contexts.preferences]
-poll_interval = 1234000000
+  name = "other_context"
+  token = "another super secret token"
+  [contexts.preferences]
+    poll_interval = "1.234s"
 `,
 		},
 		{
@@ -201,30 +190,27 @@ poll_interval = 1234000000
 			args:   []string{"deeply.nested.option", "bar"},
 			config: testConfig,
 			expOut: `Set 'deeply.nested.option' to 'bar' in context 'test_context'
-active_context = 'test_context'
+active_context = "test_context"
 
 [preferences]
-debug = true
-poll_interval = 1234000000
+  debug = true
+  poll_interval = "1.234s"
 
 [[contexts]]
-name = 'test_context'
-token = 'super secret token'
-
-[contexts.preferences]
-endpoint = 'https://test-endpoint.com'
-quiet = true
-
-[contexts.preferences.deeply]
-[contexts.preferences.deeply.nested]
-option = 'bar'
+  name = "test_context"
+  token = "super secret token"
+  [contexts.preferences]
+    endpoint = "https://test-endpoint.com"
+    quiet = true
+    [contexts.preferences.deeply]
+      [contexts.preferences.deeply.nested]
+        option = "bar"
 
 [[contexts]]
-name = 'other_context'
-token = 'another super secret token'
-
-[contexts.preferences]
-poll_interval = 1234000000
+  name = "other_context"
+  token = "another super secret token"
+  [contexts.preferences]
+    poll_interval = "1.234s"
 `,
 		},
 		{
@@ -232,27 +218,25 @@ poll_interval = 1234000000
 			args:   []string{"array-option", "a", "b", "c"},
 			config: testConfig,
 			expOut: `Set 'array-option' to '[a b c]' in context 'test_context'
-active_context = 'test_context'
+active_context = "test_context"
 
 [preferences]
-debug = true
-poll_interval = 1234000000
+  debug = true
+  poll_interval = "1.234s"
 
 [[contexts]]
-name = 'test_context'
-token = 'super secret token'
-
-[contexts.preferences]
-array_option = ['a', 'b', 'c']
-endpoint = 'https://test-endpoint.com'
-quiet = true
+  name = "test_context"
+  token = "super secret token"
+  [contexts.preferences]
+    array_option = ["a", "b", "c"]
+    endpoint = "https://test-endpoint.com"
+    quiet = true
 
 [[contexts]]
-name = 'other_context'
-token = 'another super secret token'
-
-[contexts.preferences]
-poll_interval = 1234000000
+  name = "other_context"
+  token = "another super secret token"
+  [contexts.preferences]
+    poll_interval = "1.234s"
 `,
 		},
 		{
@@ -273,10 +257,10 @@ poll_interval = 1234000000
 			name: "set in empty config global",
 			args: []string{"debug", "false", "--global"},
 			expOut: `Set 'debug' to 'false' globally
-active_context = ''
+active_context = ""
 
 [preferences]
-debug = false
+  debug = false
 `,
 		},
 	}

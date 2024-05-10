@@ -3,6 +3,7 @@ module github.com/hetznercloud/cli
 go 1.21
 
 require (
+	github.com/BurntSushi/toml v1.3.2
 	github.com/boumenot/gocover-cobertura v1.2.0
 	github.com/cheggaaa/pb/v3 v3.1.5
 	github.com/dustin/go-humanize v1.0.1
@@ -13,7 +14,6 @@ require (
 	github.com/guptarohit/asciigraph v0.7.1
 	github.com/hetznercloud/hcloud-go/v2 v2.9.0
 	github.com/jedib0t/go-pretty/v6 v6.5.9
-	github.com/pelletier/go-toml/v2 v2.2.2
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/pflag v1.0.5
 	github.com/spf13/viper v1.18.2
@@ -35,6 +35,7 @@ require (
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.15 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
+	github.com/pelletier/go-toml/v2 v2.2.2 // indirect
 	github.com/pmezard/go-difflib v1.0.1-0.20181226105442-5d4384ee4fb2 // indirect
 	github.com/prometheus/client_golang v1.19.1 // indirect
 	github.com/prometheus/client_model v0.5.0 // indirect
