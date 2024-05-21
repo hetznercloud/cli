@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path"
 	"strings"
 
 	"github.com/pelletier/go-toml/v2"
@@ -37,7 +38,7 @@ type Config interface {
 type Schema struct {
 	ActiveContext string      `toml:"active_context"`
 	Preferences   Preferences `toml:"preferences"`
-	Contexts      []*context  `toml:"contexts"`
+	Contexts      []*context  `toml:"contexts,omitempty"`
 }
 
 type config struct {
@@ -98,15 +99,15 @@ func (cfg *config) ParseConfigFile(f any) error {
 	)
 
 	cfg.path = OptionConfig.Get(cfg)
-	path, ok := f.(string)
-	if path != "" && ok {
-		cfg.path = path
+	cfgPath, ok := f.(string)
+	if cfgPath != "" && ok {
+		cfg.path = cfgPath
 	}
 
 	if f == nil || ok {
 		// read config from file
 		cfgBytes, err = os.ReadFile(cfg.path)
-		if err != nil {
+		if err != nil && !errors.Is(err, os.ErrNotExist) {
 			return err
 		}
 	} else {
@@ -179,7 +180,11 @@ func (cfg *config) ParseConfigFile(f any) error {
 
 func (cfg *config) Write(w io.Writer) (err error) {
 	if w == nil {
-		f, err := os.OpenFile(cfg.path, os.O_WRONLY|os.O_APPEND|os.O_TRUNC, 0600)
+		dir := path.Dir(cfg.path)
+		if err = os.MkdirAll(dir, 0750); err != nil {
+			return err
+		}
+		f, err := os.OpenFile(cfg.path, os.O_WRONLY|os.O_CREATE|os.O_APPEND|os.O_TRUNC, 0600)
 		if err != nil {
 			return err
 		}
