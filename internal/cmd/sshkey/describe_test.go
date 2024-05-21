@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/dustin/go-humanize"
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/sshkey"
 	"github.com/hetznercloud/cli/internal/cmd/util"
@@ -32,7 +32,7 @@ func TestDescribe(t *testing.T) {
 		PublicKey:   "public key",
 	}
 
-	fx.Client.SSHKeyClient.EXPECT().
+	fx.Client.SSHKey.EXPECT().
 		Get(gomock.Any(), "test").
 		Return(key, nil, nil)
 

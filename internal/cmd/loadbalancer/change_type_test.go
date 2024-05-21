@@ -3,8 +3,8 @@ package loadbalancer_test
 import (
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/loadbalancer"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -20,13 +20,13 @@ func TestChangeType(t *testing.T) {
 
 	lbType := &hcloud.LoadBalancerType{ID: 321, Name: "lb21"}
 
-	fx.Client.LoadBalancerClient.EXPECT().
+	fx.Client.LoadBalancer.EXPECT().
 		Get(gomock.Any(), "123").
 		Return(&hcloud.LoadBalancer{ID: 123}, nil, nil)
-	fx.Client.LoadBalancerTypeClient.EXPECT().
+	fx.Client.LoadBalancerType.EXPECT().
 		Get(gomock.Any(), "lb21").
 		Return(lbType, nil, nil)
-	fx.Client.LoadBalancerClient.EXPECT().
+	fx.Client.LoadBalancer.EXPECT().
 		ChangeType(gomock.Any(), &hcloud.LoadBalancer{ID: 123}, hcloud.LoadBalancerChangeTypeOpts{
 			LoadBalancerType: lbType,
 		}).

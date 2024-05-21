@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/sshkey"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -21,7 +21,7 @@ func TestList(t *testing.T) {
 	cmd := sshkey.ListCmd.CobraCommand(fx.State())
 
 	fx.ExpectEnsureToken()
-	fx.Client.SSHKeyClient.EXPECT().
+	fx.Client.SSHKey.EXPECT().
 		AllWithOpts(
 			gomock.Any(),
 			hcloud.SSHKeyListOpts{

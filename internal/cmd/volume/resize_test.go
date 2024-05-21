@@ -3,8 +3,8 @@ package volume_test
 import (
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/volume"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -20,10 +20,10 @@ func TestResize(t *testing.T) {
 
 	v := &hcloud.Volume{ID: 123}
 
-	fx.Client.VolumeClient.EXPECT().
+	fx.Client.Volume.EXPECT().
 		Get(gomock.Any(), "123").
 		Return(v, nil, nil)
-	fx.Client.VolumeClient.EXPECT().
+	fx.Client.Volume.EXPECT().
 		Resize(gomock.Any(), v, 42).
 		Return(&hcloud.Action{ID: 321}, nil, nil)
 	fx.ActionWaiter.EXPECT().

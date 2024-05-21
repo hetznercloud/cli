@@ -3,8 +3,8 @@ package servertype_test
 import (
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/servertype"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -18,7 +18,7 @@ func TestDescribe(t *testing.T) {
 	cmd := servertype.DescribeCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.ServerTypeClient.EXPECT().
+	fx.Client.ServerType.EXPECT().
 		Get(gomock.Any(), "cax11").
 		Return(&hcloud.ServerType{
 			ID:          45,

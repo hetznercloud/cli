@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/sshkey"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -23,7 +23,7 @@ func TestCreate(t *testing.T) {
 	cmd := sshkey.CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.SSHKeyClient.EXPECT().
+	fx.Client.SSHKey.EXPECT().
 		Create(gomock.Any(), hcloud.SSHKeyCreateOpts{
 			Name:      "test",
 			PublicKey: "test",
@@ -53,7 +53,7 @@ func TestCreateJSON(t *testing.T) {
 	cmd := sshkey.CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.SSHKeyClient.EXPECT().
+	fx.Client.SSHKey.EXPECT().
 		Create(gomock.Any(), hcloud.SSHKeyCreateOpts{
 			Name:      "test",
 			PublicKey: "test",

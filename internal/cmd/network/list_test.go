@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/network"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -20,7 +20,7 @@ func TestList(t *testing.T) {
 	cmd := network.ListCmd.CobraCommand(fx.State())
 
 	fx.ExpectEnsureToken()
-	fx.Client.NetworkClient.EXPECT().
+	fx.Client.Network.EXPECT().
 		AllWithOpts(
 			gomock.Any(),
 			hcloud.NetworkListOpts{

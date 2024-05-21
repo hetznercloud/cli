@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/dustin/go-humanize"
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/placementgroup"
 	"github.com/hetznercloud/cli/internal/cmd/util"
@@ -33,13 +33,13 @@ func TestDescribe(t *testing.T) {
 		Type:    hcloud.PlacementGroupTypeSpread,
 	}
 
-	fx.Client.PlacementGroupClient.EXPECT().
+	fx.Client.PlacementGroup.EXPECT().
 		Get(gomock.Any(), placementGroup.Name).
 		Return(&placementGroup, nil, nil)
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		ServerName(int64(4711)).
 		Return("server1")
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		ServerName(int64(4712)).
 		Return("server2")
 

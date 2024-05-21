@@ -3,8 +3,8 @@ package server_test
 import (
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/server"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -18,10 +18,10 @@ func TestLabelAdd(t *testing.T) {
 	cmd := server.LabelCmds.AddCobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		Get(gomock.Any(), "123").
 		Return(&hcloud.Server{ID: 123}, nil, nil)
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		Update(gomock.Any(), &hcloud.Server{ID: 123}, hcloud.ServerUpdateOpts{
 			Labels: map[string]string{
 				"key": "value",
@@ -44,10 +44,10 @@ func TestMultiLabelAdd(t *testing.T) {
 	cmd := server.LabelCmds.AddCobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		Get(gomock.Any(), "123").
 		Return(&hcloud.Server{ID: 123}, nil, nil)
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		Update(gomock.Any(), &hcloud.Server{ID: 123}, hcloud.ServerUpdateOpts{
 			Labels: map[string]string{
 				"foo": "bar",
@@ -71,7 +71,7 @@ func TestLabelRemove(t *testing.T) {
 	cmd := server.LabelCmds.RemoveCobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		Get(gomock.Any(), "123").
 		Return(&hcloud.Server{
 			ID: 123,
@@ -79,7 +79,7 @@ func TestLabelRemove(t *testing.T) {
 				"key": "value",
 			},
 		}, nil, nil)
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		Update(gomock.Any(), &hcloud.Server{ID: 123}, hcloud.ServerUpdateOpts{
 			Labels: make(map[string]string),
 		})
@@ -100,7 +100,7 @@ func TestMultiLabelRemove(t *testing.T) {
 	cmd := server.LabelCmds.RemoveCobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		Get(gomock.Any(), "123").
 		Return(&hcloud.Server{
 			ID: 123,
@@ -110,7 +110,7 @@ func TestMultiLabelRemove(t *testing.T) {
 				"baz": "qux",
 			},
 		}, nil, nil)
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		Update(gomock.Any(), &hcloud.Server{ID: 123}, hcloud.ServerUpdateOpts{
 			Labels: map[string]string{
 				"key": "value",

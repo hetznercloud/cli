@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/server"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -24,10 +24,10 @@ func TestMetrics(t *testing.T) {
 
 	srv := &hcloud.Server{ID: 123, Name: "my-server"}
 
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		Get(gomock.Any(), "123").
 		Return(srv, nil, nil)
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		GetMetrics(gomock.Any(), srv, hcloud.ServerGetMetricsOpts{
 			Start: start,
 			End:   end,

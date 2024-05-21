@@ -3,8 +3,8 @@ package floatingip_test
 import (
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/floatingip"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -18,10 +18,10 @@ func TestLabelAdd(t *testing.T) {
 	cmd := floatingip.LabelCmds.AddCobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.FloatingIPClient.EXPECT().
+	fx.Client.FloatingIP.EXPECT().
 		Get(gomock.Any(), "123").
 		Return(&hcloud.FloatingIP{ID: 123}, nil, nil)
-	fx.Client.FloatingIPClient.EXPECT().
+	fx.Client.FloatingIP.EXPECT().
 		Update(gomock.Any(), &hcloud.FloatingIP{ID: 123}, hcloud.FloatingIPUpdateOpts{
 			Labels: map[string]string{
 				"key": "value",
@@ -44,7 +44,7 @@ func TestLabelRemove(t *testing.T) {
 	cmd := floatingip.LabelCmds.RemoveCobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.FloatingIPClient.EXPECT().
+	fx.Client.FloatingIP.EXPECT().
 		Get(gomock.Any(), "123").
 		Return(&hcloud.FloatingIP{
 			ID: 123,
@@ -52,7 +52,7 @@ func TestLabelRemove(t *testing.T) {
 				"key": "value",
 			},
 		}, nil, nil)
-	fx.Client.FloatingIPClient.EXPECT().
+	fx.Client.FloatingIP.EXPECT().
 		Update(gomock.Any(), &hcloud.FloatingIP{ID: 123}, hcloud.FloatingIPUpdateOpts{
 			Labels: make(map[string]string),
 		})

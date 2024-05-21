@@ -3,8 +3,8 @@ package primaryip_test
 import (
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/primaryip"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -19,7 +19,7 @@ func TestEnableProtection(t *testing.T) {
 	action := &hcloud.Action{ID: 1}
 	ip := &hcloud.PrimaryIP{ID: 13}
 	fx.ExpectEnsureToken()
-	fx.Client.PrimaryIPClient.EXPECT().
+	fx.Client.PrimaryIP.EXPECT().
 		Get(
 			gomock.Any(),
 			"13",
@@ -29,7 +29,7 @@ func TestEnableProtection(t *testing.T) {
 			&hcloud.Response{},
 			nil,
 		)
-	fx.Client.PrimaryIPClient.EXPECT().
+	fx.Client.PrimaryIP.EXPECT().
 		ChangeProtection(
 			gomock.Any(),
 			hcloud.PrimaryIPChangeProtectionOpts{

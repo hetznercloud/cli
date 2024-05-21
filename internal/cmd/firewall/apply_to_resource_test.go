@@ -3,8 +3,8 @@ package firewall_test
 import (
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/firewall"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -23,13 +23,13 @@ func TestApplyToServer(t *testing.T) {
 		Name: "test",
 	}
 
-	fx.Client.FirewallClient.EXPECT().
+	fx.Client.Firewall.EXPECT().
 		Get(gomock.Any(), "test").
 		Return(fw, nil, nil)
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		Get(gomock.Any(), "my-server").
 		Return(&hcloud.Server{ID: 456}, nil, nil)
-	fx.Client.FirewallClient.EXPECT().
+	fx.Client.Firewall.EXPECT().
 		ApplyResources(gomock.Any(), fw, []hcloud.FirewallResource{{
 			Type: hcloud.FirewallResourceTypeServer,
 			Server: &hcloud.FirewallResourceServer{
@@ -62,10 +62,10 @@ func TestApplyToLabelSelector(t *testing.T) {
 		Name: "test",
 	}
 
-	fx.Client.FirewallClient.EXPECT().
+	fx.Client.Firewall.EXPECT().
 		Get(gomock.Any(), "test").
 		Return(fw, nil, nil)
-	fx.Client.FirewallClient.EXPECT().
+	fx.Client.Firewall.EXPECT().
 		ApplyResources(gomock.Any(), fw, []hcloud.FirewallResource{{
 			Type: hcloud.FirewallResourceTypeLabelSelector,
 			LabelSelector: &hcloud.FirewallResourceLabelSelector{

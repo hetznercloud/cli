@@ -4,8 +4,8 @@ import (
 	"net"
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/loadbalancer"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -28,10 +28,10 @@ func TestSetRDNS(t *testing.T) {
 		},
 	}
 
-	fx.Client.LoadBalancerClient.EXPECT().
+	fx.Client.LoadBalancer.EXPECT().
 		Get(gomock.Any(), "test").
 		Return(loadBalancer, nil, nil)
-	fx.Client.RDNSClient.EXPECT().
+	fx.Client.RDNS.EXPECT().
 		ChangeDNSPtr(gomock.Any(), loadBalancer, loadBalancer.PublicNet.IPv4.IP, hcloud.Ptr("example.com")).
 		Return(&hcloud.Action{ID: 123}, nil, nil)
 	fx.ActionWaiter.EXPECT().

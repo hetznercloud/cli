@@ -3,8 +3,8 @@ package datacenter_test
 import (
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/datacenter"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -18,7 +18,7 @@ func TestDescribe(t *testing.T) {
 	cmd := datacenter.DescribeCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.DatacenterClient.EXPECT().
+	fx.Client.Datacenter.EXPECT().
 		Get(gomock.Any(), "test").
 		Return(&hcloud.Datacenter{
 			ID:          4,
@@ -86,7 +86,7 @@ func TestDescribeWithTypes(t *testing.T) {
 		},
 	}
 
-	fx.Client.DatacenterClient.EXPECT().
+	fx.Client.Datacenter.EXPECT().
 		Get(gomock.Any(), "test").
 		Return(&hcloud.Datacenter{
 			ID:          4,
@@ -101,10 +101,10 @@ func TestDescribeWithTypes(t *testing.T) {
 
 	for i := 0; i < 2; i++ {
 		for _, st := range serverTypes {
-			fx.Client.ServerTypeClient.EXPECT().
+			fx.Client.ServerType.EXPECT().
 				ServerTypeName(st.ID).
 				Return(st.Name)
-			fx.Client.ServerTypeClient.EXPECT().
+			fx.Client.ServerType.EXPECT().
 				ServerTypeDescription(st.ID).
 				Return(st.Description)
 		}

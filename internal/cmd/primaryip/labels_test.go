@@ -3,8 +3,8 @@ package primaryip_test
 import (
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/primaryip"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -18,10 +18,10 @@ func TestLabelAdd(t *testing.T) {
 	cmd := primaryip.LabelCmds.AddCobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.PrimaryIPClient.EXPECT().
+	fx.Client.PrimaryIP.EXPECT().
 		Get(gomock.Any(), "123").
 		Return(&hcloud.PrimaryIP{ID: 123}, nil, nil)
-	fx.Client.PrimaryIPClient.EXPECT().
+	fx.Client.PrimaryIP.EXPECT().
 		Update(gomock.Any(), &hcloud.PrimaryIP{ID: 123}, hcloud.PrimaryIPUpdateOpts{
 			Labels: hcloud.Ptr(map[string]string{
 				"key": "value",
@@ -44,7 +44,7 @@ func TestLabelRemove(t *testing.T) {
 	cmd := primaryip.LabelCmds.RemoveCobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.PrimaryIPClient.EXPECT().
+	fx.Client.PrimaryIP.EXPECT().
 		Get(gomock.Any(), "123").
 		Return(&hcloud.PrimaryIP{
 			ID: 123,
@@ -52,7 +52,7 @@ func TestLabelRemove(t *testing.T) {
 				"key": "value",
 			},
 		}, nil, nil)
-	fx.Client.PrimaryIPClient.EXPECT().
+	fx.Client.PrimaryIP.EXPECT().
 		Update(gomock.Any(), &hcloud.PrimaryIP{ID: 123}, hcloud.PrimaryIPUpdateOpts{
 			Labels: hcloud.Ptr(make(map[string]string)),
 		})

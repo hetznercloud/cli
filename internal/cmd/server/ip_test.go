@@ -5,8 +5,8 @@ import (
 	"net"
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/server"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -34,7 +34,7 @@ func TestIPv4(t *testing.T) {
 		},
 	}
 
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		Get(gomock.Any(), "my-server").
 		Return(srv, nil, nil)
 
@@ -67,7 +67,7 @@ func TestIPv6(t *testing.T) {
 		},
 	}
 
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		Get(gomock.Any(), "my-server").
 		Return(srv, nil, nil)
 

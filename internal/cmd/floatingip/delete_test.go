@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/floatingip"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -25,10 +25,10 @@ func TestDelete(t *testing.T) {
 		Name: "test",
 	}
 
-	fx.Client.FloatingIPClient.EXPECT().
+	fx.Client.FloatingIP.EXPECT().
 		Get(gomock.Any(), "test").
 		Return(floatingIP, nil, nil)
-	fx.Client.FloatingIPClient.EXPECT().
+	fx.Client.FloatingIP.EXPECT().
 		Delete(gomock.Any(), floatingIP).
 		Return(nil, nil)
 
@@ -69,10 +69,10 @@ func TestDeleteMultiple(t *testing.T) {
 	for _, ip := range ips {
 		names = append(names, ip.Name)
 		expOutBuilder.WriteString(fmt.Sprintf("Floating IP %s deleted\n", ip.Name))
-		fx.Client.FloatingIPClient.EXPECT().
+		fx.Client.FloatingIP.EXPECT().
 			Get(gomock.Any(), ip.Name).
 			Return(ip, nil, nil)
-		fx.Client.FloatingIPClient.EXPECT().
+		fx.Client.FloatingIP.EXPECT().
 			Delete(gomock.Any(), ip).
 			Return(nil, nil)
 	}

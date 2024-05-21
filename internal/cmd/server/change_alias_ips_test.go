@@ -4,8 +4,8 @@ import (
 	"net"
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/server"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -22,13 +22,13 @@ func TestChangeAliasIPs(t *testing.T) {
 	srv := &hcloud.Server{ID: 123, Name: "my-server"}
 	n := &hcloud.Network{ID: 456, Name: "my-network"}
 
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		Get(gomock.Any(), "my-server").
 		Return(srv, nil, nil)
-	fx.Client.NetworkClient.EXPECT().
+	fx.Client.Network.EXPECT().
 		Get(gomock.Any(), "my-network").
 		Return(n, nil, nil)
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		ChangeAliasIPs(gomock.Any(), srv, hcloud.ServerChangeAliasIPsOpts{
 			Network: n,
 			AliasIPs: []net.IP{

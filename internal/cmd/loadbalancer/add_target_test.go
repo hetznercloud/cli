@@ -4,8 +4,8 @@ import (
 	"net"
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/loadbalancer"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -19,13 +19,13 @@ func TestAddTargetServer(t *testing.T) {
 	cmd := loadbalancer.AddTargetCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.LoadBalancerClient.EXPECT().
+	fx.Client.LoadBalancer.EXPECT().
 		Get(gomock.Any(), "123").
 		Return(&hcloud.LoadBalancer{ID: 123}, nil, nil)
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		Get(gomock.Any(), "my-server").
 		Return(&hcloud.Server{ID: 321}, nil, nil)
-	fx.Client.LoadBalancerClient.EXPECT().
+	fx.Client.LoadBalancer.EXPECT().
 		AddServerTarget(gomock.Any(), &hcloud.LoadBalancer{ID: 123}, hcloud.LoadBalancerAddServerTargetOpts{
 			Server:       &hcloud.Server{ID: 321},
 			UsePrivateIP: hcloud.Ptr(false),
@@ -51,10 +51,10 @@ func TestAddTargetLabelSelector(t *testing.T) {
 	cmd := loadbalancer.AddTargetCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.LoadBalancerClient.EXPECT().
+	fx.Client.LoadBalancer.EXPECT().
 		Get(gomock.Any(), "123").
 		Return(&hcloud.LoadBalancer{ID: 123}, nil, nil)
-	fx.Client.LoadBalancerClient.EXPECT().
+	fx.Client.LoadBalancer.EXPECT().
 		AddLabelSelectorTarget(gomock.Any(), &hcloud.LoadBalancer{ID: 123}, hcloud.LoadBalancerAddLabelSelectorTargetOpts{
 			Selector:     "my-label",
 			UsePrivateIP: hcloud.Ptr(false),
@@ -80,10 +80,10 @@ func TestAddTargetIP(t *testing.T) {
 	cmd := loadbalancer.AddTargetCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.LoadBalancerClient.EXPECT().
+	fx.Client.LoadBalancer.EXPECT().
 		Get(gomock.Any(), "123").
 		Return(&hcloud.LoadBalancer{ID: 123}, nil, nil)
-	fx.Client.LoadBalancerClient.EXPECT().
+	fx.Client.LoadBalancer.EXPECT().
 		AddIPTarget(gomock.Any(), &hcloud.LoadBalancer{ID: 123}, hcloud.LoadBalancerAddIPTargetOpts{
 			IP: net.ParseIP("192.168.2.1"),
 		}).

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/primaryip"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -26,10 +26,10 @@ func TestAssign(t *testing.T) {
 		}
 	)
 
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		Get(gomock.Any(), fmt.Sprintf("%d", server.ID)).
 		Return(&server, nil, nil)
-	fx.Client.PrimaryIPClient.EXPECT().
+	fx.Client.PrimaryIP.EXPECT().
 		Get(
 			gomock.Any(),
 			"13",
@@ -39,7 +39,7 @@ func TestAssign(t *testing.T) {
 			&hcloud.Response{},
 			nil,
 		)
-	fx.Client.PrimaryIPClient.EXPECT().
+	fx.Client.PrimaryIP.EXPECT().
 		Assign(
 			gomock.Any(),
 			hcloud.PrimaryIPAssignOpts{

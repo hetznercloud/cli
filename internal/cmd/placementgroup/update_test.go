@@ -3,8 +3,8 @@ package placementgroup_test
 import (
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/placementgroup"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -18,10 +18,10 @@ func TestUpdateName(t *testing.T) {
 	cmd := placementgroup.UpdateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.PlacementGroupClient.EXPECT().
+	fx.Client.PlacementGroup.EXPECT().
 		Get(gomock.Any(), "123").
 		Return(&hcloud.PlacementGroup{ID: 123}, nil, nil)
-	fx.Client.PlacementGroupClient.EXPECT().
+	fx.Client.PlacementGroup.EXPECT().
 		Update(gomock.Any(), &hcloud.PlacementGroup{ID: 123}, hcloud.PlacementGroupUpdateOpts{
 			Name: "new-name",
 		})

@@ -3,8 +3,8 @@ package firewall_test
 import (
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/firewall"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -18,10 +18,10 @@ func TestUpdateName(t *testing.T) {
 	cmd := firewall.UpdateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.FirewallClient.EXPECT().
+	fx.Client.Firewall.EXPECT().
 		Get(gomock.Any(), "123").
 		Return(&hcloud.Firewall{ID: 123}, nil, nil)
-	fx.Client.FirewallClient.EXPECT().
+	fx.Client.Firewall.EXPECT().
 		Update(gomock.Any(), &hcloud.Firewall{ID: 123}, hcloud.FirewallUpdateOpts{
 			Name: "new-name",
 		})

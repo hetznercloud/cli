@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/volume"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -23,7 +23,7 @@ func TestCreate(t *testing.T) {
 	cmd := volume.CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.VolumeClient.EXPECT().
+	fx.Client.Volume.EXPECT().
 		Create(gomock.Any(), hcloud.VolumeCreateOpts{
 			Name:     "test",
 			Size:     20,
@@ -61,7 +61,7 @@ func TestCreateJSON(t *testing.T) {
 	cmd := volume.CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.VolumeClient.EXPECT().
+	fx.Client.Volume.EXPECT().
 		Create(gomock.Any(), hcloud.VolumeCreateOpts{
 			Name:     "test",
 			Size:     20,
@@ -111,7 +111,7 @@ func TestCreateProtection(t *testing.T) {
 		Location: &hcloud.Location{Name: "fsn1"},
 	}
 
-	fx.Client.VolumeClient.EXPECT().
+	fx.Client.Volume.EXPECT().
 		Create(gomock.Any(), hcloud.VolumeCreateOpts{
 			Name:     "test",
 			Size:     20,
@@ -125,7 +125,7 @@ func TestCreateProtection(t *testing.T) {
 		}, nil, nil)
 	fx.ActionWaiter.EXPECT().
 		WaitForActions(gomock.Any(), gomock.Any(), []*hcloud.Action{{ID: 321}, {ID: 1}, {ID: 2}, {ID: 3}})
-	fx.Client.VolumeClient.EXPECT().
+	fx.Client.Volume.EXPECT().
 		ChangeProtection(gomock.Any(), v, hcloud.VolumeChangeProtectionOpts{
 			Delete: hcloud.Ptr(true),
 		}).

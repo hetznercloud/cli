@@ -3,8 +3,8 @@ package image_test
 import (
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/image"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -18,10 +18,10 @@ func TestLabelAdd(t *testing.T) {
 	cmd := image.LabelCmds.AddCobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.ImageClient.EXPECT().
+	fx.Client.Image.EXPECT().
 		Get(gomock.Any(), "123").
 		Return(&hcloud.Image{ID: 123}, nil, nil)
-	fx.Client.ImageClient.EXPECT().
+	fx.Client.Image.EXPECT().
 		Update(gomock.Any(), &hcloud.Image{ID: 123}, hcloud.ImageUpdateOpts{
 			Labels: map[string]string{
 				"key": "value",
@@ -44,7 +44,7 @@ func TestLabelRemove(t *testing.T) {
 	cmd := image.LabelCmds.RemoveCobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.ImageClient.EXPECT().
+	fx.Client.Image.EXPECT().
 		Get(gomock.Any(), "123").
 		Return(&hcloud.Image{
 			ID: 123,
@@ -52,7 +52,7 @@ func TestLabelRemove(t *testing.T) {
 				"key": "value",
 			},
 		}, nil, nil)
-	fx.Client.ImageClient.EXPECT().
+	fx.Client.Image.EXPECT().
 		Update(gomock.Any(), &hcloud.Image{ID: 123}, hcloud.ImageUpdateOpts{
 			Labels: make(map[string]string),
 		})

@@ -7,8 +7,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/server"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -26,13 +26,13 @@ func TestCreate(t *testing.T) {
 
 	fx.ExpectEnsureToken()
 
-	fx.Client.ServerTypeClient.EXPECT().
+	fx.Client.ServerType.EXPECT().
 		Get(gomock.Any(), "cx11").
 		Return(&hcloud.ServerType{Architecture: hcloud.ArchitectureX86}, nil, nil)
-	fx.Client.ImageClient.EXPECT().
+	fx.Client.Image.EXPECT().
 		GetForArchitecture(gomock.Any(), "ubuntu-20.04", hcloud.ArchitectureX86).
 		Return(&hcloud.Image{}, nil, nil)
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		Create(gomock.Any(), gomock.Any()).
 		Do(func(_ context.Context, opts hcloud.ServerCreateOpts) {
 			assert.Equal(t, "cli-test", opts.Name)
@@ -49,7 +49,7 @@ func TestCreate(t *testing.T) {
 			Action:      &hcloud.Action{ID: 123},
 			NextActions: []*hcloud.Action{{ID: 234}},
 		}, nil, nil)
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		GetByID(gomock.Any(), int64(1234)).
 		Return(&hcloud.Server{
 			ID: 1234,
@@ -136,13 +136,13 @@ func TestCreateJSON(t *testing.T) {
 		Status:        hcloud.ServerStatusRunning,
 	}
 
-	fx.Client.ServerTypeClient.EXPECT().
+	fx.Client.ServerType.EXPECT().
 		Get(gomock.Any(), "cx11").
 		Return(&hcloud.ServerType{Architecture: hcloud.ArchitectureX86}, nil, nil)
-	fx.Client.ImageClient.EXPECT().
+	fx.Client.Image.EXPECT().
 		GetForArchitecture(gomock.Any(), "ubuntu-20.04", hcloud.ArchitectureX86).
 		Return(&hcloud.Image{}, nil, nil)
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		Create(gomock.Any(), gomock.Any()).
 		Do(func(_ context.Context, opts hcloud.ServerCreateOpts) {
 			assert.Equal(t, "cli-test", opts.Name)
@@ -153,7 +153,7 @@ func TestCreateJSON(t *testing.T) {
 			Action:       &hcloud.Action{ID: 123},
 			NextActions:  []*hcloud.Action{{ID: 234}},
 		}, nil, nil)
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		GetByID(gomock.Any(), int64(1234)).
 		Return(srv, nil, nil)
 	fx.ActionWaiter.EXPECT().
@@ -179,13 +179,13 @@ func TestCreateProtectionBackup(t *testing.T) {
 
 	fx.ExpectEnsureToken()
 
-	fx.Client.ServerTypeClient.EXPECT().
+	fx.Client.ServerType.EXPECT().
 		Get(gomock.Any(), "cx11").
 		Return(&hcloud.ServerType{Architecture: hcloud.ArchitectureX86}, nil, nil)
-	fx.Client.ImageClient.EXPECT().
+	fx.Client.Image.EXPECT().
 		GetForArchitecture(gomock.Any(), "ubuntu-20.04", hcloud.ArchitectureX86).
 		Return(&hcloud.Image{}, nil, nil)
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		Create(gomock.Any(), gomock.Any()).
 		Do(func(_ context.Context, opts hcloud.ServerCreateOpts) {
 			assert.Equal(t, "cli-test", opts.Name)
@@ -216,14 +216,14 @@ func TestCreateProtectionBackup(t *testing.T) {
 		},
 	}
 
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		GetByID(gomock.Any(), int64(1234)).
 		Return(srv, nil, nil)
 	fx.ActionWaiter.EXPECT().
 		WaitForActions(gomock.Any(), gomock.Any(), []*hcloud.Action{{ID: 123}, {ID: 234}}).
 		Return(nil)
 
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		ChangeProtection(gomock.Any(), srv, hcloud.ServerChangeProtectionOpts{
 			Rebuild: hcloud.Ptr(true), Delete: hcloud.Ptr(true),
 		}).
@@ -232,7 +232,7 @@ func TestCreateProtectionBackup(t *testing.T) {
 		}, nil, nil)
 	fx.ActionWaiter.EXPECT().WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 1337}).Return(nil)
 
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		EnableBackup(gomock.Any(), srv, "").
 		Return(&hcloud.Action{
 			ID: 42,

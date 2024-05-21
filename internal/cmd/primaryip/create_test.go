@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/primaryip"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -23,7 +23,7 @@ func TestCreate(t *testing.T) {
 
 	cmd := primaryip.CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
-	fx.Client.PrimaryIPClient.EXPECT().
+	fx.Client.PrimaryIP.EXPECT().
 		Create(
 			gomock.Any(),
 			hcloud.PrimaryIPCreateOpts{
@@ -69,7 +69,7 @@ func TestCreateJSON(t *testing.T) {
 	cmd := primaryip.CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.PrimaryIPClient.EXPECT().
+	fx.Client.PrimaryIP.EXPECT().
 		Create(
 			gomock.Any(),
 			hcloud.PrimaryIPCreateOpts{

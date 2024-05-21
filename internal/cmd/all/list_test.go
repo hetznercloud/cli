@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/all"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -26,7 +26,7 @@ func TestListAll(t *testing.T) {
 	cmd := all.ListCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		AllWithOpts(gomock.Any(), hcloud.ServerListOpts{}).
 		Return([]*hcloud.Server{
 			{
@@ -42,7 +42,7 @@ func TestListAll(t *testing.T) {
 				Datacenter: &hcloud.Datacenter{Name: "hel1-dc2"},
 			},
 		}, nil)
-	fx.Client.NetworkClient.EXPECT().
+	fx.Client.Network.EXPECT().
 		AllWithOpts(gomock.Any(), hcloud.NetworkListOpts{}).
 		Return([]*hcloud.Network{
 			{
@@ -53,7 +53,7 @@ func TestListAll(t *testing.T) {
 				Created: time.Now().Add(-10 * time.Second),
 			},
 		}, nil)
-	fx.Client.LoadBalancerClient.EXPECT().
+	fx.Client.LoadBalancer.EXPECT().
 		AllWithOpts(gomock.Any(), hcloud.LoadBalancerListOpts{}).
 		Return([]*hcloud.LoadBalancer{
 			{
@@ -72,7 +72,7 @@ func TestListAll(t *testing.T) {
 				Created: time.Now().Add(-5 * time.Hour),
 			},
 		}, nil)
-	fx.Client.CertificateClient.EXPECT().
+	fx.Client.Certificate.EXPECT().
 		AllWithOpts(gomock.Any(), hcloud.CertificateListOpts{}).
 		Return([]*hcloud.Certificate{
 			{
@@ -84,7 +84,7 @@ func TestListAll(t *testing.T) {
 				Created:       time.Now().Add(-10 * time.Hour),
 			},
 		}, nil)
-	fx.Client.FirewallClient.EXPECT().
+	fx.Client.Firewall.EXPECT().
 		AllWithOpts(gomock.Any(), hcloud.FirewallListOpts{}).
 		Return([]*hcloud.Firewall{
 			{
@@ -95,7 +95,7 @@ func TestListAll(t *testing.T) {
 				AppliedTo: make([]hcloud.FirewallResource, 2),
 			},
 		}, nil)
-	fx.Client.PrimaryIPClient.EXPECT().
+	fx.Client.PrimaryIP.EXPECT().
 		AllWithOpts(gomock.Any(), hcloud.PrimaryIPListOpts{}).
 		Return([]*hcloud.PrimaryIP{
 			{
@@ -107,7 +107,7 @@ func TestListAll(t *testing.T) {
 				IP:         net.ParseIP("127.0.0.1"),
 			},
 		}, nil)
-	fx.Client.FloatingIPClient.EXPECT().
+	fx.Client.FloatingIP.EXPECT().
 		AllWithOpts(gomock.Any(), hcloud.FloatingIPListOpts{}).
 		Return([]*hcloud.FloatingIP{
 			{
@@ -119,7 +119,7 @@ func TestListAll(t *testing.T) {
 				HomeLocation: &hcloud.Location{Name: "fsn1"},
 			},
 		}, nil)
-	fx.Client.ImageClient.EXPECT().
+	fx.Client.Image.EXPECT().
 		AllWithOpts(gomock.Any(), hcloud.ImageListOpts{Type: []hcloud.ImageType{hcloud.ImageTypeBackup, hcloud.ImageTypeSnapshot}, IncludeDeprecated: true}).
 		Return([]*hcloud.Image{
 			{
@@ -131,7 +131,7 @@ func TestListAll(t *testing.T) {
 				DiskSize:     20,
 			},
 		}, nil)
-	fx.Client.VolumeClient.EXPECT().
+	fx.Client.Volume.EXPECT().
 		AllWithOpts(gomock.Any(), hcloud.VolumeListOpts{}).
 		Return([]*hcloud.Volume{
 			{
@@ -142,7 +142,7 @@ func TestListAll(t *testing.T) {
 				Created:  time.Now().Add(-500 * time.Hour),
 			},
 		}, nil)
-	fx.Client.ISOClient.EXPECT().
+	fx.Client.ISO.EXPECT().
 		AllWithOpts(gomock.Any(), hcloud.ISOListOpts{}).
 		Return([]*hcloud.ISO{
 			{
@@ -152,7 +152,7 @@ func TestListAll(t *testing.T) {
 				Architecture: hcloud.Ptr(hcloud.ArchitectureARM),
 			},
 		}, nil)
-	fx.Client.PlacementGroupClient.EXPECT().
+	fx.Client.PlacementGroup.EXPECT().
 		AllWithOpts(gomock.Any(), hcloud.PlacementGroupListOpts{}).
 		Return([]*hcloud.PlacementGroup{
 			{
@@ -163,7 +163,7 @@ func TestListAll(t *testing.T) {
 				Servers: make([]int64, 5),
 			},
 		}, nil)
-	fx.Client.SSHKeyClient.EXPECT().
+	fx.Client.SSHKey.EXPECT().
 		AllWithOpts(gomock.Any(), hcloud.SSHKeyListOpts{}).
 		Return([]*hcloud.SSHKey{
 			{
@@ -251,19 +251,19 @@ func TestListAllPaidJSON(t *testing.T) {
 	cmd := all.ListCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		AllWithOpts(gomock.Any(), hcloud.ServerListOpts{}).
 		Return([]*hcloud.Server{}, nil)
-	fx.Client.LoadBalancerClient.EXPECT().
+	fx.Client.LoadBalancer.EXPECT().
 		AllWithOpts(gomock.Any(), hcloud.LoadBalancerListOpts{}).
 		Return([]*hcloud.LoadBalancer{}, nil)
-	fx.Client.PrimaryIPClient.EXPECT().
+	fx.Client.PrimaryIP.EXPECT().
 		AllWithOpts(gomock.Any(), hcloud.PrimaryIPListOpts{}).
 		Return([]*hcloud.PrimaryIP{}, nil)
-	fx.Client.FloatingIPClient.EXPECT().
+	fx.Client.FloatingIP.EXPECT().
 		AllWithOpts(gomock.Any(), hcloud.FloatingIPListOpts{}).
 		Return([]*hcloud.FloatingIP{}, nil)
-	fx.Client.ImageClient.EXPECT().
+	fx.Client.Image.EXPECT().
 		AllWithOpts(gomock.Any(), hcloud.ImageListOpts{Type: []hcloud.ImageType{hcloud.ImageTypeBackup, hcloud.ImageTypeSnapshot}, IncludeDeprecated: true}).
 		Return([]*hcloud.Image{
 			{
@@ -280,7 +280,7 @@ func TestListAllPaidJSON(t *testing.T) {
 				Created:      time.Date(2023, 6, 13, 6, 0, 0, 0, time.UTC),
 			},
 		}, nil)
-	fx.Client.VolumeClient.EXPECT().
+	fx.Client.Volume.EXPECT().
 		AllWithOpts(gomock.Any(), hcloud.VolumeListOpts{}).
 		Return([]*hcloud.Volume{}, nil)
 

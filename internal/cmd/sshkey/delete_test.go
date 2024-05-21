@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/sshkey"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -25,10 +25,10 @@ func TestDelete(t *testing.T) {
 		Name: "test",
 	}
 
-	fx.Client.SSHKeyClient.EXPECT().
+	fx.Client.SSHKey.EXPECT().
 		Get(gomock.Any(), "test").
 		Return(sshKey, nil, nil)
-	fx.Client.SSHKeyClient.EXPECT().
+	fx.Client.SSHKey.EXPECT().
 		Delete(gomock.Any(), sshKey).
 		Return(nil, nil)
 
@@ -69,10 +69,10 @@ func TestDeleteMultiple(t *testing.T) {
 	for _, key := range keys {
 		names = append(names, key.Name)
 		expOutBuilder.WriteString(fmt.Sprintf("SSH Key %s deleted\n", key.Name))
-		fx.Client.SSHKeyClient.EXPECT().
+		fx.Client.SSHKey.EXPECT().
 			Get(gomock.Any(), key.Name).
 			Return(key, nil, nil)
-		fx.Client.SSHKeyClient.EXPECT().
+		fx.Client.SSHKey.EXPECT().
 			Delete(gomock.Any(), key).
 			Return(nil, nil)
 	}

@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/image"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -25,10 +25,10 @@ func TestDelete(t *testing.T) {
 		Name: "test",
 	}
 
-	fx.Client.ImageClient.EXPECT().
+	fx.Client.Image.EXPECT().
 		Get(gomock.Any(), "test").
 		Return(img, nil, nil)
-	fx.Client.ImageClient.EXPECT().
+	fx.Client.Image.EXPECT().
 		Delete(gomock.Any(), img).
 		Return(nil, nil)
 
@@ -69,10 +69,10 @@ func TestDeleteMultiple(t *testing.T) {
 	for _, img := range images {
 		names = append(names, img.Name)
 		expOutBuilder.WriteString(fmt.Sprintf("image %s deleted\n", img.Name))
-		fx.Client.ImageClient.EXPECT().
+		fx.Client.Image.EXPECT().
 			Get(gomock.Any(), img.Name).
 			Return(img, nil, nil)
-		fx.Client.ImageClient.EXPECT().
+		fx.Client.Image.EXPECT().
 			Delete(gomock.Any(), img).
 			Return(nil, nil)
 	}

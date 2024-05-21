@@ -3,8 +3,8 @@ package certificate_test
 import (
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/certificate"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -18,10 +18,10 @@ func TestLabelAdd(t *testing.T) {
 	cmd := certificate.LabelCmds.AddCobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.CertificateClient.EXPECT().
+	fx.Client.Certificate.EXPECT().
 		Get(gomock.Any(), "123").
 		Return(&hcloud.Certificate{ID: 123}, nil, nil)
-	fx.Client.CertificateClient.EXPECT().
+	fx.Client.Certificate.EXPECT().
 		Update(gomock.Any(), &hcloud.Certificate{ID: 123}, hcloud.CertificateUpdateOpts{
 			Labels: map[string]string{
 				"key": "value",
@@ -44,7 +44,7 @@ func TestLabelRemove(t *testing.T) {
 	cmd := certificate.LabelCmds.RemoveCobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.CertificateClient.EXPECT().
+	fx.Client.Certificate.EXPECT().
 		Get(gomock.Any(), "123").
 		Return(&hcloud.Certificate{
 			ID: 123,
@@ -52,7 +52,7 @@ func TestLabelRemove(t *testing.T) {
 				"key": "value",
 			},
 		}, nil, nil)
-	fx.Client.CertificateClient.EXPECT().
+	fx.Client.Certificate.EXPECT().
 		Update(gomock.Any(), &hcloud.Certificate{ID: 123}, hcloud.CertificateUpdateOpts{
 			Labels: make(map[string]string),
 		})

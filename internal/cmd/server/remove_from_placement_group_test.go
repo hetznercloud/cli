@@ -3,8 +3,8 @@ package server_test
 import (
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/server"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -23,10 +23,10 @@ func TestRemoveFromPlacementGroup(t *testing.T) {
 		Name: "my server",
 	}
 
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		Get(gomock.Any(), srv.Name).
 		Return(&srv, nil, nil)
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		RemoveFromPlacementGroup(gomock.Any(), &srv)
 	fx.ActionWaiter.EXPECT().WaitForActions(gomock.Any(), gomock.Any(), nil)
 

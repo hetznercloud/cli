@@ -3,8 +3,8 @@ package server_test
 import (
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/server"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -25,11 +25,11 @@ func TestShutdown(t *testing.T) {
 		Status: hcloud.ServerStatusRunning,
 	}
 
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		Get(gomock.Any(), srv.Name).
 		Return(&srv, nil, nil)
 
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		Shutdown(gomock.Any(), &srv)
 	fx.ActionWaiter.EXPECT().WaitForActions(gomock.Any(), gomock.Any(), nil)
 
@@ -56,15 +56,15 @@ func TestShutdownWait(t *testing.T) {
 		Status: hcloud.ServerStatusRunning,
 	}
 
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		Get(gomock.Any(), srv.Name).
 		Return(&srv, nil, nil)
 
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		Shutdown(gomock.Any(), &srv)
 	fx.ActionWaiter.EXPECT().WaitForActions(gomock.Any(), gomock.Any(), nil)
 
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		GetByID(gomock.Any(), srv.ID).
 		Return(&srv, nil, nil).
 		Return(&srv, nil, nil).

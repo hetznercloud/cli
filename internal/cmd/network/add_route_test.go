@@ -4,8 +4,8 @@ import (
 	"net"
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/network"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -20,12 +20,12 @@ func TestAddRoute(t *testing.T) {
 	fx.ExpectEnsureToken()
 
 	_, ipRange, _ := net.ParseCIDR("10.0.0.0/24")
-	fx.Client.NetworkClient.EXPECT().
+	fx.Client.Network.EXPECT().
 		Get(gomock.Any(), "123").
 		Return(&hcloud.Network{
 			ID: 123,
 		}, nil, nil)
-	fx.Client.NetworkClient.EXPECT().
+	fx.Client.Network.EXPECT().
 		AddRoute(gomock.Any(), &hcloud.Network{ID: 123}, hcloud.NetworkAddRouteOpts{
 			Route: hcloud.NetworkRoute{
 				Destination: ipRange,
@@ -34,7 +34,7 @@ func TestAddRoute(t *testing.T) {
 		}).
 		Return(&hcloud.Action{ID: 456}, nil, nil)
 	fx.ActionWaiter.EXPECT().
-		WaitForActions(gomock.Any(), fx.State(), &hcloud.Action{ID: 456}).
+		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 456}).
 		Return(nil)
 
 	out, errOut, err := fx.Run(cmd, []string{"123", "--destination", "10.0.0.0/24", "--gateway", "10.0.0.1"})

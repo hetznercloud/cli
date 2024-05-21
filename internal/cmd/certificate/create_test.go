@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/certificate"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -26,7 +26,7 @@ func TestCreateManaged(t *testing.T) {
 	cmd := certificate.CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.CertificateClient.EXPECT().
+	fx.Client.Certificate.EXPECT().
 		CreateCertificate(gomock.Any(), hcloud.CertificateCreateOpts{
 			Name:        "test",
 			Type:        hcloud.CertificateTypeManaged,
@@ -43,7 +43,7 @@ func TestCreateManaged(t *testing.T) {
 		}, nil, nil)
 	fx.ActionWaiter.EXPECT().
 		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321})
-	fx.Client.CertificateClient.EXPECT().
+	fx.Client.Certificate.EXPECT().
 		GetByID(gomock.Any(), int64(123)).
 		Return(&hcloud.Certificate{
 			ID:          123,
@@ -68,7 +68,7 @@ func TestCreateManagedJSON(t *testing.T) {
 	cmd := certificate.CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.CertificateClient.EXPECT().
+	fx.Client.Certificate.EXPECT().
 		CreateCertificate(gomock.Any(), hcloud.CertificateCreateOpts{
 			Name:        "test",
 			Type:        hcloud.CertificateTypeManaged,
@@ -97,7 +97,7 @@ func TestCreateManagedJSON(t *testing.T) {
 		}, nil, nil)
 	fx.ActionWaiter.EXPECT().
 		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321})
-	fx.Client.CertificateClient.EXPECT().
+	fx.Client.Certificate.EXPECT().
 		GetByID(gomock.Any(), int64(123)).
 		Return(&hcloud.Certificate{
 			ID:             123,
@@ -137,7 +137,7 @@ func TestCreateUploaded(t *testing.T) {
 	cmd := certificate.CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.CertificateClient.EXPECT().
+	fx.Client.Certificate.EXPECT().
 		Create(gomock.Any(), hcloud.CertificateCreateOpts{
 			Name:        "test",
 			Type:        hcloud.CertificateTypeUploaded,
@@ -166,7 +166,7 @@ func TestCreateUploadedJSON(t *testing.T) {
 	cmd := certificate.CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.CertificateClient.EXPECT().
+	fx.Client.Certificate.EXPECT().
 		Create(gomock.Any(), hcloud.CertificateCreateOpts{
 			Name:        "test",
 			Type:        hcloud.CertificateTypeUploaded,

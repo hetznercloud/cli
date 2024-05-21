@@ -5,8 +5,8 @@ import (
 	"net"
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/floatingip"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -23,7 +23,7 @@ func TestCreate(t *testing.T) {
 	cmd := floatingip.CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.FloatingIPClient.EXPECT().
+	fx.Client.FloatingIP.EXPECT().
 		Create(gomock.Any(), hcloud.FloatingIPCreateOpts{
 			Name:         hcloud.Ptr("myFloatingIP"),
 			Type:         hcloud.FloatingIPTypeIPv4,
@@ -59,7 +59,7 @@ func TestCreateJSON(t *testing.T) {
 	cmd := floatingip.CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.FloatingIPClient.EXPECT().
+	fx.Client.FloatingIP.EXPECT().
 		Create(gomock.Any(), hcloud.FloatingIPCreateOpts{
 			Name:         hcloud.Ptr("myFloatingIP"),
 			Type:         hcloud.FloatingIPTypeIPv4,
@@ -102,7 +102,7 @@ func TestCreateProtection(t *testing.T) {
 		Type: hcloud.FloatingIPTypeIPv4,
 	}
 
-	fx.Client.FloatingIPClient.EXPECT().
+	fx.Client.FloatingIP.EXPECT().
 		Create(gomock.Any(), hcloud.FloatingIPCreateOpts{
 			Name:         hcloud.Ptr("myFloatingIP"),
 			Type:         hcloud.FloatingIPTypeIPv4,
@@ -118,7 +118,7 @@ func TestCreateProtection(t *testing.T) {
 		}, nil, nil)
 	fx.ActionWaiter.EXPECT().WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321}).Return(nil)
 
-	fx.Client.FloatingIPClient.EXPECT().
+	fx.Client.FloatingIP.EXPECT().
 		ChangeProtection(gomock.Any(), floatingIp, hcloud.FloatingIPChangeProtectionOpts{
 			Delete: hcloud.Ptr(true),
 		}).

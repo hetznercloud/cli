@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/firewall"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -25,10 +25,10 @@ func TestDelete(t *testing.T) {
 		Name: "test",
 	}
 
-	fx.Client.FirewallClient.EXPECT().
+	fx.Client.Firewall.EXPECT().
 		Get(gomock.Any(), "test").
 		Return(fw, nil, nil)
-	fx.Client.FirewallClient.EXPECT().
+	fx.Client.Firewall.EXPECT().
 		Delete(gomock.Any(), fw).
 		Return(nil, nil)
 
@@ -69,10 +69,10 @@ func TestDeleteMultiple(t *testing.T) {
 	for _, fw := range firewalls {
 		names = append(names, fw.Name)
 		expOutBuilder.WriteString(fmt.Sprintf("firewall %s deleted\n", fw.Name))
-		fx.Client.FirewallClient.EXPECT().
+		fx.Client.Firewall.EXPECT().
 			Get(gomock.Any(), fw.Name).
 			Return(fw, nil, nil)
-		fx.Client.FirewallClient.EXPECT().
+		fx.Client.Firewall.EXPECT().
 			Delete(gomock.Any(), fw).
 			Return(nil, nil)
 	}

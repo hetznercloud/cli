@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/loadbalancer"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -19,10 +19,10 @@ func TestUpdateService(t *testing.T) {
 	cmd := loadbalancer.UpdateServiceCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.LoadBalancerClient.EXPECT().
+	fx.Client.LoadBalancer.EXPECT().
 		Get(gomock.Any(), "123").
 		Return(&hcloud.LoadBalancer{ID: 123}, nil, nil)
-	fx.Client.LoadBalancerClient.EXPECT().
+	fx.Client.LoadBalancer.EXPECT().
 		UpdateService(gomock.Any(), &hcloud.LoadBalancer{ID: 123}, 80, hcloud.LoadBalancerUpdateServiceOpts{
 			DestinationPort: hcloud.Ptr(8080),
 			Protocol:        hcloud.LoadBalancerServiceProtocolTCP,

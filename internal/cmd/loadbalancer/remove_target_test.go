@@ -4,8 +4,8 @@ import (
 	"net"
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/loadbalancer"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -19,13 +19,13 @@ func TestRemoveTargetServer(t *testing.T) {
 	cmd := loadbalancer.RemoveTargetCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.LoadBalancerClient.EXPECT().
+	fx.Client.LoadBalancer.EXPECT().
 		Get(gomock.Any(), "123").
 		Return(&hcloud.LoadBalancer{ID: 123}, nil, nil)
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		Get(gomock.Any(), "my-server").
 		Return(&hcloud.Server{ID: 321}, nil, nil)
-	fx.Client.LoadBalancerClient.EXPECT().
+	fx.Client.LoadBalancer.EXPECT().
 		RemoveServerTarget(gomock.Any(), &hcloud.LoadBalancer{ID: 123}, &hcloud.Server{ID: 321}).
 		Return(&hcloud.Action{ID: 123}, nil, nil)
 	fx.ActionWaiter.EXPECT().
@@ -48,10 +48,10 @@ func TestRemoveTargetLabelSelector(t *testing.T) {
 	cmd := loadbalancer.RemoveTargetCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.LoadBalancerClient.EXPECT().
+	fx.Client.LoadBalancer.EXPECT().
 		Get(gomock.Any(), "123").
 		Return(&hcloud.LoadBalancer{ID: 123}, nil, nil)
-	fx.Client.LoadBalancerClient.EXPECT().
+	fx.Client.LoadBalancer.EXPECT().
 		RemoveLabelSelectorTarget(gomock.Any(), &hcloud.LoadBalancer{ID: 123}, "my-label").
 		Return(&hcloud.Action{ID: 123}, nil, nil)
 	fx.ActionWaiter.EXPECT().
@@ -74,10 +74,10 @@ func TestRemoveTargetIP(t *testing.T) {
 	cmd := loadbalancer.RemoveTargetCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.LoadBalancerClient.EXPECT().
+	fx.Client.LoadBalancer.EXPECT().
 		Get(gomock.Any(), "123").
 		Return(&hcloud.LoadBalancer{ID: 123}, nil, nil)
-	fx.Client.LoadBalancerClient.EXPECT().
+	fx.Client.LoadBalancer.EXPECT().
 		RemoveIPTarget(gomock.Any(), &hcloud.LoadBalancer{ID: 123}, net.ParseIP("192.168.2.1")).
 		Return(&hcloud.Action{ID: 123}, nil, nil)
 	fx.ActionWaiter.EXPECT().

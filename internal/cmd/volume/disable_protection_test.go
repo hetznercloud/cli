@@ -3,8 +3,8 @@ package volume_test
 import (
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/volume"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -20,10 +20,10 @@ func TestDisableProtection(t *testing.T) {
 
 	v := &hcloud.Volume{ID: 123, Name: "myVolume"}
 
-	fx.Client.VolumeClient.EXPECT().
+	fx.Client.Volume.EXPECT().
 		Get(gomock.Any(), "myVolume").
 		Return(v, nil, nil)
-	fx.Client.VolumeClient.EXPECT().
+	fx.Client.Volume.EXPECT().
 		ChangeProtection(gomock.Any(), v, hcloud.VolumeChangeProtectionOpts{
 			Delete: hcloud.Ptr(false),
 		}).

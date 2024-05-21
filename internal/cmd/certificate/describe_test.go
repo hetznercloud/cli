@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/dustin/go-humanize"
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/certificate"
 	"github.com/hetznercloud/cli/internal/cmd/util"
@@ -47,10 +47,10 @@ func TestDescribe(t *testing.T) {
 		},
 	}
 
-	fx.Client.CertificateClient.EXPECT().
+	fx.Client.Certificate.EXPECT().
 		Get(gomock.Any(), "test").
 		Return(cert, nil, nil)
-	fx.Client.LoadBalancerClient.EXPECT().
+	fx.Client.LoadBalancer.EXPECT().
 		LoadBalancerName(int64(123)).
 		Return("test")
 

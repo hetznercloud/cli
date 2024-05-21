@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/dustin/go-humanize"
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/image"
 	"github.com/hetznercloud/cli/internal/cmd/util"
@@ -39,7 +39,7 @@ func TestDescribe(t *testing.T) {
 		},
 	}
 
-	fx.Client.ImageClient.EXPECT().
+	fx.Client.Image.EXPECT().
 		GetForArchitecture(gomock.Any(), "test", hcloud.ArchitectureX86).
 		Return(img, nil, nil)
 

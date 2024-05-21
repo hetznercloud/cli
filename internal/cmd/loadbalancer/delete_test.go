@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/loadbalancer"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -25,10 +25,10 @@ func TestDelete(t *testing.T) {
 		Name: "test",
 	}
 
-	fx.Client.LoadBalancerClient.EXPECT().
+	fx.Client.LoadBalancer.EXPECT().
 		Get(gomock.Any(), "test").
 		Return(loadBalancer, nil, nil)
-	fx.Client.LoadBalancerClient.EXPECT().
+	fx.Client.LoadBalancer.EXPECT().
 		Delete(gomock.Any(), loadBalancer).
 		Return(nil, nil)
 
@@ -69,10 +69,10 @@ func TestDeleteMultiple(t *testing.T) {
 	for _, lb := range loadBalancers {
 		names = append(names, lb.Name)
 		expOutBuilder.WriteString(fmt.Sprintf("Load Balancer %s deleted\n", lb.Name))
-		fx.Client.LoadBalancerClient.EXPECT().
+		fx.Client.LoadBalancer.EXPECT().
 			Get(gomock.Any(), lb.Name).
 			Return(lb, nil, nil)
-		fx.Client.LoadBalancerClient.EXPECT().
+		fx.Client.LoadBalancer.EXPECT().
 			Delete(gomock.Any(), lb).
 			Return(nil, nil)
 	}

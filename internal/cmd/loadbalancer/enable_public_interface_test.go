@@ -3,8 +3,8 @@ package loadbalancer_test
 import (
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/loadbalancer"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -18,10 +18,10 @@ func TestEnablePublicInterface(t *testing.T) {
 	cmd := loadbalancer.EnablePublicInterfaceCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.LoadBalancerClient.EXPECT().
+	fx.Client.LoadBalancer.EXPECT().
 		Get(gomock.Any(), "123").
 		Return(&hcloud.LoadBalancer{ID: 123}, nil, nil)
-	fx.Client.LoadBalancerClient.EXPECT().
+	fx.Client.LoadBalancer.EXPECT().
 		EnablePublicInterface(gomock.Any(), &hcloud.LoadBalancer{ID: 123}).
 		Return(&hcloud.Action{ID: 123}, nil, nil)
 	fx.ActionWaiter.EXPECT().

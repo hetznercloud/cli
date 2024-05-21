@@ -3,8 +3,8 @@ package floatingip_test
 import (
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/floatingip"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -18,13 +18,13 @@ func TestAssign(t *testing.T) {
 	cmd := floatingip.AssignCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.FloatingIPClient.EXPECT().
+	fx.Client.FloatingIP.EXPECT().
 		Get(gomock.Any(), "my-ip").
 		Return(&hcloud.FloatingIP{ID: 123}, nil, nil)
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		Get(gomock.Any(), "my-server").
 		Return(&hcloud.Server{ID: 456}, nil, nil)
-	fx.Client.FloatingIPClient.EXPECT().
+	fx.Client.FloatingIP.EXPECT().
 		Assign(gomock.Any(), &hcloud.FloatingIP{ID: 123}, &hcloud.Server{ID: 456}).
 		Return(&hcloud.Action{ID: 123}, nil, nil)
 	fx.ActionWaiter.EXPECT().

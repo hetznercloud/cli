@@ -3,8 +3,8 @@ package image_test
 import (
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/image"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -18,7 +18,7 @@ func TestEnableProtection(t *testing.T) {
 	cmd := image.EnableProtectionCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.ImageClient.EXPECT().
+	fx.Client.Image.EXPECT().
 		ChangeProtection(gomock.Any(), &hcloud.Image{ID: 123}, hcloud.ImageChangeProtectionOpts{
 			Delete: hcloud.Ptr(true),
 		}).

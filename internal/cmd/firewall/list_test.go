@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/firewall"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -22,7 +22,7 @@ func TestList(t *testing.T) {
 	cmd := firewall.ListCmd.CobraCommand(fx.State())
 
 	fx.ExpectEnsureToken()
-	fx.Client.FirewallClient.EXPECT().
+	fx.Client.Firewall.EXPECT().
 		AllWithOpts(
 			gomock.Any(),
 			hcloud.FirewallListOpts{
@@ -60,7 +60,7 @@ func TestListJSON(t *testing.T) {
 	cmd := firewall.ListCmd.CobraCommand(fx.State())
 
 	fx.ExpectEnsureToken()
-	fx.Client.FirewallClient.EXPECT().
+	fx.Client.Firewall.EXPECT().
 		AllWithOpts(
 			gomock.Any(),
 			hcloud.FirewallListOpts{

@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/dustin/go-humanize"
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/network"
 	"github.com/hetznercloud/cli/internal/cmd/util"
@@ -34,7 +34,7 @@ func TestDescribe(t *testing.T) {
 		Labels:     map[string]string{"key": "value"},
 	}
 
-	fx.Client.NetworkClient.EXPECT().
+	fx.Client.Network.EXPECT().
 		Get(gomock.Any(), "test").
 		Return(n, nil, nil)
 

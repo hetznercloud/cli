@@ -7,11 +7,11 @@ import (
 	"strings"
 	"testing"
 
-	gomock "github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	gomock "go.uber.org/mock/gomock"
 
-	hcapi2_mock "github.com/hetznercloud/cli/internal/hcapi2/mock"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud/exp/mock"
 )
 
 func TestWaitForActionsSuccess(t *testing.T) {
@@ -29,7 +29,7 @@ func TestWaitForActionsSuccess(t *testing.T) {
 		},
 	}
 
-	client := hcapi2_mock.NewMockActionClient(ctrl)
+	client := mock.NewActionClient(ctrl)
 
 	client.EXPECT().
 		WaitForFunc(gomock.Any(), gomock.Any(), action).
@@ -71,7 +71,7 @@ func TestWaitForActionsError(t *testing.T) {
 		},
 	}
 
-	client := hcapi2_mock.NewMockActionClient(ctrl)
+	client := mock.NewActionClient(ctrl)
 	client.EXPECT().
 		WaitForFunc(gomock.Any(), gomock.Any(), action).
 		DoAndReturn(func(ctx context.Context, handleUpdate func(update *hcloud.Action) error, actions ...*hcloud.Action) error {

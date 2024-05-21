@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/network"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -25,10 +25,10 @@ func TestDelete(t *testing.T) {
 		Name: "test",
 	}
 
-	fx.Client.NetworkClient.EXPECT().
+	fx.Client.Network.EXPECT().
 		Get(gomock.Any(), "test").
 		Return(n, nil, nil)
-	fx.Client.NetworkClient.EXPECT().
+	fx.Client.Network.EXPECT().
 		Delete(gomock.Any(), n).
 		Return(nil, nil)
 
@@ -69,10 +69,10 @@ func TestDeleteMultiple(t *testing.T) {
 	for _, net := range networks {
 		names = append(names, net.Name)
 		expOutBuilder.WriteString(fmt.Sprintf("Network %s deleted\n", net.Name))
-		fx.Client.NetworkClient.EXPECT().
+		fx.Client.Network.EXPECT().
 			Get(gomock.Any(), net.Name).
 			Return(net, nil, nil)
-		fx.Client.NetworkClient.EXPECT().
+		fx.Client.Network.EXPECT().
 			Delete(gomock.Any(), net).
 			Return(nil, nil)
 	}

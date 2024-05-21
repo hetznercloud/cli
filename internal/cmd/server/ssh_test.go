@@ -4,7 +4,7 @@ import (
 	"net"
 	"testing"
 
-	"github.com/golang/mock/gomock"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/server"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -24,7 +24,7 @@ func TestSSH(t *testing.T) {
 	}
 
 	preRun := func(t *testing.T, fx *testutil.Fixture) {
-		fx.Client.ServerClient.EXPECT().
+		fx.Client.Server.EXPECT().
 			Get(gomock.Any(), srv.Name).
 			Return(&srv, nil, nil)
 

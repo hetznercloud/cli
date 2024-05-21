@@ -3,8 +3,8 @@ package volume_test
 import (
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/volume"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -21,13 +21,13 @@ func TestAttach(t *testing.T) {
 	v := &hcloud.Volume{ID: 123}
 	srv := &hcloud.Server{ID: 456, Name: "myServer"}
 
-	fx.Client.VolumeClient.EXPECT().
+	fx.Client.Volume.EXPECT().
 		Get(gomock.Any(), "123").
 		Return(v, nil, nil)
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		Get(gomock.Any(), "456").
 		Return(srv, nil, nil)
-	fx.Client.VolumeClient.EXPECT().
+	fx.Client.Volume.EXPECT().
 		AttachWithOpts(gomock.Any(), v, hcloud.VolumeAttachOpts{
 			Server:    srv,
 			Automount: hcloud.Ptr(false),

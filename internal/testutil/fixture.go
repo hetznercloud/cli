@@ -6,19 +6,19 @@ import (
 	"os"
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/spf13/cobra"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/hcapi2"
-	hcapi2_mock "github.com/hetznercloud/cli/internal/hcapi2/mock"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/cli/internal/state/config"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud/exp/mock"
 )
 
 // Fixture provides affordances for testing CLI commands.
 type Fixture struct {
 	MockController *gomock.Controller
-	Client         *hcapi2_mock.MockClient
+	Client         *mock.Client
 	ActionWaiter   *state.MockActionWaiter
 	TokenEnsurer   *state.MockTokenEnsurer
 	Config         *config.MockConfig
@@ -30,7 +30,7 @@ func NewFixture(t *testing.T) *Fixture {
 
 	return &Fixture{
 		MockController: ctrl,
-		Client:         hcapi2_mock.NewMockClient(ctrl),
+		Client:         mock.NewClient(ctrl),
 		ActionWaiter:   state.NewMockActionWaiter(ctrl),
 		TokenEnsurer:   state.NewMockTokenEnsurer(ctrl),
 		Config:         config.NewMockConfig(ctrl),
@@ -88,7 +88,7 @@ func (f *Fixture) State() state.State {
 		Context:      context.Background(),
 		TokenEnsurer: f.TokenEnsurer,
 		ActionWaiter: f.ActionWaiter,
-		client:       f.Client,
+		client:       hcapi2.NewMockClient(f.Client),
 		config:       f.Config,
 	}
 }

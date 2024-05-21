@@ -8,7 +8,7 @@ import (
 	toml "github.com/pelletier/go-toml/v2"
 )
 
-//go:generate go run github.com/golang/mock/mockgen -package config -destination zz_config_mock.go github.com/hetznercloud/cli/internal/state/config Config
+//go:generate go run go.uber.org/mock/mockgen -package config -destination zz_config_mock.go github.com/hetznercloud/cli/internal/state/config Config
 
 type Config interface {
 	Write() error

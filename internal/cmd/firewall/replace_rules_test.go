@@ -4,8 +4,8 @@ import (
 	"net"
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/firewall"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -24,10 +24,10 @@ func TestReplaceRules(t *testing.T) {
 		Name: "test",
 	}
 
-	fx.Client.FirewallClient.EXPECT().
+	fx.Client.Firewall.EXPECT().
 		Get(gomock.Any(), "test").
 		Return(fw, nil, nil)
-	fx.Client.FirewallClient.EXPECT().
+	fx.Client.Firewall.EXPECT().
 		SetRules(gomock.Any(), fw, hcloud.FirewallSetRulesOpts{
 			Rules: []hcloud.FirewallRule{
 				{

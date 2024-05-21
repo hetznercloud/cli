@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/primaryip"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -20,7 +20,7 @@ func TestDelete(t *testing.T) {
 	cmd := primaryip.DeleteCmd.CobraCommand(fx.State())
 	ip := &hcloud.PrimaryIP{ID: 13}
 	fx.ExpectEnsureToken()
-	fx.Client.PrimaryIPClient.EXPECT().
+	fx.Client.PrimaryIP.EXPECT().
 		Get(
 			gomock.Any(),
 			"13",
@@ -30,7 +30,7 @@ func TestDelete(t *testing.T) {
 			&hcloud.Response{},
 			nil,
 		)
-	fx.Client.PrimaryIPClient.EXPECT().
+	fx.Client.PrimaryIP.EXPECT().
 		Delete(
 			gomock.Any(),
 			ip,
@@ -77,10 +77,10 @@ func TestDeleteMultiple(t *testing.T) {
 	for _, ip := range ips {
 		names = append(names, ip.Name)
 		expOutBuilder.WriteString(fmt.Sprintf("Primary IP %s deleted\n", ip.Name))
-		fx.Client.PrimaryIPClient.EXPECT().
+		fx.Client.PrimaryIP.EXPECT().
 			Get(gomock.Any(), ip.Name).
 			Return(ip, nil, nil)
-		fx.Client.PrimaryIPClient.EXPECT().
+		fx.Client.PrimaryIP.EXPECT().
 			Delete(gomock.Any(), ip).
 			Return(nil, nil)
 	}

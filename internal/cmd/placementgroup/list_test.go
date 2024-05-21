@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/placementgroup"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -19,7 +19,7 @@ func TestList(t *testing.T) {
 	cmd := placementgroup.ListCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.PlacementGroupClient.EXPECT().
+	fx.Client.PlacementGroup.EXPECT().
 		AllWithOpts(
 			gomock.Any(),
 			hcloud.PlacementGroupListOpts{

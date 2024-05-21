@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/placementgroup"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -37,7 +37,7 @@ func TestCreate(t *testing.T) {
 		Type:    opts.Type,
 	}
 
-	fx.Client.PlacementGroupClient.EXPECT().
+	fx.Client.PlacementGroup.EXPECT().
 		Create(gomock.Any(), opts).
 		Return(hcloud.PlacementGroupCreateResult{PlacementGroup: &placementGroup, Action: &hcloud.Action{ID: 321}}, nil, nil)
 
@@ -69,7 +69,7 @@ func TestCreateJSON(t *testing.T) {
 		Type:   hcloud.PlacementGroupTypeSpread,
 	}
 
-	fx.Client.PlacementGroupClient.EXPECT().
+	fx.Client.PlacementGroup.EXPECT().
 		Create(gomock.Any(), opts).
 		Return(hcloud.PlacementGroupCreateResult{
 			PlacementGroup: &hcloud.PlacementGroup{

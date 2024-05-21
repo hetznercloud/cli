@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/placementgroup"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -30,10 +30,10 @@ func TestDelete(t *testing.T) {
 		Type:    hcloud.PlacementGroupTypeSpread,
 	}
 
-	fx.Client.PlacementGroupClient.EXPECT().
+	fx.Client.PlacementGroup.EXPECT().
 		Get(gomock.Any(), placementGroup.Name).
 		Return(&placementGroup, nil, nil)
-	fx.Client.PlacementGroupClient.EXPECT().
+	fx.Client.PlacementGroup.EXPECT().
 		Delete(gomock.Any(), &placementGroup)
 
 	out, errOut, err := fx.Run(cmd, []string{placementGroup.Name})
@@ -73,10 +73,10 @@ func TestDeleteMultiple(t *testing.T) {
 	for _, pg := range groups {
 		names = append(names, pg.Name)
 		expOutBuilder.WriteString(fmt.Sprintf("placement group %s deleted\n", pg.Name))
-		fx.Client.PlacementGroupClient.EXPECT().
+		fx.Client.PlacementGroup.EXPECT().
 			Get(gomock.Any(), pg.Name).
 			Return(pg, nil, nil)
-		fx.Client.PlacementGroupClient.EXPECT().
+		fx.Client.PlacementGroup.EXPECT().
 			Delete(gomock.Any(), pg).
 			Return(nil, nil)
 	}

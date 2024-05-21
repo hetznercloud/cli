@@ -3,8 +3,8 @@ package location_test
 import (
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/location"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -18,7 +18,7 @@ func TestDescribe(t *testing.T) {
 	cmd := location.DescribeCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.LocationClient.EXPECT().
+	fx.Client.Location.EXPECT().
 		Get(gomock.Any(), "hel1").
 		Return(&hcloud.Location{
 			ID:          3,

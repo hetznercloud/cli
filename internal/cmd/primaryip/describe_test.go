@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/dustin/go-humanize"
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/primaryip"
 	"github.com/hetznercloud/cli/internal/cmd/util"
@@ -37,7 +37,7 @@ func TestDescribe(t *testing.T) {
 		Datacenter:   &hcloud.Datacenter{ID: 0, Location: &hcloud.Location{ID: 0}},
 	}
 
-	fx.Client.PrimaryIPClient.EXPECT().
+	fx.Client.PrimaryIP.EXPECT().
 		Get(gomock.Any(), "10").
 		Return(primaryIP, nil, nil)
 

@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/servertype"
 	"github.com/hetznercloud/cli/internal/cmd/util"
@@ -22,7 +22,7 @@ func TestList(t *testing.T) {
 	cmd := servertype.ListCmd.CobraCommand(fx.State())
 
 	fx.ExpectEnsureToken()
-	fx.Client.ServerTypeClient.EXPECT().
+	fx.Client.ServerType.EXPECT().
 		AllWithOpts(
 			gomock.Any(),
 			hcloud.ServerTypeListOpts{

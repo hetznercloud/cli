@@ -3,8 +3,8 @@ package volume_test
 import (
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/volume"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -18,10 +18,10 @@ func TestUpdateName(t *testing.T) {
 	cmd := volume.UpdateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.VolumeClient.EXPECT().
+	fx.Client.Volume.EXPECT().
 		Get(gomock.Any(), "123").
 		Return(&hcloud.Volume{ID: 123}, nil, nil)
-	fx.Client.VolumeClient.EXPECT().
+	fx.Client.Volume.EXPECT().
 		Update(gomock.Any(), &hcloud.Volume{ID: 123}, hcloud.VolumeUpdateOpts{
 			Name: "new-name",
 		})

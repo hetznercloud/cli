@@ -3,8 +3,8 @@ package floatingip_test
 import (
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/floatingip"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -18,10 +18,10 @@ func TestDisableProtection(t *testing.T) {
 	cmd := floatingip.DisableProtectionCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.FloatingIPClient.EXPECT().
+	fx.Client.FloatingIP.EXPECT().
 		Get(gomock.Any(), "test").
 		Return(&hcloud.FloatingIP{ID: 123}, nil, nil)
-	fx.Client.FloatingIPClient.EXPECT().
+	fx.Client.FloatingIP.EXPECT().
 		ChangeProtection(gomock.Any(), &hcloud.FloatingIP{ID: 123}, hcloud.FloatingIPChangeProtectionOpts{
 			Delete: hcloud.Ptr(false),
 		}).

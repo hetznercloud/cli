@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/server"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -25,10 +25,10 @@ func TestDelete(t *testing.T) {
 		Name: "test",
 	}
 
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		Get(gomock.Any(), "test").
 		Return(srv, nil, nil)
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		DeleteWithResult(gomock.Any(), srv).
 		Return(&hcloud.ServerDeleteResult{
 			Action: &hcloud.Action{ID: 321},
@@ -73,10 +73,10 @@ func TestDeleteMultiple(t *testing.T) {
 	for i, srv := range servers {
 		names = append(names, srv.Name)
 		expOutBuilder.WriteString(fmt.Sprintf("Server %s deleted\n", srv.Name))
-		fx.Client.ServerClient.EXPECT().
+		fx.Client.Server.EXPECT().
 			Get(gomock.Any(), srv.Name).
 			Return(srv, nil, nil)
-		fx.Client.ServerClient.EXPECT().
+		fx.Client.Server.EXPECT().
 			DeleteWithResult(gomock.Any(), srv).
 			Return(&hcloud.ServerDeleteResult{
 				Action: &hcloud.Action{ID: int64(i)},

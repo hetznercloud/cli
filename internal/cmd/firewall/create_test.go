@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/firewall"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -24,7 +24,7 @@ func TestCreate(t *testing.T) {
 	cmd := firewall.CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.FirewallClient.EXPECT().
+	fx.Client.Firewall.EXPECT().
 		Create(gomock.Any(), hcloud.FirewallCreateOpts{
 			Name:   "test",
 			Labels: make(map[string]string),
@@ -100,7 +100,7 @@ func TestCreateJSON(t *testing.T) {
 	cmd := firewall.CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.FirewallClient.EXPECT().
+	fx.Client.Firewall.EXPECT().
 		Create(gomock.Any(), hcloud.FirewallCreateOpts{
 			Name:   "test",
 			Labels: make(map[string]string),

@@ -3,8 +3,8 @@ package image_test
 import (
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/image"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -18,10 +18,10 @@ func TestUpdateDescription(t *testing.T) {
 	cmd := image.UpdateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.ImageClient.EXPECT().
+	fx.Client.Image.EXPECT().
 		Get(gomock.Any(), "123").
 		Return(&hcloud.Image{ID: 123}, nil, nil)
-	fx.Client.ImageClient.EXPECT().
+	fx.Client.Image.EXPECT().
 		Update(gomock.Any(), &hcloud.Image{ID: 123}, hcloud.ImageUpdateOpts{
 			Description: hcloud.Ptr("new-description"),
 		})
@@ -42,10 +42,10 @@ func TestUpdateType(t *testing.T) {
 	cmd := image.UpdateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.ImageClient.EXPECT().
+	fx.Client.Image.EXPECT().
 		Get(gomock.Any(), "123").
 		Return(&hcloud.Image{ID: 123}, nil, nil)
-	fx.Client.ImageClient.EXPECT().
+	fx.Client.Image.EXPECT().
 		Update(gomock.Any(), &hcloud.Image{ID: 123}, hcloud.ImageUpdateOpts{
 			Description: hcloud.Ptr(""),
 			Type:        hcloud.ImageTypeSnapshot,

@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/network"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -25,7 +25,7 @@ func TestCreate(t *testing.T) {
 	fx.ExpectEnsureToken()
 
 	_, ipRange, _ := net.ParseCIDR("10.0.0.0/24")
-	fx.Client.NetworkClient.EXPECT().
+	fx.Client.Network.EXPECT().
 		Create(gomock.Any(), hcloud.NetworkCreateOpts{
 			Name:    "myNetwork",
 			IPRange: ipRange,
@@ -56,7 +56,7 @@ func TestCreateJSON(t *testing.T) {
 	fx.ExpectEnsureToken()
 
 	_, ipRange, _ := net.ParseCIDR("10.0.0.0/24")
-	fx.Client.NetworkClient.EXPECT().
+	fx.Client.Network.EXPECT().
 		Create(gomock.Any(), hcloud.NetworkCreateOpts{
 			Name:    "myNetwork",
 			IPRange: ipRange,
@@ -96,14 +96,14 @@ func TestCreateProtection(t *testing.T) {
 		IPRange: ipRange,
 	}
 
-	fx.Client.NetworkClient.EXPECT().
+	fx.Client.Network.EXPECT().
 		Create(gomock.Any(), hcloud.NetworkCreateOpts{
 			Name:    "myNetwork",
 			IPRange: ipRange,
 			Labels:  make(map[string]string),
 		}).
 		Return(n, nil, nil)
-	fx.Client.NetworkClient.EXPECT().
+	fx.Client.Network.EXPECT().
 		ChangeProtection(gomock.Any(), n, hcloud.NetworkChangeProtectionOpts{
 			Delete: hcloud.Ptr(true),
 		}).

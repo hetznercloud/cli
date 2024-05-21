@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/volume"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -21,7 +21,7 @@ func TestList(t *testing.T) {
 	cmd := volume.ListCmd.CobraCommand(fx.State())
 
 	fx.ExpectEnsureToken()
-	fx.Client.VolumeClient.EXPECT().
+	fx.Client.Volume.EXPECT().
 		AllWithOpts(
 			gomock.Any(),
 			hcloud.VolumeListOpts{
@@ -39,7 +39,7 @@ func TestList(t *testing.T) {
 				Created:  time.Now().Add(-1 * time.Hour),
 			},
 		}, nil)
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		ServerName(int64(321)).
 		Return("myServer")
 

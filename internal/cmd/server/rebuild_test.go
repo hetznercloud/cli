@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/server"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -22,13 +22,13 @@ func TestRebuild(t *testing.T) {
 	srv := &hcloud.Server{ID: 123, Name: "my-server", ServerType: &hcloud.ServerType{Architecture: hcloud.ArchitectureARM}}
 	img := &hcloud.Image{ID: 456, Name: "ubuntu-22.04"}
 
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		Get(gomock.Any(), "my-server").
 		Return(srv, nil, nil)
-	fx.Client.ImageClient.EXPECT().
+	fx.Client.Image.EXPECT().
 		GetForArchitecture(gomock.Any(), "ubuntu-22.04", hcloud.ArchitectureARM).
 		Return(img, nil, nil)
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		RebuildWithResult(gomock.Any(), srv, hcloud.ServerRebuildOpts{Image: img}).
 		Return(hcloud.ServerRebuildResult{
 			Action:       &hcloud.Action{ID: 789},
@@ -58,10 +58,10 @@ func TestRebuildDeprecated(t *testing.T) {
 	srv := &hcloud.Server{ID: 123, Name: "my-server", ServerType: &hcloud.ServerType{Architecture: hcloud.ArchitectureARM}}
 	img := &hcloud.Image{ID: 456, Name: "ubuntu-22.04", Deprecated: time.Date(2036, 5, 20, 0, 0, 0, 0, time.UTC)}
 
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		Get(gomock.Any(), "my-server").
 		Return(srv, nil, nil)
-	fx.Client.ImageClient.EXPECT().
+	fx.Client.Image.EXPECT().
 		GetForArchitecture(gomock.Any(), "ubuntu-22.04", hcloud.ArchitectureARM).
 		Return(img, nil, nil)
 

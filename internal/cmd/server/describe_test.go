@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/dustin/go-humanize"
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/server"
 	"github.com/hetznercloud/cli/internal/cmd/util"
@@ -71,7 +71,7 @@ func TestDescribe(t *testing.T) {
 		Created:         time.Date(2036, 8, 12, 12, 0, 0, 0, time.UTC),
 	}
 
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		Get(gomock.Any(), "test").
 		Return(srv, nil, nil)
 

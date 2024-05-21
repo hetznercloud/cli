@@ -3,8 +3,8 @@ package server_test
 import (
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/server"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -21,13 +21,13 @@ func TestAttachISO(t *testing.T) {
 	srv := &hcloud.Server{ID: 123, Name: "my-server"}
 	iso := &hcloud.ISO{ID: 456, Name: "my-iso"}
 
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		Get(gomock.Any(), "my-server").
 		Return(srv, nil, nil)
-	fx.Client.ISOClient.EXPECT().
+	fx.Client.ISO.EXPECT().
 		Get(gomock.Any(), "my-iso").
 		Return(iso, nil, nil)
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		AttachISO(gomock.Any(), srv, iso).
 		Return(&hcloud.Action{ID: 789}, nil, nil)
 	fx.ActionWaiter.EXPECT().

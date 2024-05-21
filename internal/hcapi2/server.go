@@ -15,7 +15,7 @@ type ServerClient interface {
 	LabelKeys(idOrName string) []string
 }
 
-func NewServerClient(client *hcloud.ServerClient) ServerClient {
+func NewServerClient(client hcloud.IServerClient) ServerClient {
 	return &serverClient{
 		IServerClient: client,
 	}

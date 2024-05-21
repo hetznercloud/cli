@@ -4,8 +4,8 @@ import (
 	"net"
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/floatingip"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -24,10 +24,10 @@ func TestSetRDNS(t *testing.T) {
 		IP: net.ParseIP("192.168.2.1"),
 	}
 
-	fx.Client.FloatingIPClient.EXPECT().
+	fx.Client.FloatingIP.EXPECT().
 		Get(gomock.Any(), "test").
 		Return(floatingIP, nil, nil)
-	fx.Client.RDNSClient.EXPECT().
+	fx.Client.RDNS.EXPECT().
 		ChangeDNSPtr(gomock.Any(), floatingIP, floatingIP.IP, hcloud.Ptr("example.com")).
 		Return(&hcloud.Action{ID: 123}, nil, nil)
 	fx.ActionWaiter.EXPECT().

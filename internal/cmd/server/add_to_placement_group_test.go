@@ -3,8 +3,8 @@ package server_test
 import (
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/server"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -29,13 +29,13 @@ func TestAddToPlacementGroup(t *testing.T) {
 		}
 	)
 
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		Get(gomock.Any(), server.Name).
 		Return(&server, nil, nil)
-	fx.Client.PlacementGroupClient.EXPECT().
+	fx.Client.PlacementGroup.EXPECT().
 		Get(gomock.Any(), placementGroup.Name).
 		Return(&placementGroup, nil, nil)
-	fx.Client.ServerClient.EXPECT().
+	fx.Client.Server.EXPECT().
 		AddToPlacementGroup(gomock.Any(), &server, &placementGroup)
 	fx.ActionWaiter.EXPECT().WaitForActions(gomock.Any(), gomock.Any(), nil)
 

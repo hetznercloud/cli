@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/loadbalancer"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -22,10 +22,10 @@ func TestMetrics(t *testing.T) {
 	start := time.Date(2022, 11, 1, 0, 0, 0, 0, time.UTC)
 	end := start.Add(time.Hour)
 
-	fx.Client.LoadBalancerClient.EXPECT().
+	fx.Client.LoadBalancer.EXPECT().
 		Get(gomock.Any(), "123").
 		Return(&hcloud.LoadBalancer{ID: 123}, nil, nil)
-	fx.Client.LoadBalancerClient.EXPECT().
+	fx.Client.LoadBalancer.EXPECT().
 		GetMetrics(gomock.Any(), &hcloud.LoadBalancer{ID: 123}, hcloud.LoadBalancerGetMetricsOpts{
 			Start: start,
 			End:   end,

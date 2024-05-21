@@ -4,8 +4,8 @@ import (
 	"net"
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/primaryip"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -19,7 +19,7 @@ func TestSetRDNS(t *testing.T) {
 	cmd := primaryip.SetRDNSCmd.CobraCommand(fx.State())
 	action := &hcloud.Action{ID: 1}
 	fx.ExpectEnsureToken()
-	fx.Client.PrimaryIPClient.EXPECT().
+	fx.Client.PrimaryIP.EXPECT().
 		Get(
 			gomock.Any(),
 			"13",
@@ -29,7 +29,7 @@ func TestSetRDNS(t *testing.T) {
 			&hcloud.Response{},
 			nil,
 		)
-	fx.Client.RDNSClient.EXPECT().
+	fx.Client.RDNS.EXPECT().
 		ChangeDNSPtr(
 			gomock.Any(),
 			&hcloud.PrimaryIP{ID: 13},

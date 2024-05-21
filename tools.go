@@ -5,5 +5,5 @@ package tools
 
 import (
 	_ "github.com/boumenot/gocover-cobertura"
-	_ "github.com/golang/mock/mockgen"
+	_ "go.uber.org/mock/mockgen"
 )

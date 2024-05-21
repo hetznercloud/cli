@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/volume"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -25,10 +25,10 @@ func TestDelete(t *testing.T) {
 		Name: "test",
 	}
 
-	fx.Client.VolumeClient.EXPECT().
+	fx.Client.Volume.EXPECT().
 		Get(gomock.Any(), "test").
 		Return(v, nil, nil)
-	fx.Client.VolumeClient.EXPECT().
+	fx.Client.Volume.EXPECT().
 		Delete(gomock.Any(), v).
 		Return(nil, nil)
 
@@ -69,10 +69,10 @@ func TestDeleteMultiple(t *testing.T) {
 	for _, v := range volumes {
 		names = append(names, v.Name)
 		expOutBuilder.WriteString(fmt.Sprintf("Volume %s deleted\n", v.Name))
-		fx.Client.VolumeClient.EXPECT().
+		fx.Client.Volume.EXPECT().
 			Get(gomock.Any(), v.Name).
 			Return(v, nil, nil)
-		fx.Client.VolumeClient.EXPECT().
+		fx.Client.Volume.EXPECT().
 			Delete(gomock.Any(), v).
 			Return(nil, nil)
 	}

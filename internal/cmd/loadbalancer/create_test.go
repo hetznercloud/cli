@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/loadbalancer"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -24,7 +24,7 @@ func TestCreate(t *testing.T) {
 	cmd := loadbalancer.CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	fx.Client.LoadBalancerClient.EXPECT().
+	fx.Client.LoadBalancer.EXPECT().
 		Create(gomock.Any(), hcloud.LoadBalancerCreateOpts{
 			Name:             "myLoadBalancer",
 			LoadBalancerType: &hcloud.LoadBalancerType{Name: "lb11"},
@@ -36,7 +36,7 @@ func TestCreate(t *testing.T) {
 			Action:       &hcloud.Action{ID: 321},
 		}, nil, nil)
 	fx.ActionWaiter.EXPECT().WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321}).Return(nil)
-	fx.Client.LoadBalancerClient.EXPECT().
+	fx.Client.LoadBalancer.EXPECT().
 		GetByID(gomock.Any(), int64(123)).
 		Return(&hcloud.LoadBalancer{
 			ID: 123,
@@ -87,7 +87,7 @@ func TestCreateJSON(t *testing.T) {
 		Targets:         []hcloud.LoadBalancerTarget{},
 	}
 
-	fx.Client.LoadBalancerClient.EXPECT().
+	fx.Client.LoadBalancer.EXPECT().
 		Create(gomock.Any(), hcloud.LoadBalancerCreateOpts{
 			Name:             "myLoadBalancer",
 			LoadBalancerType: &hcloud.LoadBalancerType{Name: "lb11"},
@@ -99,7 +99,7 @@ func TestCreateJSON(t *testing.T) {
 			Action:       &hcloud.Action{ID: 321},
 		}, nil, nil)
 	fx.ActionWaiter.EXPECT().WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321}).Return(nil)
-	fx.Client.LoadBalancerClient.EXPECT().
+	fx.Client.LoadBalancer.EXPECT().
 		GetByID(gomock.Any(), int64(123)).
 		Return(lb, nil, nil)
 
@@ -131,7 +131,7 @@ func TestCreateProtection(t *testing.T) {
 		},
 	}
 
-	fx.Client.LoadBalancerClient.EXPECT().
+	fx.Client.LoadBalancer.EXPECT().
 		Create(gomock.Any(), hcloud.LoadBalancerCreateOpts{
 			Name:             "myLoadBalancer",
 			LoadBalancerType: &hcloud.LoadBalancerType{Name: "lb11"},
@@ -143,10 +143,10 @@ func TestCreateProtection(t *testing.T) {
 			Action:       &hcloud.Action{ID: 321},
 		}, nil, nil)
 	fx.ActionWaiter.EXPECT().WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321}).Return(nil)
-	fx.Client.LoadBalancerClient.EXPECT().
+	fx.Client.LoadBalancer.EXPECT().
 		GetByID(gomock.Any(), int64(123)).
 		Return(loadBalancer, nil, nil)
-	fx.Client.LoadBalancerClient.EXPECT().
+	fx.Client.LoadBalancer.EXPECT().
 		ChangeProtection(gomock.Any(), loadBalancer, hcloud.LoadBalancerChangeProtectionOpts{
 			Delete: hcloud.Ptr(true),
 		}).

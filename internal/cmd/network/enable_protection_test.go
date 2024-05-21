@@ -3,8 +3,8 @@ package network_test
 import (
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/network"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -20,10 +20,10 @@ func TestEnableProtection(t *testing.T) {
 
 	n := &hcloud.Network{ID: 123, Name: "myNetwork"}
 
-	fx.Client.NetworkClient.EXPECT().
+	fx.Client.Network.EXPECT().
 		Get(gomock.Any(), "myNetwork").
 		Return(n, nil, nil)
-	fx.Client.NetworkClient.EXPECT().
+	fx.Client.Network.EXPECT().
 		ChangeProtection(gomock.Any(), n, hcloud.NetworkChangeProtectionOpts{
 			Delete: hcloud.Ptr(true),
 		}).

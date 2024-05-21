@@ -5,8 +5,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/certificate"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -25,10 +25,10 @@ func TestDelete(t *testing.T) {
 		Name: "test",
 	}
 
-	fx.Client.CertificateClient.EXPECT().
+	fx.Client.Certificate.EXPECT().
 		Get(gomock.Any(), "test").
 		Return(cert, nil, nil)
-	fx.Client.CertificateClient.EXPECT().
+	fx.Client.Certificate.EXPECT().
 		Delete(gomock.Any(), cert).
 		Return(nil, nil)
 
@@ -69,10 +69,10 @@ func TestDeleteMultiple(t *testing.T) {
 	for _, cert := range certs {
 		names = append(names, cert.Name)
 		expOutBuilder.WriteString(fmt.Sprintf("certificate %s deleted\n", cert.Name))
-		fx.Client.CertificateClient.EXPECT().
+		fx.Client.Certificate.EXPECT().
 			Get(gomock.Any(), cert.Name).
 			Return(cert, nil, nil)
-		fx.Client.CertificateClient.EXPECT().
+		fx.Client.Certificate.EXPECT().
 			Delete(gomock.Any(), cert).
 			Return(nil, nil)
 	}
