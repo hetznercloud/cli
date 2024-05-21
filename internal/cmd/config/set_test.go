@@ -272,7 +272,6 @@ poll_interval = 1234000000
 			args: []string{"debug", "false", "--global"},
 			expOut: `Set 'debug' to 'false' globally
 active_context = ''
-contexts = []
 
 [preferences]
 debug = false
