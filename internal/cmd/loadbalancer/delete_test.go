@@ -1,8 +1,6 @@
 package loadbalancer_test
 
 import (
-	"fmt"
-	"strings"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -63,12 +61,9 @@ func TestDeleteMultiple(t *testing.T) {
 		},
 	}
 
-	expOutBuilder := strings.Builder{}
-
 	var names []string
 	for _, lb := range loadBalancers {
 		names = append(names, lb.Name)
-		expOutBuilder.WriteString(fmt.Sprintf("Load Balancer %s deleted\n", lb.Name))
 		fx.Client.LoadBalancerClient.EXPECT().
 			Get(gomock.Any(), lb.Name).
 			Return(lb, nil, nil)
@@ -78,9 +73,8 @@ func TestDeleteMultiple(t *testing.T) {
 	}
 
 	out, errOut, err := fx.Run(cmd, names)
-	expOut := expOutBuilder.String()
 
 	assert.NoError(t, err)
 	assert.Empty(t, errOut)
-	assert.Equal(t, expOut, out)
+	assert.Equal(t, "Load Balancers test1, test2, test3 deleted\n", out)
 }

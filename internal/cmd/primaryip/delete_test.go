@@ -1,8 +1,6 @@
 package primaryip_test
 
 import (
-	"fmt"
-	"strings"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -71,12 +69,9 @@ func TestDeleteMultiple(t *testing.T) {
 		},
 	}
 
-	expOutBuilder := strings.Builder{}
-
 	var names []string
 	for _, ip := range ips {
 		names = append(names, ip.Name)
-		expOutBuilder.WriteString(fmt.Sprintf("Primary IP %s deleted\n", ip.Name))
 		fx.Client.PrimaryIPClient.EXPECT().
 			Get(gomock.Any(), ip.Name).
 			Return(ip, nil, nil)
@@ -86,9 +81,8 @@ func TestDeleteMultiple(t *testing.T) {
 	}
 
 	out, errOut, err := fx.Run(cmd, names)
-	expOut := expOutBuilder.String()
 
 	assert.NoError(t, err)
 	assert.Empty(t, errOut)
-	assert.Equal(t, expOut, out)
+	assert.Equal(t, "Primary IPs test1, test2, test3 deleted\n", out)
 }

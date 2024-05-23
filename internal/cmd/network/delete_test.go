@@ -1,8 +1,6 @@
 package network_test
 
 import (
-	"fmt"
-	"strings"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -63,12 +61,9 @@ func TestDeleteMultiple(t *testing.T) {
 		},
 	}
 
-	expOutBuilder := strings.Builder{}
-
 	var names []string
 	for _, net := range networks {
 		names = append(names, net.Name)
-		expOutBuilder.WriteString(fmt.Sprintf("Network %s deleted\n", net.Name))
 		fx.Client.NetworkClient.EXPECT().
 			Get(gomock.Any(), net.Name).
 			Return(net, nil, nil)
@@ -78,9 +73,8 @@ func TestDeleteMultiple(t *testing.T) {
 	}
 
 	out, errOut, err := fx.Run(cmd, names)
-	expOut := expOutBuilder.String()
 
 	assert.NoError(t, err)
 	assert.Empty(t, errOut)
-	assert.Equal(t, expOut, out)
+	assert.Equal(t, "Networks test1, test2, test3 deleted\n", out)
 }

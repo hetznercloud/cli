@@ -1,8 +1,6 @@
 package placementgroup_test
 
 import (
-	"fmt"
-	"strings"
 	"testing"
 	"time"
 
@@ -67,12 +65,9 @@ func TestDeleteMultiple(t *testing.T) {
 		},
 	}
 
-	expOutBuilder := strings.Builder{}
-
 	var names []string
 	for _, pg := range groups {
 		names = append(names, pg.Name)
-		expOutBuilder.WriteString(fmt.Sprintf("placement group %s deleted\n", pg.Name))
 		fx.Client.PlacementGroupClient.EXPECT().
 			Get(gomock.Any(), pg.Name).
 			Return(pg, nil, nil)
@@ -82,9 +77,8 @@ func TestDeleteMultiple(t *testing.T) {
 	}
 
 	out, errOut, err := fx.Run(cmd, names)
-	expOut := expOutBuilder.String()
 
 	assert.NoError(t, err)
 	assert.Empty(t, errOut)
-	assert.Equal(t, expOut, out)
+	assert.Equal(t, "placement groups test1, test2, test3 deleted\n", out)
 }

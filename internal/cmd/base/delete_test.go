@@ -15,9 +15,9 @@ import (
 var fakeDeleteCmd = &base.DeleteCmd{
 	ResourceNameSingular: "Fake resource",
 	ResourceNamePlural:   "Fake resources",
-	Delete: func(s state.State, cmd *cobra.Command, resource interface{}) error {
+	Delete: func(s state.State, cmd *cobra.Command, resource interface{}) (*hcloud.Action, error) {
 		cmd.Println("Deleting fake resource")
-		return nil
+		return nil, nil
 	},
 
 	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
@@ -44,8 +44,8 @@ func TestDelete(t *testing.T) {
 		},
 		"no flags multiple": {
 			Args: []string{"delete", "123", "456", "789"},
-			ExpOut: "Fetching fake resource\nDeleting fake resource\nFake resource 123 deleted\nFetching fake resource\n" +
-				"Deleting fake resource\nFake resource 456 deleted\nFetching fake resource\nDeleting fake resource\nFake resource 789 deleted\n",
+			ExpOut: "Fetching fake resource\nDeleting fake resource\nFetching fake resource\nDeleting fake resource\n" +
+				"Fetching fake resource\nDeleting fake resource\nFake resources 123, 456, 789 deleted\n",
 		},
 		"quiet": {
 			Args: []string{"delete", "123", "--quiet"},

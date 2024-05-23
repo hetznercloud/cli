@@ -1,8 +1,6 @@
 package floatingip_test
 
 import (
-	"fmt"
-	"strings"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -63,12 +61,9 @@ func TestDeleteMultiple(t *testing.T) {
 		},
 	}
 
-	expOutBuilder := strings.Builder{}
-
 	var names []string
 	for _, ip := range ips {
 		names = append(names, ip.Name)
-		expOutBuilder.WriteString(fmt.Sprintf("Floating IP %s deleted\n", ip.Name))
 		fx.Client.FloatingIPClient.EXPECT().
 			Get(gomock.Any(), ip.Name).
 			Return(ip, nil, nil)
@@ -78,9 +73,8 @@ func TestDeleteMultiple(t *testing.T) {
 	}
 
 	out, errOut, err := fx.Run(cmd, names)
-	expOut := expOutBuilder.String()
 
 	assert.NoError(t, err)
 	assert.Empty(t, errOut)
-	assert.Equal(t, expOut, out)
+	assert.Equal(t, "Floating IPs test1, test2, test3 deleted\n", out)
 }
