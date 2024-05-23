@@ -68,7 +68,7 @@ Rules:
     Description:	ssh
     Protocol:		tcp
     Port:		22
-    Origin IPs:
+    Source IPs:
 Applied To:
   - Type:		server
     Server ID:		321

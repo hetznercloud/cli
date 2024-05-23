@@ -59,7 +59,7 @@ var DescribeCmd = base.DescribeCmd{
 				var ips []net.IPNet
 				switch rule.Direction {
 				case hcloud.FirewallRuleDirectionIn:
-					cmd.Print("    Origin IPs:\n")
+					cmd.Print("    Source IPs:\n")
 					ips = rule.SourceIPs
 				case hcloud.FirewallRuleDirectionOut:
 					cmd.Print("    Destination IPs:\n")

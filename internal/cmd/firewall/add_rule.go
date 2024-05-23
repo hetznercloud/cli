@@ -30,7 +30,7 @@ var AddRuleCmd = base.Cmd{
 		cmd.RegisterFlagCompletionFunc("protocol", cmpl.SuggestCandidates("icmp", "udp", "tcp", "esp", "gre"))
 		cmd.MarkFlagRequired("protocol")
 
-		cmd.Flags().StringArray("source-ips", []string{}, "Origin IPs (CIDR Notation) (required when direction is in)")
+		cmd.Flags().StringArray("source-ips", []string{}, "Source IPs (CIDR Notation) (required when direction is in)")
 
 		cmd.Flags().StringArray("destination-ips", []string{}, "Destination IPs (CIDR Notation) (required when direction is out)")
 
