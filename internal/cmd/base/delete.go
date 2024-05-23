@@ -81,7 +81,7 @@ func (dc *DeleteCmd) Run(s state.State, cmd *cobra.Command, args []string) error
 	filtered := util.FilterNil(actions)
 	var err error
 	if len(filtered) > 0 {
-		err = s.WaitForActions(cmd, s, util.FilterNil(actions)...)
+		err = s.WaitForActions(cmd, s, filtered...)
 	}
 
 	var actuallyDeleted []string
