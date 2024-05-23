@@ -1,6 +1,7 @@
 package base_test
 
 import (
+	"sync"
 	"testing"
 
 	"github.com/spf13/cobra"
@@ -12,15 +13,19 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
+var mu = sync.Mutex{}
+
 var fakeDeleteCmd = &base.DeleteCmd{
 	ResourceNameSingular: "Fake resource",
 	ResourceNamePlural:   "Fake resources",
 	Delete: func(s state.State, cmd *cobra.Command, resource interface{}) (*hcloud.Action, error) {
+		defer mu.Unlock()
 		cmd.Println("Deleting fake resource")
 		return nil, nil
 	},
 
 	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
+		mu.Lock()
 		cmd.Println("Fetching fake resource")
 
 		resource := &fakeResource{
