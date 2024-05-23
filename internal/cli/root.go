@@ -1,7 +1,7 @@
 package cli
 
 import (
-	"os"
+	"io"
 
 	"github.com/spf13/cobra"
 
@@ -23,13 +23,9 @@ func NewRootCommand(s state.State) *cobra.Command {
 	cmd.PersistentFlags().AddFlagSet(s.Config().FlagSet())
 
 	cmd.PersistentPreRunE = func(cmd *cobra.Command, args []string) error {
-		var err error
-		out := os.Stdout
+		out := cmd.OutOrStdout()
 		if quiet := config.OptionQuiet.Get(s.Config()); quiet {
-			out, err = os.Open(os.DevNull)
-			if err != nil {
-				return err
-			}
+			out = io.Discard
 		}
 		cmd.SetOut(out)
 		return nil

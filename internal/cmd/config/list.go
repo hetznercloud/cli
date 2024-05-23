@@ -80,7 +80,7 @@ func runList(s state.State, cmd *cobra.Command, _ []string) error {
 		cols = outOpts["columns"]
 	}
 
-	t := output.NewTable()
+	t := output.NewTable(cmd.OutOrStdout())
 	t.AddAllowedFields(option{})
 	if !outOpts.IsSet("noheader") {
 		t.WriteHeader(cols)
