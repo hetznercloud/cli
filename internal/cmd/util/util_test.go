@@ -289,7 +289,7 @@ func TestIsNil(t *testing.T) {
 
 func TestFilterNil(t *testing.T) {
 	type testStruct struct {
-		a, b, c int
+		a, b, c int //nolint:unused
 	}
 	assert.Equal(t, []interface{}{0, ""}, util.FilterNil([]interface{}{0, nil, ""}))
 	assert.Equal(t, []*testStruct{{1, 2, 3}, {}}, util.FilterNil([]*testStruct{{1, 2, 3}, nil, {}, (*testStruct)(nil)}))
