@@ -1,8 +1,6 @@
 package server_test
 
 import (
-	"fmt"
-	"strings"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -67,12 +65,12 @@ func TestDeleteMultiple(t *testing.T) {
 		},
 	}
 
-	expOutBuilder := strings.Builder{}
-
-	var names []string
+	var (
+		names   []string
+		actions []*hcloud.Action
+	)
 	for i, srv := range servers {
 		names = append(names, srv.Name)
-		expOutBuilder.WriteString(fmt.Sprintf("Server %s deleted\n", srv.Name))
 		fx.Client.ServerClient.EXPECT().
 			Get(gomock.Any(), srv.Name).
 			Return(srv, nil, nil)
@@ -81,14 +79,13 @@ func TestDeleteMultiple(t *testing.T) {
 			Return(&hcloud.ServerDeleteResult{
 				Action: &hcloud.Action{ID: int64(i)},
 			}, nil, nil)
-		fx.ActionWaiter.EXPECT().
-			WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: int64(i)})
+		actions = append(actions, &hcloud.Action{ID: int64(i)})
 	}
+	fx.ActionWaiter.EXPECT().WaitForActions(gomock.Any(), gomock.Any(), actions)
 
 	out, errOut, err := fx.Run(cmd, names)
-	expOut := expOutBuilder.String()
 
 	assert.NoError(t, err)
 	assert.Empty(t, errOut)
-	assert.Equal(t, expOut, out)
+	assert.Equal(t, "Servers test1, test2, test3 deleted\n", out)
 }

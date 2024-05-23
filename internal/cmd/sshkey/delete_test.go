@@ -1,8 +1,6 @@
 package sshkey_test
 
 import (
-	"fmt"
-	"strings"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -63,12 +61,9 @@ func TestDeleteMultiple(t *testing.T) {
 		},
 	}
 
-	expOutBuilder := strings.Builder{}
-
 	var names []string
 	for _, key := range keys {
 		names = append(names, key.Name)
-		expOutBuilder.WriteString(fmt.Sprintf("SSH Key %s deleted\n", key.Name))
 		fx.Client.SSHKeyClient.EXPECT().
 			Get(gomock.Any(), key.Name).
 			Return(key, nil, nil)
@@ -78,9 +73,8 @@ func TestDeleteMultiple(t *testing.T) {
 	}
 
 	out, errOut, err := fx.Run(cmd, names)
-	expOut := expOutBuilder.String()
 
 	assert.NoError(t, err)
 	assert.Empty(t, errOut)
-	assert.Equal(t, expOut, out)
+	assert.Equal(t, "SSH Keys test1, test2, test3 deleted\n", out)
 }

@@ -11,16 +11,15 @@ import (
 
 var DeleteCmd = base.DeleteCmd{
 	ResourceNameSingular: "Network",
+	ResourceNamePlural:   "Networks",
 	ShortDescription:     "Delete a network",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Network().Names },
 	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
 		return s.Client().Network().Get(s, idOrName)
 	},
-	Delete: func(s state.State, cmd *cobra.Command, resource interface{}) error {
+	Delete: func(s state.State, cmd *cobra.Command, resource interface{}) (*hcloud.Action, error) {
 		network := resource.(*hcloud.Network)
-		if _, err := s.Client().Network().Delete(s, network); err != nil {
-			return err
-		}
-		return nil
+		_, err := s.Client().Network().Delete(s, network)
+		return nil, err
 	},
 }

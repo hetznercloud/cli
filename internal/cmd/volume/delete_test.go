@@ -1,8 +1,6 @@
 package volume_test
 
 import (
-	"fmt"
-	"strings"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -63,12 +61,9 @@ func TestDeleteMultiple(t *testing.T) {
 		},
 	}
 
-	expOutBuilder := strings.Builder{}
-
 	var names []string
 	for _, v := range volumes {
 		names = append(names, v.Name)
-		expOutBuilder.WriteString(fmt.Sprintf("Volume %s deleted\n", v.Name))
 		fx.Client.VolumeClient.EXPECT().
 			Get(gomock.Any(), v.Name).
 			Return(v, nil, nil)
@@ -78,9 +73,8 @@ func TestDeleteMultiple(t *testing.T) {
 	}
 
 	out, errOut, err := fx.Run(cmd, names)
-	expOut := expOutBuilder.String()
 
 	assert.NoError(t, err)
 	assert.Empty(t, errOut)
-	assert.Equal(t, expOut, out)
+	assert.Equal(t, "Volumes test1, test2, test3 deleted\n", out)
 }

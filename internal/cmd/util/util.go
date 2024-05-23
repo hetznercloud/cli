@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"reflect"
 	"sort"
 	"strings"
 	"text/template"
@@ -208,4 +209,27 @@ func AddGroup(cmd *cobra.Command, id string, title string, groupCmds ...*cobra.C
 // ToKebabCase converts the passed string to kebab-case.
 func ToKebabCase(s string) string {
 	return strings.ReplaceAll(strings.ToLower(s), " ", "-")
+}
+
+func IsNil(v any) bool {
+	if v == nil {
+		return true
+	}
+	val := reflect.ValueOf(v)
+	switch val.Kind() {
+	case reflect.Chan, reflect.Func, reflect.Interface, reflect.Map, reflect.Ptr, reflect.Slice:
+		return val.IsNil()
+	default:
+		return false
+	}
+}
+
+func FilterNil[T any](values []T) []T {
+	var filtered []T
+	for _, v := range values {
+		if !IsNil(v) {
+			filtered = append(filtered, v)
+		}
+	}
+	return filtered
 }

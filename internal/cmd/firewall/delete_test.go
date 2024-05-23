@@ -1,8 +1,6 @@
 package firewall_test
 
 import (
-	"fmt"
-	"strings"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -63,12 +61,9 @@ func TestDeleteMultiple(t *testing.T) {
 		},
 	}
 
-	expOutBuilder := strings.Builder{}
-
 	var names []string
 	for _, fw := range firewalls {
 		names = append(names, fw.Name)
-		expOutBuilder.WriteString(fmt.Sprintf("firewall %s deleted\n", fw.Name))
 		fx.Client.FirewallClient.EXPECT().
 			Get(gomock.Any(), fw.Name).
 			Return(fw, nil, nil)
@@ -78,9 +73,8 @@ func TestDeleteMultiple(t *testing.T) {
 	}
 
 	out, errOut, err := fx.Run(cmd, names)
-	expOut := expOutBuilder.String()
 
 	assert.NoError(t, err)
 	assert.Empty(t, errOut)
-	assert.Equal(t, expOut, out)
+	assert.Equal(t, "firewalls test1, test2, test3 deleted\n", out)
 }

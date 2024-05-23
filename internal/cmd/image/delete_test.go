@@ -1,8 +1,6 @@
 package image_test
 
 import (
-	"fmt"
-	"strings"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -63,12 +61,9 @@ func TestDeleteMultiple(t *testing.T) {
 		},
 	}
 
-	expOutBuilder := strings.Builder{}
-
 	var names []string
 	for _, img := range images {
 		names = append(names, img.Name)
-		expOutBuilder.WriteString(fmt.Sprintf("image %s deleted\n", img.Name))
 		fx.Client.ImageClient.EXPECT().
 			Get(gomock.Any(), img.Name).
 			Return(img, nil, nil)
@@ -78,9 +73,8 @@ func TestDeleteMultiple(t *testing.T) {
 	}
 
 	out, errOut, err := fx.Run(cmd, names)
-	expOut := expOutBuilder.String()
 
 	assert.NoError(t, err)
 	assert.Empty(t, errOut)
-	assert.Equal(t, expOut, out)
+	assert.Equal(t, "images test1, test2, test3 deleted\n", out)
 }

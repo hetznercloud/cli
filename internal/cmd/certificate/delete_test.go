@@ -1,8 +1,6 @@
 package certificate_test
 
 import (
-	"fmt"
-	"strings"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -63,12 +61,9 @@ func TestDeleteMultiple(t *testing.T) {
 		},
 	}
 
-	expOutBuilder := strings.Builder{}
-
 	var names []string
 	for _, cert := range certs {
 		names = append(names, cert.Name)
-		expOutBuilder.WriteString(fmt.Sprintf("certificate %s deleted\n", cert.Name))
 		fx.Client.CertificateClient.EXPECT().
 			Get(gomock.Any(), cert.Name).
 			Return(cert, nil, nil)
@@ -78,9 +73,8 @@ func TestDeleteMultiple(t *testing.T) {
 	}
 
 	out, errOut, err := fx.Run(cmd, names)
-	expOut := expOutBuilder.String()
 
 	assert.NoError(t, err)
 	assert.Empty(t, errOut)
-	assert.Equal(t, expOut, out)
+	assert.Equal(t, "certificates test1, test2, test3 deleted\n", out)
 }
