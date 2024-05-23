@@ -46,10 +46,11 @@ func (c *state) Config() config.Config {
 }
 
 func (c *state) newClient() hcapi2.Client {
-	var opts []hcloud.ClientOption
+	opts := []hcloud.ClientOption{
+		hcloud.WithToken(config.OptionToken.Get(c.config)),
+		hcloud.WithApplication("hcloud-cli", version.Version),
+	}
 
-	token := config.OptionToken.Get(c.config)
-	opts = append(opts, hcloud.WithToken(token))
 	if ep := config.OptionEndpoint.Get(c.config); ep != "" {
 		opts = append(opts, hcloud.WithEndpoint(ep))
 	}
@@ -66,6 +67,5 @@ func (c *state) newClient() hcapi2.Client {
 		opts = append(opts, hcloud.WithBackoffFunc(hcloud.ConstantBackoff(pollInterval)))
 	}
 
-	opts = append(opts, hcloud.WithApplication("hcloud-cli", version.Version))
 	return hcapi2.NewClient(opts...)
 }
