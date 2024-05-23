@@ -3,7 +3,8 @@ package base
 import (
 	"errors"
 	"fmt"
-	"reflect"
+	"strings"
+	"sync"
 
 	"github.com/spf13/cobra"
 
@@ -17,11 +18,12 @@ import (
 // DeleteCmd allows defining commands for deleting a resource.
 type DeleteCmd struct {
 	ResourceNameSingular string // e.g. "server"
+	ResourceNamePlural   string // e.g. "servers"
 	ShortDescription     string
 	NameSuggestions      func(client hcapi2.Client) func() []string
 	AdditionalFlags      func(*cobra.Command)
 	Fetch                func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error)
-	Delete               func(s state.State, cmd *cobra.Command, resource interface{}) error
+	Delete               func(s state.State, cmd *cobra.Command, resource interface{}) (*hcloud.Action, error)
 }
 
 // CobraCommand creates a command that can be registered with cobra.
@@ -49,29 +51,50 @@ func (dc *DeleteCmd) CobraCommand(s state.State) *cobra.Command {
 	return cmd
 }
 
-// Run executes a describe command.
+// Run executes a delete command.
 func (dc *DeleteCmd) Run(s state.State, cmd *cobra.Command, args []string) error {
-	var cmdErr error
 
-	for _, idOrName := range args {
-		resource, _, err := dc.Fetch(s, cmd, idOrName)
-		if err != nil {
-			cmdErr = errors.Join(cmdErr, err)
-			continue
-		}
+	wg := sync.WaitGroup{}
+	wg.Add(len(args))
+	actions, errs :=
+		make([]*hcloud.Action, len(args)),
+		make([]error, len(args))
 
-		// resource is an interface that always has a type, so the interface is never nil
-		// (i.e. == nil) is always false.
-		if reflect.ValueOf(resource).IsNil() {
-			cmdErr = errors.Join(cmdErr, fmt.Errorf("%s not found: %s", dc.ResourceNameSingular, idOrName))
-			continue
-		}
-
-		if err = dc.Delete(s, cmd, resource); err != nil {
-			cmdErr = errors.Join(cmdErr, fmt.Errorf("deleting %s %s failed: %s", dc.ResourceNameSingular, idOrName, err))
-		}
-		cmd.Printf("%s %v deleted\n", dc.ResourceNameSingular, idOrName)
+	for i, idOrName := range args {
+		i, idOrName := i, idOrName
+		go func() {
+			defer wg.Done()
+			resource, _, err := dc.Fetch(s, cmd, idOrName)
+			if err != nil {
+				errs[i] = err
+				return
+			}
+			if util.IsNil(resource) {
+				errs[i] = fmt.Errorf("%s not found: %s", dc.ResourceNameSingular, idOrName)
+				return
+			}
+			actions[i], errs[i] = dc.Delete(s, cmd, resource)
+		}()
 	}
 
-	return cmdErr
+	wg.Wait()
+	filtered := util.FilterNil(actions)
+	var err error
+	if len(filtered) > 0 {
+		err = s.WaitForActions(cmd, s, util.FilterNil(actions)...)
+	}
+
+	var actuallyDeleted []string
+	for i, idOrName := range args {
+		if errs[i] == nil {
+			actuallyDeleted = append(actuallyDeleted, idOrName)
+		}
+	}
+
+	if len(actuallyDeleted) == 1 {
+		cmd.Printf("%s %s deleted\n", dc.ResourceNameSingular, actuallyDeleted[0])
+	} else if len(actuallyDeleted) > 1 {
+		cmd.Printf("%s %s deleted\n", dc.ResourceNamePlural, strings.Join(actuallyDeleted, ", "))
+	}
+	return errors.Join(append(errs, err)...)
 }

@@ -14,6 +14,7 @@ import (
 
 var fakeDeleteCmd = &base.DeleteCmd{
 	ResourceNameSingular: "Fake resource",
+	ResourceNamePlural:   "Fake resources",
 	Delete: func(s state.State, cmd *cobra.Command, resource interface{}) error {
 		cmd.Println("Deleting fake resource")
 		return nil

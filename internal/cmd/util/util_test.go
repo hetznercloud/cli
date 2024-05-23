@@ -271,3 +271,26 @@ func TestToKebabCase(t *testing.T) {
 	assert.Equal(t, "foo-bar", util.ToKebabCase("Foo Bar"))
 	assert.Equal(t, "foo", util.ToKebabCase("Foo"))
 }
+
+func TestIsNil(t *testing.T) {
+	assert.True(t, util.IsNil(nil))
+	assert.True(t, util.IsNil((*int)(nil)))
+	assert.True(t, util.IsNil((chan int)(nil)))
+	assert.True(t, util.IsNil((map[int]int)(nil)))
+	assert.True(t, util.IsNil(([]int)(nil)))
+	assert.True(t, util.IsNil((func())(nil)))
+	assert.True(t, util.IsNil((interface{})(nil)))
+	assert.True(t, util.IsNil((error)(nil)))
+	assert.False(t, util.IsNil(0))
+	assert.False(t, util.IsNil(""))
+	assert.False(t, util.IsNil([]int{}))
+	assert.False(t, util.IsNil(struct{}{}))
+}
+
+func TestFilterNil(t *testing.T) {
+	type testStruct struct {
+		a, b, c int
+	}
+	assert.Equal(t, []interface{}{0, ""}, util.FilterNil([]interface{}{0, nil, ""}))
+	assert.Equal(t, []*testStruct{{1, 2, 3}, {}}, util.FilterNil([]*testStruct{{1, 2, 3}, nil, {}, (*testStruct)(nil)}))
+}
