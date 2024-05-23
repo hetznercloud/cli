@@ -2,6 +2,8 @@ package base
 
 import (
 	"fmt"
+	"io"
+	"os"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -10,6 +12,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
+	"github.com/hetznercloud/cli/internal/state/config"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
@@ -20,13 +23,15 @@ type ListCmd struct {
 	DefaultColumns     []string
 	Fetch              func(state.State, *pflag.FlagSet, hcloud.ListOpts, []string) ([]interface{}, error)
 	AdditionalFlags    func(*cobra.Command)
-	OutputTable        func(client hcapi2.Client) *output.Table
+	OutputTable        func(t *output.Table, client hcapi2.Client)
 	Schema             func([]interface{}) interface{}
 }
 
 // CobraCommand creates a command that can be registered with cobra.
 func (lc *ListCmd) CobraCommand(s state.State) *cobra.Command {
-	outputColumns := lc.OutputTable(s.Client()).Columns()
+	t := output.NewTable(io.Discard)
+	lc.OutputTable(t, s.Client())
+	outputColumns := t.Columns()
 
 	cmd := &cobra.Command{
 		Use:   "list [options]",
@@ -82,14 +87,19 @@ func (lc *ListCmd) Run(s state.State, cmd *cobra.Command) error {
 		cols = outOpts["columns"]
 	}
 
-	table := lc.OutputTable(s.Client())
+	out := cmd.OutOrStdout()
+	if config.OptionQuiet.Get(s.Config()) {
+		// if the quiet option is set, write to stdout anyway, since outputting nothing would not make sense
+		out = os.Stdout
+	}
+
+	t := output.NewTable(out)
+	lc.OutputTable(t, s.Client())
 	if !outOpts.IsSet("noheader") {
-		table.WriteHeader(cols)
+		t.WriteHeader(cols)
 	}
 	for _, resource := range resources {
-		table.Write(cols, resource)
+		t.Write(cols, resource)
 	}
-	table.Flush()
-
-	return nil
+	return t.Flush()
 }
