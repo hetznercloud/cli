@@ -27,7 +27,7 @@ func NewRemoveCommand(s state.State) *cobra.Command {
 			cmpl.SuggestCandidatesF(func() []string {
 				var keys []string
 				for key, opt := range config.Options {
-					if opt.HasFlag(config.OptionFlagPreference) {
+					if opt.IsSlice() && opt.HasFlag(config.OptionFlagPreference) {
 						keys = append(keys, key)
 					}
 				}
