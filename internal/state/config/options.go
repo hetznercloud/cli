@@ -18,7 +18,7 @@ type OptionFlag int
 const (
 	// OptionFlagPreference indicates that the option can be set in the config file, globally or per context (in the preferences section)
 	OptionFlagPreference OptionFlag = 1 << iota
-	// OptionFlagConfig indicates that the option can be set in the config file, but only globally or per context (not in the preferences section)
+	// OptionFlagConfig indicates that the option can be configured inside the configuration file
 	OptionFlagConfig
 	// OptionFlagPFlag indicates that the option can be set via a command line flag
 	OptionFlagPFlag
