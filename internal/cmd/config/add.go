@@ -92,7 +92,7 @@ func runAdd(s state.State, cmd *cobra.Command, args []string) error {
 		_, _ = fmt.Fprintln(os.Stderr, "Warning: some values were already present or duplicate")
 	}
 
-	if util.IsNil(ctx) {
+	if global {
 		cmd.Printf("Added '%v' to '%s' globally\n", added, key)
 	} else {
 		cmd.Printf("Added '%v' to '%s' in context '%s'\n", added, key, ctx.Name())

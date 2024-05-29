@@ -95,7 +95,7 @@ func runRemove(s state.State, cmd *cobra.Command, args []string) error {
 		_, _ = fmt.Fprintln(os.Stderr, "Warning: some values were not removed")
 	}
 
-	if util.IsNil(ctx) {
+	if global {
 		cmd.Printf("Removed '%v' from '%s' globally\n", removed, key)
 	} else {
 		cmd.Printf("Removed '%v' from '%s' in context '%s'\n", removed, key, ctx.Name())

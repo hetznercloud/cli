@@ -112,7 +112,7 @@ func runSet(s state.State, cmd *cobra.Command, args []string) error {
 
 	prefs.Set(key, val)
 
-	if util.IsNil(ctx) {
+	if global {
 		cmd.Printf("Set '%s' to '%v' globally\n", key, val)
 	} else {
 		cmd.Printf("Set '%s' to '%v' in context '%s'\n", key, val, ctx.Name())

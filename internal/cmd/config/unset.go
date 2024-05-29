@@ -67,7 +67,7 @@ func runUnset(s state.State, cmd *cobra.Command, args []string) error {
 	if !ok {
 		_, _ = fmt.Fprintf(os.Stderr, "Warning: key '%s' was not set\n", key)
 	}
-	if util.IsNil(ctx) {
+	if global {
 		cmd.Printf("Unset '%s' globally\n", key)
 	} else {
 		cmd.Printf("Unset '%s' in context '%s'\n", key, ctx.Name())
