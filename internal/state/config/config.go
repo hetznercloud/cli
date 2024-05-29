@@ -153,10 +153,7 @@ func (cfg *config) ParseConfigFile(f any) error {
 	}
 
 	// read active context from viper
-	activeContext := cfg.schema.ActiveContext
-	if ctx := OptionContext.Get(cfg); ctx != "" {
-		activeContext = ctx
-	}
+	activeContext := OptionContext.Get(cfg)
 
 	cfg.contexts = cfg.schema.Contexts
 	for i, ctx := range cfg.contexts {
@@ -166,8 +163,8 @@ func (cfg *config) ParseConfigFile(f any) error {
 		}
 	}
 
-	if cfg.schema.ActiveContext != "" && cfg.activeContext == nil {
-		_, _ = fmt.Fprintf(os.Stderr, "Warning: active context %q not found\n", cfg.schema.ActiveContext)
+	if activeContext != "" && cfg.activeContext == nil {
+		_, _ = fmt.Fprintf(os.Stderr, "Warning: active context %q not found\n", activeContext)
 	}
 
 	// merge global preferences first so that contexts can override them
