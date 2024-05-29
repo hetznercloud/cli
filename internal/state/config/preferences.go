@@ -13,9 +13,8 @@ import (
 type Preferences map[string]any
 
 func (p Preferences) Get(key string) (any, bool) {
-	configKey := strings.ReplaceAll(strings.ToLower(key), "-", "_")
 	var m map[string]any = p
-	path := strings.Split(configKey, ".")
+	path := splitPath(key)
 	for i, key := range path {
 		if i == len(path)-1 {
 			val, ok := m[key]
@@ -31,9 +30,8 @@ func (p Preferences) Get(key string) (any, bool) {
 }
 
 func (p Preferences) Set(key string, val any) {
-	configKey := strings.ReplaceAll(strings.ToLower(key), "-", "_")
 	var m map[string]any = p
-	path := strings.Split(configKey, ".")
+	path := splitPath(key)
 	for i, key := range path {
 		if i == len(path)-1 {
 			m[key] = val
@@ -50,9 +48,8 @@ func (p Preferences) Set(key string, val any) {
 }
 
 func (p Preferences) Unset(key string) bool {
-	configKey := strings.ReplaceAll(strings.ToLower(key), "-", "_")
 	var m map[string]any = p
-	path := strings.Split(configKey, ".")
+	path := splitPath(key)
 	parents := make([]map[string]any, 0, len(path)-1)
 	for i, key := range path {
 		parents = append(parents, m)
@@ -113,4 +110,9 @@ func validate(m map[string]any, prefix string) error {
 		}
 	}
 	return nil
+}
+
+func splitPath(key string) []string {
+	configKey := strings.ReplaceAll(strings.ToLower(key), "-", "_")
+	return strings.Split(configKey, ".")
 }
