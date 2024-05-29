@@ -20,20 +20,22 @@ type Config interface {
 	// Write writes the config to the given writer. If w is nil, the config is written to the config file.
 	Write(w io.Writer) error
 
-	// Reset resets the config by creating a new viper instance and a new FlagSet
-	Reset()
 	// ParseConfigFile parses the given config file f, environment variables and flags and reads the values into the config
 	ParseConfigFile(f any) error
 
 	// ActiveContext returns the currently active context
 	ActiveContext() Context
 	// SetActiveContext sets the currently active context and also modifies the schema to reflect this change
-	// This does NOT change any configuration values. Use [ReadConfig] to re-read the newly set active context.
+	// This does NOT change any configuration values. Use [config.Config.UseConfig] to read the actual context into memory.
 	SetActiveContext(Context)
 	// Contexts returns a list of currently loaded contexts
 	Contexts() []Context
 	// SetContexts sets the list of contexts and also modifies the schema to reflect this change
 	SetContexts([]Context)
+	// UseContext temporarily switches context to the given context name and reloads the config, loading the values of the given context.
+	// If name is nil, the context is unloaded and only the global preferences are used.
+	// This change will not be written to the schema, so `active_context` will not be changed after writing.
+	UseContext(name *string) error
 
 	// Preferences returns the global preferences (as opposed to [Context.Preferences])
 	Preferences() Preferences
@@ -66,11 +68,11 @@ type config struct {
 
 func NewConfig() Config {
 	cfg := &config{}
-	cfg.Reset()
+	cfg.reset()
 	return cfg
 }
 
-func (cfg *config) Reset() {
+func (cfg *config) reset() {
 	cfg.v = viper.New()
 	cfg.v.SetConfigType("toml")
 	cfg.v.SetEnvPrefix("HCLOUD")
@@ -255,6 +257,16 @@ func (cfg *config) SetContexts(contexts []Context) {
 		}
 	}
 	cfg.schema.Contexts = cfg.contexts
+}
+
+func (cfg *config) UseContext(name *string) error {
+	if name == nil {
+		OptionContext.OverrideAny(cfg, nil)
+	} else {
+		OptionContext.OverrideAny(cfg, *name)
+	}
+	cfg.reset()
+	return ReadConfig(cfg, nil)
 }
 
 func (cfg *config) Preferences() Preferences {

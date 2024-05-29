@@ -31,10 +31,7 @@ func runGet(s state.State, cmd *cobra.Command, args []string) error {
 	allowSensitive, _ := cmd.Flags().GetBool("allow-sensitive")
 
 	if global {
-		// set context to nil and then reload
-		config.OptionContext.OverrideAny(s.Config(), nil)
-		s.Config().Reset()
-		if err := config.ReadConfig(s.Config(), nil); err != nil {
+		if err := s.Config().UseContext(nil); err != nil {
 			return err
 		}
 	}

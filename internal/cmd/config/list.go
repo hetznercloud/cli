@@ -39,10 +39,7 @@ func runList(s state.State, cmd *cobra.Command, _ []string) error {
 	outOpts := output.FlagsForCommand(cmd)
 
 	if global {
-		// set context to nil and then reload
-		config.OptionContext.OverrideAny(s.Config(), nil)
-		s.Config().Reset()
-		if err := config.ReadConfig(s.Config(), nil); err != nil {
+		if err := s.Config().UseContext(nil); err != nil {
 			return err
 		}
 	}
