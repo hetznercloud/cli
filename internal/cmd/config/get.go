@@ -40,14 +40,8 @@ func runGet(s state.State, cmd *cobra.Command, args []string) error {
 	}
 
 	key := args[0]
-	var opt config.IOption
-	for name, o := range config.Options {
-		if name == key {
-			opt = o
-			break
-		}
-	}
-	if opt == nil {
+	opt, ok := config.Options[key]
+	if !ok {
 		return fmt.Errorf("unknown key: %s", key)
 	}
 
