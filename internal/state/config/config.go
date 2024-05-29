@@ -20,18 +20,31 @@ type Config interface {
 	// Write writes the config to the given writer. If w is nil, the config is written to the config file.
 	Write(w io.Writer) error
 
+	// Reset resets the config by creating a new viper instance and a new FlagSet
 	Reset()
+	// ParseConfigFile parses the given config file f, environment variables and flags and reads the values into the config
 	ParseConfigFile(f any) error
 
+	// ActiveContext returns the currently active context
 	ActiveContext() Context
+	// SetActiveContext sets the currently active context and also modifies the schema to reflect this change
+	// This does NOT change any configuration values. Use [ReadConfig] to re-read the newly set active context.
 	SetActiveContext(Context)
+	// Contexts returns a list of currently loaded contexts
 	Contexts() []Context
+	// SetContexts sets the list of contexts and also modifies the schema to reflect this change
 	SetContexts([]Context)
 
+	// Preferences returns the global preferences (as opposed to [Context.Preferences])
 	Preferences() Preferences
+	// Viper returns the currently active instance of viper
 	Viper() *viper.Viper
+	// FlagSet returns the FlagSet that options are bound to
 	FlagSet() *pflag.FlagSet
+
+	// Path returns the path to the used config file
 	Path() string
+	// Schema returns the TOML schema of the config file as a struct
 	Schema() *Schema
 }
 

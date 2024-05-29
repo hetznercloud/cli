@@ -31,18 +31,31 @@ const (
 )
 
 type IOption interface {
+	// addToFlagSet adds the option to the provided flag set
 	addToFlagSet(fs *pflag.FlagSet)
+	// GetName returns the name of the option
 	GetName() string
+	// GetDescription returns the description of the option
 	GetDescription() string
+	// ConfigKey returns the key used in the config file. If the option is not configurable via the config file, an empty string is returned
 	ConfigKey() string
+	// EnvVar returns the name of the environment variable. If the option is not configurable via an environment variable, an empty string is returned
 	EnvVar() string
+	// FlagName returns the name of the flag. If the option is not configurable via a flag, an empty string is returned
 	FlagName() string
+	// HasFlag returns true if the option has the provided flag set
 	HasFlag(src OptionFlag) bool
+	// GetAsAny reads the option value from the config and returns it as an any
 	GetAsAny(c Config) any
+	// OverrideAny sets the option value in the config to the provided any value
 	OverrideAny(c Config, v any)
+	// Changed returns true if the option has been changed from the default
 	Changed(c Config) bool
+	// Completions returns a list of possible completions for the option (for example for boolean options: "true", "false")
 	Completions() []string
+	// IsSlice returns true if the option is a slice
 	IsSlice() bool
+	// T returns an instance of the type of the option as an any
 	T() any
 }
 
