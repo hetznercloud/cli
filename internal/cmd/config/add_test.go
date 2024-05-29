@@ -12,6 +12,7 @@ import (
 )
 
 func TestAdd(t *testing.T) {
+	os.Clearenv()
 
 	_, deleteArrayOption := config.NewTestOption[[]string](
 		"array-option",

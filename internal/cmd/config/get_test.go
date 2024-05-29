@@ -1,6 +1,7 @@
 package config_test
 
 import (
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -11,6 +12,7 @@ import (
 )
 
 func TestGet(t *testing.T) {
+	os.Clearenv()
 
 	_, deleteDeeplyNestedOption := config.NewTestOption(
 		"deeply.nested.option",

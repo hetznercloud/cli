@@ -1,6 +1,7 @@
 package config_test
 
 import (
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -11,6 +12,7 @@ import (
 )
 
 func TestRemove(t *testing.T) {
+	os.Clearenv()
 
 	_, deleteArrayOption := config.NewTestOption[[]string](
 		"array-option",

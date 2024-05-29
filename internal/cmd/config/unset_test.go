@@ -12,6 +12,7 @@ import (
 )
 
 func TestUnset(t *testing.T) {
+	os.Clearenv()
 
 	_, deleteNestedOption := config.NewTestOption(
 		"nested.option",

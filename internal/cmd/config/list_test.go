@@ -12,6 +12,7 @@ import (
 )
 
 func TestList(t *testing.T) {
+	os.Clearenv()
 
 	_, deleteDeeplyNestedOption := config.NewTestOption(
 		"deeply.nested.option",
