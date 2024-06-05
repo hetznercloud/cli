@@ -1,9 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"slices"
 	"strings"
+	"time"
 
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/jedib0t/go-pretty/v6/text"
@@ -40,7 +42,7 @@ func generateTable(outFile string, filterFlag config.OptionFlag, hasFlag bool) {
 	})
 
 	t.SetOutputMirror(f)
-	t.AppendHeader(table.Row{"Option", "Description", "Config key", "Environment variable", "Flag"})
+	t.AppendHeader(table.Row{"Option", "Description", "Type", "Config key", "Environment variable", "Flag"})
 
 	var opts []config.IOption
 	for _, opt := range config.Options {
@@ -55,9 +57,26 @@ func generateTable(outFile string, filterFlag config.OptionFlag, hasFlag bool) {
 	})
 
 	for _, opt := range opts {
-		t.AppendRow(table.Row{opt.GetName(), opt.GetDescription(), opt.ConfigKey(), opt.EnvVar(), opt.FlagName()})
+		t.AppendRow(table.Row{opt.GetName(), opt.GetDescription(), getTypeName(opt), opt.ConfigKey(), opt.EnvVar(), opt.FlagName()})
 		t.AppendSeparator()
 	}
 
 	t.Render()
+}
+
+func getTypeName(opt config.IOption) string {
+	switch t := opt.T().(type) {
+	case bool:
+		return "boolean"
+	case int:
+		return "integer"
+	case string:
+		return "string"
+	case time.Duration:
+		return "duration"
+	case []string:
+		return "string list"
+	default:
+		panic(fmt.Sprintf("missing type name for %T", t))
+	}
 }

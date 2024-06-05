@@ -29,6 +29,13 @@ The hierarchy for configuration sources is as follows (from highest to lowest pr
 4. Configuration file (global)
 5. Default values
 
+Option values can have following types:
+ - string
+ - integer
+ - boolean (true/false, yes/no)
+ - duration (in the Go duration format, e.g. "1h30m")
+ - any of the above as a list
+
 Most options are 'preferences' - these options can be set globally and can additionally be overridden
 for each context. Below is a list of all non-preference options:
 
@@ -36,7 +43,7 @@ for each context. Below is a list of all non-preference options:
 			`
 Since the above options are not preferences, they cannot be modified with 'hcloud config set' or 
 'hcloud config unset'. However, you are able to retrieve them using 'hcloud config get' and 'hcloud config list'.
-Following options are preferences and can be used with these commands:
+Following options are preferences and can be used with set/unset/add/remove:
 
 ` + preferenceOptions +
 			`
