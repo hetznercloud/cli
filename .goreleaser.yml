@@ -3,42 +3,28 @@ before:
     - go mod tidy
 
 builds:
-  - id: hcloud-build
-    main: ./cmd/hcloud/main.go
-    binary: hcloud
-    ldflags:
-      - -w
-      - -X {{ .ModulePath }}/internal/version.version={{ .Version }}
-      - -X {{ .ModulePath }}/internal/version.versionPrerelease={{- if .IsSnapshot -}}dev+{{ .ShortCommit }}{{- end -}}
-    env:
-      - CGO_ENABLED=0
-    goos:
-      - freebsd
-      - windows
-      - linux
-    goarch:
-      - amd64
-      - arm
-      - arm64
-      - "386"
-    goarm:
-      - "6"
-      - "7"
+  - <<: &build_defaults
+      main: ./cmd/hcloud/main.go
+      binary: hcloud
+      flags:
+        - -trimpath
+      ldflags:
+        - -s
+        - -w
+        - -X {{ .ModulePath }}/internal/version.version={{ .Version }}
+        - -X {{ .ModulePath }}/internal/version.versionPrerelease={{- if .IsSnapshot -}}dev+{{ .ShortCommit }}{{- end -}}
+      env:
+        - CGO_ENABLED=0
 
-  - id: hcloud-build-darwin
-    main: ./cmd/hcloud/main.go
-    binary: hcloud
-    ldflags:
-      - -w
-      - -X {{ .ModulePath }}/internal/version.version={{ .Version }}
-      - -X {{ .ModulePath }}/internal/version.versionPrerelease={{- if .IsSnapshot -}}dev+{{ .ShortCommit }}{{- end -}}
-    env:
-      - CGO_ENABLED=0
-    goos:
-      - darwin
-    goarch:
-      - amd64
-      - arm64
+    id: hcloud-build
+    goos: [freebsd, windows, linux]
+    goarch: [amd64, arm, arm64, "386"]
+    goarm: ["6", "7"]
+
+  - <<: *build_defaults
+    id: hcloud-build-darwin
+    goos: [darwin]
+    goarch: [amd64, arm64]
     hooks:
       post:
         - cmd: >
