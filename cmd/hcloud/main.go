@@ -39,7 +39,7 @@ func init() {
 
 func main() {
 
-	cfg := config.NewConfig()
+	cfg := config.New()
 	if err := config.ReadConfig(cfg, nil); err != nil {
 		log.Fatalf("unable to read config file \"%s\": %s\n", cfg.Path(), err)
 	}

@@ -66,7 +66,7 @@ type config struct {
 	schema        Schema
 }
 
-func NewConfig() Config {
+func New() Config {
 	cfg := &config{}
 	cfg.reset()
 	return cfg

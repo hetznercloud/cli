@@ -34,7 +34,7 @@ func NewFixture(t *testing.T) *Fixture {
 func NewFixtureWithConfigFile(t *testing.T, f any) *Fixture {
 	ctrl := gomock.NewController(t)
 
-	cfg := config.NewConfig()
+	cfg := config.New()
 	if err := config.ReadConfig(cfg, f); err != nil {
 		t.Fatal(err)
 	}
