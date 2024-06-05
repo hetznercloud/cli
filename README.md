@@ -160,7 +160,7 @@ context-specific preferences. Contexts always store a token and can optionally h
 additional preferences which take precedence over the globally set preferences.
 
 However, a config file is not required. If no config file is found, the CLI will
-use the default configuration. Overriding options using environment variables allows 
+use the default configuration. Overriding options using environment variables allows the
 hcloud CLI to function in a stateless way. For example, setting `HCLOUD_TOKEN` is
 already enough in many cases.
 
