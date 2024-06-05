@@ -40,7 +40,7 @@ func init() {
 func main() {
 
 	cfg := config.New()
-	if err := config.ReadConfig(cfg, nil); err != nil {
+	if err := cfg.Read(nil); err != nil {
 		log.Fatalf("unable to read config file \"%s\": %s\n", cfg.Path(), err)
 	}
 

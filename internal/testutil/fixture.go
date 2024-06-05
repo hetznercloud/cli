@@ -30,12 +30,12 @@ func NewFixture(t *testing.T) *Fixture {
 }
 
 // NewFixtureWithConfigFile creates a new Fixture with the given config file.
-// See Config#ParseConfigFile for the supported types of f.
+// See [config.Config.Read] for the supported types of f.
 func NewFixtureWithConfigFile(t *testing.T, f any) *Fixture {
 	ctrl := gomock.NewController(t)
 
 	cfg := config.New()
-	if err := config.ReadConfig(cfg, f); err != nil {
+	if err := cfg.Read(f); err != nil {
 		t.Fatal(err)
 	}
 

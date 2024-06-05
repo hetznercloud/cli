@@ -20,8 +20,14 @@ type Config interface {
 	// Write writes the config to the given writer. If w is nil, the config is written to the config file.
 	Write(w io.Writer) error
 
-	// ParseConfigFile parses the given config file f, environment variables and flags and reads the values into the config
-	ParseConfigFile(f any) error
+	// Read reads the config from the flags, env and the given config file f.
+	// f can be of the following types:
+	// - nil: the default config file is used
+	// - string: the path to the config file
+	// - io.Reader: the config is read from the reader
+	// - []byte: the config is read from the byte slice
+	// - any other type: an error is returned
+	Read(f any) error
 
 	// ActiveContext returns the currently active context
 	ActiveContext() Context
@@ -87,27 +93,14 @@ func (cfg *config) reset() {
 	}
 }
 
-// ReadConfig reads the config from the flags, env and the given config file f.
-// See [ParseConfigFile] for the supported types of f.
-func ReadConfig(cfg Config, f any) error {
+func (cfg *config) Read(f any) error {
 
 	// error is ignored since invalid flags are already handled by cobra
-	_ = cfg.FlagSet().Parse(os.Args[1:])
+	_ = cfg.fs.Parse(os.Args[1:])
 
 	// load env already so we can determine the active context
-	cfg.Viper().AutomaticEnv()
+	cfg.v.AutomaticEnv()
 
-	return cfg.ParseConfigFile(f)
-}
-
-// ParseConfigFile parses the given config file f.
-// f can be of the following types:
-// - nil: the default config file is used
-// - string: the path to the config file
-// - io.Reader: the config is read from the reader
-// - []byte: the config is read from the byte slice
-// - any other type: an error is returned
-func (cfg *config) ParseConfigFile(f any) error {
 	var (
 		cfgBytes []byte
 		err      error
@@ -266,7 +259,7 @@ func (cfg *config) UseContext(name *string) error {
 		OptionContext.OverrideAny(cfg, *name)
 	}
 	cfg.reset()
-	return ReadConfig(cfg, nil)
+	return cfg.Read(nil)
 }
 
 func (cfg *config) Preferences() Preferences {
