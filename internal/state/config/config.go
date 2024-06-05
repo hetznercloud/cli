@@ -189,7 +189,7 @@ func (cfg *config) Write(w io.Writer) (err error) {
 		if err = os.MkdirAll(dir, 0750); err != nil {
 			return err
 		}
-		f, err := os.OpenFile(cfg.path, os.O_WRONLY|os.O_CREATE|os.O_APPEND|os.O_TRUNC, 0600)
+		f, err := os.OpenFile(cfg.path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600)
 		if err != nil {
 			return err
 		}
