@@ -46,7 +46,7 @@ func newTerminalProgress(output io.Writer, message string, resources string) *te
 	p := &terminalProgress{pb.New(100)}
 	p.el.SetWriter(output)
 	p.el.SetTemplateString(termProgressRunning)
-	p.el.Set("message", fmt.Sprintf("%-60s", message))
+	p.el.Set("message", fmt.Sprintf("%-40s", message))
 	p.el.Set("resources", resources)
 	return p
 }

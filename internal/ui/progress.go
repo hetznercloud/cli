@@ -11,7 +11,7 @@ type ProgressGroup interface {
 }
 
 func NewProgressGroup(output io.Writer) ProgressGroup {
-	if StdoutIsTerminal() {
+	if StdoutIsTerminal() && TerminalWidth() > 80 {
 		return newTerminalProgressGroup(output)
 	} else {
 		return newScriptProgressGroup(output)
@@ -26,7 +26,7 @@ type Progress interface {
 }
 
 func NewProgress(output io.Writer, message string, resources string) Progress {
-	if StdoutIsTerminal() {
+	if StdoutIsTerminal() && TerminalWidth() > 80 {
 		return newTerminalProgress(output, message, resources)
 	} else {
 		return newScriptProgress(output, message, resources)

@@ -27,7 +27,7 @@ func TestMessages(t *testing.T) {
 					{ID: 46830545, Type: hcloud.ActionResourceTypeServer},
 				},
 			},
-			wantAction:    "Waiting for create_server to complete",
+			wantAction:    "Waiting for create_server",
 			wantResources: "(server: 46830545)",
 		},
 		{
@@ -42,7 +42,7 @@ func TestMessages(t *testing.T) {
 					{ID: 46830546, Type: hcloud.ActionResourceTypeVolume},
 				},
 			},
-			wantAction:    "Waiting for attach_volume to complete",
+			wantAction:    "Waiting for attach_volume",
 			wantResources: "(server: 46830545, volume: 46830546)",
 		},
 		{
@@ -53,7 +53,7 @@ func TestMessages(t *testing.T) {
 				Status:   hcloud.ActionStatusRunning,
 				Progress: 0,
 			},
-			wantAction:    "Waiting for create_server to complete",
+			wantAction:    "Waiting for create_server",
 			wantResources: "",
 		},
 	}
@@ -73,9 +73,9 @@ func TestFakeActionMessages(t *testing.T) {
 	fakeMessage := FakeActionMessage("Some random message")
 
 	// The padding is important
-	actionMessage = fmt.Sprintf("%-60s", actionMessage)
-	fakeMessage = fmt.Sprintf("%-60s", fakeMessage)
+	actionMessage = fmt.Sprintf("%-40s", actionMessage)
+	fakeMessage = fmt.Sprintf("%-40s", fakeMessage)
 
-	assert.Equal(t, actionMessage, "Waiting for create_server to complete                       ")
-	assert.Equal(t, fakeMessage, "Some random message                                         ")
+	assert.Equal(t, "Waiting for create_server               ", actionMessage)
+	assert.Equal(t, "Some random message                     ", fakeMessage)
 }
