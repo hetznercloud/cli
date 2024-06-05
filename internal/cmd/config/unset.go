@@ -22,17 +22,7 @@ func NewUnsetCommand(s state.State) *cobra.Command {
 		DisableFlagsInUseLine: true,
 		SilenceUsage:          true,
 		RunE:                  state.Wrap(s, runUnset),
-		ValidArgsFunction: cmpl.NoFileCompletion(cmpl.SuggestArgs(
-			cmpl.SuggestCandidatesF(func() []string {
-				var keys []string
-				for key, opt := range config.Options {
-					if opt.HasFlag(config.OptionFlagPreference) {
-						keys = append(keys, key)
-					}
-				}
-				return keys
-			}),
-		)),
+		ValidArgsFunction:     cmpl.NoFileCompletion(cmpl.SuggestCandidates(getOptionNames(config.OptionFlagPreference)...)),
 	}
 	cmd.Flags().Bool("global", false, "Unset the value globally (for all contexts)")
 	return cmd

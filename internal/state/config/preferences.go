@@ -105,7 +105,7 @@ func validate(m map[string]any, prefix string) error {
 			continue
 		}
 		opt, ok := Options[key]
-		if !ok || !opt.HasFlag(OptionFlagPreference) {
+		if !ok || !opt.HasFlags(OptionFlagPreference) {
 			return fmt.Errorf("unknown preference: %s", key)
 		}
 	}

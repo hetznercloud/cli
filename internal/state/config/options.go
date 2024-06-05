@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"reflect"
 	"strconv"
 	"strings"
 	"time"
@@ -26,6 +25,8 @@ const (
 	OptionFlagEnv
 	// OptionFlagSensitive indicates that the option holds sensitive data and should not be printed
 	OptionFlagSensitive
+	// OptionFlagSlice indicates that the option value is a slice
+	OptionFlagSlice
 
 	DefaultPreferenceFlags = OptionFlagPreference | OptionFlagConfig | OptionFlagPFlag | OptionFlagEnv
 )
@@ -43,8 +44,8 @@ type IOption interface {
 	EnvVar() string
 	// FlagName returns the name of the flag. If the option is not configurable via a flag, an empty string is returned
 	FlagName() string
-	// HasFlag returns true if the option has the provided flag set
-	HasFlag(src OptionFlag) bool
+	// HasFlags returns true if the option has all the provided flags set
+	HasFlags(src OptionFlag) bool
 	// GetAsAny reads the option value from the config and returns it as an any
 	GetAsAny(c Config) any
 	// OverrideAny sets the option value in the config to the provided any value
@@ -53,8 +54,6 @@ type IOption interface {
 	Changed(c Config) bool
 	// Completions returns a list of possible completions for the option (for example for boolean options: "true", "false")
 	Completions() []string
-	// IsSlice returns true if the option is a slice
-	IsSlice() bool
 	// T returns an instance of the type of the option as an any
 	T() any
 }
@@ -192,12 +191,8 @@ func (o *Option[T]) Changed(c Config) bool {
 	return c.Viper().IsSet(o.Name)
 }
 
-func (o *Option[T]) HasFlag(src OptionFlag) bool {
-	return o.Flags&src != 0
-}
-
-func (o *Option[T]) IsSlice() bool {
-	return reflect.TypeOf(o.T()).Kind() == reflect.Slice
+func (o *Option[T]) HasFlags(src OptionFlag) bool {
+	return (^o.Flags)&src == 0
 }
 
 func (o *Option[T]) GetName() string {
@@ -209,7 +204,7 @@ func (o *Option[T]) GetDescription() string {
 }
 
 func (o *Option[T]) ConfigKey() string {
-	if !o.HasFlag(OptionFlagConfig) {
+	if !o.HasFlags(OptionFlagConfig) {
 		return ""
 	}
 	if o.overrides != nil && o.overrides.configKey != "" {
@@ -219,7 +214,7 @@ func (o *Option[T]) ConfigKey() string {
 }
 
 func (o *Option[T]) EnvVar() string {
-	if !o.HasFlag(OptionFlagEnv) {
+	if !o.HasFlags(OptionFlagEnv) {
 		return ""
 	}
 	if o.overrides != nil && o.overrides.envVar != "" {
@@ -229,7 +224,7 @@ func (o *Option[T]) EnvVar() string {
 }
 
 func (o *Option[T]) FlagName() string {
-	if !o.HasFlag(OptionFlagPFlag) {
+	if !o.HasFlags(OptionFlagPFlag) {
 		return ""
 	}
 	if o.overrides != nil && o.overrides.flagName != "" {
@@ -253,7 +248,7 @@ func (o *Option[T]) T() any {
 }
 
 func (o *Option[T]) addToFlagSet(fs *pflag.FlagSet) {
-	if !o.HasFlag(OptionFlagPFlag) {
+	if !o.HasFlags(OptionFlagPFlag) {
 		return
 	}
 	switch v := any(o.Default).(type) {

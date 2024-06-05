@@ -24,22 +24,8 @@ func NewAddCommand(s state.State) *cobra.Command {
 		SilenceUsage:          true,
 		RunE:                  state.Wrap(s, runAdd),
 		ValidArgsFunction: cmpl.NoFileCompletion(cmpl.SuggestArgs(
-			cmpl.SuggestCandidatesF(func() []string {
-				var keys []string
-				for key, opt := range config.Options {
-					if opt.IsSlice() && opt.HasFlag(config.OptionFlagPreference) {
-						keys = append(keys, key)
-					}
-				}
-				return keys
-			}),
-			cmpl.SuggestCandidatesCtx(func(_ *cobra.Command, args []string) []string {
-				var comps []string
-				if opt, ok := config.Options[args[0]]; ok {
-					comps = opt.Completions()
-				}
-				return comps
-			}),
+			cmpl.SuggestCandidates(getOptionNames(config.OptionFlagPreference|config.OptionFlagSlice)...),
+			cmpl.SuggestCandidatesCtx(suggestOptionCompletions),
 		)),
 	}
 	cmd.Flags().Bool("global", false, "Set the value globally (for all contexts)")

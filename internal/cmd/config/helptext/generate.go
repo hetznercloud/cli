@@ -44,7 +44,7 @@ func generateTable(outFile string, filterFlag config.OptionFlag, hasFlag bool) {
 
 	var opts []config.IOption
 	for _, opt := range config.Options {
-		if opt.HasFlag(filterFlag) != hasFlag {
+		if opt.HasFlags(filterFlag) != hasFlag {
 			continue
 		}
 		opts = append(opts, opt)
