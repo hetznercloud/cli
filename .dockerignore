@@ -1,0 +1,6 @@
+/hcloud
+/dist
+/bats
+/cmd/hcloud/hcloud
+hcloud_cli.p12
+coverage.txt
