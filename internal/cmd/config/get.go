@@ -5,6 +5,7 @@ import (
 
 	"github.com/spf13/cobra"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/cli/internal/state/config"
@@ -20,6 +21,15 @@ func NewGetCommand(s state.State) *cobra.Command {
 		DisableFlagsInUseLine: true,
 		SilenceUsage:          true,
 		RunE:                  state.Wrap(s, runGet),
+		ValidArgsFunction: cmpl.NoFileCompletion(
+			cmpl.SuggestCandidatesF(func() []string {
+				var keys []string
+				for key := range config.Options {
+					keys = append(keys, key)
+				}
+				return keys
+			}),
+		),
 	}
 	cmd.Flags().Bool("global", false, "Get the value globally")
 	cmd.Flags().Bool("allow-sensitive", false, "Allow showing sensitive values")
