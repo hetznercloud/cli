@@ -49,30 +49,20 @@ func NewRemoveCommand(s state.State) *cobra.Command {
 func runRemove(s state.State, cmd *cobra.Command, args []string) error {
 	global, _ := cmd.Flags().GetBool("global")
 
-	var (
-		removed []any
-		ctx     config.Context
-		prefs   config.Preferences
-	)
-
-	if global {
-		prefs = s.Config().Preferences()
-	} else {
-		ctx = s.Config().ActiveContext()
-		if util.IsNil(ctx) {
-			return fmt.Errorf("no active context (use --global to remove an option globally)")
-		}
-		prefs = ctx.Preferences()
+	ctx, prefs, err := getPreferences(s.Config(), global)
+	if err != nil {
+		return err
 	}
 
 	key, values := args[0], args[1:]
-	opt, ok := config.Options[key]
-	if !ok || !opt.HasFlag(config.OptionFlagPreference) {
-		return fmt.Errorf("unknown preference: %s", key)
+	opt, err := getPreference(key)
+	if err != nil {
+		return err
 	}
 
 	val, _ := prefs.Get(key)
 
+	var removed []any
 	switch opt.T().(type) {
 	case []string:
 		before := util.AnyToStringSlice(val)

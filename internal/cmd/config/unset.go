@@ -41,30 +41,17 @@ func NewUnsetCommand(s state.State) *cobra.Command {
 func runUnset(s state.State, cmd *cobra.Command, args []string) error {
 	global, _ := cmd.Flags().GetBool("global")
 
-	var (
-		ctx   config.Context
-		prefs config.Preferences
-	)
-
-	if global {
-		prefs = s.Config().Preferences()
-	} else {
-		ctx = s.Config().ActiveContext()
-		if util.IsNil(ctx) {
-			return fmt.Errorf("no active context (use --global flag to unset a global option)")
-		}
-		prefs = ctx.Preferences()
+	ctx, prefs, err := getPreferences(s.Config(), global)
+	if err != nil {
+		return err
 	}
 
 	key := args[0]
-	opt, ok := config.Options[key]
-	if !ok || !opt.HasFlag(config.OptionFlagPreference) {
-		return fmt.Errorf("unknown preference: %s", key)
+	if _, err = getPreference(key); err != nil {
+		return err
 	}
 
-	ok = prefs.Unset(key)
-
-	if !ok {
+	if !prefs.Unset(key) {
 		_, _ = fmt.Fprintf(os.Stderr, "Warning: key '%s' was not set\n", key)
 	}
 	if global {
