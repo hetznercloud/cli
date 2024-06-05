@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -54,6 +55,8 @@ type IOption interface {
 	Changed(c Config) bool
 	// Completions returns a list of possible completions for the option (for example for boolean options: "true", "false")
 	Completions() []string
+	// Parse parses a string slice (for example command arguments) based on the option type and returns the parsed value as an any
+	Parse(values []string) (any, error)
 	// T returns an instance of the type of the option as an any
 	T() any
 }
@@ -240,6 +243,51 @@ func (o *Option[T]) Completions() []string {
 		return []string{"true", "false"}
 	}
 	return nil
+}
+
+func (o *Option[T]) Parse(values []string) (any, error) {
+	var (
+		val any
+		t   T
+	)
+	switch any(t).(type) {
+	case bool:
+		if len(values) != 1 {
+			return nil, fmt.Errorf("expected exactly one value")
+		}
+		value := values[0]
+		switch strings.ToLower(value) {
+		case "true", "t", "yes", "y", "1":
+			val = true
+		case "false", "f", "no", "n", "0":
+			val = false
+		default:
+			return nil, fmt.Errorf("invalid boolean value: %s", value)
+		}
+	case string:
+		if len(values) != 1 {
+			return nil, fmt.Errorf("expected exactly one value")
+		}
+		val = values[0]
+	case time.Duration:
+		if len(values) != 1 {
+			return nil, fmt.Errorf("expected exactly one value")
+		}
+		value := values[0]
+		var err error
+		val, err = time.ParseDuration(value)
+		if err != nil {
+			return nil, fmt.Errorf("invalid duration value: %s", value)
+		}
+	case []string:
+		newVal := values[:]
+		slices.Sort(newVal)
+		newVal = slices.Compact(newVal)
+		val = newVal
+	default:
+		return nil, fmt.Errorf("unsupported type %T", t)
+	}
+	return val, nil
 }
 
 func (o *Option[T]) T() any {

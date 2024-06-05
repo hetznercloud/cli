@@ -1,11 +1,6 @@
 package config
 
 import (
-	"fmt"
-	"slices"
-	"strings"
-	"time"
-
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
@@ -47,43 +42,9 @@ func runSet(s state.State, cmd *cobra.Command, args []string) error {
 		return err
 	}
 
-	var val any
-	switch t := opt.T().(type) {
-	case bool:
-		if len(values) != 1 {
-			return fmt.Errorf("expected exactly one value")
-		}
-		value := values[0]
-		switch strings.ToLower(value) {
-		case "true", "t", "yes", "y", "1":
-			val = true
-		case "false", "f", "no", "n", "0":
-			val = false
-		default:
-			return fmt.Errorf("invalid boolean value: %s", value)
-		}
-	case string:
-		if len(values) != 1 {
-			return fmt.Errorf("expected exactly one value")
-		}
-		val = values[0]
-	case time.Duration:
-		if len(values) != 1 {
-			return fmt.Errorf("expected exactly one value")
-		}
-		value := values[0]
-		var err error
-		val, err = time.ParseDuration(value)
-		if err != nil {
-			return fmt.Errorf("invalid duration value: %s", value)
-		}
-	case []string:
-		newVal := values[:]
-		slices.Sort(newVal)
-		newVal = slices.Compact(newVal)
-		val = newVal
-	default:
-		return fmt.Errorf("unsupported type %T", t)
+	val, err := opt.Parse(values)
+	if err != nil {
+		return err
 	}
 
 	prefs.Set(key, val)
