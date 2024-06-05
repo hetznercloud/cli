@@ -255,14 +255,10 @@ func (o *Option[T]) Parse(values []string) (any, error) {
 		if len(values) != 1 {
 			return nil, fmt.Errorf("expected exactly one value")
 		}
-		value := values[0]
-		switch strings.ToLower(value) {
-		case "true", "t", "yes", "y", "1":
-			val = true
-		case "false", "f", "no", "n", "0":
-			val = false
-		default:
-			return nil, fmt.Errorf("invalid boolean value: %s", value)
+		var err error
+		val, err = util.ParseBoolLenient(values[0])
+		if err != nil {
+			return nil, err
 		}
 	case string:
 		if len(values) != 1 {
