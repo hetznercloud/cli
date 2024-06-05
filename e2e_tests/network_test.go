@@ -68,6 +68,14 @@ func TestNetwork(t *testing.T) {
 	assert.Empty(t, out)
 	assert.Regexp(t, `^network deletion is protected \(protected, [0-9a-f]{16}\)$`, err.Error())
 
+	out, err = runCommand(t, "network", "add-subnet", "--type", "cloud", "--network-zone", "eu-central", "--ip-range", "10.0.16.0/24", strconv.Itoa(networkId))
+	assert.NoError(t, err)
+	assert.Equal(t, fmt.Sprintf("Subnet added to network %d\n", networkId), out)
+
+	out, err = runCommand(t, "network", "add-route", "--type", "cloud", "--network-zone", "eu-central", "--ip-range", "10.0.16.0/24", strconv.Itoa(networkId))
+	assert.NoError(t, err)
+	assert.Equal(t, fmt.Sprintf("Subnet added to network %d\n", networkId), out)
+
 	out, err = runCommand(t, "network", "disable-protection", strconv.Itoa(networkId), "delete")
 	assert.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Resource protection disabled for network %d\n", networkId), out)

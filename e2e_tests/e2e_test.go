@@ -46,8 +46,8 @@ func TestMain(m *testing.M) {
 }
 
 func newRootCommand(t *testing.T) *cobra.Command {
-	cfg := config.NewConfig()
-	if err := config.ReadConfig(cfg, "config.toml"); err != nil {
+	cfg := config.New()
+	if err := cfg.Read("config.toml"); err != nil {
 		t.Fatalf("unable to read config file \"%s\": %s\n", cfg.Path(), err)
 	}
 
