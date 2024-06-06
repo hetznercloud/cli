@@ -134,6 +134,14 @@ var (
 		DefaultPreferenceFlags,
 		nil,
 	)
+
+	OptionDefaultSSHKeys = newOpt(
+		"default-ssh-keys",
+		"Default SSH keys for new servers",
+		[]string{},
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
+		nil,
+	)
 )
 
 type Option[T any] struct {
