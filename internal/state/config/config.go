@@ -9,7 +9,7 @@ import (
 	"path"
 	"strings"
 
-	"github.com/pelletier/go-toml/v2"
+	"github.com/BurntSushi/toml"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 

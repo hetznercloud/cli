@@ -32,30 +32,27 @@ func TestRemove(t *testing.T) {
 	)
 	defer deleteNestedArrayOption()
 
-	testConfig := `active_context = 'test_context'
+	testConfig := `active_context = "test_context"
 
 [preferences]
-debug = true
-poll_interval = 1234000000
+  debug = true
+  poll_interval = "1.234s"
 
 [[contexts]]
-name = 'test_context'
-token = 'super secret token'
-
-[contexts.preferences]
-array_option = ['1', '2', '3']
-endpoint = 'https://test-endpoint.com'
-quiet = true
-
-[contexts.preferences.nested]
-array_option = ['1', '2', '3']
+  name = "test_context"
+  token = "super secret token"
+  [contexts.preferences]
+    array_option = ["1", "2", "3"]
+    endpoint = "https://test-endpoint.com"
+    quiet = true
+    [contexts.preferences.nested]
+      array_option = ["1", "2", "3"]
 
 [[contexts]]
-name = 'other_context'
-token = 'another super secret token'
-
-[contexts.preferences]
-poll_interval = 1234000000
+  name = "other_context"
+  token = "another super secret token"
+  [contexts.preferences]
+    poll_interval = "1.234s"
 `
 
 	type testCase struct {
@@ -75,30 +72,27 @@ poll_interval = 1234000000
 			args:   []string{"array-option", "2", "3"},
 			config: testConfig,
 			expOut: `Removed '[2 3]' from 'array-option' in context 'test_context'
-active_context = 'test_context'
+active_context = "test_context"
 
 [preferences]
-debug = true
-poll_interval = 1234000000
+  debug = true
+  poll_interval = "1.234s"
 
 [[contexts]]
-name = 'test_context'
-token = 'super secret token'
-
-[contexts.preferences]
-array_option = ['1']
-endpoint = 'https://test-endpoint.com'
-quiet = true
-
-[contexts.preferences.nested]
-array_option = ['1', '2', '3']
+  name = "test_context"
+  token = "super secret token"
+  [contexts.preferences]
+    array_option = ["1"]
+    endpoint = "https://test-endpoint.com"
+    quiet = true
+    [contexts.preferences.nested]
+      array_option = ["1", "2", "3"]
 
 [[contexts]]
-name = 'other_context'
-token = 'another super secret token'
-
-[contexts.preferences]
-poll_interval = 1234000000
+  name = "other_context"
+  token = "another super secret token"
+  [contexts.preferences]
+    poll_interval = "1.234s"
 `,
 		},
 		{
@@ -106,29 +100,26 @@ poll_interval = 1234000000
 			args:   []string{"array-option", "1", "2", "3"},
 			config: testConfig,
 			expOut: `Removed '[1 2 3]' from 'array-option' in context 'test_context'
-active_context = 'test_context'
+active_context = "test_context"
 
 [preferences]
-debug = true
-poll_interval = 1234000000
+  debug = true
+  poll_interval = "1.234s"
 
 [[contexts]]
-name = 'test_context'
-token = 'super secret token'
-
-[contexts.preferences]
-endpoint = 'https://test-endpoint.com'
-quiet = true
-
-[contexts.preferences.nested]
-array_option = ['1', '2', '3']
+  name = "test_context"
+  token = "super secret token"
+  [contexts.preferences]
+    endpoint = "https://test-endpoint.com"
+    quiet = true
+    [contexts.preferences.nested]
+      array_option = ["1", "2", "3"]
 
 [[contexts]]
-name = 'other_context'
-token = 'another super secret token'
-
-[contexts.preferences]
-poll_interval = 1234000000
+  name = "other_context"
+  token = "another super secret token"
+  [contexts.preferences]
+    poll_interval = "1.234s"
 `,
 		},
 		{
@@ -143,30 +134,27 @@ poll_interval = 1234000000
 			args:   []string{"nested.array-option", "2", "3"},
 			config: testConfig,
 			expOut: `Removed '[2 3]' from 'nested.array-option' in context 'test_context'
-active_context = 'test_context'
+active_context = "test_context"
 
 [preferences]
-debug = true
-poll_interval = 1234000000
+  debug = true
+  poll_interval = "1.234s"
 
 [[contexts]]
-name = 'test_context'
-token = 'super secret token'
-
-[contexts.preferences]
-array_option = ['1', '2', '3']
-endpoint = 'https://test-endpoint.com'
-quiet = true
-
-[contexts.preferences.nested]
-array_option = ['1']
+  name = "test_context"
+  token = "super secret token"
+  [contexts.preferences]
+    array_option = ["1", "2", "3"]
+    endpoint = "https://test-endpoint.com"
+    quiet = true
+    [contexts.preferences.nested]
+      array_option = ["1"]
 
 [[contexts]]
-name = 'other_context'
-token = 'another super secret token'
-
-[contexts.preferences]
-poll_interval = 1234000000
+  name = "other_context"
+  token = "another super secret token"
+  [contexts.preferences]
+    poll_interval = "1.234s"
 `,
 		},
 		{
@@ -174,27 +162,25 @@ poll_interval = 1234000000
 			args:   []string{"nested.array-option", "1", "2", "3"},
 			config: testConfig,
 			expOut: `Removed '[1 2 3]' from 'nested.array-option' in context 'test_context'
-active_context = 'test_context'
+active_context = "test_context"
 
 [preferences]
-debug = true
-poll_interval = 1234000000
+  debug = true
+  poll_interval = "1.234s"
 
 [[contexts]]
-name = 'test_context'
-token = 'super secret token'
-
-[contexts.preferences]
-array_option = ['1', '2', '3']
-endpoint = 'https://test-endpoint.com'
-quiet = true
+  name = "test_context"
+  token = "super secret token"
+  [contexts.preferences]
+    array_option = ["1", "2", "3"]
+    endpoint = "https://test-endpoint.com"
+    quiet = true
 
 [[contexts]]
-name = 'other_context'
-token = 'another super secret token'
-
-[contexts.preferences]
-poll_interval = 1234000000
+  name = "other_context"
+  token = "another super secret token"
+  [contexts.preferences]
+    poll_interval = "1.234s"
 `,
 		},
 		{
