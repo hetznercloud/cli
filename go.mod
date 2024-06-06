@@ -3,7 +3,7 @@ module github.com/hetznercloud/cli
 go 1.21
 
 require (
-	github.com/BurntSushi/toml v1.3.2
+	github.com/BurntSushi/toml v1.4.0
 	github.com/boumenot/gocover-cobertura v1.2.0
 	github.com/cheggaaa/pb/v3 v3.1.5
 	github.com/dustin/go-humanize v1.0.1
