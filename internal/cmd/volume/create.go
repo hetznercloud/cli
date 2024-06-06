@@ -12,6 +12,7 @@ import (
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud/exp/actionutils"
 )
 
 var CreateCmd = base.CreateCmd{
@@ -97,7 +98,7 @@ var CreateCmd = base.CreateCmd{
 			return nil, nil, err
 		}
 
-		if err := s.WaitForActions(cmd, s, util.MergeNextActions(result.Action, result.NextActions)...); err != nil {
+		if err := s.WaitForActions(cmd, s, actionutils.AppendNextActions(result.Action, result.NextActions)...); err != nil {
 			return nil, nil, err
 		}
 		cmd.Printf("Volume %d created\n", result.Volume.ID)

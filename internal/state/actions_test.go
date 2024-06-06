@@ -49,8 +49,8 @@ func TestWaitForActionsSuccess(t *testing.T) {
 
 	assert.Equal(t,
 		strings.Join([]string{
-			"Waiting for attach_volume to complete (server: 46830545, volume: 46830546) ...\n",
-			"Waiting for attach_volume to complete (server: 46830545, volume: 46830546) ... done\n",
+			"Waiting for attach_volume (server: 46830545, volume: 46830546) ...\n",
+			"Waiting for attach_volume (server: 46830545, volume: 46830546) ... done\n",
 		}, ""),
 		stderr,
 	)
@@ -92,8 +92,8 @@ func TestWaitForActionsError(t *testing.T) {
 
 	assert.Equal(t,
 		strings.Join([]string{
-			"Waiting for attach_volume to complete (server: 46830545, volume: 46830546) ...\n",
-			"Waiting for attach_volume to complete (server: 46830545, volume: 46830546) ... failed\n",
+			"Waiting for attach_volume (server: 46830545, volume: 46830546) ...\n",
+			"Waiting for attach_volume (server: 46830545, volume: 46830546) ... failed\n",
 		}, ""),
 		stderr,
 	)
