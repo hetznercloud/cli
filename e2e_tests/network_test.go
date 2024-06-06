@@ -72,9 +72,9 @@ func TestNetwork(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Subnet added to network %d\n", networkId), out)
 
-	out, err = runCommand(t, "network", "add-route", "--type", "cloud", "--network-zone", "eu-central", "--ip-range", "10.0.16.0/24", strconv.Itoa(networkId))
+	out, err = runCommand(t, "network", "add-route", "--destination", "10.100.1.0/24", "--gateway", "10.0.1.1", strconv.Itoa(networkId))
 	assert.NoError(t, err)
-	assert.Equal(t, fmt.Sprintf("Subnet added to network %d\n", networkId), out)
+	assert.Equal(t, fmt.Sprintf("Route added to network %d\n", networkId), out)
 
 	out, err = runCommand(t, "network", "disable-protection", strconv.Itoa(networkId), "delete")
 	assert.NoError(t, err)
