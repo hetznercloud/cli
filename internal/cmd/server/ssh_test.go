@@ -28,7 +28,7 @@ func TestSSH(t *testing.T) {
 			Get(gomock.Any(), srv.Name).
 			Return(&srv, nil, nil)
 
-		fx.Config.EXPECT().SSHPath().Return("echo")
+		server.SSHPath = "echo"
 	}
 
 	testutil.TestCommand(t, &server.SSHCmd, map[string]testutil.TestCase{

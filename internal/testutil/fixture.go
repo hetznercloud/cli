@@ -24,16 +24,27 @@ type Fixture struct {
 	Config         *config.MockConfig
 }
 
-// NewFixture creates a new Fixture.
+// NewFixture creates a new Fixture with default config file.
 func NewFixture(t *testing.T) *Fixture {
+	return NewFixtureWithConfigFile(t, []byte{})
+}
+
+// NewFixtureWithConfigFile creates a new Fixture with the given config file.
+// See [config.Config.Read] for the supported types of f.
+func NewFixtureWithConfigFile(t *testing.T, f any) *Fixture {
 	ctrl := gomock.NewController(t)
+
+	cfg := config.New()
+	if err := cfg.Read(f); err != nil {
+		t.Fatal(err)
+	}
 
 	return &Fixture{
 		MockController: ctrl,
 		Client:         hcapi2_mock.NewMockClient(ctrl),
 		ActionWaiter:   state.NewMockActionWaiter(ctrl),
 		TokenEnsurer:   state.NewMockTokenEnsurer(ctrl),
-		Config:         config.NewMockConfig(ctrl),
+		Config:         &config.MockConfig{Config: cfg},
 	}
 }
 

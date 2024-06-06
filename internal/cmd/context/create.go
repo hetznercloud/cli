@@ -43,8 +43,6 @@ func runCreate(s state.State, cmd *cobra.Command, args []string) error {
 		return errors.New("name already used")
 	}
 
-	context := &config.Context{Name: name}
-
 	var token string
 
 	envToken := os.Getenv("HCLOUD_TOKEN")
@@ -83,12 +81,12 @@ func runCreate(s state.State, cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	context.Token = token
+	context := config.NewContext(name, token)
 
 	cfg.SetContexts(append(cfg.Contexts(), context))
 	cfg.SetActiveContext(context)
 
-	if err := cfg.Write(); err != nil {
+	if err := cfg.Write(nil); err != nil {
 		return err
 	}
 

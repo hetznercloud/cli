@@ -1,10 +1,12 @@
 package util
 
 import (
+	"cmp"
 	"encoding/json"
 	"fmt"
 	"os"
 	"reflect"
+	"slices"
 	"sort"
 	"strings"
 	"text/template"
@@ -232,4 +234,71 @@ func FilterNil[T any](values []T) []T {
 		}
 	}
 	return filtered
+}
+
+// SliceDiff returns the difference between the two passed slices. The returned slice contains all elements that are present in a but not in b.
+// Note that it does not preserve order.
+func SliceDiff[S ~[]E, E cmp.Ordered](a, b []E) []E {
+	m := make(map[E]struct{})
+	for _, x := range a {
+		m[x] = struct{}{}
+	}
+	for _, x := range b {
+		delete(m, x)
+	}
+	var diff S
+	for x := range m {
+		diff = append(diff, x)
+	}
+	slices.Sort(diff)
+	return diff
+}
+
+func AnyToAnySlice(a any) []any {
+	val := reflect.ValueOf(a)
+	if val.Kind() != reflect.Slice {
+		return nil
+	}
+	s := make([]any, val.Len())
+	for i := 0; i < val.Len(); i++ {
+		s[i] = val.Index(i).Interface()
+	}
+	return s
+}
+
+func AnyToStringSlice(a any) []string {
+	var s []string
+	for _, v := range AnyToAnySlice(a) {
+		s = append(s, fmt.Sprint(v))
+	}
+	return s
+}
+
+func ToStringSlice(a []any) []string {
+	var s []string
+	for _, v := range a {
+		s = append(s, fmt.Sprint(v))
+	}
+	return s
+}
+
+func ToAnySlice[T any](a []T) []any {
+	var s []any
+	for _, v := range a {
+		s = append(s, any(v))
+	}
+	return s
+}
+
+// ParseBoolLenient parses the passed string as a boolean. It is different from strconv.ParseBool in that it
+// is case-insensitive and also accepts "yes"/"y" and "no"/"n" as valid values.
+func ParseBoolLenient(s string) (bool, error) {
+	switch strings.ToLower(s) {
+	case "true", "t", "yes", "y", "1":
+		return true, nil
+	case "false", "f", "no", "n", "0":
+		return false, nil
+	default:
+		return false, fmt.Errorf("invalid boolean value: %s", s)
+	}
 }

@@ -142,18 +142,31 @@ You can control output via the `-o` option:
   The template’s input is the resource’s corresponding struct in the
   [hcloud-go](https://godoc.org/github.com/hetznercloud/hcloud-go/hcloud) library.
 
-## Configure hcloud using environment variables
+## Configuring hcloud
 
-You can use the following environment variables to configure `hcloud`:
+The hcloud CLI tool can be configured using following methods:
+1. Configuration file
+2. Environment variables
+3. Command line flags
 
-* `HCLOUD_TOKEN`
-* `HCLOUD_CONTEXT`
-* `HCLOUD_CONFIG`
+A higher number means a higher priority. For example, a command line flag will 
+always override an environment variable.
 
-When using `hcloud` in scripts, for example, it may be cumbersome to work with
-contexts. Instead of creating a context, you can set the token via the `HCLOUD_TOKEN`
-environment variable. When combined with tools like [direnv](https://direnv.net), you
-can configure a per-directory context by setting `HCLOUD_CONTEXT=my-context` via `.envrc`.
+The configuration file is located at `~/.config/hcloud/cli.toml` by default 
+(On Windows: `%APPDATA%\hcloud\cli.toml`). You can change the location by setting 
+the `HCLOUD_CONFIG` environment variable or the `--config` flag. The configuration file
+stores global preferences, the currently active context, all contexts and 
+context-specific preferences. Contexts always store a token and can optionally have
+additional preferences which take precedence over the globally set preferences.
+
+However, a config file is not required. If no config file is found, the CLI will
+use the default configuration. Overriding options using environment variables allows the
+hcloud CLI to function in a stateless way. For example, setting `HCLOUD_TOKEN` is
+already enough in many cases.
+
+You can use the `hcloud config` command to manage your configuration, for example 
+to get, list, set and unset configuration options and preferences. You can view a list
+of all available options and preferences by running `hcloud config --help`.
 
 ## Examples
 

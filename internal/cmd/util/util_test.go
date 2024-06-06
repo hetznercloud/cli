@@ -294,3 +294,89 @@ func TestFilterNil(t *testing.T) {
 	assert.Equal(t, []interface{}{0, ""}, util.FilterNil([]interface{}{0, nil, ""}))
 	assert.Equal(t, []*testStruct{{1, 2, 3}, {}}, util.FilterNil([]*testStruct{{1, 2, 3}, nil, {}, (*testStruct)(nil)}))
 }
+
+func TestSliceDiff(t *testing.T) {
+	assert.Equal(t, []int{1, 2}, util.SliceDiff[[]int]([]int{1, 2, 3}, []int{3, 4}))
+	assert.Equal(t, []int{4}, util.SliceDiff[[]int]([]int{3, 4}, []int{1, 2, 3}))
+	assert.Empty(t, util.SliceDiff[[]int]([]int{1, 2, 3}, []int{1, 2, 3}))
+	assert.Empty(t, util.SliceDiff[[]int]([]int{}, []int{}))
+	assert.Equal(t, []string{"a", "b"}, util.SliceDiff[[]string]([]string{"a", "b", "c"}, []string{"c", "d"}))
+	assert.Equal(t, []string{"a"}, util.SliceDiff[[]string]([]string{"b", "a", "b", "b", "c", "c"}, []string{"b", "c"}))
+}
+
+func TestAnyToAnySlice(t *testing.T) {
+	assert.Equal(t, []any{1, "foo", true}, util.AnyToAnySlice([]any{1, "foo", true}))
+	assert.Equal(t, []any{"a", "b", "c"}, util.AnyToAnySlice([]string{"a", "b", "c"}))
+	assert.Equal(t, []any{1, 2, 3}, util.AnyToAnySlice([]int{1, 2, 3}))
+	assert.Equal(t, []any{true, false}, util.AnyToAnySlice([]bool{true, false}))
+	assert.Nil(t, util.AnyToAnySlice(1))
+	assert.Nil(t, util.AnyToAnySlice("abc"))
+	assert.Nil(t, util.AnyToAnySlice(nil))
+}
+
+func TestAnyToStringSlice(t *testing.T) {
+	assert.Equal(t, []string{"1", "foo", "true"}, util.AnyToStringSlice([]any{1, "foo", true}))
+	assert.Equal(t, []string{"a", "b", "c"}, util.AnyToStringSlice([]string{"a", "b", "c"}))
+	assert.Equal(t, []string{"1", "2", "3"}, util.AnyToStringSlice([]int{1, 2, 3}))
+	assert.Equal(t, []string{"true", "false"}, util.AnyToStringSlice([]bool{true, false}))
+	assert.Nil(t, util.AnyToStringSlice(1))
+	assert.Nil(t, util.AnyToStringSlice("abc"))
+	assert.Nil(t, util.AnyToStringSlice(nil))
+}
+
+func TestToStringSlice(t *testing.T) {
+	assert.Equal(t, []string{"1", "foo", "true"}, util.ToStringSlice([]any{1, "foo", true}))
+	assert.Equal(t, []string{"a", "b", "c"}, util.ToStringSlice([]any{"a", "b", "c"}))
+	assert.Equal(t, []string{"1", "2", "3"}, util.ToStringSlice([]any{1, 2, 3}))
+	assert.Equal(t, []string{"true", "false"}, util.ToStringSlice([]any{true, false}))
+}
+
+func TestToAnySlice(t *testing.T) {
+	assert.Equal(t, []any{1, "foo", true}, util.ToAnySlice([]any{1, "foo", true}))
+	assert.Equal(t, []any{"a", "b", "c"}, util.ToAnySlice([]string{"a", "b", "c"}))
+	assert.Equal(t, []any{1, 2, 3}, util.ToAnySlice([]int{1, 2, 3}))
+	assert.Equal(t, []any{true, false}, util.ToAnySlice([]bool{true, false}))
+}
+
+func TestParseBoolLenient(t *testing.T) {
+	b, err := util.ParseBoolLenient("true")
+	assert.NoError(t, err)
+	assert.True(t, b)
+	b, err = util.ParseBoolLenient("True")
+	assert.NoError(t, err)
+	assert.True(t, b)
+	b, err = util.ParseBoolLenient("t")
+	assert.NoError(t, err)
+	assert.True(t, b)
+	b, err = util.ParseBoolLenient("yes")
+	assert.NoError(t, err)
+	assert.True(t, b)
+	b, err = util.ParseBoolLenient("y")
+	assert.NoError(t, err)
+	assert.True(t, b)
+	b, err = util.ParseBoolLenient("1")
+	assert.NoError(t, err)
+	assert.True(t, b)
+	b, err = util.ParseBoolLenient("false")
+	assert.NoError(t, err)
+	assert.False(t, b)
+	b, err = util.ParseBoolLenient("False")
+	assert.NoError(t, err)
+	assert.False(t, b)
+	b, err = util.ParseBoolLenient("f")
+	assert.NoError(t, err)
+	assert.False(t, b)
+	b, err = util.ParseBoolLenient("no")
+	assert.NoError(t, err)
+	assert.False(t, b)
+	b, err = util.ParseBoolLenient("n")
+	assert.NoError(t, err)
+	assert.False(t, b)
+	b, err = util.ParseBoolLenient("0")
+	assert.NoError(t, err)
+	assert.False(t, b)
+	b, err = util.ParseBoolLenient("invalid")
+	assert.EqualError(t, err, "invalid boolean value: invalid")
+	b, err = util.ParseBoolLenient("")
+	assert.EqualError(t, err, "invalid boolean value: ")
+}

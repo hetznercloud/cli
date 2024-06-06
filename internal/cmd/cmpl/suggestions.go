@@ -93,3 +93,14 @@ func SuggestArgs(
 		return f(cmd, args, toComplete)
 	}
 }
+
+// NoFileCompletion returns a function that provides completion suggestions without
+// file completion.
+func NoFileCompletion(f func(*cobra.Command, []string, string) ([]string, cobra.ShellCompDirective)) func(
+	*cobra.Command, []string, string) ([]string, cobra.ShellCompDirective) {
+
+	return func(command *cobra.Command, i []string, s string) ([]string, cobra.ShellCompDirective) {
+		candidates, _ := f(command, i, s)
+		return candidates, cobra.ShellCompDirectiveNoFileComp
+	}
+}

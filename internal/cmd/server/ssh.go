@@ -16,6 +16,8 @@ import (
 	"github.com/hetznercloud/cli/internal/state"
 )
 
+var SSHPath = "ssh"
+
 var SSHCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
@@ -57,7 +59,7 @@ var SSHCmd = base.Cmd{
 		}
 
 		sshArgs := []string{"-l", user, "-p", strconv.Itoa(port), ipAddress.String()}
-		sshCommand := exec.Command(s.Config().SSHPath(), append(sshArgs, args[1:]...)...)
+		sshCommand := exec.Command(SSHPath, append(sshArgs, args[1:]...)...)
 		sshCommand.Stdin = os.Stdin
 		sshCommand.Stdout = os.Stdout
 		sshCommand.Stderr = os.Stderr

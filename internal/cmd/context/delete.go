@@ -37,5 +37,5 @@ func runDelete(s state.State, _ *cobra.Command, args []string) error {
 		cfg.SetActiveContext(nil)
 	}
 	config.RemoveContext(cfg, context)
-	return cfg.Write()
+	return cfg.Write(nil)
 }

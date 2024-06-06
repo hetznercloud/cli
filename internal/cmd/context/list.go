@@ -58,11 +58,11 @@ func runList(s state.State, cmd *cobra.Command, _ []string) error {
 	cfg := s.Config()
 	for _, context := range cfg.Contexts() {
 		presentation := ContextPresentation{
-			Name:   context.Name,
-			Token:  context.Token,
+			Name:   context.Name(),
+			Token:  context.Token(),
 			Active: " ",
 		}
-		if ctx := cfg.ActiveContext(); ctx != nil && ctx.Name == context.Name {
+		if context == cfg.ActiveContext() {
 			presentation.Active = "*"
 		}
 

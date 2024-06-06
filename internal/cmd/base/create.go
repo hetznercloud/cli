@@ -9,6 +9,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
+	"github.com/hetznercloud/cli/internal/state/config"
 )
 
 // CreateCmd allows defining commands for resource creation
@@ -42,7 +43,7 @@ func (cc *CreateCmd) CobraCommand(s state.State) *cobra.Command {
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
 		outputFlags := output.FlagsForCommand(cmd)
 
-		quiet, _ := cmd.Flags().GetBool("quiet")
+		quiet := config.OptionQuiet.Get(s.Config())
 
 		isSchema := outputFlags.IsSet("json") || outputFlags.IsSet("yaml")
 		if isSchema && !quiet {

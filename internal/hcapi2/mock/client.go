@@ -4,6 +4,7 @@ import (
 	"github.com/golang/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/hcapi2"
+	"github.com/hetznercloud/cli/internal/state/config"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
@@ -122,6 +123,10 @@ func (c *MockClient) PlacementGroup() hcapi2.PlacementGroupClient {
 	return c.PlacementGroupClient
 }
 
-func (*MockClient) WithOpts(...hcloud.ClientOption) {
+func (*MockClient) WithOpts(_ ...hcloud.ClientOption) {
+	// no-op
+}
+
+func (*MockClient) FromConfig(_ config.Config) {
 	// no-op
 }
