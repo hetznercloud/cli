@@ -144,7 +144,7 @@ You can control output via the `-o` option:
 
 ## Configuring hcloud
 
-The hcloud CLI tool allows configuration using following methods:
+The hcloud CLI tool can be configured using following methods:
 1. Configuration file
 2. Environment variables
 3. Command line flags
