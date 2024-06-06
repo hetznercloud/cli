@@ -13,6 +13,7 @@ import (
 	hcapi2_mock "github.com/hetznercloud/cli/internal/hcapi2/mock"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/cli/internal/state/config"
+	"github.com/hetznercloud/cli/internal/testutil/terminal"
 )
 
 // Fixture provides affordances for testing CLI commands.
@@ -22,6 +23,7 @@ type Fixture struct {
 	ActionWaiter   *state.MockActionWaiter
 	TokenEnsurer   *state.MockTokenEnsurer
 	Config         *config.MockConfig
+	Terminal       *terminal.MockTerminal
 }
 
 // NewFixture creates a new Fixture with default config file.
@@ -45,6 +47,7 @@ func NewFixtureWithConfigFile(t *testing.T, f any) *Fixture {
 		ActionWaiter:   state.NewMockActionWaiter(ctrl),
 		TokenEnsurer:   state.NewMockTokenEnsurer(ctrl),
 		Config:         &config.MockConfig{Config: cfg},
+		Terminal:       terminal.NewMockTerminal(ctrl),
 	}
 }
 
@@ -79,6 +82,7 @@ type fixtureState struct {
 
 	client hcapi2.Client
 	config config.Config
+	term   terminal.Terminal
 }
 
 func (*fixtureState) WriteConfig() error {
@@ -93,6 +97,10 @@ func (s *fixtureState) Config() config.Config {
 	return s.config
 }
 
+func (s *fixtureState) Terminal() terminal.Terminal {
+	return s.term
+}
+
 // State returns a state.State implementation for testing purposes.
 func (f *Fixture) State() state.State {
 	return &fixtureState{
@@ -101,5 +109,6 @@ func (f *Fixture) State() state.State {
 		ActionWaiter: f.ActionWaiter,
 		client:       f.Client,
 		config:       f.Config,
+		term:         f.Terminal,
 	}
 }

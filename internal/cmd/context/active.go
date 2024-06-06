@@ -10,7 +10,7 @@ import (
 	"github.com/hetznercloud/cli/internal/state"
 )
 
-func newActiveCommand(s state.State) *cobra.Command {
+func NewActiveCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "active",
 		Short:                 "Show active context",

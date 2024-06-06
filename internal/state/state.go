@@ -6,6 +6,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state/config"
+	"github.com/hetznercloud/cli/internal/testutil/terminal"
 	"github.com/hetznercloud/cli/internal/version"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -18,6 +19,7 @@ type State interface {
 
 	Client() hcapi2.Client
 	Config() config.Config
+	Terminal() terminal.Terminal
 }
 
 type state struct {
@@ -25,12 +27,14 @@ type state struct {
 
 	client hcapi2.Client
 	config config.Config
+	term   terminal.Terminal
 }
 
 func New(cfg config.Config) (State, error) {
 	s := &state{
 		Context: context.Background(),
 		config:  cfg,
+		term:    terminal.DefaultTerminal{},
 	}
 
 	s.client = s.newClient()
@@ -43,6 +47,10 @@ func (c *state) Client() hcapi2.Client {
 
 func (c *state) Config() config.Config {
 	return c.config
+}
+
+func (c *state) Terminal() terminal.Terminal {
+	return c.term
 }
 
 func (c *state) newClient() hcapi2.Client {

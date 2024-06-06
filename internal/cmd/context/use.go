@@ -12,7 +12,7 @@ import (
 	"github.com/hetznercloud/cli/internal/state/config"
 )
 
-func newUseCommand(s state.State) *cobra.Command {
+func NewUseCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "use <context>",
 		Short:                 "Use a context",
@@ -20,6 +20,7 @@ func newUseCommand(s state.State) *cobra.Command {
 		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidates(config.ContextNames(s.Config())...)),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
+		SilenceUsage:          true,
 		RunE:                  state.Wrap(s, runUse),
 	}
 	return cmd

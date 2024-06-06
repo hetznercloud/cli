@@ -8,34 +8,27 @@ import (
 	"github.com/hetznercloud/cli/internal/state"
 )
 
-var listTableOutput *output.Table
-
 type ContextPresentation struct {
 	Name   string
 	Token  string
 	Active string
 }
 
-func init() {
-	listTableOutput = output.NewTable().
-		AddAllowedFields(ContextPresentation{}).
-		RemoveAllowedField("token")
-}
-
-func newListCommand(s state.State) *cobra.Command {
+func NewListCommand(s state.State) *cobra.Command {
+	cols := newListOutputTable().Columns()
 	cmd := &cobra.Command{
 		Use:   "list [options]",
 		Short: "List contexts",
 		Long: util.ListLongDescription(
 			"Displays a list of contexts.",
-			listTableOutput.Columns(),
+			cols,
 		),
 		Args:                  util.Validate,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		RunE:                  state.Wrap(s, runList),
 	}
-	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(listTableOutput.Columns()))
+	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(cols))
 	return cmd
 }
 
@@ -47,7 +40,7 @@ func runList(s state.State, cmd *cobra.Command, _ []string) error {
 		cols = outOpts["columns"]
 	}
 
-	tw := listTableOutput
+	tw := newListOutputTable()
 	if err := tw.ValidateColumns(cols); err != nil {
 		return err
 	}
@@ -70,4 +63,10 @@ func runList(s state.State, cmd *cobra.Command, _ []string) error {
 	}
 	tw.Flush()
 	return nil
+}
+
+func newListOutputTable() *output.Table {
+	return output.NewTable().
+		AddAllowedFields(ContextPresentation{}).
+		RemoveAllowedField("token")
 }
