@@ -60,29 +60,24 @@ func TestDescribeWithTypes(t *testing.T) {
 
 	serverTypes := []*hcloud.ServerType{
 		{
-			ID:          1,
-			Name:        "cx11",
-			Description: "CX11",
-		},
-		{
 			ID:          3,
-			Name:        "cx21",
-			Description: "CX21",
+			Name:        "cx22",
+			Description: "CX22",
 		},
 		{
 			ID:          5,
-			Name:        "cx31",
-			Description: "CX31",
+			Name:        "cx32",
+			Description: "CX32",
 		},
 		{
 			ID:          7,
-			Name:        "cx41",
-			Description: "CX41",
+			Name:        "cx42",
+			Description: "CX42",
 		},
 		{
 			ID:          9,
-			Name:        "cx51",
-			Description: "CX51",
+			Name:        "cx52",
+			Description: "CX52",
 		},
 	}
 
@@ -124,37 +119,31 @@ Location:
   Longitude:	0.000000
 Server Types:
   Available:
-  - ID:		 1
-    Name:	 cx11
-    Description: CX11
   - ID:		 3
-    Name:	 cx21
-    Description: CX21
+    Name:	 cx22
+    Description: CX22
   - ID:		 5
-    Name:	 cx31
-    Description: CX31
+    Name:	 cx32
+    Description: CX32
   - ID:		 7
-    Name:	 cx41
-    Description: CX41
+    Name:	 cx42
+    Description: CX42
   - ID:		 9
-    Name:	 cx51
-    Description: CX51
+    Name:	 cx52
+    Description: CX52
   Supported:
-  - ID:		 1
-    Name:	 cx11
-    Description: CX11
   - ID:		 3
-    Name:	 cx21
-    Description: CX21
+    Name:	 cx22
+    Description: CX22
   - ID:		 5
-    Name:	 cx31
-    Description: CX31
+    Name:	 cx32
+    Description: CX32
   - ID:		 7
-    Name:	 cx41
-    Description: CX41
+    Name:	 cx42
+    Description: CX42
   - ID:		 9
-    Name:	 cx51
-    Description: CX51
+    Name:	 cx52
+    Description: CX52
 `
 
 	assert.NoError(t, err)
