@@ -49,6 +49,13 @@ var ListCmd = base.ListCmd{
 			AddFieldFn("traffic", func(obj interface{}) string {
 				serverType := obj.(*hcloud.ServerType)
 				return fmt.Sprintf("%d TB", serverType.IncludedTraffic/util.Tebibyte)
+			}).
+			AddFieldFn("deprecated", func(obj interface{}) string {
+				serverType := obj.(*hcloud.ServerType)
+				if !serverType.IsDeprecated() {
+					return "-"
+				}
+				return util.Datetime(serverType.UnavailableAfter())
 			})
 	},
 

@@ -54,3 +54,49 @@ func TestList(t *testing.T) {
 	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
+
+func TestListColumnDeprecated(t *testing.T) {
+	fx := testutil.NewFixture(t)
+	defer fx.Finish()
+
+	time.Local = time.UTC
+
+	cmd := servertype.ListCmd.CobraCommand(fx.State())
+
+	fx.ExpectEnsureToken()
+	fx.Client.ServerTypeClient.EXPECT().
+		AllWithOpts(
+			gomock.Any(),
+			hcloud.ServerTypeListOpts{
+				ListOpts: hcloud.ListOpts{PerPage: 50},
+				Sort:     []string{"id:asc"},
+			},
+		).
+		Return([]*hcloud.ServerType{
+			{
+				ID:   123,
+				Name: "deprecated",
+				DeprecatableResource: hcloud.DeprecatableResource{
+					Deprecation: &hcloud.DeprecationInfo{
+						Announced:        time.Date(2036, 8, 20, 12, 0, 0, 0, time.UTC),
+						UnavailableAfter: time.Date(2037, 8, 20, 12, 0, 0, 0, time.UTC),
+					},
+				},
+			},
+			{
+				ID:   124,
+				Name: "current",
+			},
+		}, nil)
+
+	out, errOut, err := fx.Run(cmd, []string{"-o=columns=id,name,deprecated"})
+
+	expOut := `ID    NAME         DEPRECATED
+123   deprecated   Thu Aug 20 12:00:00 UTC 2037
+124   current      -
+`
+
+	assert.NoError(t, err)
+	assert.Empty(t, errOut)
+	assert.Equal(t, expOut, out)
+}
