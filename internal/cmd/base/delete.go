@@ -4,9 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"strings"
-	"sync"
 
 	"github.com/spf13/cobra"
+	"golang.org/x/sync/semaphore"
 
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/cli/internal/cmd/util"
@@ -14,6 +14,8 @@ import (
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
+
+const nConcurrentDeletes = 5
 
 // DeleteCmd allows defining commands for deleting a resource.
 type DeleteCmd struct {
@@ -54,8 +56,7 @@ func (dc *DeleteCmd) CobraCommand(s state.State) *cobra.Command {
 // Run executes a delete command.
 func (dc *DeleteCmd) Run(s state.State, cmd *cobra.Command, args []string) error {
 
-	wg := sync.WaitGroup{}
-	wg.Add(len(args))
+	sema := semaphore.NewWeighted(nConcurrentDeletes)
 	actions, errs :=
 		make([]*hcloud.Action, len(args)),
 		make([]error, len(args))
@@ -63,7 +64,11 @@ func (dc *DeleteCmd) Run(s state.State, cmd *cobra.Command, args []string) error
 	for i, idOrName := range args {
 		i, idOrName := i, idOrName
 		go func() {
-			defer wg.Done()
+			if err := sema.Acquire(s, 1); err != nil {
+				errs[i] = err
+				return
+			}
+			defer sema.Release(1)
 			resource, _, err := dc.Fetch(s, cmd, idOrName)
 			if err != nil {
 				errs[i] = err
@@ -77,7 +82,10 @@ func (dc *DeleteCmd) Run(s state.State, cmd *cobra.Command, args []string) error
 		}()
 	}
 
-	wg.Wait()
+	if err := sema.Acquire(s, nConcurrentDeletes); err != nil {
+		return err
+	}
+
 	filtered := util.FilterNil(actions)
 	var err error
 	if len(filtered) > 0 {
