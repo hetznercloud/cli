@@ -46,7 +46,7 @@ func TestNetwork(t *testing.T) {
 	out, err = runCommand(t, "network", "list", "-o=columns=servers,ip_range,labels,protection,created,age")
 	assert.NoError(t, err)
 	assert.Regexp(t, `SERVERS +IP RANGE +LABELS +PROTECTION +CREATED +AGE
-0 server +10\.0\.0\.0/24 +delete .*? (?:just now|[0-9]+s)
+0 servers +10\.0\.0\.0/24 +delete .*? (?:just now|[0-9]+s)
 `, out)
 
 	out, err = runCommand(t, "network", "change-ip-range", "--ip-range", "10.0.2.0/16", "non-existing-network")
