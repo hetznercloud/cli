@@ -76,9 +76,9 @@ func (lc *ListCmd) Run(s state.State, cmd *cobra.Command) error {
 	if outOpts.IsSet("json") || outOpts.IsSet("yaml") {
 		schema := lc.Schema(resources)
 		if outOpts.IsSet("json") {
-			return util.DescribeJSON(schema)
+			return util.DescribeJSON(cmd.OutOrStdout(), schema)
 		} else {
-			return util.DescribeYAML(schema)
+			return util.DescribeYAML(cmd.OutOrStdout(), schema)
 		}
 	}
 

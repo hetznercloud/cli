@@ -55,9 +55,9 @@ var RequestConsoleCmd = base.Cmd{
 			}
 
 			if outOpts.IsSet("json") {
-				return util.DescribeJSON(schema)
+				return util.DescribeJSON(cmd.OutOrStdout(), schema)
 			} else {
-				return util.DescribeYAML(schema)
+				return util.DescribeYAML(cmd.OutOrStdout(), schema)
 			}
 		}
 

@@ -1,6 +1,7 @@
 package util_test
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"testing"
@@ -204,35 +205,31 @@ func TestDescribeFormat(t *testing.T) {
 }
 
 func TestDescribeJSON(t *testing.T) {
-	stdout, stderr, err := testutil.CaptureOutStreams(func() error {
-		return util.DescribeJSON(struct {
-			Foo string `json:"foo"`
-			Bar string `json:"bar"`
-		}{
-			Foo: "foo",
-			Bar: "bar",
-		})
+	var buf bytes.Buffer
+	err := util.DescribeJSON(&buf, struct {
+		Foo string `json:"foo"`
+		Bar string `json:"bar"`
+	}{
+		Foo: "foo",
+		Bar: "bar",
 	})
 
 	assert.NoError(t, err)
-	assert.JSONEq(t, `{"foo":"foo", "bar": "bar"}`, stdout)
-	assert.Empty(t, stderr)
+	assert.JSONEq(t, `{"foo":"foo", "bar": "bar"}`, buf.String())
 }
 
 func TestDescribeYAML(t *testing.T) {
-	stdout, stderr, err := testutil.CaptureOutStreams(func() error {
-		return util.DescribeYAML(struct {
-			Foo string `json:"foo"`
-			Bar string `json:"bar"`
-		}{
-			Foo: "foo",
-			Bar: "bar",
-		})
+	var buf bytes.Buffer
+	err := util.DescribeYAML(&buf, struct {
+		Foo string `json:"foo"`
+		Bar string `json:"bar"`
+	}{
+		Foo: "foo",
+		Bar: "bar",
 	})
 
 	assert.NoError(t, err)
-	assert.YAMLEq(t, `{"foo":"foo", "bar": "bar"}`, stdout)
-	assert.Empty(t, stderr)
+	assert.YAMLEq(t, `{"foo":"foo", "bar": "bar"}`, buf.String())
 }
 
 func TestWrap(t *testing.T) {

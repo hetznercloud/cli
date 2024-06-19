@@ -69,9 +69,9 @@ func runList(s state.State, cmd *cobra.Command, _ []string) error {
 	if outOpts.IsSet("json") || outOpts.IsSet("yaml") {
 		schema := util.Wrap("options", options)
 		if outOpts.IsSet("json") {
-			return util.DescribeJSON(schema)
+			return util.DescribeJSON(cmd.OutOrStdout(), schema)
 		} else {
-			return util.DescribeYAML(schema)
+			return util.DescribeYAML(cmd.OutOrStdout(), schema)
 		}
 	}
 
