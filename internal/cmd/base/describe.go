@@ -75,9 +75,9 @@ func (dc *DescribeCmd) Run(s state.State, cmd *cobra.Command, args []string) err
 
 	switch {
 	case outputFlags.IsSet("json"):
-		return util.DescribeJSON(schema)
+		return util.DescribeJSON(cmd.OutOrStdout(), schema)
 	case outputFlags.IsSet("yaml"):
-		return util.DescribeYAML(schema)
+		return util.DescribeYAML(cmd.OutOrStdout(), schema)
 	case outputFlags.IsSet("format"):
 		return util.DescribeFormat(resource, outputFlags["format"][0])
 	default:
