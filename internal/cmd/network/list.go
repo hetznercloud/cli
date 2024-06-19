@@ -41,7 +41,7 @@ var ListCmd = base.ListCmd{
 			AddFieldFn("servers", output.FieldFn(func(obj interface{}) string {
 				network := obj.(*hcloud.Network)
 				serverCount := len(network.Servers)
-				if serverCount <= 1 {
+				if serverCount == 1 {
 					return fmt.Sprintf("%v server", serverCount)
 				}
 				return fmt.Sprintf("%v servers", serverCount)
