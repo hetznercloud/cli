@@ -50,12 +50,15 @@ func (dc *DeleteCmd) CobraCommand(s state.State) *cobra.Command {
 	return cmd
 }
 
+// DeleteBatchSize is the batch size when deleting multiple resources in parallel.
+const DeleteBatchSize = 10
+
 // Run executes a delete command.
 func (dc *DeleteCmd) Run(s state.State, cmd *cobra.Command, args []string) error {
 	errs := make([]error, 0, len(args))
 	deleted := make([]string, 0, len(args))
 
-	for _, batch := range util.Batches(args, 10) {
+	for _, batch := range util.Batches(args, DeleteBatchSize) {
 		results := make([]util.ResourceState, len(batch))
 		actions := make([]*hcloud.Action, 0, len(batch))
 
