@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"strings"
-	"sync"
 
 	"github.com/spf13/cobra"
 
@@ -51,50 +50,60 @@ func (dc *DeleteCmd) CobraCommand(s state.State) *cobra.Command {
 	return cmd
 }
 
+// deleteBatchSize is the batch size when deleting multiple resources in parallel.
+const deleteBatchSize = 10
+
 // Run executes a delete command.
 func (dc *DeleteCmd) Run(s state.State, cmd *cobra.Command, args []string) error {
+	errs := make([]error, 0, len(args))
+	deleted := make([]string, 0, len(args))
 
-	wg := sync.WaitGroup{}
-	wg.Add(len(args))
-	actions, errs :=
-		make([]*hcloud.Action, len(args)),
-		make([]error, len(args))
+	for _, batch := range util.Batches(args, deleteBatchSize) {
+		results := make([]util.ResourceState, len(batch))
+		actions := make([]*hcloud.Action, 0, len(batch))
 
-	for i, idOrName := range args {
-		i, idOrName := i, idOrName
-		go func() {
-			defer wg.Done()
+		for i, idOrName := range batch {
+			results[i] = util.ResourceState{IDOrName: idOrName}
+
 			resource, _, err := dc.Fetch(s, cmd, idOrName)
 			if err != nil {
-				errs[i] = err
-				return
+				results[i].Error = err
+				continue
 			}
 			if util.IsNil(resource) {
-				errs[i] = fmt.Errorf("%s not found: %s", dc.ResourceNameSingular, idOrName)
-				return
+				results[i].Error = fmt.Errorf("%s not found: %s", dc.ResourceNameSingular, idOrName)
+				continue
 			}
-			actions[i], errs[i] = dc.Delete(s, cmd, resource)
-		}()
-	}
 
-	wg.Wait()
-	filtered := util.FilterNil(actions)
-	var err error
-	if len(filtered) > 0 {
-		err = s.WaitForActions(cmd, s, filtered...)
-	}
+			action, err := dc.Delete(s, cmd, resource)
+			if err != nil {
+				results[i].Error = err
+				continue
+			}
+			if action != nil {
+				actions = append(actions, action)
+			}
+		}
 
-	var actuallyDeleted []string
-	for i, idOrName := range args {
-		if errs[i] == nil {
-			actuallyDeleted = append(actuallyDeleted, idOrName)
+		if len(actions) > 0 {
+			// TODO: We do not check when an action fail for a specific resource
+			if err := s.WaitForActions(cmd, s, actions...); err != nil {
+				errs = append(errs, err)
+			}
+		}
+
+		for _, result := range results {
+			if result.Error == nil {
+				deleted = append(deleted, result.IDOrName)
+			}
 		}
 	}
 
-	if len(actuallyDeleted) == 1 {
-		cmd.Printf("%s %s deleted\n", dc.ResourceNameSingular, actuallyDeleted[0])
-	} else if len(actuallyDeleted) > 1 {
-		cmd.Printf("%s %s deleted\n", dc.ResourceNamePlural, strings.Join(actuallyDeleted, ", "))
+	if len(deleted) == 1 {
+		cmd.Printf("%s %s deleted\n", dc.ResourceNameSingular, deleted[0])
+	} else if len(deleted) > 1 {
+		cmd.Printf("%s %s deleted\n", dc.ResourceNamePlural, strings.Join(deleted, ", "))
 	}
-	return errors.Join(append(errs, err)...)
+
+	return errors.Join(errs...)
 }
