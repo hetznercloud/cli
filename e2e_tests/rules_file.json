@@ -1,0 +1,34 @@
+[
+  {
+    "description": "Allow port 80",
+    "direction": "in",
+    "port": "80",
+    "protocol": "tcp",
+    "source_ips": [
+      "28.239.13.1/32",
+      "28.239.14.0/24",
+      "ff21:1eac:9a3b:ee58:5ca:990c:8bc9:c03b/128"
+    ]
+  },
+  {
+    "description": "Allow port 443",
+    "direction": "in",
+    "port": "443",
+    "protocol": "tcp",
+    "source_ips": [
+      "0.0.0.0/0",
+      "::/0"
+    ]
+  },
+  {
+    "direction": "out",
+    "source_ips": [],
+    "destination_ips": [
+      "28.239.13.1/32",
+      "28.239.14.0/24",
+      "ff21:1eac:9a3b:ee58:5ca:990c:8bc9:c03b/128"
+    ],
+    "protocol": "tcp",
+    "port": "80"
+  }
+]
