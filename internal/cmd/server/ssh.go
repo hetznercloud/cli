@@ -21,7 +21,7 @@ var SSHPath = "ssh"
 var SSHCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:                   "ssh [options] <server> [command...]",
+			Use:                   "ssh [options] <server> [--] [ssh options] [command [argument...]]",
 			Short:                 "Spawn an SSH connection for the server",
 			Args:                  util.ValidateLenient,
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
