@@ -85,6 +85,7 @@ func (cfg *config) reset() {
 	cfg.v.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
 
 	cfg.fs = pflag.NewFlagSet("hcloud", pflag.ContinueOnError)
+	cfg.fs.Usage = func() {} // disable usage output
 	for _, o := range Options {
 		o.addToFlagSet(cfg.fs)
 	}
