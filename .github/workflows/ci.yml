@@ -43,6 +43,7 @@ jobs:
         run: go test -coverprofile=coverage.txt -v -race ./...
 
       - name: Upload coverage reports to Codecov
+        if: github.actor != 'Hetzner Cloud Bot' && github.actor != 'renovate[bot]'
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
