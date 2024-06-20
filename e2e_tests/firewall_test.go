@@ -11,17 +11,12 @@ import (
 func TestFirewall(t *testing.T) {
 	t.Parallel()
 
-	out, err := runCommand(t, "firewall", "create", "--name", "test-firewall", "--rules-file", "rules_file.json")
-	assert.NoError(t, err)
-	if !assert.Regexp(t, `^Firewall [0-9]+ created\n$`, out) {
-		// firewall was not created (properly), so there's no need to test it
-		return
+	firewallId, err := createFirewall(t, "test-firewall", "--rules-file", "rules_file.json")
+	if err != nil {
+		t.Fatal(err)
 	}
 
-	firewallId, err := strconv.Atoi(out[9 : len(out)-9])
-	assert.NoError(t, err)
-
-	out, err = runCommand(t, "firewall", "add-label", "non-existing-firewall", "foo=bar")
+	out, err := runCommand(t, "firewall", "add-label", "non-existing-firewall", "foo=bar")
 	assert.EqualError(t, err, "firewall not found: non-existing-firewall")
 	assert.Empty(t, out)
 
@@ -108,4 +103,21 @@ Applied To:
 	out, err = runCommand(t, "firewall", "delete", strconv.Itoa(firewallId))
 	assert.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("firewall %d deleted\n", firewallId), out)
+}
+
+func createFirewall(t *testing.T, name string, args ...string) (int, error) {
+	out, err := runCommand(t, append([]string{"firewall", "create", "--name", name}, args...)...)
+	if err != nil {
+		return 0, err
+	}
+
+	if !assert.Regexp(t, `^Firewall [0-9]+ created\n$`, out) {
+		return 0, fmt.Errorf("invalid response: %s", out)
+	}
+
+	firewallId, err := strconv.Atoi(out[9 : len(out)-9])
+	if err != nil {
+		return 0, err
+	}
+	return firewallId, nil
 }
