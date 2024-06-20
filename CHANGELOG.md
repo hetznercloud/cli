@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.44.0](https://github.com/hetznercloud/cli/compare/v1.43.1...v1.44.0) (2024-06-20)
+
+
+### Features
+
+* delete multiple resources in parallel ([#761](https://github.com/hetznercloud/cli/issues/761)) ([f2fb321](https://github.com/hetznercloud/cli/commit/f2fb321a774419431bb851d8e92c3a4741bb9220))
+* improve toml formatting ([#758](https://github.com/hetznercloud/cli/issues/758)) ([eacb7dd](https://github.com/hetznercloud/cli/commit/eacb7dd69c50a7d7469710b54adebc592702c2fd))
+* **load-balancer:** allow specifying health check options in add-service ([#743](https://github.com/hetznercloud/cli/issues/743)) ([2cd08b2](https://github.com/hetznercloud/cli/commit/2cd08b2298882b5877c8ff522ddc4e2226ecbdb7)), closes [#742](https://github.com/hetznercloud/cli/issues/742)
+* new action waiting progress  ([#749](https://github.com/hetznercloud/cli/issues/749)) ([9e30f3f](https://github.com/hetznercloud/cli/commit/9e30f3f69bc930e4b87be0cee8a096827b542d53))
+* new configuration system, config subcommand ([#736](https://github.com/hetznercloud/cli/issues/736)) ([d1c6678](https://github.com/hetznercloud/cli/commit/d1c667838e045f9d93cc5d54fdd38bfb5f15ba17))
+* **server-type:** add deprecated column to list command ([#780](https://github.com/hetznercloud/cli/issues/780)) ([906f864](https://github.com/hetznercloud/cli/commit/906f86436d1c6f7e9f0bebe43fcd26bd243f0b81))
+* **server:** add default-ssh-keys option ([#759](https://github.com/hetznercloud/cli/issues/759)) ([9b34d26](https://github.com/hetznercloud/cli/commit/9b34d26295a675399741c7d85058233d3b9f0ee5))
+
+
+### Bug Fixes
+
+* **firewall:** 'create --rules-file' not working with outbound rules ([#752](https://github.com/hetznercloud/cli/issues/752)) ([2f2be32](https://github.com/hetznercloud/cli/commit/2f2be32a513f9e2e878553672189d24d098205bc)), closes [#750](https://github.com/hetznercloud/cli/issues/750)
+* network list server count format ([#783](https://github.com/hetznercloud/cli/issues/783)) ([f69d261](https://github.com/hetznercloud/cli/commit/f69d26167100e83f1fa3ab0d658b624618e51c97))
+* track progress if the terminal width allows it ([#768](https://github.com/hetznercloud/cli/issues/768)) ([069fffe](https://github.com/hetznercloud/cli/commit/069fffe48bb09f23edcade9e73f351a8b361a2a5)), closes [#767](https://github.com/hetznercloud/cli/issues/767)
+
 ## [1.43.1](https://github.com/hetznercloud/cli/compare/v1.43.0...v1.43.1) (2024-04-19)
 
 
