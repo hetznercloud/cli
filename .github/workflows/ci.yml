@@ -43,7 +43,8 @@ jobs:
         run: go test -coverprofile=coverage.txt -v -race ./...
 
       - name: Upload coverage reports to Codecov
-        if: github.actor != 'Hetzner Cloud Bot' && github.actor != 'renovate[bot]'
+        # don't run if branch name starts with 'renovate/' or 'release-please--'
+        if: "!startsWith(github.head_ref, 'renovate/') && !startsWith(github.head_ref, 'release-please--')"
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
