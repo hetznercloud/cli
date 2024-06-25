@@ -4,6 +4,7 @@ import (
 	"cmp"
 	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 	"reflect"
 	"slices"
@@ -157,14 +158,14 @@ func DescribeFormat(object interface{}, format string) error {
 	return t.Execute(os.Stdout, object)
 }
 
-func DescribeJSON(object interface{}) error {
-	enc := json.NewEncoder(os.Stdout)
+func DescribeJSON(w io.Writer, object interface{}) error {
+	enc := json.NewEncoder(w)
 	enc.SetIndent("", "  ")
 	return enc.Encode(object)
 }
 
-func DescribeYAML(object interface{}) error {
-	enc := yaml.NewEncoder(os.Stdout)
+func DescribeYAML(w io.Writer, object interface{}) error {
+	enc := yaml.NewEncoder(w)
 	return enc.Encode(object)
 }
 

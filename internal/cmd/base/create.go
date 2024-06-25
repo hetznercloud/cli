@@ -57,9 +57,9 @@ func (cc *CreateCmd) CobraCommand(s state.State) *cobra.Command {
 
 		if isSchema {
 			if outputFlags.IsSet("json") {
-				return util.DescribeJSON(schema)
+				return util.DescribeJSON(cmd.OutOrStdout(), schema)
 			} else {
-				return util.DescribeYAML(schema)
+				return util.DescribeYAML(cmd.OutOrStdout(), schema)
 			}
 		} else if cc.PrintResource != nil && resource != nil {
 			cc.PrintResource(s, cmd, resource)
