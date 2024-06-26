@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.44.1](https://github.com/hetznercloud/cli/compare/v1.44.0...v1.44.1) (2024-06-26)
+
+
+### Bug Fixes
+
+* errors silently ignored when deleting resources ([#792](https://github.com/hetznercloud/cli/issues/792)) ([a7655f8](https://github.com/hetznercloud/cli/commit/a7655f8c42025b4576ee4556cb0ebbc1062671f5)), closes [#791](https://github.com/hetznercloud/cli/issues/791)
+
 ## [1.44.0](https://github.com/hetznercloud/cli/compare/v1.43.1...v1.44.0) (2024-06-20)
 
 
