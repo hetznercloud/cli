@@ -13,6 +13,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
+	"github.com/hetznercloud/cli/internal/state/config"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
@@ -21,6 +22,8 @@ var ListCmd = base.ListCmd{
 	ResourceNamePlural: "ISOs",
 	JSONKeyGetByName:   "isos",
 	DefaultColumns:     []string{"id", "name", "description", "type", "architecture"},
+	SortOption:         config.OptionSortISO,
+
 	AdditionalFlags: func(cmd *cobra.Command) {
 		cmd.Flags().StringSlice("architecture", []string{}, "Only show images of given architecture: x86|arm")
 		cmd.RegisterFlagCompletionFunc("architecture", cmpl.SuggestCandidates(string(hcloud.ArchitectureX86), string(hcloud.ArchitectureARM)))
