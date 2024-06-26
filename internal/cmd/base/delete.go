@@ -88,18 +88,14 @@ func (dc *DeleteCmd) Run(s state.State, cmd *cobra.Command, args []string) error
 		for _, result := range results {
 			if result.Error != nil {
 				errs = append(errs, result.Error)
+			} else {
+				deleted = append(deleted, result.IDOrName)
 			}
 		}
 
 		if len(actions) > 0 {
 			if err := s.WaitForActions(cmd, s, actions...); err != nil {
 				errs = append(errs, err)
-			}
-		}
-
-		for _, result := range results {
-			if result.Error == nil {
-				deleted = append(deleted, result.IDOrName)
 			}
 		}
 	}
