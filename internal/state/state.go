@@ -3,6 +3,7 @@ package state
 import (
 	"context"
 	"os"
+	"strings"
 
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state/config"
@@ -88,8 +89,9 @@ func (c *state) newClient() (hcapi2.Client, error) {
 		if filePath == "" {
 			opts = append(opts, hcloud.WithDebugWriter(os.Stderr))
 		} else {
-			writer, _ := os.Create(filePath)
-			opts = append(opts, hcloud.WithDebugWriter(writer))
+			f, _ := os.OpenFile(filePath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
+			_, _ = f.WriteString("--- Command:\n" + strings.Join(os.Args, " ") + "\n\n\n\n")
+			opts = append(opts, hcloud.WithDebugWriter(f))
 		}
 	}
 
