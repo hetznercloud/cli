@@ -85,16 +85,18 @@ func (dc *DeleteCmd) Run(s state.State, cmd *cobra.Command, args []string) error
 			}
 		}
 
-		if len(actions) > 0 {
-			// TODO: We do not check when an action fail for a specific resource
-			if err := s.WaitForActions(cmd, s, actions...); err != nil {
-				errs = append(errs, err)
+		for _, result := range results {
+			if result.Error != nil {
+				errs = append(errs, result.Error)
+			} else {
+				deleted = append(deleted, result.IDOrName)
 			}
 		}
 
-		for _, result := range results {
-			if result.Error == nil {
-				deleted = append(deleted, result.IDOrName)
+		if len(actions) > 0 {
+			// TODO: We do not check if an action fails for a specific resource
+			if err := s.WaitForActions(cmd, s, actions...); err != nil {
+				errs = append(errs, err)
 			}
 		}
 	}

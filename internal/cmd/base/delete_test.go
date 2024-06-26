@@ -1,6 +1,7 @@
 package base_test
 
 import (
+	"errors"
 	"sync"
 	"testing"
 
@@ -28,6 +29,11 @@ var fakeDeleteCmd = &base.DeleteCmd{
 		mu.Lock()
 		cmd.Println("Fetching fake resource")
 
+		if idOrName == "fail" {
+			mu.Unlock()
+			return nil, nil, errors.New("this is an error")
+		}
+
 		resource := &fakeResource{
 			ID:   123,
 			Name: "test",
@@ -51,6 +57,16 @@ func TestDelete(t *testing.T) {
 			Args: []string{"delete", "123", "456", "789"},
 			ExpOut: "Fetching fake resource\nDeleting fake resource\nFetching fake resource\nDeleting fake resource\n" +
 				"Fetching fake resource\nDeleting fake resource\nFake resources 123, 456, 789 deleted\n",
+		},
+		"error": {
+			Args:   []string{"delete", "fail"},
+			ExpOut: "Fetching fake resource\n",
+			ExpErr: "this is an error",
+		},
+		"error multiple": {
+			Args:   []string{"delete", "123", "fail", "789"},
+			ExpOut: "Fetching fake resource\nDeleting fake resource\nFetching fake resource\nFetching fake resource\nDeleting fake resource\nFake resources 123, 789 deleted\n",
+			ExpErr: "this is an error",
 		},
 		"quiet": {
 			Args: []string{"delete", "123", "--quiet"},
