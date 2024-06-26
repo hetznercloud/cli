@@ -79,7 +79,7 @@ func (dc *DescribeCmd) Run(s state.State, cmd *cobra.Command, args []string) err
 	case outputFlags.IsSet("yaml"):
 		return util.DescribeYAML(cmd.OutOrStdout(), schema)
 	case outputFlags.IsSet("format"):
-		return util.DescribeFormat(resource, outputFlags["format"][0])
+		return util.DescribeFormat(cmd.OutOrStdout(), resource, outputFlags["format"][0])
 	default:
 		return dc.PrintText(s, cmd, resource)
 	}

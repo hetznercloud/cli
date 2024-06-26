@@ -15,7 +15,7 @@ func createServer(t *testing.T, name, serverType, image string, args ...string) 
 	}
 
 	firstLine := strings.Split(out, "\n")[0]
-	if !assert.Regexp(t, `^Server [0-9]+ created`, firstLine) {
+	if !assert.Regexp(t, `^Server [0-9]+ created$`, firstLine) {
 		t.Fatalf("invalid response: %s", out)
 	}
 

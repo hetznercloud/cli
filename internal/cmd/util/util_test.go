@@ -12,7 +12,6 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/hetznercloud/cli/internal/cmd/util"
-	"github.com/hetznercloud/cli/internal/testutil"
 )
 
 func TestYesNo(t *testing.T) {
@@ -189,19 +188,17 @@ func TestPrefixLines(t *testing.T) {
 }
 
 func TestDescribeFormat(t *testing.T) {
-	stdout, stderr, err := testutil.CaptureOutStreams(func() error {
-		return util.DescribeFormat(struct {
-			Foo string
-			Bar string
-		}{
-			Foo: "foo",
-			Bar: "bar",
-		}, "Foo is: {{.Foo}} Bar is: {{.Bar}}")
-	})
+	var buf bytes.Buffer
+	err := util.DescribeFormat(&buf, struct {
+		Foo string
+		Bar string
+	}{
+		Foo: "foo",
+		Bar: "bar",
+	}, "Foo is: {{.Foo}} Bar is: {{.Bar}}")
 
 	assert.NoError(t, err)
-	assert.Equal(t, "Foo is: foo Bar is: bar\n", stdout)
-	assert.Empty(t, stderr)
+	assert.Equal(t, "Foo is: foo Bar is: bar\n", buf.String())
 }
 
 func TestDescribeJSON(t *testing.T) {

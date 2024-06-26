@@ -10,10 +10,6 @@ import (
 )
 
 func TestNetwork(t *testing.T) {
-	if true {
-		return
-	}
-
 	t.Parallel()
 
 	out, err := runCommand(t, "network", "create")

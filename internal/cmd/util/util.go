@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"os"
 	"reflect"
 	"slices"
 	"sort"
@@ -147,7 +146,7 @@ func PrefixLines(text, prefix string) string {
 	return strings.Join(lines, "\n")
 }
 
-func DescribeFormat(object interface{}, format string) error {
+func DescribeFormat(w io.Writer, object interface{}, format string) error {
 	if !strings.HasSuffix(format, "\n") {
 		format = format + "\n"
 	}
@@ -155,7 +154,7 @@ func DescribeFormat(object interface{}, format string) error {
 	if err != nil {
 		return err
 	}
-	return t.Execute(os.Stdout, object)
+	return t.Execute(w, object)
 }
 
 func DescribeJSON(w io.Writer, object interface{}) error {
