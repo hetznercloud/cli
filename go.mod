@@ -12,7 +12,7 @@ require (
 	github.com/goccy/go-yaml v1.11.3
 	github.com/golang/mock v1.6.0
 	github.com/guptarohit/asciigraph v0.7.1
-	github.com/hetznercloud/hcloud-go/v2 v2.10.1
+	github.com/hetznercloud/hcloud-go/v2 v2.10.2
 	github.com/jedib0t/go-pretty/v6 v6.5.9
 	github.com/spf13/cobra v1.8.1
 	github.com/spf13/pflag v1.0.5
