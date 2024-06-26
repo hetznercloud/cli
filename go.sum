@@ -41,8 +41,8 @@ github.com/guptarohit/asciigraph v0.7.1 h1:K+JWbRc04XEfv8BSZgNuvhCmpbvX4+9NYd/Ux
 github.com/guptarohit/asciigraph v0.7.1/go.mod h1:dYl5wwK4gNsnFf9Zp+l06rFiDZ5YtXM6x7SRWZ3KGag=
 github.com/hashicorp/hcl v1.0.0 h1:0Anlzjpi4vEasTeNFn2mLJgTSwt0+6sfsiTG8qcWGx4=
 github.com/hashicorp/hcl v1.0.0/go.mod h1:E5yfLk+7swimpb2L/Alb/PJmXilQ/rhwaUYs4T20WEQ=
-github.com/hetznercloud/hcloud-go/v2 v2.10.1 h1:MLfIJJvl7qo79Q+52YmrJ4BOTL5oICJWHjzb0sCtgQI=
-github.com/hetznercloud/hcloud-go/v2 v2.10.1/go.mod h1:xQ+8KhIS62W0D78Dpi57jsufWh844gUw1az5OUvaeq8=
+github.com/hetznercloud/hcloud-go/v2 v2.10.2 h1:9gyTUPhfNbfbS40Spgij5mV5k37bOZgt8iHKCbfGs5I=
+github.com/hetznercloud/hcloud-go/v2 v2.10.2/go.mod h1:xQ+8KhIS62W0D78Dpi57jsufWh844gUw1az5OUvaeq8=
 github.com/inconshreveable/mousetrap v1.1.0 h1:wN+x4NVGpMsO7ErUn/mUI3vEoE6Jt13X2s0bqwp9tc8=
 github.com/inconshreveable/mousetrap v1.1.0/go.mod h1:vpF70FUmC8bwa3OWnCshd2FqLfsEA9PFc4w1p2J65bw=
 github.com/jedib0t/go-pretty/v6 v6.5.9 h1:ACteMBRrrmm1gMsXe9PSTOClQ63IXDUt03H5U+UV8OU=
