@@ -1,22 +1,73 @@
-┌──────────────────┬──────────────────────┬─────────────┬──────────────────┬─────────────────────────┬─────────────────┐
-│ OPTION           │ DESCRIPTION          │ TYPE        │ CONFIG KEY       │ ENVIRONMENT VARIABLE    │ FLAG            │
-├──────────────────┼──────────────────────┼─────────────┼──────────────────┼─────────────────────────┼─────────────────┤
-│ debug            │ Enable debug output  │ boolean     │ debug            │ HCLOUD_DEBUG            │ --debug         │
-├──────────────────┼──────────────────────┼─────────────┼──────────────────┼─────────────────────────┼─────────────────┤
-│ debug-file       │ File to write debug  │ string      │ debug_file       │ HCLOUD_DEBUG_FILE       │ --debug-file    │
-│                  │ output to            │             │                  │                         │                 │
-├──────────────────┼──────────────────────┼─────────────┼──────────────────┼─────────────────────────┼─────────────────┤
-│ default-ssh-keys │ Default SSH keys for │ string list │ default_ssh_keys │ HCLOUD_DEFAULT_SSH_KEYS │                 │
-│                  │ new servers          │             │                  │                         │                 │
-├──────────────────┼──────────────────────┼─────────────┼──────────────────┼─────────────────────────┼─────────────────┤
-│ endpoint         │ Hetzner Cloud API    │ string      │ endpoint         │ HCLOUD_ENDPOINT         │ --endpoint      │
-│                  │ endpoint             │             │                  │                         │                 │
-├──────────────────┼──────────────────────┼─────────────┼──────────────────┼─────────────────────────┼─────────────────┤
-│ poll-interval    │ Interval at which to │ duration    │ poll_interval    │ HCLOUD_POLL_INTERVAL    │ --poll-interval │
-│                  │ poll information,    │             │                  │                         │                 │
-│                  │ for example action   │             │                  │                         │                 │
-│                  │ progress             │             │                  │                         │                 │
-├──────────────────┼──────────────────────┼─────────────┼──────────────────┼─────────────────────────┼─────────────────┤
-│ quiet            │ If true, only print  │ boolean     │ quiet            │ HCLOUD_QUIET            │ --quiet         │
-│                  │ error messages       │             │                  │                         │                 │
-└──────────────────┴──────────────────────┴─────────────┴──────────────────┴─────────────────────────┴─────────────────┘
+┌───────────────────────┬──────────────────────┬─────────────┬───────────────────────┬──────────────────────────────┬─────────────────┐
+│ OPTION                │ DESCRIPTION          │ TYPE        │ CONFIG KEY            │ ENVIRONMENT VARIABLE         │ FLAG            │
+├───────────────────────┼──────────────────────┼─────────────┼───────────────────────┼──────────────────────────────┼─────────────────┤
+│ debug                 │ Enable debug output  │ boolean     │ debug                 │ HCLOUD_DEBUG                 │ --debug         │
+├───────────────────────┼──────────────────────┼─────────────┼───────────────────────┼──────────────────────────────┼─────────────────┤
+│ debug-file            │ File to write debug  │ string      │ debug_file            │ HCLOUD_DEBUG_FILE            │ --debug-file    │
+│                       │ output to            │             │                       │                              │                 │
+├───────────────────────┼──────────────────────┼─────────────┼───────────────────────┼──────────────────────────────┼─────────────────┤
+│ default-ssh-keys      │ Default SSH keys for │ string list │ default_ssh_keys      │ HCLOUD_DEFAULT_SSH_KEYS      │                 │
+│                       │ new servers          │             │                       │                              │                 │
+├───────────────────────┼──────────────────────┼─────────────┼───────────────────────┼──────────────────────────────┼─────────────────┤
+│ endpoint              │ Hetzner Cloud API    │ string      │ endpoint              │ HCLOUD_ENDPOINT              │ --endpoint      │
+│                       │ endpoint             │             │                       │                              │                 │
+├───────────────────────┼──────────────────────┼─────────────┼───────────────────────┼──────────────────────────────┼─────────────────┤
+│ poll-interval         │ Interval at which to │ duration    │ poll_interval         │ HCLOUD_POLL_INTERVAL         │ --poll-interval │
+│                       │ poll information,    │             │                       │                              │                 │
+│                       │ for example action   │             │                       │                              │                 │
+│                       │ progress             │             │                       │                              │                 │
+├───────────────────────┼──────────────────────┼─────────────┼───────────────────────┼──────────────────────────────┼─────────────────┤
+│ quiet                 │ If true, only print  │ boolean     │ quiet                 │ HCLOUD_QUIET                 │ --quiet         │
+│                       │ error messages       │             │                       │                              │                 │
+├───────────────────────┼──────────────────────┼─────────────┼───────────────────────┼──────────────────────────────┼─────────────────┤
+│ sort.certificate      │ Default sorting for  │ string list │ sort.certificate      │ HCLOUD_SORT.CERTIFICATE      │                 │
+│                       │ Certificate resource │             │                       │                              │                 │
+├───────────────────────┼──────────────────────┼─────────────┼───────────────────────┼──────────────────────────────┼─────────────────┤
+│ sort.datacenter       │ Default sorting for  │ string list │ sort.datacenter       │ HCLOUD_SORT.DATACENTER       │                 │
+│                       │ Datacenter resource  │             │                       │                              │                 │
+├───────────────────────┼──────────────────────┼─────────────┼───────────────────────┼──────────────────────────────┼─────────────────┤
+│ sort.firewall         │ Default sorting for  │ string list │ sort.firewall         │ HCLOUD_SORT.FIREWALL         │                 │
+│                       │ Firewall resource    │             │                       │                              │                 │
+├───────────────────────┼──────────────────────┼─────────────┼───────────────────────┼──────────────────────────────┼─────────────────┤
+│ sort.floatingip       │ Default sorting for  │ string list │ sort.floatingip       │ HCLOUD_SORT.FLOATINGIP       │                 │
+│                       │ Floating IP resource │             │                       │                              │                 │
+├───────────────────────┼──────────────────────┼─────────────┼───────────────────────┼──────────────────────────────┼─────────────────┤
+│ sort.image            │ Default sorting for  │ string list │ sort.image            │ HCLOUD_SORT.IMAGE            │                 │
+│                       │ Image resource       │             │                       │                              │                 │
+├───────────────────────┼──────────────────────┼─────────────┼───────────────────────┼──────────────────────────────┼─────────────────┤
+│ sort.iso              │ Default sorting for  │ string list │ sort.iso              │ HCLOUD_SORT.ISO              │                 │
+│                       │ ISO resource         │             │                       │                              │                 │
+├───────────────────────┼──────────────────────┼─────────────┼───────────────────────┼──────────────────────────────┼─────────────────┤
+│ sort.loadbalancer     │ Default sorting for  │ string list │ sort.loadbalancer     │ HCLOUD_SORT.LOADBALANCER     │                 │
+│                       │ Load Balancer        │             │                       │                              │                 │
+│                       │ resource             │             │                       │                              │                 │
+├───────────────────────┼──────────────────────┼─────────────┼───────────────────────┼──────────────────────────────┼─────────────────┤
+│ sort.loadbalancertype │ Default sorting for  │ string list │ sort.loadbalancertype │ HCLOUD_SORT.LOADBALANCERTYPE │                 │
+│                       │ Load Balancer Type   │             │                       │                              │                 │
+│                       │ resource             │             │                       │                              │                 │
+├───────────────────────┼──────────────────────┼─────────────┼───────────────────────┼──────────────────────────────┼─────────────────┤
+│ sort.location         │ Default sorting for  │ string list │ sort.location         │ HCLOUD_SORT.LOCATION         │                 │
+│                       │ Location resource    │             │                       │                              │                 │
+├───────────────────────┼──────────────────────┼─────────────┼───────────────────────┼──────────────────────────────┼─────────────────┤
+│ sort.network          │ Default sorting for  │ string list │ sort.network          │ HCLOUD_SORT.NETWORK          │                 │
+│                       │ Network resource     │             │                       │                              │                 │
+├───────────────────────┼──────────────────────┼─────────────┼───────────────────────┼──────────────────────────────┼─────────────────┤
+│ sort.placementgroup   │ Default sorting for  │ string list │ sort.placementgroup   │ HCLOUD_SORT.PLACEMENTGROUP   │                 │
+│                       │ Placement Group      │             │                       │                              │                 │
+│                       │ resource             │             │                       │                              │                 │
+├───────────────────────┼──────────────────────┼─────────────┼───────────────────────┼──────────────────────────────┼─────────────────┤
+│ sort.primaryip        │ Default sorting for  │ string list │ sort.primaryip        │ HCLOUD_SORT.PRIMARYIP        │                 │
+│                       │ Primary IP resource  │             │                       │                              │                 │
+├───────────────────────┼──────────────────────┼─────────────┼───────────────────────┼──────────────────────────────┼─────────────────┤
+│ sort.server           │ Default sorting for  │ string list │ sort.server           │ HCLOUD_SORT.SERVER           │                 │
+│                       │ Server resource      │             │                       │                              │                 │
+├───────────────────────┼──────────────────────┼─────────────┼───────────────────────┼──────────────────────────────┼─────────────────┤
+│ sort.servertype       │ Default sorting for  │ string list │ sort.servertype       │ HCLOUD_SORT.SERVERTYPE       │                 │
+│                       │ Server Type resource │             │                       │                              │                 │
+├───────────────────────┼──────────────────────┼─────────────┼───────────────────────┼──────────────────────────────┼─────────────────┤
+│ sort.sshkey           │ Default sorting for  │ string list │ sort.sshkey           │ HCLOUD_SORT.SSHKEY           │                 │
+│                       │ SSH Key resource     │             │                       │                              │                 │
+├───────────────────────┼──────────────────────┼─────────────┼───────────────────────┼──────────────────────────────┼─────────────────┤
+│ sort.volume           │ Default sorting for  │ string list │ sort.volume           │ HCLOUD_SORT.VOLUME           │                 │
+│                       │ Volume resource      │             │                       │                              │                 │
+└───────────────────────┴──────────────────────┴─────────────┴───────────────────────┴──────────────────────────────┴─────────────────┘

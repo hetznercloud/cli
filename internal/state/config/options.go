@@ -141,6 +141,134 @@ var (
 		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
 		nil,
 	)
+
+	OptionSortCertificate = newOpt(
+		"sort.certificate",
+		"Default sorting for Certificate resource",
+		[]string{"id:asc"},
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
+		nil,
+	)
+
+	OptionSortDatacenter = newOpt(
+		"sort.datacenter",
+		"Default sorting for Datacenter resource",
+		[]string{"id:asc"},
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
+		nil,
+	)
+
+	OptionSortFirewall = newOpt(
+		"sort.firewall",
+		"Default sorting for Firewall resource",
+		[]string{"id:asc"},
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
+		nil,
+	)
+
+	OptionSortFloatingIP = newOpt(
+		"sort.floatingip",
+		"Default sorting for Floating IP resource",
+		[]string{"id:asc"},
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
+		nil,
+	)
+
+	OptionSortImage = newOpt(
+		"sort.image",
+		"Default sorting for Image resource",
+		[]string{"id:asc"},
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
+		nil,
+	)
+
+	OptionSortISO = newOpt(
+		"sort.iso",
+		"Default sorting for ISO resource",
+		[]string{"id:asc"},
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
+		nil,
+	)
+
+	OptionSortLoadBalancer = newOpt(
+		"sort.loadbalancer",
+		"Default sorting for Load Balancer resource",
+		[]string{"id:asc"},
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
+		nil,
+	)
+
+	OptionSortLoadBalancerType = newOpt(
+		"sort.loadbalancertype",
+		"Default sorting for Load Balancer Type resource",
+		[]string{"id:asc"},
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
+		nil,
+	)
+
+	OptionSortLocation = newOpt(
+		"sort.location",
+		"Default sorting for Location resource",
+		[]string{"id:asc"},
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
+		nil,
+	)
+
+	OptionSortNetwork = newOpt(
+		"sort.network",
+		"Default sorting for Network resource",
+		[]string{"id:asc"},
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
+		nil,
+	)
+
+	OptionSortPlacementGroup = newOpt(
+		"sort.placementgroup",
+		"Default sorting for Placement Group resource",
+		[]string{"id:asc"},
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
+		nil,
+	)
+
+	OptionSortPrimaryIP = newOpt(
+		"sort.primaryip",
+		"Default sorting for Primary IP resource",
+		[]string{"id:asc"},
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
+		nil,
+	)
+
+	OptionSortServer = newOpt(
+		"sort.server",
+		"Default sorting for Server resource",
+		[]string{"id:asc"},
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
+		nil,
+	)
+
+	OptionSortServerType = newOpt(
+		"sort.servertype",
+		"Default sorting for Server Type resource",
+		[]string{"id:asc"},
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
+		nil,
+	)
+
+	OptionSortSSHKey = newOpt(
+		"sort.sshkey",
+		"Default sorting for SSH Key resource",
+		[]string{"id:asc"},
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
+		nil,
+	)
+
+	OptionSortVolume = newOpt(
+		"sort.volume",
+		"Default sorting for Volume resource",
+		[]string{"id:asc"},
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
+		nil,
+	)
 )
 
 type Option[T any] struct {
