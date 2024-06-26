@@ -22,6 +22,7 @@ type TestCase struct {
 	ExpOutType    DataType
 	ExpErrOut     string
 	ExpErrOutType DataType
+	ExpErr        string
 }
 
 type DataType string
@@ -72,7 +73,11 @@ func TestCommand(t *testing.T, cmd TestableCommand, cases map[string]TestCase) {
 
 			out, errOut, err := fx.Run(rootCmd, testCase.Args)
 
-			assert.NoError(t, err)
+			if testCase.ExpErr != "" {
+				assert.EqualError(t, err, testCase.ExpErr)
+			} else {
+				assert.NoError(t, err)
+			}
 			testCase.ExpOutType.test(t, testCase.ExpOut, out)
 			testCase.ExpErrOutType.test(t, testCase.ExpErrOut, errOut)
 		})
