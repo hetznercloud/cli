@@ -1,11 +1,7 @@
 package firewall
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
-	"net"
-	"os"
 
 	"github.com/spf13/cobra"
 
@@ -14,7 +10,6 @@ import (
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
-	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
 var ReplaceRulesCmd = base.Cmd{
@@ -41,52 +36,13 @@ var ReplaceRulesCmd = base.Cmd{
 		}
 
 		opts := hcloud.FirewallSetRulesOpts{}
-
 		rulesFile, _ := cmd.Flags().GetString("rules-file")
-
-		var data []byte
-		if rulesFile == "-" {
-			data, err = ioutil.ReadAll(os.Stdin)
-		} else {
-			data, err = ioutil.ReadFile(rulesFile)
-		}
-		if err != nil {
-			return err
-		}
-		var rules []schema.FirewallRule
-		err = json.Unmarshal(data, &rules)
-		if err != nil {
-			return err
-		}
-		for _, rule := range rules {
-			d := hcloud.FirewallRuleDirection(rule.Direction)
-			r := hcloud.FirewallRule{
-				Direction:   d,
-				Protocol:    hcloud.FirewallRuleProtocol(rule.Protocol),
-				Port:        rule.Port,
-				Description: rule.Description,
+		if rulesFile != "" {
+			rules, err := parseRulesFile(rulesFile)
+			if err != nil {
+				return err
 			}
-			switch d {
-			case hcloud.FirewallRuleDirectionOut:
-				r.DestinationIPs = make([]net.IPNet, len(rule.DestinationIPs))
-				for i, ip := range rule.DestinationIPs {
-					_, n, err := net.ParseCIDR(ip)
-					if err != nil {
-						return fmt.Errorf("invalid CIDR on index %d : %s", i, err)
-					}
-					r.DestinationIPs[i] = *n
-				}
-			case hcloud.FirewallRuleDirectionIn:
-				r.SourceIPs = make([]net.IPNet, len(rule.SourceIPs))
-				for i, ip := range rule.SourceIPs {
-					_, n, err := net.ParseCIDR(ip)
-					if err != nil {
-						return fmt.Errorf("invalid CIDR on index %d : %s", i, err)
-					}
-					r.SourceIPs[i] = *n
-				}
-			}
-			opts.Rules = append(opts.Rules, r)
+			opts.Rules = rules
 		}
 
 		actions, _, err := s.Client().Firewall().SetRules(s, firewall, opts)
