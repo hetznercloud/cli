@@ -5,6 +5,7 @@ import (
 	"net"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
@@ -40,13 +41,6 @@ var AddRuleCmd = base.Cmd{
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
-		direction, _ := cmd.Flags().GetString("direction")
-		protocol, _ := cmd.Flags().GetString("protocol")
-		sourceIPs, _ := cmd.Flags().GetStringArray("source-ips")
-		destinationIPs, _ := cmd.Flags().GetStringArray("destination-ips")
-		port, _ := cmd.Flags().GetString("port")
-		description, _ := cmd.Flags().GetString("description")
-
 		idOrName := args[0]
 		firewall, _, err := s.Client().Firewall().Get(s, idOrName)
 		if err != nil {
@@ -56,53 +50,12 @@ var AddRuleCmd = base.Cmd{
 			return fmt.Errorf("Firewall not found: %v", idOrName)
 		}
 
-		d := hcloud.FirewallRuleDirection(direction)
-		rule := hcloud.FirewallRule{
-			Direction: d,
-			Protocol:  hcloud.FirewallRuleProtocol(protocol),
+		rule, err := parseRuleFromArgs(cmd.Flags())
+		if err != nil {
+			return err
 		}
 
-		if port != "" {
-			rule.Port = hcloud.String(port)
-		}
-
-		if description != "" {
-			rule.Description = hcloud.String(description)
-		}
-
-		switch rule.Protocol {
-		case hcloud.FirewallRuleProtocolUDP, hcloud.FirewallRuleProtocolTCP:
-			if port == "" {
-				return fmt.Errorf("port is required (--port)")
-			}
-		default:
-			if port != "" {
-				return fmt.Errorf("port is not allowed for this protocol")
-			}
-		}
-
-		switch d {
-		case hcloud.FirewallRuleDirectionOut:
-			rule.DestinationIPs = make([]net.IPNet, len(destinationIPs))
-			for i, ip := range destinationIPs {
-				n, err := ValidateFirewallIP(ip)
-				if err != nil {
-					return fmt.Errorf("destination error on index %d: %s", i, err)
-				}
-				rule.DestinationIPs[i] = *n
-			}
-		case hcloud.FirewallRuleDirectionIn:
-			rule.SourceIPs = make([]net.IPNet, len(sourceIPs))
-			for i, ip := range sourceIPs {
-				n, err := ValidateFirewallIP(ip)
-				if err != nil {
-					return fmt.Errorf("source ips error on index %d: %s", i, err)
-				}
-				rule.SourceIPs[i] = *n
-			}
-		}
-
-		rules := append(firewall.Rules, rule)
+		rules := append(firewall.Rules, *rule)
 
 		actions, _, err := s.Client().Firewall().SetRules(s, firewall,
 			hcloud.FirewallSetRulesOpts{Rules: rules},
@@ -118,4 +71,72 @@ var AddRuleCmd = base.Cmd{
 
 		return nil
 	},
+}
+
+func parseRuleFromArgs(flags *pflag.FlagSet) (*hcloud.FirewallRule, error) {
+	direction, _ := flags.GetString("direction")
+	protocol, _ := flags.GetString("protocol")
+	sourceIPs, _ := flags.GetStringArray("source-ips")
+	destinationIPs, _ := flags.GetStringArray("destination-ips")
+	port, _ := flags.GetString("port")
+	description, _ := flags.GetString("description")
+
+	rule := &hcloud.FirewallRule{
+		SourceIPs:      make([]net.IPNet, 0),
+		DestinationIPs: make([]net.IPNet, 0),
+	}
+
+	switch hcloud.FirewallRuleDirection(direction) {
+	case hcloud.FirewallRuleDirectionIn, hcloud.FirewallRuleDirectionOut:
+		rule.Direction = hcloud.FirewallRuleDirection(direction)
+	default:
+		return nil, fmt.Errorf("invalid direction: %s", direction)
+	}
+
+	switch hcloud.FirewallRuleProtocol(protocol) {
+	case hcloud.FirewallRuleProtocolTCP, hcloud.FirewallRuleProtocolUDP, hcloud.FirewallRuleProtocolICMP, hcloud.FirewallRuleProtocolESP, hcloud.FirewallRuleProtocolGRE:
+		rule.Protocol = hcloud.FirewallRuleProtocol(protocol)
+	default:
+		return nil, fmt.Errorf("invalid protocol: %s", protocol)
+	}
+
+	if port != "" {
+		rule.Port = hcloud.Ptr(port)
+	}
+
+	if description != "" {
+		rule.Description = hcloud.Ptr(description)
+	}
+
+	switch rule.Protocol {
+	case hcloud.FirewallRuleProtocolUDP, hcloud.FirewallRuleProtocolTCP:
+		if port == "" {
+			return nil, fmt.Errorf("port is required (--port)")
+		}
+	default:
+		if port != "" {
+			return nil, fmt.Errorf("port is not allowed for this protocol")
+		}
+	}
+
+	switch rule.Direction {
+	case hcloud.FirewallRuleDirectionOut:
+		for i, ip := range destinationIPs {
+			n, err := ValidateFirewallIP(ip)
+			if err != nil {
+				return nil, fmt.Errorf("destination error on index %d: %s", i, err)
+			}
+			rule.DestinationIPs = append(rule.DestinationIPs, *n)
+		}
+	case hcloud.FirewallRuleDirectionIn:
+		for i, ip := range sourceIPs {
+			n, err := ValidateFirewallIP(ip)
+			if err != nil {
+				return nil, fmt.Errorf("source ips error on index %d: %s", i, err)
+			}
+			rule.SourceIPs = append(rule.SourceIPs, *n)
+		}
+	}
+
+	return rule, nil
 }
