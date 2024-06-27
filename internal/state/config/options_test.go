@@ -34,3 +34,14 @@ func TestOption_HasFlags(t *testing.T) {
 	assert.False(t, opt.HasFlags(OptionFlagConfig))
 	assert.False(t, opt.HasFlags(OptionFlagConfig|OptionFlagSensitive))
 }
+
+func TestOption_EnvVar(t *testing.T) {
+	opt := &Option[any]{Name: "foo", Flags: OptionFlagEnv}
+	assert.Equal(t, "HCLOUD_FOO", opt.EnvVar())
+	opt.Name = "foo-bar"
+	assert.Equal(t, "HCLOUD_FOO_BAR", opt.EnvVar())
+	opt.Name = "foo.bar-baz"
+	assert.Equal(t, "HCLOUD_FOO_BAR_BAZ", opt.EnvVar())
+	opt.Flags = 0
+	assert.Empty(t, opt.EnvVar())
+}
