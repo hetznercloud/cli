@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/goccy/go-yaml"
+	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 )
@@ -300,5 +301,29 @@ func ParseBoolLenient(s string) (bool, error) {
 		return false, nil
 	default:
 		return false, fmt.Errorf("invalid boolean value: %s", s)
+	}
+}
+
+// ToBoolE converts the provided value to a bool. It is more lenient than [cast.ToBoolE] (see [ParseBoolLenient]).
+func ToBoolE(val any) (bool, error) {
+	switch v := val.(type) {
+	case bool:
+		return v, nil
+	case string:
+		return ParseBoolLenient(v)
+	default:
+		return cast.ToBoolE(val)
+	}
+}
+
+// ToStringSliceDelimited is like [AnyToStringSlice] but also accepts a string that is comma-separated.
+func ToStringSliceDelimited(val any) []string {
+	switch v := val.(type) {
+	case []string:
+		return v
+	case string:
+		return strings.Split(v, ",")
+	default:
+		return AnyToStringSlice(val)
 	}
 }

@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/spf13/cast"
 	"github.com/spf13/pflag"
 
 	"github.com/hetznercloud/cli/internal/cmd/util"
@@ -152,63 +153,41 @@ type Option[T any] struct {
 }
 
 func (o *Option[T]) Get(c Config) (T, error) {
+	// val is the option value that we obtain from viper.
+	// Since viper uses multiple configuration sources (env, config, etc.) we need
+	// to be able to convert the value to the desired type.
 	val := c.Viper().Get(o.Name)
-	if val == nil {
+	if !c.Viper().IsSet(o.Name) {
 		return o.Default, nil
 	}
 
+	// t is a dummy variable to get the desired type of the option
 	var t T
+
 	switch any(t).(type) {
 	case time.Duration:
-		switch v := val.(type) {
-		case time.Duration:
-			break
-		case string:
-			d, err := time.ParseDuration(v)
-			if err != nil {
-				return o.Default, fmt.Errorf("%s: %s", o.Name, err)
-			}
-			val = d
-		case int64:
-			val = time.Duration(v)
-		default:
-			return o.Default, fmt.Errorf("%s: invalid type %T", o.Name, val)
+		// we can use the cast package included with viper here
+		d, err := cast.ToDurationE(val)
+		if err != nil {
+			return o.Default, fmt.Errorf("%s: %s", o.Name, err)
 		}
+		val = d
 
 	case bool:
-		switch v := val.(type) {
-		case bool:
-			break
-		case string:
-			b, err := util.ParseBoolLenient(v)
-			if err != nil {
-				return o.Default, fmt.Errorf("%s: %s", o.Name, err)
-			}
-			val = b
-		default:
-			return o.Default, fmt.Errorf("%s: invalid type %T", o.Name, val)
+		b, err := util.ToBoolE(val)
+		if err != nil {
+			return o.Default, fmt.Errorf("%s: %s", o.Name, err)
 		}
+		val = b
+
 	case []string:
-		switch v := val.(type) {
-		case []string:
-			break
-		case string:
-			val = strings.Split(v, ",")
-		case []any:
-			val = util.ToStringSlice(v)
-		default:
-			val = []string{fmt.Sprintf("%v", val)}
-		}
+		val = util.ToStringSliceDelimited(val)
 
 	case string:
-		switch val.(type) {
-		case string:
-			break
-		default:
-			val = fmt.Sprintf("%v", val)
-		}
+		val = fmt.Sprint(val)
 	}
 
+	// now that val has the desired dynamic type, we can safely cast the static type to T
 	return val.(T), nil
 }
 
