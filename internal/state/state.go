@@ -2,6 +2,7 @@ package state
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"strings"
 
@@ -90,7 +91,11 @@ func (c *state) newClient() (hcapi2.Client, error) {
 			opts = append(opts, hcloud.WithDebugWriter(os.Stderr))
 		} else {
 			f, _ := os.OpenFile(filePath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
-			_, _ = f.WriteString("--- Command:\n" + strings.Join(os.Args, " ") + "\n\n\n\n")
+			quotedArgs := make([]string, 0, len(os.Args))
+			for _, arg := range os.Args {
+				quotedArgs = append(quotedArgs, fmt.Sprintf("%q", arg))
+			}
+			_, _ = f.WriteString("--- Command:\n" + strings.Join(quotedArgs, " ") + "\n\n\n\n")
 			opts = append(opts, hcloud.WithDebugWriter(f))
 		}
 	}
