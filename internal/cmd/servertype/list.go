@@ -10,6 +10,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
+	"github.com/hetznercloud/cli/internal/state/config"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
@@ -17,8 +18,8 @@ import (
 var ListCmd = base.ListCmd{
 	ResourceNamePlural: "Server Types",
 	JSONKeyGetByName:   "server_types",
-
-	DefaultColumns: []string{"id", "name", "cores", "cpu_type", "architecture", "memory", "disk", "storage_type", "traffic"},
+	DefaultColumns:     []string{"id", "name", "cores", "cpu_type", "architecture", "memory", "disk", "storage_type", "traffic"},
+	SortOption:         config.OptionSortServerType,
 
 	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
 		opts := hcloud.ServerTypeListOpts{ListOpts: listOpts}
