@@ -3,7 +3,6 @@ package config
 import (
 	"fmt"
 	"slices"
-	"strconv"
 	"strings"
 	"time"
 
@@ -48,7 +47,7 @@ type IOption interface {
 	// HasFlags returns true if the option has all the provided flags set
 	HasFlags(src OptionFlag) bool
 	// GetAsAny reads the option value from the config and returns it as an any
-	GetAsAny(c Config) any
+	GetAsAny(c Config) (any, error)
 	// OverrideAny sets the option value in the config to the provided any value
 	OverrideAny(c Config, v any)
 	// Changed returns true if the option has been changed from the default
@@ -152,41 +151,68 @@ type Option[T any] struct {
 	overrides   *overrides
 }
 
-func (o *Option[T]) Get(c Config) T {
+func (o *Option[T]) Get(c Config) (T, error) {
 	val := c.Viper().Get(o.Name)
 	if val == nil {
-		return o.Default
+		return o.Default, nil
 	}
+
 	var t T
 	switch any(t).(type) {
 	case time.Duration:
-		if v, ok := val.(string); ok {
+		switch v := val.(type) {
+		case time.Duration:
+			break
+		case string:
 			d, err := time.ParseDuration(v)
 			if err != nil {
-				panic(err)
+				return o.Default, fmt.Errorf("%s: %s", o.Name, err)
 			}
 			val = d
-		}
-		if v, ok := val.(int64); ok {
+		case int64:
 			val = time.Duration(v)
+		default:
+			return o.Default, fmt.Errorf("%s: invalid type %T", o.Name, val)
 		}
+
 	case bool:
-		if v, ok := val.(string); ok {
-			b, err := strconv.ParseBool(v)
+		switch v := val.(type) {
+		case bool:
+			break
+		case string:
+			b, err := util.ParseBoolLenient(v)
 			if err != nil {
-				panic(err)
+				return o.Default, fmt.Errorf("%s: %s", o.Name, err)
 			}
 			val = b
+		default:
+			return o.Default, fmt.Errorf("%s: invalid type %T", o.Name, val)
 		}
 	case []string:
-		if v, ok := val.([]any); ok {
+		switch v := val.(type) {
+		case []string:
+			break
+		case string:
+			val = strings.Split(v, ",")
+		case []any:
 			val = util.ToStringSlice(v)
+		default:
+			val = []string{fmt.Sprintf("%v", val)}
+		}
+
+	case string:
+		switch val.(type) {
+		case string:
+			break
+		default:
+			val = fmt.Sprintf("%v", val)
 		}
 	}
-	return val.(T)
+
+	return val.(T), nil
 }
 
-func (o *Option[T]) GetAsAny(c Config) any {
+func (o *Option[T]) GetAsAny(c Config) (any, error) {
 	return o.Get(c)
 }
 
@@ -283,6 +309,7 @@ func (o *Option[T]) Parse(values []string) (any, error) {
 		if err != nil {
 			return nil, fmt.Errorf("invalid duration value: %s", value)
 		}
+
 	case []string:
 		newVal := values[:]
 		slices.Sort(newVal)

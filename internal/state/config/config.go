@@ -107,7 +107,11 @@ func (cfg *config) Read(f any) error {
 		err      error
 	)
 
-	cfg.path = OptionConfig.Get(cfg)
+	cfg.path, err = OptionConfig.Get(cfg)
+	if err != nil {
+		return err
+	}
+
 	cfgPath, ok := f.(string)
 	if cfgPath != "" && ok {
 		cfg.path = cfgPath
@@ -149,7 +153,10 @@ func (cfg *config) Read(f any) error {
 	}
 
 	// read active context from viper
-	activeContext := OptionContext.Get(cfg)
+	activeContext, err := OptionContext.Get(cfg)
+	if err != nil {
+		return err
+	}
 
 	cfg.contexts = cfg.schema.Contexts
 	for i, ctx := range cfg.contexts {
