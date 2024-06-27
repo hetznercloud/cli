@@ -27,21 +27,21 @@ test:golangci-lint:
 
 test:go-mod-tidy:
   stage: test
-  image: golang:1.21
+  image: golang:1.22
   script:
     - go mod tidy -v
     - git diff --exit-code
 
 test:go-generate:
   stage: test
-  image: golang:1.21
+  image: golang:1.22
   script:
     - go generate ./...
     - git diff --exit-code
 
 test:tests:
   stage: test
-  image: golang:1.21
+  image: golang:1.22
   script:
     - |
       go test -v \
