@@ -32,7 +32,7 @@ func TestAddRule(t *testing.T) {
 			Rules: []hcloud.FirewallRule{{
 				Direction:      hcloud.FirewallRuleDirectionIn,
 				SourceIPs:      []net.IPNet{{IP: net.IP{0, 0, 0, 0}, Mask: net.IPMask{0, 0, 0, 0}}},
-				DestinationIPs: nil,
+				DestinationIPs: []net.IPNet{},
 				Protocol:       hcloud.FirewallRuleProtocolTCP,
 				Port:           hcloud.Ptr("80"),
 				Description:    hcloud.Ptr("http"),
