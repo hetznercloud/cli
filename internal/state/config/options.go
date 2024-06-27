@@ -157,7 +157,7 @@ func (o *Option[T]) Get(c Config) (T, error) {
 	// Since viper uses multiple configuration sources (env, config, etc.) we need
 	// to be able to convert the value to the desired type.
 	val := c.Viper().Get(o.Name)
-	if !c.Viper().IsSet(o.Name) {
+	if util.IsNil(val) {
 		return o.Default, nil
 	}
 
