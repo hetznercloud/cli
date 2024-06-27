@@ -231,7 +231,7 @@ func (o *Option[T]) EnvVar() string {
 	if o.overrides != nil && o.overrides.envVar != "" {
 		return o.overrides.envVar
 	}
-	return "HCLOUD_" + strings.ReplaceAll(strings.ToUpper(o.Name), "-", "_")
+	return "HCLOUD_" + strings.ToUpper(strings.NewReplacer("-", "_", ".", "_").Replace(o.Name))
 }
 
 func (o *Option[T]) FlagName() string {

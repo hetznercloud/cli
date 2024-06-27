@@ -82,7 +82,7 @@ func (cfg *config) reset() {
 	cfg.v = viper.New()
 	cfg.v.SetConfigType("toml")
 	cfg.v.SetEnvPrefix("HCLOUD")
-	cfg.v.SetEnvKeyReplacer(strings.NewReplacer("-", "_"))
+	cfg.v.SetEnvKeyReplacer(strings.NewReplacer("-", "_", ".", "_"))
 
 	cfg.fs = pflag.NewFlagSet("hcloud", pflag.ContinueOnError)
 	cfg.fs.Usage = func() {} // disable usage output
