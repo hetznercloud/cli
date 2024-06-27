@@ -167,7 +167,7 @@ var (
 	)
 
 	OptionSortFloatingIP = newOpt(
-		"sort.floatingip",
+		"sort.floating-ip",
 		"Default sorting for Floating IP resource",
 		[]string{"id:asc"},
 		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
@@ -191,7 +191,7 @@ var (
 	)
 
 	OptionSortLoadBalancer = newOpt(
-		"sort.loadbalancer",
+		"sort.load-balancer",
 		"Default sorting for Load Balancer resource",
 		[]string{"id:asc"},
 		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
@@ -199,7 +199,7 @@ var (
 	)
 
 	OptionSortLoadBalancerType = newOpt(
-		"sort.loadbalancertype",
+		"sort.load-balancer-type",
 		"Default sorting for Load Balancer Type resource",
 		[]string{"id:asc"},
 		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
@@ -223,7 +223,7 @@ var (
 	)
 
 	OptionSortPlacementGroup = newOpt(
-		"sort.placementgroup",
+		"sort.placement-group",
 		"Default sorting for Placement Group resource",
 		[]string{"id:asc"},
 		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
@@ -231,7 +231,7 @@ var (
 	)
 
 	OptionSortPrimaryIP = newOpt(
-		"sort.primaryip",
+		"sort.primary-ip",
 		"Default sorting for Primary IP resource",
 		[]string{"id:asc"},
 		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
@@ -247,7 +247,7 @@ var (
 	)
 
 	OptionSortServerType = newOpt(
-		"sort.servertype",
+		"sort.server-type",
 		"Default sorting for Server Type resource",
 		[]string{"id:asc"},
 		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
@@ -255,7 +255,7 @@ var (
 	)
 
 	OptionSortSSHKey = newOpt(
-		"sort.sshkey",
+		"sort.ssh-key",
 		"Default sorting for SSH Key resource",
 		[]string{"id:asc"},
 		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
