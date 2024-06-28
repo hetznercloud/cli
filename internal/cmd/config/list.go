@@ -51,7 +51,11 @@ func runList(s state.State, cmd *cobra.Command, _ []string) error {
 
 	var options []option
 	for name, opt := range config.Options {
-		val := opt.GetAsAny(s.Config())
+		val, err := opt.GetAsAny(s.Config())
+		if err != nil {
+			return err
+		}
+
 		if opt.HasFlags(config.OptionFlagSensitive) && !allowSensitive {
 			val = "[redacted]"
 		}

@@ -25,7 +25,11 @@ func NewRootCommand(s state.State) *cobra.Command {
 	cmd.PersistentPreRunE = func(cmd *cobra.Command, args []string) error {
 		var err error
 		out := os.Stdout
-		if quiet := config.OptionQuiet.Get(s.Config()); quiet {
+		quiet, err := config.OptionQuiet.Get(s.Config())
+		if err != nil {
+			return err
+		}
+		if quiet {
 			out, err = os.Open(os.DevNull)
 			if err != nil {
 				return err

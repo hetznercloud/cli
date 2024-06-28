@@ -37,7 +37,11 @@ func New(cfg config.Config) (State, error) {
 		term:    terminal.DefaultTerminal{},
 	}
 
-	s.client = s.newClient()
+	var err error
+	s.client, err = s.newClient()
+	if err != nil {
+		return nil, err
+	}
 	return s, nil
 }
 
@@ -53,27 +57,50 @@ func (c *state) Terminal() terminal.Terminal {
 	return c.term
 }
 
-func (c *state) newClient() hcapi2.Client {
+func (c *state) newClient() (hcapi2.Client, error) {
+	tok, err := config.OptionToken.Get(c.config)
+	if err != nil {
+		return nil, err
+	}
+
 	opts := []hcloud.ClientOption{
-		hcloud.WithToken(config.OptionToken.Get(c.config)),
+		hcloud.WithToken(tok),
 		hcloud.WithApplication("hcloud-cli", version.Version),
 	}
 
-	if ep := config.OptionEndpoint.Get(c.config); ep != "" {
+	if ep, err := config.OptionEndpoint.Get(c.config); err == nil && ep != "" {
 		opts = append(opts, hcloud.WithEndpoint(ep))
+	} else if err != nil {
+		return nil, err
 	}
-	if config.OptionDebug.Get(c.config) {
-		if filePath := config.OptionDebugFile.Get(c.config); filePath == "" {
+
+	debug, err := config.OptionDebug.Get(c.config)
+	if err != nil {
+		return nil, err
+	}
+
+	if debug {
+		filePath, err := config.OptionDebugFile.Get(c.config)
+		if err != nil {
+			return nil, err
+		}
+
+		if filePath == "" {
 			opts = append(opts, hcloud.WithDebugWriter(os.Stderr))
 		} else {
 			writer, _ := os.Create(filePath)
 			opts = append(opts, hcloud.WithDebugWriter(writer))
 		}
 	}
-	pollInterval := config.OptionPollInterval.Get(c.config)
+
+	pollInterval, err := config.OptionPollInterval.Get(c.config)
+	if err != nil {
+		return nil, err
+	}
+
 	if pollInterval > 0 {
 		opts = append(opts, hcloud.WithBackoffFunc(hcloud.ConstantBackoff(pollInterval)))
 	}
 
-	return hcapi2.NewClient(opts...)
+	return hcapi2.NewClient(opts...), nil
 }

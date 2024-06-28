@@ -356,7 +356,10 @@ func createOptsFromFlags(
 	}
 
 	if !flags.Changed("ssh-key") && config.OptionDefaultSSHKeys.Changed(s.Config()) {
-		sshKeys = config.OptionDefaultSSHKeys.Get(s.Config())
+		sshKeys, err = config.OptionDefaultSSHKeys.Get(s.Config())
+		if err != nil {
+			return
+		}
 	}
 
 	for _, sshKeyIDOrName := range sshKeys {
