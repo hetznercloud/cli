@@ -30,7 +30,7 @@ var DescribeCmd = base.DescribeCmd{
 		cmd.Printf("ID:\t\t%d\n", volume.ID)
 		cmd.Printf("Name:\t\t%s\n", volume.Name)
 		cmd.Printf("Created:\t%s (%s)\n", util.Datetime(volume.Created), humanize.Time(volume.Created))
-		cmd.Printf("Size:\t\t%s\n", humanize.Bytes(uint64(volume.Size*humanize.GByte)))
+		cmd.Printf("Size:\t\t%s\n", humanize.Bytes(uint64(volume.Size)*humanize.GByte))
 		cmd.Printf("Linux Device:\t%s\n", volume.LinuxDevice)
 		cmd.Printf("Location:\n")
 		cmd.Printf("  Name:\t\t%s\n", volume.Location.Name)

@@ -48,7 +48,7 @@ var ListCmd = base.ListCmd{
 			})).
 			AddFieldFn("size", output.FieldFn(func(obj interface{}) string {
 				volume := obj.(*hcloud.Volume)
-				return humanize.Bytes(uint64(volume.Size * humanize.GByte))
+				return humanize.Bytes(uint64(volume.Size) * humanize.GByte)
 			})).
 			AddFieldFn("location", output.FieldFn(func(obj interface{}) string {
 				volume := obj.(*hcloud.Volume)
