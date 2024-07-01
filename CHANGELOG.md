@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.44.2](https://github.com/hetznercloud/cli/compare/v1.44.1...v1.44.2) (2024-07-01)
+
+
+### Bug Fixes
+
+* correctly print disk sizes on 32bit systems ([#800](https://github.com/hetznercloud/cli/issues/800)) ([3de8530](https://github.com/hetznercloud/cli/commit/3de8530dfc3b1e74f89bb69811ea5f872091ff18))
+
 ## [1.44.1](https://github.com/hetznercloud/cli/compare/v1.44.0...v1.44.1) (2024-06-26)
 
 
