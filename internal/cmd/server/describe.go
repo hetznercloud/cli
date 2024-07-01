@@ -112,7 +112,7 @@ var DescribeCmd = base.DescribeCmd{
 				}
 				cmd.Printf("  - ID:\t\t%d\n", volume.ID)
 				cmd.Printf("    Name:\t%s\n", volume.Name)
-				cmd.Printf("    Size:\t%s\n", humanize.Bytes(uint64(volume.Size*humanize.GByte)))
+				cmd.Printf("    Size:\t%s\n", humanize.Bytes(uint64(volume.Size)*humanize.GByte))
 			}
 		} else {
 			cmd.Printf("  No Volumes\n")
