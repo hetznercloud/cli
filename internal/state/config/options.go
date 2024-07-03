@@ -27,6 +27,8 @@ const (
 	OptionFlagSensitive
 	// OptionFlagSlice indicates that the option value is a slice
 	OptionFlagSlice
+	// OptionFlagHidden indicates that the option should not be shown in the help output
+	OptionFlagHidden
 
 	DefaultPreferenceFlags = OptionFlagPreference | OptionFlagConfig | OptionFlagPFlag | OptionFlagEnv
 )
@@ -46,6 +48,8 @@ type IOption interface {
 	FlagName() string
 	// HasFlags returns true if the option has all the provided flags set
 	HasFlags(src OptionFlag) bool
+	// GetFlags returns all flags set for the option
+	GetFlags() OptionFlag
 	// GetAsAny reads the option value from the config and returns it as an any
 	GetAsAny(c Config) (any, error)
 	// OverrideAny sets the option value in the config to the provided any value
@@ -146,7 +150,7 @@ var (
 		"sort.certificate",
 		"Default sorting for Certificate resource",
 		[]string{"id:asc"},
-		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
 		nil,
 	)
 
@@ -154,7 +158,7 @@ var (
 		"sort.datacenter",
 		"Default sorting for Datacenter resource",
 		[]string{"id:asc"},
-		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
 		nil,
 	)
 
@@ -162,7 +166,7 @@ var (
 		"sort.firewall",
 		"Default sorting for Firewall resource",
 		[]string{"id:asc"},
-		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
 		nil,
 	)
 
@@ -170,7 +174,7 @@ var (
 		"sort.floating-ip",
 		"Default sorting for Floating IP resource",
 		[]string{"id:asc"},
-		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
 		nil,
 	)
 
@@ -178,7 +182,7 @@ var (
 		"sort.image",
 		"Default sorting for Image resource",
 		[]string{"id:asc"},
-		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
 		nil,
 	)
 
@@ -186,7 +190,7 @@ var (
 		"sort.iso",
 		"Default sorting for ISO resource",
 		[]string{"id:asc"},
-		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
 		nil,
 	)
 
@@ -194,7 +198,7 @@ var (
 		"sort.load-balancer",
 		"Default sorting for Load Balancer resource",
 		[]string{"id:asc"},
-		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
 		nil,
 	)
 
@@ -202,7 +206,7 @@ var (
 		"sort.load-balancer-type",
 		"Default sorting for Load Balancer Type resource",
 		[]string{"id:asc"},
-		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
 		nil,
 	)
 
@@ -210,7 +214,7 @@ var (
 		"sort.location",
 		"Default sorting for Location resource",
 		[]string{"id:asc"},
-		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
 		nil,
 	)
 
@@ -218,7 +222,7 @@ var (
 		"sort.network",
 		"Default sorting for Network resource",
 		[]string{"id:asc"},
-		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
 		nil,
 	)
 
@@ -226,7 +230,7 @@ var (
 		"sort.placement-group",
 		"Default sorting for Placement Group resource",
 		[]string{"id:asc"},
-		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
 		nil,
 	)
 
@@ -234,7 +238,7 @@ var (
 		"sort.primary-ip",
 		"Default sorting for Primary IP resource",
 		[]string{"id:asc"},
-		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
 		nil,
 	)
 
@@ -242,7 +246,7 @@ var (
 		"sort.server",
 		"Default sorting for Server resource",
 		[]string{"id:asc"},
-		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
 		nil,
 	)
 
@@ -250,7 +254,7 @@ var (
 		"sort.server-type",
 		"Default sorting for Server Type resource",
 		[]string{"id:asc"},
-		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
 		nil,
 	)
 
@@ -258,7 +262,7 @@ var (
 		"sort.ssh-key",
 		"Default sorting for SSH Key resource",
 		[]string{"id:asc"},
-		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
 		nil,
 	)
 
@@ -266,7 +270,7 @@ var (
 		"sort.volume",
 		"Default sorting for Volume resource",
 		[]string{"id:asc"},
-		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
 		nil,
 	)
 )
@@ -336,6 +340,11 @@ func (o *Option[T]) Changed(c Config) bool {
 
 func (o *Option[T]) HasFlags(src OptionFlag) bool {
 	return (^o.Flags)&src == 0
+}
+
+func (o *Option[T]) GetFlags() OptionFlag {
+	return o.Flags
+
 }
 
 func (o *Option[T]) GetName() string {
