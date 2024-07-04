@@ -156,11 +156,11 @@ active_context = "test_context"
 			args:   []string{"--global", "array-option", "c", "b", "c", "a", "a"},
 			config: testConfig,
 			expErr: "Warning: some values were already present or duplicate\n",
-			expOut: `Added '[a b c]' to 'array-option' globally
+			expOut: `Added '[c b a]' to 'array-option' globally
 active_context = "test_context"
 
 [preferences]
-  array_option = ["a", "b", "c"]
+  array_option = ["c", "b", "a"]
   debug = true
   poll_interval = "1.234s"
 

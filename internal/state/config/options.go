@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"slices"
 	"strings"
 	"time"
 
@@ -288,12 +287,8 @@ func (o *Option[T]) Parse(values []string) (any, error) {
 		if err != nil {
 			return nil, fmt.Errorf("invalid duration value: %s", value)
 		}
-
 	case []string:
-		newVal := values[:]
-		slices.Sort(newVal)
-		newVal = slices.Compact(newVal)
-		val = newVal
+		val = util.RemoveDuplicates(values)
 	default:
 		return nil, fmt.Errorf("unsupported type %T", t)
 	}

@@ -413,3 +413,12 @@ func TestToStringSliceDelimited(t *testing.T) {
 	assert.Equal(t, []string{"a", "b", "c"}, util.ToStringSliceDelimited("a,b,c"))
 	assert.Equal(t, []string{"0", "1", "2"}, util.ToStringSliceDelimited([]int{0, 1, 2}))
 }
+
+func TestRemoveDuplicates(t *testing.T) {
+	assert.Equal(t, []string{"a", "b", "c"}, util.RemoveDuplicates([]string{"a", "b", "c"}))
+	assert.Equal(t, []string{"a", "b", "c"}, util.RemoveDuplicates([]string{"a", "b", "c", "a", "b", "c"}))
+	assert.Equal(t, []string{"a", "b", "c"}, util.RemoveDuplicates([]string{"a", "b", "c", "c", "b", "a"}))
+	assert.Equal(t, []string{"c", "b", "a"}, util.RemoveDuplicates([]string{"c", "b", "a", "a", "b", "c"}))
+	assert.Equal(t, []string{"a"}, util.RemoveDuplicates([]string{"a", "a", "a", "a", "a"}))
+	assert.Equal(t, []int{1, 2, 3, 4, 5}, util.RemoveDuplicates([]int{1, 2, 1, 1, 3, 2, 1, 4, 3, 2, 5, 4, 3, 2, 1}))
+}
