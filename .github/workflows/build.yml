@@ -18,9 +18,9 @@ jobs:
           go-version-file: go.mod
 
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v5
+        uses: goreleaser/goreleaser-action@v6
         with:
-          version: latest
+          version: 2.x
           args: release --clean --snapshot --skip=sign
 
       - uses: actions/upload-artifact@v4
