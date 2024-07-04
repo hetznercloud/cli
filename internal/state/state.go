@@ -2,7 +2,10 @@ package state
 
 import (
 	"context"
+	"fmt"
+	"io"
 	"os"
+	"strings"
 
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state/config"
@@ -85,12 +88,27 @@ func (c *state) newClient() (hcapi2.Client, error) {
 			return nil, err
 		}
 
+		var debugWriter io.Writer
 		if filePath == "" {
-			opts = append(opts, hcloud.WithDebugWriter(os.Stderr))
+			debugWriter = os.Stderr
 		} else {
-			writer, _ := os.Create(filePath)
-			opts = append(opts, hcloud.WithDebugWriter(writer))
+			f, err := os.OpenFile(filePath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
+			if err != nil {
+				return nil, err
+			}
+			debugWriter = f
 		}
+
+		quotedArgs := make([]string, 0, len(os.Args))
+		for _, arg := range os.Args {
+			quotedArgs = append(quotedArgs, fmt.Sprintf("%q", arg))
+		}
+		_, err = debugWriter.Write([]byte("--- Command:\n" + strings.Join(quotedArgs, " ") + "\n\n\n\n"))
+		if err != nil {
+			return nil, err
+		}
+
+		opts = append(opts, hcloud.WithDebugWriter(debugWriter))
 	}
 
 	pollInterval, err := config.OptionPollInterval.Get(c.config)
