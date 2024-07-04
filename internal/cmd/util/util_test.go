@@ -380,3 +380,36 @@ func TestParseBoolLenient(t *testing.T) {
 	b, err = util.ParseBoolLenient("")
 	assert.EqualError(t, err, "invalid boolean value: ")
 }
+
+func TestBoolFromAny(t *testing.T) {
+	b, err := util.ToBoolE(true)
+	assert.NoError(t, err)
+	assert.True(t, b)
+	b, err = util.ToBoolE("true")
+	assert.NoError(t, err)
+	assert.True(t, b)
+	b, err = util.ToBoolE("false")
+	assert.NoError(t, err)
+	assert.False(t, b)
+	b, err = util.ToBoolE("yes")
+	assert.NoError(t, err)
+	assert.True(t, b)
+	b, err = util.ToBoolE("no")
+	assert.NoError(t, err)
+	assert.False(t, b)
+	b, err = util.ToBoolE(1)
+	assert.NoError(t, err)
+	assert.True(t, b)
+	b, err = util.ToBoolE(0)
+	assert.NoError(t, err)
+	assert.False(t, b)
+	_, err = util.ToBoolE("invalid")
+	assert.EqualError(t, err, "invalid boolean value: invalid")
+}
+
+func TestToStringSliceDelimited(t *testing.T) {
+	assert.Equal(t, []string{"a", "b", "c"}, util.ToStringSliceDelimited([]string{"a", "b", "c"}))
+	assert.Equal(t, []string{"a", "b", "c"}, util.ToStringSliceDelimited([]any{"a", "b", "c"}))
+	assert.Equal(t, []string{"a", "b", "c"}, util.ToStringSliceDelimited("a,b,c"))
+	assert.Equal(t, []string{"0", "1", "2"}, util.ToStringSliceDelimited([]int{0, 1, 2}))
+}

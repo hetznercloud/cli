@@ -44,7 +44,11 @@ func runGet(s state.State, cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("unknown key: %s", key)
 	}
 
-	val := opt.GetAsAny(s.Config())
+	val, err := opt.GetAsAny(s.Config())
+	if err != nil {
+		return err
+	}
+
 	if opt.HasFlags(config.OptionFlagSensitive) && !allowSensitive {
 		return fmt.Errorf("'%s' is sensitive. use --allow-sensitive to show the value", key)
 	}

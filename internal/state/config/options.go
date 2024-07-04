@@ -3,10 +3,10 @@ package config
 import (
 	"fmt"
 	"slices"
-	"strconv"
 	"strings"
 	"time"
 
+	"github.com/spf13/cast"
 	"github.com/spf13/pflag"
 
 	"github.com/hetznercloud/cli/internal/cmd/util"
@@ -48,7 +48,7 @@ type IOption interface {
 	// HasFlags returns true if the option has all the provided flags set
 	HasFlags(src OptionFlag) bool
 	// GetAsAny reads the option value from the config and returns it as an any
-	GetAsAny(c Config) any
+	GetAsAny(c Config) (any, error)
 	// OverrideAny sets the option value in the config to the provided any value
 	OverrideAny(c Config, v any)
 	// Changed returns true if the option has been changed from the default
@@ -152,41 +152,46 @@ type Option[T any] struct {
 	overrides   *overrides
 }
 
-func (o *Option[T]) Get(c Config) T {
+func (o *Option[T]) Get(c Config) (T, error) {
+	// val is the option value that we obtain from viper.
+	// Since viper uses multiple configuration sources (env, config, etc.) we need
+	// to be able to convert the value to the desired type.
 	val := c.Viper().Get(o.Name)
-	if val == nil {
-		return o.Default
+	if util.IsNil(val) {
+		return o.Default, nil
 	}
+
+	// t is a dummy variable to get the desired type of the option
 	var t T
+
 	switch any(t).(type) {
 	case time.Duration:
-		if v, ok := val.(string); ok {
-			d, err := time.ParseDuration(v)
-			if err != nil {
-				panic(err)
-			}
-			val = d
+		// we can use the cast package included with viper here
+		d, err := cast.ToDurationE(val)
+		if err != nil {
+			return o.Default, fmt.Errorf("%s: %s", o.Name, err)
 		}
-		if v, ok := val.(int64); ok {
-			val = time.Duration(v)
-		}
+		val = d
+
 	case bool:
-		if v, ok := val.(string); ok {
-			b, err := strconv.ParseBool(v)
-			if err != nil {
-				panic(err)
-			}
-			val = b
+		b, err := util.ToBoolE(val)
+		if err != nil {
+			return o.Default, fmt.Errorf("%s: %s", o.Name, err)
 		}
+		val = b
+
 	case []string:
-		if v, ok := val.([]any); ok {
-			val = util.ToStringSlice(v)
-		}
+		val = util.ToStringSliceDelimited(val)
+
+	case string:
+		val = fmt.Sprint(val)
 	}
-	return val.(T)
+
+	// now that val has the desired dynamic type, we can safely cast the static type to T
+	return val.(T), nil
 }
 
-func (o *Option[T]) GetAsAny(c Config) any {
+func (o *Option[T]) GetAsAny(c Config) (any, error) {
 	return o.Get(c)
 }
 
@@ -283,6 +288,7 @@ func (o *Option[T]) Parse(values []string) (any, error) {
 		if err != nil {
 			return nil, fmt.Errorf("invalid duration value: %s", value)
 		}
+
 	case []string:
 		newVal := values[:]
 		slices.Sort(newVal)
