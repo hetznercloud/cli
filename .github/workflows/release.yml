@@ -33,7 +33,7 @@ jobs:
         run: echo "${{ secrets.APPLE_CERTIFICATE_P12_FILE }}" | base64 -d > certificate.p12
 
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v5
+        uses: goreleaser/goreleaser-action@v6
         with:
           version: latest
           args: release --clean --skip=validate
