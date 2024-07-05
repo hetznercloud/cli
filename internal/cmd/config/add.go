@@ -3,7 +3,6 @@ package config
 import (
 	"fmt"
 	"os"
-	"slices"
 
 	"github.com/spf13/cobra"
 
@@ -52,8 +51,7 @@ func runAdd(s state.State, cmd *cobra.Command, args []string) error {
 	case []string:
 		before := util.AnyToStringSlice(val)
 		newVal := append(before, values...)
-		slices.Sort(newVal)
-		newVal = slices.Compact(newVal)
+		newVal = util.RemoveDuplicates(newVal)
 		val = newVal
 		added = util.ToAnySlice(util.SliceDiff[[]string](newVal, before))
 	default:

@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"os"
 	"reflect"
-	"slices"
 	"sort"
 	"strings"
 	"text/template"
@@ -237,22 +236,36 @@ func FilterNil[T any](values []T) []T {
 	return filtered
 }
 
-// SliceDiff returns the difference between the two passed slices. The returned slice contains all elements that are present in a but not in b.
-// Note that it does not preserve order.
+// SliceDiff returns the difference between the two passed slices. The returned slice contains all elements that
+// are present in a but not in b. The order of a is preserved.
 func SliceDiff[S ~[]E, E cmp.Ordered](a, b []E) []E {
-	m := make(map[E]struct{})
-	for _, x := range a {
-		m[x] = struct{}{}
-	}
-	for _, x := range b {
-		delete(m, x)
-	}
 	var diff S
-	for x := range m {
-		diff = append(diff, x)
+	seen := make(map[E]struct{})
+	for _, v := range b {
+		seen[v] = struct{}{}
 	}
-	slices.Sort(diff)
+	for _, v := range a {
+		if _, ok := seen[v]; ok {
+			continue
+		}
+		diff = append(diff, v)
+	}
 	return diff
+}
+
+// RemoveDuplicates removes duplicates from the passed slice while preserving the order of the elements.
+// The first occurrence of an element is kept, all following occurrences are removed.
+func RemoveDuplicates[S ~[]E, E cmp.Ordered](values S) S {
+	var unique S
+	seen := make(map[E]struct{})
+	for _, v := range values {
+		if _, ok := seen[v]; ok {
+			continue
+		}
+		seen[v] = struct{}{}
+		unique = append(unique, v)
+	}
+	return unique
 }
 
 func AnyToAnySlice(a any) []any {
