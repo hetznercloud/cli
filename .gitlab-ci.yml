@@ -2,57 +2,57 @@ include:
   - project: cloud/integrations/ci
     file:
       - default.yml
+      - workflows/feature-branches.yml
 
 variables:
-  COVERAGE_FILE: .testCoverage.txt
+  GOMODCACHE: $CI_PROJECT_DIR/.cache/go-mod
+  GOCACHE: $CI_PROJECT_DIR/.cache/go-build
 
-workflow:
-  rules:
-    - # Do not execute on main branch
-      if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-      when: never
-    - # Do not execute on tag
-      if: $CI_COMMIT_TAG != null
-      when: never
-    - # Avoid duplicate pipelines in MRs
-      if: $CI_PIPELINE_SOURCE == 'merge_request_event'
-      when: never
-    - when: always
+cache:
+  key:
+    files:
+      - go.mod
+      - go.sum
+  paths:
+    - $GOMODCACHE
 
-test:golangci-lint:
+build:
+  stage: build
+  image: golang:1.21
+  script:
+    - go env
+    - go mod download
+
+test:lint:
   stage: test
-  image: golangci/golangci-lint:v1.59.1
+  image: golangci/golangci-lint:v1.59
   script:
     - golangci-lint run -v
 
-test:go-mod-tidy:
+test:tidy:
   stage: test
   image: golang:1.21
   script:
     - go mod tidy -v
     - git diff --exit-code
 
-test:go-generate:
+test:generate:
   stage: test
   image: golang:1.21
   script:
     - go generate ./...
     - git diff --exit-code
 
-test:tests:
+test:unit:
   stage: test
   image: golang:1.21
   script:
-    - |
-      go test -v \
-              -race \
-              -coverprofile=$COVERAGE_FILE \
-              ./...
-    - go tool cover -func=$COVERAGE_FILE | tail -n1
-    - go run github.com/boumenot/gocover-cobertura < $COVERAGE_FILE > coverage.xml
-
+    - go test -v -coverprofile=coverage.txt -covermode count ./...
+    - go get github.com/boumenot/gocover-cobertura
+    - go run github.com/boumenot/gocover-cobertura < coverage.txt > coverage.xml
   artifacts:
     reports:
       coverage_report:
         coverage_format: cobertura
         path: coverage.xml
+  coverage: "/coverage: \\d+.\\d+% of statements/"
