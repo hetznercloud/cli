@@ -84,7 +84,7 @@ var ApplyToResourceCmd = base.Cmd{
 		if err := s.WaitForActions(cmd, s, actions...); err != nil {
 			return err
 		}
-		cmd.Printf("Firewall %d applied\n", firewall.ID)
+		cmd.Printf("Firewall %d applied to resource\n", firewall.ID)
 
 		return nil
 	},
