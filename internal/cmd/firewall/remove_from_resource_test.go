@@ -43,7 +43,7 @@ func TestRemoveFromServer(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"--type", "server", "--server", "my-server", "test"})
 
-	expOut := "Firewall 123 applied\n"
+	expOut := "Firewall 123 removed from resource\n"
 
 	assert.NoError(t, err)
 	assert.Empty(t, errOut)
@@ -79,7 +79,7 @@ func TestRemoveFromLabelSelector(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"--type", "label_selector", "--label-selector", "my-label", "test"})
 
-	expOut := "Firewall 123 applied\n"
+	expOut := "Firewall 123 removed from resource\n"
 
 	assert.NoError(t, err)
 	assert.Empty(t, errOut)
