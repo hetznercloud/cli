@@ -17,6 +17,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
+	"github.com/hetznercloud/cli/internal/state/config"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
@@ -36,8 +37,8 @@ var serverStatusStrings = []string{
 var ListCmd = base.ListCmd{
 	ResourceNamePlural: "Servers",
 	JSONKeyGetByName:   "servers",
-
-	DefaultColumns: []string{"id", "name", "status", "ipv4", "ipv6", "private_net", "datacenter", "age"},
+	DefaultColumns:     []string{"id", "name", "status", "ipv4", "ipv6", "private_net", "datacenter", "age"},
+	SortOption:         config.OptionSortServer,
 
 	AdditionalFlags: func(cmd *cobra.Command) {
 		cmd.Flags().StringSlice("status", nil, "Only servers with one of these statuses are displayed")

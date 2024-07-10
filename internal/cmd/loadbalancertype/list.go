@@ -14,8 +14,8 @@ import (
 var ListCmd = base.ListCmd{
 	ResourceNamePlural: "Load Balancer Types",
 	JSONKeyGetByName:   "load_balancer_types",
-
-	DefaultColumns: []string{"id", "name", "description", "max_services", "max_connections", "max_targets"},
+	DefaultColumns:     []string{"id", "name", "description", "max_services", "max_connections", "max_targets"},
+	SortOption:         nil, // Load Balancer Types do not support sorting
 
 	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
 		opts := hcloud.LoadBalancerTypeListOpts{ListOpts: listOpts}

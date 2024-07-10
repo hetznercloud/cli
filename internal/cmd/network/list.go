@@ -20,6 +20,7 @@ var ListCmd = base.ListCmd{
 	ResourceNamePlural: "Networks",
 	JSONKeyGetByName:   "networks",
 	DefaultColumns:     []string{"id", "name", "ip_range", "servers", "age"},
+	SortOption:         nil, // Networks do not support sorting
 
 	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
 		opts := hcloud.NetworkListOpts{ListOpts: listOpts}

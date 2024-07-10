@@ -16,11 +16,19 @@ import (
 //go:generate go run $GOFILE
 
 func main() {
-	generateTable("preferences.txt", config.OptionFlagPreference, true)
-	generateTable("other.txt", config.OptionFlagPreference, false)
+	generateTable(
+		"preferences.txt",
+		config.OptionFlagPreference|config.OptionFlagHidden,
+		config.OptionFlagPreference,
+		table.Row{"sort.<resource>", "Default sorting for resource", "string list", "sort.<resource>", "HCLOUD_SORT_<RESOURCE>", ""},
+	)
+	generateTable("other.txt",
+		config.OptionFlagPreference|config.OptionFlagHidden,
+		0,
+	)
 }
 
-func generateTable(outFile string, filterFlag config.OptionFlag, hasFlag bool) {
+func generateTable(outFile string, mask, filter config.OptionFlag, extraRows ...table.Row) {
 	f, err := os.OpenFile(outFile, os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		panic(err)
@@ -46,7 +54,7 @@ func generateTable(outFile string, filterFlag config.OptionFlag, hasFlag bool) {
 
 	var opts []config.IOption
 	for _, opt := range config.Options {
-		if opt.HasFlags(filterFlag) != hasFlag {
+		if opt.GetFlags()&mask != filter {
 			continue
 		}
 		opts = append(opts, opt)
@@ -58,6 +66,11 @@ func generateTable(outFile string, filterFlag config.OptionFlag, hasFlag bool) {
 
 	for _, opt := range opts {
 		t.AppendRow(table.Row{opt.GetName(), opt.GetDescription(), getTypeName(opt), opt.ConfigKey(), opt.EnvVar(), opt.FlagName()})
+		t.AppendSeparator()
+	}
+
+	for _, row := range extraRows {
+		t.AppendRow(row)
 		t.AppendSeparator()
 	}
 

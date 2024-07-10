@@ -21,6 +21,8 @@ var ListCmd = base.ListCmd{
 	ResourceNamePlural: "ISOs",
 	JSONKeyGetByName:   "isos",
 	DefaultColumns:     []string{"id", "name", "description", "type", "architecture"},
+	SortOption:         nil, // ISOs does not support sorting
+
 	AdditionalFlags: func(cmd *cobra.Command) {
 		cmd.Flags().StringSlice("architecture", []string{}, "Only show images of given architecture: x86|arm")
 		cmd.RegisterFlagCompletionFunc("architecture", cmpl.SuggestCandidates(string(hcloud.ArchitectureX86), string(hcloud.ArchitectureARM)))

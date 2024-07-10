@@ -2,6 +2,7 @@ package base
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -10,11 +11,13 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
+	"github.com/hetznercloud/cli/internal/state/config"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 // ListCmd allows defining commands for listing resources
 type ListCmd struct {
+	SortOption         *config.Option[[]string]
 	ResourceNamePlural string // e.g. "servers"
 	JSONKeyGetByName   string // e.g. "servers"
 	DefaultColumns     []string
@@ -48,7 +51,7 @@ func (lc *ListCmd) CobraCommand(s state.State) *cobra.Command {
 	if lc.AdditionalFlags != nil {
 		lc.AdditionalFlags(cmd)
 	}
-	cmd.Flags().StringSliceP("sort", "s", []string{"id:asc"}, "Determine the sorting of the result")
+	cmd.Flags().StringSliceP("sort", "s", []string{}, "Determine the sorting of the result")
 	return cmd
 }
 
@@ -61,7 +64,21 @@ func (lc *ListCmd) Run(s state.State, cmd *cobra.Command) error {
 		LabelSelector: labelSelector,
 		PerPage:       50,
 	}
-	sorts, _ := cmd.Flags().GetStringSlice("sort")
+
+	var sorts []string
+	if cmd.Flags().Changed("sort") {
+		if lc.SortOption == nil {
+			_, _ = fmt.Fprintln(os.Stderr, "Warning: resource does not support sorting. Ignoring --sort flag.")
+		} else {
+			sorts, _ = cmd.Flags().GetStringSlice("sort")
+		}
+	} else if lc.SortOption != nil {
+		var err error
+		sorts, err = lc.SortOption.Get(s.Config())
+		if err != nil {
+			return err
+		}
+	}
 
 	resources, err := lc.Fetch(s, cmd.Flags(), listOpts, sorts)
 	if err != nil {
