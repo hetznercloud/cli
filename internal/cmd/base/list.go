@@ -66,7 +66,11 @@ func (lc *ListCmd) Run(s state.State, cmd *cobra.Command) error {
 
 	sorts, _ := cmd.Flags().GetStringSlice("sort")
 	if !cmd.Flags().Changed("sort") {
-		sorts = lc.SortOption.Get(s.Config())
+		var err error
+		sorts, err = lc.SortOption.Get(s.Config())
+		if err != nil {
+			return err
+		}
 	}
 
 	resources, err := lc.Fetch(s, cmd.Flags(), listOpts, sorts)
