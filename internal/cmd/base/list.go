@@ -2,6 +2,7 @@ package base
 
 import (
 	"fmt"
+	"os"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -64,8 +65,14 @@ func (lc *ListCmd) Run(s state.State, cmd *cobra.Command) error {
 		PerPage:       50,
 	}
 
-	sorts, _ := cmd.Flags().GetStringSlice("sort")
-	if lc.SortOption != nil && !cmd.Flags().Changed("sort") {
+	var sorts []string
+	if cmd.Flags().Changed("sort") {
+		if lc.SortOption == nil {
+			_, _ = fmt.Fprintln(os.Stderr, "Warning: resource does not support sorting. Ignoring --sort flag.")
+		} else {
+			sorts, _ = cmd.Flags().GetStringSlice("sort")
+		}
+	} else if lc.SortOption != nil {
 		var err error
 		sorts, err = lc.SortOption.Get(s.Config())
 		if err != nil {
