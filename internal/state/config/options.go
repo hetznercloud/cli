@@ -186,14 +186,6 @@ var (
 		nil,
 	)
 
-	OptionSortISO = newOpt(
-		"sort.iso",
-		"Default sorting for ISO resource",
-		[]string{"id:asc"},
-		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
-		nil,
-	)
-
 	OptionSortLoadBalancer = newOpt(
 		"sort.load-balancer",
 		"Default sorting for Load Balancer resource",
@@ -202,25 +194,9 @@ var (
 		nil,
 	)
 
-	OptionSortLoadBalancerType = newOpt(
-		"sort.load-balancer-type",
-		"Default sorting for Load Balancer Type resource",
-		[]string{"id:asc"},
-		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
-		nil,
-	)
-
 	OptionSortLocation = newOpt(
 		"sort.location",
 		"Default sorting for Location resource",
-		[]string{"id:asc"},
-		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
-		nil,
-	)
-
-	OptionSortNetwork = newOpt(
-		"sort.network",
-		"Default sorting for Network resource",
 		[]string{"id:asc"},
 		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
 		nil,
@@ -245,14 +221,6 @@ var (
 	OptionSortServer = newOpt(
 		"sort.server",
 		"Default sorting for Server resource",
-		[]string{"id:asc"},
-		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
-		nil,
-	)
-
-	OptionSortServerType = newOpt(
-		"sort.server-type",
-		"Default sorting for Server Type resource",
 		[]string{"id:asc"},
 		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
 		nil,

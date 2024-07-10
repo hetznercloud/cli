@@ -7,7 +7,6 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
-	"github.com/hetznercloud/cli/internal/state/config"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
@@ -16,7 +15,7 @@ var ListCmd = base.ListCmd{
 	ResourceNamePlural: "Load Balancer Types",
 	JSONKeyGetByName:   "load_balancer_types",
 	DefaultColumns:     []string{"id", "name", "description", "max_services", "max_connections", "max_targets"},
-	SortOption:         config.OptionSortLoadBalancerType,
+	SortOption:         nil, // Load Balancer Types do not support sorting
 
 	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
 		opts := hcloud.LoadBalancerTypeListOpts{ListOpts: listOpts}

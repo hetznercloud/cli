@@ -26,7 +26,7 @@ func TestList(t *testing.T) {
 			gomock.Any(),
 			hcloud.LoadBalancerTypeListOpts{
 				ListOpts: hcloud.ListOpts{PerPage: 50},
-				Sort:     []string{"id:asc"},
+				Sort:     nil, // Load Balancer Types do not support sorting
 			},
 		).
 		Return([]*hcloud.LoadBalancerType{

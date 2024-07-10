@@ -26,7 +26,7 @@ func TestList(t *testing.T) {
 			gomock.Any(),
 			hcloud.ISOListOpts{
 				ListOpts: hcloud.ListOpts{PerPage: 50},
-				Sort:     []string{"id:asc"},
+				Sort:     nil, // ISOs do not support sorting
 			},
 		).
 		Return([]*hcloud.ISO{

@@ -12,7 +12,6 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
-	"github.com/hetznercloud/cli/internal/state/config"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
@@ -21,7 +20,7 @@ var ListCmd = base.ListCmd{
 	ResourceNamePlural: "Networks",
 	JSONKeyGetByName:   "networks",
 	DefaultColumns:     []string{"id", "name", "ip_range", "servers", "age"},
-	SortOption:         config.OptionSortNetwork,
+	SortOption:         nil, // Networks do not support sorting
 
 	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
 		opts := hcloud.NetworkListOpts{ListOpts: listOpts}

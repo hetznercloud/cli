@@ -27,7 +27,7 @@ func TestList(t *testing.T) {
 			gomock.Any(),
 			hcloud.ServerTypeListOpts{
 				ListOpts: hcloud.ListOpts{PerPage: 50},
-				Sort:     []string{"id:asc"},
+				Sort:     nil, // Server Types do not support sorting
 			},
 		).
 		Return([]*hcloud.ServerType{
@@ -69,7 +69,7 @@ func TestListColumnDeprecated(t *testing.T) {
 			gomock.Any(),
 			hcloud.ServerTypeListOpts{
 				ListOpts: hcloud.ListOpts{PerPage: 50},
-				Sort:     []string{"id:asc"},
+				Sort:     nil, // Server Types do not support sorting
 			},
 		).
 		Return([]*hcloud.ServerType{
