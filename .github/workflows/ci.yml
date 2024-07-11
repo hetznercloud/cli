@@ -40,7 +40,7 @@ jobs:
           go-version-file: go.mod
 
       - name: Run tests
-        run: go test -coverprofile=coverage.txt -v -race ./...
+        run: go test -coverpkg=./... -coverprofile=coverage.txt -v -race ./...
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4
