@@ -18,7 +18,7 @@ cache:
 
 build:
   stage: build
-  image: golang:1.21
+  image: golang:1.22
   script:
     - go env
     - go mod download
@@ -31,21 +31,21 @@ test:lint:
 
 test:tidy:
   stage: test
-  image: golang:1.21
+  image: golang:1.22
   script:
     - go mod tidy -v
     - git diff --exit-code
 
 test:generate:
   stage: test
-  image: golang:1.21
+  image: golang:1.22
   script:
     - go generate ./...
     - git diff --exit-code
 
 test:unit:
   stage: test
-  image: golang:1.21
+  image: golang:1.22
   script:
     - go test -v -coverprofile=coverage.txt -covermode count ./...
     - go get github.com/boumenot/gocover-cobertura
