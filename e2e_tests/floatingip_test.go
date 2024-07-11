@@ -2,6 +2,7 @@ package e2e_tests
 
 import (
 	"fmt"
+	"net"
 	"strconv"
 	"strings"
 	"testing"
@@ -174,6 +175,57 @@ $`, out)
 			assert.Equal(t, fmt.Sprintf("Resource protection disabled for floating IP %d\n", floatingIPId), out)
 		})
 	})
+
+	out, err = runCommand(t, "floating-ip", "delete", strconv.Itoa(floatingIPId))
+	assert.NoError(t, err)
+	assert.Equal(t, fmt.Sprintf("Floating IP %d deleted\n", floatingIPId), out)
+
+	floatingIPId, err = createFloatingIP(t, "test-floating-ip", "ipv6", "--home-location", "fsn1")
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	out, err = runCommand(t, "floating-ip", "describe", strconv.Itoa(floatingIPId))
+	assert.NoError(t, err)
+	assert.Regexp(t, `ID:\s+[0-9]+
+Type:\s+ipv6
+Name:\s+test-floating-ip
+Description:\s+-
+Created:.*?
+IP:\s+[0-9a-f]+:[0-9a-f]+:[0-9a-f]+:[0-9a-f]+::\/64
+Blocked:\s+no
+Home Location:\s+fsn1
+Server:
+\s+Not assigned
+DNS:
+\s+No reverse DNS entries
+Protection:
+\s+Delete:\s+no
+Labels:
+\s+No labels
+`, out)
+
+	out, err = runCommand(t, "floating-ip", "describe", strconv.Itoa(floatingIPId), "--output", "format={{.IP}}")
+	assert.NoError(t, err)
+	out = strings.TrimSpace(out)
+	ipv6 := net.ParseIP(out)
+	if ipv6 != nil {
+		out, err = runCommand(t, "floating-ip", "set-rdns", strconv.Itoa(floatingIPId), "--ip", ipv6.String()+"1", "--hostname", "s1.example.com")
+		assert.NoError(t, err)
+		assert.Equal(t, fmt.Sprintf("Reverse DNS of Floating IP %d changed\n", floatingIPId), out)
+
+		out, err = runCommand(t, "floating-ip", "set-rdns", strconv.Itoa(floatingIPId), "--ip", ipv6.String()+"2", "--hostname", "s2.example.com")
+		assert.NoError(t, err)
+		assert.Equal(t, fmt.Sprintf("Reverse DNS of Floating IP %d changed\n", floatingIPId), out)
+	} else {
+		t.Errorf("invalid IPv6 address: %s", out)
+	}
+
+	out, err = runCommand(t, "floating-ip", "list", "-o", "columns=ip,dns")
+	assert.NoError(t, err)
+	assert.Regexp(t, fmt.Sprintf(`^IP +DNS
+%s\/64 +2 entries
+`, ipv6), out)
 
 	out, err = runCommand(t, "floating-ip", "delete", strconv.Itoa(floatingIPId))
 	assert.NoError(t, err)
