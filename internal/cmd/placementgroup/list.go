@@ -36,8 +36,8 @@ var ListCmd = base.ListCmd{
 		return resources, err
 	},
 
-	OutputTable: func(client hcapi2.Client) *output.Table {
-		return output.NewTable().
+	OutputTable: func(t *output.Table, client hcapi2.Client) {
+		t.
 			AddAllowedFields(hcloud.PlacementGroup{}).
 			AddFieldFn("servers", output.FieldFn(func(obj interface{}) string {
 				placementGroup := obj.(*hcloud.PlacementGroup)

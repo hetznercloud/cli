@@ -37,8 +37,8 @@ var ListCmd = base.ListCmd{
 		return resources, err
 	},
 
-	OutputTable: func(client hcapi2.Client) *output.Table {
-		return output.NewTable().
+	OutputTable: func(t *output.Table, client hcapi2.Client) {
+		t.
 			AddAllowedFields(hcloud.Volume{}).
 			AddFieldFn("server", output.FieldFn(func(obj interface{}) string {
 				volume := obj.(*hcloud.Volume)

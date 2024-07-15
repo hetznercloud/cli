@@ -30,6 +30,8 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -39,8 +41,10 @@ jobs:
         with:
           go-version-file: go.mod
 
+      - uses: hetznercloud/tps-action@main
+
       - name: Run tests
-        run: go test -coverprofile=coverage.txt -v -race ./...
+        run: go test -coverpkg=./... -coverprofile=coverage.txt -v -race ./...
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v4

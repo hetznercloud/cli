@@ -10,6 +10,9 @@ import (
 )
 
 func TestUse(t *testing.T) {
+	// Make sure we don't have any environment variables set that could interfere with the test
+	t.Setenv("HCLOUD_TOKEN", "")
+	t.Setenv("HCLOUD_CONTEXT", "")
 
 	testConfig := `active_context = "my-context"
 
