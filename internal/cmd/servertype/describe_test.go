@@ -31,6 +31,46 @@ func TestDescribe(t *testing.T) {
 			StorageType: hcloud.StorageTypeLocal,
 		}, nil, nil)
 
+	fx.Client.PricingClient.EXPECT().
+		Get(gomock.Any()).
+		Return(hcloud.Pricing{
+			ServerTypes: []hcloud.ServerTypePricing{
+				// Two server types to test that fullPricingInfo filters for the correct one
+				{
+					ServerType: &hcloud.ServerType{ID: 1},
+					Pricings: []hcloud.ServerTypeLocationPricing{{
+						Location: &hcloud.Location{
+							Name: "Nuremberg",
+						},
+						Hourly: hcloud.Price{
+							Gross:    "4.0000",
+							Currency: "EUR",
+						},
+						Monthly: hcloud.Price{
+							Gross:    "7.0000",
+							Currency: "EUR",
+						},
+					}},
+				},
+				{
+					ServerType: &hcloud.ServerType{ID: 45},
+					Pricings: []hcloud.ServerTypeLocationPricing{{
+						Location: &hcloud.Location{
+							Name: "Falkenstein",
+						},
+						Hourly: hcloud.Price{
+							Gross:    "1.0000",
+							Currency: "EUR",
+						},
+						Monthly: hcloud.Price{
+							Gross:    "2.0000",
+							Currency: "EUR",
+						},
+					}},
+				},
+			},
+		}, nil, nil)
+
 	out, errOut, err := fx.Run(cmd, []string{"cax11"})
 
 	expOut := `ID:			45
@@ -44,6 +84,9 @@ Disk:			40 GB
 Storage Type:		local
 Included Traffic:	0 TB
 Pricings per Location:
+  - Location:	Falkenstein
+    Hourly:	€ 1.0000
+    Monthly:	€ 2.0000
 `
 
 	assert.NoError(t, err)
