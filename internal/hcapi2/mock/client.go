@@ -27,6 +27,7 @@ type MockClient struct {
 	ISOClient              *MockISOClient
 	PlacementGroupClient   *MockPlacementGroupClient
 	RDNSClient             *MockRDNSClient
+	PricingClient          *MockPricingClient
 }
 
 func NewMockClient(ctrl *gomock.Controller) *MockClient {
@@ -49,6 +50,7 @@ func NewMockClient(ctrl *gomock.Controller) *MockClient {
 		ISOClient:              NewMockISOClient(ctrl),
 		PlacementGroupClient:   NewMockPlacementGroupClient(ctrl),
 		RDNSClient:             NewMockRDNSClient(ctrl),
+		PricingClient:          NewMockPricingClient(ctrl),
 	}
 }
 
@@ -121,6 +123,10 @@ func (c *MockClient) RDNS() hcapi2.RDNSClient {
 
 func (c *MockClient) PlacementGroup() hcapi2.PlacementGroupClient {
 	return c.PlacementGroupClient
+}
+
+func (c *MockClient) Pricing() hcapi2.PricingClient {
+	return c.PricingClient
 }
 
 func (*MockClient) WithOpts(_ ...hcloud.ClientOption) {

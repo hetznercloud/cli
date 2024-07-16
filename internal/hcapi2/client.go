@@ -26,6 +26,7 @@ type Client interface {
 	PlacementGroup() PlacementGroupClient
 	RDNS() RDNSClient
 	PrimaryIP() PrimaryIPClient
+	Pricing() PricingClient
 	WithOpts(...hcloud.ClientOption)
 }
 
@@ -48,6 +49,7 @@ type clientCache struct {
 	placementGroupClient   PlacementGroupClient
 	rdnsClient             RDNSClient
 	primaryIPClient        PrimaryIPClient
+	pricingClient          PricingClient
 }
 
 type client struct {
@@ -236,4 +238,13 @@ func (c *client) PlacementGroup() PlacementGroupClient {
 	}
 	defer c.mu.Unlock()
 	return c.cache.placementGroupClient
+}
+
+func (c *client) Pricing() PricingClient {
+	c.mu.Lock()
+	if c.cache.pricingClient == nil {
+		c.cache.pricingClient = NewPricingClient(&c.client.Pricing)
+	}
+	defer c.mu.Unlock()
+	return c.cache.pricingClient
 }
