@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.45.0](https://github.com/hetznercloud/cli/compare/v1.44.2...v1.45.0) (2024-07-17)
+
+
+### Features
+
+* allow configuring default sort columns for each supported resource ([#795](https://github.com/hetznercloud/cli/issues/795)) ([f6877a1](https://github.com/hetznercloud/cli/commit/f6877a166ea7602ac2f65b85d9dcae16690f49c6))
+* better error messages on malformed option value ([#798](https://github.com/hetznercloud/cli/issues/798)) ([8c6fec9](https://github.com/hetznercloud/cli/commit/8c6fec9b4ef776c10d58efd86a5d2122b3a8be5c))
+
+
+### Bug Fixes
+
+* **config:** ordering of list option values not preserved ([#805](https://github.com/hetznercloud/cli/issues/805)) ([1ac27bf](https://github.com/hetznercloud/cli/commit/1ac27bfbcca1eb3dbb3778b1894badff3d7462f2))
+* debug log is truncated if it already exists ([#793](https://github.com/hetznercloud/cli/issues/793)) ([c3d3a9f](https://github.com/hetznercloud/cli/commit/c3d3a9fa0e90340bc45c7b6ab1eeb0b318a12cf7))
+* **firewall:** wrong wording when firewall is removed from resource ([#812](https://github.com/hetznercloud/cli/issues/812)) ([9017a65](https://github.com/hetznercloud/cli/commit/9017a652907b17cee0be9500bc36d455ee51c49f)), closes [#809](https://github.com/hetznercloud/cli/issues/809)
+
 ## [1.44.2](https://github.com/hetznercloud/cli/compare/v1.44.1...v1.44.2) (2024-07-01)
 
 
