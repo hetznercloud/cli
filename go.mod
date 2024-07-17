@@ -9,7 +9,7 @@ require (
 	github.com/dustin/go-humanize v1.0.1
 	github.com/fatih/color v1.17.0
 	github.com/fatih/structs v1.1.0
-	github.com/goccy/go-yaml v1.11.3
+	github.com/goccy/go-yaml v1.12.0
 	github.com/golang/mock v1.6.0
 	github.com/guptarohit/asciigraph v0.7.1
 	github.com/hetznercloud/hcloud-go/v2 v2.10.2
