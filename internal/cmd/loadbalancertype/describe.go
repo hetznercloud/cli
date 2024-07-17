@@ -36,7 +36,7 @@ var DescribeCmd = base.DescribeCmd{
 
 		pricings, err := fullPricingInfo(s, loadBalancerType)
 		if err != nil {
-			cmd.PrintErrf("failed to get prices for server type: %v", err)
+			cmd.PrintErrf("failed to get prices for load balancer type: %v", err)
 		}
 
 		if pricings != nil {
