@@ -23,7 +23,7 @@ var DescribeCmd = base.DescribeCmd{
 		}
 		return st, hcloud.SchemaFromServerType(st), nil
 	},
-	PrintText: func(_ state.State, cmd *cobra.Command, resource interface{}) error {
+	PrintText: func(s state.State, cmd *cobra.Command, resource interface{}) error {
 		serverType := resource.(*hcloud.ServerType)
 
 		cmd.Printf("ID:\t\t\t%d\n", serverType.ID)
@@ -38,12 +38,35 @@ var DescribeCmd = base.DescribeCmd{
 		cmd.Printf("Included Traffic:\t%d TB\n", serverType.IncludedTraffic/util.Tebibyte)
 		cmd.Printf(util.DescribeDeprecation(serverType))
 
-		cmd.Printf("Pricings per Location:\n")
-		for _, price := range serverType.Pricings {
-			cmd.Printf("  - Location:\t%s:\n", price.Location.Name)
-			cmd.Printf("    Hourly:\t€ %s\n", price.Hourly.Gross)
-			cmd.Printf("    Monthly:\t€ %s\n", price.Monthly.Gross)
+		pricings, err := fullPricingInfo(s, serverType)
+		if err != nil {
+			cmd.PrintErrf("failed to get prices for server type: %v", err)
 		}
+
+		if pricings != nil {
+			cmd.Printf("Pricings per Location:\n")
+			for _, price := range pricings {
+				cmd.Printf("  - Location:\t%s\n", price.Location.Name)
+				cmd.Printf("    Hourly:\t%s\n", util.GrossPrice(price.Hourly))
+				cmd.Printf("    Monthly:\t%s\n", util.GrossPrice(price.Monthly))
+			}
+		}
+
 		return nil
 	},
+}
+
+func fullPricingInfo(s state.State, serverType *hcloud.ServerType) ([]hcloud.ServerTypeLocationPricing, error) {
+	pricing, _, err := s.Client().Pricing().Get(s)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, price := range pricing.ServerTypes {
+		if price.ServerType.ID == serverType.ID {
+			return price.Pricings, nil
+		}
+	}
+
+	return nil, nil
 }

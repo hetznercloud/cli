@@ -30,6 +30,46 @@ func TestDescribe(t *testing.T) {
 			MaxAssignedCertificates: 10,
 		}, nil, nil)
 
+	fx.Client.PricingClient.EXPECT().
+		Get(gomock.Any()).
+		Return(hcloud.Pricing{
+			LoadBalancerTypes: []hcloud.LoadBalancerTypePricing{
+				// Two load balancer types to test that fullPricingInfo filters for the correct one
+				{
+					LoadBalancerType: &hcloud.LoadBalancerType{ID: 1},
+					Pricings: []hcloud.LoadBalancerTypeLocationPricing{{
+						Location: &hcloud.Location{
+							Name: "Nuremberg",
+						},
+						Hourly: hcloud.Price{
+							Gross:    "4.0000",
+							Currency: "EUR",
+						},
+						Monthly: hcloud.Price{
+							Gross:    "7.0000",
+							Currency: "EUR",
+						},
+					}},
+				},
+				{
+					LoadBalancerType: &hcloud.LoadBalancerType{ID: 123},
+					Pricings: []hcloud.LoadBalancerTypeLocationPricing{{
+						Location: &hcloud.Location{
+							Name: "Falkenstein",
+						},
+						Hourly: hcloud.Price{
+							Gross:    "1.0000",
+							Currency: "EUR",
+						},
+						Monthly: hcloud.Price{
+							Gross:    "2.0000",
+							Currency: "EUR",
+						},
+					}},
+				},
+			},
+		}, nil, nil)
+
 	out, errOut, err := fx.Run(cmd, []string{"lb11"})
 
 	expOut := `ID:				123
@@ -40,6 +80,9 @@ Max Connections:		10000
 Max Targets:			25
 Max assigned Certificates:	10
 Pricings per Location:
+  - Location:	Falkenstein
+    Hourly:	€ 1.0000
+    Monthly:	€ 2.0000
 `
 
 	assert.NoError(t, err)

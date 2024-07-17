@@ -18,3 +18,4 @@ package hcapi2_mock
 //go:generate go run github.com/golang/mock/mockgen -package hcapi2_mock -destination zz_volume_client_mock.go github.com/hetznercloud/cli/internal/hcapi2 VolumeClient
 //go:generate go run github.com/golang/mock/mockgen -package hcapi2_mock -destination zz_placement_group_client_mock.go github.com/hetznercloud/cli/internal/hcapi2 PlacementGroupClient
 //go:generate go run github.com/golang/mock/mockgen -package hcapi2_mock -destination zz_rdns_client_mock.go github.com/hetznercloud/cli/internal/hcapi2 RDNSClient
+//go:generate go run github.com/golang/mock/mockgen -package hcapi2_mock -destination zz_pricing_client_mock.go github.com/hetznercloud/cli/internal/hcapi2 PricingClient

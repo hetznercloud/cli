@@ -12,6 +12,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/testutil"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 func TestYesNo(t *testing.T) {
@@ -421,4 +422,32 @@ func TestRemoveDuplicates(t *testing.T) {
 	assert.Equal(t, []string{"c", "b", "a"}, util.RemoveDuplicates([]string{"c", "b", "a", "a", "b", "c"}))
 	assert.Equal(t, []string{"a"}, util.RemoveDuplicates([]string{"a", "a", "a", "a", "a"}))
 	assert.Equal(t, []int{1, 2, 3, 4, 5}, util.RemoveDuplicates([]int{1, 2, 1, 1, 3, 2, 1, 4, 3, 2, 5, 4, 3, 2, 1}))
+}
+
+func TestPrice(t *testing.T) {
+	tests := []struct {
+		name     string
+		price    hcloud.Price
+		amount   string
+		currency string
+		want     string
+	}{
+		{
+			name:  "known currency",
+			price: hcloud.Price{Currency: "EUR", Gross: "5.00"},
+			want:  "€\u00a05.00",
+		},
+		{
+			name:     "unknown currency",
+			price:    hcloud.Price{Currency: "HOL", Gross: "1.2"},
+			amount:   "1.2",
+			currency: "HOL",
+			want:     "HOL\u00a01.2",
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equalf(t, tt.want, util.GrossPrice(tt.price), "GrossPrice(%v, %v)", tt.amount, tt.currency)
+		})
+	}
 }

@@ -15,6 +15,8 @@ import (
 	"github.com/spf13/cast"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
+
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 func YesNo(b bool) string {
@@ -56,6 +58,20 @@ func Age(t, currentTime time.Time) string {
 	}
 
 	return "just now"
+}
+
+func GrossPrice(price hcloud.Price) string {
+	currencyDisplay := price.Currency
+
+	// Currency is the ISO 4217 code, but we want to the show currency symbol
+	switch price.Currency {
+	case "EUR":
+		currencyDisplay = "€"
+	}
+
+	// The code/symbol and the amount are separated by a non-breaking space:
+	// https://style-guide.europa.eu/en/content/-/isg/topic?identifier=7.3.3-rules-for-expressing-monetary-units#id370303__id370303_PositionISO
+	return fmt.Sprintf("%s\u00a0%s", currencyDisplay, price.Gross)
 }
 
 func ChainRunE(fns ...func(cmd *cobra.Command, args []string) error) func(cmd *cobra.Command, args []string) error {
