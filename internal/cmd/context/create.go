@@ -25,12 +25,20 @@ func NewCreateCommand(s state.State) *cobra.Command {
 		SilenceUsage:          true,
 		RunE:                  state.Wrap(s, runCreate),
 	}
+	cmd.Flags().BoolP("yes", "y", false, "Assume yes on interactive prompts")
+
 	return cmd
 }
 
 func runCreate(s state.State, cmd *cobra.Command, args []string) error {
 	cfg := s.Config()
-	if !s.Terminal().StdoutIsTerminal() {
+
+	yes, err := cmd.Flags().GetBool("yes")
+	if err != nil {
+		return err
+	}
+
+	if !s.Terminal().StdoutIsTerminal() || yes {
 		return errors.New("context create is an interactive command")
 	}
 
@@ -49,11 +57,15 @@ func runCreate(s state.State, cmd *cobra.Command, args []string) error {
 		if len(envToken) != 64 {
 			cmd.Println("Warning: HCLOUD_TOKEN is set, but token is invalid (must be exactly 64 characters long)")
 		} else {
-			cmd.Print("The HCLOUD_TOKEN environment variable is set. Do you want to use the token from HCLOUD_TOKEN for the new context? (Y/n): ")
-			scanner := bufio.NewScanner(os.Stdin)
-			scanner.Scan()
-			if s := strings.ToLower(scanner.Text()); s == "" || s == "y" || s == "yes" {
+			if yes {
 				token = envToken
+			} else {
+				cmd.Print("The HCLOUD_TOKEN environment variable is set. Do you want to use the token from HCLOUD_TOKEN for the new context? (Y/n): ")
+				scanner := bufio.NewScanner(os.Stdin)
+				scanner.Scan()
+				if s := strings.ToLower(scanner.Text()); s == "" || s == "y" || s == "yes" {
+					token = envToken
+				}
 			}
 		}
 	}
