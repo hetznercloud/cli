@@ -7,7 +7,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-// CertificateClient embeds the Hetzner Cloud Certificate client and provides some
+// CertificateClient embeds the Hetzner Cloud Certificate ActualClient and provides some
 // additional helper functions.
 type CertificateClient interface {
 	hcloud.ICertificateClient

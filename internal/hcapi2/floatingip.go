@@ -15,14 +15,14 @@ type FloatingIPClient interface {
 	LabelKeys(idOrName string) []string
 }
 
-// NewFloatingIPClient creates a new floating IP client.
+// NewFloatingIPClient creates a new floating IP ActualClient.
 func NewFloatingIPClient(client hcloud.IFloatingIPClient) FloatingIPClient {
 	return &floatingIPClient{
 		IFloatingIPClient: client,
 	}
 }
 
-// FloatingIPClient embeds the Hetzner Cloud FloatingIP client and provides some
+// FloatingIPClient embeds the Hetzner Cloud FloatingIP ActualClient and provides some
 // additional helper functions.
 type floatingIPClient struct {
 	hcloud.IFloatingIPClient

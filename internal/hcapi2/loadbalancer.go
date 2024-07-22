@@ -8,7 +8,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-// LoadBalancerClient embeds the Hetzner Cloud LoadBalancer client and provides some
+// LoadBalancerClient embeds the Hetzner Cloud LoadBalancer ActualClient and provides some
 // additional helper functions.
 type LoadBalancerClient interface {
 	hcloud.ILoadBalancerClient

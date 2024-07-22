@@ -19,7 +19,7 @@ func NewFirewallClient(client hcloud.IFirewallClient) FirewallClient {
 	}
 }
 
-// FirewallClient embeds the Hetzner Cloud Firewall client and provides
+// FirewallClient embeds the Hetzner Cloud Firewall ActualClient and provides
 // some additional helper functions.
 type firewallClient struct {
 	hcloud.IFirewallClient

@@ -7,7 +7,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-// SSHKeyClient embeds the Hetzner Cloud SSHKey client and provides some
+// SSHKeyClient embeds the Hetzner Cloud SSHKey ActualClient and provides some
 // additional helper functions.
 type SSHKeyClient interface {
 	hcloud.ISSHKeyClient

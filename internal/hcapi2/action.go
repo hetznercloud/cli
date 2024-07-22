@@ -4,7 +4,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-// ActionClient embeds the Hetzner Cloud Action client
+// ActionClient embeds the Hetzner Cloud Action ActualClient
 type ActionClient interface {
 	hcloud.IActionClient
 }

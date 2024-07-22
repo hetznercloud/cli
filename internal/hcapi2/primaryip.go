@@ -17,14 +17,14 @@ type PrimaryIPClient interface {
 	LabelKeys(idOrName string) []string
 }
 
-// NewPrimaryIPClient creates a new primary IP client.
+// NewPrimaryIPClient creates a new primary IP ActualClient.
 func NewPrimaryIPClient(client hcloud.IPrimaryIPClient) PrimaryIPClient {
 	return &primaryIPClient{
 		IPrimaryIPClient: client,
 	}
 }
 
-// PrimaryIPClient embeds the Hetzner Cloud PrimaryIP client and provides some
+// PrimaryIPClient embeds the Hetzner Cloud PrimaryIP ActualClient and provides some
 // additional helper functions.
 type primaryIPClient struct {
 	hcloud.IPrimaryIPClient

@@ -4,7 +4,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-// PricingClient embeds the Hetzner Cloud Pricing client and provides some
+// PricingClient embeds the Hetzner Cloud Pricing ActualClient and provides some
 // additional helper functions.
 type PricingClient interface {
 	hcloud.IPricingClient

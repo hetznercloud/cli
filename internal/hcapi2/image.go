@@ -7,7 +7,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-// ImageClient embeds the Hetzner Cloud Image client and provides some
+// ImageClient embeds the Hetzner Cloud Image ActualClient and provides some
 // additional helper functions.
 type ImageClient interface {
 	hcloud.IImageClient

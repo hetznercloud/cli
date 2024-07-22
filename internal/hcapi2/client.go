@@ -52,198 +52,198 @@ type clientCache struct {
 	pricingClient          PricingClient
 }
 
-type client struct {
-	client *hcloud.Client
+type ActualClient struct {
+	Client *hcloud.Client
 	cache  clientCache
 
 	mu   sync.Mutex
 	opts []hcloud.ClientOption
 }
 
-// NewClient creates a new CLI API client extending hcloud.Client.
+// NewClient creates a new CLI API ActualClient extending hcloud.Client.
 func NewClient(opts ...hcloud.ClientOption) Client {
-	c := &client{
+	c := &ActualClient{
 		opts: opts,
 	}
 	c.update()
 	return c
 }
 
-func (c *client) WithOpts(opts ...hcloud.ClientOption) {
+func (c *ActualClient) WithOpts(opts ...hcloud.ClientOption) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	c.opts = append(c.opts, opts...)
 	c.update()
 }
 
-func (c *client) update() {
-	c.client = hcloud.NewClient(c.opts...)
+func (c *ActualClient) update() {
+	c.Client = hcloud.NewClient(c.opts...)
 	c.cache = clientCache{}
 }
 
-func (c *client) Action() ActionClient {
+func (c *ActualClient) Action() ActionClient {
 	c.mu.Lock()
 	if c.cache.actionClient == nil {
-		c.cache.actionClient = NewActionClient(&c.client.Action)
+		c.cache.actionClient = NewActionClient(&c.Client.Action)
 	}
 	defer c.mu.Unlock()
 	return c.cache.actionClient
 }
 
-func (c *client) Certificate() CertificateClient {
+func (c *ActualClient) Certificate() CertificateClient {
 	c.mu.Lock()
 	if c.cache.certificateClient == nil {
-		c.cache.certificateClient = NewCertificateClient(&c.client.Certificate)
+		c.cache.certificateClient = NewCertificateClient(&c.Client.Certificate)
 	}
 	defer c.mu.Unlock()
 	return c.cache.certificateClient
 }
 
-func (c *client) Datacenter() DatacenterClient {
+func (c *ActualClient) Datacenter() DatacenterClient {
 	c.mu.Lock()
 	if c.cache.datacenterClient == nil {
-		c.cache.datacenterClient = NewDatacenterClient(&c.client.Datacenter)
+		c.cache.datacenterClient = NewDatacenterClient(&c.Client.Datacenter)
 	}
 	defer c.mu.Unlock()
 	return c.cache.datacenterClient
 }
 
-func (c *client) Firewall() FirewallClient {
+func (c *ActualClient) Firewall() FirewallClient {
 	c.mu.Lock()
 	if c.cache.firewallClient == nil {
-		c.cache.firewallClient = NewFirewallClient(&c.client.Firewall)
+		c.cache.firewallClient = NewFirewallClient(&c.Client.Firewall)
 	}
 	defer c.mu.Unlock()
 	return c.cache.firewallClient
 }
 
-func (c *client) FloatingIP() FloatingIPClient {
+func (c *ActualClient) FloatingIP() FloatingIPClient {
 	c.mu.Lock()
 	if c.cache.floatingIPClient == nil {
-		c.cache.floatingIPClient = NewFloatingIPClient(&c.client.FloatingIP)
+		c.cache.floatingIPClient = NewFloatingIPClient(&c.Client.FloatingIP)
 	}
 	defer c.mu.Unlock()
 	return c.cache.floatingIPClient
 }
 
-func (c *client) PrimaryIP() PrimaryIPClient {
+func (c *ActualClient) PrimaryIP() PrimaryIPClient {
 	c.mu.Lock()
 	if c.cache.primaryIPClient == nil {
-		c.cache.primaryIPClient = NewPrimaryIPClient(&c.client.PrimaryIP)
+		c.cache.primaryIPClient = NewPrimaryIPClient(&c.Client.PrimaryIP)
 	}
 	defer c.mu.Unlock()
 	return c.cache.primaryIPClient
 }
 
-func (c *client) Image() ImageClient {
+func (c *ActualClient) Image() ImageClient {
 	c.mu.Lock()
 	if c.cache.imageClient == nil {
-		c.cache.imageClient = NewImageClient(&c.client.Image)
+		c.cache.imageClient = NewImageClient(&c.Client.Image)
 	}
 	defer c.mu.Unlock()
 	return c.cache.imageClient
 }
 
-func (c *client) ISO() ISOClient {
+func (c *ActualClient) ISO() ISOClient {
 	c.mu.Lock()
 	if c.cache.isoClient == nil {
-		c.cache.isoClient = NewISOClient(&c.client.ISO)
+		c.cache.isoClient = NewISOClient(&c.Client.ISO)
 	}
 	defer c.mu.Unlock()
 	return c.cache.isoClient
 }
 
-func (c *client) Location() LocationClient {
+func (c *ActualClient) Location() LocationClient {
 	c.mu.Lock()
 	if c.cache.locationClient == nil {
-		c.cache.locationClient = NewLocationClient(&c.client.Location)
+		c.cache.locationClient = NewLocationClient(&c.Client.Location)
 	}
 	defer c.mu.Unlock()
 	return c.cache.locationClient
 }
 
-func (c *client) LoadBalancer() LoadBalancerClient {
+func (c *ActualClient) LoadBalancer() LoadBalancerClient {
 	c.mu.Lock()
 	if c.cache.loadBalancerClient == nil {
-		c.cache.loadBalancerClient = NewLoadBalancerClient(&c.client.LoadBalancer)
+		c.cache.loadBalancerClient = NewLoadBalancerClient(&c.Client.LoadBalancer)
 	}
 	defer c.mu.Unlock()
 	return c.cache.loadBalancerClient
 }
-func (c *client) LoadBalancerType() LoadBalancerTypeClient {
+func (c *ActualClient) LoadBalancerType() LoadBalancerTypeClient {
 	c.mu.Lock()
 	if c.cache.loadBalancerTypeClient == nil {
-		c.cache.loadBalancerTypeClient = NewLoadBalancerTypeClient(&c.client.LoadBalancerType)
+		c.cache.loadBalancerTypeClient = NewLoadBalancerTypeClient(&c.Client.LoadBalancerType)
 	}
 	defer c.mu.Unlock()
 	return c.cache.loadBalancerTypeClient
 }
-func (c *client) Network() NetworkClient {
+func (c *ActualClient) Network() NetworkClient {
 	c.mu.Lock()
 	if c.cache.networkClient == nil {
-		c.cache.networkClient = NewNetworkClient(&c.client.Network)
+		c.cache.networkClient = NewNetworkClient(&c.Client.Network)
 	}
 	defer c.mu.Unlock()
 	return c.cache.networkClient
 }
 
-func (c *client) Server() ServerClient {
+func (c *ActualClient) Server() ServerClient {
 	c.mu.Lock()
 	if c.cache.serverClient == nil {
-		c.cache.serverClient = NewServerClient(&c.client.Server)
+		c.cache.serverClient = NewServerClient(&c.Client.Server)
 	}
 	defer c.mu.Unlock()
 	return c.cache.serverClient
 }
 
-func (c *client) ServerType() ServerTypeClient {
+func (c *ActualClient) ServerType() ServerTypeClient {
 	c.mu.Lock()
 	if c.cache.serverTypeClient == nil {
-		c.cache.serverTypeClient = NewServerTypeClient(&c.client.ServerType)
+		c.cache.serverTypeClient = NewServerTypeClient(&c.Client.ServerType)
 	}
 	defer c.mu.Unlock()
 	return c.cache.serverTypeClient
 }
 
-func (c *client) SSHKey() SSHKeyClient {
+func (c *ActualClient) SSHKey() SSHKeyClient {
 	c.mu.Lock()
 	if c.cache.sshKeyClient == nil {
-		c.cache.sshKeyClient = NewSSHKeyClient(&c.client.SSHKey)
+		c.cache.sshKeyClient = NewSSHKeyClient(&c.Client.SSHKey)
 	}
 	defer c.mu.Unlock()
 	return c.cache.sshKeyClient
 }
-func (c *client) RDNS() RDNSClient {
+func (c *ActualClient) RDNS() RDNSClient {
 	c.mu.Lock()
 	if c.cache.rdnsClient == nil {
-		c.cache.rdnsClient = NewRDNSClient(&c.client.RDNS)
+		c.cache.rdnsClient = NewRDNSClient(&c.Client.RDNS)
 	}
 	defer c.mu.Unlock()
 	return c.cache.rdnsClient
 }
 
-func (c *client) Volume() VolumeClient {
+func (c *ActualClient) Volume() VolumeClient {
 	c.mu.Lock()
 	if c.cache.volumeClient == nil {
-		c.cache.volumeClient = NewVolumeClient(&c.client.Volume)
+		c.cache.volumeClient = NewVolumeClient(&c.Client.Volume)
 	}
 	defer c.mu.Unlock()
 	return c.cache.volumeClient
 }
 
-func (c *client) PlacementGroup() PlacementGroupClient {
+func (c *ActualClient) PlacementGroup() PlacementGroupClient {
 	c.mu.Lock()
 	if c.cache.placementGroupClient == nil {
-		c.cache.placementGroupClient = NewPlacementGroupClient(&c.client.PlacementGroup)
+		c.cache.placementGroupClient = NewPlacementGroupClient(&c.Client.PlacementGroup)
 	}
 	defer c.mu.Unlock()
 	return c.cache.placementGroupClient
 }
 
-func (c *client) Pricing() PricingClient {
+func (c *ActualClient) Pricing() PricingClient {
 	c.mu.Lock()
 	if c.cache.pricingClient == nil {
-		c.cache.pricingClient = NewPricingClient(&c.client.Pricing)
+		c.cache.pricingClient = NewPricingClient(&c.Client.Pricing)
 	}
 	defer c.mu.Unlock()
 	return c.cache.pricingClient

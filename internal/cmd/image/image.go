@@ -29,5 +29,9 @@ func NewCommand(s state.State) *cobra.Command {
 		EnableProtectionCmd.CobraCommand(s),
 		DisableProtectionCmd.CobraCommand(s),
 	)
+
+	util.AddGroup(cmd, "workaround", "Workaround",
+		UploadCmd.CobraCommand(s),
+	)
 	return cmd
 }

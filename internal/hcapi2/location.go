@@ -7,7 +7,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-// LocationClient embeds the Hetzner Cloud Location client and provides some
+// LocationClient embeds the Hetzner Cloud Location ActualClient and provides some
 // additional helper functions.
 type LocationClient interface {
 	hcloud.ILocationClient

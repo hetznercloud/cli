@@ -8,7 +8,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-// NetworkClient embeds the Hetzner Cloud Network client and provides some
+// NetworkClient embeds the Hetzner Cloud Network ActualClient and provides some
 // additional helper functions.
 type NetworkClient interface {
 	hcloud.INetworkClient

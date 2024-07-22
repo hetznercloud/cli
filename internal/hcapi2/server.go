@@ -21,7 +21,7 @@ func NewServerClient(client *hcloud.ServerClient) ServerClient {
 	}
 }
 
-// ServerClient embeds the Hetzner Cloud Server client and provides some
+// ServerClient embeds the Hetzner Cloud Server ActualClient and provides some
 // additional helper functions.
 type serverClient struct {
 	hcloud.IServerClient

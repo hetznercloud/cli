@@ -7,7 +7,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-// ISOClient embeds the Hetzner Cloud iso client and provides some
+// ISOClient embeds the Hetzner Cloud iso ActualClient and provides some
 // additional helper functions.
 type ISOClient interface {
 	hcloud.IISOClient

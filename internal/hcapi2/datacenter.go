@@ -7,7 +7,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-// DatacenterClient embeds the Hetzner Cloud DataCenter client and provides some
+// DatacenterClient embeds the Hetzner Cloud DataCenter ActualClient and provides some
 // additional helper functions.
 type DatacenterClient interface {
 	hcloud.IDatacenterClient

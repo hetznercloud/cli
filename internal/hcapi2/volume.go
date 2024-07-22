@@ -7,7 +7,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-// VolumeClient embeds the Hetzner Cloud Volume client and provides some additional
+// VolumeClient embeds the Hetzner Cloud Volume ActualClient and provides some additional
 // helper functions.
 type VolumeClient interface {
 	hcloud.IVolumeClient
