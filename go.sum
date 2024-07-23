@@ -41,8 +41,6 @@ github.com/guptarohit/asciigraph v0.7.1 h1:K+JWbRc04XEfv8BSZgNuvhCmpbvX4+9NYd/Ux
 github.com/guptarohit/asciigraph v0.7.1/go.mod h1:dYl5wwK4gNsnFf9Zp+l06rFiDZ5YtXM6x7SRWZ3KGag=
 github.com/hashicorp/hcl v1.0.0 h1:0Anlzjpi4vEasTeNFn2mLJgTSwt0+6sfsiTG8qcWGx4=
 github.com/hashicorp/hcl v1.0.0/go.mod h1:E5yfLk+7swimpb2L/Alb/PJmXilQ/rhwaUYs4T20WEQ=
-github.com/hetznercloud/hcloud-go/v2 v2.10.2 h1:9gyTUPhfNbfbS40Spgij5mV5k37bOZgt8iHKCbfGs5I=
-github.com/hetznercloud/hcloud-go/v2 v2.10.2/go.mod h1:xQ+8KhIS62W0D78Dpi57jsufWh844gUw1az5OUvaeq8=
 github.com/hetznercloud/hcloud-go/v2 v2.11.0 h1:U1wD58/trMnKO6aHy2i2aguT5USwWbzC2hWj3r2sidE=
 github.com/hetznercloud/hcloud-go/v2 v2.11.0/go.mod h1:dhix40Br3fDiBhwaSG/zgaYOFFddpfBm/6R1Zz0IiF0=
 github.com/inconshreveable/mousetrap v1.1.0 h1:wN+x4NVGpMsO7ErUn/mUI3vEoE6Jt13X2s0bqwp9tc8=
@@ -133,8 +131,6 @@ golang.org/x/net v0.0.0-20190404232315-eb5bcb51f2a3/go.mod h1:t9HGtf8HONx5eT2rtn
 golang.org/x/net v0.0.0-20190620200207-3b0461eec859/go.mod h1:z5CRVTTTmAJ677TzLLGU+0bjPO0LkuOLi4/5GtJWs/s=
 golang.org/x/net v0.0.0-20200226121028-0de0cce0169b/go.mod h1:z5CRVTTTmAJ677TzLLGU+0bjPO0LkuOLi4/5GtJWs/s=
 golang.org/x/net v0.0.0-20210405180319-a5a99cb37ef4/go.mod h1:p54w0d4576C0XHj96bSt6lcn1PtDYWL6XObtHCRCNQM=
-golang.org/x/net v0.26.0 h1:soB7SVo0PWrY4vPW/+ay0jKDNScG2X9wFeYlXIvJsOQ=
-golang.org/x/net v0.26.0/go.mod h1:5YKkiSynbBIh3p6iOc/vibscux0x38BZDkn8sCUPxHE=
 golang.org/x/net v0.27.0 h1:5K3Njcw06/l2y9vpGCSdcxWOYHOUk3dVNGDXN+FvAys=
 golang.org/x/net v0.27.0/go.mod h1:dDi0PyhWNoiUOrAS8uXv/vnScO4wnHQO4mj9fn/RytE=
 golang.org/x/sync v0.0.0-20190423024810-112230192c58/go.mod h1:RxMgew5VJxzue5/jJTE5uejpjVlOe/izrB70Jof72aM=
