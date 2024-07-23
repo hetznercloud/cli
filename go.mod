@@ -12,7 +12,7 @@ require (
 	github.com/goccy/go-yaml v1.12.0
 	github.com/golang/mock v1.6.0
 	github.com/guptarohit/asciigraph v0.7.1
-	github.com/hetznercloud/hcloud-go/v2 v2.10.2
+	github.com/hetznercloud/hcloud-go/v2 v2.11.0
 	github.com/jedib0t/go-pretty/v6 v6.5.9
 	github.com/spf13/cast v1.6.0
 	github.com/spf13/cobra v1.8.1
@@ -52,7 +52,7 @@ require (
 	go.uber.org/multierr v1.9.0 // indirect
 	golang.org/x/exp v0.0.0-20230905200255-921286631fa9 // indirect
 	golang.org/x/mod v0.17.0 // indirect
-	golang.org/x/net v0.26.0 // indirect
+	golang.org/x/net v0.27.0 // indirect
 	golang.org/x/sync v0.7.0 // indirect
 	golang.org/x/sys v0.22.0 // indirect
 	golang.org/x/text v0.16.0 // indirect

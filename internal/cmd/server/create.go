@@ -20,7 +20,7 @@ import (
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/cli/internal/state/config"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
-	"github.com/hetznercloud/hcloud-go/v2/hcloud/exp/actionutils"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud/exp/actionutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
@@ -109,7 +109,7 @@ var CreateCmd = base.CreateCmd{
 			return nil, nil, err
 		}
 
-		if err := s.WaitForActions(cmd, s, actionutils.AppendNext(result.Action, result.NextActions)...); err != nil {
+		if err := s.WaitForActions(cmd, s, actionutil.AppendNext(result.Action, result.NextActions)...); err != nil {
 			return nil, nil, err
 		}
 
