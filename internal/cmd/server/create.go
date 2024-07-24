@@ -154,11 +154,10 @@ var CreateCmd = base.CreateCmd{
 			cmd.Printf("IPv6 Network: %s\n", server.PublicNet.IPv6.Network.String())
 		}
 		if len(server.PrivateNet) > 0 {
-			var networks []string
+			cmd.Printf("Private Networks:\n")
 			for _, network := range server.PrivateNet {
-				networks = append(networks, fmt.Sprintf("- %s (%s)", network.IP.String(), s.Client().Network().Name(network.Network.ID)))
+				cmd.Printf("\t- %s (%s)\n", network.IP.String(), s.Client().Network().Name(network.Network.ID))
 			}
-			cmd.Printf("Private Networks:\n\t%s\n", strings.Join(networks, "\n"))
 		}
 		// Only print the root password if it's not empty,
 		// which is only the case if it wasn't created with an SSH key.
