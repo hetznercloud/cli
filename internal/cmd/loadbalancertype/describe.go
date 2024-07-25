@@ -1,6 +1,7 @@
 package loadbalancertype
 
 import (
+	"github.com/dustin/go-humanize"
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
@@ -42,9 +43,12 @@ var DescribeCmd = base.DescribeCmd{
 		if pricings != nil {
 			cmd.Printf("Pricings per Location:\n")
 			for _, price := range pricings {
-				cmd.Printf("  - Location:\t%s\n", price.Location.Name)
-				cmd.Printf("    Hourly:\t%s\n", util.GrossPrice(price.Hourly))
-				cmd.Printf("    Monthly:\t%s\n", util.GrossPrice(price.Monthly))
+				cmd.Printf("  - Location:\t\t%s\n", price.Location.Name)
+				cmd.Printf("    Hourly:\t\t%s\n", util.GrossPrice(price.Hourly))
+				cmd.Printf("    Monthly:\t\t%s\n", util.GrossPrice(price.Monthly))
+				cmd.Printf("    Included Traffic:\t%s\n", humanize.IBytes(price.IncludedTraffic))
+				cmd.Printf("    Additional Traffic:\t%s per TB\n", util.GrossPrice(price.PerTBTraffic))
+				cmd.Printf("\n")
 			}
 		}
 

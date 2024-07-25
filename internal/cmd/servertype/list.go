@@ -17,7 +17,7 @@ import (
 var ListCmd = base.ListCmd{
 	ResourceNamePlural: "Server Types",
 	JSONKeyGetByName:   "server_types",
-	DefaultColumns:     []string{"id", "name", "cores", "cpu_type", "architecture", "memory", "disk", "storage_type", "traffic"},
+	DefaultColumns:     []string{"id", "name", "cores", "cpu_type", "architecture", "memory", "disk", "storage_type"},
 	SortOption:         nil, // Server Types do not support sorting
 
 	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
@@ -47,8 +47,9 @@ var ListCmd = base.ListCmd{
 				return fmt.Sprintf("%d GB", serverType.Disk)
 			})).
 			AddFieldFn("traffic", func(obj interface{}) string {
-				serverType := obj.(*hcloud.ServerType)
-				return fmt.Sprintf("%d TB", serverType.IncludedTraffic/util.Tebibyte)
+				// Was deprecated and traffic is now set per location, only available through describe.
+				// Field was kept to avoid returning errors if people explicitly request the column.
+				return "-"
 			}).
 			AddFieldFn("deprecated", func(obj interface{}) string {
 				serverType := obj.(*hcloud.ServerType)

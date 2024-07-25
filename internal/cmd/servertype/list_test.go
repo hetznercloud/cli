@@ -8,7 +8,6 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/hetznercloud/cli/internal/cmd/servertype"
-	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -32,22 +31,21 @@ func TestList(t *testing.T) {
 		).
 		Return([]*hcloud.ServerType{
 			{
-				ID:              123,
-				Name:            "test",
-				Cores:           2,
-				CPUType:         hcloud.CPUTypeShared,
-				Architecture:    hcloud.ArchitectureARM,
-				Memory:          8.0,
-				Disk:            80,
-				StorageType:     hcloud.StorageTypeLocal,
-				IncludedTraffic: 20 * util.Tebibyte,
+				ID:           123,
+				Name:         "test",
+				Cores:        2,
+				CPUType:      hcloud.CPUTypeShared,
+				Architecture: hcloud.ArchitectureARM,
+				Memory:       8.0,
+				Disk:         80,
+				StorageType:  hcloud.StorageTypeLocal,
 			},
 		}, nil)
 
 	out, errOut, err := fx.Run(cmd, []string{})
 
-	expOut := `ID    NAME   CORES   CPU TYPE   ARCHITECTURE   MEMORY   DISK    STORAGE TYPE   TRAFFIC
-123   test   2       shared     arm            8.0 GB   80 GB   local          20 TB
+	expOut := `ID    NAME   CORES   CPU TYPE   ARCHITECTURE   MEMORY   DISK    STORAGE TYPE
+123   test   2       shared     arm            8.0 GB   80 GB   local
 `
 
 	assert.NoError(t, err)

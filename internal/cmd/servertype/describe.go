@@ -1,6 +1,7 @@
 package servertype
 
 import (
+	"github.com/dustin/go-humanize"
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
@@ -35,7 +36,6 @@ var DescribeCmd = base.DescribeCmd{
 		cmd.Printf("Memory:\t\t\t%.1f GB\n", serverType.Memory)
 		cmd.Printf("Disk:\t\t\t%d GB\n", serverType.Disk)
 		cmd.Printf("Storage Type:\t\t%s\n", serverType.StorageType)
-		cmd.Printf("Included Traffic:\t%d TB\n", serverType.IncludedTraffic/util.Tebibyte)
 		cmd.Printf(util.DescribeDeprecation(serverType))
 
 		pricings, err := fullPricingInfo(s, serverType)
@@ -46,9 +46,12 @@ var DescribeCmd = base.DescribeCmd{
 		if pricings != nil {
 			cmd.Printf("Pricings per Location:\n")
 			for _, price := range pricings {
-				cmd.Printf("  - Location:\t%s\n", price.Location.Name)
-				cmd.Printf("    Hourly:\t%s\n", util.GrossPrice(price.Hourly))
-				cmd.Printf("    Monthly:\t%s\n", util.GrossPrice(price.Monthly))
+				cmd.Printf("  - Location:\t\t%s\n", price.Location.Name)
+				cmd.Printf("    Hourly:\t\t%s\n", util.GrossPrice(price.Hourly))
+				cmd.Printf("    Monthly:\t\t%s\n", util.GrossPrice(price.Monthly))
+				cmd.Printf("    Included Traffic:\t%s\n", humanize.IBytes(price.IncludedTraffic))
+				cmd.Printf("    Additional Traffic:\t%s per TB\n", util.GrossPrice(price.PerTBTraffic))
+				cmd.Printf("\n")
 			}
 		}
 

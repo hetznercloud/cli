@@ -49,6 +49,11 @@ func TestDescribe(t *testing.T) {
 							Gross:    "7.0000",
 							Currency: "EUR",
 						},
+						IncludedTraffic: 6543210,
+						PerTBTraffic: hcloud.Price{
+							Gross:    "8.0000",
+							Currency: "EUR",
+						},
 					}},
 				},
 				{
@@ -63,6 +68,11 @@ func TestDescribe(t *testing.T) {
 						},
 						Monthly: hcloud.Price{
 							Gross:    "2.0000",
+							Currency: "EUR",
+						},
+						IncludedTraffic: 654321,
+						PerTBTraffic: hcloud.Price{
+							Gross:    "3.0000",
 							Currency: "EUR",
 						},
 					}},
@@ -80,9 +90,12 @@ Max Connections:		10000
 Max Targets:			25
 Max assigned Certificates:	10
 Pricings per Location:
-  - Location:	Falkenstein
-    Hourly:	€ 1.0000
-    Monthly:	€ 2.0000
+  - Location:		Falkenstein
+    Hourly:		€ 1.0000
+    Monthly:		€ 2.0000
+    Included Traffic:	639 KiB
+    Additional Traffic:	€ 3.0000 per TB
+
 `
 
 	assert.NoError(t, err)
