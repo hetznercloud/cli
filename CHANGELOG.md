@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.46.0](https://github.com/hetznercloud/cli/compare/v1.45.0...v1.46.0) (2024-07-25)
+
+
+### Features
+
+* **load-balancer-type:** show traffic details for each location in describe output ([5c9380c](https://github.com/hetznercloud/cli/commit/5c9380c5b4d5792d259f13b6f44bf10f3d0c1b68))
+* **server-type:** show traffic details for each location in describe output ([5c9380c](https://github.com/hetznercloud/cli/commit/5c9380c5b4d5792d259f13b6f44bf10f3d0c1b68))
+
+
+### Bug Fixes
+
+* ineffective poll interval option ([#822](https://github.com/hetznercloud/cli/issues/822)) ([41aaa56](https://github.com/hetznercloud/cli/commit/41aaa56bd4649d42054eabe48e14d9fdde42a8ae))
+* printing for server create with mulitple networks ([#824](https://github.com/hetznercloud/cli/issues/824)) ([f3fcbd2](https://github.com/hetznercloud/cli/commit/f3fcbd2378a18df09abc82c6b7ac9c8aa8a68302))
+* **server-type:** remove deprecated traffic column ([5c9380c](https://github.com/hetznercloud/cli/commit/5c9380c5b4d5792d259f13b6f44bf10f3d0c1b68))
+
 ## [1.45.0](https://github.com/hetznercloud/cli/compare/v1.44.2...v1.45.0) (2024-07-17)
 
 
