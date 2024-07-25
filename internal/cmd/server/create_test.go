@@ -13,6 +13,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/server"
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
 //go:embed testdata/create_response.json
@@ -41,27 +42,60 @@ func TestCreate(t *testing.T) {
 			Server: &hcloud.Server{
 				ID: 1234,
 				PublicNet: hcloud.ServerPublicNet{
-					IPv4: hcloud.ServerPublicNetIPv4{
-						IP: net.ParseIP("192.0.2.1"),
-					},
+					IPv4: hcloud.ServerPublicNetIPv4FromSchema(schema.ServerPublicNetIPv4{
+						IP: "192.0.2.1",
+					}),
+					IPv6: hcloud.ServerPublicNetIPv6FromSchema(schema.ServerPublicNetIPv6{
+						IP: "2001:0db8:c013:4d58::/64",
+					}),
+				},
+				PrivateNet: []hcloud.ServerPrivateNet{
+					hcloud.ServerPrivateNetFromSchema(schema.ServerPrivateNet{
+						Network: 4461841,
+						IP:      "10.1.0.2",
+					}),
+					hcloud.ServerPrivateNetFromSchema(schema.ServerPrivateNet{
+						Network: 4461842,
+						IP:      "10.2.0.2",
+					}),
 				},
 			},
-			Action:      &hcloud.Action{ID: 123},
-			NextActions: []*hcloud.Action{{ID: 234}},
+			Action:       &hcloud.Action{ID: 123},
+			NextActions:  []*hcloud.Action{{ID: 234}},
+			RootPassword: "password",
 		}, nil, nil)
 	fx.Client.ServerClient.EXPECT().
 		GetByID(gomock.Any(), int64(1234)).
 		Return(&hcloud.Server{
 			ID: 1234,
 			PublicNet: hcloud.ServerPublicNet{
-				IPv4: hcloud.ServerPublicNetIPv4{
-					IP: net.ParseIP("192.0.2.1"),
-				},
+				IPv4: hcloud.ServerPublicNetIPv4FromSchema(schema.ServerPublicNetIPv4{
+					IP: "192.0.2.1",
+				}),
+				IPv6: hcloud.ServerPublicNetIPv6FromSchema(schema.ServerPublicNetIPv6{
+					IP: "2001:0db8:c013:4d58::/64",
+				}),
+			},
+			PrivateNet: []hcloud.ServerPrivateNet{
+				hcloud.ServerPrivateNetFromSchema(schema.ServerPrivateNet{
+					Network: 4461841,
+					IP:      "10.1.0.2",
+				}),
+				hcloud.ServerPrivateNetFromSchema(schema.ServerPrivateNet{
+					Network: 4461842,
+					IP:      "10.2.0.2",
+				}),
 			},
 		}, nil, nil)
 	fx.ActionWaiter.EXPECT().
 		WaitForActions(gomock.Any(), gomock.Any(), []*hcloud.Action{{ID: 123}, {ID: 234}}).
 		Return(nil)
+	fx.Client.NetworkClient.EXPECT().
+		Name(int64(4461841)).
+		Return("foo")
+	fx.Client.NetworkClient.EXPECT().
+		Name(int64(4461842)).
+		Return("bar")
 
 	args := []string{"--name", "cli-test", "--type", "cx22", "--image", "ubuntu-20.04"}
 	out, errOut, err := fx.Run(cmd, args)
@@ -70,6 +104,12 @@ func TestCreate(t *testing.T) {
 	assert.Empty(t, errOut)
 	expOut := `Server 1234 created
 IPv4: 192.0.2.1
+IPv6: 2001:db8:c013:4d58::1
+IPv6 Network: 2001:db8:c013:4d58::/64
+Private Networks:
+	- 10.1.0.2 (foo)
+	- 10.2.0.2 (bar)
+Root password: password
 `
 	assert.Equal(t, expOut, out)
 }
