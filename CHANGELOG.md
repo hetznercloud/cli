@@ -2,6 +2,15 @@
 
 ## [1.46.0](https://github.com/hetznercloud/cli/compare/v1.45.0...v1.46.0) (2024-07-25)
 
+### API Changes for Traffic Prices and Server Type Included Traffic
+
+There will be a breaking change in the API regarding Traffic Prices and Server Type Included Traffic on 2024-08-05. This release implements the necessary changes for the CLI.
+
+Until now, the `hcloud server-type list` command had a column `traffic`. This is no longer possible, because there is no single included traffic for a server type, and instead this depends on the location. We have set the field to `-` and removed it from the default columns. The information is still available in `hcloud server-type describe <server-type-name>`, now in the "Pricing" section of the output.
+
+This also affects the JSON and YAML output of both `hcloud server-type list` and `hcloud server-type describe` as we use the API schema for this.
+
+You can learn more about this change in [our changelog](https://docs.hetzner.cloud/changelog#2024-07-25-cloud-api-returns-traffic-information-in-different-format).
 
 ### Features
 
@@ -12,7 +21,7 @@
 ### Bug Fixes
 
 * ineffective poll interval option ([#822](https://github.com/hetznercloud/cli/issues/822)) ([41aaa56](https://github.com/hetznercloud/cli/commit/41aaa56bd4649d42054eabe48e14d9fdde42a8ae))
-* printing for server create with mulitple networks ([#824](https://github.com/hetznercloud/cli/issues/824)) ([f3fcbd2](https://github.com/hetznercloud/cli/commit/f3fcbd2378a18df09abc82c6b7ac9c8aa8a68302))
+* printing for server create with multiple networks ([#824](https://github.com/hetznercloud/cli/issues/824)) ([f3fcbd2](https://github.com/hetznercloud/cli/commit/f3fcbd2378a18df09abc82c6b7ac9c8aa8a68302))
 * **server-type:** remove deprecated traffic column ([5c9380c](https://github.com/hetznercloud/cli/commit/5c9380c5b4d5792d259f13b6f44bf10f3d0c1b68))
 
 ## [1.45.0](https://github.com/hetznercloud/cli/compare/v1.44.2...v1.45.0) (2024-07-17)
