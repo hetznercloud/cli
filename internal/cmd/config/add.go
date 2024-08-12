@@ -50,8 +50,7 @@ func runAdd(s state.State, cmd *cobra.Command, args []string) error {
 	switch opt.T().(type) {
 	case []string:
 		before := util.AnyToStringSlice(val)
-		newVal := append(before, values...)
-		newVal = util.RemoveDuplicates(newVal)
+		newVal := util.RemoveDuplicates(append(before, values...))
 		val = newVal
 		added = util.ToAnySlice(util.SliceDiff[[]string](newVal, before))
 	default:

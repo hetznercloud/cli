@@ -357,8 +357,9 @@ func (o *Option[T]) Completions() []string {
 	switch any(t).(type) {
 	case bool:
 		return []string{"true", "false"}
+	default:
+		return nil
 	}
-	return nil
 }
 
 func (o *Option[T]) Parse(values []string) (any, error) {
