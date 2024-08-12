@@ -61,7 +61,7 @@ func TestOnlyOneSet(t *testing.T) {
 		expected bool
 	}{
 		{
-			name:     "only arg emtpy",
+			name:     "only arg empty",
 			expected: false,
 		},
 		{

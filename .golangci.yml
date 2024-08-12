@@ -63,7 +63,7 @@ linters:
     # - gosimple
     - govet
     # - ineffassign
-    # - misspell
+    - misspell
     - revive
     - rowserrcheck
     # - scopelint
