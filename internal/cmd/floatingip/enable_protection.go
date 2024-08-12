@@ -14,7 +14,6 @@ import (
 )
 
 func getChangeProtectionOpts(enable bool, flags []string) (hcloud.FloatingIPChangeProtectionOpts, error) {
-
 	opts := hcloud.FloatingIPChangeProtectionOpts{}
 
 	var unknown []string
@@ -35,7 +34,6 @@ func getChangeProtectionOpts(enable bool, flags []string) (hcloud.FloatingIPChan
 
 func changeProtection(s state.State, cmd *cobra.Command,
 	floatingIP *hcloud.FloatingIP, enable bool, opts hcloud.FloatingIPChangeProtectionOpts) error {
-
 	if opts.Delete == nil {
 		return nil
 	}

@@ -95,7 +95,6 @@ func (cfg *config) reset() {
 }
 
 func (cfg *config) Read(f any) error {
-
 	// error is ignored since invalid flags are already handled by cobra
 	_ = cfg.fs.Parse(os.Args[1:])
 

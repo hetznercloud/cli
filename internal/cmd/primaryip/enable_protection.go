@@ -14,7 +14,6 @@ import (
 )
 
 func getChangeProtectionOpts(enable bool, flags []string) (hcloud.PrimaryIPChangeProtectionOpts, error) {
-
 	opts := hcloud.PrimaryIPChangeProtectionOpts{}
 
 	var unknown []string
@@ -35,7 +34,6 @@ func getChangeProtectionOpts(enable bool, flags []string) (hcloud.PrimaryIPChang
 
 func changeProtection(s state.State, cmd *cobra.Command,
 	primaryIp *hcloud.PrimaryIP, enable bool, opts hcloud.PrimaryIPChangeProtectionOpts) error {
-
 	opts.ID = primaryIp.ID
 
 	action, _, err := s.Client().PrimaryIP().ChangeProtection(s, opts)

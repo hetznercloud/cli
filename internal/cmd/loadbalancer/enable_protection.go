@@ -14,7 +14,6 @@ import (
 )
 
 func getChangeProtectionOpts(enable bool, flags []string) (hcloud.LoadBalancerChangeProtectionOpts, error) {
-
 	opts := hcloud.LoadBalancerChangeProtectionOpts{}
 
 	var unknown []string
@@ -35,7 +34,6 @@ func getChangeProtectionOpts(enable bool, flags []string) (hcloud.LoadBalancerCh
 
 func changeProtection(s state.State, cmd *cobra.Command,
 	loadBalancer *hcloud.LoadBalancer, enable bool, opts hcloud.LoadBalancerChangeProtectionOpts) error {
-
 	if opts.Delete == nil {
 		return nil
 	}

@@ -312,7 +312,6 @@ func (o *Option[T]) HasFlags(src OptionFlag) bool {
 
 func (o *Option[T]) GetFlags() OptionFlag {
 	return o.Flags
-
 }
 
 func (o *Option[T]) GetName() string {

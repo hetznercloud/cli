@@ -44,7 +44,6 @@ func (uc *UpdateCmd) CobraCommand(s state.State) *cobra.Command {
 
 // Run executes a update command.
 func (uc *UpdateCmd) Run(s state.State, cmd *cobra.Command, args []string) error {
-
 	idOrName := args[0]
 	resource, _, err := uc.Fetch(s, cmd, idOrName)
 	if err != nil {

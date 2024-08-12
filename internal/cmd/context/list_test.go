@@ -11,7 +11,6 @@ import (
 )
 
 func TestList(t *testing.T) {
-
 	testConfig := `
 active_context = "my-context"
 
@@ -93,7 +92,6 @@ my-third-context
 
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
-
 			if tt.preRun != nil {
 				tt.preRun()
 			}

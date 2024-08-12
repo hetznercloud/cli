@@ -12,7 +12,6 @@ import (
 )
 
 func TestCreate(t *testing.T) {
-
 	testConfig := `
 active_context = "my-context"
 

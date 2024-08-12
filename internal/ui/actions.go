@@ -34,5 +34,4 @@ func ActionResourcesMessage(resources ...*hcloud.ActionResource) string {
 	}
 
 	return fmt.Sprintf("(%v)", strings.Join(items, ", "))
-
 }

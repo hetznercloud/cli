@@ -71,7 +71,7 @@ linters:
     - typecheck
     # - unparam
     - unused
-    # - whitespace
+    - whitespace
 
 issues:
   include:

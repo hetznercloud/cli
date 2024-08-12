@@ -14,7 +14,6 @@ import (
 )
 
 func getChangeProtectionOpts(enable bool, flags []string) (hcloud.NetworkChangeProtectionOpts, error) {
-
 	opts := hcloud.NetworkChangeProtectionOpts{}
 
 	var unknown []string
@@ -35,7 +34,6 @@ func getChangeProtectionOpts(enable bool, flags []string) (hcloud.NetworkChangeP
 
 func changeProtection(s state.State, cmd *cobra.Command,
 	network *hcloud.Network, enable bool, opts hcloud.NetworkChangeProtectionOpts) error {
-
 	if opts.Delete == nil {
 		return nil
 	}

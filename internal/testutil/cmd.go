@@ -50,7 +50,6 @@ func (dt DataType) test(t *testing.T, expected string, actual string, _ ...any) 
 
 func TestCommand(t *testing.T, cmd TestableCommand, cases map[string]TestCase) {
 	for name, testCase := range cases {
-
 		if testCase.ExpOutType == "" {
 			testCase.ExpOutType = DataTypeText
 		}

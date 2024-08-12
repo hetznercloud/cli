@@ -43,5 +43,4 @@ func TestSSH(t *testing.T) {
 			ExpOut: "-l root -p 22 192.168.0.2 ls -al\n",
 		},
 	})
-
 }

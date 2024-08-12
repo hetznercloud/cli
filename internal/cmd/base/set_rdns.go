@@ -46,7 +46,6 @@ func (rc *SetRdnsCmd) CobraCommand(s state.State) *cobra.Command {
 
 // Run executes a setRDNS command.
 func (rc *SetRdnsCmd) Run(s state.State, cmd *cobra.Command, args []string) error {
-
 	var hostnamePtr *string
 	if reset, _ := cmd.Flags().GetBool("reset"); reset {
 		hostnamePtr = nil
