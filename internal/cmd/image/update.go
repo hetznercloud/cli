@@ -28,7 +28,7 @@ var UpdateCmd = base.UpdateCmd{
 	DefineFlags: func(cmd *cobra.Command) {
 		cmd.Flags().String("description", "", "Image description")
 		cmd.Flags().String("type", "", "Image type")
-		cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("snapshot"))
+		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("snapshot"))
 	},
 	Update: func(s state.State, _ *cobra.Command, resource interface{}, flags map[string]pflag.Value) error {
 		image := resource.(*hcloud.Image)

@@ -23,23 +23,23 @@ var CreateCmd = base.CreateCmd{
 			DisableFlagsInUseLine: true,
 		}
 		cmd.Flags().String("type", "", "Type (ipv4 or ipv6) (required)")
-		cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("ipv4", "ipv6"))
-		cmd.MarkFlagRequired("type")
+		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("ipv4", "ipv6"))
+		_ = cmd.MarkFlagRequired("type")
 
 		cmd.Flags().String("description", "", "Description")
 
 		cmd.Flags().String("name", "", "Name")
 
 		cmd.Flags().String("home-location", "", "Home location")
-		cmd.RegisterFlagCompletionFunc("home-location", cmpl.SuggestCandidatesF(client.Location().Names))
+		_ = cmd.RegisterFlagCompletionFunc("home-location", cmpl.SuggestCandidatesF(client.Location().Names))
 
 		cmd.Flags().String("server", "", "Server to assign Floating IP to")
-		cmd.RegisterFlagCompletionFunc("server", cmpl.SuggestCandidatesF(client.Server().Names))
+		_ = cmd.RegisterFlagCompletionFunc("server", cmpl.SuggestCandidatesF(client.Server().Names))
 
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 
 		cmd.Flags().StringSlice("enable-protection", []string{}, "Enable protection (delete) (default: none)")
-		cmd.RegisterFlagCompletionFunc("enable-protection", cmpl.SuggestCandidates("delete"))
+		_ = cmd.RegisterFlagCompletionFunc("enable-protection", cmpl.SuggestCandidates("delete"))
 
 		return cmd
 	},

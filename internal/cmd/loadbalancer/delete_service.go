@@ -22,7 +22,7 @@ var DeleteServiceCmd = base.Cmd{
 		}
 
 		cmd.Flags().Int("listen-port", 0, "The listen port of the service you want to delete (required)")
-		cmd.MarkFlagRequired("listen-port")
+		_ = cmd.MarkFlagRequired("listen-port")
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {

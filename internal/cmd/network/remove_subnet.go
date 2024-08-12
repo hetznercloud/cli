@@ -23,7 +23,7 @@ var RemoveSubnetCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 		cmd.Flags().IPNet("ip-range", net.IPNet{}, "Subnet IP range (required)")
-		cmd.MarkFlagRequired("ip-range")
+		_ = cmd.MarkFlagRequired("ip-range")
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {

@@ -22,8 +22,8 @@ var DetachFromNetworkCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 		cmd.Flags().StringP("network", "n", "", "Network (ID or name) (required)")
-		cmd.RegisterFlagCompletionFunc("network", cmpl.SuggestCandidatesF(client.Network().Names))
-		cmd.MarkFlagRequired("network")
+		_ = cmd.RegisterFlagCompletionFunc("network", cmpl.SuggestCandidatesF(client.Network().Names))
+		_ = cmd.MarkFlagRequired("network")
 
 		return cmd
 	},

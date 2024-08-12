@@ -21,17 +21,17 @@ var CreateCmd = base.CreateCmd{
 		}
 
 		cmd.Flags().String("name", "", "Network name (required)")
-		cmd.MarkFlagRequired("name")
+		_ = cmd.MarkFlagRequired("name")
 
 		cmd.Flags().IPNet("ip-range", net.IPNet{}, "Network IP range (required)")
-		cmd.MarkFlagRequired("ip-range")
+		_ = cmd.MarkFlagRequired("ip-range")
 
 		cmd.Flags().Bool("expose-routes-to-vswitch", false, "Expose routes from this network to the vSwitch connection. It only takes effect if a vSwitch connection is active.")
 
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 
 		cmd.Flags().StringSlice("enable-protection", []string{}, "Enable protection (delete) (default: none)")
-		cmd.RegisterFlagCompletionFunc("enable-protection", cmpl.SuggestCandidates("delete"))
+		_ = cmd.RegisterFlagCompletionFunc("enable-protection", cmpl.SuggestCandidates("delete"))
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, _ []string) (any, any, error) {

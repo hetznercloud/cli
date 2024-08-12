@@ -53,7 +53,7 @@ linters:
   enable:
     - bodyclose
     # - dupl
-    # - errcheck
+    - errcheck
     - exhaustive
     - gocritic
     # - golint

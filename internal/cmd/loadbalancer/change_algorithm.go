@@ -23,11 +23,11 @@ var ChangeAlgorithmCmd = base.Cmd{
 		}
 
 		cmd.Flags().String("algorithm-type", "", "New Load Balancer algorithm (round_robin, least_connections) (required)")
-		cmd.RegisterFlagCompletionFunc("algorithm-type", cmpl.SuggestCandidates(
+		_ = cmd.RegisterFlagCompletionFunc("algorithm-type", cmpl.SuggestCandidates(
 			string(hcloud.LoadBalancerAlgorithmTypeRoundRobin),
 			string(hcloud.LoadBalancerAlgorithmTypeLeastConnections),
 		))
-		cmd.MarkFlagRequired("algorithm-type")
+		_ = cmd.MarkFlagRequired("algorithm-type")
 
 		return cmd
 	},

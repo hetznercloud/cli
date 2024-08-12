@@ -22,12 +22,12 @@ var CreateCmd = base.CreateCmd{
 		}
 
 		cmd.Flags().String("name", "", "Certificate name (required)")
-		cmd.MarkFlagRequired("name")
+		_ = cmd.MarkFlagRequired("name")
 
 		cmd.Flags().StringP("type", "t", string(hcloud.CertificateTypeUploaded),
 			fmt.Sprintf("Type of certificate to create. Valid choices: %v, %v",
 				hcloud.CertificateTypeUploaded, hcloud.CertificateTypeManaged))
-		cmd.RegisterFlagCompletionFunc(
+		_ = cmd.RegisterFlagCompletionFunc(
 			"type",
 			cmpl.SuggestCandidates(string(hcloud.CertificateTypeUploaded), string(hcloud.CertificateTypeManaged)),
 		)

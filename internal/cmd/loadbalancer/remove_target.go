@@ -25,7 +25,7 @@ var RemoveTargetCmd = base.Cmd{
 		}
 
 		cmd.Flags().String("server", "", "Name or ID of the server")
-		cmd.RegisterFlagCompletionFunc("server", cmpl.SuggestCandidatesF(client.Server().Names))
+		_ = cmd.RegisterFlagCompletionFunc("server", cmpl.SuggestCandidatesF(client.Server().Names))
 
 		cmd.Flags().String("label-selector", "", "Label Selector")
 

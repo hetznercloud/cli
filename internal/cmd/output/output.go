@@ -63,7 +63,7 @@ func AddFlag(cmd *cobra.Command, options ...Option) {
 		[]string{},
 		fmt.Sprintf("output options: %s", strings.Join(names, "|")),
 	)
-	cmd.RegisterFlagCompletionFunc(flagName, cmpl.SuggestCandidates(values...))
+	_ = cmd.RegisterFlagCompletionFunc(flagName, cmpl.SuggestCandidates(values...))
 	cmd.PreRunE = util.ChainRunE(cmd.PreRunE, validateOutputFlag(options))
 }
 

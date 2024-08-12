@@ -39,8 +39,8 @@ var MetricsCmd = base.Cmd{
 		}
 
 		cmd.Flags().StringSlice("type", nil, "Types of metrics you want to show")
-		cmd.MarkFlagRequired("type")
-		cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates(metricTypeStrings...))
+		_ = cmd.MarkFlagRequired("type")
+		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates(metricTypeStrings...))
 
 		cmd.Flags().String("start", "", "ISO 8601 timestamp")
 		cmd.Flags().String("end", "", "ISO 8601 timestamp")

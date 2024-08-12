@@ -44,7 +44,7 @@ func TestWaitForActionsSuccess(t *testing.T) {
 		})
 
 	stderr := captureStderr(t, func() {
-		waitForActions(context.Background(), client, action)
+		_ = waitForActions(context.Background(), client, action)
 	})
 
 	assert.Equal(t,
@@ -87,7 +87,7 @@ func TestWaitForActionsError(t *testing.T) {
 		})
 
 	stderr := captureStderr(t, func() {
-		waitForActions(context.Background(), client, action)
+		_ = waitForActions(context.Background(), client, action)
 	})
 
 	assert.Equal(t,

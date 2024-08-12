@@ -21,7 +21,7 @@ var ResizeCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 		cmd.Flags().Int("size", 0, "New size (GB) of the volume (required)")
-		cmd.MarkFlagRequired("size")
+		_ = cmd.MarkFlagRequired("size")
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {

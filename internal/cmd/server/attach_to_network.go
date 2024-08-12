@@ -24,8 +24,8 @@ var AttachToNetworkCmd = base.Cmd{
 		}
 
 		cmd.Flags().StringP("network", "n", "", "Network (ID or name) (required)")
-		cmd.RegisterFlagCompletionFunc("network", cmpl.SuggestCandidatesF(client.Network().Names))
-		cmd.MarkFlagRequired("network")
+		_ = cmd.RegisterFlagCompletionFunc("network", cmpl.SuggestCandidatesF(client.Network().Names))
+		_ = cmd.MarkFlagRequired("network")
 
 		cmd.Flags().IP("ip", nil, "IP address to assign to the server (auto-assigned if omitted)")
 		cmd.Flags().IPSlice("alias-ips", []net.IP{}, "Additional IP addresses to be assigned to the server")

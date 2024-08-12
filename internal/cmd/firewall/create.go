@@ -24,7 +24,7 @@ var CreateCmd = base.CreateCmd{
 			Short: "Create a Firewall",
 		}
 		cmd.Flags().String("name", "", "Name")
-		cmd.MarkFlagRequired("name")
+		_ = cmd.MarkFlagRequired("name")
 
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 

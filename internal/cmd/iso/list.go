@@ -25,12 +25,12 @@ var ListCmd = base.ListCmd{
 
 	AdditionalFlags: func(cmd *cobra.Command) {
 		cmd.Flags().StringSlice("architecture", []string{}, "Only show images of given architecture: x86|arm")
-		cmd.RegisterFlagCompletionFunc("architecture", cmpl.SuggestCandidates(string(hcloud.ArchitectureX86), string(hcloud.ArchitectureARM)))
+		_ = cmd.RegisterFlagCompletionFunc("architecture", cmpl.SuggestCandidates(string(hcloud.ArchitectureX86), string(hcloud.ArchitectureARM)))
 
 		cmd.Flags().Bool("include-architecture-wildcard", false, "Include ISOs with unknown architecture, only required if you want so show custom ISOs and still filter for architecture.")
 
 		cmd.Flags().StringSlice("type", []string{"public", "private"}, "Types to include (public, private)")
-		cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("public", "private"))
+		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("public", "private"))
 	},
 
 	Fetch: func(s state.State, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {

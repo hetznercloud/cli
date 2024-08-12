@@ -22,8 +22,8 @@ var AttachCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 		cmd.Flags().String("server", "", "Server (ID or name) (required)")
-		cmd.RegisterFlagCompletionFunc("server", cmpl.SuggestCandidatesF(client.Server().Names))
-		cmd.MarkFlagRequired("server")
+		_ = cmd.RegisterFlagCompletionFunc("server", cmpl.SuggestCandidatesF(client.Server().Names))
+		_ = cmd.MarkFlagRequired("server")
 		cmd.Flags().Bool("automount", false, "Automount volume after attach")
 
 		return cmd

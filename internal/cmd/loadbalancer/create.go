@@ -21,27 +21,27 @@ var CreateCmd = base.CreateCmd{
 		}
 
 		cmd.Flags().String("name", "", "Load Balancer name (required)")
-		cmd.MarkFlagRequired("name")
+		_ = cmd.MarkFlagRequired("name")
 
 		cmd.Flags().String("type", "", "Load Balancer type (ID or name) (required)")
-		cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidatesF(client.LoadBalancerType().Names))
-		cmd.MarkFlagRequired("type")
+		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidatesF(client.LoadBalancerType().Names))
+		_ = cmd.MarkFlagRequired("type")
 
 		cmd.Flags().String("algorithm-type", "", "Algorithm Type name (round_robin or least_connections)")
-		cmd.RegisterFlagCompletionFunc("algorithm-type", cmpl.SuggestCandidates(
+		_ = cmd.RegisterFlagCompletionFunc("algorithm-type", cmpl.SuggestCandidates(
 			string(hcloud.LoadBalancerAlgorithmTypeLeastConnections),
 			string(hcloud.LoadBalancerAlgorithmTypeRoundRobin),
 		))
 		cmd.Flags().String("location", "", "Location (ID or name)")
-		cmd.RegisterFlagCompletionFunc("location", cmpl.SuggestCandidatesF(client.Location().Names))
+		_ = cmd.RegisterFlagCompletionFunc("location", cmpl.SuggestCandidatesF(client.Location().Names))
 
 		cmd.Flags().String("network-zone", "", "Network Zone")
-		cmd.RegisterFlagCompletionFunc("network-zone", cmpl.SuggestCandidatesF(client.Location().NetworkZones))
+		_ = cmd.RegisterFlagCompletionFunc("network-zone", cmpl.SuggestCandidatesF(client.Location().NetworkZones))
 
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 
 		cmd.Flags().StringSlice("enable-protection", []string{}, "Enable protection (delete) (default: none)")
-		cmd.RegisterFlagCompletionFunc("enable-protection", cmpl.SuggestCandidates("delete"))
+		_ = cmd.RegisterFlagCompletionFunc("enable-protection", cmpl.SuggestCandidates("delete"))
 
 		return cmd
 	},

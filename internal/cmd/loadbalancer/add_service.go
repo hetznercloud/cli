@@ -23,7 +23,7 @@ var AddServiceCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 		cmd.Flags().String("protocol", "", "Protocol of the service (required)")
-		cmd.MarkFlagRequired("protocol")
+		_ = cmd.MarkFlagRequired("protocol")
 
 		cmd.Flags().Int("listen-port", 0, "Listen port of the service")
 		cmd.Flags().Int("destination-port", 0, "Destination port of the service on the targets")

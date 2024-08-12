@@ -19,8 +19,8 @@ var CreateImageCmd = base.Cmd{
 			Short: "Create an image from a server",
 		}
 		cmd.Flags().String("type", "", "Image type (required)")
-		cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("backup", "snapshot"))
-		cmd.MarkFlagRequired("type")
+		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("backup", "snapshot"))
+		_ = cmd.MarkFlagRequired("type")
 
 		cmd.Flags().String("description", "", "Image description")
 

@@ -43,24 +43,24 @@ var CreateCmd = base.CreateCmd{
 		}
 
 		cmd.Flags().String("name", "", "Server name (required)")
-		cmd.MarkFlagRequired("name")
+		_ = cmd.MarkFlagRequired("name")
 
 		cmd.Flags().String("type", "", "Server type (ID or name) (required)")
-		cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidatesF(client.ServerType().Names))
-		cmd.MarkFlagRequired("type")
+		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidatesF(client.ServerType().Names))
+		_ = cmd.MarkFlagRequired("type")
 
 		cmd.Flags().String("image", "", "Image (ID or name) (required)")
-		cmd.RegisterFlagCompletionFunc("image", cmpl.SuggestCandidatesF(client.Image().Names))
-		cmd.MarkFlagRequired("image")
+		_ = cmd.RegisterFlagCompletionFunc("image", cmpl.SuggestCandidatesF(client.Image().Names))
+		_ = cmd.MarkFlagRequired("image")
 
 		cmd.Flags().String("location", "", "Location (ID or name)")
-		cmd.RegisterFlagCompletionFunc("location", cmpl.SuggestCandidatesF(client.Location().Names))
+		_ = cmd.RegisterFlagCompletionFunc("location", cmpl.SuggestCandidatesF(client.Location().Names))
 
 		cmd.Flags().String("datacenter", "", "Datacenter (ID or name)")
-		cmd.RegisterFlagCompletionFunc("datacenter", cmpl.SuggestCandidatesF(client.Datacenter().Names))
+		_ = cmd.RegisterFlagCompletionFunc("datacenter", cmpl.SuggestCandidatesF(client.Datacenter().Names))
 
 		cmd.Flags().StringSlice("ssh-key", nil, "ID or name of SSH key to inject (can be specified multiple times)")
-		cmd.RegisterFlagCompletionFunc("ssh-key", cmpl.SuggestCandidatesF(client.SSHKey().Names))
+		_ = cmd.RegisterFlagCompletionFunc("ssh-key", cmpl.SuggestCandidatesF(client.SSHKey().Names))
 
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 
@@ -69,29 +69,29 @@ var CreateCmd = base.CreateCmd{
 		cmd.Flags().Bool("start-after-create", true, "Start server right after creation")
 
 		cmd.Flags().StringSlice("volume", nil, "ID or name of volume to attach (can be specified multiple times)")
-		cmd.RegisterFlagCompletionFunc("volume", cmpl.SuggestCandidatesF(client.Volume().Names))
+		_ = cmd.RegisterFlagCompletionFunc("volume", cmpl.SuggestCandidatesF(client.Volume().Names))
 
 		cmd.Flags().StringSlice("network", nil, "ID or name of network to attach the server to (can be specified multiple times)")
-		cmd.RegisterFlagCompletionFunc("network", cmpl.SuggestCandidatesF(client.Network().Names))
+		_ = cmd.RegisterFlagCompletionFunc("network", cmpl.SuggestCandidatesF(client.Network().Names))
 
 		cmd.Flags().StringSlice("firewall", nil, "ID or name of Firewall to attach the server to (can be specified multiple times)")
-		cmd.RegisterFlagCompletionFunc("firewall", cmpl.SuggestCandidatesF(client.Firewall().Names))
+		_ = cmd.RegisterFlagCompletionFunc("firewall", cmpl.SuggestCandidatesF(client.Firewall().Names))
 
 		cmd.Flags().Bool("automount", false, "Automount volumes after attach (default: false)")
 		cmd.Flags().Bool("allow-deprecated-image", false, "Enable the use of deprecated images (default: false)")
 
 		cmd.Flags().String("placement-group", "", "Placement Group (ID of name)")
-		cmd.RegisterFlagCompletionFunc("placement-group", cmpl.SuggestCandidatesF(client.PlacementGroup().Names))
+		_ = cmd.RegisterFlagCompletionFunc("placement-group", cmpl.SuggestCandidatesF(client.PlacementGroup().Names))
 		cmd.Flags().String("primary-ipv4", "", "Primary IPv4 (ID of name)")
-		cmd.RegisterFlagCompletionFunc("primary-ipv4", cmpl.SuggestCandidatesF(client.PrimaryIP().IPv4Names))
+		_ = cmd.RegisterFlagCompletionFunc("primary-ipv4", cmpl.SuggestCandidatesF(client.PrimaryIP().IPv4Names))
 		cmd.Flags().String("primary-ipv6", "", "Primary IPv6 (ID of name)")
-		cmd.RegisterFlagCompletionFunc("primary-ipv6", cmpl.SuggestCandidatesF(client.PrimaryIP().IPv6Names))
+		_ = cmd.RegisterFlagCompletionFunc("primary-ipv6", cmpl.SuggestCandidatesF(client.PrimaryIP().IPv6Names))
 
 		cmd.Flags().Bool("without-ipv4", false, "Creates the server without an IPv4 (default: false)")
 		cmd.Flags().Bool("without-ipv6", false, "Creates the server without an IPv6 (default: false)")
 
 		cmd.Flags().StringSlice("enable-protection", []string{}, "Enable protection (delete, rebuild) (default: none)")
-		cmd.RegisterFlagCompletionFunc("enable-protection", cmpl.SuggestCandidates("delete", "rebuild"))
+		_ = cmd.RegisterFlagCompletionFunc("enable-protection", cmpl.SuggestCandidates("delete", "rebuild"))
 
 		cmd.Flags().Bool("enable-backup", false, "Enable automatic backups")
 

@@ -17,12 +17,12 @@ var CreateCmd = base.CreateCmd{
 			Short: "Create a placement group",
 		}
 		cmd.Flags().String("name", "", "Name")
-		cmd.MarkFlagRequired("name")
+		_ = cmd.MarkFlagRequired("name")
 
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 
 		cmd.Flags().String("type", "", "Type of the placement group")
-		cmd.MarkFlagRequired("type")
+		_ = cmd.MarkFlagRequired("type")
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, _ []string) (any, any, error) {

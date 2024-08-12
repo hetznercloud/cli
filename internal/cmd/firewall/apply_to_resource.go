@@ -22,11 +22,11 @@ var ApplyToResourceCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 		cmd.Flags().String("type", "", "Resource Type (server, label_selector) (required)")
-		cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("server", "label_selector"))
-		cmd.MarkFlagRequired("type")
+		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("server", "label_selector"))
+		_ = cmd.MarkFlagRequired("type")
 
 		cmd.Flags().String("server", "", "Server name of ID (required when type is server)")
-		cmd.RegisterFlagCompletionFunc("server", cmpl.SuggestCandidatesF(client.Server().Names))
+		_ = cmd.RegisterFlagCompletionFunc("server", cmpl.SuggestCandidatesF(client.Server().Names))
 
 		cmd.Flags().StringP("label-selector", "l", "", "Label Selector")
 		return cmd
