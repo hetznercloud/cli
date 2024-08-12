@@ -27,7 +27,7 @@ type SetRdnsCmd struct {
 // CobraCommand creates a command that can be registered with cobra.
 func (rc *SetRdnsCmd) CobraCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   fmt.Sprintf("set-rdns [options] --hostname <hostname> <%s>", util.ToKebabCase(rc.ResourceNameSingular)),
+		Use:                   fmt.Sprintf("set-rdns [--ip <ip>] (--hostname <hostname> | --reset) <%s>", util.ToKebabCase(rc.ResourceNameSingular)),
 		Short:                 rc.ShortDescription,
 		Args:                  util.Validate,
 		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(rc.NameSuggestions(s.Client()))),
@@ -38,7 +38,7 @@ func (rc *SetRdnsCmd) CobraCommand(s state.State) *cobra.Command {
 			return rc.Run(s, cmd, args)
 		},
 	}
-	cmd.Flags().StringP("hostname", "r", "", "Hostname to set as a reverse DNS PTR entry (required)")
+	cmd.Flags().StringP("hostname", "r", "", "Hostname to set as a reverse DNS PTR entry")
 	cmd.Flags().Bool("reset", false, "Reset the reverse DNS entry to the default value")
 
 	cmd.Flags().IPP("ip", "i", net.IP{}, "IP address for which the reverse DNS entry should be set")
