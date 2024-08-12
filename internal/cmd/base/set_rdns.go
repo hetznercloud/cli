@@ -19,7 +19,6 @@ type SetRdnsCmd struct {
 	ResourceNameSingular string // e.g. "server"
 	ShortDescription     string
 	NameSuggestions      func(client hcapi2.Client) func() []string
-	AdditionalFlags      func(*cobra.Command)
 	Fetch                func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error)
 	GetDefaultIP         func(resource interface{}) net.IP
 }
@@ -42,9 +41,6 @@ func (rc *SetRdnsCmd) CobraCommand(s state.State) *cobra.Command {
 	cmd.Flags().Bool("reset", false, "Reset the reverse DNS entry to the default value")
 
 	cmd.Flags().IPP("ip", "i", net.IP{}, "IP address for which the reverse DNS entry should be set")
-	if rc.AdditionalFlags != nil {
-		rc.AdditionalFlags(cmd)
-	}
 	return cmd
 }
 
