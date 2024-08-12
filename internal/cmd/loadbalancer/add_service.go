@@ -66,11 +66,9 @@ var AddServiceCmd = base.Cmd{
 			if listenPort == 0 {
 				return fmt.Errorf("please specify a listen port")
 			}
-
 			if destinationPort == 0 {
 				return fmt.Errorf("please specify a destination port")
 			}
-			break
 		case hcloud.LoadBalancerServiceProtocolHTTPS:
 			if len(httpCertificates) == 0 {
 				return fmt.Errorf("no certificate specified")
@@ -153,7 +151,6 @@ var AddServiceCmd = base.Cmd{
 			switch proto := hcloud.LoadBalancerServiceProtocol(healthCheckProtocol); proto {
 			case hcloud.LoadBalancerServiceProtocolHTTP, hcloud.LoadBalancerServiceProtocolHTTPS, hcloud.LoadBalancerServiceProtocolTCP:
 				opts.HealthCheck.Protocol = proto
-				break
 			default:
 				return fmt.Errorf("invalid health check protocol: %s", healthCheckProtocol)
 			}

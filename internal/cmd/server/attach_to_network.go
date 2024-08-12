@@ -58,9 +58,7 @@ var AttachToNetworkCmd = base.Cmd{
 			Network: network,
 			IP:      ip,
 		}
-		for _, aliasIP := range aliasIPs {
-			opts.AliasIPs = append(opts.AliasIPs, aliasIP)
-		}
+		opts.AliasIPs = append(opts.AliasIPs, aliasIPs...)
 		action, _, err := s.Client().Server().AttachToNetwork(s, server, opts)
 
 		if err != nil {
