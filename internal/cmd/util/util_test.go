@@ -378,8 +378,10 @@ func TestParseBoolLenient(t *testing.T) {
 	assert.False(t, b)
 	b, err = util.ParseBoolLenient("invalid")
 	assert.EqualError(t, err, "invalid boolean value: invalid")
+	assert.False(t, b)
 	b, err = util.ParseBoolLenient("")
 	assert.EqualError(t, err, "invalid boolean value: ")
+	assert.False(t, b)
 }
 
 func TestBoolFromAny(t *testing.T) {
