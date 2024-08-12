@@ -69,7 +69,7 @@ linters:
     # - scopelint
     # - staticcheck
     - typecheck
-    # - unparam
+    - unparam
     - unused
     - whitespace
 
