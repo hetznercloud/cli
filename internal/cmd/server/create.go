@@ -98,7 +98,7 @@ var CreateCmd = base.CreateCmd{
 		return cmd
 	},
 
-	Run: func(s state.State, cmd *cobra.Command, args []string) (any, any, error) {
+	Run: func(s state.State, cmd *cobra.Command, _ []string) (any, any, error) {
 		createOpts, protectionOpts, err := createOptsFromFlags(s, cmd)
 		if err != nil {
 			return nil, nil, err
@@ -109,7 +109,7 @@ var CreateCmd = base.CreateCmd{
 			return nil, nil, err
 		}
 
-		if err := s.WaitForActions(cmd, s, actionutil.AppendNext(result.Action, result.NextActions)...); err != nil {
+		if err := s.WaitForActions(s, cmd, actionutil.AppendNext(result.Action, result.NextActions)...); err != nil {
 			return nil, nil, err
 		}
 
@@ -131,7 +131,7 @@ var CreateCmd = base.CreateCmd{
 				return nil, nil, err
 			}
 
-			if err := s.WaitForActions(cmd, s, action); err != nil {
+			if err := s.WaitForActions(s, cmd, action); err != nil {
 				return nil, nil, err
 			}
 

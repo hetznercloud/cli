@@ -48,7 +48,7 @@ var ListCmd = base.ListCmd{
 			}
 		}
 		if len(unknown) > 0 {
-			return nil, fmt.Errorf("unknown ISO types %s\n", strings.Join(unknown, ", "))
+			return nil, fmt.Errorf("unknown ISO types %s", strings.Join(unknown, ", "))
 		}
 
 		architecture, _ := flags.GetStringSlice("architecture")
@@ -85,9 +85,8 @@ var ListCmd = base.ListCmd{
 				iso := obj.(*hcloud.ISO)
 				if iso.Architecture == nil {
 					return "-"
-				} else {
-					return string(*iso.Architecture)
 				}
+				return string(*iso.Architecture)
 			})
 	},
 

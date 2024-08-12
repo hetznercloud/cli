@@ -37,7 +37,7 @@ func TestTableOutput(t *testing.T) {
 		}
 	})
 	t.Run("AddFieldOutputFn", func(t *testing.T) {
-		to.AddFieldFn("leeroy jenkins", FieldFn(func(obj interface{}) string {
+		to.AddFieldFn("leeroy jenkins", FieldFn(func(interface{}) string {
 			return "LEEROY JENKINS!!!"
 		}))
 		if _, ok := to.fieldMapping["leeroy jenkins"]; !ok {

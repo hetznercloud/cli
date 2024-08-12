@@ -33,15 +33,15 @@ func getChangeProtectionOpts(enable bool, flags []string) (hcloud.PrimaryIPChang
 }
 
 func changeProtection(s state.State, cmd *cobra.Command,
-	primaryIp *hcloud.PrimaryIP, enable bool, opts hcloud.PrimaryIPChangeProtectionOpts) error {
-	opts.ID = primaryIp.ID
+	primaryIP *hcloud.PrimaryIP, enable bool, opts hcloud.PrimaryIPChangeProtectionOpts) error {
+	opts.ID = primaryIP.ID
 
 	action, _, err := s.Client().PrimaryIP().ChangeProtection(s, opts)
 	if err != nil {
 		return err
 	}
 
-	if err := s.WaitForActions(cmd, s, action); err != nil {
+	if err := s.WaitForActions(s, cmd, action); err != nil {
 		return err
 	}
 

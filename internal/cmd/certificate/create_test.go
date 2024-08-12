@@ -14,10 +14,10 @@ import (
 )
 
 //go:embed testdata/managed_create_response.json
-var managedCreateResponseJson string
+var managedCreateResponseJSON string
 
 //go:embed testdata/uploaded_create_response.json
-var uploadedCreateResponseJson string
+var uploadedCreateResponseJSON string
 
 func TestCreateManaged(t *testing.T) {
 	fx := testutil.NewFixture(t)
@@ -127,7 +127,7 @@ func TestCreateManagedJSON(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, expOut, out)
 
-	assert.JSONEq(t, managedCreateResponseJson, jsonOut)
+	assert.JSONEq(t, managedCreateResponseJSON, jsonOut)
 }
 
 func TestCreateUploaded(t *testing.T) {
@@ -194,5 +194,5 @@ func TestCreateUploadedJSON(t *testing.T) {
 
 	assert.NoError(t, err)
 	assert.Equal(t, expOut, out)
-	assert.JSONEq(t, uploadedCreateResponseJson, jsonOut)
+	assert.JSONEq(t, uploadedCreateResponseJSON, jsonOut)
 }

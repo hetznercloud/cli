@@ -49,7 +49,7 @@ var ListCmd = base.ListCmd{
 			}
 		}
 		if len(unknown) > 0 {
-			return nil, fmt.Errorf("unknown image type: %s\n", strings.Join(unknown, ", "))
+			return nil, fmt.Errorf("unknown image type: %s", strings.Join(unknown, ", "))
 		}
 
 		architecture, _ := flags.GetStringSlice("architecture")

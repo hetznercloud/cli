@@ -15,7 +15,7 @@ import (
 )
 
 //go:embed testdata/create_response.json
-var createResponseJson string
+var createResponseJSON string
 
 func TestCreate(t *testing.T) {
 	fx := testutil.NewFixture(t)
@@ -109,7 +109,7 @@ func TestCreateJSON(t *testing.T) {
 
 	assert.NoError(t, err)
 	assert.Equal(t, expOut, out)
-	assert.JSONEq(t, createResponseJson, jsonOut)
+	assert.JSONEq(t, createResponseJSON, jsonOut)
 }
 
 func TestCreateProtection(t *testing.T) {

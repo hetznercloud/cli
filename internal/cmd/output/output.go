@@ -68,7 +68,7 @@ func AddFlag(cmd *cobra.Command, options ...Option) {
 }
 
 func validateOutputFlag(options []Option) func(cmd *cobra.Command, args []string) error {
-	return func(cmd *cobra.Command, args []string) error {
+	return func(cmd *cobra.Command, _ []string) error {
 		validOptions := map[string]map[string]bool{}
 		for _, option := range options {
 			if option.Values == nil {

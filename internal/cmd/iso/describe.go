@@ -17,14 +17,14 @@ var DescribeCmd = base.DescribeCmd{
 	JSONKeyGetByID:       "iso",
 	JSONKeyGetByName:     "isos",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Location().Names },
-	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
+	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, interface{}, error) {
 		iso, _, err := s.Client().ISO().Get(s, idOrName)
 		if err != nil {
 			return nil, nil, err
 		}
 		return iso, hcloud.SchemaFromISO(iso), nil
 	},
-	PrintText: func(s state.State, cmd *cobra.Command, resource interface{}) error {
+	PrintText: func(_ state.State, cmd *cobra.Command, resource interface{}) error {
 		iso := resource.(*hcloud.ISO)
 
 		cmd.Printf("ID:\t\t%d\n", iso.ID)

@@ -15,7 +15,7 @@ import (
 )
 
 //go:embed testdata/all_list_response.json
-var allListResponseJson string
+var allListResponseJSON string
 
 func TestListAll(t *testing.T) {
 	fx := testutil.NewFixture(t)
@@ -288,5 +288,5 @@ func TestListAllPaidJSON(t *testing.T) {
 
 	assert.NoError(t, err)
 	assert.Empty(t, errOut)
-	assert.JSONEq(t, allListResponseJson, jsonOut)
+	assert.JSONEq(t, allListResponseJSON, jsonOut)
 }

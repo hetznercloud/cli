@@ -96,7 +96,7 @@ func (dc *DeleteCmd) Run(s state.State, cmd *cobra.Command, args []string) error
 
 		if len(actions) > 0 {
 			// TODO: We do not check if an action fails for a specific resource
-			if err := s.WaitForActions(cmd, s, actions...); err != nil {
+			if err := s.WaitForActions(s, cmd, actions...); err != nil {
 				errs = append(errs, err)
 			}
 		}

@@ -43,7 +43,7 @@ var CreateCmd = base.CreateCmd{
 
 		return cmd
 	},
-	Run: func(s state.State, cmd *cobra.Command, args []string) (any, any, error) {
+	Run: func(s state.State, cmd *cobra.Command, _ []string) (any, any, error) {
 		typ, _ := cmd.Flags().GetString("type")
 		if typ == "" {
 			return nil, nil, errors.New("type is required")
@@ -94,7 +94,7 @@ var CreateCmd = base.CreateCmd{
 		}
 
 		if result.Action != nil {
-			if err := s.WaitForActions(cmd, s, result.Action); err != nil {
+			if err := s.WaitForActions(s, cmd, result.Action); err != nil {
 				return nil, nil, err
 			}
 		}
@@ -108,7 +108,7 @@ var CreateCmd = base.CreateCmd{
 		return result.FloatingIP, util.Wrap("floating_ip", hcloud.SchemaFromFloatingIP(result.FloatingIP)), nil
 	},
 
-	PrintResource: func(s state.State, cmd *cobra.Command, resource any) {
+	PrintResource: func(_ state.State, cmd *cobra.Command, resource any) {
 		floatingIP := resource.(*hcloud.FloatingIP)
 		cmd.Printf("IP%s: %s\n", floatingIP.Type[2:], floatingIP.IP)
 	},

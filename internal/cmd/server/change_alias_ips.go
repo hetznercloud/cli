@@ -70,7 +70,7 @@ var ChangeAliasIPsCmd = base.Cmd{
 			return err
 		}
 
-		if err := s.WaitForActions(cmd, s, action); err != nil {
+		if err := s.WaitForActions(s, cmd, action); err != nil {
 			return err
 		}
 

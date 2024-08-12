@@ -18,7 +18,7 @@ import (
 )
 
 var CreateCmd = base.CreateCmd{
-	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
+	BaseCobraCommand: func(hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:   "create [options] --name <name>",
 			Short: "Create a Firewall",
@@ -31,7 +31,7 @@ var CreateCmd = base.CreateCmd{
 		cmd.Flags().String("rules-file", "", "JSON file containing your routes (use - to read from stdin). The structure of the file needs to be the same as within the API: https://docs.hetzner.cloud/#firewalls-get-a-firewall ")
 		return cmd
 	},
-	Run: func(s state.State, cmd *cobra.Command, strings []string) (any, any, error) {
+	Run: func(s state.State, cmd *cobra.Command, _ []string) (any, any, error) {
 		name, _ := cmd.Flags().GetString("name")
 		labels, _ := cmd.Flags().GetStringToString("label")
 
@@ -54,7 +54,7 @@ var CreateCmd = base.CreateCmd{
 			return nil, nil, err
 		}
 
-		if err := s.WaitForActions(cmd, s, result.Actions...); err != nil {
+		if err := s.WaitForActions(s, cmd, result.Actions...); err != nil {
 			return nil, nil, err
 		}
 

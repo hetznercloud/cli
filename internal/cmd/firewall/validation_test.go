@@ -36,7 +36,8 @@ func TestValidateFirewallIP(t *testing.T) {
 		{
 			name: "Missing CIDR notation (IPv6)",
 			ip:   "fe80::",
-			err:  fmt.Errorf("invalid CIDR address: fe80::"),
+			//nolint:revive
+			err: fmt.Errorf("invalid CIDR address: fe80::"),
 		},
 		{
 			name: "Host bit set (IPv4)",

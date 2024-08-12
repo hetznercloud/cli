@@ -14,10 +14,10 @@ var DeleteCmd = base.DeleteCmd{
 	ResourceNamePlural:   "Networks",
 	ShortDescription:     "Delete a network",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Network().Names },
-	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
+	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
 		return s.Client().Network().Get(s, idOrName)
 	},
-	Delete: func(s state.State, cmd *cobra.Command, resource interface{}) (*hcloud.Action, error) {
+	Delete: func(s state.State, _ *cobra.Command, resource interface{}) (*hcloud.Action, error) {
 		network := resource.(*hcloud.Network)
 		_, err := s.Client().Network().Delete(s, network)
 		return nil, err

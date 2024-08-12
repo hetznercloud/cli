@@ -14,10 +14,10 @@ var DeleteCmd = base.DeleteCmd{
 	ResourceNamePlural:   "firewalls",
 	ShortDescription:     "Delete a firewall",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Firewall().Names },
-	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
+	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
 		return s.Client().Firewall().Get(s, idOrName)
 	},
-	Delete: func(s state.State, cmd *cobra.Command, resource interface{}) (*hcloud.Action, error) {
+	Delete: func(s state.State, _ *cobra.Command, resource interface{}) (*hcloud.Action, error) {
 		firewall := resource.(*hcloud.Firewall)
 		_, err := s.Client().Firewall().Delete(s, firewall)
 		return nil, err

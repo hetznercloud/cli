@@ -231,12 +231,12 @@ func (cfg *config) SetActiveContext(ctx Context) {
 		cfg.schema.ActiveContext = ""
 		return
 	}
-	if ctx, ok := ctx.(*context); !ok {
+	ctxStruct, ok := ctx.(*context)
+	if !ok {
 		panic("invalid context type")
-	} else {
-		cfg.activeContext = ctx
-		cfg.schema.ActiveContext = ctx.ContextName
 	}
+	cfg.activeContext = ctxStruct
+	cfg.schema.ActiveContext = ctxStruct.ContextName
 }
 
 func (cfg *config) Contexts() []Context {
@@ -250,11 +250,11 @@ func (cfg *config) Contexts() []Context {
 func (cfg *config) SetContexts(contexts []Context) {
 	cfg.contexts = make([]*context, 0, len(cfg.contexts))
 	for _, c := range contexts {
-		if c, ok := c.(*context); !ok {
+		c, ok := c.(*context)
+		if !ok {
 			panic("invalid context type")
-		} else {
-			cfg.contexts = append(cfg.contexts, c)
 		}
+		cfg.contexts = append(cfg.contexts, c)
 	}
 	cfg.schema.Contexts = cfg.contexts
 }

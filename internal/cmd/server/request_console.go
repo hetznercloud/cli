@@ -41,7 +41,7 @@ var RequestConsoleCmd = base.Cmd{
 			return err
 		}
 
-		if err := s.WaitForActions(cmd, s, result.Action); err != nil {
+		if err := s.WaitForActions(s, cmd, result.Action); err != nil {
 			return err
 		}
 
@@ -56,9 +56,8 @@ var RequestConsoleCmd = base.Cmd{
 
 			if outOpts.IsSet("json") {
 				return util.DescribeJSON(schema)
-			} else {
-				return util.DescribeYAML(schema)
 			}
+			return util.DescribeYAML(schema)
 		}
 
 		cmd.Printf("Console for server %d:\n", server.ID)

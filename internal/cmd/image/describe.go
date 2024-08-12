@@ -28,14 +28,14 @@ var DescribeCmd = base.DescribeCmd{
 	NameSuggestions: func(c hcapi2.Client) func() []string { return c.Image().Names },
 	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
 		_, err := strconv.ParseInt(idOrName, 10, 64)
-		isId := err == nil
+		isID := err == nil
 
 		arch, err := cmd.Flags().GetString("architecture")
 		if err != nil {
 			return nil, nil, err
 		}
 
-		if !isId && !cmd.Flags().Changed("architecture") {
+		if !isID && !cmd.Flags().Changed("architecture") {
 			_, _ = fmt.Fprintln(os.Stderr, "INFO: This command only returns x86 images by default. Explicitly set the --architecture=x86|arm flag to hide this message.")
 		}
 

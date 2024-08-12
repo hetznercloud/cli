@@ -42,7 +42,7 @@ var allCmds = []base.ListCmd{
 }
 
 var ListCmd = base.Cmd{
-	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
+	BaseCobraCommand: func(hcapi2.Client) *cobra.Command {
 
 		var resources []string
 		for _, cmd := range allCmds {
@@ -66,7 +66,7 @@ Listed resources are:
 
 		return cmd
 	},
-	Run: func(s state.State, cmd *cobra.Command, args []string) error {
+	Run: func(s state.State, cmd *cobra.Command, _ []string) error {
 
 		paid, _ := cmd.Flags().GetBool("paid")
 		labelSelector, _ := cmd.Flags().GetString("selector")
@@ -154,9 +154,8 @@ Listed resources are:
 			}
 			if outOpts.IsSet("json") {
 				return util.DescribeJSON(schema)
-			} else {
-				return util.DescribeYAML(schema)
 			}
+			return util.DescribeYAML(schema)
 		}
 
 		for i, lc := range cmds {

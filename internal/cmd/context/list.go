@@ -8,7 +8,7 @@ import (
 	"github.com/hetznercloud/cli/internal/state"
 )
 
-type ContextPresentation struct {
+type presentation struct {
 	Name   string
 	Token  string
 	Active string
@@ -50,7 +50,7 @@ func runList(s state.State, cmd *cobra.Command, _ []string) error {
 	}
 	cfg := s.Config()
 	for _, context := range cfg.Contexts() {
-		presentation := ContextPresentation{
+		presentation := presentation{
 			Name:   context.Name(),
 			Token:  context.Token(),
 			Active: " ",
@@ -67,6 +67,6 @@ func runList(s state.State, cmd *cobra.Command, _ []string) error {
 
 func newListOutputTable() *output.Table {
 	return output.NewTable().
-		AddAllowedFields(ContextPresentation{}).
+		AddAllowedFields(presentation{}).
 		RemoveAllowedField("token")
 }

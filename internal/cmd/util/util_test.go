@@ -33,15 +33,15 @@ func TestDatetime(t *testing.T) {
 
 func TestChainRunE(t *testing.T) {
 	var calls int
-	f1 := func(_ *cobra.Command, args []string) error {
+	f1 := func(*cobra.Command, []string) error {
 		calls++
 		return nil
 	}
-	f2 := func(_ *cobra.Command, args []string) error {
+	f2 := func(*cobra.Command, []string) error {
 		calls++
 		return errors.New("error")
 	}
-	f3 := func(_ *cobra.Command, args []string) error {
+	f3 := func(*cobra.Command, []string) error {
 		calls++
 		return nil
 	}

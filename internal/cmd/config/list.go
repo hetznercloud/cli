@@ -74,9 +74,8 @@ func runList(s state.State, cmd *cobra.Command, _ []string) error {
 		schema := util.Wrap("options", options)
 		if outOpts.IsSet("json") {
 			return util.DescribeJSON(schema)
-		} else {
-			return util.DescribeYAML(schema)
 		}
+		return util.DescribeYAML(schema)
 	}
 
 	cols := outputColumns

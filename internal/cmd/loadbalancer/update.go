@@ -14,13 +14,13 @@ var UpdateCmd = base.UpdateCmd{
 	ResourceNameSingular: "Load Balancer",
 	ShortDescription:     "Update a Load Balancer",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.LoadBalancer().Names },
-	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
+	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
 		return s.Client().LoadBalancer().Get(s, idOrName)
 	},
 	DefineFlags: func(cmd *cobra.Command) {
 		cmd.Flags().String("name", "", "LoadBalancer name")
 	},
-	Update: func(s state.State, cmd *cobra.Command, resource interface{}, flags map[string]pflag.Value) error {
+	Update: func(s state.State, _ *cobra.Command, resource interface{}, flags map[string]pflag.Value) error {
 		floatingIP := resource.(*hcloud.LoadBalancer)
 		updOpts := hcloud.LoadBalancerUpdateOpts{
 			Name: flags["name"].String(),

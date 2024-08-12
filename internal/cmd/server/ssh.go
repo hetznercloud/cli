@@ -68,9 +68,8 @@ var SSHCmd = base.Cmd{
 			if exitError, ok := err.(*exec.ExitError); ok {
 				waitStatus := exitError.Sys().(syscall.WaitStatus)
 				os.Exit(waitStatus.ExitStatus())
-			} else {
-				return err
 			}
+			return err
 		}
 
 		return nil

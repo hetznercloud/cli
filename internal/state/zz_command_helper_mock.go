@@ -37,7 +37,7 @@ func (m *MockActionWaiter) EXPECT() *MockActionWaiterMockRecorder {
 }
 
 // WaitForActions mocks base method.
-func (m *MockActionWaiter) WaitForActions(arg0 *cobra.Command, arg1 context.Context, arg2 ...*hcloud.Action) error {
+func (m *MockActionWaiter) WaitForActions(arg0 context.Context, arg1 *cobra.Command, arg2 ...*hcloud.Action) error {
 	m.ctrl.T.Helper()
 	varargs := []interface{}{arg0, arg1}
 	for _, a := range arg2 {

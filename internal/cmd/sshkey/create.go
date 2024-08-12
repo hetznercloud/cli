@@ -14,7 +14,7 @@ import (
 )
 
 var CreateCmd = base.CreateCmd{
-	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
+	BaseCobraCommand: func(hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:   "create [options] --name <name> (--public-key <key> | --public-key-from-file <file>)",
 			Short: "Create a SSH key",
@@ -29,7 +29,7 @@ var CreateCmd = base.CreateCmd{
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 		return cmd
 	},
-	Run: func(s state.State, cmd *cobra.Command, args []string) (any, any, error) {
+	Run: func(s state.State, cmd *cobra.Command, _ []string) (any, any, error) {
 		name, _ := cmd.Flags().GetString("name")
 		publicKey, _ := cmd.Flags().GetString("public-key")
 		publicKeyFile, _ := cmd.Flags().GetString("public-key-from-file")

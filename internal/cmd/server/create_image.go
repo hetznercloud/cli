@@ -13,7 +13,7 @@ import (
 )
 
 var CreateImageCmd = base.Cmd{
-	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
+	BaseCobraCommand: func(hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:   "create-image [options] --type <snapshot|backup> <server>",
 			Short: "Create an image from a server",
@@ -59,7 +59,7 @@ var CreateImageCmd = base.Cmd{
 			return err
 		}
 
-		if err := s.WaitForActions(cmd, s, result.Action); err != nil {
+		if err := s.WaitForActions(s, cmd, result.Action); err != nil {
 			return err
 		}
 

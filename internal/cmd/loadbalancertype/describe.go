@@ -17,7 +17,7 @@ var DescribeCmd = base.DescribeCmd{
 	JSONKeyGetByID:       "load_balancer_type",
 	JSONKeyGetByName:     "load_balancer_types",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.LoadBalancerType().Names },
-	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
+	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, interface{}, error) {
 		lbt, _, err := s.Client().LoadBalancerType().Get(s, idOrName)
 		if err != nil {
 			return nil, nil, err

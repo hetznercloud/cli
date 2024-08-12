@@ -23,7 +23,7 @@ func TestSSH(t *testing.T) {
 		},
 	}
 
-	preRun := func(t *testing.T, fx *testutil.Fixture) {
+	preRun := func(_ *testing.T, fx *testutil.Fixture) {
 		fx.Client.ServerClient.EXPECT().
 			Get(gomock.Any(), srv.Name).
 			Return(&srv, nil, nil)

@@ -14,7 +14,7 @@ import (
 )
 
 //go:embed testdata/create_response.json
-var createResponseJson string
+var createResponseJSON string
 
 func TestCreate(t *testing.T) {
 	fx := testutil.NewFixture(t)
@@ -85,7 +85,7 @@ func TestCreateJSON(t *testing.T) {
 
 	assert.NoError(t, err)
 	assert.Equal(t, expOut, out)
-	assert.JSONEq(t, createResponseJson, jsonOut)
+	assert.JSONEq(t, createResponseJSON, jsonOut)
 }
 
 func TestCreateProtection(t *testing.T) {
@@ -95,7 +95,7 @@ func TestCreateProtection(t *testing.T) {
 	cmd := floatingip.CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	floatingIp := &hcloud.FloatingIP{
+	floatingIP := &hcloud.FloatingIP{
 		ID:   123,
 		Name: "myFloatingIP",
 		IP:   net.ParseIP("192.168.2.1"),
@@ -111,7 +111,7 @@ func TestCreateProtection(t *testing.T) {
 			Description:  hcloud.Ptr(""),
 		}).
 		Return(hcloud.FloatingIPCreateResult{
-			FloatingIP: floatingIp,
+			FloatingIP: floatingIP,
 			Action: &hcloud.Action{
 				ID: 321,
 			},
@@ -119,7 +119,7 @@ func TestCreateProtection(t *testing.T) {
 	fx.ActionWaiter.EXPECT().WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321}).Return(nil)
 
 	fx.Client.FloatingIPClient.EXPECT().
-		ChangeProtection(gomock.Any(), floatingIp, hcloud.FloatingIPChangeProtectionOpts{
+		ChangeProtection(gomock.Any(), floatingIP, hcloud.FloatingIPChangeProtectionOpts{
 			Delete: hcloud.Ptr(true),
 		}).
 		Return(&hcloud.Action{ID: 333}, nil, nil)

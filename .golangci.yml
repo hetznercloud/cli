@@ -64,7 +64,7 @@ linters:
     - govet
     # - ineffassign
     # - misspell
-    # - revive
+    - revive
     - rowserrcheck
     # - scopelint
     # - staticcheck

@@ -69,7 +69,7 @@ var AddSubnetCmd = base.Cmd{
 		if err != nil {
 			return err
 		}
-		if err := s.WaitForActions(cmd, s, action); err != nil {
+		if err := s.WaitForActions(s, cmd, action); err != nil {
 			return err
 		}
 		cmd.Printf("Subnet added to network %d\n", network.ID)

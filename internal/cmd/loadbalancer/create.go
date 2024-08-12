@@ -45,7 +45,7 @@ var CreateCmd = base.CreateCmd{
 
 		return cmd
 	},
-	Run: func(s state.State, cmd *cobra.Command, args []string) (any, any, error) {
+	Run: func(s state.State, cmd *cobra.Command, _ []string) (any, any, error) {
 		name, _ := cmd.Flags().GetString("name")
 		serverType, _ := cmd.Flags().GetString("type")
 		algorithmType, _ := cmd.Flags().GetString("algorithm-type")
@@ -80,7 +80,7 @@ var CreateCmd = base.CreateCmd{
 			return nil, nil, err
 		}
 
-		if err := s.WaitForActions(cmd, s, result.Action); err != nil {
+		if err := s.WaitForActions(s, cmd, result.Action); err != nil {
 			return nil, nil, err
 		}
 		loadBalancer, _, err := s.Client().LoadBalancer().GetByID(s, result.LoadBalancer.ID)

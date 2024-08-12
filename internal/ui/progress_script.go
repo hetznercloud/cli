@@ -57,7 +57,7 @@ func (p *scriptProgress) Start() {
 	p.print("")
 }
 
-func (p *scriptProgress) SetCurrent(value int) {
+func (p *scriptProgress) SetCurrent(int) {
 }
 
 func (p *scriptProgress) SetSuccess() {

@@ -49,7 +49,7 @@ var ApplyToResourceCmd = base.Cmd{
 			return fmt.Errorf("unknown type %s", resourceType)
 		}
 
-		serverIdOrName, _ := cmd.Flags().GetString("server")
+		serverIDOrName, _ := cmd.Flags().GetString("server")
 		labelSelector, _ := cmd.Flags().GetString("label-selector")
 		idOrName := args[0]
 		firewall, _, err := s.Client().Firewall().Get(s, idOrName)
@@ -63,12 +63,12 @@ var ApplyToResourceCmd = base.Cmd{
 
 		switch opts.Type {
 		case hcloud.FirewallResourceTypeServer:
-			server, _, err := s.Client().Server().Get(s, serverIdOrName)
+			server, _, err := s.Client().Server().Get(s, serverIDOrName)
 			if err != nil {
 				return err
 			}
 			if server == nil {
-				return fmt.Errorf("Server not found: %v", serverIdOrName)
+				return fmt.Errorf("Server not found: %v", serverIDOrName)
 			}
 			opts.Server = &hcloud.FirewallResourceServer{ID: server.ID}
 		case hcloud.FirewallResourceTypeLabelSelector:
@@ -81,7 +81,7 @@ var ApplyToResourceCmd = base.Cmd{
 		if err != nil {
 			return err
 		}
-		if err := s.WaitForActions(cmd, s, actions...); err != nil {
+		if err := s.WaitForActions(s, cmd, actions...); err != nil {
 			return err
 		}
 		cmd.Printf("Firewall %d applied to resource\n", firewall.ID)

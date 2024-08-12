@@ -38,7 +38,7 @@ var CreateCmd = base.CreateCmd{
 
 		return cmd
 	},
-	Run: func(s state.State, cmd *cobra.Command, args []string) (any, any, error) {
+	Run: func(s state.State, cmd *cobra.Command, _ []string) (any, any, error) {
 		typ, _ := cmd.Flags().GetString("type")
 		name, _ := cmd.Flags().GetString("name")
 		assigneeID, _ := cmd.Flags().GetInt64("assignee-id")
@@ -66,7 +66,7 @@ var CreateCmd = base.CreateCmd{
 		}
 
 		if result.Action != nil {
-			if err := s.WaitForActions(cmd, s, result.Action); err != nil {
+			if err := s.WaitForActions(s, cmd, result.Action); err != nil {
 				return nil, nil, err
 			}
 		}

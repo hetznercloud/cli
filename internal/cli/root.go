@@ -22,7 +22,7 @@ func NewRootCommand(s state.State) *cobra.Command {
 
 	cmd.PersistentFlags().AddFlagSet(s.Config().FlagSet())
 
-	cmd.PersistentPreRunE = func(cmd *cobra.Command, args []string) error {
+	cmd.PersistentPreRunE = func(cmd *cobra.Command, _ []string) error {
 		var err error
 		out := os.Stdout
 		quiet, err := config.OptionQuiet.Get(s.Config())

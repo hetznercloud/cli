@@ -19,7 +19,7 @@ import (
 // Fixture provides affordances for testing CLI commands.
 type Fixture struct {
 	MockController *gomock.Controller
-	Client         *hcapi2_mock.MockClient
+	Client         *hcapi2_mock.Client
 	ActionWaiter   *state.MockActionWaiter
 	TokenEnsurer   *state.MockTokenEnsurer
 	Config         *config.MockConfig

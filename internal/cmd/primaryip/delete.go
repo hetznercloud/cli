@@ -14,10 +14,10 @@ var DeleteCmd = base.DeleteCmd{
 	ResourceNamePlural:   "Primary IPs",
 	ShortDescription:     "Delete a Primary IP",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.PrimaryIP().Names },
-	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
+	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
 		return s.Client().PrimaryIP().Get(s, idOrName)
 	},
-	Delete: func(s state.State, cmd *cobra.Command, resource interface{}) (*hcloud.Action, error) {
+	Delete: func(s state.State, _ *cobra.Command, resource interface{}) (*hcloud.Action, error) {
 		primaryIP := resource.(*hcloud.PrimaryIP)
 		_, err := s.Client().PrimaryIP().Delete(s, primaryIP)
 		return nil, err
