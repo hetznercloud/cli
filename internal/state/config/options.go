@@ -138,6 +138,14 @@ var (
 		nil,
 	)
 
+	OptionNoWait = newOpt(
+		"no-wait",
+		"If true, do not wait for actions to complete",
+		false,
+		DefaultPreferenceFlags,
+		nil,
+	)
+
 	OptionDefaultSSHKeys = newOpt(
 		"default-ssh-keys",
 		"Default SSH keys for new servers",
