@@ -19,7 +19,6 @@ type SetRdnsCmd struct {
 	ResourceNameSingular string // e.g. "server"
 	ShortDescription     string
 	NameSuggestions      func(client hcapi2.Client) func() []string
-	AdditionalFlags      func(*cobra.Command)
 	Fetch                func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error)
 	GetDefaultIP         func(resource interface{}) net.IP
 }
@@ -27,7 +26,7 @@ type SetRdnsCmd struct {
 // CobraCommand creates a command that can be registered with cobra.
 func (rc *SetRdnsCmd) CobraCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   fmt.Sprintf("set-rdns [options] --hostname <hostname> <%s>", util.ToKebabCase(rc.ResourceNameSingular)),
+		Use:                   fmt.Sprintf("set-rdns [--ip <ip>] (--hostname <hostname> | --reset) <%s>", util.ToKebabCase(rc.ResourceNameSingular)),
 		Short:                 rc.ShortDescription,
 		Args:                  util.Validate,
 		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(rc.NameSuggestions(s.Client()))),
@@ -38,18 +37,26 @@ func (rc *SetRdnsCmd) CobraCommand(s state.State) *cobra.Command {
 			return rc.Run(s, cmd, args)
 		},
 	}
-	cmd.Flags().StringP("hostname", "r", "", "Hostname to set as a reverse DNS PTR entry (required)")
-	cmd.MarkFlagRequired("hostname")
+	cmd.Flags().StringP("hostname", "r", "", "Hostname to set as a reverse DNS PTR entry")
+	cmd.Flags().Bool("reset", false, "Reset the reverse DNS entry to the default value")
 
 	cmd.Flags().IPP("ip", "i", net.IP{}, "IP address for which the reverse DNS entry should be set")
-	if rc.AdditionalFlags != nil {
-		rc.AdditionalFlags(cmd)
-	}
 	return cmd
 }
 
 // Run executes a setRDNS command.
 func (rc *SetRdnsCmd) Run(s state.State, cmd *cobra.Command, args []string) error {
+
+	var hostnamePtr *string
+	if reset, _ := cmd.Flags().GetBool("reset"); reset {
+		hostnamePtr = nil
+	} else {
+		hostname, _ := cmd.Flags().GetString("hostname")
+		if hostname == "" {
+			return fmt.Errorf("either --hostname or --reset must be specified")
+		}
+		hostnamePtr = &hostname
+	}
 
 	idOrName := args[0]
 	resource, _, err := rc.Fetch(s, cmd, idOrName)
@@ -67,8 +74,8 @@ func (rc *SetRdnsCmd) Run(s state.State, cmd *cobra.Command, args []string) erro
 	if ip.IsUnspecified() || ip == nil {
 		ip = rc.GetDefaultIP(resource)
 	}
-	hostname, _ := cmd.Flags().GetString("hostname")
-	action, _, err := s.Client().RDNS().ChangeDNSPtr(s, resource.(hcloud.RDNSSupporter), ip, hcloud.String(hostname))
+
+	action, _, err := s.Client().RDNS().ChangeDNSPtr(s, resource.(hcloud.RDNSSupporter), ip, hostnamePtr)
 	if err != nil {
 		return err
 	}
