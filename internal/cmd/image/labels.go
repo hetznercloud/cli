@@ -2,6 +2,7 @@ package image
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/hcapi2"
@@ -16,7 +17,11 @@ var LabelCmds = base.LabelCmds{
 	NameSuggestions:        func(c hcapi2.Client) func() []string { return c.Image().Names },
 	LabelKeySuggestions:    func(c hcapi2.Client) func(idOrName string) []string { return c.Image().LabelKeys },
 	FetchLabels: func(s state.State, idOrName string) (map[string]string, int64, error) {
-		image, _, err := s.Client().Image().Get(s, idOrName)
+		id, err := strconv.ParseInt(idOrName, 10, 64)
+		if err != nil {
+			return nil, 0, fmt.Errorf("invalid snapshot or backup ID %q", idOrName)
+		}
+		image, _, err := s.Client().Image().GetByID(s, id)
 		if err != nil {
 			return nil, 0, err
 		}

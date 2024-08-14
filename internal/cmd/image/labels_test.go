@@ -19,7 +19,7 @@ func TestLabelAdd(t *testing.T) {
 	fx.ExpectEnsureToken()
 
 	fx.Client.ImageClient.EXPECT().
-		Get(gomock.Any(), "123").
+		GetByID(gomock.Any(), int64(123)).
 		Return(&hcloud.Image{ID: 123}, nil, nil)
 	fx.Client.ImageClient.EXPECT().
 		Update(gomock.Any(), &hcloud.Image{ID: 123}, hcloud.ImageUpdateOpts{
@@ -45,7 +45,7 @@ func TestLabelRemove(t *testing.T) {
 	fx.ExpectEnsureToken()
 
 	fx.Client.ImageClient.EXPECT().
-		Get(gomock.Any(), "123").
+		GetByID(gomock.Any(), int64(123)).
 		Return(&hcloud.Image{
 			ID: 123,
 			Labels: map[string]string{

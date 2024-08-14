@@ -1,6 +1,7 @@
 package image_test
 
 import (
+	"strconv"
 	"testing"
 
 	"github.com/golang/mock/gomock"
@@ -19,20 +20,19 @@ func TestDelete(t *testing.T) {
 	fx.ExpectEnsureToken()
 
 	img := &hcloud.Image{
-		ID:   123,
-		Name: "test",
+		ID: 123,
 	}
 
 	fx.Client.ImageClient.EXPECT().
-		Get(gomock.Any(), "test").
+		GetByID(gomock.Any(), img.ID).
 		Return(img, nil, nil)
 	fx.Client.ImageClient.EXPECT().
 		Delete(gomock.Any(), img).
 		Return(nil, nil)
 
-	out, errOut, err := fx.Run(cmd, []string{"test"})
+	out, errOut, err := fx.Run(cmd, []string{"123"})
 
-	expOut := "image test deleted\n"
+	expOut := "image 123 deleted\n"
 
 	assert.NoError(t, err)
 	assert.Empty(t, errOut)
@@ -48,33 +48,30 @@ func TestDeleteMultiple(t *testing.T) {
 
 	images := []*hcloud.Image{
 		{
-			ID:   123,
-			Name: "test1",
+			ID: 123,
 		},
 		{
-			ID:   456,
-			Name: "test2",
+			ID: 456,
 		},
 		{
-			ID:   789,
-			Name: "test3",
+			ID: 789,
 		},
 	}
 
-	var names []string
+	var ids []string
 	for _, img := range images {
-		names = append(names, img.Name)
+		ids = append(ids, strconv.FormatInt(img.ID, 10))
 		fx.Client.ImageClient.EXPECT().
-			Get(gomock.Any(), img.Name).
+			GetByID(gomock.Any(), img.ID).
 			Return(img, nil, nil)
 		fx.Client.ImageClient.EXPECT().
 			Delete(gomock.Any(), img).
 			Return(nil, nil)
 	}
 
-	out, errOut, err := fx.Run(cmd, names)
+	out, errOut, err := fx.Run(cmd, ids)
 
 	assert.NoError(t, err)
 	assert.Empty(t, errOut)
-	assert.Equal(t, "images test1, test2, test3 deleted\n", out)
+	assert.Equal(t, "images 123, 456, 789 deleted\n", out)
 }
