@@ -12,6 +12,10 @@
 │ endpoint         │ Hetzner Cloud API    │ string      │ endpoint         │ HCLOUD_ENDPOINT         │ --endpoint      │
 │                  │ endpoint             │             │                  │                         │                 │
 ├──────────────────┼──────────────────────┼─────────────┼──────────────────┼─────────────────────────┼─────────────────┤
+│ no-wait          │ If true, do not wait │ boolean     │ no_wait          │ HCLOUD_NO_WAIT          │ --no-wait       │
+│                  │ for actions to       │             │                  │                         │                 │
+│                  │ complete             │             │                  │                         │                 │
+├──────────────────┼──────────────────────┼─────────────┼──────────────────┼─────────────────────────┼─────────────────┤
 │ poll-interval    │ Interval at which to │ duration    │ poll_interval    │ HCLOUD_POLL_INTERVAL    │ --poll-interval │
 │                  │ poll information,    │             │                  │                         │                 │
 │                  │ for example action   │             │                  │                         │                 │
