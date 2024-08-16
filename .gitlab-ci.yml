@@ -25,7 +25,7 @@ build:
 
 test:lint:
   stage: test
-  image: golangci/golangci-lint:v1.59
+  image: golangci/golangci-lint:v1.60
   script:
     - golangci-lint run -v
 

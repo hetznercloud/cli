@@ -43,7 +43,7 @@ var DescribeCmd = base.DescribeCmd{
 		cmd.Printf("  Memory:\t%v GB\n", server.ServerType.Memory)
 		cmd.Printf("  Disk:\t\t%d GB\n", server.PrimaryDiskSize)
 		cmd.Printf("  Storage Type:\t%s\n", server.ServerType.StorageType)
-		cmd.Printf(util.PrefixLines(util.DescribeDeprecation(server.ServerType), "  "))
+		cmd.Print(util.PrefixLines(util.DescribeDeprecation(server.ServerType), "  "))
 
 		cmd.Printf("Public Net:\n")
 		cmd.Printf("  IPv4:\n")
