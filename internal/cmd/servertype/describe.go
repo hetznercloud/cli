@@ -36,7 +36,7 @@ var DescribeCmd = base.DescribeCmd{
 		cmd.Printf("Memory:\t\t\t%.1f GB\n", serverType.Memory)
 		cmd.Printf("Disk:\t\t\t%d GB\n", serverType.Disk)
 		cmd.Printf("Storage Type:\t\t%s\n", serverType.StorageType)
-		cmd.Printf(util.DescribeDeprecation(serverType))
+		cmd.Print(util.DescribeDeprecation(serverType))
 
 		pricings, err := fullPricingInfo(s, serverType)
 		if err != nil {

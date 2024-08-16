@@ -31,7 +31,7 @@ var DescribeCmd = base.DescribeCmd{
 		cmd.Printf("Name:\t\t%s\n", iso.Name)
 		cmd.Printf("Description:\t%s\n", iso.Description)
 		cmd.Printf("Type:\t\t%s\n", iso.Type)
-		cmd.Printf(util.DescribeDeprecation(iso))
+		cmd.Print(util.DescribeDeprecation(iso))
 
 		architecture := "-"
 		if iso.Architecture != nil {
