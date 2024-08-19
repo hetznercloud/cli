@@ -18,17 +18,21 @@ func (c *state) WaitForActions(cmd *cobra.Command, ctx context.Context, actions 
 	if err != nil {
 		return err
 	}
+	quiet, err := config.OptionQuiet.Get(c.Config())
+	if err != nil {
+		return err
+	}
+
 	if !wait {
+		if quiet {
+			return nil
+		}
 		for _, action := range actions {
 			ui.SkipActionWaitMessage(action)
 		}
 		return nil
 	}
 
-	quiet, err := config.OptionQuiet.Get(c.Config())
-	if err != nil {
-		return err
-	}
 	if quiet {
 		return c.Client().Action().WaitFor(ctx, actions...)
 	}
