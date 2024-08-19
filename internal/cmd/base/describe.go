@@ -12,6 +12,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
+	"github.com/hetznercloud/cli/internal/state/config"
 )
 
 // DescribeCmd allows defining commands for describing a resource.
@@ -54,7 +55,10 @@ func (dc *DescribeCmd) CobraCommand(s state.State) *cobra.Command {
 func (dc *DescribeCmd) Run(s state.State, cmd *cobra.Command, args []string) error {
 	outputFlags := output.FlagsForCommand(cmd)
 
-	quiet, _ := cmd.Flags().GetBool("quiet")
+	quiet, err := config.OptionQuiet.Get(s.Config())
+	if err != nil {
+		return err
+	}
 
 	isSchema := outputFlags.IsSet("json") || outputFlags.IsSet("yaml")
 	if isSchema && !quiet {

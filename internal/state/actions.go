@@ -8,12 +8,17 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/hcapi2"
+	"github.com/hetznercloud/cli/internal/state/config"
 	"github.com/hetznercloud/cli/internal/ui"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 func (c *state) WaitForActions(cmd *cobra.Command, ctx context.Context, actions ...*hcloud.Action) error {
-	if quiet, _ := cmd.Flags().GetBool("quiet"); quiet {
+	quiet, err := config.OptionQuiet.Get(c.Config())
+	if err != nil {
+		return err
+	}
+	if quiet {
 		return c.Client().Action().WaitFor(ctx, actions...)
 	}
 
