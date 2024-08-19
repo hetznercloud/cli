@@ -14,7 +14,11 @@ import (
 )
 
 func (c *state) WaitForActions(cmd *cobra.Command, ctx context.Context, actions ...*hcloud.Action) error {
-	if wait, _ := config.OptionWait.Get(c.Config()); !wait {
+	wait, err := config.OptionWait.Get(c.Config())
+	if err != nil {
+		return err
+	}
+	if !wait {
 		return nil
 	}
 
