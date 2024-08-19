@@ -13,6 +13,10 @@ func ActionMessage(action *hcloud.Action) string {
 	return fmt.Sprintf("Waiting for %s", color.New(color.Bold).Sprint(action.Command))
 }
 
+func SkipActionWaitMessage(action *hcloud.Action) string {
+	return fmt.Sprintf("Skipping waiting for %s", color.New(color.Bold).Sprint(action.Command))
+}
+
 // FakeActionMessage returns the initial value with a unused color to grow the string
 // size.
 //

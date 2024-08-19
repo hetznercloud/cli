@@ -19,6 +19,9 @@ func (c *state) WaitForActions(cmd *cobra.Command, ctx context.Context, actions 
 		return err
 	}
 	if !wait {
+		for _, action := range actions {
+			ui.SkipActionWaitMessage(action)
+		}
 		return nil
 	}
 
