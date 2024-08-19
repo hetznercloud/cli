@@ -23,6 +23,7 @@ func NewCommand(s state.State) *cobra.Command {
 		LabelCmds.RemoveCobraCommand(s),
 		DeleteCmd.CobraCommand(s),
 		DescribeCmd.CobraCommand(s),
+		RetryCmd.CobraCommand(s),
 	)
 
 	return cmd
