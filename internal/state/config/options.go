@@ -138,10 +138,10 @@ var (
 		nil,
 	)
 
-	OptionNoWait = newOpt(
-		"no-wait",
-		"If true, do not wait for actions to complete",
-		false,
+	OptionWait = newOpt(
+		"wait",
+		"If false, do not wait for actions to complete",
+		true,
 		DefaultPreferenceFlags,
 		nil,
 	)

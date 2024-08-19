@@ -12,10 +12,6 @@
 │ endpoint         │ Hetzner Cloud API    │ string      │ endpoint         │ HCLOUD_ENDPOINT         │ --endpoint      │
 │                  │ endpoint             │             │                  │                         │                 │
 ├──────────────────┼──────────────────────┼─────────────┼──────────────────┼─────────────────────────┼─────────────────┤
-│ no-wait          │ If true, do not wait │ boolean     │ no_wait          │ HCLOUD_NO_WAIT          │ --no-wait       │
-│                  │ for actions to       │             │                  │                         │                 │
-│                  │ complete             │             │                  │                         │                 │
-├──────────────────┼──────────────────────┼─────────────┼──────────────────┼─────────────────────────┼─────────────────┤
 │ poll-interval    │ Interval at which to │ duration    │ poll_interval    │ HCLOUD_POLL_INTERVAL    │ --poll-interval │
 │                  │ poll information,    │             │                  │                         │                 │
 │                  │ for example action   │             │                  │                         │                 │
@@ -23,6 +19,10 @@
 ├──────────────────┼──────────────────────┼─────────────┼──────────────────┼─────────────────────────┼─────────────────┤
 │ quiet            │ If true, only print  │ boolean     │ quiet            │ HCLOUD_QUIET            │ --quiet         │
 │                  │ error messages       │             │                  │                         │                 │
+├──────────────────┼──────────────────────┼─────────────┼──────────────────┼─────────────────────────┼─────────────────┤
+│ wait             │ If false, do not     │ boolean     │ wait             │ HCLOUD_WAIT             │ --wait          │
+│                  │ wait for actions to  │             │                  │                         │                 │
+│                  │ complete             │             │                  │                         │                 │
 ├──────────────────┼──────────────────────┼─────────────┼──────────────────┼─────────────────────────┼─────────────────┤
 │ sort.<resource>  │ Default sorting for  │ string list │ sort.<resource>  │ HCLOUD_SORT_<RESOURCE>  │                 │
 │                  │ resource             │             │                  │                         │                 │
