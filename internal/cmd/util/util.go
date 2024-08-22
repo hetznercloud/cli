@@ -88,6 +88,15 @@ func ChainRunE(fns ...func(cmd *cobra.Command, args []string) error) func(cmd *c
 	}
 }
 
+func AnySet(s string, ss ...string) bool {
+	for _, s := range append(ss, s) {
+		if s != "" {
+			return true
+		}
+	}
+	return false
+}
+
 func ExactlyOneSet(s string, ss ...string) bool {
 	set := s != ""
 	for _, s := range ss {

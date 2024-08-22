@@ -54,6 +54,9 @@ var RemoveTargetCmd = base.Cmd{
 			return fmt.Errorf("Load Balancer not found: %s", idOrName)
 		}
 
+		if !util.AnySet(serverIDOrName, labelSelector, ipAddr) {
+			return fmt.Errorf("specify one of --server, --label-selector, or --ip")
+		}
 		if !util.ExactlyOneSet(serverIDOrName, labelSelector, ipAddr) {
 			return fmt.Errorf("--server, --label-selector, and --ip are mutually exclusive")
 		}
