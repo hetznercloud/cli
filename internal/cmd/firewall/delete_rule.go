@@ -23,12 +23,12 @@ var DeleteRuleCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 		cmd.Flags().String("direction", "", "Direction (in, out) (required)")
-		cmd.RegisterFlagCompletionFunc("direction", cmpl.SuggestCandidates("in", "out"))
-		cmd.MarkFlagRequired("direction")
+		_ = cmd.RegisterFlagCompletionFunc("direction", cmpl.SuggestCandidates("in", "out"))
+		_ = cmd.MarkFlagRequired("direction")
 
 		cmd.Flags().String("protocol", "", "Protocol (icmp, esp, gre, udp or tcp) (required)")
-		cmd.RegisterFlagCompletionFunc("protocol", cmpl.SuggestCandidates("icmp", "udp", "tcp", "esp", "gre"))
-		cmd.MarkFlagRequired("protocol")
+		_ = cmd.RegisterFlagCompletionFunc("protocol", cmpl.SuggestCandidates("icmp", "udp", "tcp", "esp", "gre"))
+		_ = cmd.MarkFlagRequired("protocol")
 
 		cmd.Flags().StringArray("source-ips", []string{}, "Source IPs (CIDR Notation) (required when direction is in)")
 
@@ -69,7 +69,7 @@ var DeleteRuleCmd = base.Cmd{
 		if err != nil {
 			return err
 		}
-		if err := s.WaitForActions(cmd, s, actions...); err != nil {
+		if err := s.WaitForActions(s, cmd, actions...); err != nil {
 			return err
 		}
 		cmd.Printf("Firewall Rules for Firewall %d updated\n", firewall.ID)

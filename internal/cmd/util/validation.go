@@ -34,7 +34,6 @@ func ValidateLenient(cmd *cobra.Command, args []string) error {
 }
 
 func validate(cmd *cobra.Command, args []string, lenient bool) error {
-
 	use := cmd.Use
 	paren := cmd.Parent()
 	for paren != nil {

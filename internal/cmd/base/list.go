@@ -42,7 +42,7 @@ func (lc *ListCmd) CobraCommand(s state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               s.EnsureToken,
-		RunE: func(cmd *cobra.Command, args []string) error {
+		RunE: func(cmd *cobra.Command, _ []string) error {
 			return lc.Run(s, cmd)
 		},
 	}
@@ -89,9 +89,8 @@ func (lc *ListCmd) Run(s state.State, cmd *cobra.Command) error {
 		schema := lc.Schema(resources)
 		if outOpts.IsSet("json") {
 			return util.DescribeJSON(schema)
-		} else {
-			return util.DescribeYAML(schema)
 		}
+		return util.DescribeYAML(schema)
 	}
 
 	cols := lc.DefaultColumns

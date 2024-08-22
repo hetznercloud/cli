@@ -11,21 +11,21 @@ import (
 )
 
 var CreateCmd = base.CreateCmd{
-	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
+	BaseCobraCommand: func(hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:   "create [options] --name <name> --type <type>",
 			Short: "Create a placement group",
 		}
 		cmd.Flags().String("name", "", "Name")
-		cmd.MarkFlagRequired("name")
+		_ = cmd.MarkFlagRequired("name")
 
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 
 		cmd.Flags().String("type", "", "Type of the placement group")
-		cmd.MarkFlagRequired("type")
+		_ = cmd.MarkFlagRequired("type")
 		return cmd
 	},
-	Run: func(s state.State, cmd *cobra.Command, args []string) (any, any, error) {
+	Run: func(s state.State, cmd *cobra.Command, _ []string) (any, any, error) {
 		name, _ := cmd.Flags().GetString("name")
 		labels, _ := cmd.Flags().GetStringToString("label")
 		placementGroupType, _ := cmd.Flags().GetString("type")
@@ -42,7 +42,7 @@ var CreateCmd = base.CreateCmd{
 		}
 
 		if result.Action != nil {
-			if err := s.WaitForActions(cmd, s, result.Action); err != nil {
+			if err := s.WaitForActions(s, cmd, result.Action); err != nil {
 				return nil, nil, err
 			}
 		}

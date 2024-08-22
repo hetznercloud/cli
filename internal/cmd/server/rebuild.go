@@ -24,8 +24,8 @@ var RebuildCmd = base.Cmd{
 		}
 
 		cmd.Flags().String("image", "", "ID or name of image to rebuild from (required)")
-		cmd.RegisterFlagCompletionFunc("image", cmpl.SuggestCandidatesF(client.Image().Names))
-		cmd.MarkFlagRequired("image")
+		_ = cmd.RegisterFlagCompletionFunc("image", cmpl.SuggestCandidatesF(client.Image().Names))
+		_ = cmd.MarkFlagRequired("image")
 		cmd.Flags().Bool("allow-deprecated-image", false, "Enable the use of deprecated images (default: false)")
 
 		return cmd
@@ -68,7 +68,7 @@ var RebuildCmd = base.Cmd{
 			return err
 		}
 
-		if err := s.WaitForActions(cmd, s, result.Action); err != nil {
+		if err := s.WaitForActions(s, cmd, result.Action); err != nil {
 			return err
 		}
 

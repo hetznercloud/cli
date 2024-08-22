@@ -1,4 +1,4 @@
-package hcapi2_mock
+package mock
 
 import (
 	"github.com/golang/mock/gomock"
@@ -8,7 +8,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-type MockClient struct {
+type Client struct {
 	ActionClient           *MockActionClient
 	CertificateClient      *MockCertificateClient
 	DatacenterClient       *MockDatacenterClient
@@ -30,8 +30,8 @@ type MockClient struct {
 	PricingClient          *MockPricingClient
 }
 
-func NewMockClient(ctrl *gomock.Controller) *MockClient {
-	return &MockClient{
+func NewMockClient(ctrl *gomock.Controller) *Client {
+	return &Client{
 		ActionClient:           NewMockActionClient(ctrl),
 		CertificateClient:      NewMockCertificateClient(ctrl),
 		DatacenterClient:       NewMockDatacenterClient(ctrl),
@@ -54,85 +54,85 @@ func NewMockClient(ctrl *gomock.Controller) *MockClient {
 	}
 }
 
-func (c *MockClient) Action() hcapi2.ActionClient {
+func (c *Client) Action() hcapi2.ActionClient {
 	return c.ActionClient
 }
 
-func (c *MockClient) Certificate() hcapi2.CertificateClient {
+func (c *Client) Certificate() hcapi2.CertificateClient {
 	return c.CertificateClient
 }
 
-func (c *MockClient) Datacenter() hcapi2.DatacenterClient {
+func (c *Client) Datacenter() hcapi2.DatacenterClient {
 	return c.DatacenterClient
 }
 
-func (c *MockClient) Firewall() hcapi2.FirewallClient {
+func (c *Client) Firewall() hcapi2.FirewallClient {
 	return c.FirewallClient
 }
 
-func (c *MockClient) FloatingIP() hcapi2.FloatingIPClient {
+func (c *Client) FloatingIP() hcapi2.FloatingIPClient {
 	return c.FloatingIPClient
 }
 
-func (c *MockClient) PrimaryIP() hcapi2.PrimaryIPClient {
+func (c *Client) PrimaryIP() hcapi2.PrimaryIPClient {
 	return c.PrimaryIPClient
 }
 
-func (c *MockClient) Image() hcapi2.ImageClient {
+func (c *Client) Image() hcapi2.ImageClient {
 	return c.ImageClient
 }
 
-func (c *MockClient) ISO() hcapi2.ISOClient {
+func (c *Client) ISO() hcapi2.ISOClient {
 	return c.ISOClient
 }
 
-func (c *MockClient) Location() hcapi2.LocationClient {
+func (c *Client) Location() hcapi2.LocationClient {
 	return c.LocationClient
 }
 
-func (c *MockClient) LoadBalancer() hcapi2.LoadBalancerClient {
+func (c *Client) LoadBalancer() hcapi2.LoadBalancerClient {
 	return c.LoadBalancerClient
 }
 
-func (c *MockClient) LoadBalancerType() hcapi2.LoadBalancerTypeClient {
+func (c *Client) LoadBalancerType() hcapi2.LoadBalancerTypeClient {
 	return c.LoadBalancerTypeClient
 }
 
-func (c *MockClient) Network() hcapi2.NetworkClient {
+func (c *Client) Network() hcapi2.NetworkClient {
 	return c.NetworkClient
 }
 
-func (c *MockClient) Server() hcapi2.ServerClient {
+func (c *Client) Server() hcapi2.ServerClient {
 	return c.ServerClient
 }
 
-func (c *MockClient) ServerType() hcapi2.ServerTypeClient {
+func (c *Client) ServerType() hcapi2.ServerTypeClient {
 	return c.ServerTypeClient
 }
 
-func (c *MockClient) SSHKey() hcapi2.SSHKeyClient {
+func (c *Client) SSHKey() hcapi2.SSHKeyClient {
 	return c.SSHKeyClient
 }
 
-func (c *MockClient) Volume() hcapi2.VolumeClient {
+func (c *Client) Volume() hcapi2.VolumeClient {
 	return c.VolumeClient
 }
-func (c *MockClient) RDNS() hcapi2.RDNSClient {
+func (c *Client) RDNS() hcapi2.RDNSClient {
 	return c.RDNSClient
 }
 
-func (c *MockClient) PlacementGroup() hcapi2.PlacementGroupClient {
+func (c *Client) PlacementGroup() hcapi2.PlacementGroupClient {
 	return c.PlacementGroupClient
 }
 
-func (c *MockClient) Pricing() hcapi2.PricingClient {
+func (c *Client) Pricing() hcapi2.PricingClient {
 	return c.PricingClient
 }
 
-func (*MockClient) WithOpts(_ ...hcloud.ClientOption) {
+func (*Client) WithOpts(_ ...hcloud.ClientOption) {
 	// no-op
 }
 
-func (*MockClient) FromConfig(_ config.Config) {
+func (*Client) FromConfig(_ config.Config) {
 	// no-op
 }

@@ -312,7 +312,6 @@ func (o *Option[T]) HasFlags(src OptionFlag) bool {
 
 func (o *Option[T]) GetFlags() OptionFlag {
 	return o.Flags
-
 }
 
 func (o *Option[T]) GetName() string {
@@ -358,8 +357,9 @@ func (o *Option[T]) Completions() []string {
 	switch any(t).(type) {
 	case bool:
 		return []string{"true", "false"}
+	default:
+		return nil
 	}
-	return nil
 }
 
 func (o *Option[T]) Parse(values []string) (any, error) {

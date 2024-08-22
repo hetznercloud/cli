@@ -31,7 +31,7 @@ var ListCmd = base.ListCmd{
 		return resources, err
 	},
 
-	OutputTable: func(client hcapi2.Client) *output.Table {
+	OutputTable: func(hcapi2.Client) *output.Table {
 		return output.NewTable().
 			AddAllowedFields(hcloud.LoadBalancerType{})
 	},

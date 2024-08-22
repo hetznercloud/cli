@@ -24,7 +24,7 @@ var ChangeIPRangeCmd = base.Cmd{
 		}
 
 		cmd.Flags().IPNet("ip-range", net.IPNet{}, "New IP range (required)")
-		cmd.MarkFlagRequired("ip-range")
+		_ = cmd.MarkFlagRequired("ip-range")
 
 		return cmd
 	},
@@ -48,7 +48,7 @@ var ChangeIPRangeCmd = base.Cmd{
 			return err
 		}
 
-		if err := s.WaitForActions(cmd, s, action); err != nil {
+		if err := s.WaitForActions(s, cmd, action); err != nil {
 			return err
 		}
 		cmd.Printf("IP range of network %d changed\n", network.ID)

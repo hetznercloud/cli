@@ -22,10 +22,10 @@ var EnableRescueCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 		cmd.Flags().String("type", "linux64", "Rescue type")
-		cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("linux64"))
+		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("linux64"))
 
 		cmd.Flags().StringSlice("ssh-key", nil, "ID or name of SSH key to inject (can be specified multiple times)")
-		cmd.RegisterFlagCompletionFunc("ssh-key", cmpl.SuggestCandidatesF(client.SSHKey().Names))
+		_ = cmd.RegisterFlagCompletionFunc("ssh-key", cmpl.SuggestCandidatesF(client.SSHKey().Names))
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
@@ -70,7 +70,7 @@ var EnableRescueCmd = base.Cmd{
 			return err
 		}
 
-		if err := s.WaitForActions(cmd, s, result.Action); err != nil {
+		if err := s.WaitForActions(s, cmd, result.Action); err != nil {
 			return err
 		}
 

@@ -53,25 +53,25 @@ linters:
   enable:
     - bodyclose
     # - dupl
-    # - errcheck
+    - errcheck
     - exhaustive
-    # - gocritic
+    - gocritic
     # - golint
     - gci
     - gomodguard
     - gosec
-    # - gosimple
+    - gosimple
     - govet
-    # - ineffassign
-    # - misspell
-    # - revive
+    - ineffassign
+    - misspell
+    - revive
     - rowserrcheck
     # - scopelint
     # - staticcheck
     - typecheck
-    # - unparam
+    - unparam
     - unused
-    # - whitespace
+    - whitespace
 
 issues:
   include:

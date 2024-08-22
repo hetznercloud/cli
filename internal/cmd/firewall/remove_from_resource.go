@@ -22,11 +22,11 @@ var RemoveFromResourceCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 		cmd.Flags().String("type", "", "Resource Type (server) (required)")
-		cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("server", "label_selector"))
-		cmd.MarkFlagRequired("type")
+		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("server", "label_selector"))
+		_ = cmd.MarkFlagRequired("type")
 
 		cmd.Flags().String("server", "", "Server name of ID (required when type is server)")
-		cmd.RegisterFlagCompletionFunc("server", cmpl.SuggestCandidatesF(client.Server().Names))
+		_ = cmd.RegisterFlagCompletionFunc("server", cmpl.SuggestCandidatesF(client.Server().Names))
 
 		cmd.Flags().StringP("label-selector", "l", "", "Label Selector")
 		return cmd
@@ -48,7 +48,7 @@ var RemoveFromResourceCmd = base.Cmd{
 		default:
 			return fmt.Errorf("unknown type %s", resourceType)
 		}
-		serverIdOrName, _ := cmd.Flags().GetString("server")
+		serverIDOrName, _ := cmd.Flags().GetString("server")
 		labelSelector, _ := cmd.Flags().GetString("label-selector")
 
 		idOrName := args[0]
@@ -63,12 +63,12 @@ var RemoveFromResourceCmd = base.Cmd{
 
 		switch opts.Type {
 		case hcloud.FirewallResourceTypeServer:
-			server, _, err := s.Client().Server().Get(s, serverIdOrName)
+			server, _, err := s.Client().Server().Get(s, serverIDOrName)
 			if err != nil {
 				return err
 			}
 			if server == nil {
-				return fmt.Errorf("Server not found: %v", serverIdOrName)
+				return fmt.Errorf("Server not found: %v", serverIDOrName)
 			}
 			opts.Server = &hcloud.FirewallResourceServer{ID: server.ID}
 		case hcloud.FirewallResourceTypeLabelSelector:
@@ -80,7 +80,7 @@ var RemoveFromResourceCmd = base.Cmd{
 		if err != nil {
 			return err
 		}
-		if err := s.WaitForActions(cmd, s, actions...); err != nil {
+		if err := s.WaitForActions(s, cmd, actions...); err != nil {
 			return err
 		}
 		cmd.Printf("Firewall %d removed from resource\n", firewall.ID)

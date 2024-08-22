@@ -16,7 +16,6 @@ import (
 )
 
 func getChangeProtectionOpts(enable bool, flags []string) (hcloud.ImageChangeProtectionOpts, error) {
-
 	opts := hcloud.ImageChangeProtectionOpts{}
 
 	var unknown []string
@@ -37,7 +36,6 @@ func getChangeProtectionOpts(enable bool, flags []string) (hcloud.ImageChangePro
 
 func changeProtection(s state.State, cmd *cobra.Command,
 	image *hcloud.Image, enable bool, opts hcloud.ImageChangeProtectionOpts) error {
-
 	if opts.Delete == nil {
 		return nil
 	}
@@ -47,7 +45,7 @@ func changeProtection(s state.State, cmd *cobra.Command,
 		return err
 	}
 
-	if err := s.WaitForActions(cmd, s, action); err != nil {
+	if err := s.WaitForActions(s, cmd, action); err != nil {
 		return err
 	}
 

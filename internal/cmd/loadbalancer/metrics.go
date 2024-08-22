@@ -39,8 +39,8 @@ var MetricsCmd = base.Cmd{
 		}
 
 		cmd.Flags().StringSlice("type", nil, "Types of metrics you want to show")
-		cmd.MarkFlagRequired("type")
-		cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates(metricTypeStrings...))
+		_ = cmd.MarkFlagRequired("type")
+		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates(metricTypeStrings...))
 
 		cmd.Flags().String("start", "", "ISO 8601 timestamp")
 		cmd.Flags().String("end", "", "ISO 8601 timestamp")
@@ -105,9 +105,8 @@ var MetricsCmd = base.Cmd{
 			}
 			if outputFlags.IsSet("json") {
 				return util.DescribeJSON(schema)
-			} else {
-				return util.DescribeYAML(schema)
 			}
+			return util.DescribeYAML(schema)
 		default:
 			var keys []string
 			for k := range m.TimeSeries {

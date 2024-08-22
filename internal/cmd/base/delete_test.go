@@ -19,13 +19,13 @@ var mu = sync.Mutex{}
 var fakeDeleteCmd = &base.DeleteCmd{
 	ResourceNameSingular: "Fake resource",
 	ResourceNamePlural:   "Fake resources",
-	Delete: func(s state.State, cmd *cobra.Command, resource interface{}) (*hcloud.Action, error) {
+	Delete: func(_ state.State, cmd *cobra.Command, _ interface{}) (*hcloud.Action, error) {
 		defer mu.Unlock()
 		cmd.Println("Deleting fake resource")
 		return nil, nil
 	},
 
-	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
+	Fetch: func(_ state.State, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
 		mu.Lock()
 		cmd.Println("Fetching fake resource")
 
@@ -42,7 +42,7 @@ var fakeDeleteCmd = &base.DeleteCmd{
 		return resource, nil, nil
 	},
 
-	NameSuggestions: func(client hcapi2.Client) func() []string {
+	NameSuggestions: func(hcapi2.Client) func() []string {
 		return nil
 	},
 }

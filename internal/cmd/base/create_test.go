@@ -18,12 +18,12 @@ type fakeResource struct {
 }
 
 var fakeCreateCmd = &base.CreateCmd{
-	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
+	BaseCobraCommand: func(hcapi2.Client) *cobra.Command {
 		return &cobra.Command{
 			Use: "create",
 		}
 	},
-	Run: func(s state.State, cmd *cobra.Command, strings []string) (any, any, error) {
+	Run: func(_ state.State, cmd *cobra.Command, _ []string) (any, any, error) {
 		cmd.Println("Creating fake resource")
 
 		resource := &fakeResource{

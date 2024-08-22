@@ -24,12 +24,12 @@ var AddSubnetCmd = base.Cmd{
 		}
 
 		cmd.Flags().String("type", "", "Type of subnet (required)")
-		cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("cloud", "server", "vswitch"))
-		cmd.MarkFlagRequired("type")
+		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("cloud", "server", "vswitch"))
+		_ = cmd.MarkFlagRequired("type")
 
 		cmd.Flags().String("network-zone", "", "Name of network zone (required)")
-		cmd.RegisterFlagCompletionFunc("network-zone", cmpl.SuggestCandidatesF(client.Location().NetworkZones))
-		cmd.MarkFlagRequired("network-zone")
+		_ = cmd.RegisterFlagCompletionFunc("network-zone", cmpl.SuggestCandidatesF(client.Location().NetworkZones))
+		_ = cmd.MarkFlagRequired("network-zone")
 
 		cmd.Flags().IPNet("ip-range", net.IPNet{}, "Range to allocate IPs from")
 
@@ -69,7 +69,7 @@ var AddSubnetCmd = base.Cmd{
 		if err != nil {
 			return err
 		}
-		if err := s.WaitForActions(cmd, s, action); err != nil {
+		if err := s.WaitForActions(s, cmd, action); err != nil {
 			return err
 		}
 		cmd.Printf("Subnet added to network %d\n", network.ID)

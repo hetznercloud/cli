@@ -23,8 +23,8 @@ var AttachToNetworkCmd = base.Cmd{
 		}
 
 		cmd.Flags().StringP("network", "n", "", "Network (ID or name) (required)")
-		cmd.RegisterFlagCompletionFunc("network", cmpl.SuggestCandidatesF(client.Network().Names))
-		cmd.MarkFlagRequired("network")
+		_ = cmd.RegisterFlagCompletionFunc("network", cmpl.SuggestCandidatesF(client.Network().Names))
+		_ = cmd.MarkFlagRequired("network")
 
 		cmd.Flags().IP("ip", nil, "IP address to assign to the Load Balancer (auto-assigned if omitted)")
 
@@ -61,7 +61,7 @@ var AttachToNetworkCmd = base.Cmd{
 			return err
 		}
 
-		if err := s.WaitForActions(cmd, s, action); err != nil {
+		if err := s.WaitForActions(s, cmd, action); err != nil {
 			return err
 		}
 

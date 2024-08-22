@@ -34,7 +34,7 @@ var ListCmd = base.ListCmd{
 		return resources, err
 	},
 
-	OutputTable: func(client hcapi2.Client) *output.Table {
+	OutputTable: func(hcapi2.Client) *output.Table {
 		return output.NewTable().
 			AddAllowedFields(hcloud.ServerType{}).
 			AddFieldAlias("storagetype", "storage type").
@@ -46,7 +46,7 @@ var ListCmd = base.ListCmd{
 				serverType := obj.(*hcloud.ServerType)
 				return fmt.Sprintf("%d GB", serverType.Disk)
 			})).
-			AddFieldFn("traffic", func(obj interface{}) string {
+			AddFieldFn("traffic", func(interface{}) string {
 				// Was deprecated and traffic is now set per location, only available through describe.
 				// Field was kept to avoid returning errors if people explicitly request the column.
 				return "-"

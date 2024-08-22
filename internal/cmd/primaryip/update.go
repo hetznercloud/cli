@@ -14,7 +14,7 @@ var UpdateCmd = base.UpdateCmd{
 	ResourceNameSingular: "Primary IP",
 	ShortDescription:     "Update a Primary IP",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.PrimaryIP().Names },
-	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
+	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
 		return s.Client().PrimaryIP().Get(s, idOrName)
 	},
 	DefineFlags: func(cmd *cobra.Command) {

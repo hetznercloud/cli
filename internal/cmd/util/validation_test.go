@@ -92,9 +92,8 @@ func TestValidate(t *testing.T) {
 				cmd := &cobra.Command{Use: test.use}
 				if test.lenient {
 					return util.ValidateLenient(cmd, test.args)
-				} else {
-					return util.Validate(cmd, test.args)
 				}
+				return util.Validate(cmd, test.args)
 			})
 
 			assert.Equal(t, test.expectedStdout, stdout)

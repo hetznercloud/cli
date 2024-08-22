@@ -42,7 +42,7 @@ var ResetPasswordCmd = base.Cmd{
 			return err
 		}
 
-		if err := s.WaitForActions(cmd, s, result.Action); err != nil {
+		if err := s.WaitForActions(s, cmd, result.Action); err != nil {
 			return err
 		}
 
@@ -51,9 +51,8 @@ var ResetPasswordCmd = base.Cmd{
 			schema["root_password"] = result.RootPassword
 			if outputFlags.IsSet("json") {
 				return util.DescribeJSON(schema)
-			} else {
-				return util.DescribeYAML(schema)
 			}
+			return util.DescribeYAML(schema)
 		}
 
 		cmd.Printf("Password of server %d reset to: %s\n", server.ID, result.RootPassword)

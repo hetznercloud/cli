@@ -33,7 +33,7 @@ func TestWaitForActionsSuccess(t *testing.T) {
 
 	client.EXPECT().
 		WaitForFunc(gomock.Any(), gomock.Any(), action).
-		DoAndReturn(func(ctx context.Context, handleUpdate func(update *hcloud.Action) error, actions ...*hcloud.Action) error {
+		DoAndReturn(func(_ context.Context, handleUpdate func(update *hcloud.Action) error, _ ...*hcloud.Action) error {
 			assert.NoError(t, handleUpdate(action))
 			action.Status = hcloud.ActionStatusRunning
 			assert.NoError(t, handleUpdate(action))
@@ -44,7 +44,7 @@ func TestWaitForActionsSuccess(t *testing.T) {
 		})
 
 	stderr := captureStderr(t, func() {
-		waitForActions(client, context.Background(), action)
+		_ = waitForActions(context.Background(), client, action)
 	})
 
 	assert.Equal(t,
@@ -74,7 +74,7 @@ func TestWaitForActionsError(t *testing.T) {
 	client := hcapi2_mock.NewMockActionClient(ctrl)
 	client.EXPECT().
 		WaitForFunc(gomock.Any(), gomock.Any(), action).
-		DoAndReturn(func(ctx context.Context, handleUpdate func(update *hcloud.Action) error, actions ...*hcloud.Action) error {
+		DoAndReturn(func(_ context.Context, handleUpdate func(update *hcloud.Action) error, _ ...*hcloud.Action) error {
 			assert.NoError(t, handleUpdate(action))
 			action.Status = hcloud.ActionStatusRunning
 			assert.NoError(t, handleUpdate(action))
@@ -87,7 +87,7 @@ func TestWaitForActionsError(t *testing.T) {
 		})
 
 	stderr := captureStderr(t, func() {
-		waitForActions(client, context.Background(), action)
+		_ = waitForActions(context.Background(), client, action)
 	})
 
 	assert.Equal(t,

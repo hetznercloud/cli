@@ -15,7 +15,7 @@ import (
 var fakeDescribeCmd = &base.DescribeCmd{
 	ResourceNameSingular: "Fake resource",
 
-	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
+	Fetch: func(_ state.State, cmd *cobra.Command, _ string) (interface{}, interface{}, error) {
 		cmd.Println("Fetching fake resource")
 
 		resource := &fakeResource{
@@ -26,14 +26,14 @@ var fakeDescribeCmd = &base.DescribeCmd{
 		return resource, util.Wrap("resource", resource), nil
 	},
 
-	PrintText: func(s state.State, cmd *cobra.Command, resource interface{}) error {
+	PrintText: func(_ state.State, cmd *cobra.Command, resource interface{}) error {
 		rsc := resource.(*fakeResource)
 		cmd.Printf("ID: %d\n", rsc.ID)
 		cmd.Printf("Name: %s\n", rsc.Name)
 		return nil
 	},
 
-	NameSuggestions: func(client hcapi2.Client) func() []string {
+	NameSuggestions: func(hcapi2.Client) func() []string {
 		return nil
 	},
 }

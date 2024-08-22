@@ -16,14 +16,14 @@ var DescribeCmd = base.DescribeCmd{
 	JSONKeyGetByID:       "location",
 	JSONKeyGetByName:     "locations",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Location().Names },
-	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
+	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, interface{}, error) {
 		l, _, err := s.Client().Location().Get(s, idOrName)
 		if err != nil {
 			return nil, nil, err
 		}
 		return l, hcloud.SchemaFromLocation(l), nil
 	},
-	PrintText: func(s state.State, cmd *cobra.Command, resource interface{}) error {
+	PrintText: func(_ state.State, cmd *cobra.Command, resource interface{}) error {
 		location := resource.(*hcloud.Location)
 
 		cmd.Printf("ID:\t\t%d\n", location.ID)

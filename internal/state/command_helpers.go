@@ -11,7 +11,7 @@ import (
 //go:generate go run github.com/golang/mock/mockgen -package state -destination zz_command_helper_mock.go . ActionWaiter,TokenEnsurer
 
 type ActionWaiter interface {
-	WaitForActions(*cobra.Command, context.Context, ...*hcloud.Action) error
+	WaitForActions(context.Context, *cobra.Command, ...*hcloud.Action) error
 }
 
 type TokenEnsurer interface {

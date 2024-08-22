@@ -31,7 +31,6 @@ func (t testDeprecatable) DeprecationAnnounced() time.Time {
 }
 
 func TestDescribeDeprecation(t *testing.T) {
-
 	time.Local = time.UTC
 
 	type testCase struct {

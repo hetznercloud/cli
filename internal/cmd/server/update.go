@@ -14,13 +14,13 @@ var UpdateCmd = base.UpdateCmd{
 	ResourceNameSingular: "Server",
 	ShortDescription:     "Update a Server",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Server().Names },
-	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
+	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
 		return s.Client().Server().Get(s, idOrName)
 	},
 	DefineFlags: func(cmd *cobra.Command) {
 		cmd.Flags().String("name", "", "Server name")
 	},
-	Update: func(s state.State, cmd *cobra.Command, resource interface{}, flags map[string]pflag.Value) error {
+	Update: func(s state.State, _ *cobra.Command, resource interface{}, flags map[string]pflag.Value) error {
 		floatingIP := resource.(*hcloud.Server)
 		updOpts := hcloud.ServerUpdateOpts{
 			Name: flags["name"].String(),

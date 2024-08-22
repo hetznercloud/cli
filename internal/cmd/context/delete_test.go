@@ -10,7 +10,6 @@ import (
 )
 
 func TestDelete(t *testing.T) {
-
 	testConfig := `
 active_context = "my-context"
 

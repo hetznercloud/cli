@@ -14,7 +14,6 @@ import (
 )
 
 func getChangeProtectionOpts(enable bool, flags []string) (hcloud.ServerChangeProtectionOpts, error) {
-
 	opts := hcloud.ServerChangeProtectionOpts{}
 
 	var unknown []string
@@ -37,7 +36,6 @@ func getChangeProtectionOpts(enable bool, flags []string) (hcloud.ServerChangePr
 
 func changeProtection(s state.State, cmd *cobra.Command,
 	server *hcloud.Server, enable bool, opts hcloud.ServerChangeProtectionOpts) error {
-
 	if opts.Delete == nil && opts.Rebuild == nil {
 		return nil
 	}
@@ -47,7 +45,7 @@ func changeProtection(s state.State, cmd *cobra.Command,
 		return err
 	}
 
-	if err := s.WaitForActions(cmd, s, action); err != nil {
+	if err := s.WaitForActions(s, cmd, action); err != nil {
 		return err
 	}
 

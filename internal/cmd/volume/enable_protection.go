@@ -14,7 +14,6 @@ import (
 )
 
 func getChangeProtectionOpts(enable bool, flags []string) (hcloud.VolumeChangeProtectionOpts, error) {
-
 	opts := hcloud.VolumeChangeProtectionOpts{}
 
 	var unknown []string
@@ -35,7 +34,6 @@ func getChangeProtectionOpts(enable bool, flags []string) (hcloud.VolumeChangePr
 
 func changeProtection(s state.State, cmd *cobra.Command,
 	volume *hcloud.Volume, enable bool, opts hcloud.VolumeChangeProtectionOpts) error {
-
 	if opts.Delete == nil {
 		return nil
 	}
@@ -45,7 +43,7 @@ func changeProtection(s state.State, cmd *cobra.Command,
 		return err
 	}
 
-	if err := s.WaitForActions(cmd, s, action); err != nil {
+	if err := s.WaitForActions(s, cmd, action); err != nil {
 		return err
 	}
 

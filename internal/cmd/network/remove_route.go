@@ -24,10 +24,10 @@ var RemoveRouteCmd = base.Cmd{
 		}
 
 		cmd.Flags().IPNet("destination", net.IPNet{}, "Destination network or host (required)")
-		cmd.MarkFlagRequired("destination")
+		_ = cmd.MarkFlagRequired("destination")
 
 		cmd.Flags().IP("gateway", net.IP{}, "Gateway IP address (required)")
-		cmd.MarkFlagRequired("gateway")
+		_ = cmd.MarkFlagRequired("gateway")
 
 		return cmd
 	},
@@ -53,7 +53,7 @@ var RemoveRouteCmd = base.Cmd{
 		if err != nil {
 			return err
 		}
-		if err := s.WaitForActions(cmd, s, action); err != nil {
+		if err := s.WaitForActions(s, cmd, action); err != nil {
 			return err
 		}
 		cmd.Printf("Route removed from network %d\n", network.ID)

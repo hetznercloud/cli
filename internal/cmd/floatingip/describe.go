@@ -17,7 +17,7 @@ var DescribeCmd = base.DescribeCmd{
 	JSONKeyGetByID:       "floating_ip",
 	JSONKeyGetByName:     "floating_ips",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.FloatingIP().Names },
-	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
+	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, interface{}, error) {
 		ip, _, err := s.Client().FloatingIP().Get(s, idOrName)
 		if err != nil {
 			return nil, nil, err

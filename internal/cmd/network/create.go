@@ -14,27 +14,27 @@ import (
 )
 
 var CreateCmd = base.CreateCmd{
-	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
+	BaseCobraCommand: func(hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:   "create [options] --name <name> --ip-range <ip-range>",
 			Short: "Create a network",
 		}
 
 		cmd.Flags().String("name", "", "Network name (required)")
-		cmd.MarkFlagRequired("name")
+		_ = cmd.MarkFlagRequired("name")
 
 		cmd.Flags().IPNet("ip-range", net.IPNet{}, "Network IP range (required)")
-		cmd.MarkFlagRequired("ip-range")
+		_ = cmd.MarkFlagRequired("ip-range")
 
 		cmd.Flags().Bool("expose-routes-to-vswitch", false, "Expose routes from this network to the vSwitch connection. It only takes effect if a vSwitch connection is active.")
 
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 
 		cmd.Flags().StringSlice("enable-protection", []string{}, "Enable protection (delete) (default: none)")
-		cmd.RegisterFlagCompletionFunc("enable-protection", cmpl.SuggestCandidates("delete"))
+		_ = cmd.RegisterFlagCompletionFunc("enable-protection", cmpl.SuggestCandidates("delete"))
 		return cmd
 	},
-	Run: func(s state.State, cmd *cobra.Command, args []string) (any, any, error) {
+	Run: func(s state.State, cmd *cobra.Command, _ []string) (any, any, error) {
 		name, _ := cmd.Flags().GetString("name")
 		ipRange, _ := cmd.Flags().GetIPNet("ip-range")
 		labels, _ := cmd.Flags().GetStringToString("label")

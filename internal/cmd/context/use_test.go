@@ -10,7 +10,6 @@ import (
 )
 
 func TestUse(t *testing.T) {
-
 	testConfig := `active_context = "my-context"
 
 [[contexts]]

@@ -24,8 +24,8 @@ var AssignCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 		cmd.Flags().String("server", "", "Name or ID of the server")
-		cmd.RegisterFlagCompletionFunc("server", cmpl.SuggestCandidatesF(client.Server().Names))
-		cmd.MarkFlagRequired("server")
+		_ = cmd.RegisterFlagCompletionFunc("server", cmpl.SuggestCandidatesF(client.Server().Names))
+		_ = cmd.MarkFlagRequired("server")
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
@@ -58,7 +58,7 @@ var AssignCmd = base.Cmd{
 			return err
 		}
 
-		if err := s.WaitForActions(cmd, s, action); err != nil {
+		if err := s.WaitForActions(s, cmd, action); err != nil {
 			return err
 		}
 

@@ -63,12 +63,12 @@ func AddFlag(cmd *cobra.Command, options ...Option) {
 		[]string{},
 		fmt.Sprintf("output options: %s", strings.Join(names, "|")),
 	)
-	cmd.RegisterFlagCompletionFunc(flagName, cmpl.SuggestCandidates(values...))
+	_ = cmd.RegisterFlagCompletionFunc(flagName, cmpl.SuggestCandidates(values...))
 	cmd.PreRunE = util.ChainRunE(cmd.PreRunE, validateOutputFlag(options))
 }
 
 func validateOutputFlag(options []Option) func(cmd *cobra.Command, args []string) error {
-	return func(cmd *cobra.Command, args []string) error {
+	return func(cmd *cobra.Command, _ []string) error {
 		validOptions := map[string]map[string]bool{}
 		for _, option := range options {
 			if option.Values == nil {
@@ -254,7 +254,7 @@ func (o *Table) WriteHeader(columns []string) {
 		if alias, ok := o.fieldAlias[col]; ok {
 			col = alias
 		}
-		header = append(header, strings.Replace(strings.ToUpper(col), "_", " ", -1))
+		header = append(header, strings.ReplaceAll(strings.ToUpper(col), "_", " "))
 	}
 	_, _ = fmt.Fprintln(o.w, strings.Join(header, "\t"))
 }
@@ -284,7 +284,7 @@ func (o *Table) Write(columns []string, obj interface{}) {
 			out = append(out, fn(obj))
 			continue
 		}
-		if value, ok := dataL[strings.Replace(colName, "_", "", -1)]; ok {
+		if value, ok := dataL[strings.ReplaceAll(colName, "_", "")]; ok {
 			if value == nil {
 				out = append(out, util.NA(""))
 				continue

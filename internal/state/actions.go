@@ -13,7 +13,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-func (c *state) WaitForActions(cmd *cobra.Command, ctx context.Context, actions ...*hcloud.Action) error {
+func (c *state) WaitForActions(ctx context.Context, _ *cobra.Command, actions ...*hcloud.Action) error {
 	quiet, err := config.OptionQuiet.Get(c.Config())
 	if err != nil {
 		return err
@@ -22,10 +22,10 @@ func (c *state) WaitForActions(cmd *cobra.Command, ctx context.Context, actions 
 		return c.Client().Action().WaitFor(ctx, actions...)
 	}
 
-	return waitForActions(c.Client().Action(), ctx, actions...)
+	return waitForActions(ctx, c.Client().Action(), actions...)
 }
 
-func waitForActions(client hcapi2.ActionClient, ctx context.Context, actions ...*hcloud.Action) (err error) {
+func waitForActions(ctx context.Context, client hcapi2.ActionClient, actions ...*hcloud.Action) (err error) {
 	progressGroup := ui.NewProgressGroup(os.Stderr)
 	progressByAction := make(map[int64]ui.Progress, len(actions))
 	for _, action := range actions {

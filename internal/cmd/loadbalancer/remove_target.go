@@ -25,7 +25,7 @@ var RemoveTargetCmd = base.Cmd{
 		}
 
 		cmd.Flags().String("server", "", "Name or ID of the server")
-		cmd.RegisterFlagCompletionFunc("server", cmpl.SuggestCandidatesF(client.Server().Names))
+		_ = cmd.RegisterFlagCompletionFunc("server", cmpl.SuggestCandidatesF(client.Server().Names))
 
 		cmd.Flags().String("label-selector", "", "Label Selector")
 
@@ -87,7 +87,7 @@ var RemoveTargetCmd = base.Cmd{
 			return fmt.Errorf("specify one of --server, --label-selector, or --ip")
 		}
 
-		if err := s.WaitForActions(cmd, s, action); err != nil {
+		if err := s.WaitForActions(s, cmd, action); err != nil {
 			return err
 		}
 		cmd.Printf("Target removed from Load Balancer %d\n", loadBalancer.ID)

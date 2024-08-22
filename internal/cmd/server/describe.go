@@ -19,7 +19,7 @@ var DescribeCmd = base.DescribeCmd{
 	JSONKeyGetByID:       "server",
 	JSONKeyGetByName:     "servers",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Server().Names },
-	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
+	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, interface{}, error) {
 		srv, _, err := s.Client().Server().Get(s, idOrName)
 		if err != nil {
 			return nil, nil, err

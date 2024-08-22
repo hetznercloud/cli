@@ -33,15 +33,15 @@ func TestDatetime(t *testing.T) {
 
 func TestChainRunE(t *testing.T) {
 	var calls int
-	f1 := func(_ *cobra.Command, args []string) error {
+	f1 := func(*cobra.Command, []string) error {
 		calls++
 		return nil
 	}
-	f2 := func(_ *cobra.Command, args []string) error {
+	f2 := func(*cobra.Command, []string) error {
 		calls++
 		return errors.New("error")
 	}
-	f3 := func(_ *cobra.Command, args []string) error {
+	f3 := func(*cobra.Command, []string) error {
 		calls++
 		return nil
 	}
@@ -61,7 +61,7 @@ func TestOnlyOneSet(t *testing.T) {
 		expected bool
 	}{
 		{
-			name:     "only arg emtpy",
+			name:     "only arg empty",
 			expected: false,
 		},
 		{
@@ -378,8 +378,10 @@ func TestParseBoolLenient(t *testing.T) {
 	assert.False(t, b)
 	b, err = util.ParseBoolLenient("invalid")
 	assert.EqualError(t, err, "invalid boolean value: invalid")
+	assert.False(t, b)
 	b, err = util.ParseBoolLenient("")
 	assert.EqualError(t, err, "invalid boolean value: ")
+	assert.False(t, b)
 }
 
 func TestBoolFromAny(t *testing.T) {

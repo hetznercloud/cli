@@ -24,7 +24,7 @@ var UpdateServiceCmd = base.Cmd{
 		}
 
 		cmd.Flags().Int("listen-port", 0, "The listen port of the service that you want to update (required)")
-		cmd.MarkFlagRequired("listen-port")
+		_ = cmd.MarkFlagRequired("listen-port")
 
 		cmd.Flags().Int("destination-port", 0, "Destination port of the service on the targets")
 
@@ -162,7 +162,7 @@ var UpdateServiceCmd = base.Cmd{
 		if err != nil {
 			return err
 		}
-		if err := s.WaitForActions(cmd, s, action); err != nil {
+		if err := s.WaitForActions(s, cmd, action); err != nil {
 			return err
 		}
 		cmd.Printf("Service %d on Load Balancer %d was updated\n", listenPort, loadBalancer.ID)

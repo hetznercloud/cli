@@ -23,7 +23,7 @@ func TestSSH(t *testing.T) {
 		},
 	}
 
-	preRun := func(t *testing.T, fx *testutil.Fixture) {
+	preRun := func(_ *testing.T, fx *testutil.Fixture) {
 		fx.Client.ServerClient.EXPECT().
 			Get(gomock.Any(), srv.Name).
 			Return(&srv, nil, nil)
@@ -43,5 +43,4 @@ func TestSSH(t *testing.T) {
 			ExpOut: "-l root -p 22 192.168.0.2 ls -al\n",
 		},
 	})
-
 }

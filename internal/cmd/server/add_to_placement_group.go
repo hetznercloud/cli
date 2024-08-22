@@ -20,8 +20,8 @@ var AddToPlacementGroupCmd = base.Cmd{
 		}
 
 		cmd.Flags().StringP("placement-group", "g", "", "Placement Group (ID or name) (required)")
-		cmd.RegisterFlagCompletionFunc("placement-group", cmpl.SuggestCandidatesF(client.PlacementGroup().Names))
-		cmd.MarkFlagRequired(("placement-group"))
+		_ = cmd.RegisterFlagCompletionFunc("placement-group", cmpl.SuggestCandidatesF(client.PlacementGroup().Names))
+		_ = cmd.MarkFlagRequired(("placement-group"))
 
 		return cmd
 	},
@@ -49,7 +49,7 @@ var AddToPlacementGroupCmd = base.Cmd{
 			return err
 		}
 
-		if err := s.WaitForActions(cmd, s, action); err != nil {
+		if err := s.WaitForActions(s, cmd, action); err != nil {
 			return err
 		}
 

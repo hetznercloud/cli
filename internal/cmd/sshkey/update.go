@@ -14,13 +14,13 @@ var UpdateCmd = base.UpdateCmd{
 	ResourceNameSingular: "SSHKey",
 	ShortDescription:     "Update a SSHKey",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.SSHKey().Names },
-	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
+	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
 		return s.Client().SSHKey().Get(s, idOrName)
 	},
 	DefineFlags: func(cmd *cobra.Command) {
 		cmd.Flags().String("name", "", "SSH Key name")
 	},
-	Update: func(s state.State, cmd *cobra.Command, resource interface{}, flags map[string]pflag.Value) error {
+	Update: func(s state.State, _ *cobra.Command, resource interface{}, flags map[string]pflag.Value) error {
 		floatingIP := resource.(*hcloud.SSHKey)
 		updOpts := hcloud.SSHKeyUpdateOpts{
 			Name: flags["name"].String(),

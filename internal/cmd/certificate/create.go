@@ -15,19 +15,19 @@ import (
 )
 
 var CreateCmd = base.CreateCmd{
-	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
+	BaseCobraCommand: func(hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:   "create [options] --name <name> (--type managed --domain <domain> | --type uploaded --cert-file <file> --key-file <file>)",
 			Short: "Create or upload a Certificate",
 		}
 
 		cmd.Flags().String("name", "", "Certificate name (required)")
-		cmd.MarkFlagRequired("name")
+		_ = cmd.MarkFlagRequired("name")
 
 		cmd.Flags().StringP("type", "t", string(hcloud.CertificateTypeUploaded),
 			fmt.Sprintf("Type of certificate to create. Valid choices: %v, %v",
 				hcloud.CertificateTypeUploaded, hcloud.CertificateTypeManaged))
-		cmd.RegisterFlagCompletionFunc(
+		_ = cmd.RegisterFlagCompletionFunc(
 			"type",
 			cmpl.SuggestCandidates(string(hcloud.CertificateTypeUploaded), string(hcloud.CertificateTypeManaged)),
 		)
@@ -39,7 +39,7 @@ var CreateCmd = base.CreateCmd{
 
 		return cmd
 	},
-	Run: func(s state.State, cmd *cobra.Command, strings []string) (any, any, error) {
+	Run: func(s state.State, cmd *cobra.Command, _ []string) (any, any, error) {
 		certType, err := cmd.Flags().GetString("type")
 		if err != nil {
 			return nil, nil, err
@@ -129,7 +129,7 @@ func createManaged(s state.State, cmd *cobra.Command) (*hcloud.Certificate, erro
 	if err != nil {
 		return nil, err
 	}
-	if err := s.WaitForActions(cmd, s, res.Action); err != nil {
+	if err := s.WaitForActions(s, cmd, res.Action); err != nil {
 		return nil, err
 	}
 	defer cmd.Printf("Certificate %d created\n", res.Certificate.ID)

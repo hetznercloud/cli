@@ -20,11 +20,11 @@ func (p Preferences) Get(key string) (any, bool) {
 			val, ok := m[key]
 			return val, ok
 		}
-		if next, ok := m[key].(map[string]any); !ok {
+		next, ok := m[key].(map[string]any)
+		if !ok {
 			break
-		} else {
-			m = next
 		}
+		m = next
 	}
 	return nil, false
 }
@@ -66,11 +66,11 @@ func (p Preferences) Unset(key string) bool {
 			}
 			return ok
 		}
-		if next, ok := m[key].(map[string]any); !ok {
+		next, ok := m[key].(map[string]any)
+		if !ok {
 			return false
-		} else {
-			m = next
 		}
+		m = next
 	}
 	return false
 }

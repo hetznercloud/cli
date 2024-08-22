@@ -18,7 +18,6 @@ func (p *scriptProgressGroup) Add(message string, resources string) Progress {
 	progress := newScriptProgress(p.output, message, resources)
 	p.progress = append(p.progress, progress)
 	return progress
-
 }
 
 func (p *scriptProgressGroup) Start() error {
@@ -58,7 +57,7 @@ func (p *scriptProgress) Start() {
 	p.print("")
 }
 
-func (p *scriptProgress) SetCurrent(value int) {
+func (p *scriptProgress) SetCurrent(int) {
 }
 
 func (p *scriptProgress) SetSuccess() {

@@ -28,10 +28,10 @@ var ListCmd = base.ListCmd{
 
 	AdditionalFlags: func(cmd *cobra.Command) {
 		cmd.Flags().StringSliceP("type", "t", []string{}, "Only show images of given type: system|app|snapshot|backup")
-		cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("backup", "snapshot", "system", "app"))
+		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("backup", "snapshot", "system", "app"))
 
 		cmd.Flags().StringSliceP("architecture", "a", []string{}, "Only show images of given architecture: x86|arm")
-		cmd.RegisterFlagCompletionFunc("architecture", cmpl.SuggestCandidates(string(hcloud.ArchitectureX86), string(hcloud.ArchitectureARM)))
+		_ = cmd.RegisterFlagCompletionFunc("architecture", cmpl.SuggestCandidates(string(hcloud.ArchitectureX86), string(hcloud.ArchitectureARM)))
 	},
 	Fetch: func(s state.State, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
 		opts := hcloud.ImageListOpts{ListOpts: listOpts, IncludeDeprecated: true}
@@ -49,7 +49,7 @@ var ListCmd = base.ListCmd{
 			}
 		}
 		if len(unknown) > 0 {
-			return nil, fmt.Errorf("unknown image type: %s\n", strings.Join(unknown, ", "))
+			return nil, fmt.Errorf("unknown image type: %s", strings.Join(unknown, ", "))
 		}
 
 		architecture, _ := flags.GetStringSlice("architecture")

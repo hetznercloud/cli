@@ -22,7 +22,7 @@ var ReplaceRulesCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 		cmd.Flags().String("rules-file", "", "JSON file containing your routes (use - to read from stdin). The structure of the file needs to be the same as within the API: https://docs.hetzner.cloud/#firewalls-get-a-firewall")
-		cmd.MarkFlagRequired("rules-file")
+		_ = cmd.MarkFlagRequired("rules-file")
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
@@ -49,7 +49,7 @@ var ReplaceRulesCmd = base.Cmd{
 		if err != nil {
 			return err
 		}
-		if err := s.WaitForActions(cmd, s, actions...); err != nil {
+		if err := s.WaitForActions(s, cmd, actions...); err != nil {
 			return err
 		}
 		cmd.Printf("Firewall Rules for Firewall %d updated\n", firewall.ID)

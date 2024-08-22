@@ -17,14 +17,14 @@ var DescribeCmd = base.DescribeCmd{
 	JSONKeyGetByID:       "primary_ip",
 	JSONKeyGetByName:     "primary_ips",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.PrimaryIP().Names },
-	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
+	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, interface{}, error) {
 		ip, _, err := s.Client().PrimaryIP().Get(s, idOrName)
 		if err != nil {
 			return nil, nil, err
 		}
 		return ip, hcloud.SchemaFromPrimaryIP(ip), nil
 	},
-	PrintText: func(s state.State, cmd *cobra.Command, resource interface{}) error {
+	PrintText: func(_ state.State, cmd *cobra.Command, resource interface{}) error {
 		primaryIP := resource.(*hcloud.PrimaryIP)
 
 		cmd.Printf("ID:\t\t%d\n", primaryIP.ID)

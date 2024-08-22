@@ -33,24 +33,23 @@ const (
 	DataTypeYAML DataType = "yaml"
 )
 
-func (dt DataType) test(t *testing.T, expected string, actual string, _ ...any) bool {
+func (dt DataType) test(t *testing.T, expected string, actual string, _ ...any) {
 	switch dt {
 	case DataTypeJSON:
-		return assert.JSONEq(t, expected, actual)
+		assert.JSONEq(t, expected, actual)
 	case DataTypeYAML:
 		if json.Valid([]byte(actual)) {
 			t.Error("expected YAML, but got valid JSON")
-			return false
+			return
 		}
-		return assert.YAMLEq(t, expected, actual)
+		assert.YAMLEq(t, expected, actual)
 	default:
-		return assert.Equal(t, expected, actual)
+		assert.Equal(t, expected, actual)
 	}
 }
 
 func TestCommand(t *testing.T, cmd TestableCommand, cases map[string]TestCase) {
 	for name, testCase := range cases {
-
 		if testCase.ExpOutType == "" {
 			testCase.ExpOutType = DataTypeText
 		}

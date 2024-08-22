@@ -12,7 +12,6 @@ import (
 )
 
 func TestShutdown(t *testing.T) {
-
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
@@ -43,7 +42,6 @@ func TestShutdown(t *testing.T) {
 }
 
 func TestShutdownWait(t *testing.T) {
-
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 

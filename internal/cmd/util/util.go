@@ -67,6 +67,8 @@ func GrossPrice(price hcloud.Price) string {
 	switch price.Currency {
 	case "EUR":
 		currencyDisplay = "€"
+	default:
+		// unchanged
 	}
 
 	// The code/symbol and the amount are separated by a non-breaking space:
@@ -164,7 +166,7 @@ func PrefixLines(text, prefix string) string {
 
 func DescribeFormat(object interface{}, format string) error {
 	if !strings.HasSuffix(format, "\n") {
-		format = format + "\n"
+		format += "\n"
 	}
 	t, err := template.New("").Parse(format)
 	if err != nil {

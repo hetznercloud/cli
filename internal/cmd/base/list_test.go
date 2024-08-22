@@ -25,7 +25,7 @@ var fakeListCmd = &base.ListCmd{
 		return i
 	},
 
-	OutputTable: func(client hcapi2.Client) *output.Table {
+	OutputTable: func(hcapi2.Client) *output.Table {
 		return output.NewTable().
 			AddAllowedFields(hcloud.Firewall{}).
 			AddFieldFn("id", func(obj interface{}) string {
@@ -40,7 +40,7 @@ var fakeListCmd = &base.ListCmd{
 
 	DefaultColumns: []string{"id", "name"},
 
-	Fetch: func(s state.State, set *pflag.FlagSet, opts hcloud.ListOpts, sort []string) ([]interface{}, error) {
+	Fetch: func(_ state.State, _ *pflag.FlagSet, _ hcloud.ListOpts, sort []string) ([]interface{}, error) {
 		resources := []*fakeResource{
 			{
 				ID:   456,

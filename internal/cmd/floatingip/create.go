@@ -23,27 +23,27 @@ var CreateCmd = base.CreateCmd{
 			DisableFlagsInUseLine: true,
 		}
 		cmd.Flags().String("type", "", "Type (ipv4 or ipv6) (required)")
-		cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("ipv4", "ipv6"))
-		cmd.MarkFlagRequired("type")
+		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("ipv4", "ipv6"))
+		_ = cmd.MarkFlagRequired("type")
 
 		cmd.Flags().String("description", "", "Description")
 
 		cmd.Flags().String("name", "", "Name")
 
 		cmd.Flags().String("home-location", "", "Home location")
-		cmd.RegisterFlagCompletionFunc("home-location", cmpl.SuggestCandidatesF(client.Location().Names))
+		_ = cmd.RegisterFlagCompletionFunc("home-location", cmpl.SuggestCandidatesF(client.Location().Names))
 
 		cmd.Flags().String("server", "", "Server to assign Floating IP to")
-		cmd.RegisterFlagCompletionFunc("server", cmpl.SuggestCandidatesF(client.Server().Names))
+		_ = cmd.RegisterFlagCompletionFunc("server", cmpl.SuggestCandidatesF(client.Server().Names))
 
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 
 		cmd.Flags().StringSlice("enable-protection", []string{}, "Enable protection (delete) (default: none)")
-		cmd.RegisterFlagCompletionFunc("enable-protection", cmpl.SuggestCandidates("delete"))
+		_ = cmd.RegisterFlagCompletionFunc("enable-protection", cmpl.SuggestCandidates("delete"))
 
 		return cmd
 	},
-	Run: func(s state.State, cmd *cobra.Command, args []string) (any, any, error) {
+	Run: func(s state.State, cmd *cobra.Command, _ []string) (any, any, error) {
 		typ, _ := cmd.Flags().GetString("type")
 		if typ == "" {
 			return nil, nil, errors.New("type is required")
@@ -94,7 +94,7 @@ var CreateCmd = base.CreateCmd{
 		}
 
 		if result.Action != nil {
-			if err := s.WaitForActions(cmd, s, result.Action); err != nil {
+			if err := s.WaitForActions(s, cmd, result.Action); err != nil {
 				return nil, nil, err
 			}
 		}
@@ -108,7 +108,7 @@ var CreateCmd = base.CreateCmd{
 		return result.FloatingIP, util.Wrap("floating_ip", hcloud.SchemaFromFloatingIP(result.FloatingIP)), nil
 	},
 
-	PrintResource: func(s state.State, cmd *cobra.Command, resource any) {
+	PrintResource: func(_ state.State, cmd *cobra.Command, resource any) {
 		floatingIP := resource.(*hcloud.FloatingIP)
 		cmd.Printf("IP%s: %s\n", floatingIP.Type[2:], floatingIP.IP)
 	},

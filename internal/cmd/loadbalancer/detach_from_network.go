@@ -22,8 +22,8 @@ var DetachFromNetworkCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 		cmd.Flags().StringP("network", "n", "", "Network (ID or name) (required)")
-		cmd.RegisterFlagCompletionFunc("network", cmpl.SuggestCandidatesF(client.Network().Names))
-		cmd.MarkFlagRequired("network")
+		_ = cmd.RegisterFlagCompletionFunc("network", cmpl.SuggestCandidatesF(client.Network().Names))
+		_ = cmd.MarkFlagRequired("network")
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
@@ -52,7 +52,7 @@ var DetachFromNetworkCmd = base.Cmd{
 			return err
 		}
 
-		if err := s.WaitForActions(cmd, s, action); err != nil {
+		if err := s.WaitForActions(s, cmd, action); err != nil {
 			return err
 		}
 

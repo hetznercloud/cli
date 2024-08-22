@@ -23,7 +23,7 @@ var AddServiceCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 		cmd.Flags().String("protocol", "", "Protocol of the service (required)")
-		cmd.MarkFlagRequired("protocol")
+		_ = cmd.MarkFlagRequired("protocol")
 
 		cmd.Flags().Int("listen-port", 0, "Listen port of the service")
 		cmd.Flags().Int("destination-port", 0, "Destination port of the service on the targets")
@@ -66,11 +66,9 @@ var AddServiceCmd = base.Cmd{
 			if listenPort == 0 {
 				return fmt.Errorf("please specify a listen port")
 			}
-
 			if destinationPort == 0 {
 				return fmt.Errorf("please specify a destination port")
 			}
-			break
 		case hcloud.LoadBalancerServiceProtocolHTTPS:
 			if len(httpCertificates) == 0 {
 				return fmt.Errorf("no certificate specified")
@@ -153,7 +151,6 @@ var AddServiceCmd = base.Cmd{
 			switch proto := hcloud.LoadBalancerServiceProtocol(healthCheckProtocol); proto {
 			case hcloud.LoadBalancerServiceProtocolHTTP, hcloud.LoadBalancerServiceProtocolHTTPS, hcloud.LoadBalancerServiceProtocolTCP:
 				opts.HealthCheck.Protocol = proto
-				break
 			default:
 				return fmt.Errorf("invalid health check protocol: %s", healthCheckProtocol)
 			}
@@ -208,7 +205,7 @@ var AddServiceCmd = base.Cmd{
 		if err != nil {
 			return err
 		}
-		if err := s.WaitForActions(cmd, s, action); err != nil {
+		if err := s.WaitForActions(s, cmd, action); err != nil {
 			return err
 		}
 		cmd.Printf("Service was added to Load Balancer %d\n", loadBalancer.ID)
