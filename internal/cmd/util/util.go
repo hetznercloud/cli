@@ -88,8 +88,8 @@ func ChainRunE(fns ...func(cmd *cobra.Command, args []string) error) func(cmd *c
 	}
 }
 
-func AnySet(s string, ss ...string) bool {
-	for _, s := range append(ss, s) {
+func AnySet(ss ...string) bool {
+	for _, s := range ss {
 		if s != "" {
 			return true
 		}
