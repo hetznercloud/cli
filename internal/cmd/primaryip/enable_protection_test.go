@@ -52,3 +52,32 @@ func TestEnableProtection(t *testing.T) {
 	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
+
+func TestEnableDeleteProtection(t *testing.T) {
+	fx := testutil.NewFixture(t)
+	defer fx.Finish()
+
+	cmd := primaryip.EnableProtectionCmd.CobraCommand(fx.State())
+	action := &hcloud.Action{ID: 1}
+	ip := &hcloud.PrimaryIP{ID: 13}
+
+	fx.ExpectEnsureToken()
+	fx.Client.PrimaryIPClient.EXPECT().
+		Get(gomock.Any(), "13").
+		Return(ip, nil, nil)
+	fx.Client.PrimaryIPClient.EXPECT().
+		ChangeProtection(gomock.Any(), hcloud.PrimaryIPChangeProtectionOpts{
+			ID:     13,
+			Delete: true,
+		}).
+		Return(action, nil, nil)
+	fx.ActionWaiter.EXPECT().WaitForActions(gomock.Any(), gomock.Any(), action).Return(nil)
+
+	out, errOut, err := fx.Run(cmd, []string{"13", "delete"})
+
+	expOut := "Resource protection enabled for primary IP 13\n"
+
+	assert.NoError(t, err)
+	assert.Empty(t, errOut)
+	assert.Equal(t, expOut, out)
+}
