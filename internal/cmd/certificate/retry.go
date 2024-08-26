@@ -11,7 +11,7 @@ import (
 )
 
 var RetryCmd = base.Cmd{
-	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
+	BaseCobraCommand: func(_ hcapi2.Client) *cobra.Command {
 		return &cobra.Command{
 			Use:                   "retry <certificate>",
 			Short:                 "Retry a managed certificate's issuance",
@@ -34,7 +34,7 @@ var RetryCmd = base.Cmd{
 			return err
 		}
 
-		if err := s.WaitForActions(cmd, s, action); err != nil {
+		if err := s.WaitForActions(s, cmd, action); err != nil {
 			return err
 		}
 
