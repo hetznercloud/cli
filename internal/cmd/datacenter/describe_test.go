@@ -39,11 +39,6 @@ Location:
   City:		
   Latitude:	0.000000
   Longitude:	0.000000
-Server Types:
-  Available:
-    No available server types
-  Supported:
-    No supported server types
 `
 
 	assert.NoError(t, err)
@@ -89,20 +84,15 @@ func TestDescribeWithTypes(t *testing.T) {
 			Location:    &hcloud.Location{Name: "fsn1"},
 			Description: "Falkenstein 1 virtual DC 14",
 			ServerTypes: hcloud.DatacenterServerTypes{
-				Available: serverTypes,
 				Supported: serverTypes,
+				Available: serverTypes[:2],
 			},
 		}, nil, nil)
 
-	for i := 0; i < 2; i++ {
-		for _, st := range serverTypes {
-			fx.Client.ServerTypeClient.EXPECT().
-				ServerTypeName(st.ID).
-				Return(st.Name)
-			fx.Client.ServerTypeClient.EXPECT().
-				ServerTypeDescription(st.ID).
-				Return(st.Description)
-		}
+	for _, st := range serverTypes {
+		fx.Client.ServerTypeClient.EXPECT().
+			ServerTypeName(st.ID).
+			Return(st.Name)
 	}
 
 	out, errOut, err := fx.Run(cmd, []string{"test"})
@@ -118,32 +108,10 @@ Location:
   Latitude:	0.000000
   Longitude:	0.000000
 Server Types:
-  Available:
-  - ID:		 3
-    Name:	 cx22
-    Description: CX22
-  - ID:		 5
-    Name:	 cx32
-    Description: CX32
-  - ID:		 7
-    Name:	 cx42
-    Description: CX42
-  - ID:		 9
-    Name:	 cx52
-    Description: CX52
-  Supported:
-  - ID:		 3
-    Name:	 cx22
-    Description: CX22
-  - ID:		 5
-    Name:	 cx32
-    Description: CX32
-  - ID:		 7
-    Name:	 cx42
-    Description: CX42
-  - ID:		 9
-    Name:	 cx52
-    Description: CX52
+  - ID: 3        Name: cx22     Supported: true     Available: true
+  - ID: 5        Name: cx32     Supported: true     Available: true
+  - ID: 7        Name: cx42     Supported: true     Available: false
+  - ID: 9        Name: cx52     Supported: true     Available: false
 `
 
 	assert.NoError(t, err)

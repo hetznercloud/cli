@@ -1,6 +1,9 @@
 package datacenter
 
 import (
+	"slices"
+	"strconv"
+
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
@@ -35,27 +38,39 @@ var DescribeCmd = base.DescribeCmd{
 		cmd.Printf("  City:\t\t%s\n", datacenter.Location.City)
 		cmd.Printf("  Latitude:\t%f\n", datacenter.Location.Latitude)
 		cmd.Printf("  Longitude:\t%f\n", datacenter.Location.Longitude)
-		cmd.Printf("Server Types:\n")
 
-		printServerTypes := func(list []*hcloud.ServerType) {
-			for _, t := range list {
-				cmd.Printf("  - ID:\t\t %d\n", t.ID)
-				cmd.Printf("    Name:\t %s\n", s.Client().ServerType().ServerTypeName(t.ID))
-				cmd.Printf("    Description: %s\n", s.Client().ServerType().ServerTypeDescription(t.ID))
+		type ServerTypeStatus struct {
+			ID        int64
+			Available bool
+			Supported bool
+		}
+
+		allServerTypeStatus := make([]*ServerTypeStatus, 0, len(datacenter.ServerTypes.Supported))
+		for _, serverType := range datacenter.ServerTypes.Supported {
+			allServerTypeStatus = append(allServerTypeStatus, &ServerTypeStatus{ID: serverType.ID, Supported: true})
+		}
+
+		for _, serverType := range datacenter.ServerTypes.Available {
+			index := slices.IndexFunc(allServerTypeStatus, func(i *ServerTypeStatus) bool { return serverType.ID == i.ID })
+			if index >= 0 {
+				allServerTypeStatus[index].Available = true
+			} else {
+				allServerTypeStatus = append(allServerTypeStatus, &ServerTypeStatus{ID: serverType.ID, Available: true})
 			}
 		}
 
-		cmd.Printf("  Available:\n")
-		if len(datacenter.ServerTypes.Available) > 0 {
-			printServerTypes(datacenter.ServerTypes.Available)
-		} else {
-			cmd.Printf("    No available server types\n")
-		}
-		cmd.Printf("  Supported:\n")
-		if len(datacenter.ServerTypes.Supported) > 0 {
-			printServerTypes(datacenter.ServerTypes.Supported)
-		} else {
-			cmd.Printf("    No supported server types\n")
+		slices.SortFunc(allServerTypeStatus, func(a, b *ServerTypeStatus) int { return int(a.ID - b.ID) })
+
+		if len(allServerTypeStatus) > 0 {
+			cmd.Printf("Server Types:\n")
+			for _, t := range allServerTypeStatus {
+				cmd.Printf("  - ID: %-8d Name: %-8s Supported: %-8s Available: %s\n",
+					t.ID,
+					s.Client().ServerType().ServerTypeName(t.ID),
+					strconv.FormatBool(t.Supported),
+					strconv.FormatBool(t.Available),
+				)
+			}
 		}
 
 		return nil
