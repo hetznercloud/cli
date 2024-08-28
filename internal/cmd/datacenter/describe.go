@@ -61,8 +61,8 @@ var DescribeCmd = base.DescribeCmd{
 
 		slices.SortFunc(allServerTypeStatus, func(a, b *ServerTypeStatus) int { return int(a.ID - b.ID) })
 
+		cmd.Printf("Server Types:\n")
 		if len(allServerTypeStatus) > 0 {
-			cmd.Printf("Server Types:\n")
 			for _, t := range allServerTypeStatus {
 				cmd.Printf("  - ID: %-8d Name: %-8s Supported: %-8s Available: %s\n",
 					t.ID,
@@ -71,6 +71,8 @@ var DescribeCmd = base.DescribeCmd{
 					strconv.FormatBool(t.Available),
 				)
 			}
+		} else {
+			cmd.Printf("  No server types\n")
 		}
 
 		return nil

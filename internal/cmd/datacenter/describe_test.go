@@ -39,6 +39,8 @@ Location:
   City:		
   Latitude:	0.000000
   Longitude:	0.000000
+Server Types:
+  No server types
 `
 
 	assert.NoError(t, err)
