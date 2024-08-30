@@ -45,21 +45,21 @@ var DescribeCmd = base.DescribeCmd{
 			Supported bool
 		}
 
-		allServerTypeStatus := make([]*ServerTypeStatus, 0, len(datacenter.ServerTypes.Supported))
+		allServerTypeStatus := make([]ServerTypeStatus, 0, len(datacenter.ServerTypes.Supported))
 		for _, serverType := range datacenter.ServerTypes.Supported {
-			allServerTypeStatus = append(allServerTypeStatus, &ServerTypeStatus{ID: serverType.ID, Supported: true})
+			allServerTypeStatus = append(allServerTypeStatus, ServerTypeStatus{ID: serverType.ID, Supported: true})
 		}
 
 		for _, serverType := range datacenter.ServerTypes.Available {
-			index := slices.IndexFunc(allServerTypeStatus, func(i *ServerTypeStatus) bool { return serverType.ID == i.ID })
+			index := slices.IndexFunc(allServerTypeStatus, func(i ServerTypeStatus) bool { return serverType.ID == i.ID })
 			if index >= 0 {
 				allServerTypeStatus[index].Available = true
 			} else {
-				allServerTypeStatus = append(allServerTypeStatus, &ServerTypeStatus{ID: serverType.ID, Available: true})
+				allServerTypeStatus = append(allServerTypeStatus, ServerTypeStatus{ID: serverType.ID, Available: true})
 			}
 		}
 
-		slices.SortFunc(allServerTypeStatus, func(a, b *ServerTypeStatus) int { return int(a.ID - b.ID) })
+		slices.SortFunc(allServerTypeStatus, func(a, b ServerTypeStatus) int { return int(a.ID - b.ID) })
 
 		cmd.Printf("Server Types:\n")
 		if len(allServerTypeStatus) > 0 {
