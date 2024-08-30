@@ -1,5 +1,22 @@
 # Changelog
 
+## [1.47.0](https://github.com/hetznercloud/cli/compare/v1.46.0...v1.47.0) (2024-08-30)
+
+
+### Features
+
+* allow deleting rDNS entries ([#839](https://github.com/hetznercloud/cli/issues/839)) ([129f51d](https://github.com/hetznercloud/cli/commit/129f51de4cc76bb12d60a43ffd3068e1764ddbb9)), closes [#814](https://github.com/hetznercloud/cli/issues/814)
+* **certificate:** allow retrying managed certificate issuance ([#847](https://github.com/hetznercloud/cli/issues/847)) ([0223f7d](https://github.com/hetznercloud/cli/commit/0223f7d7948d40b4dabe219c2578bc123a034bf2))
+* improve datacenter describe server types readability ([#854](https://github.com/hetznercloud/cli/issues/854)) ([fc0002c](https://github.com/hetznercloud/cli/commit/fc0002c3fce9185a33bd485a8199200e4aec6776)), closes [#852](https://github.com/hetznercloud/cli/issues/852)
+
+
+### Bug Fixes
+
+* `quiet` option sometimes only working as a flag ([#846](https://github.com/hetznercloud/cli/issues/846)) ([f7c9ac6](https://github.com/hetznercloud/cli/commit/f7c9ac6241531c556544b5b398b474d05b67df9f))
+* **image:** only accept numerical ids for update, delete, label ([#844](https://github.com/hetznercloud/cli/issues/844)) ([7355571](https://github.com/hetznercloud/cli/commit/735557183200eaeb4f5f8c586e5be84f245c52fc))
+* **load-balancer:** show message if none of --server, --label-selector or --ip is set ([#849](https://github.com/hetznercloud/cli/issues/849)) ([2df45e0](https://github.com/hetznercloud/cli/commit/2df45e0082ec48faf40d64c6b313c37b4377d8c4))
+* **primary-ip:** change protection commands do not allow protection levels ([#851](https://github.com/hetznercloud/cli/issues/851)) ([697a87a](https://github.com/hetznercloud/cli/commit/697a87ab2f0ddf6dbe53b3867a744230b2f8a952))
+
 ## [1.46.0](https://github.com/hetznercloud/cli/compare/v1.45.0...v1.46.0) (2024-07-25)
 
 ### API Changes for Traffic Prices and Server Type Included Traffic
