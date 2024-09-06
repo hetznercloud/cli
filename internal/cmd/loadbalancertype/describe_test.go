@@ -94,7 +94,7 @@ Pricings per Location:
     Hourly:		€ 1.0000
     Monthly:		€ 2.0000
     Included Traffic:	639 KiB
-    Additional Traffic:	€ 3.0000 per TB
+    Additional Traffic:	€ 3.0000 per TiB
 
 `
 

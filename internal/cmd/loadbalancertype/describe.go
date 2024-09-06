@@ -47,7 +47,7 @@ var DescribeCmd = base.DescribeCmd{
 				cmd.Printf("    Hourly:\t\t%s\n", util.GrossPrice(price.Hourly))
 				cmd.Printf("    Monthly:\t\t%s\n", util.GrossPrice(price.Monthly))
 				cmd.Printf("    Included Traffic:\t%s\n", humanize.IBytes(price.IncludedTraffic))
-				cmd.Printf("    Additional Traffic:\t%s per TB\n", util.GrossPrice(price.PerTBTraffic))
+				cmd.Printf("    Additional Traffic:\t%s per TiB\n", util.GrossPrice(price.PerTBTraffic))
 				cmd.Printf("\n")
 			}
 		}
