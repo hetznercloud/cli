@@ -6,9 +6,11 @@ import (
 	"time"
 
 	"github.com/spf13/cast"
+	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
 	"github.com/hetznercloud/cli/internal/cmd/util"
+	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
@@ -33,6 +35,8 @@ const (
 	DefaultPreferenceFlags = OptionFlagPreference | OptionFlagConfig | OptionFlagPFlag | OptionFlagEnv
 )
 
+type FlagCompletionFunc func(client hcapi2.Client, cfg Config, cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective)
+
 type IOption interface {
 	// addToFlagSet adds the option to the provided flag set
 	addToFlagSet(fs *pflag.FlagSet)
@@ -40,6 +44,9 @@ type IOption interface {
 	GetName() string
 	// GetDescription returns the description of the option
 	GetDescription() string
+	// GetFlagCompletionFunc returns the completion function for this option's flag.
+	// If it doesn't exist it returns nil.
+	GetFlagCompletionFunc() FlagCompletionFunc
 	// ConfigKey returns the key used in the config file. If the option is not configurable via the config file, an empty string is returned
 	ConfigKey() string
 	// EnvVar returns the name of the environment variable. If the option is not configurable via an environment variable, an empty string is returned
@@ -80,6 +87,7 @@ var (
 		DefaultConfigPath(),
 		OptionFlagPFlag|OptionFlagEnv,
 		nil,
+		nil,
 	)
 
 	OptionToken = newOpt(
@@ -88,6 +96,7 @@ var (
 		"",
 		OptionFlagConfig|OptionFlagEnv|OptionFlagSensitive,
 		nil,
+		nil,
 	)
 
 	OptionContext = newOpt(
@@ -95,6 +104,14 @@ var (
 		"Currently active context",
 		"",
 		OptionFlagConfig|OptionFlagEnv|OptionFlagPFlag,
+		func(_ hcapi2.Client, cfg Config, _ *cobra.Command, _ []string, _ string) ([]string, cobra.ShellCompDirective) {
+			ctxs := cfg.Contexts()
+			ctxNames := make([]string, 0, len(ctxs))
+			for _, ctx := range ctxs {
+				ctxNames = append(ctxNames, ctx.Name())
+			}
+			return ctxNames, cobra.ShellCompDirectiveDefault
+		},
 		&overrides{configKey: "active_context"},
 	)
 
@@ -104,6 +121,7 @@ var (
 		hcloud.Endpoint,
 		DefaultPreferenceFlags,
 		nil,
+		nil,
 	)
 
 	OptionDebug = newOpt(
@@ -111,6 +129,7 @@ var (
 		"Enable debug output",
 		false,
 		DefaultPreferenceFlags,
+		nil,
 		nil,
 	)
 
@@ -120,6 +139,7 @@ var (
 		"",
 		DefaultPreferenceFlags,
 		nil,
+		nil,
 	)
 
 	OptionPollInterval = newOpt(
@@ -127,6 +147,7 @@ var (
 		"Interval at which to poll information, for example action progress",
 		500*time.Millisecond,
 		DefaultPreferenceFlags,
+		nil,
 		nil,
 	)
 
@@ -136,6 +157,7 @@ var (
 		false,
 		DefaultPreferenceFlags,
 		nil,
+		nil,
 	)
 
 	OptionDefaultSSHKeys = newOpt(
@@ -143,6 +165,7 @@ var (
 		"Default SSH keys for new servers",
 		[]string{},
 		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
+		nil,
 		nil,
 	)
 
@@ -152,6 +175,7 @@ var (
 		[]string{"id:asc"},
 		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
 		nil,
+		nil,
 	)
 
 	OptionSortDatacenter = newOpt(
@@ -159,6 +183,7 @@ var (
 		"Default sorting for Datacenter resource",
 		[]string{"id:asc"},
 		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
+		nil,
 		nil,
 	)
 
@@ -168,6 +193,7 @@ var (
 		[]string{"id:asc"},
 		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
 		nil,
+		nil,
 	)
 
 	OptionSortFloatingIP = newOpt(
@@ -175,6 +201,7 @@ var (
 		"Default sorting for Floating IP resource",
 		[]string{"id:asc"},
 		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
+		nil,
 		nil,
 	)
 
@@ -184,6 +211,7 @@ var (
 		[]string{"id:asc"},
 		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
 		nil,
+		nil,
 	)
 
 	OptionSortLoadBalancer = newOpt(
@@ -191,6 +219,7 @@ var (
 		"Default sorting for Load Balancer resource",
 		[]string{"id:asc"},
 		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
+		nil,
 		nil,
 	)
 
@@ -200,6 +229,7 @@ var (
 		[]string{"id:asc"},
 		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
 		nil,
+		nil,
 	)
 
 	OptionSortPlacementGroup = newOpt(
@@ -207,6 +237,7 @@ var (
 		"Default sorting for Placement Group resource",
 		[]string{"id:asc"},
 		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
+		nil,
 		nil,
 	)
 
@@ -216,6 +247,7 @@ var (
 		[]string{"id:asc"},
 		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
 		nil,
+		nil,
 	)
 
 	OptionSortServer = newOpt(
@@ -223,6 +255,7 @@ var (
 		"Default sorting for Server resource",
 		[]string{"id:asc"},
 		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
+		nil,
 		nil,
 	)
 
@@ -232,6 +265,7 @@ var (
 		[]string{"id:asc"},
 		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
 		nil,
+		nil,
 	)
 
 	OptionSortVolume = newOpt(
@@ -240,15 +274,17 @@ var (
 		[]string{"id:asc"},
 		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
 		nil,
+		nil,
 	)
 )
 
 type Option[T any] struct {
-	Name        string
-	Description string
-	Default     T
-	Flags       OptionFlag
-	overrides   *overrides
+	Name               string
+	Description        string
+	Default            T
+	Flags              OptionFlag
+	FlagCompletionFunc FlagCompletionFunc
+	overrides          *overrides
 }
 
 func (o *Option[T]) Get(c Config) (T, error) {
@@ -320,6 +356,10 @@ func (o *Option[T]) GetName() string {
 
 func (o *Option[T]) GetDescription() string {
 	return o.Description
+}
+
+func (o *Option[T]) GetFlagCompletionFunc() FlagCompletionFunc {
+	return o.FlagCompletionFunc
 }
 
 func (o *Option[T]) ConfigKey() string {
@@ -423,15 +463,15 @@ func (o *Option[T]) addToFlagSet(fs *pflag.FlagSet) {
 	}
 }
 
-func newOpt[T any](name, description string, def T, flags OptionFlag, ov *overrides) *Option[T] {
-	o := &Option[T]{Name: name, Description: description, Default: def, Flags: flags, overrides: ov}
+func newOpt[T any](name, description string, def T, flags OptionFlag, f FlagCompletionFunc, ov *overrides) *Option[T] {
+	o := &Option[T]{Name: name, Description: description, Default: def, Flags: flags, FlagCompletionFunc: f, overrides: ov}
 	Options[name] = o
 	return o
 }
 
 // NewTestOption is a helper function to create an option for testing purposes
 func NewTestOption[T any](name, description string, def T, flags OptionFlag, ov *overrides) (*Option[T], func()) {
-	opt := newOpt(name, description, def, flags, ov)
+	opt := newOpt(name, description, def, flags, nil, ov)
 	return opt, func() {
 		delete(Options, name)
 	}
