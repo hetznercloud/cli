@@ -13,11 +13,11 @@ import (
 func CaptureOutStreams(fn func() error) (string, string, error) {
 	outR, outW, err := os.Pipe()
 	if err != nil {
-		return "", "", fmt.Errorf("capture stdout: %v", err)
+		return "", "", fmt.Errorf("capture stdout: %w", err)
 	}
 	errR, errW, err := os.Pipe()
 	if err != nil {
-		return "", "", fmt.Errorf("capture stderr: %v", err)
+		return "", "", fmt.Errorf("capture stderr: %w", err)
 	}
 
 	origOut, origErr := os.Stdout, os.Stderr
@@ -35,13 +35,13 @@ func CaptureOutStreams(fn func() error) (string, string, error) {
 
 		copied, err := io.Copy(outBuf, outR)
 		if err != nil {
-			copyErr <- fmt.Errorf("capture stdout: %v, copied: %d", err, copied)
+			copyErr <- fmt.Errorf("capture stdout: %w, copied: %d", err, copied)
 			return
 		}
 
 		copied, err = io.Copy(errBuf, errR)
 		if err != nil {
-			copyErr <- fmt.Errorf("capture stderr: %v, copied: %d", err, copied)
+			copyErr <- fmt.Errorf("capture stderr: %w, copied: %d", err, copied)
 			return
 		}
 	}()
@@ -49,11 +49,11 @@ func CaptureOutStreams(fn func() error) (string, string, error) {
 	err = fn()
 
 	if err := outW.Close(); err != nil {
-		return "", "", fmt.Errorf("capture stdout close pipe writer: %v", err)
+		return "", "", fmt.Errorf("capture stdout close pipe writer: %w", err)
 	}
 
 	if err := errW.Close(); err != nil {
-		return "", "", fmt.Errorf("capture stderr close pipe writer: %v", err)
+		return "", "", fmt.Errorf("capture stderr close pipe writer: %w", err)
 	}
 
 	if err := <-copyErr; err != nil {

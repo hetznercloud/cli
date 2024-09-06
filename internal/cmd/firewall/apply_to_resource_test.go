@@ -5,6 +5,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/hetznercloud/cli/internal/cmd/firewall"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -45,7 +46,7 @@ func TestApplyToServer(t *testing.T) {
 
 	expOut := "Firewall 123 applied to resource\n"
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
@@ -81,7 +82,7 @@ func TestApplyToLabelSelector(t *testing.T) {
 
 	expOut := "Firewall 123 applied to resource\n"
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

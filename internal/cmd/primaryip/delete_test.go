@@ -5,6 +5,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/hetznercloud/cli/internal/cmd/primaryip"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -42,7 +43,7 @@ func TestDelete(t *testing.T) {
 
 	expOut := "Primary IP 13 deleted\n"
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
@@ -82,7 +83,7 @@ func TestDeleteMultiple(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, names)
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	assert.Equal(t, "Primary IPs test1, test2, test3 deleted\n", out)
 }

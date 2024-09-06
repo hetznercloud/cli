@@ -9,6 +9,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/stretchr/testify/assert"
+	require "github.com/stretchr/testify/require"
 
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -49,7 +50,7 @@ func TestChainRunE(t *testing.T) {
 	fn := util.ChainRunE(f1, f2, f3)
 	err := fn(nil, nil)
 
-	assert.EqualError(t, err, "error")
+	require.EqualError(t, err, "error")
 	assert.Equal(t, 2, calls)
 }
 
@@ -199,7 +200,7 @@ func TestDescribeFormat(t *testing.T) {
 		}, "Foo is: {{.Foo}} Bar is: {{.Bar}}")
 	})
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, "Foo is: foo Bar is: bar\n", stdout)
 	assert.Empty(t, stderr)
 }
@@ -215,7 +216,7 @@ func TestDescribeJSON(t *testing.T) {
 		})
 	})
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.JSONEq(t, `{"foo":"foo", "bar": "bar"}`, stdout)
 	assert.Empty(t, stderr)
 }
@@ -231,7 +232,7 @@ func TestDescribeYAML(t *testing.T) {
 		})
 	})
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.YAMLEq(t, `{"foo":"foo", "bar": "bar"}`, stdout)
 	assert.Empty(t, stderr)
 }
@@ -240,7 +241,8 @@ func TestWrap(t *testing.T) {
 	wrapped := util.Wrap("json", map[string]interface{}{
 		"foo": "bar",
 	})
-	jsonString, _ := json.Marshal(wrapped)
+	jsonString, err := json.Marshal(wrapped)
+	require.NoError(t, err)
 	assert.JSONEq(t, `{"json": {"foo": "bar"}}`, string(jsonString))
 }
 
@@ -253,7 +255,7 @@ func TestValidateRequiredFlags(t *testing.T) {
 	_ = flags.Set("bar", "bar")
 
 	err := util.ValidateRequiredFlags(flags, "foo")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 
 	err = util.ValidateRequiredFlags(flags, "baz")
 	assert.EqualError(t, err, "hcloud: required flag(s) \"baz\" not set")
@@ -262,10 +264,10 @@ func TestValidateRequiredFlags(t *testing.T) {
 func TestAddGroup(t *testing.T) {
 	cmd := &cobra.Command{}
 	util.AddGroup(cmd, "id", "title", &cobra.Command{})
-	assert.Equal(t, len(cmd.Commands()), 1)
-	assert.Equal(t, len(cmd.Groups()), 1)
-	assert.Equal(t, cmd.Groups()[0].ID, "id")
-	assert.Equal(t, cmd.Groups()[0].Title, "title:")
+	assert.Len(t, cmd.Commands(), 1)
+	assert.Len(t, cmd.Groups(), 1)
+	assert.Equal(t, "id", cmd.Groups()[0].ID)
+	assert.Equal(t, "title:", cmd.Groups()[0].Title)
 }
 
 func TestToKebabCase(t *testing.T) {
@@ -341,70 +343,70 @@ func TestToAnySlice(t *testing.T) {
 
 func TestParseBoolLenient(t *testing.T) {
 	b, err := util.ParseBoolLenient("true")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.True(t, b)
 	b, err = util.ParseBoolLenient("True")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.True(t, b)
 	b, err = util.ParseBoolLenient("t")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.True(t, b)
 	b, err = util.ParseBoolLenient("yes")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.True(t, b)
 	b, err = util.ParseBoolLenient("y")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.True(t, b)
 	b, err = util.ParseBoolLenient("1")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.True(t, b)
 	b, err = util.ParseBoolLenient("false")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.False(t, b)
 	b, err = util.ParseBoolLenient("False")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.False(t, b)
 	b, err = util.ParseBoolLenient("f")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.False(t, b)
 	b, err = util.ParseBoolLenient("no")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.False(t, b)
 	b, err = util.ParseBoolLenient("n")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.False(t, b)
 	b, err = util.ParseBoolLenient("0")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.False(t, b)
 	b, err = util.ParseBoolLenient("invalid")
-	assert.EqualError(t, err, "invalid boolean value: invalid")
+	require.EqualError(t, err, "invalid boolean value: invalid")
 	assert.False(t, b)
 	b, err = util.ParseBoolLenient("")
-	assert.EqualError(t, err, "invalid boolean value: ")
+	require.EqualError(t, err, "invalid boolean value: ")
 	assert.False(t, b)
 }
 
 func TestBoolFromAny(t *testing.T) {
 	b, err := util.ToBoolE(true)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.True(t, b)
 	b, err = util.ToBoolE("true")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.True(t, b)
 	b, err = util.ToBoolE("false")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.False(t, b)
 	b, err = util.ToBoolE("yes")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.True(t, b)
 	b, err = util.ToBoolE("no")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.False(t, b)
 	b, err = util.ToBoolE(1)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.True(t, b)
 	b, err = util.ToBoolE(0)
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.False(t, b)
 	_, err = util.ToBoolE("invalid")
 	assert.EqualError(t, err, "invalid boolean value: invalid")

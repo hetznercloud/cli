@@ -8,6 +8,7 @@ import (
 	"github.com/dustin/go-humanize"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/hetznercloud/cli/internal/cmd/firewall"
 	"github.com/hetznercloud/cli/internal/cmd/util"
@@ -75,7 +76,7 @@ Applied To:
     Server Name:	myServer
 `, util.Datetime(fw.Created), humanize.Time(fw.Created))
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

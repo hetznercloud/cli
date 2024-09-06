@@ -9,6 +9,7 @@ import (
 
 	gomock "github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	hcapi2_mock "github.com/hetznercloud/cli/internal/hcapi2/mock"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -34,11 +35,11 @@ func TestWaitForActionsSuccess(t *testing.T) {
 	client.EXPECT().
 		WaitForFunc(gomock.Any(), gomock.Any(), action).
 		DoAndReturn(func(_ context.Context, handleUpdate func(update *hcloud.Action) error, _ ...*hcloud.Action) error {
-			assert.NoError(t, handleUpdate(action))
+			require.NoError(t, handleUpdate(action))
 			action.Status = hcloud.ActionStatusRunning
-			assert.NoError(t, handleUpdate(action))
+			require.NoError(t, handleUpdate(action))
 			action.Status = hcloud.ActionStatusSuccess
-			assert.NoError(t, handleUpdate(action))
+			require.NoError(t, handleUpdate(action))
 
 			return nil
 		})
@@ -75,13 +76,13 @@ func TestWaitForActionsError(t *testing.T) {
 	client.EXPECT().
 		WaitForFunc(gomock.Any(), gomock.Any(), action).
 		DoAndReturn(func(_ context.Context, handleUpdate func(update *hcloud.Action) error, _ ...*hcloud.Action) error {
-			assert.NoError(t, handleUpdate(action))
+			require.NoError(t, handleUpdate(action))
 			action.Status = hcloud.ActionStatusRunning
-			assert.NoError(t, handleUpdate(action))
+			require.NoError(t, handleUpdate(action))
 			action.Status = hcloud.ActionStatusError
 			action.ErrorCode = "action_failed"
 			action.ErrorMessage = "action failed"
-			assert.Error(t, handleUpdate(action))
+			require.Error(t, handleUpdate(action))
 
 			return action.Error()
 		})

@@ -9,6 +9,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/hetznercloud/cli/internal/cmd/server"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -100,7 +101,7 @@ func TestCreate(t *testing.T) {
 	args := []string{"--name", "cli-test", "--type", "cx22", "--image", "ubuntu-20.04"}
 	out, errOut, err := fx.Run(cmd, args)
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	expOut := `Server 1234 created
 IPv4: 192.0.2.1
@@ -205,7 +206,7 @@ func TestCreateJSON(t *testing.T) {
 
 	expOut := "Server 1234 created\n"
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, expOut, out)
 
 	assert.JSONEq(t, createResponseJSON, jsonOut)
@@ -282,7 +283,7 @@ func TestCreateProtectionBackup(t *testing.T) {
 	args := []string{"--name", "cli-test", "--type", "cx22", "--image", "ubuntu-20.04", "--enable-protection", "rebuild,delete", "--enable-backup"}
 	out, errOut, err := fx.Run(cmd, args)
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	expOut := `Server 1234 created
 Resource protection enabled for server 1234

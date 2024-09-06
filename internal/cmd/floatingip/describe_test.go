@@ -9,6 +9,7 @@ import (
 	"github.com/dustin/go-humanize"
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/hetznercloud/cli/internal/cmd/floatingip"
 	"github.com/hetznercloud/cli/internal/cmd/util"
@@ -66,7 +67,7 @@ Labels:
   key: value
 `, util.Datetime(floatingIP.Created), humanize.Time(floatingIP.Created))
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

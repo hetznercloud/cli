@@ -6,6 +6,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/hetznercloud/cli/internal/cmd/image"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -34,7 +35,7 @@ func TestDelete(t *testing.T) {
 
 	expOut := "image 123 deleted\n"
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
@@ -71,7 +72,7 @@ func TestDeleteMultiple(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, ids)
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	assert.Equal(t, "images 123, 456, 789 deleted\n", out)
 }

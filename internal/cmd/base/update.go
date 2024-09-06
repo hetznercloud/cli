@@ -66,7 +66,7 @@ func (uc *UpdateCmd) Run(s state.State, cmd *cobra.Command, args []string) error
 	})
 
 	if err := uc.Update(s, cmd, resource, flags); err != nil {
-		return fmt.Errorf("updating %s %s failed: %s", uc.ResourceNameSingular, idOrName, err)
+		return fmt.Errorf("updating %s %s failed: %w", uc.ResourceNameSingular, idOrName, err)
 	}
 
 	cmd.Printf("%s %v updated\n", uc.ResourceNameSingular, idOrName)

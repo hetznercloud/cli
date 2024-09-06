@@ -5,6 +5,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/hetznercloud/cli/internal/cmd/server"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -40,7 +41,7 @@ func TestChangeType(t *testing.T) {
 	args := []string{"my-server", "cax21"}
 	out, errOut, err := fx.Run(cmd, args)
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	assert.Equal(t, "Server 123 changed to type cax21\n", out)
 }
@@ -74,7 +75,7 @@ func TestChangeTypeKeepDisk(t *testing.T) {
 	args := []string{"my-server", "cax21", "--keep-disk"}
 	out, errOut, err := fx.Run(cmd, args)
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	assert.Equal(t, "Server 123 changed to type cax21 (disk size was unchanged)\n", out)
 }

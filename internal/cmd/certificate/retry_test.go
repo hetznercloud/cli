@@ -6,6 +6,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/hetznercloud/cli/internal/cmd/certificate"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -38,7 +39,7 @@ func TestRetry(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"123"})
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	assert.Equal(t, "Retried issuance of certificate my-test-cert\n", out)
 }

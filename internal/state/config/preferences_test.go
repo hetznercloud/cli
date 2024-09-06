@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/hetznercloud/cli/internal/state/config"
 )
@@ -153,7 +154,7 @@ func TestPreferences_Validate(t *testing.T) {
 		defer cleanup()
 
 		p := config.Preferences{"foo": ""}
-		assert.NoError(t, p.Validate())
+		require.NoError(t, p.Validate())
 	})
 
 	t.Run("existing nested", func(t *testing.T) {
@@ -161,7 +162,7 @@ func TestPreferences_Validate(t *testing.T) {
 		defer cleanup()
 
 		p := config.Preferences{"foo": map[string]any{"bar": ""}}
-		assert.NoError(t, p.Validate())
+		require.NoError(t, p.Validate())
 	})
 
 	t.Run("existing but no preference", func(t *testing.T) {

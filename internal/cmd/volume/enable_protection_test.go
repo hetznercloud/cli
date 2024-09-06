@@ -5,6 +5,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/hetznercloud/cli/internal/cmd/volume"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -35,7 +36,7 @@ func TestEnableProtection(t *testing.T) {
 	args := []string{"myVolume", "delete"}
 	out, errOut, err := fx.Run(cmd, args)
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	assert.Equal(t, "Resource protection enabled for volume 123\n", out)
 }

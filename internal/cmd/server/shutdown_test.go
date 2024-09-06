@@ -5,6 +5,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/hetznercloud/cli/internal/cmd/server"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -36,7 +37,7 @@ func TestShutdown(t *testing.T) {
 
 	expOut := "Sent shutdown signal to server 42\n"
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
@@ -73,7 +74,7 @@ func TestShutdownWait(t *testing.T) {
 	expOut := "Sent shutdown signal to server 42\nServer 42 shut down\n"
 	expErrOut := "Waiting for server to shut down (server: 42) ...\nWaiting for server to shut down (server: 42) ... done\n"
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, expErrOut, errOut)
 	assert.Equal(t, expOut, out)
 }

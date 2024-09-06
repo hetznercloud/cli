@@ -7,6 +7,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/hetznercloud/cli/internal/cmd/server"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -41,7 +42,7 @@ func TestIPv4(t *testing.T) {
 	args := []string{"my-server"}
 	out, errOut, err := fx.Run(cmd, args)
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	assert.Equal(t, ip.String()+"\n", out)
 }
@@ -74,7 +75,7 @@ func TestIPv6(t *testing.T) {
 	args := []string{"my-server", "-6"}
 	out, errOut, err := fx.Run(cmd, args)
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	assert.Equal(t, ip.String()+"1\n", out)
 }

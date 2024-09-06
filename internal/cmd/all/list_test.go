@@ -8,6 +8,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/hetznercloud/cli/internal/cmd/all"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -237,7 +238,7 @@ ID    NAME   FINGERPRINT   AGE
 
 `
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
@@ -286,7 +287,7 @@ func TestListAllPaidJSON(t *testing.T) {
 
 	jsonOut, errOut, err := fx.Run(cmd, []string{"--paid", "-o=json"})
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	assert.JSONEq(t, allListResponseJSON, jsonOut)
 }

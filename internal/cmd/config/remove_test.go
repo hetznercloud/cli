@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	configCmd "github.com/hetznercloud/cli/internal/cmd/config"
 	"github.com/hetznercloud/cli/internal/state/config"
@@ -209,9 +210,9 @@ active_context = "test_context"
 			out, errOut, err := fx.Run(cmd, tt.args)
 
 			if tt.err == "" {
-				assert.NoError(t, err)
+				require.NoError(t, err)
 			} else {
-				assert.EqualError(t, err, tt.err)
+				require.EqualError(t, err, tt.err)
 			}
 			assert.Equal(t, tt.expErr, errOut)
 			assert.Equal(t, tt.expOut, out)

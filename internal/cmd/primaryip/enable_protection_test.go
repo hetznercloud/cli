@@ -5,6 +5,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/hetznercloud/cli/internal/cmd/primaryip"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -48,7 +49,7 @@ func TestEnableProtection(t *testing.T) {
 
 	expOut := "Resource protection enabled for primary IP 13\n"
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
@@ -77,7 +78,7 @@ func TestEnableDeleteProtection(t *testing.T) {
 
 	expOut := "Resource protection enabled for primary IP 13\n"
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

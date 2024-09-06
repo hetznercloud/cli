@@ -5,6 +5,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/hetznercloud/cli/internal/cmd/loadbalancer"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -34,7 +35,7 @@ func TestDelete(t *testing.T) {
 
 	expOut := "Load Balancer test deleted\n"
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
@@ -74,7 +75,7 @@ func TestDeleteMultiple(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, names)
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	assert.Equal(t, "Load Balancers test1, test2, test3 deleted\n", out)
 }

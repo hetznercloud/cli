@@ -8,6 +8,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/hetznercloud/cli/internal/cmd/primaryip"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -57,7 +58,7 @@ func TestCreate(t *testing.T) {
 IPv4: 192.168.2.1
 `
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
@@ -111,7 +112,7 @@ func TestCreateJSON(t *testing.T) {
 
 	expOut := "Primary IP 1 created\n"
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, expOut, out)
 	assert.JSONEq(t, createResponseJSON, jsonOut)
 }

@@ -6,6 +6,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/hetznercloud/cli/internal/cmd/network"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -38,7 +39,7 @@ func TestChangeIPRange(t *testing.T) {
 
 	expOut := "IP range of network 123 changed\n"
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, expOut, out)
 	assert.Empty(t, errOut)
 }

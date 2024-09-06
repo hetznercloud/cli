@@ -5,6 +5,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/hetznercloud/cli/internal/cmd/server"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -36,7 +37,7 @@ func TestResetPassword(t *testing.T) {
 	args := []string{"my-server"}
 	out, errOut, err := fx.Run(cmd, args)
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	assert.Equal(t, "Password of server 123 reset to: root-password\n", out)
 }

@@ -268,14 +268,14 @@ func (o *Option[T]) Get(c Config) (T, error) {
 		// we can use the cast package included with viper here
 		d, err := cast.ToDurationE(val)
 		if err != nil {
-			return o.Default, fmt.Errorf("%s: %s", o.Name, err)
+			return o.Default, fmt.Errorf("%s: %w", o.Name, err)
 		}
 		val = d
 
 	case bool:
 		b, err := util.ToBoolE(val)
 		if err != nil {
-			return o.Default, fmt.Errorf("%s: %s", o.Name, err)
+			return o.Default, fmt.Errorf("%s: %w", o.Name, err)
 		}
 		val = b
 

@@ -1,6 +1,7 @@
 package server
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -59,13 +60,14 @@ var SSHCmd = base.Cmd{
 		}
 
 		sshArgs := []string{"-l", user, "-p", strconv.Itoa(port), ipAddress.String()}
-		sshCommand := exec.Command(SSHPath, append(sshArgs, args[1:]...)...)
+		sshCommand := exec.Command(SSHPath, append(sshArgs, args[1:]...)...) //nolint:gosec
 		sshCommand.Stdin = os.Stdin
 		sshCommand.Stdout = os.Stdout
 		sshCommand.Stderr = os.Stderr
 
 		if err := sshCommand.Run(); err != nil {
-			if exitError, ok := err.(*exec.ExitError); ok {
+			var exitError *exec.ExitError
+			if errors.As(err, &exitError) {
 				waitStatus := exitError.Sys().(syscall.WaitStatus)
 				os.Exit(waitStatus.ExitStatus())
 			}

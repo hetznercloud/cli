@@ -8,6 +8,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/hetznercloud/cli/internal/cmd/loadbalancer"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -57,7 +58,7 @@ IPv4: 192.168.2.1
 IPv6: ::
 `
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
@@ -107,7 +108,7 @@ func TestCreateJSON(t *testing.T) {
 
 	expOut := "Load Balancer 123 created\n"
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, expOut, out)
 	assert.JSONEq(t, createResponseJSON, jsonOut)
 }
@@ -161,7 +162,7 @@ IPv4: 192.168.2.1
 IPv6: ::
 `
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

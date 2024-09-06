@@ -5,6 +5,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -99,7 +100,7 @@ func TestValidate(t *testing.T) {
 			assert.Equal(t, test.expectedStdout, stdout)
 			assert.Equal(t, test.expectedStderr, stderr)
 			if test.expectedErr == "" {
-				assert.NoError(t, err)
+				require.NoError(t, err)
 			} else {
 				assert.EqualError(t, err, test.expectedErr)
 			}

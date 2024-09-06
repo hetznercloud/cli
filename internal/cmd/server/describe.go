@@ -69,7 +69,7 @@ var DescribeCmd = base.DescribeCmd{
 			for _, f := range server.PublicNet.FloatingIPs {
 				floatingIP, _, err := s.Client().FloatingIP().GetByID(s, f.ID)
 				if err != nil {
-					return fmt.Errorf("error fetching Floating IP: %v", err)
+					return fmt.Errorf("error fetching Floating IP: %w", err)
 				}
 				cmd.Printf("  - ID:\t\t\t%d\n", floatingIP.ID)
 				cmd.Printf("    Description:\t%s\n", util.NA(floatingIP.Description))
@@ -84,7 +84,7 @@ var DescribeCmd = base.DescribeCmd{
 			for _, n := range server.PrivateNet {
 				network, _, err := s.Client().Network().GetByID(s, n.Network.ID)
 				if err != nil {
-					return fmt.Errorf("error fetching network: %v", err)
+					return fmt.Errorf("error fetching network: %w", err)
 				}
 				cmd.Printf("  - ID:\t\t\t%d\n", network.ID)
 				cmd.Printf("    Name:\t\t%s\n", network.Name)
@@ -108,7 +108,7 @@ var DescribeCmd = base.DescribeCmd{
 			for _, v := range server.Volumes {
 				volume, _, err := s.Client().Volume().GetByID(s, v.ID)
 				if err != nil {
-					return fmt.Errorf("error fetching Volume: %v", err)
+					return fmt.Errorf("error fetching Volume: %w", err)
 				}
 				cmd.Printf("  - ID:\t\t%d\n", volume.ID)
 				cmd.Printf("    Name:\t%s\n", volume.Name)

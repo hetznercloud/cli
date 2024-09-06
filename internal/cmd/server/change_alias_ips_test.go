@@ -6,6 +6,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/hetznercloud/cli/internal/cmd/server"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -44,7 +45,7 @@ func TestChangeAliasIPs(t *testing.T) {
 	args := []string{"my-server", "--network", "my-network", "--alias-ips", "10.0.1.2,10.0.1.3"}
 	out, errOut, err := fx.Run(cmd, args)
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	assert.Equal(t, "Alias IPs changed for server 123 in network 456\n", out)
 }
