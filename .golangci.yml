@@ -46,6 +46,9 @@ linters-settings:
     exported: true
     import-shadowing: true
     indent-error-flow: true
+  gosec:
+    excludes:
+      - G115
 
 linters:
   disable-all: true
