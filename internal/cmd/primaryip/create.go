@@ -36,6 +36,8 @@ var CreateCmd = base.CreateCmd{
 		cmd.Flags().StringSlice("enable-protection", []string{}, "Enable protection (delete) (default: none)")
 		_ = cmd.RegisterFlagCompletionFunc("enable-protection", cmpl.SuggestCandidates("delete"))
 
+		cmd.Flags().Bool("auto-delete", false, "Delete Primary IP if assigned resource is deleted")
+
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, _ []string) (any, any, error) {
@@ -44,6 +46,7 @@ var CreateCmd = base.CreateCmd{
 		assigneeID, _ := cmd.Flags().GetInt64("assignee-id")
 		datacenter, _ := cmd.Flags().GetString("datacenter")
 		protection, _ := cmd.Flags().GetStringSlice("enable-protection")
+		autoDelete, _ := cmd.Flags().GetBool("auto-delete")
 
 		protectionOpts, err := getChangeProtectionOpts(true, protection)
 		if err != nil {
@@ -58,6 +61,9 @@ var CreateCmd = base.CreateCmd{
 		}
 		if assigneeID != 0 {
 			createOpts.AssigneeID = &assigneeID
+		}
+		if cmd.Flags().Changed("auto-delete") {
+			createOpts.AutoDelete = &autoDelete
 		}
 
 		result, _, err := s.Client().PrimaryIP().Create(s, createOpts)
