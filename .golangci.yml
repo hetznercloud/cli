@@ -48,6 +48,9 @@ linters-settings:
     indent-error-flow: true
   gosec:
     excludes:
+      # As of golangci-lint v1.60.3, this rule is still enabled by default, which causes problems.
+      # We disable it manually for now until a new golangci-lint version is released which fixes this.
+      # See https://github.com/securego/gosec/issues/1185
       - G115
 
 linters:
