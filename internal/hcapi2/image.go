@@ -43,11 +43,15 @@ func (c *imageClient) Names() []string {
 	return names
 }
 
-// ImageLabelKeys returns a slice containing the keys of all labels assigned to
-// the Image with the passed idOrName.
-func (c *imageClient) LabelKeys(idOrName string) []string {
-	img, _, err := c.Get(context.Background(), idOrName)
-	if err != nil || img == nil || len(img.Labels) == 0 {
+// LabelKeys returns a slice containing the keys of all labels assigned to
+// the Image with the passed id.
+func (c *imageClient) LabelKeys(id string) []string {
+	imgID, err := strconv.ParseInt(id, 10, 64)
+	if err != nil {
+		return nil
+	}
+	img, _, err := c.GetByID(context.Background(), imgID)
+	if err != nil || len(img.Labels) == 0 {
 		return nil
 	}
 	return labelKeys(img.Labels)
