@@ -51,7 +51,7 @@ func (c *imageClient) LabelKeys(id string) []string {
 		return nil
 	}
 	img, _, err := c.GetByID(context.Background(), imgID)
-	if err != nil || len(img.Labels) == 0 {
+	if err != nil || img == nil || len(img.Labels) == 0 {
 		return nil
 	}
 	return labelKeys(img.Labels)
