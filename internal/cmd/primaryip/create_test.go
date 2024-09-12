@@ -31,14 +31,16 @@ func TestCreate(t *testing.T) {
 				Type:         "ipv4",
 				Datacenter:   "fsn1-dc14",
 				AssigneeType: "server",
+				AutoDelete:   hcloud.Ptr(true),
 			},
 		).
 		Return(
 			&hcloud.PrimaryIPCreateResult{
 				PrimaryIP: &hcloud.PrimaryIP{
-					ID:   1,
-					IP:   net.ParseIP("192.168.2.1"),
-					Type: hcloud.PrimaryIPTypeIPv4,
+					ID:         1,
+					IP:         net.ParseIP("192.168.2.1"),
+					Type:       hcloud.PrimaryIPTypeIPv4,
+					AutoDelete: true,
 				},
 				Action: &hcloud.Action{ID: 321},
 			},
@@ -49,7 +51,7 @@ func TestCreate(t *testing.T) {
 	fx.ActionWaiter.EXPECT().
 		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321})
 
-	out, errOut, err := fx.Run(cmd, []string{"--name=my-ip", "--type=ipv4", "--datacenter=fsn1-dc14"})
+	out, errOut, err := fx.Run(cmd, []string{"--name=my-ip", "--type=ipv4", "--datacenter=fsn1-dc14", "--auto-delete"})
 
 	expOut := `Primary IP 1 created
 IPv4: 192.168.2.1
@@ -77,6 +79,7 @@ func TestCreateJSON(t *testing.T) {
 				Type:         "ipv4",
 				Datacenter:   "fsn1-dc14",
 				AssigneeType: "server",
+				AutoDelete:   hcloud.Ptr(true),
 			},
 		).
 		Return(
@@ -104,7 +107,7 @@ func TestCreateJSON(t *testing.T) {
 	fx.ActionWaiter.EXPECT().
 		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321})
 
-	jsonOut, out, err := fx.Run(cmd, []string{"-o=json", "--name=my-ip", "--type=ipv4", "--datacenter=fsn1-dc14"})
+	jsonOut, out, err := fx.Run(cmd, []string{"-o=json", "--name=my-ip", "--type=ipv4", "--datacenter=fsn1-dc14", "--auto-delete"})
 
 	expOut := "Primary IP 1 created\n"
 
