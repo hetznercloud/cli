@@ -104,9 +104,9 @@ var MetricsCmd = base.Cmd{
 				return err
 			}
 			if outputFlags.IsSet("json") {
-				return util.DescribeJSON(schema)
+				return util.DescribeJSON(cmd.OutOrStdout(), schema)
 			}
-			return util.DescribeYAML(schema)
+			return util.DescribeYAML(cmd.OutOrStdout(), schema)
 		default:
 			var keys []string
 			for k := range m.TimeSeries {

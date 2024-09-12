@@ -4,7 +4,7 @@ import (
 	"cmp"
 	"encoding/json"
 	"fmt"
-	"os"
+	"io"
 	"reflect"
 	"sort"
 	"strings"
@@ -173,7 +173,7 @@ func PrefixLines(text, prefix string) string {
 	return strings.Join(lines, "\n")
 }
 
-func DescribeFormat(object interface{}, format string) error {
+func DescribeFormat(w io.Writer, object interface{}, format string) error {
 	if !strings.HasSuffix(format, "\n") {
 		format += "\n"
 	}
@@ -181,17 +181,17 @@ func DescribeFormat(object interface{}, format string) error {
 	if err != nil {
 		return err
 	}
-	return t.Execute(os.Stdout, object)
+	return t.Execute(w, object)
 }
 
-func DescribeJSON(object interface{}) error {
-	enc := json.NewEncoder(os.Stdout)
+func DescribeJSON(w io.Writer, object interface{}) error {
+	enc := json.NewEncoder(w)
 	enc.SetIndent("", "  ")
 	return enc.Encode(object)
 }
 
-func DescribeYAML(object interface{}) error {
-	enc := yaml.NewEncoder(os.Stdout)
+func DescribeYAML(w io.Writer, object interface{}) error {
+	enc := yaml.NewEncoder(w)
 	return enc.Encode(object)
 }
 

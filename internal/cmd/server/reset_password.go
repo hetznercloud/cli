@@ -50,9 +50,9 @@ var ResetPasswordCmd = base.Cmd{
 			schema := make(map[string]interface{})
 			schema["root_password"] = result.RootPassword
 			if outputFlags.IsSet("json") {
-				return util.DescribeJSON(schema)
+				return util.DescribeJSON(cmd.OutOrStdout(), schema)
 			}
-			return util.DescribeYAML(schema)
+			return util.DescribeYAML(cmd.OutOrStdout(), schema)
 		}
 
 		cmd.Printf("Password of server %d reset to: %s\n", server.ID, result.RootPassword)

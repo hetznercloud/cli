@@ -153,14 +153,15 @@ Listed resources are:
 				schema[lc.JSONKeyGetByName] = lc.Schema(resources[i])
 			}
 			if outOpts.IsSet("json") {
-				return util.DescribeJSON(schema)
+				return util.DescribeJSON(cmd.OutOrStdout(), schema)
 			}
-			return util.DescribeYAML(schema)
+			return util.DescribeYAML(cmd.OutOrStdout(), schema)
 		}
 
 		for i, lc := range cmds {
 			cols := lc.DefaultColumns
-			table := lc.OutputTable(s.Client())
+			table := output.NewTable(cmd.OutOrStdout())
+			lc.OutputTable(table, s.Client())
 			table.WriteHeader(cols)
 
 			if len(resources[i]) == 0 {

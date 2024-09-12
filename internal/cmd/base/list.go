@@ -2,6 +2,7 @@ package base
 
 import (
 	"fmt"
+	"io"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -23,13 +24,15 @@ type ListCmd struct {
 	DefaultColumns     []string
 	Fetch              func(state.State, *pflag.FlagSet, hcloud.ListOpts, []string) ([]interface{}, error)
 	AdditionalFlags    func(*cobra.Command)
-	OutputTable        func(client hcapi2.Client) *output.Table
+	OutputTable        func(t *output.Table, client hcapi2.Client)
 	Schema             func([]interface{}) interface{}
 }
 
 // CobraCommand creates a command that can be registered with cobra.
 func (lc *ListCmd) CobraCommand(s state.State) *cobra.Command {
-	outputColumns := lc.OutputTable(s.Client()).Columns()
+	t := output.NewTable(io.Discard)
+	lc.OutputTable(t, s.Client())
+	outputColumns := t.Columns()
 
 	cmd := &cobra.Command{
 		Use:   "list [options]",
@@ -59,10 +62,9 @@ func (lc *ListCmd) CobraCommand(s state.State) *cobra.Command {
 func (lc *ListCmd) Run(s state.State, cmd *cobra.Command) error {
 	outOpts := output.FlagsForCommand(cmd)
 
-	labelSelector, _ := cmd.Flags().GetString("selector")
-	listOpts := hcloud.ListOpts{
-		LabelSelector: labelSelector,
-		PerPage:       50,
+	quiet, err := config.OptionQuiet.Get(s.Config())
+	if err != nil {
+		return err
 	}
 
 	var sorts []string
@@ -80,17 +82,30 @@ func (lc *ListCmd) Run(s state.State, cmd *cobra.Command) error {
 		}
 	}
 
+	labelSelector, _ := cmd.Flags().GetString("selector")
+	listOpts := hcloud.ListOpts{
+		LabelSelector: labelSelector,
+		PerPage:       50,
+	}
+
 	resources, err := lc.Fetch(s, cmd.Flags(), listOpts, sorts)
 	if err != nil {
 		return err
 	}
 
-	if outOpts.IsSet("json") || outOpts.IsSet("yaml") {
+	out := cmd.OutOrStdout()
+	if quiet {
+		// If we are in quiet mode, we saved the original output in cmd.errWriter. We can now restore it.
+		out = cmd.ErrOrStderr()
+	}
+
+	isSchema := outOpts.IsSet("json") || outOpts.IsSet("yaml")
+	if isSchema {
 		schema := lc.Schema(resources)
 		if outOpts.IsSet("json") {
-			return util.DescribeJSON(schema)
+			return util.DescribeJSON(out, schema)
 		}
-		return util.DescribeYAML(schema)
+		return util.DescribeYAML(out, schema)
 	}
 
 	cols := lc.DefaultColumns
@@ -98,14 +113,13 @@ func (lc *ListCmd) Run(s state.State, cmd *cobra.Command) error {
 		cols = outOpts["columns"]
 	}
 
-	table := lc.OutputTable(s.Client())
+	t := output.NewTable(out)
+	lc.OutputTable(t, s.Client())
 	if !outOpts.IsSet("noheader") {
-		table.WriteHeader(cols)
+		t.WriteHeader(cols)
 	}
 	for _, resource := range resources {
-		table.Write(cols, resource)
+		t.Write(cols, resource)
 	}
-	table.Flush()
-
-	return nil
+	return t.Flush()
 }

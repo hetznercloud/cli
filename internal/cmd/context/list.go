@@ -1,6 +1,8 @@
 package context
 
 import (
+	"io"
+
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/output"
@@ -15,7 +17,7 @@ type presentation struct {
 }
 
 func NewListCommand(s state.State) *cobra.Command {
-	cols := newListOutputTable().Columns()
+	cols := newListOutputTable(io.Discard).Columns()
 	cmd := &cobra.Command{
 		Use:   "list [options]",
 		Short: "List contexts",
@@ -40,7 +42,7 @@ func runList(s state.State, cmd *cobra.Command, _ []string) error {
 		cols = outOpts["columns"]
 	}
 
-	tw := newListOutputTable()
+	tw := newListOutputTable(cmd.OutOrStdout())
 	if err := tw.ValidateColumns(cols); err != nil {
 		return err
 	}
@@ -61,12 +63,11 @@ func runList(s state.State, cmd *cobra.Command, _ []string) error {
 
 		tw.Write(cols, presentation)
 	}
-	tw.Flush()
-	return nil
+	return tw.Flush()
 }
 
-func newListOutputTable() *output.Table {
-	return output.NewTable().
+func newListOutputTable(w io.Writer) *output.Table {
+	return output.NewTable(w).
 		AddAllowedFields(presentation{}).
 		RemoveAllowedField("token")
 }

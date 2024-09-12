@@ -55,9 +55,9 @@ var RequestConsoleCmd = base.Cmd{
 			}
 
 			if outOpts.IsSet("json") {
-				return util.DescribeJSON(schema)
+				return util.DescribeJSON(cmd.OutOrStdout(), schema)
 			}
-			return util.DescribeYAML(schema)
+			return util.DescribeYAML(cmd.OutOrStdout(), schema)
 		}
 
 		cmd.Printf("Console for server %d:\n", server.ID)

@@ -73,9 +73,9 @@ func runList(s state.State, cmd *cobra.Command, _ []string) error {
 	if outOpts.IsSet("json") || outOpts.IsSet("yaml") {
 		schema := util.Wrap("options", options)
 		if outOpts.IsSet("json") {
-			return util.DescribeJSON(schema)
+			return util.DescribeJSON(cmd.OutOrStdout(), schema)
 		}
-		return util.DescribeYAML(schema)
+		return util.DescribeYAML(cmd.OutOrStdout(), schema)
 	}
 
 	cols := outputColumns
@@ -83,7 +83,7 @@ func runList(s state.State, cmd *cobra.Command, _ []string) error {
 		cols = outOpts["columns"]
 	}
 
-	t := output.NewTable()
+	t := output.NewTable(cmd.OutOrStdout())
 	t.AddAllowedFields(option{})
 	if !outOpts.IsSet("noheader") {
 		t.WriteHeader(cols)

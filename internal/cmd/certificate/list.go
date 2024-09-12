@@ -36,8 +36,8 @@ var ListCmd = base.ListCmd{
 		return resources, err
 	},
 
-	OutputTable: func(_ hcapi2.Client) *output.Table {
-		return output.NewTable().
+	OutputTable: func(t *output.Table, _ hcapi2.Client) {
+		t.
 			AddAllowedFields(hcloud.Certificate{}).
 			RemoveAllowedField("certificate", "chain").
 			AddFieldFn("labels", output.FieldFn(func(obj interface{}) string {

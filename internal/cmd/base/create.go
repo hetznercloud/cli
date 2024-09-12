@@ -48,9 +48,16 @@ func (cc *CreateCmd) CobraCommand(s state.State) *cobra.Command {
 			return err
 		}
 
+		schemaOut := cmd.OutOrStdout()
 		isSchema := outputFlags.IsSet("json") || outputFlags.IsSet("yaml")
-		if isSchema && !quiet {
-			cmd.SetOut(os.Stderr)
+		if isSchema {
+			if quiet {
+				// If we are in quiet mode, we saved the original output in cmd.errWriter. We can now restore it.
+				schemaOut = cmd.ErrOrStderr()
+			} else {
+				// We don't want anything other than the schema in stdout, so we set the default to stderr
+				cmd.SetOut(os.Stderr)
+			}
 		}
 
 		resource, schema, err := cc.Run(s, cmd, args)
@@ -60,9 +67,9 @@ func (cc *CreateCmd) CobraCommand(s state.State) *cobra.Command {
 
 		if isSchema {
 			if outputFlags.IsSet("json") {
-				return util.DescribeJSON(schema)
+				return util.DescribeJSON(schemaOut, schema)
 			}
-			return util.DescribeYAML(schema)
+			return util.DescribeYAML(schemaOut, schema)
 		} else if cc.PrintResource != nil && resource != nil {
 			cc.PrintResource(s, cmd, resource)
 		}
