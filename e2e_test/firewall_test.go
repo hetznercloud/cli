@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestFirewall(t *testing.T) {
@@ -17,83 +18,83 @@ func TestFirewall(t *testing.T) {
 	}
 
 	out, err := runCommand(t, "firewall", "add-label", "non-existing-firewall", "foo=bar")
-	assert.EqualError(t, err, "firewall not found: non-existing-firewall")
+	require.EqualError(t, err, "firewall not found: non-existing-firewall")
 	assert.Empty(t, out)
 
 	out, err = runCommand(t, "firewall", "add-label", strconv.Itoa(firewallID), "foo=bar")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Label(s) foo added to firewall %d\n", firewallID), out)
 
 	out, err = runCommand(t, "firewall", "add-label", strconv.Itoa(firewallID), "baz=qux")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Label(s) baz added to firewall %d\n", firewallID), out)
 
 	out, err = runCommand(t, "firewall", "update", strconv.Itoa(firewallID), "--name", "new-test-firewall")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Firewall %d updated\n", firewallID), out)
 
 	out, err = runCommand(t, "firewall", "remove-label", "new-test-firewall", "baz")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Label(s) baz removed from firewall %d\n", firewallID), out)
 
 	t.Run("add-rule", func(t *testing.T) {
 		t.Run("missing-args", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "add-rule", strconv.Itoa(firewallID))
-			assert.EqualError(t, err, `required flag(s) "direction", "protocol" not set`)
+			require.EqualError(t, err, `required flag(s) "direction", "protocol" not set`)
 			assert.Empty(t, out)
 		})
 
 		t.Run("unknown-firewall", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "add-rule", "non-existing-firewall", "--direction", "in", "--source-ips", "10.0.0.0/24", "--protocol", "tcp", "--port", "9100")
-			assert.EqualError(t, err, "Firewall not found: non-existing-firewall")
+			require.EqualError(t, err, "Firewall not found: non-existing-firewall")
 			assert.Empty(t, out)
 		})
 
 		t.Run("missing-port", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "add-rule", strconv.Itoa(firewallID), "--direction", "in", "--source-ips", "10.0.0.0/24", "--protocol", "tcp", "--description", "Some random description")
-			assert.EqualError(t, err, "port is required (--port)")
+			require.EqualError(t, err, "port is required (--port)")
 			assert.Empty(t, out)
 		})
 
 		t.Run("port-not-allowed", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "add-rule", strconv.Itoa(firewallID), "--direction", "out", "--destination-ips", "192.168.1.0/24", "--protocol", "icmp", "--port", "12345")
-			assert.EqualError(t, err, "port is not allowed for this protocol")
+			require.EqualError(t, err, "port is not allowed for this protocol")
 			assert.Empty(t, out)
 		})
 
 		t.Run("invalid-direction", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "add-rule", strconv.Itoa(firewallID), "--direction", "foo", "--destination-ips", "192.168.1.0/24", "--protocol", "tcp", "--port", "12345")
-			assert.EqualError(t, err, "invalid direction: foo")
+			require.EqualError(t, err, "invalid direction: foo")
 			assert.Empty(t, out)
 		})
 
 		t.Run("invalid-protocol", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "add-rule", strconv.Itoa(firewallID), "--direction", "out", "--destination-ips", "192.168.1.0/24", "--protocol", "abc", "--port", "12345")
-			assert.EqualError(t, err, "invalid protocol: abc")
+			require.EqualError(t, err, "invalid protocol: abc")
 			assert.Empty(t, out)
 		})
 
 		t.Run("tcp-in", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "add-rule", strconv.Itoa(firewallID), "--direction", "in", "--source-ips", "10.0.0.0/24", "--protocol", "tcp", "--port", "9100", "--description", "Some random description")
-			assert.NoError(t, err)
+			require.NoError(t, err)
 			assert.Equal(t, fmt.Sprintf("Firewall Rules for Firewall %d updated\n", firewallID), out)
 		})
 
 		t.Run("icmp-out", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "add-rule", strconv.Itoa(firewallID), "--direction", "out", "--destination-ips", "192.168.1.0/24", "--protocol", "icmp")
-			assert.NoError(t, err)
+			require.NoError(t, err)
 			assert.Equal(t, fmt.Sprintf("Firewall Rules for Firewall %d updated\n", firewallID), out)
 		})
 
 		t.Run("invalid-ip-out", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "add-rule", strconv.Itoa(firewallID), "--direction", "out", "--destination-ips", "invalid-ip", "--protocol", "tcp", "--port", "9100")
-			assert.EqualError(t, err, "destination error on index 0: invalid CIDR address: invalid-ip")
+			require.EqualError(t, err, "destination error on index 0: invalid CIDR address: invalid-ip")
 			assert.Empty(t, out)
 		})
 
 		t.Run("invalid-ip-range-out", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "add-rule", strconv.Itoa(firewallID), "--direction", "in", "--source-ips", "10.1.2.3/8", "--protocol", "tcp", "--port", "9100")
-			assert.EqualError(t, err, "source ips error on index 0: 10.1.2.3/8 is not the start of the cidr block 10.0.0.0/8")
+			require.EqualError(t, err, "source ips error on index 0: 10.1.2.3/8 is not the start of the cidr block 10.0.0.0/8")
 			assert.Empty(t, out)
 		})
 	})
@@ -101,38 +102,38 @@ func TestFirewall(t *testing.T) {
 	t.Run("apply-to-resource", func(t *testing.T) {
 		t.Run("unknown-type", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "apply-to-resource", "--type", "non-existing-type", strconv.Itoa(firewallID))
-			assert.EqualError(t, err, "unknown type non-existing-type")
+			require.EqualError(t, err, "unknown type non-existing-type")
 			assert.Empty(t, out)
 		})
 		t.Run("missing-server", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "apply-to-resource", "--type", "server", strconv.Itoa(firewallID))
-			assert.EqualError(t, err, "type server need a --server specific")
+			require.EqualError(t, err, "type server need a --server specific")
 			assert.Empty(t, out)
 		})
 		t.Run("missing-label-selector", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "apply-to-resource", "--type", "label_selector", strconv.Itoa(firewallID))
-			assert.EqualError(t, err, "type label_selector need a --label-selector specific")
+			require.EqualError(t, err, "type label_selector need a --label-selector specific")
 			assert.Empty(t, out)
 		})
 		t.Run("unknown-firewall", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "apply-to-resource", "--type", "server", "--server", "non-existing-server", "non-existing-firewall")
-			assert.EqualError(t, err, "Firewall not found: non-existing-firewall")
+			require.EqualError(t, err, "Firewall not found: non-existing-firewall")
 			assert.Empty(t, out)
 		})
 		t.Run("unknown-server", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "apply-to-resource", "--type", "server", "--server", "non-existing-server", strconv.Itoa(firewallID))
-			assert.EqualError(t, err, "Server not found: non-existing-server")
+			require.EqualError(t, err, "Server not found: non-existing-server")
 			assert.Empty(t, out)
 		})
 		t.Run("label-selector", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "apply-to-resource", "--type", "label_selector", "--label-selector", "foo=bar", strconv.Itoa(firewallID))
-			assert.NoError(t, err)
+			require.NoError(t, err)
 			assert.Equal(t, fmt.Sprintf("Firewall %d applied to resource\n", firewallID), out)
 		})
 	})
 
 	out, err = runCommand(t, "firewall", "describe", strconv.Itoa(firewallID))
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Regexp(t, `ID:\s+[0-9]+
 Name:\s+new-test-firewall
 Created:\s+.*?
@@ -179,32 +180,32 @@ Applied To:
 	t.Run("remove-from-resource", func(t *testing.T) {
 		t.Run("unknown-type", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "remove-from-resource", "--type", "non-existing-type", strconv.Itoa(firewallID))
-			assert.EqualError(t, err, "unknown type non-existing-type")
+			require.EqualError(t, err, "unknown type non-existing-type")
 			assert.Empty(t, out)
 		})
 		t.Run("missing-server", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "remove-from-resource", "--type", "server", strconv.Itoa(firewallID))
-			assert.EqualError(t, err, "type server need a --server specific")
+			require.EqualError(t, err, "type server need a --server specific")
 			assert.Empty(t, out)
 		})
 		t.Run("missing-label-selector", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "remove-from-resource", "--type", "label_selector", strconv.Itoa(firewallID))
-			assert.EqualError(t, err, "type label_selector need a --label-selector specific")
+			require.EqualError(t, err, "type label_selector need a --label-selector specific")
 			assert.Empty(t, out)
 		})
 		t.Run("unknown-firewall", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "remove-from-resource", "--type", "server", "--server", "non-existing-server", "non-existing-firewall")
-			assert.EqualError(t, err, "Firewall not found: non-existing-firewall")
+			require.EqualError(t, err, "Firewall not found: non-existing-firewall")
 			assert.Empty(t, out)
 		})
 		t.Run("unknown-server", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "remove-from-resource", "--type", "server", "--server", "non-existing-server", strconv.Itoa(firewallID))
-			assert.EqualError(t, err, "Server not found: non-existing-server")
+			require.EqualError(t, err, "Server not found: non-existing-server")
 			assert.Empty(t, out)
 		})
 		t.Run("label-selector", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "remove-from-resource", "--type", "label_selector", "--label-selector", "foo=bar", strconv.Itoa(firewallID))
-			assert.NoError(t, err)
+			require.NoError(t, err)
 			assert.Equal(t, fmt.Sprintf("Firewall %d removed from resource\n", firewallID), out)
 		})
 	})
@@ -212,51 +213,51 @@ Applied To:
 	t.Run("delete-rule", func(t *testing.T) {
 		t.Run("unknown-firewall", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "delete-rule", "non-existing-firewall", "--direction", "in", "--source-ips", "10.0.0.0/24", "--protocol", "tcp", "--port", "9100")
-			assert.EqualError(t, err, "Firewall not found: non-existing-firewall")
+			require.EqualError(t, err, "Firewall not found: non-existing-firewall")
 			assert.Empty(t, out)
 		})
 
 		t.Run("missing-port", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "delete-rule", strconv.Itoa(firewallID), "--direction", "in", "--source-ips", "10.0.0.0/24", "--protocol", "tcp")
-			assert.EqualError(t, err, "port is required (--port)")
+			require.EqualError(t, err, "port is required (--port)")
 			assert.Empty(t, out)
 		})
 
 		t.Run("port-not-allowed", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "delete-rule", strconv.Itoa(firewallID), "--direction", "out", "--destination-ips", "192.168.1.0/24", "--protocol", "icmp", "--port", "12345")
-			assert.EqualError(t, err, "port is not allowed for this protocol")
+			require.EqualError(t, err, "port is not allowed for this protocol")
 			assert.Empty(t, out)
 		})
 
 		t.Run("tcp-in", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "delete-rule", strconv.Itoa(firewallID), "--direction", "in", "--source-ips", "10.0.0.0/24", "--protocol", "tcp", "--port", "9100", "--description", "Some random description")
-			assert.NoError(t, err)
+			require.NoError(t, err)
 			assert.Equal(t, fmt.Sprintf("Firewall Rules for Firewall %d updated\n", firewallID), out)
 		})
 
 		t.Run("icmp-out", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "delete-rule", strconv.Itoa(firewallID), "--direction", "out", "--destination-ips", "192.168.1.0/24", "--protocol", "icmp")
-			assert.NoError(t, err)
+			require.NoError(t, err)
 			assert.Equal(t, fmt.Sprintf("Firewall Rules for Firewall %d updated\n", firewallID), out)
 		})
 
 		t.Run("non-existing-rule", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "delete-rule", strconv.Itoa(firewallID), "--direction", "in", "--source-ips", "123.123.123.123/32", "--port", "1234", "--protocol", "tcp")
-			assert.EqualError(t, err, fmt.Sprintf("the specified rule was not found in the ruleset of Firewall %d", firewallID))
+			require.EqualError(t, err, fmt.Sprintf("the specified rule was not found in the ruleset of Firewall %d", firewallID))
 			assert.Empty(t, out)
 		})
 	})
 
 	out, err = runCommand(t, "firewall", "replace-rules", "non-existing-firewall", "--rules-file", "rules_file.json")
-	assert.EqualError(t, err, "Firewall not found: non-existing-firewall")
+	require.EqualError(t, err, "Firewall not found: non-existing-firewall")
 	assert.Empty(t, out)
 
 	out, err = runCommand(t, "firewall", "replace-rules", strconv.Itoa(firewallID), "--rules-file", "rules_file.json")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Firewall Rules for Firewall %d updated\n", firewallID), out)
 
 	out, err = runCommand(t, "firewall", "delete", strconv.Itoa(firewallID))
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("firewall %d deleted\n", firewallID), out)
 }
 

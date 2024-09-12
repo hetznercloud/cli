@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 	"github.com/swaggest/assertjson"
 )
 
@@ -15,13 +16,13 @@ func TestFloatingIP(t *testing.T) {
 	t.Parallel()
 
 	_, err := createFloatingIP(t, "")
-	assert.EqualError(t, err, "type is required")
+	require.EqualError(t, err, "type is required")
 
 	_, err = createFloatingIP(t, "ipv4")
-	assert.EqualError(t, err, "one of --home-location or --server is required")
+	require.EqualError(t, err, "one of --home-location or --server is required")
 
 	_, err = createFloatingIP(t, "ipv4", "--server", "non-existing-server")
-	assert.EqualError(t, err, "server not found: non-existing-server")
+	require.EqualError(t, err, "server not found: non-existing-server")
 
 	floatingIPId, err := createFloatingIP(t, "ipv4", "--home-location", "fsn1")
 	if err != nil {
@@ -31,64 +32,64 @@ func TestFloatingIP(t *testing.T) {
 	t.Run("labels", func(t *testing.T) {
 		t.Run("add-label-non-existing-floating-ip", func(t *testing.T) {
 			out, err := runCommand(t, "floating-ip", "add-label", "non-existing-floating-ip", "foo=bar")
-			assert.EqualError(t, err, "floating IP not found: non-existing-floating-ip")
+			require.EqualError(t, err, "floating IP not found: non-existing-floating-ip")
 			assert.Empty(t, out)
 		})
 
 		t.Run("add-label", func(t *testing.T) {
 			out, err := runCommand(t, "floating-ip", "add-label", strconv.Itoa(floatingIPId), "foo=bar")
-			assert.NoError(t, err)
+			require.NoError(t, err)
 			assert.Equal(t, fmt.Sprintf("Label(s) foo added to Floating IP %d\n", floatingIPId), out)
 		})
 	})
 
 	out, err := runCommand(t, "floating-ip", "update", strconv.Itoa(floatingIPId), "--name", "new-test-floating-ip", "--description", "Some description")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Floating IP %d updated\n", floatingIPId), out)
 
 	out, err = runCommand(t, "floating-ip", "set-rdns", strconv.Itoa(floatingIPId), "--hostname", "s1.example.com")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Reverse DNS of Floating IP %d changed\n", floatingIPId), out)
 
 	out, err = runCommand(t, "floating-ip", "unassign", "non-existing-floating-ip")
-	assert.EqualError(t, err, "Floating IP not found: non-existing-floating-ip")
+	require.EqualError(t, err, "Floating IP not found: non-existing-floating-ip")
 	assert.Empty(t, out)
 
 	out, err = runCommand(t, "floating-ip", "assign", "non-existing-floating-ip", "non-existing-server")
-	assert.EqualError(t, err, "Floating IP not found: non-existing-floating-ip")
+	require.EqualError(t, err, "Floating IP not found: non-existing-floating-ip")
 	assert.Empty(t, out)
 
 	out, err = runCommand(t, "floating-ip", "assign", strconv.Itoa(floatingIPId), "non-existing-server")
-	assert.EqualError(t, err, "server not found: non-existing-server")
+	require.EqualError(t, err, "server not found: non-existing-server")
 	assert.Empty(t, out)
 
 	t.Run("enable-protection", func(t *testing.T) {
 		t.Run("unknown-protection-level", func(t *testing.T) {
 			out, err := runCommand(t, "floating-ip", "enable-protection", strconv.Itoa(floatingIPId), "unknown-protection-level")
-			assert.EqualError(t, err, "unknown protection level: unknown-protection-level")
+			require.EqualError(t, err, "unknown protection level: unknown-protection-level")
 			assert.Empty(t, out)
 		})
 
 		t.Run("non-existing-floating-ip", func(t *testing.T) {
 			out, err := runCommand(t, "floating-ip", "enable-protection", "non-existing-floating-ip", "delete")
-			assert.EqualError(t, err, "Floating IP not found: non-existing-floating-ip")
+			require.EqualError(t, err, "Floating IP not found: non-existing-floating-ip")
 			assert.Empty(t, out)
 		})
 
 		t.Run("enable-delete-protection", func(t *testing.T) {
 			out, err := runCommand(t, "floating-ip", "enable-protection", strconv.Itoa(floatingIPId), "delete")
-			assert.NoError(t, err)
+			require.NoError(t, err)
 			assert.Equal(t, fmt.Sprintf("Resource protection enabled for floating IP %d\n", floatingIPId), out)
 		})
 	})
 
 	ipStr, err := runCommand(t, "floating-ip", "describe", strconv.Itoa(floatingIPId), "--output", "format={{.IP}}")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	ipStr = strings.TrimSpace(ipStr)
 	assert.Regexp(t, `^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$`, ipStr)
 
 	out, err = runCommand(t, "floating-ip", "describe", strconv.Itoa(floatingIPId))
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Regexp(t, `ID:\s+[0-9]+
 Type:\s+ipv4
 Name:\s+new-test-floating-ip
@@ -108,13 +109,13 @@ Labels:
 `, out)
 
 	out, err = runCommand(t, "floating-ip", "list", "--output", "columns=id,name,type,ip,dns,server,home,blocked,protection,labels,created,age")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Regexp(t, `^ID +NAME +TYPE +IP +DNS +SERVER +HOME +BLOCKED +PROTECTION +LABELS +CREATED +AGE
 [0-9]+ +new-test-floating-ip +ipv4 +(?:[0-9]{1,3}\.){3}[0-9]{1,3} +s1\.example\.com +- +fsn1 +no +delete +foo=bar.*?
 $`, out)
 
 	out, err = runCommand(t, "floating-ip", "list", "-o=json")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assertjson.Equal(t, []byte(fmt.Sprintf(`
 [
   {
@@ -159,25 +160,25 @@ $`, out)
 	t.Run("disable-protection", func(t *testing.T) {
 		t.Run("non-existing-floating-ip", func(t *testing.T) {
 			out, err := runCommand(t, "floating-ip", "disable-protection", "non-existing-floating-ip", "delete")
-			assert.EqualError(t, err, "Floating IP not found: non-existing-floating-ip")
+			require.EqualError(t, err, "Floating IP not found: non-existing-floating-ip")
 			assert.Empty(t, out)
 		})
 
 		t.Run("unknown-protection-level", func(t *testing.T) {
 			out, err := runCommand(t, "floating-ip", "disable-protection", strconv.Itoa(floatingIPId), "unknown-protection-level")
-			assert.EqualError(t, err, "unknown protection level: unknown-protection-level")
+			require.EqualError(t, err, "unknown protection level: unknown-protection-level")
 			assert.Empty(t, out)
 		})
 
 		t.Run("disable-delete-protection", func(t *testing.T) {
 			out, err = runCommand(t, "floating-ip", "disable-protection", strconv.Itoa(floatingIPId), "delete")
-			assert.NoError(t, err)
+			require.NoError(t, err)
 			assert.Equal(t, fmt.Sprintf("Resource protection disabled for floating IP %d\n", floatingIPId), out)
 		})
 	})
 
 	out, err = runCommand(t, "floating-ip", "delete", strconv.Itoa(floatingIPId))
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Floating IP %d deleted\n", floatingIPId), out)
 
 	floatingIPId, err = createFloatingIP(t, "ipv6", "--home-location", "fsn1")
@@ -186,7 +187,7 @@ $`, out)
 	}
 
 	out, err = runCommand(t, "floating-ip", "describe", strconv.Itoa(floatingIPId))
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Regexp(t, `ID:\s+[0-9]+
 Type:\s+ipv6
 Name:\s+test-floating-ip
@@ -206,29 +207,29 @@ Labels:
 `, out)
 
 	out, err = runCommand(t, "floating-ip", "describe", strconv.Itoa(floatingIPId), "--output", "format={{.IP}}")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	out = strings.TrimSpace(out)
 	ipv6 := net.ParseIP(out)
 	if ipv6 != nil {
 		out, err = runCommand(t, "floating-ip", "set-rdns", strconv.Itoa(floatingIPId), "--ip", ipv6.String()+"1", "--hostname", "s1.example.com")
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, fmt.Sprintf("Reverse DNS of Floating IP %d changed\n", floatingIPId), out)
 
 		out, err = runCommand(t, "floating-ip", "set-rdns", strconv.Itoa(floatingIPId), "--ip", ipv6.String()+"2", "--hostname", "s2.example.com")
-		assert.NoError(t, err)
+		require.NoError(t, err)
 		assert.Equal(t, fmt.Sprintf("Reverse DNS of Floating IP %d changed\n", floatingIPId), out)
 	} else {
 		t.Errorf("invalid IPv6 address: %s", out)
 	}
 
 	out, err = runCommand(t, "floating-ip", "list", "-o", "columns=ip,dns")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Regexp(t, fmt.Sprintf(`^IP +DNS
 %s\/64 +2 entries
 `, ipv6), out)
 
 	out, err = runCommand(t, "floating-ip", "delete", strconv.Itoa(floatingIPId))
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Floating IP %d deleted\n", floatingIPId), out)
 }
 

@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestCombined(t *testing.T) {
@@ -18,7 +19,7 @@ func TestCombined(t *testing.T) {
 	}
 
 	out, err := runCommand(t, "firewall", "apply-to-resource", "--type", "server", "--server", "test-server", strconv.Itoa(firewallID))
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Firewall %d applied to resource\n", firewallID), out)
 
 	out, err = runCommand(t, "firewall", "delete", strconv.Itoa(firewallID))
@@ -26,11 +27,11 @@ func TestCombined(t *testing.T) {
 	assert.Empty(t, out)
 
 	out, err = runCommand(t, "firewall", "remove-from-resource", "--type", "server", "--server", "test-server", strconv.Itoa(firewallID))
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Firewall %d removed from resource\n", firewallID), out)
 
 	out, err = runCommand(t, "firewall", "delete", strconv.Itoa(firewallID))
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("firewall %d deleted\n", firewallID), out)
 
 	floatingIP, err := createFloatingIP(t, "ipv4", "--server", strconv.Itoa(serverID))
@@ -39,15 +40,15 @@ func TestCombined(t *testing.T) {
 	}
 
 	out, err = runCommand(t, "floating-ip", "unassign", strconv.Itoa(floatingIP))
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Floating IP %d unassigned\n", floatingIP), out)
 
 	out, err = runCommand(t, "floating-ip", "assign", strconv.Itoa(floatingIP), strconv.Itoa(serverID))
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Floating IP %d assigned to server %d\n", floatingIP, serverID), out)
 
 	out, err = runCommand(t, "floating-ip", "describe", strconv.Itoa(floatingIP))
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Regexp(t, `ID:\s+[0-9]+
 Type:\s+ipv4
 Name:\s+test-floating-ip
@@ -68,14 +69,14 @@ Labels:
 `, out)
 
 	out, err = runCommand(t, "floating-ip", "list", "-o", "columns=server", "-o", "noheader")
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, "test-server\n", out)
 
 	out, err = runCommand(t, "floating-ip", "delete", strconv.Itoa(floatingIP))
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Floating IP %d deleted\n", floatingIP), out)
 
 	out, err = runCommand(t, "server", "delete", strconv.Itoa(serverID))
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Server %d deleted\n", serverID), out)
 }
