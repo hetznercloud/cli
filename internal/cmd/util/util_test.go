@@ -199,7 +199,7 @@ func TestDescribeFormat(t *testing.T) {
 		Bar: "bar",
 	}, "Foo is: {{.Foo}} Bar is: {{.Bar}}")
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, "Foo is: foo Bar is: bar\n", buf.String())
 }
 
@@ -213,7 +213,7 @@ func TestDescribeJSON(t *testing.T) {
 		Bar: "bar",
 	})
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.JSONEq(t, `{"foo":"foo", "bar": "bar"}`, buf.String())
 }
 
@@ -227,7 +227,7 @@ func TestDescribeYAML(t *testing.T) {
 		Bar: "bar",
 	})
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.YAMLEq(t, `{"foo":"foo", "bar": "bar"}`, buf.String())
 }
 
