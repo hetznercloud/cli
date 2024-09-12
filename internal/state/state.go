@@ -117,7 +117,9 @@ func (c *state) newClient() (hcapi2.Client, error) {
 	}
 
 	if pollInterval > 0 {
-		opts = append(opts, hcloud.WithPollBackoffFunc(hcloud.ConstantBackoff(pollInterval)))
+		opts = append(opts, hcloud.WithPollOpts(hcloud.PollOpts{
+			BackoffFunc: hcloud.ConstantBackoff(pollInterval),
+		}))
 	}
 
 	return hcapi2.NewClient(opts...), nil

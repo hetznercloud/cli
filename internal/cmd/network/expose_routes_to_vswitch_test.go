@@ -5,6 +5,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/hetznercloud/cli/internal/cmd/network"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -32,7 +33,7 @@ func TestExposeRoutesToVSwitchEnable(t *testing.T) {
 	args := []string{"123"}
 	out, errOut, err := fx.Run(cmd, args)
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	assert.Equal(t, "Exposing routes to connected vSwitch of network myNetwork enabled\n", out)
 }
@@ -58,7 +59,7 @@ func TestExposeRoutesToVSwitchDisable(t *testing.T) {
 	args := []string{"123", "--disable"}
 	out, errOut, err := fx.Run(cmd, args)
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	assert.Equal(t, "Exposing routes to connected vSwitch of network myNetwork disabled\n", out)
 }

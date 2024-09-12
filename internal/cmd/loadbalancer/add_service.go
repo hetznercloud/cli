@@ -102,26 +102,26 @@ var AddServiceCmd = base.Cmd{
 
 		opts := hcloud.LoadBalancerAddServiceOpts{
 			Protocol:      hcloud.LoadBalancerServiceProtocol(protocol),
-			Proxyprotocol: hcloud.Bool(proxyProtocol),
+			Proxyprotocol: &proxyProtocol,
 		}
 
 		if listenPort != 0 {
-			opts.ListenPort = hcloud.Int(listenPort)
+			opts.ListenPort = &listenPort
 		}
 		if destinationPort != 0 {
-			opts.DestinationPort = hcloud.Int(destinationPort)
+			opts.DestinationPort = &destinationPort
 		}
 
 		if protocol != string(hcloud.LoadBalancerServiceProtocolTCP) {
 			opts.HTTP = &hcloud.LoadBalancerAddServiceOptsHTTP{
-				StickySessions: hcloud.Bool(httpStickySessions),
-				RedirectHTTP:   hcloud.Bool(httpRedirect),
+				StickySessions: &httpStickySessions,
+				RedirectHTTP:   &httpRedirect,
 			}
 			if httpCookieName != "" {
-				opts.HTTP.CookieName = hcloud.String(httpCookieName)
+				opts.HTTP.CookieName = &httpCookieName
 			}
 			if httpCookieLifetime != 0 {
-				opts.HTTP.CookieLifetime = hcloud.Duration(httpCookieLifetime)
+				opts.HTTP.CookieLifetime = &httpCookieLifetime
 			}
 			for _, certificateID := range httpCertificates {
 				opts.HTTP.Certificates = append(opts.HTTP.Certificates, &hcloud.Certificate{ID: certificateID})

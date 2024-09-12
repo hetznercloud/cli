@@ -5,6 +5,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/hetznercloud/cli/internal/cmd/server"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -37,7 +38,7 @@ func TestRequestConsole(t *testing.T) {
 	args := []string{"my-server"}
 	out, errOut, err := fx.Run(cmd, args)
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	assert.Equal(t, "Console for server 123:\nWebSocket URL: wss://console.hetzner.cloud/?token=123\nVNC Password: root-password\n", out)
 }
@@ -68,7 +69,7 @@ func TestRequestConsoleJSON(t *testing.T) {
 	args := []string{"my-server", "-o=json"}
 	out, errOut, err := fx.Run(cmd, args)
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	assert.JSONEq(t, `{"wss_url": "wss://console.hetzner.cloud/?token=123", "password": "root-password"}`, out)
 }

@@ -3,8 +3,9 @@ package server
 import (
 	"bytes"
 	"encoding/base64"
+	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"mime/multipart"
 	"net/textproto"
 	"os"
@@ -200,9 +201,9 @@ func buildUserData(files []string) (string, error) {
 			err  error
 		)
 		if file == "-" {
-			data, err = ioutil.ReadAll(os.Stdin)
+			data, err = io.ReadAll(os.Stdin)
 		} else {
-			data, err = ioutil.ReadFile(file)
+			data, err = os.ReadFile(file)
 		}
 		if err != nil {
 			return "", err
@@ -219,11 +220,11 @@ func buildUserData(files []string) (string, error) {
 
 		w, err := mp.CreatePart(header)
 		if err != nil {
-			return "", fmt.Errorf("failed to create multipart for file %q: %s", file, err)
+			return "", fmt.Errorf("failed to create multipart for file %q: %w", file, err)
 		}
 
 		if _, err := base64.NewEncoder(base64.StdEncoding, w).Write(data); err != nil {
-			return "", fmt.Errorf("failed to encode data for file %q: %s", file, err)
+			return "", fmt.Errorf("failed to encode data for file %q: %w", file, err)
 		}
 	}
 
@@ -339,9 +340,9 @@ func createOptsFromFlags(
 	if len(userDataFiles) == 1 {
 		var data []byte
 		if userDataFiles[0] == "-" {
-			data, err = ioutil.ReadAll(os.Stdin)
+			data, err = io.ReadAll(os.Stdin)
 		} else {
-			data, err = ioutil.ReadFile(userDataFiles[0])
+			data, err = os.ReadFile(userDataFiles[0])
 		}
 		if err != nil {
 			return
@@ -452,21 +453,21 @@ func getSSHKeyForFingerprint(
 		publicKey   ssh.PublicKey
 	)
 
-	if fileContent, err = ioutil.ReadFile(file); err == os.ErrNotExist {
+	if fileContent, err = os.ReadFile(file); errors.Is(err, os.ErrNotExist) {
 		err = nil
 		return
 	} else if err != nil {
-		err = fmt.Errorf("lookup SSH key by fingerprint: %v", err)
+		err = fmt.Errorf("lookup SSH key by fingerprint: %w", err)
 		return
 	}
 
 	if publicKey, _, _, _, err = ssh.ParseAuthorizedKey(fileContent); err != nil {
-		err = fmt.Errorf("lookup SSH key by fingerprint: %v", err)
+		err = fmt.Errorf("lookup SSH key by fingerprint: %w", err)
 		return
 	}
 	sshKey, _, err = s.Client().SSHKey().GetByFingerprint(s, ssh.FingerprintLegacyMD5(publicKey))
 	if err != nil {
-		err = fmt.Errorf("lookup SSH key by fingerprint: %v", err)
+		err = fmt.Errorf("lookup SSH key by fingerprint: %w", err)
 		return
 	}
 	if sshKey == nil {

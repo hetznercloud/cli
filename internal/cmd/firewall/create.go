@@ -90,7 +90,7 @@ func parseRulesFile(path string) ([]hcloud.FirewallRule, error) {
 		for i, sourceIP := range rule.SourceIPs {
 			_, sourceNet, err := net.ParseCIDR(sourceIP)
 			if err != nil {
-				return nil, fmt.Errorf("invalid CIDR on index %d : %s", i, err)
+				return nil, fmt.Errorf("invalid CIDR on index %d : %w", i, err)
 			}
 			sourceNets = append(sourceNets, *sourceNet)
 		}
@@ -98,7 +98,7 @@ func parseRulesFile(path string) ([]hcloud.FirewallRule, error) {
 		for i, destIP := range rule.DestinationIPs {
 			_, destNet, err := net.ParseCIDR(destIP)
 			if err != nil {
-				return nil, fmt.Errorf("invalid CIDR on index %d : %s", i, err)
+				return nil, fmt.Errorf("invalid CIDR on index %d : %w", i, err)
 			}
 			destNets = append(destNets, *destNet)
 		}

@@ -7,6 +7,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/hetznercloud/cli/internal/cmd/firewall"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -46,7 +47,7 @@ func TestList(t *testing.T) {
 123   test   5 Rules       2 Servers | 0 Label Selectors
 `
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
@@ -114,9 +115,9 @@ func TestListJSON(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"-o=json"})
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Empty(t, errOut)
-	assert.JSONEq(t, out, `
+	assert.JSONEq(t, `
 [
   {
     "id": 42,
@@ -151,5 +152,5 @@ func TestListJSON(t *testing.T) {
       }
     ]
   }
-]`)
+]`, out)
 }

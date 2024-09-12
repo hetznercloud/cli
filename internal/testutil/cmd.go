@@ -6,6 +6,7 @@ import (
 
 	"github.com/spf13/cobra"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/hetznercloud/cli/internal/cli"
 	"github.com/hetznercloud/cli/internal/state"
@@ -43,7 +44,7 @@ func (dt DataType) test(t *testing.T, expected string, actual string, _ ...any) 
 			return
 		}
 		assert.YAMLEq(t, expected, actual)
-	default:
+	case DataTypeText:
 		assert.Equal(t, expected, actual)
 	}
 }
@@ -73,9 +74,9 @@ func TestCommand(t *testing.T, cmd TestableCommand, cases map[string]TestCase) {
 			out, errOut, err := fx.Run(rootCmd, testCase.Args)
 
 			if testCase.ExpErr != "" {
-				assert.EqualError(t, err, testCase.ExpErr)
+				require.EqualError(t, err, testCase.ExpErr)
 			} else {
-				assert.NoError(t, err)
+				require.NoError(t, err)
 			}
 			testCase.ExpOutType.test(t, testCase.ExpOut, out)
 			testCase.ExpErrOutType.test(t, testCase.ExpErrOut, errOut)

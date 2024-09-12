@@ -6,6 +6,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/hetznercloud/cli/internal/cmd/server"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -45,7 +46,7 @@ func TestAttachToNetwork(t *testing.T) {
 	args := []string{"my-server", "--network", "my-network", "--ip", "192.168.0.1", "--alias-ips", "10.0.1.2,10.0.1.3"}
 	out, errOut, err := fx.Run(cmd, args)
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	assert.Equal(t, "Server 123 attached to network 456\n", out)
 }

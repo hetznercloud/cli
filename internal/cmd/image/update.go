@@ -33,7 +33,7 @@ var UpdateCmd = base.UpdateCmd{
 	Update: func(s state.State, _ *cobra.Command, resource interface{}, flags map[string]pflag.Value) error {
 		image := resource.(*hcloud.Image)
 		updOpts := hcloud.ImageUpdateOpts{
-			Description: hcloud.String(flags["description"].String()),
+			Description: hcloud.Ptr(flags["description"].String()),
 			Type:        hcloud.ImageType(flags["type"].String()),
 		}
 		_, _, err := s.Client().Image().Update(s, image, updOpts)

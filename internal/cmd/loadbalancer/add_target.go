@@ -70,7 +70,7 @@ var AddTargetCmd = base.Cmd{
 			}
 			action, _, err = s.Client().LoadBalancer().AddServerTarget(s, loadBalancer, hcloud.LoadBalancerAddServerTargetOpts{
 				Server:       server,
-				UsePrivateIP: hcloud.Bool(usePrivateIP),
+				UsePrivateIP: &usePrivateIP,
 			})
 			if err != nil {
 				return err
@@ -78,7 +78,7 @@ var AddTargetCmd = base.Cmd{
 		case labelSelector != "":
 			action, _, err = s.Client().LoadBalancer().AddLabelSelectorTarget(s, loadBalancer, hcloud.LoadBalancerAddLabelSelectorTargetOpts{
 				Selector:     labelSelector,
-				UsePrivateIP: hcloud.Bool(usePrivateIP),
+				UsePrivateIP: &usePrivateIP,
 			})
 			if err != nil {
 				return err

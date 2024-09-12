@@ -109,7 +109,7 @@ func Health(l *hcloud.LoadBalancer) string {
 			case hcloud.LoadBalancerTargetHealthStatusStatusUnhealthy:
 				unhealthyCount++
 
-			default:
+			case hcloud.LoadBalancerTargetHealthStatusStatusUnknown:
 				unknownCount++
 			}
 		}

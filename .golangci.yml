@@ -1,51 +1,29 @@
----
+linters:
+  presets:
+    - bugs
+    - error
+    - import
+    - metalinter
+    - module
+    - unused
+
+  enable:
+    - testifylint
+
+  disable:
+    # preset error
+    - err113 # Very annoying to define static errors everywhere
+    - wrapcheck # Very annoying to wrap errors everywhere
+    # preset import
+    - depguard
+
 linters-settings:
   gci:
     sections:
       - standard
       - default
       - prefix(github.com/hetznercloud)
-  exhaustive:
-    default-signifies-exhaustive: true
-  gomodguard:
-    blocked:
-      modules:
-        - github.com/tj/assert:
-            recommendations:
-              - github.com/stretchr/testify/assert
-            reason: |
-              One assertion library is enough and we use testify/assert
-              everywhere.
-        - gotest.tools/assert:
-            recommendations:
-              - github.com/stretchr/testify/assert
-            reason: |
-              One assertion library is enough and we use testify/assert
-              everywhere.
-        - github.com/magiconair/properties:
-            recommendations:
-              - github.com/stretchr/testify/assert
-            reason: >
-              We do not currently need to parse properties files. At the same
-              time this module has an assert package which tends to get
-              imported by accident. It is therefore blocked.
-        - github.com/gogo/protobuf:
-            recommendations:
-              - google.golang.org/protobuf
-            reason: >
-              This is not the protobuf module that we want to import.
-        - github.com/golang/protobuf:
-            recommendations:
-              - google.golang.org/protobuf
-            reason: >
-              This is the legacy import location of Google's protobuf module.
-              Use the new one instead.
-  misspell:
-    locale: "US"
-  revive:
-    exported: true
-    import-shadowing: true
-    indent-error-flow: true
+
   gosec:
     excludes:
       # As of golangci-lint v1.60.3, this rule is still enabled by default, which causes problems.
@@ -53,40 +31,10 @@ linters-settings:
       # See https://github.com/securego/gosec/issues/1185
       - G115
 
-linters:
-  disable-all: true
-  # Some of these are temporarily disabled until we fix the numerous issues we have.
-  enable:
-    - bodyclose
-    # - dupl
-    - errcheck
-    - exhaustive
-    - gocritic
-    # - golint
-    - gci
-    - gomodguard
-    - gosec
-    - gosimple
-    - govet
-    - ineffassign
-    - misspell
-    - revive
-    - rowserrcheck
-    # - scopelint
-    # - staticcheck
-    - typecheck
-    - unparam
-    - unused
-    - whitespace
+  exhaustive:
+    # Switch cases with a default case should be exhaustive.
+    default-signifies-exhaustive: true
 
-issues:
-  include:
-    - EXC0002  # disable excluding of issues about comments from golint
-  exclude-rules:
-    - path: _test\.go
-      linters:
-        - dupl
-        - gosec
-    - linters:
-        - gosec
-      text: "G204:"
+  gosmopolitan:
+    # We want to allow the use of time.Local()
+    allow-time-local: true

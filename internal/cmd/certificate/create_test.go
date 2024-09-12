@@ -7,6 +7,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/hetznercloud/cli/internal/cmd/certificate"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -56,7 +57,7 @@ func TestCreateManaged(t *testing.T) {
 
 	expOut := "Certificate 123 created\n"
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
@@ -124,7 +125,7 @@ func TestCreateManagedJSON(t *testing.T) {
 
 	expOut := "Certificate 123 created\n"
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, expOut, out)
 
 	assert.JSONEq(t, managedCreateResponseJSON, jsonOut)
@@ -154,7 +155,7 @@ func TestCreateUploaded(t *testing.T) {
 
 	expOut := "Certificate 123 created\n"
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
@@ -192,7 +193,7 @@ func TestCreateUploadedJSON(t *testing.T) {
 
 	expOut := "Certificate 123 created\n"
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, expOut, out)
 	assert.JSONEq(t, uploadedCreateResponseJSON, jsonOut)
 }

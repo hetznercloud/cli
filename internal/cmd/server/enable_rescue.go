@@ -47,7 +47,7 @@ var EnableRescueCmd = base.Cmd{
 		switch opts.Type {
 		case hcloud.ServerRescueTypeLinux64:
 			break
-		case hcloud.ServerRescueTypeLinux32:
+		case hcloud.ServerRescueTypeLinux32: //nolint:staticcheck
 			return fmt.Errorf("rescue type not supported anymore: %s", opts.Type)
 		default:
 			return fmt.Errorf("invalid rescue type: %s", opts.Type)

@@ -6,6 +6,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/hetznercloud/cli/internal/cmd/server"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -41,7 +42,7 @@ func TestRebuild(t *testing.T) {
 	args := []string{"my-server", "--image", "ubuntu-22.04"}
 	out, errOut, err := fx.Run(cmd, args)
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	assert.Equal(t, "Server 123 rebuilt with image ubuntu-22.04\nRoot password: root-password\n", out)
 }
@@ -70,7 +71,7 @@ func TestRebuildDeprecated(t *testing.T) {
 
 	errorMsg := "image ubuntu-22.04 is deprecated, please use --allow-deprecated-image to create a server with this image. It will continue to be available until 2036-08-20"
 
-	assert.Error(t, err, errorMsg)
+	require.Error(t, err, errorMsg)
 	assert.Equal(t, "Error: "+errorMsg+"\n", errOut)
 	assert.Empty(t, out)
 }

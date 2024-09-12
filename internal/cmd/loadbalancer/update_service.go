@@ -84,24 +84,24 @@ var UpdateServiceCmd = base.Cmd{
 		}
 		if cmd.Flag("proxy-protocol").Changed {
 			proxyProtocol, _ := cmd.Flags().GetBool("proxy-protocol")
-			opts.Proxyprotocol = hcloud.Bool(proxyProtocol)
+			opts.Proxyprotocol = &proxyProtocol
 		}
 		// HTTP
 		if cmd.Flag("http-redirect-http").Changed {
 			redirectHTTP, _ := cmd.Flags().GetBool("http-redirect-http")
-			opts.HTTP.RedirectHTTP = hcloud.Bool(redirectHTTP)
+			opts.HTTP.RedirectHTTP = &redirectHTTP
 		}
 		if cmd.Flag("http-sticky-sessions").Changed {
 			stickySessions, _ := cmd.Flags().GetBool("http-sticky-sessions")
-			opts.HTTP.StickySessions = hcloud.Bool(stickySessions)
+			opts.HTTP.StickySessions = &stickySessions
 		}
 		if cmd.Flag("http-cookie-name").Changed {
 			cookieName, _ := cmd.Flags().GetString("http-cookie-name")
-			opts.HTTP.CookieName = hcloud.String(cookieName)
+			opts.HTTP.CookieName = &cookieName
 		}
 		if cmd.Flag("http-cookie-lifetime").Changed {
 			cookieLifetime, _ := cmd.Flags().GetDuration("http-cookie-lifetime")
-			opts.HTTP.CookieLifetime = hcloud.Duration(cookieLifetime)
+			opts.HTTP.CookieLifetime = &cookieLifetime
 		}
 		if cmd.Flag("http-certificates").Changed {
 			certificates, _ := cmd.Flags().GetInt64Slice("http-certificates")
@@ -116,19 +116,19 @@ var UpdateServiceCmd = base.Cmd{
 		}
 		if cmd.Flag("health-check-port").Changed {
 			healthCheckPort, _ := cmd.Flags().GetInt("health-check-port")
-			opts.HealthCheck.Port = hcloud.Int(healthCheckPort)
+			opts.HealthCheck.Port = &healthCheckPort
 		}
 		if cmd.Flag("health-check-interval").Changed {
 			healthCheckInterval, _ := cmd.Flags().GetDuration("health-check-interval")
-			opts.HealthCheck.Interval = hcloud.Duration(healthCheckInterval)
+			opts.HealthCheck.Interval = &healthCheckInterval
 		}
 		if cmd.Flag("health-check-timeout").Changed {
 			healthCheckTimeout, _ := cmd.Flags().GetDuration("health-check-timeout")
-			opts.HealthCheck.Timeout = hcloud.Duration(healthCheckTimeout)
+			opts.HealthCheck.Timeout = &healthCheckTimeout
 		}
 		if cmd.Flag("health-check-retries").Changed {
 			healthCheckRetries, _ := cmd.Flags().GetInt("health-check-retries")
-			opts.HealthCheck.Retries = hcloud.Int(healthCheckRetries)
+			opts.HealthCheck.Retries = &healthCheckRetries
 		}
 
 		// Health Check HTTP
@@ -138,15 +138,15 @@ var UpdateServiceCmd = base.Cmd{
 
 			if cmd.Flag("health-check-http-domain").Changed {
 				healthCheckHTTPDomain, _ := cmd.Flags().GetString("health-check-http-domain")
-				opts.HealthCheck.HTTP.Domain = hcloud.String(healthCheckHTTPDomain)
+				opts.HealthCheck.HTTP.Domain = &healthCheckHTTPDomain
 			}
 			if cmd.Flag("health-check-http-path").Changed {
 				healthCheckHTTPPath, _ := cmd.Flags().GetString("health-check-http-path")
-				opts.HealthCheck.HTTP.Path = hcloud.String(healthCheckHTTPPath)
+				opts.HealthCheck.HTTP.Path = &healthCheckHTTPPath
 			}
 			if cmd.Flag("health-check-http-response").Changed {
 				healthCheckHTTPResponse, _ := cmd.Flags().GetString("health-check-http-response")
-				opts.HealthCheck.HTTP.Response = hcloud.String(healthCheckHTTPResponse)
+				opts.HealthCheck.HTTP.Response = &healthCheckHTTPResponse
 			}
 			if cmd.Flag("health-check-http-status-codes").Changed {
 				healthCheckHTTPStatusCodes, _ := cmd.Flags().GetStringSlice("health-check-http-status-codes")
@@ -154,7 +154,7 @@ var UpdateServiceCmd = base.Cmd{
 			}
 			if cmd.Flag("health-check-http-tls").Changed {
 				healthCheckHTTPTLS, _ := cmd.Flags().GetBool("health-check-http-tls")
-				opts.HealthCheck.HTTP.TLS = hcloud.Bool(healthCheckHTTPTLS)
+				opts.HealthCheck.HTTP.TLS = &healthCheckHTTPTLS
 			}
 		}
 

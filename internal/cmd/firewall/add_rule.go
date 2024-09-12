@@ -124,7 +124,7 @@ func parseRuleFromArgs(flags *pflag.FlagSet) (*hcloud.FirewallRule, error) {
 		for i, ip := range destinationIPs {
 			n, err := ValidateFirewallIP(ip)
 			if err != nil {
-				return nil, fmt.Errorf("destination error on index %d: %s", i, err)
+				return nil, fmt.Errorf("destination error on index %d: %w", i, err)
 			}
 			rule.DestinationIPs = append(rule.DestinationIPs, *n)
 		}
@@ -132,7 +132,7 @@ func parseRuleFromArgs(flags *pflag.FlagSet) (*hcloud.FirewallRule, error) {
 		for i, ip := range sourceIPs {
 			n, err := ValidateFirewallIP(ip)
 			if err != nil {
-				return nil, fmt.Errorf("source ips error on index %d: %s", i, err)
+				return nil, fmt.Errorf("source ips error on index %d: %w", i, err)
 			}
 			rule.SourceIPs = append(rule.SourceIPs, *n)
 		}

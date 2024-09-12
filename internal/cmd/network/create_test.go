@@ -8,6 +8,7 @@ import (
 
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 
 	"github.com/hetznercloud/cli/internal/cmd/network"
 	"github.com/hetznercloud/cli/internal/testutil"
@@ -41,7 +42,7 @@ func TestCreate(t *testing.T) {
 
 	expOut := "Network 123 created\n"
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
@@ -77,7 +78,7 @@ func TestCreateJSON(t *testing.T) {
 
 	expOut := "Network 123 created\n"
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Equal(t, expOut, out)
 	assert.JSONEq(t, createResponseJSON, jsonOut)
 }
@@ -116,7 +117,7 @@ func TestCreateProtection(t *testing.T) {
 Resource protection enabled for network 123
 `
 
-	assert.NoError(t, err)
+	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
