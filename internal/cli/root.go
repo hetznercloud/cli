@@ -22,6 +22,18 @@ func NewRootCommand(s state.State) *cobra.Command {
 
 	cmd.PersistentFlags().AddFlagSet(s.Config().FlagSet())
 
+	for _, opt := range config.Options {
+		f := opt.GetFlagCompletionFunc()
+		if !opt.HasFlags(config.OptionFlagPFlag) || f == nil {
+			continue
+		}
+		// opt.FlagName() is prefixed with --
+		flagName := opt.FlagName()[2:]
+		_ = cmd.RegisterFlagCompletionFunc(flagName, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+			return f(s.Client(), s.Config(), cmd, args, toComplete)
+		})
+	}
+
 	cmd.PersistentPreRunE = func(cmd *cobra.Command, _ []string) error {
 		var err error
 		out := os.Stdout
