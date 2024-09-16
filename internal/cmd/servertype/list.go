@@ -34,8 +34,8 @@ var ListCmd = base.ListCmd{
 		return resources, err
 	},
 
-	OutputTable: func(hcapi2.Client) *output.Table {
-		return output.NewTable().
+	OutputTable: func(t *output.Table, _ hcapi2.Client) {
+		t.
 			AddAllowedFields(hcloud.ServerType{}).
 			AddFieldAlias("storagetype", "storage type").
 			AddFieldFn("memory", output.FieldFn(func(obj interface{}) string {

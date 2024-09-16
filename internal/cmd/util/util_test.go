@@ -1,6 +1,7 @@
 package util_test
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"testing"
@@ -12,7 +13,6 @@ import (
 	require "github.com/stretchr/testify/require"
 
 	"github.com/hetznercloud/cli/internal/cmd/util"
-	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
@@ -190,51 +190,45 @@ func TestPrefixLines(t *testing.T) {
 }
 
 func TestDescribeFormat(t *testing.T) {
-	stdout, stderr, err := testutil.CaptureOutStreams(func() error {
-		return util.DescribeFormat(struct {
-			Foo string
-			Bar string
-		}{
-			Foo: "foo",
-			Bar: "bar",
-		}, "Foo is: {{.Foo}} Bar is: {{.Bar}}")
-	})
+	var buf bytes.Buffer
+	err := util.DescribeFormat(&buf, struct {
+		Foo string
+		Bar string
+	}{
+		Foo: "foo",
+		Bar: "bar",
+	}, "Foo is: {{.Foo}} Bar is: {{.Bar}}")
 
 	require.NoError(t, err)
-	assert.Equal(t, "Foo is: foo Bar is: bar\n", stdout)
-	assert.Empty(t, stderr)
+	assert.Equal(t, "Foo is: foo Bar is: bar\n", buf.String())
 }
 
 func TestDescribeJSON(t *testing.T) {
-	stdout, stderr, err := testutil.CaptureOutStreams(func() error {
-		return util.DescribeJSON(struct {
-			Foo string `json:"foo"`
-			Bar string `json:"bar"`
-		}{
-			Foo: "foo",
-			Bar: "bar",
-		})
+	var buf bytes.Buffer
+	err := util.DescribeJSON(&buf, struct {
+		Foo string `json:"foo"`
+		Bar string `json:"bar"`
+	}{
+		Foo: "foo",
+		Bar: "bar",
 	})
 
 	require.NoError(t, err)
-	assert.JSONEq(t, `{"foo":"foo", "bar": "bar"}`, stdout)
-	assert.Empty(t, stderr)
+	assert.JSONEq(t, `{"foo":"foo", "bar": "bar"}`, buf.String())
 }
 
 func TestDescribeYAML(t *testing.T) {
-	stdout, stderr, err := testutil.CaptureOutStreams(func() error {
-		return util.DescribeYAML(struct {
-			Foo string `json:"foo"`
-			Bar string `json:"bar"`
-		}{
-			Foo: "foo",
-			Bar: "bar",
-		})
+	var buf bytes.Buffer
+	err := util.DescribeYAML(&buf, struct {
+		Foo string `json:"foo"`
+		Bar string `json:"bar"`
+	}{
+		Foo: "foo",
+		Bar: "bar",
 	})
 
 	require.NoError(t, err)
-	assert.YAMLEq(t, `{"foo":"foo", "bar": "bar"}`, stdout)
-	assert.Empty(t, stderr)
+	assert.YAMLEq(t, `{"foo":"foo", "bar": "bar"}`, buf.String())
 }
 
 func TestWrap(t *testing.T) {

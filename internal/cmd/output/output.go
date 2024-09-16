@@ -3,7 +3,6 @@ package output
 import (
 	"fmt"
 	"io"
-	"os"
 	"reflect"
 	"sort"
 	"strings"
@@ -149,9 +148,9 @@ func parseOutputFlags(in []string) Opts {
 }
 
 // NewTable creates a new Table.
-func NewTable() *Table {
+func NewTable(out io.Writer) *Table {
 	return &Table{
-		w:             tabwriter.NewWriter(os.Stdout, 0, 0, 3, ' ', 0),
+		w:             tabwriter.NewWriter(out, 0, 0, 3, ' ', 0),
 		columns:       map[string]bool{},
 		fieldMapping:  map[string]FieldFn{},
 		fieldAlias:    map[string]string{},
