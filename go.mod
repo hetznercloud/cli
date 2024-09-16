@@ -2,6 +2,8 @@ module github.com/hetznercloud/cli
 
 go 1.21
 
+toolchain go1.23.1
+
 require (
 	github.com/BurntSushi/toml v1.4.0
 	github.com/boumenot/gocover-cobertura v1.2.0

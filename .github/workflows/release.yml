@@ -15,7 +15,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version-file: go.mod
+          go-version: "1.23"
 
       - name: Setup rcodesign
         uses: hashicorp/action-setup-rcodesign@v1
