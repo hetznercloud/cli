@@ -17,7 +17,7 @@ import (
 
 func NewCreateCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   "create <name>",
+		Use:                   "create [--token-from-env] <name>",
 		Short:                 "Create a new context",
 		Args:                  util.Validate,
 		TraverseChildren:      true,
@@ -25,13 +25,16 @@ func NewCreateCommand(s state.State) *cobra.Command {
 		SilenceUsage:          true,
 		RunE:                  state.Wrap(s, runCreate),
 	}
+	cmd.Flags().Bool("token-from-env", false, "If true, the HCLOUD_TOKEN from the environment will be used without asking")
 	return cmd
 }
 
 func runCreate(s state.State, cmd *cobra.Command, args []string) error {
+	tokenFromEnv, _ := cmd.Flags().GetBool("token-from-env")
+
 	cfg := s.Config()
-	if !s.Terminal().StdoutIsTerminal() {
-		return errors.New("context create is an interactive command")
+	if !s.Terminal().StdoutIsTerminal() && !tokenFromEnv {
+		return errors.New("non-interactive tty detected. Use --token-from-env to use HCLOUD_TOKEN from the environment")
 	}
 
 	name := strings.TrimSpace(args[0])
@@ -47,7 +50,12 @@ func runCreate(s state.State, cmd *cobra.Command, args []string) error {
 	envToken := os.Getenv("HCLOUD_TOKEN")
 	if envToken != "" {
 		if len(envToken) != 64 {
+			if tokenFromEnv {
+				return errors.New("invalid token: must be 64 characters in length")
+			}
 			cmd.Println("Warning: HCLOUD_TOKEN is set, but token is invalid (must be exactly 64 characters long)")
+		} else if tokenFromEnv {
+			token = envToken
 		} else {
 			cmd.Print("The HCLOUD_TOKEN environment variable is set. Do you want to use the token from HCLOUD_TOKEN for the new context? (Y/n): ")
 			scanner := bufio.NewScanner(os.Stdin)
@@ -59,6 +67,9 @@ func runCreate(s state.State, cmd *cobra.Command, args []string) error {
 	}
 
 	if token == "" {
+		if tokenFromEnv {
+			return errors.New("no token provided")
+		}
 		for {
 			cmd.Printf("Token: ")
 			// Conversion needed for compilation on Windows
