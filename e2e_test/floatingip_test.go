@@ -134,14 +134,14 @@ $`, out)
       }
     ],
     "home_location": {
-      "id": 1,
+      "id": "<ignore-diff>",
       "name": "%s",
-      "description": "Falkenstein DC Park 1",
+      "description": "<ignore-diff>",
       "country": "DE",
-      "city": "Falkenstein",
-      "latitude": 50.47612,
-      "longitude": 12.370071,
-      "network_zone": "eu-central"
+      "city": "<ignore-diff>",
+      "latitude": "<ignore-diff>",
+      "longitude": "<ignore-diff>",
+      "network_zone": "<ignore-diff>"
     },
     "blocked": false,
     "protection": {
