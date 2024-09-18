@@ -5,6 +5,9 @@ on:
     tags:
       - "v*.*.*"
 
+env:
+  GOTOOLCHAIN: local
+
 jobs:
   release:
     runs-on: ubuntu-latest
