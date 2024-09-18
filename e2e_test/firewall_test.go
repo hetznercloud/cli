@@ -19,31 +19,41 @@ func TestFirewall(t *testing.T) {
 
 	firewallName := withSuffix("test-firewall")
 	firewallID, err := createFirewall(t, firewallName, "--rules-file", "rules_file.json")
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	out, err := runCommand(t, "firewall", "add-label", "non-existing-firewall", "foo=bar")
-	require.EqualError(t, err, "firewall not found: non-existing-firewall")
-	assert.Empty(t, out)
-
-	out, err = runCommand(t, "firewall", "add-label", strconv.FormatInt(firewallID, 10), "foo=bar")
 	require.NoError(t, err)
-	assert.Equal(t, fmt.Sprintf("Label(s) foo added to firewall %d\n", firewallID), out)
 
-	out, err = runCommand(t, "firewall", "add-label", strconv.FormatInt(firewallID, 10), "baz=qux")
-	require.NoError(t, err)
-	assert.Equal(t, fmt.Sprintf("Label(s) baz added to firewall %d\n", firewallID), out)
+	t.Run("add-label", func(t *testing.T) {
+		t.Run("non-existing", func(t *testing.T) {
+			out, err := runCommand(t, "firewall", "add-label", "non-existing-firewall", "foo=bar")
+			require.EqualError(t, err, "firewall not found: non-existing-firewall")
+			assert.Empty(t, out)
+		})
 
-	firewallName = withSuffix("new-test-firewall")
+		t.Run("1", func(t *testing.T) {
+			out, err := runCommand(t, "firewall", "add-label", strconv.FormatInt(firewallID, 10), "foo=bar")
+			require.NoError(t, err)
+			assert.Equal(t, fmt.Sprintf("Label(s) foo added to firewall %d\n", firewallID), out)
+		})
 
-	out, err = runCommand(t, "firewall", "update", strconv.FormatInt(firewallID, 10), "--name", firewallName)
-	require.NoError(t, err)
-	assert.Equal(t, fmt.Sprintf("Firewall %d updated\n", firewallID), out)
+		t.Run("2", func(t *testing.T) {
+			out, err := runCommand(t, "firewall", "add-label", strconv.FormatInt(firewallID, 10), "baz=qux")
+			require.NoError(t, err)
+			assert.Equal(t, fmt.Sprintf("Label(s) baz added to firewall %d\n", firewallID), out)
+		})
+	})
 
-	out, err = runCommand(t, "firewall", "remove-label", firewallName, "baz")
-	require.NoError(t, err)
-	assert.Equal(t, fmt.Sprintf("Label(s) baz removed from firewall %d\n", firewallID), out)
+	t.Run("update-name", func(t *testing.T) {
+		firewallName = withSuffix("new-test-firewall")
+
+		out, err := runCommand(t, "firewall", "update", strconv.FormatInt(firewallID, 10), "--name", firewallName)
+		require.NoError(t, err)
+		assert.Equal(t, fmt.Sprintf("Firewall %d updated\n", firewallID), out)
+	})
+
+	t.Run("remove-label", func(t *testing.T) {
+		out, err := runCommand(t, "firewall", "remove-label", firewallName, "baz")
+		require.NoError(t, err)
+		assert.Equal(t, fmt.Sprintf("Label(s) baz removed from firewall %d\n", firewallID), out)
+	})
 
 	t.Run("add-rule", func(t *testing.T) {
 		t.Run("missing-args", func(t *testing.T) {
@@ -113,26 +123,31 @@ func TestFirewall(t *testing.T) {
 			require.EqualError(t, err, "unknown type non-existing-type")
 			assert.Empty(t, out)
 		})
+
 		t.Run("missing-server", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "apply-to-resource", "--type", "server", strconv.FormatInt(firewallID, 10))
 			require.EqualError(t, err, "type server need a --server specific")
 			assert.Empty(t, out)
 		})
+
 		t.Run("missing-label-selector", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "apply-to-resource", "--type", "label_selector", strconv.FormatInt(firewallID, 10))
 			require.EqualError(t, err, "type label_selector need a --label-selector specific")
 			assert.Empty(t, out)
 		})
+
 		t.Run("unknown-firewall", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "apply-to-resource", "--type", "server", "--server", "non-existing-server", "non-existing-firewall")
 			require.EqualError(t, err, "Firewall not found: non-existing-firewall")
 			assert.Empty(t, out)
 		})
+
 		t.Run("unknown-server", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "apply-to-resource", "--type", "server", "--server", "non-existing-server", strconv.FormatInt(firewallID, 10))
 			require.EqualError(t, err, "Server not found: non-existing-server")
 			assert.Empty(t, out)
 		})
+
 		t.Run("label-selector", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "apply-to-resource", "--type", "label_selector", "--label-selector", "foo=bar", strconv.FormatInt(firewallID, 10))
 			require.NoError(t, err)
@@ -140,9 +155,10 @@ func TestFirewall(t *testing.T) {
 		})
 	})
 
-	out, err = runCommand(t, "firewall", "describe", strconv.FormatInt(firewallID, 10))
-	require.NoError(t, err)
-	assert.Regexp(t, `ID:\s+[0-9]+
+	t.Run("describe", func(t *testing.T) {
+		out, err := runCommand(t, "firewall", "describe", strconv.FormatInt(firewallID, 10))
+		require.NoError(t, err)
+		assert.Regexp(t, `ID:\s+[0-9]+
 Name:\s+new-test-firewall-[0-9a-f]{8}
 Created:\s+.*?
 Labels:
@@ -184,6 +200,7 @@ Applied To:
 \s+- Type:\s+label_selector
 \s+Label Selector:\s+foo=bar
 `, out)
+	})
 
 	t.Run("remove-from-resource", func(t *testing.T) {
 		t.Run("unknown-type", func(t *testing.T) {
@@ -191,26 +208,31 @@ Applied To:
 			require.EqualError(t, err, "unknown type non-existing-type")
 			assert.Empty(t, out)
 		})
+
 		t.Run("missing-server", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "remove-from-resource", "--type", "server", strconv.FormatInt(firewallID, 10))
 			require.EqualError(t, err, "type server need a --server specific")
 			assert.Empty(t, out)
 		})
+
 		t.Run("missing-label-selector", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "remove-from-resource", "--type", "label_selector", strconv.FormatInt(firewallID, 10))
 			require.EqualError(t, err, "type label_selector need a --label-selector specific")
 			assert.Empty(t, out)
 		})
+
 		t.Run("unknown-firewall", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "remove-from-resource", "--type", "server", "--server", "non-existing-server", "non-existing-firewall")
 			require.EqualError(t, err, "Firewall not found: non-existing-firewall")
 			assert.Empty(t, out)
 		})
+
 		t.Run("unknown-server", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "remove-from-resource", "--type", "server", "--server", "non-existing-server", strconv.FormatInt(firewallID, 10))
 			require.EqualError(t, err, "Server not found: non-existing-server")
 			assert.Empty(t, out)
 		})
+
 		t.Run("label-selector", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "remove-from-resource", "--type", "label_selector", "--label-selector", "foo=bar", strconv.FormatInt(firewallID, 10))
 			require.NoError(t, err)
@@ -256,17 +278,25 @@ Applied To:
 		})
 	})
 
-	out, err = runCommand(t, "firewall", "replace-rules", "non-existing-firewall", "--rules-file", "rules_file.json")
-	require.EqualError(t, err, "Firewall not found: non-existing-firewall")
-	assert.Empty(t, out)
+	t.Run("replace-rules", func(t *testing.T) {
+		t.Run("non-existing-firewall", func(t *testing.T) {
+			out, err := runCommand(t, "firewall", "replace-rules", "non-existing-firewall", "--rules-file", "rules_file.json")
+			require.EqualError(t, err, "Firewall not found: non-existing-firewall")
+			assert.Empty(t, out)
+		})
 
-	out, err = runCommand(t, "firewall", "replace-rules", strconv.FormatInt(firewallID, 10), "--rules-file", "rules_file.json")
-	require.NoError(t, err)
-	assert.Equal(t, fmt.Sprintf("Firewall Rules for Firewall %d updated\n", firewallID), out)
+		t.Run("normal", func(t *testing.T) {
+			out, err := runCommand(t, "firewall", "replace-rules", strconv.FormatInt(firewallID, 10), "--rules-file", "rules_file.json")
+			require.NoError(t, err)
+			assert.Equal(t, fmt.Sprintf("Firewall Rules for Firewall %d updated\n", firewallID), out)
+		})
+	})
 
-	out, err = runCommand(t, "firewall", "delete", strconv.FormatInt(firewallID, 10))
-	require.NoError(t, err)
-	assert.Equal(t, fmt.Sprintf("firewall %d deleted\n", firewallID), out)
+	t.Run("delete", func(t *testing.T) {
+		out, err := runCommand(t, "firewall", "delete", strconv.FormatInt(firewallID, 10))
+		require.NoError(t, err)
+		assert.Equal(t, fmt.Sprintf("firewall %d deleted\n", firewallID), out)
+	})
 }
 
 func createFirewall(t *testing.T, name string, args ...string) (int64, error) {
