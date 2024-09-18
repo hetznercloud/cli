@@ -44,8 +44,6 @@ jobs:
         with:
           go-version: "1.23"
 
-      - uses: hetznercloud/tps-action@main
-
       - name: Run tests
         run: go test -coverpkg=./... -coverprofile=coverage.txt -v -race ./...
 
