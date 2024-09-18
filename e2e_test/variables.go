@@ -27,8 +27,11 @@ var (
 	// TestLoadBalancerType is the default Load Balancer type used in end-to-end tests.
 	TestLoadBalancerType = "lb11"
 
-	// TestDataCenter is the default datacenter where we execute our end-to-end tests.
-	TestDataCenter = getEnv("TEST_DATACENTER", "nbg1-dc3")
+	// TestDatacenterName is the default datacenter name where we execute our end-to-end tests.
+	TestDatacenterName = getEnv("TEST_DATACENTER_NAME", "nbg1-dc3")
+
+	// TestDatacenterID is the default datacenter ID where we execute our end-to-end tests (Must be the ID of TestDatacenterName)
+	TestDatacenterID = getEnv("TEST_DATACENTER_ID", "2")
 
 	// TestLocationName is the default location where we execute our end-to-end tests.
 	TestLocationName = getEnv("TEST_LOCATION", "nbg1")

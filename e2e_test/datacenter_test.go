@@ -26,7 +26,7 @@ func TestDatacenter(t *testing.T) {
 	require.EqualError(t, err, "datacenter not found: 123456")
 	assert.Empty(t, out)
 
-	out, err = runCommand(t, "datacenter", "describe", "2")
+	out, err = runCommand(t, "datacenter", "describe", TestDatacenterID)
 	require.NoError(t, err)
 	assert.Regexp(t, `ID:\s+[0-9]+
 Name:\s+[a-z0-9\-]+
