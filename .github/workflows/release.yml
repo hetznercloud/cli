@@ -20,20 +20,12 @@ jobs:
         with:
           go-version: "1.23"
 
-      - name: Setup rcodesign
-        uses: hashicorp/action-setup-rcodesign@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Import GPG key
         id: import_gpg
         uses: crazy-max/ghaction-import-gpg@v6
         with:
           gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
-
-      - name: Extract Apple certificate
-        run: echo "${{ secrets.APPLE_CERTIFICATE_P12_FILE }}" | base64 -d > certificate.p12
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v6
@@ -42,8 +34,8 @@ jobs:
           args: release --clean --skip=validate
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          APPLE_CERTIFICATE_P12_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_P12_PASSWORD }}
-
-      - name: Delete Apple certificate
-        if: always()
-        run: rm -f certificate.p12
+          QUILL_SIGN_P12: ${{ secrets.APPLE_CERTIFICATE_P12_FILE }}
+          QUILL_SIGN_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_P12_PASSWORD }}
+          QUILL_NOTARY_ISSUER: ${{ secrets.APPLE_NOTARY_ISSUER }}
+          QUILL_NOTARY_KEY_ID: ${{ secrets.APPLE_NOTARY_KEY_ID }}
+          QUILL_NOTARY_KEY: ${{ secrets.APPLE_NOTARY_KEY }}
