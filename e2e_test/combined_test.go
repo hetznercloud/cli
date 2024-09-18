@@ -58,7 +58,7 @@ Description:\s+-
 Created:.*?
 IP:\s+(?:[0-9]{1,3}\.){3}[0-9]{1,3}
 Blocked:\s+no
-Home Location:\s+[a-z]{3}[0-9]+
+Home Location:\s+[a-z]{3}[0-9]*
 Server:
 \s+ID:\s+[0-9]+
 \s+Name:\s+test-server

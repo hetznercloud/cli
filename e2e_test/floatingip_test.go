@@ -99,7 +99,7 @@ Description:\s+Some description
 Created:.*?
 IP:\s+(?:[0-9]{1,3}\.){3}[0-9]{1,3}
 Blocked:\s+no
-Home Location:\s+fsn1
+Home Location:\s+[a-z]{3}[0-9]*
 Server:
 \s+Not assigned
 DNS:
@@ -113,7 +113,7 @@ Labels:
 	out, err = runCommand(t, "floating-ip", "list", "--output", "columns=id,name,type,ip,dns,server,home,blocked,protection,labels,created,age")
 	require.NoError(t, err)
 	assert.Regexp(t, `^ID +NAME +TYPE +IP +DNS +SERVER +HOME +BLOCKED +PROTECTION +LABELS +CREATED +AGE
-[0-9]+ +new-test-floating-ip +ipv4 +(?:[0-9]{1,3}\.){3}[0-9]{1,3} +s1\.example\.com +- +fsn1 +no +delete +foo=bar.*?
+[0-9]+ +new-test-floating-ip +ipv4 +(?:[0-9]{1,3}\.){3}[0-9]{1,3} +s1\.example\.com +- +[a-z]{3}[0-9]* +no +delete +foo=bar.*?
 $`, out)
 
 	out, err = runCommand(t, "floating-ip", "list", "-o=json")
@@ -197,7 +197,7 @@ Description:\s+-
 Created:.*?
 IP:\s+[0-9a-f]+:[0-9a-f]+:[0-9a-f]+:[0-9a-f]+::\/64
 Blocked:\s+no
-Home Location:\s+fsn1
+Home Location:\s+[a-z]{3}[0-9]*
 Server:
 \s+Not assigned
 DNS:
