@@ -30,7 +30,7 @@ func TestNetwork(t *testing.T) {
 	require.Error(t, err)
 	assert.Regexp(t, `^name is already used \(uniqueness_error, [0-9a-f]+\)$`, err.Error())
 
-	out, err = runCommand(t, "network", "enable-protection", strconv.Itoa(networkID), "non-existing-protection")
+	out, err = runCommand(t, "network", "enable-protection", strconv.FormatInt(networkID, 10), "non-existing-protection")
 	require.EqualError(t, err, "unknown protection level: non-existing-protection")
 	assert.Empty(t, out)
 
@@ -38,7 +38,7 @@ func TestNetwork(t *testing.T) {
 	require.EqualError(t, err, "network not found: non-existing-network")
 	assert.Empty(t, out)
 
-	out, err = runCommand(t, "network", "enable-protection", strconv.Itoa(networkID), "delete")
+	out, err = runCommand(t, "network", "enable-protection", strconv.FormatInt(networkID, 10), "delete")
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Resource protection enabled for network %d\n", networkID), out)
 
@@ -79,7 +79,7 @@ func TestNetwork(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Network %s updated\n", oldNetworkName), out)
 
-	out, err = runCommand(t, "network", "delete", strconv.Itoa(networkID))
+	out, err = runCommand(t, "network", "delete", strconv.FormatInt(networkID, 10))
 	assert.Empty(t, out)
 	assert.Regexp(t, `^network is delete protected \(protected, [0-9a-f]+\)$`, err.Error())
 
@@ -87,11 +87,11 @@ func TestNetwork(t *testing.T) {
 	require.EqualError(t, err, "network not found: non-existing-network")
 	assert.Empty(t, out)
 
-	out, err = runCommand(t, "network", "add-subnet", "--type", "vswitch", "--vswitch-id", "42", "--network-zone", "eu-central", "--ip-range", "10.0.17.0/24", strconv.Itoa(networkID))
+	out, err = runCommand(t, "network", "add-subnet", "--type", "vswitch", "--vswitch-id", "42", "--network-zone", "eu-central", "--ip-range", "10.0.17.0/24", strconv.FormatInt(networkID, 10))
 	assert.Empty(t, out)
 	assert.Regexp(t, `^vswitch not found \(service_error, [0-9a-f]+\)$`, err.Error())
 
-	out, err = runCommand(t, "network", "add-subnet", "--type", "cloud", "--network-zone", "eu-central", "--ip-range", "10.0.16.0/24", strconv.Itoa(networkID))
+	out, err = runCommand(t, "network", "add-subnet", "--type", "cloud", "--network-zone", "eu-central", "--ip-range", "10.0.16.0/24", strconv.FormatInt(networkID, 10))
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Subnet added to network %d\n", networkID), out)
 
@@ -99,7 +99,7 @@ func TestNetwork(t *testing.T) {
 	require.EqualError(t, err, "network not found: non-existing-network")
 	assert.Empty(t, out)
 
-	out, err = runCommand(t, "network", "add-route", "--destination", "10.100.1.0/24", "--gateway", "10.0.1.1", strconv.Itoa(networkID))
+	out, err = runCommand(t, "network", "add-route", "--destination", "10.100.1.0/24", "--gateway", "10.0.1.1", strconv.FormatInt(networkID, 10))
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Route added to network %d\n", networkID), out)
 
@@ -107,11 +107,11 @@ func TestNetwork(t *testing.T) {
 	require.EqualError(t, err, "network not found: non-existing-network")
 	assert.Empty(t, out)
 
-	out, err = runCommand(t, "network", "expose-routes-to-vswitch", strconv.Itoa(networkID))
+	out, err = runCommand(t, "network", "expose-routes-to-vswitch", strconv.FormatInt(networkID, 10))
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Exposing routes to connected vSwitch of network %s enabled\n", networkName), out)
 
-	out, err = runCommand(t, "network", "describe", strconv.Itoa(networkID))
+	out, err = runCommand(t, "network", "describe", strconv.FormatInt(networkID, 10))
 	require.NoError(t, err)
 	assert.Regexp(t, `^ID:\s+[0-9]+
 Name:\s+new-test-network-[0-9a-f]{8}
@@ -171,7 +171,7 @@ $`, out)
 	require.EqualError(t, err, "network not found: non-existing-network")
 	assert.Empty(t, out)
 
-	out, err = runCommand(t, "network", "remove-route", "--destination", "10.100.1.0/24", "--gateway", "10.0.1.1", strconv.Itoa(networkID))
+	out, err = runCommand(t, "network", "remove-route", "--destination", "10.100.1.0/24", "--gateway", "10.0.1.1", strconv.FormatInt(networkID, 10))
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Route removed from network %d\n", networkID), out)
 
@@ -179,7 +179,7 @@ $`, out)
 	require.EqualError(t, err, "network not found: non-existing-network")
 	assert.Empty(t, out)
 
-	out, err = runCommand(t, "network", "remove-subnet", "--ip-range", "10.0.16.0/24", strconv.Itoa(networkID))
+	out, err = runCommand(t, "network", "remove-subnet", "--ip-range", "10.0.16.0/24", strconv.FormatInt(networkID, 10))
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Subnet 10.0.16.0/24 removed from network %d\n", networkID), out)
 
@@ -187,19 +187,19 @@ $`, out)
 	require.EqualError(t, err, "network not found: non-existing-network")
 	assert.Empty(t, out)
 
-	out, err = runCommand(t, "network", "disable-protection", strconv.Itoa(networkID), "delete")
+	out, err = runCommand(t, "network", "disable-protection", strconv.FormatInt(networkID, 10), "delete")
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Resource protection disabled for network %d\n", networkID), out)
 
-	out, err = runCommand(t, "network", "remove-label", strconv.Itoa(networkID), "foo")
+	out, err = runCommand(t, "network", "remove-label", strconv.FormatInt(networkID, 10), "foo")
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Label(s) foo removed from Network %d\n", networkID), out)
 
-	out, err = runCommand(t, "network", "expose-routes-to-vswitch", "--disable", strconv.Itoa(networkID))
+	out, err = runCommand(t, "network", "expose-routes-to-vswitch", "--disable", strconv.FormatInt(networkID, 10))
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Exposing routes to connected vSwitch of network %s disabled\n", networkName), out)
 
-	out, err = runCommand(t, "network", "describe", strconv.Itoa(networkID))
+	out, err = runCommand(t, "network", "describe", strconv.FormatInt(networkID, 10))
 	require.NoError(t, err)
 	assert.Regexp(t, `^ID:\s+[0-9]+
 Name:\s+new-test-network-[0-9a-f]{8}
@@ -216,12 +216,12 @@ Labels:
 \s+No labels
 $`, out)
 
-	out, err = runCommand(t, "network", "delete", strconv.Itoa(networkID))
+	out, err = runCommand(t, "network", "delete", strconv.FormatInt(networkID, 10))
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Network %d deleted\n", networkID), out)
 }
 
-func createNetwork(t *testing.T, name string, args ...string) (int, error) {
+func createNetwork(t *testing.T, name string, args ...string) (int64, error) {
 	t.Helper()
 	t.Cleanup(func() {
 		_, _ = client.Network.Delete(context.Background(), &hcloud.Network{Name: name})
@@ -236,13 +236,13 @@ func createNetwork(t *testing.T, name string, args ...string) (int, error) {
 		return 0, fmt.Errorf("invalid response: %s", out)
 	}
 
-	id, err := strconv.Atoi(out[8 : len(out)-9])
+	id, err := strconv.ParseInt(out[8:len(out)-9], 10, 64)
 	if err != nil {
 		return 0, err
 	}
 
 	t.Cleanup(func() {
-		_, _ = client.Network.Delete(context.Background(), &hcloud.Network{ID: int64(id)})
+		_, _ = client.Network.Delete(context.Background(), &hcloud.Network{ID: id})
 	})
 	return id, nil
 }

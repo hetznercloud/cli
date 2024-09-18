@@ -14,7 +14,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-func createServer(t *testing.T, name, serverType, image string, args ...string) (int, error) {
+func createServer(t *testing.T, name, serverType, image string, args ...string) (int64, error) {
 	t.Helper()
 	t.Cleanup(func() {
 		_, _, _ = client.Server.DeleteWithResult(context.Background(), &hcloud.Server{Name: name})
@@ -30,7 +30,7 @@ func createServer(t *testing.T, name, serverType, image string, args ...string) 
 		return 0, fmt.Errorf("invalid response: %s", out)
 	}
 
-	id, err := strconv.Atoi(out[7 : len(firstLine)-8])
+	id, err := strconv.ParseInt(out[7:len(firstLine)-8], 10, 64)
 	if err != nil {
 		return 0, err
 	}

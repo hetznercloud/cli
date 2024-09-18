@@ -44,7 +44,7 @@ func TestFloatingIP(t *testing.T) {
 		})
 
 		t.Run("add-label", func(t *testing.T) {
-			out, err := runCommand(t, "floating-ip", "add-label", strconv.Itoa(floatingIPId), "foo=bar")
+			out, err := runCommand(t, "floating-ip", "add-label", strconv.FormatInt(floatingIPId, 10), "foo=bar")
 			require.NoError(t, err)
 			assert.Equal(t, fmt.Sprintf("Label(s) foo added to Floating IP %d\n", floatingIPId), out)
 		})
@@ -52,11 +52,11 @@ func TestFloatingIP(t *testing.T) {
 
 	floatingIPName = withSuffix("new-test-floating-ip")
 
-	out, err := runCommand(t, "floating-ip", "update", strconv.Itoa(floatingIPId), "--name", floatingIPName, "--description", "Some description")
+	out, err := runCommand(t, "floating-ip", "update", strconv.FormatInt(floatingIPId, 10), "--name", floatingIPName, "--description", "Some description")
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Floating IP %d updated\n", floatingIPId), out)
 
-	out, err = runCommand(t, "floating-ip", "set-rdns", strconv.Itoa(floatingIPId), "--hostname", "s1.example.com")
+	out, err = runCommand(t, "floating-ip", "set-rdns", strconv.FormatInt(floatingIPId, 10), "--hostname", "s1.example.com")
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Reverse DNS of Floating IP %d changed\n", floatingIPId), out)
 
@@ -68,13 +68,13 @@ func TestFloatingIP(t *testing.T) {
 	require.EqualError(t, err, "Floating IP not found: non-existing-floating-ip")
 	assert.Empty(t, out)
 
-	out, err = runCommand(t, "floating-ip", "assign", strconv.Itoa(floatingIPId), "non-existing-server")
+	out, err = runCommand(t, "floating-ip", "assign", strconv.FormatInt(floatingIPId, 10), "non-existing-server")
 	require.EqualError(t, err, "server not found: non-existing-server")
 	assert.Empty(t, out)
 
 	t.Run("enable-protection", func(t *testing.T) {
 		t.Run("unknown-protection-level", func(t *testing.T) {
-			out, err := runCommand(t, "floating-ip", "enable-protection", strconv.Itoa(floatingIPId), "unknown-protection-level")
+			out, err := runCommand(t, "floating-ip", "enable-protection", strconv.FormatInt(floatingIPId, 10), "unknown-protection-level")
 			require.EqualError(t, err, "unknown protection level: unknown-protection-level")
 			assert.Empty(t, out)
 		})
@@ -86,18 +86,18 @@ func TestFloatingIP(t *testing.T) {
 		})
 
 		t.Run("enable-delete-protection", func(t *testing.T) {
-			out, err := runCommand(t, "floating-ip", "enable-protection", strconv.Itoa(floatingIPId), "delete")
+			out, err := runCommand(t, "floating-ip", "enable-protection", strconv.FormatInt(floatingIPId, 10), "delete")
 			require.NoError(t, err)
 			assert.Equal(t, fmt.Sprintf("Resource protection enabled for floating IP %d\n", floatingIPId), out)
 		})
 	})
 
-	ipStr, err := runCommand(t, "floating-ip", "describe", strconv.Itoa(floatingIPId), "--output", "format={{.IP}}")
+	ipStr, err := runCommand(t, "floating-ip", "describe", strconv.FormatInt(floatingIPId, 10), "--output", "format={{.IP}}")
 	require.NoError(t, err)
 	ipStr = strings.TrimSpace(ipStr)
 	assert.Regexp(t, `^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$`, ipStr)
 
-	out, err = runCommand(t, "floating-ip", "describe", strconv.Itoa(floatingIPId))
+	out, err = runCommand(t, "floating-ip", "describe", strconv.FormatInt(floatingIPId, 10))
 	require.NoError(t, err)
 	assert.Regexp(t, `ID:\s+[0-9]+
 Type:\s+ipv4
@@ -162,7 +162,7 @@ $`, out)
 ]
 `, floatingIPId, ipStr, ipStr, TestLocationName, floatingIPName)), []byte(out))
 
-	out, err = runCommand(t, "floating-ip", "delete", strconv.Itoa(floatingIPId))
+	out, err = runCommand(t, "floating-ip", "delete", strconv.FormatInt(floatingIPId, 10))
 	assert.Regexp(t, `^Floating IP deletion is protected \(protected, [0-9a-f]+\)$`, err.Error())
 	assert.Empty(t, out)
 
@@ -174,19 +174,19 @@ $`, out)
 		})
 
 		t.Run("unknown-protection-level", func(t *testing.T) {
-			out, err := runCommand(t, "floating-ip", "disable-protection", strconv.Itoa(floatingIPId), "unknown-protection-level")
+			out, err := runCommand(t, "floating-ip", "disable-protection", strconv.FormatInt(floatingIPId, 10), "unknown-protection-level")
 			require.EqualError(t, err, "unknown protection level: unknown-protection-level")
 			assert.Empty(t, out)
 		})
 
 		t.Run("disable-delete-protection", func(t *testing.T) {
-			out, err = runCommand(t, "floating-ip", "disable-protection", strconv.Itoa(floatingIPId), "delete")
+			out, err = runCommand(t, "floating-ip", "disable-protection", strconv.FormatInt(floatingIPId, 10), "delete")
 			require.NoError(t, err)
 			assert.Equal(t, fmt.Sprintf("Resource protection disabled for floating IP %d\n", floatingIPId), out)
 		})
 	})
 
-	out, err = runCommand(t, "floating-ip", "delete", strconv.Itoa(floatingIPId))
+	out, err = runCommand(t, "floating-ip", "delete", strconv.FormatInt(floatingIPId, 10))
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Floating IP %d deleted\n", floatingIPId), out)
 
@@ -196,7 +196,7 @@ $`, out)
 		t.Fatal(err)
 	}
 
-	out, err = runCommand(t, "floating-ip", "describe", strconv.Itoa(floatingIPId))
+	out, err = runCommand(t, "floating-ip", "describe", strconv.FormatInt(floatingIPId, 10))
 	require.NoError(t, err)
 	assert.Regexp(t, `ID:\s+[0-9]+
 Type:\s+ipv6
@@ -216,16 +216,16 @@ Labels:
 \s+No labels
 `, out)
 
-	out, err = runCommand(t, "floating-ip", "describe", strconv.Itoa(floatingIPId), "--output", "format={{.IP}}")
+	out, err = runCommand(t, "floating-ip", "describe", strconv.FormatInt(floatingIPId, 10), "--output", "format={{.IP}}")
 	require.NoError(t, err)
 	out = strings.TrimSpace(out)
 	ipv6 := net.ParseIP(out)
 	if ipv6 != nil {
-		out, err = runCommand(t, "floating-ip", "set-rdns", strconv.Itoa(floatingIPId), "--ip", ipv6.String()+"1", "--hostname", "s1.example.com")
+		out, err = runCommand(t, "floating-ip", "set-rdns", strconv.FormatInt(floatingIPId, 10), "--ip", ipv6.String()+"1", "--hostname", "s1.example.com")
 		require.NoError(t, err)
 		assert.Equal(t, fmt.Sprintf("Reverse DNS of Floating IP %d changed\n", floatingIPId), out)
 
-		out, err = runCommand(t, "floating-ip", "set-rdns", strconv.Itoa(floatingIPId), "--ip", ipv6.String()+"2", "--hostname", "s2.example.com")
+		out, err = runCommand(t, "floating-ip", "set-rdns", strconv.FormatInt(floatingIPId, 10), "--ip", ipv6.String()+"2", "--hostname", "s2.example.com")
 		require.NoError(t, err)
 		assert.Equal(t, fmt.Sprintf("Reverse DNS of Floating IP %d changed\n", floatingIPId), out)
 	} else {
@@ -238,12 +238,12 @@ Labels:
 %s\/64 +2 entries
 `, ipv6), out)
 
-	out, err = runCommand(t, "floating-ip", "delete", strconv.Itoa(floatingIPId))
+	out, err = runCommand(t, "floating-ip", "delete", strconv.FormatInt(floatingIPId, 10))
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Floating IP %d deleted\n", floatingIPId), out)
 }
 
-func createFloatingIP(t *testing.T, name, ipType string, args ...string) (int, error) {
+func createFloatingIP(t *testing.T, name, ipType string, args ...string) (int64, error) {
 	t.Helper()
 	t.Cleanup(func() {
 		_, _ = client.FloatingIP.Delete(context.Background(), &hcloud.FloatingIP{Name: name})
@@ -259,13 +259,13 @@ func createFloatingIP(t *testing.T, name, ipType string, args ...string) (int, e
 		return 0, fmt.Errorf("invalid response: %s", out)
 	}
 
-	id, err := strconv.Atoi(out[12 : len(firstLine)-8])
+	id, err := strconv.ParseInt(out[12:len(firstLine)-8], 10, 64)
 	if err != nil {
 		return 0, err
 	}
 
 	t.Cleanup(func() {
-		_, _ = client.FloatingIP.Delete(context.Background(), &hcloud.FloatingIP{ID: int64(id)})
+		_, _ = client.FloatingIP.Delete(context.Background(), &hcloud.FloatingIP{ID: id})
 	})
 	return id, nil
 }

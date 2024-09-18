@@ -51,7 +51,7 @@ func TestPlacementGroup(t *testing.T) {
 [0-9]+ +new-test-placement-group-[0-9a-f]{8} +0 servers +spread .*? (?:just now|[0-9]+s)
 `, out)
 
-	out, err = runCommand(t, "placement-group", "describe", strconv.Itoa(pgID))
+	out, err = runCommand(t, "placement-group", "describe", strconv.FormatInt(pgID, 10))
 	require.NoError(t, err)
 	assert.Regexp(t, `^ID:\s+[0-9]+
 Name:\s+new-test-placement-group-[0-9a-f]{8}
@@ -84,12 +84,12 @@ $`, out)
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Label(s) baz removed from placement group %d\n", pgID), out)
 
-	out, err = runCommand(t, "placement-group", "delete", strconv.Itoa(pgID))
+	out, err = runCommand(t, "placement-group", "delete", strconv.FormatInt(pgID, 10))
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("placement group %d deleted\n", pgID), out)
 }
 
-func createPlacementGroup(t *testing.T, name string, args ...string) (int, error) {
+func createPlacementGroup(t *testing.T, name string, args ...string) (int64, error) {
 	t.Helper()
 	t.Cleanup(func() {
 		_, _ = client.PlacementGroup.Delete(context.Background(), &hcloud.PlacementGroup{Name: name})
@@ -104,13 +104,13 @@ func createPlacementGroup(t *testing.T, name string, args ...string) (int, error
 		return 0, fmt.Errorf("invalid response: %s", out)
 	}
 
-	id, err := strconv.Atoi(out[16 : len(out)-9])
+	id, err := strconv.ParseInt(out[16:len(out)-9], 10, 64)
 	if err != nil {
 		return 0, err
 	}
 
 	t.Cleanup(func() {
-		_, _ = client.PlacementGroup.Delete(context.Background(), &hcloud.PlacementGroup{ID: int64(id)})
+		_, _ = client.PlacementGroup.Delete(context.Background(), &hcloud.PlacementGroup{ID: id})
 	})
 	return id, nil
 }

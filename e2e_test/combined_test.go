@@ -25,37 +25,37 @@ func TestCombined(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	out, err := runCommand(t, "firewall", "apply-to-resource", "--type", "server", "--server", serverName, strconv.Itoa(firewallID))
+	out, err := runCommand(t, "firewall", "apply-to-resource", "--type", "server", "--server", serverName, strconv.FormatInt(firewallID, 10))
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Firewall %d applied to resource\n", firewallID), out)
 
-	out, err = runCommand(t, "firewall", "delete", strconv.Itoa(firewallID))
+	out, err = runCommand(t, "firewall", "delete", strconv.FormatInt(firewallID, 10))
 	assert.Regexp(t, `^firewall with ID [0-9]+ is still in use \(resource_in_use, [0-9a-f]+\)$`, err.Error())
 	assert.Empty(t, out)
 
-	out, err = runCommand(t, "firewall", "remove-from-resource", "--type", "server", "--server", serverName, strconv.Itoa(firewallID))
+	out, err = runCommand(t, "firewall", "remove-from-resource", "--type", "server", "--server", serverName, strconv.FormatInt(firewallID, 10))
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Firewall %d removed from resource\n", firewallID), out)
 
-	out, err = runCommand(t, "firewall", "delete", strconv.Itoa(firewallID))
+	out, err = runCommand(t, "firewall", "delete", strconv.FormatInt(firewallID, 10))
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("firewall %d deleted\n", firewallID), out)
 
 	floatingIPName := withSuffix("test-floating-ip")
-	floatingIP, err := createFloatingIP(t, floatingIPName, "ipv4", "--server", strconv.Itoa(serverID))
+	floatingIP, err := createFloatingIP(t, floatingIPName, "ipv4", "--server", strconv.FormatInt(serverID, 10))
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	out, err = runCommand(t, "floating-ip", "unassign", strconv.Itoa(floatingIP))
+	out, err = runCommand(t, "floating-ip", "unassign", strconv.FormatInt(floatingIP, 10))
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Floating IP %d unassigned\n", floatingIP), out)
 
-	out, err = runCommand(t, "floating-ip", "assign", strconv.Itoa(floatingIP), strconv.Itoa(serverID))
+	out, err = runCommand(t, "floating-ip", "assign", strconv.FormatInt(floatingIP, 10), strconv.FormatInt(serverID, 10))
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Floating IP %d assigned to server %d\n", floatingIP, serverID), out)
 
-	out, err = runCommand(t, "floating-ip", "describe", strconv.Itoa(floatingIP))
+	out, err = runCommand(t, "floating-ip", "describe", strconv.FormatInt(floatingIP, 10))
 	require.NoError(t, err)
 	assert.Regexp(t, `ID:\s+[0-9]+
 Type:\s+ipv4
@@ -80,11 +80,11 @@ Labels:
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("%s\n", serverName), out)
 
-	out, err = runCommand(t, "floating-ip", "delete", strconv.Itoa(floatingIP))
+	out, err = runCommand(t, "floating-ip", "delete", strconv.FormatInt(floatingIP, 10))
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Floating IP %d deleted\n", floatingIP), out)
 
-	out, err = runCommand(t, "server", "delete", strconv.Itoa(serverID))
+	out, err = runCommand(t, "server", "delete", strconv.FormatInt(serverID, 10))
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Server %d deleted\n", serverID), out)
 }
