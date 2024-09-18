@@ -1,6 +1,6 @@
 //go:build e2e
 
-package e2e_test
+package e2e
 
 import (
 	"fmt"
@@ -13,7 +13,7 @@ import (
 
 func TestCombined(t *testing.T) {
 	// combined tests combine multiple resources and can thus not be run in parallel
-	serverID := createServer(t, "test-server", "cpx11", "ubuntu-24.04")
+	serverID := createServer(t, "test-server", TestServerType, TestImage)
 
 	firewallID, err := createFirewall(t, "test-firewall")
 	if err != nil {

@@ -1,6 +1,6 @@
 //go:build e2e
 
-package e2e_test
+package e2e
 
 import (
 	"fmt"
@@ -26,7 +26,7 @@ func TestFloatingIP(t *testing.T) {
 	_, err = createFloatingIP(t, "ipv4", "--server", "non-existing-server")
 	require.EqualError(t, err, "server not found: non-existing-server")
 
-	floatingIPId, err := createFloatingIP(t, "ipv4", "--home-location", "fsn1")
+	floatingIPId, err := createFloatingIP(t, "ipv4", "--home-location", TestLocationName)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -135,7 +135,7 @@ $`, out)
     ],
     "home_location": {
       "id": 1,
-      "name": "fsn1",
+      "name": "%s",
       "description": "Falkenstein DC Park 1",
       "country": "DE",
       "city": "Falkenstein",
@@ -153,7 +153,7 @@ $`, out)
     "name": "new-test-floating-ip"
   }
 ]
-`, floatingIPId, ipStr, ipStr)), []byte(out))
+`, floatingIPId, ipStr, ipStr, TestLocationName)), []byte(out))
 
 	out, err = runCommand(t, "floating-ip", "delete", strconv.Itoa(floatingIPId))
 	assert.Regexp(t, `^Floating IP deletion is protected \(protected, [0-9a-f]+\)$`, err.Error())
@@ -183,7 +183,7 @@ $`, out)
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Floating IP %d deleted\n", floatingIPId), out)
 
-	floatingIPId, err = createFloatingIP(t, "ipv6", "--home-location", "fsn1")
+	floatingIPId, err = createFloatingIP(t, "ipv6", "--home-location", TestLocationName)
 	if err != nil {
 		t.Fatal(err)
 	}
