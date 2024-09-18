@@ -3,6 +3,7 @@
 package e2e
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 	"testing"
@@ -10,6 +11,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/swaggest/assertjson"
+
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 func TestNetwork(t *testing.T) {
@@ -19,18 +22,11 @@ func TestNetwork(t *testing.T) {
 	assert.Empty(t, out)
 	require.EqualError(t, err, `required flag(s) "ip-range", "name" not set`)
 
-	out, err = runCommand(t, "network", "create", "--name", "test-network", "--ip-range", "10.0.0.0/24")
-	require.NoError(t, err)
-	if !assert.Regexp(t, `^Network [0-9]+ created\n$`, out) {
-		// network was not created (properly), so there's no need to test it
-		return
-	}
-
-	networkID, err := strconv.Atoi(out[8 : len(out)-9])
+	networkName := withSuffix("test-network")
+	networkID, err := createNetwork(t, networkName, "--ip-range", "10.0.0.0/24")
 	require.NoError(t, err)
 
-	out, err = runCommand(t, "network", "create", "--name", "test-network", "--ip-range", "10.0.1.0/24")
-	assert.Empty(t, out)
+	_, err = createNetwork(t, networkName, "--ip-range", "10.0.1.0/24")
 	require.Error(t, err)
 	assert.Regexp(t, `^name is already used \(uniqueness_error, [0-9a-f]+\)$`, err.Error())
 
@@ -56,7 +52,7 @@ func TestNetwork(t *testing.T) {
 	require.EqualError(t, err, "network not found: non-existing-network")
 	assert.Empty(t, out)
 
-	out, err = runCommand(t, "network", "change-ip-range", "--ip-range", "10.0.2.0/16", "test-network")
+	out, err = runCommand(t, "network", "change-ip-range", "--ip-range", "10.0.2.0/16", networkName)
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("IP range of network %d changed\n", networkID), out)
 
@@ -64,21 +60,24 @@ func TestNetwork(t *testing.T) {
 	require.EqualError(t, err, "network not found: non-existing-network")
 	assert.Empty(t, out)
 
-	out, err = runCommand(t, "network", "add-label", "test-network", "foo=bar")
+	out, err = runCommand(t, "network", "add-label", networkName, "foo=bar")
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Label(s) foo added to Network %d\n", networkID), out)
 
-	out, err = runCommand(t, "network", "add-label", "test-network", "baz=qux")
+	out, err = runCommand(t, "network", "add-label", networkName, "baz=qux")
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Label(s) baz added to Network %d\n", networkID), out)
 
-	out, err = runCommand(t, "network", "remove-label", "test-network", "baz")
+	out, err = runCommand(t, "network", "remove-label", networkName, "baz")
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Label(s) baz removed from Network %d\n", networkID), out)
 
-	out, err = runCommand(t, "network", "update", "test-network", "--name", "new-test-network")
+	oldNetworkName := networkName
+	networkName = withSuffix("new-test-network")
+
+	out, err = runCommand(t, "network", "update", oldNetworkName, "--name", networkName)
 	require.NoError(t, err)
-	assert.Equal(t, "Network test-network updated\n", out)
+	assert.Equal(t, fmt.Sprintf("Network %s updated\n", oldNetworkName), out)
 
 	out, err = runCommand(t, "network", "delete", strconv.Itoa(networkID))
 	assert.Empty(t, out)
@@ -110,12 +109,12 @@ func TestNetwork(t *testing.T) {
 
 	out, err = runCommand(t, "network", "expose-routes-to-vswitch", strconv.Itoa(networkID))
 	require.NoError(t, err)
-	assert.Equal(t, "Exposing routes to connected vSwitch of network new-test-network enabled\n", out)
+	assert.Equal(t, fmt.Sprintf("Exposing routes to connected vSwitch of network %s enabled\n", networkName), out)
 
 	out, err = runCommand(t, "network", "describe", strconv.Itoa(networkID))
 	require.NoError(t, err)
 	assert.Regexp(t, `^ID:\s+[0-9]+
-Name:\s+new-test-network
+Name:\s+new-test-network-[0-9a-f]{8}
 Created:\s+.*?
 IP Range:\s+10\.0\.0\.0\/16
 Expose Routes to vSwitch: yes
@@ -139,7 +138,7 @@ $`, out)
 [
   {
     "id": %d,
-    "name": "new-test-network",
+    "name": "%s",
     "created": "<ignore-diff>",
     "ip_range": "10.0.0.0/16",
     "subnets": [
@@ -166,7 +165,7 @@ $`, out)
     "expose_routes_to_vswitch": true
   }
 ]
-`, networkID)), []byte(out))
+`, networkID, networkName)), []byte(out))
 
 	out, err = runCommand(t, "network", "remove-route", "--destination", "10.100.1.0/24", "--gateway", "10.0.1.1", "non-existing-network")
 	require.EqualError(t, err, "network not found: non-existing-network")
@@ -198,12 +197,12 @@ $`, out)
 
 	out, err = runCommand(t, "network", "expose-routes-to-vswitch", "--disable", strconv.Itoa(networkID))
 	require.NoError(t, err)
-	assert.Equal(t, "Exposing routes to connected vSwitch of network new-test-network disabled\n", out)
+	assert.Equal(t, fmt.Sprintf("Exposing routes to connected vSwitch of network %s disabled\n", networkName), out)
 
 	out, err = runCommand(t, "network", "describe", strconv.Itoa(networkID))
 	require.NoError(t, err)
 	assert.Regexp(t, `^ID:\s+[0-9]+
-Name:\s+new-test-network
+Name:\s+new-test-network-[0-9a-f]{8}
 Created:\s+.*?
 IP Range:\s+10\.0\.0\.0\/16
 Expose Routes to vSwitch: no
@@ -220,4 +219,30 @@ $`, out)
 	out, err = runCommand(t, "network", "delete", strconv.Itoa(networkID))
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Network %d deleted\n", networkID), out)
+}
+
+func createNetwork(t *testing.T, name string, args ...string) (int, error) {
+	t.Helper()
+	t.Cleanup(func() {
+		_, _ = client.Network.Delete(context.Background(), &hcloud.Network{Name: name})
+	})
+
+	out, err := runCommand(t, append([]string{"network", "create", "--name", name}, args...)...)
+	if err != nil {
+		return 0, err
+	}
+
+	if !assert.Regexp(t, `^Network [0-9]+ created\n$`, out) {
+		return 0, fmt.Errorf("invalid response: %s", out)
+	}
+
+	id, err := strconv.Atoi(out[8 : len(out)-9])
+	if err != nil {
+		return 0, err
+	}
+
+	t.Cleanup(func() {
+		_, _ = client.Network.Delete(context.Background(), &hcloud.Network{ID: int64(id)})
+	})
+	return id, nil
 }

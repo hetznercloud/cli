@@ -3,6 +3,7 @@
 package e2e
 
 import (
+	"context"
 	"fmt"
 	"net"
 	"strconv"
@@ -12,21 +13,25 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/swaggest/assertjson"
+
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 func TestFloatingIP(t *testing.T) {
 	t.Parallel()
 
-	_, err := createFloatingIP(t, "")
+	floatingIPName := withSuffix("test-floating-ip")
+
+	_, err := createFloatingIP(t, floatingIPName, "")
 	require.EqualError(t, err, "type is required")
 
-	_, err = createFloatingIP(t, "ipv4")
+	_, err = createFloatingIP(t, floatingIPName, "ipv4")
 	require.EqualError(t, err, "one of --home-location or --server is required")
 
-	_, err = createFloatingIP(t, "ipv4", "--server", "non-existing-server")
+	_, err = createFloatingIP(t, floatingIPName, "ipv4", "--server", "non-existing-server")
 	require.EqualError(t, err, "server not found: non-existing-server")
 
-	floatingIPId, err := createFloatingIP(t, "ipv4", "--home-location", TestLocationName)
+	floatingIPId, err := createFloatingIP(t, floatingIPName, "ipv4", "--home-location", TestLocationName)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -45,7 +50,9 @@ func TestFloatingIP(t *testing.T) {
 		})
 	})
 
-	out, err := runCommand(t, "floating-ip", "update", strconv.Itoa(floatingIPId), "--name", "new-test-floating-ip", "--description", "Some description")
+	floatingIPName = withSuffix("new-test-floating-ip")
+
+	out, err := runCommand(t, "floating-ip", "update", strconv.Itoa(floatingIPId), "--name", floatingIPName, "--description", "Some description")
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Floating IP %d updated\n", floatingIPId), out)
 
@@ -94,7 +101,7 @@ func TestFloatingIP(t *testing.T) {
 	require.NoError(t, err)
 	assert.Regexp(t, `ID:\s+[0-9]+
 Type:\s+ipv4
-Name:\s+new-test-floating-ip
+Name:\s+new-test-floating-ip-[0-9a-f]{8}
 Description:\s+Some description
 Created:.*?
 IP:\s+(?:[0-9]{1,3}\.){3}[0-9]{1,3}
@@ -113,7 +120,7 @@ Labels:
 	out, err = runCommand(t, "floating-ip", "list", "--output", "columns=id,name,type,ip,dns,server,home,blocked,protection,labels,created,age")
 	require.NoError(t, err)
 	assert.Regexp(t, `^ID +NAME +TYPE +IP +DNS +SERVER +HOME +BLOCKED +PROTECTION +LABELS +CREATED +AGE
-[0-9]+ +new-test-floating-ip +ipv4 +(?:[0-9]{1,3}\.){3}[0-9]{1,3} +s1\.example\.com +- +[a-z]{3}[0-9]* +no +delete +foo=bar.*?
+[0-9]+ +new-test-floating-ip-[0-9a-f]{8} +ipv4 +(?:[0-9]{1,3}\.){3}[0-9]{1,3} +s1\.example\.com +- +[a-z]{3}[0-9]* +no +delete +foo=bar.*?
 $`, out)
 
 	out, err = runCommand(t, "floating-ip", "list", "-o=json")
@@ -150,10 +157,10 @@ $`, out)
     "labels": {
       "foo": "bar"
     },
-    "name": "new-test-floating-ip"
+    "name": "%s"
   }
 ]
-`, floatingIPId, ipStr, ipStr, TestLocationName)), []byte(out))
+`, floatingIPId, ipStr, ipStr, TestLocationName, floatingIPName)), []byte(out))
 
 	out, err = runCommand(t, "floating-ip", "delete", strconv.Itoa(floatingIPId))
 	assert.Regexp(t, `^Floating IP deletion is protected \(protected, [0-9a-f]+\)$`, err.Error())
@@ -183,7 +190,8 @@ $`, out)
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Floating IP %d deleted\n", floatingIPId), out)
 
-	floatingIPId, err = createFloatingIP(t, "ipv6", "--home-location", TestLocationName)
+	floatingIPName = withSuffix("test-floating-ipv6")
+	floatingIPId, err = createFloatingIP(t, floatingIPName, "ipv6", "--home-location", TestLocationName)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -192,7 +200,7 @@ $`, out)
 	require.NoError(t, err)
 	assert.Regexp(t, `ID:\s+[0-9]+
 Type:\s+ipv6
-Name:\s+test-floating-ip
+Name:\s+test-floating-ipv6-[0-9a-f]{8}
 Description:\s+-
 Created:.*?
 IP:\s+[0-9a-f]+:[0-9a-f]+:[0-9a-f]+:[0-9a-f]+::\/64
@@ -235,8 +243,13 @@ Labels:
 	assert.Equal(t, fmt.Sprintf("Floating IP %d deleted\n", floatingIPId), out)
 }
 
-func createFloatingIP(t *testing.T, ipType string, args ...string) (int, error) {
-	out, err := runCommand(t, append([]string{"floating-ip", "create", "--name", "test-floating-ip", "--type", ipType}, args...)...)
+func createFloatingIP(t *testing.T, name, ipType string, args ...string) (int, error) {
+	t.Helper()
+	t.Cleanup(func() {
+		_, _ = client.FloatingIP.Delete(context.Background(), &hcloud.FloatingIP{Name: name})
+	})
+
+	out, err := runCommand(t, append([]string{"floating-ip", "create", "--name", name, "--type", ipType}, args...)...)
 	if err != nil {
 		return 0, err
 	}
@@ -250,5 +263,9 @@ func createFloatingIP(t *testing.T, ipType string, args ...string) (int, error) 
 	if err != nil {
 		return 0, err
 	}
+
+	t.Cleanup(func() {
+		_, _ = client.FloatingIP.Delete(context.Background(), &hcloud.FloatingIP{ID: int64(id)})
+	})
 	return id, nil
 }

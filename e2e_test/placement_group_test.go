@@ -3,6 +3,7 @@
 package e2e
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 	"testing"
@@ -10,6 +11,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/swaggest/assertjson"
+
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 func TestPlacementGroup(t *testing.T) {
@@ -19,41 +22,39 @@ func TestPlacementGroup(t *testing.T) {
 	assert.Empty(t, out)
 	require.EqualError(t, err, `required flag(s) "name", "type" not set`)
 
-	out, err = runCommand(t, "placement-group", "create", "--name", "test-placement-group", "--type", "spread")
-	require.NoError(t, err)
-	if !assert.Regexp(t, `^Placement group [0-9]+ created\n$`, out) {
-		return
-	}
-
-	pgID, err := strconv.Atoi(out[16 : len(out)-9])
+	pgName := withSuffix("test-placement-group")
+	pgID, err := createPlacementGroup(t, pgName, "--type", "spread")
 	require.NoError(t, err)
 
 	out, err = runCommand(t, "placement-group", "add-label", "non-existing-placement-group", "foo=bar")
 	require.EqualError(t, err, "placement group not found: non-existing-placement-group")
 	assert.Empty(t, out)
 
-	out, err = runCommand(t, "placement-group", "add-label", "test-placement-group", "foo=bar")
+	out, err = runCommand(t, "placement-group", "add-label", pgName, "foo=bar")
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Label(s) foo added to placement group %d\n", pgID), out)
 
-	out, err = runCommand(t, "placement-group", "add-label", "test-placement-group", "baz=qux")
+	out, err = runCommand(t, "placement-group", "add-label", pgName, "baz=qux")
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Label(s) baz added to placement group %d\n", pgID), out)
 
-	out, err = runCommand(t, "placement-group", "update", "test-placement-group", "--name", "new-test-placement-group")
+	oldPgName := pgName
+	pgName = withSuffix("new-test-placement-group")
+
+	out, err = runCommand(t, "placement-group", "update", oldPgName, "--name", pgName)
 	require.NoError(t, err)
-	assert.Equal(t, "placement group test-placement-group updated\n", out)
+	assert.Equal(t, fmt.Sprintf("placement group %s updated\n", oldPgName), out)
 
 	out, err = runCommand(t, "placement-group", "list", "-o=columns=id,name,servers,type,created,age")
 	require.NoError(t, err)
 	assert.Regexp(t, `ID +NAME +SERVERS +TYPE +CREATED +AGE
-[0-9]+ +new-test-placement-group +0 servers +spread .*? (?:just now|[0-9]+s)
+[0-9]+ +new-test-placement-group-[0-9a-f]{8} +0 servers +spread .*? (?:just now|[0-9]+s)
 `, out)
 
 	out, err = runCommand(t, "placement-group", "describe", strconv.Itoa(pgID))
 	require.NoError(t, err)
 	assert.Regexp(t, `^ID:\s+[0-9]+
-Name:\s+new-test-placement-group
+Name:\s+new-test-placement-group-[0-9a-f]{8}
 Created:\s+.*?
 Labels:
 \s+(baz: qux|foo: bar)
@@ -68,7 +69,7 @@ $`, out)
 [
   {
     "id": %d,
-    "name": "new-test-placement-group",
+    "name": "%s",
     "labels": {
       "baz": "qux",
       "foo": "bar"
@@ -77,13 +78,39 @@ $`, out)
     "servers": [],
     "type": "spread"
   }
-]`, pgID)), []byte(out))
+]`, pgID, pgName)), []byte(out))
 
-	out, err = runCommand(t, "placement-group", "remove-label", "new-test-placement-group", "baz")
+	out, err = runCommand(t, "placement-group", "remove-label", pgName, "baz")
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Label(s) baz removed from placement group %d\n", pgID), out)
 
 	out, err = runCommand(t, "placement-group", "delete", strconv.Itoa(pgID))
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("placement group %d deleted\n", pgID), out)
+}
+
+func createPlacementGroup(t *testing.T, name string, args ...string) (int, error) {
+	t.Helper()
+	t.Cleanup(func() {
+		_, _ = client.PlacementGroup.Delete(context.Background(), &hcloud.PlacementGroup{Name: name})
+	})
+
+	out, err := runCommand(t, append([]string{"placement-group", "create", "--name", name}, args...)...)
+	if err != nil {
+		return 0, err
+	}
+
+	if !assert.Regexp(t, `^Placement group [0-9]+ created\n$`, out) {
+		return 0, fmt.Errorf("invalid response: %s", out)
+	}
+
+	id, err := strconv.Atoi(out[16 : len(out)-9])
+	if err != nil {
+		return 0, err
+	}
+
+	t.Cleanup(func() {
+		_, _ = client.PlacementGroup.Delete(context.Background(), &hcloud.PlacementGroup{ID: int64(id)})
+	})
+	return id, nil
 }

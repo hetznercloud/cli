@@ -3,18 +3,22 @@
 package e2e
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 func TestFirewall(t *testing.T) {
 	t.Parallel()
 
-	firewallID, err := createFirewall(t, "test-firewall", "--rules-file", "rules_file.json")
+	firewallName := withSuffix("test-firewall")
+	firewallID, err := createFirewall(t, firewallName, "--rules-file", "rules_file.json")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -31,11 +35,13 @@ func TestFirewall(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Label(s) baz added to firewall %d\n", firewallID), out)
 
-	out, err = runCommand(t, "firewall", "update", strconv.Itoa(firewallID), "--name", "new-test-firewall")
+	firewallName = withSuffix("new-test-firewall")
+
+	out, err = runCommand(t, "firewall", "update", strconv.Itoa(firewallID), "--name", firewallName)
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Firewall %d updated\n", firewallID), out)
 
-	out, err = runCommand(t, "firewall", "remove-label", "new-test-firewall", "baz")
+	out, err = runCommand(t, "firewall", "remove-label", firewallName, "baz")
 	require.NoError(t, err)
 	assert.Equal(t, fmt.Sprintf("Label(s) baz removed from firewall %d\n", firewallID), out)
 
@@ -137,7 +143,7 @@ func TestFirewall(t *testing.T) {
 	out, err = runCommand(t, "firewall", "describe", strconv.Itoa(firewallID))
 	require.NoError(t, err)
 	assert.Regexp(t, `ID:\s+[0-9]+
-Name:\s+new-test-firewall
+Name:\s+new-test-firewall-[0-9a-f]{8}
 Created:\s+.*?
 Labels:
 \s+foo: bar
@@ -264,6 +270,11 @@ Applied To:
 }
 
 func createFirewall(t *testing.T, name string, args ...string) (int, error) {
+	t.Helper()
+	t.Cleanup(func() {
+		_, _ = client.Firewall.Delete(context.Background(), &hcloud.Firewall{Name: name})
+	})
+
 	out, err := runCommand(t, append([]string{"firewall", "create", "--name", name}, args...)...)
 	if err != nil {
 		return 0, err
@@ -277,5 +288,9 @@ func createFirewall(t *testing.T, name string, args ...string) (int, error) {
 	if err != nil {
 		return 0, err
 	}
+
+	t.Cleanup(func() {
+		_, _ = client.Firewall.Delete(context.Background(), &hcloud.Firewall{ID: int64(firewallID)})
+	})
 	return firewallID, nil
 }
