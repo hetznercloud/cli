@@ -17,8 +17,13 @@ func TestDatacenter(t *testing.T) {
 		t.Run("table", func(t *testing.T) {
 			out, err := runCommand(t, "datacenter", "list")
 			require.NoError(t, err)
-			assert.Regexp(t, `ID +NAME +DESCRIPTION +LOCATION
-([0-9]+ +[a-z0-9\-]+ +[a-zA-Z0-9\- ]+ +[a-z0-9\-]+\n)+`, out)
+			assert.Regexp(t,
+				NewRegex().Start().
+					SeparatedByWhitespace("ID", "NAME", "DESCRIPTION", "LOCATION").Newline().
+					AnyTimes(NewRegex().Int().Whitespace().Identifier().Whitespace().AnyString().Whitespace().LocationName().Newline()).
+					End(),
+				out,
+			)
 		})
 
 		t.Run("json", func(t *testing.T) {

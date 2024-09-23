@@ -158,48 +158,52 @@ func TestFirewall(t *testing.T) {
 	t.Run("describe", func(t *testing.T) {
 		out, err := runCommand(t, "firewall", "describe", strconv.FormatInt(firewallID, 10))
 		require.NoError(t, err)
-		assert.Regexp(t, `ID:\s+[0-9]+
-Name:\s+new-test-firewall-[0-9a-f]{8}
-Created:\s+.*?
-Labels:
-\s+foo: bar
-Rules:
-\s+- Direction:\s+in
-\s+Description:\s+Allow port 80
-\s+Protocol:\s+tcp
-\s+Port:\s+80
-\s+Source IPs:
-\s+28\.239\.13\.1\/32
-\s+28\.239\.14\.0\/24
-\s+ff21:1eac:9a3b:ee58:5ca:990c:8bc9:c03b\/128
-\s+- Direction:\s+in
-\s+Description:\s+Allow port 443
-\s+Protocol:\s+tcp
-\s+Port:\s+443
-\s+Source IPs:
-\s+0\.0\.0\.0\/0
-\s+::\/0
-\s+- Direction:\s+out
-\s+Protocol:\s+tcp
-\s+Port:\s+80
-\s+Destination IPs:
-\s+28\.239\.13\.1\/32
-\s+28\.239\.14\.0\/24
-\s+ff21:1eac:9a3b:ee58:5ca:990c:8bc9:c03b\/128
-\s+- Direction:\s+in
-\s+Description:\s+Some random description
-\s+Protocol:\s+tcp
-\s+Port:\s+9100
-\s+Source IPs:
-\s+10\.0\.0\.0\/24
-\s+- Direction:\s+out
-\s+Protocol:\s+icmp
-\s+Destination IPs:
-\s+192\.168\.1\.0\/24
-Applied To:
-\s+- Type:\s+label_selector
-\s+Label Selector:\s+foo=bar
-`, out)
+		assert.Regexp(t,
+			NewRegex().Start().
+				Lit("ID:").Whitespace().Int().Newline().
+				Lit("Name:").Whitespace().Raw(`new-test-firewall-[0-9a-f]{8}`).Newline().
+				Lit("Created:").Whitespace().UnixDate().Lit(" (").HumanizeTime().Lit(")").Newline().
+				Lit("Labels:").Newline().
+				Lit("  foo: bar").Newline().
+				Lit("Rules:").Newline().
+				Lit("  - Direction:").Whitespace().Lit("in").Newline().
+				Lit("    Description:").Whitespace().Lit("Allow port 80").Newline().
+				Lit("    Protocol:").Whitespace().Lit("tcp").Newline().
+				Lit("    Port:").Whitespace().Lit("80").Newline().
+				Lit("    Source IPs:").Newline().
+				Whitespace().Lit("28.239.13.1/32").Newline().
+				Whitespace().Lit("28.239.14.0/24").Newline().
+				Whitespace().Lit("ff21:1eac:9a3b:ee58:5ca:990c:8bc9:c03b/128").Newline().
+				Lit("  - Direction:").Whitespace().Lit("in").Newline().
+				Lit("    Description:").Whitespace().Lit("Allow port 443").Newline().
+				Lit("    Protocol:").Whitespace().Lit("tcp").Newline().
+				Lit("    Port:").Whitespace().Lit("443").Newline().
+				Lit("    Source IPs:").Newline().
+				Whitespace().Lit("0.0.0.0/0").Newline().
+				Whitespace().Lit("::/0").Newline().
+				Lit("  - Direction:").Whitespace().Lit("out").Newline().
+				Lit("    Protocol:").Whitespace().Lit("tcp").Newline().
+				Lit("    Port:").Whitespace().Lit("80").Newline().
+				Lit("    Destination IPs:").Newline().
+				Whitespace().Lit("28.239.13.1/32").Newline().
+				Whitespace().Lit("28.239.14.0/24").Newline().
+				Whitespace().Lit("ff21:1eac:9a3b:ee58:5ca:990c:8bc9:c03b/128").Newline().
+				Lit("  - Direction:").Whitespace().Lit("in").Newline().
+				Lit("    Description:").Whitespace().Lit("Some random description").Newline().
+				Lit("    Protocol:").Whitespace().Lit("tcp").Newline().
+				Lit("    Port:").Whitespace().Lit("9100").Newline().
+				Lit("    Source IPs:").Newline().
+				Whitespace().Lit("10.0.0.0/24").Newline().
+				Lit("  - Direction:").Whitespace().Lit("out").Newline().
+				Lit("    Protocol:").Whitespace().Lit("icmp").Newline().
+				Lit("    Destination IPs:").Newline().
+				Whitespace().Lit("192.168.1.0/24").Newline().
+				Lit("Applied To:").Newline().
+				Lit("  - Type:").Whitespace().Lit("label_selector").Newline().
+				Lit("    Label Selector:").Whitespace().Lit("foo=bar").Newline().
+				End(),
+			out,
+		)
 	})
 
 	t.Run("remove-from-resource", func(t *testing.T) {

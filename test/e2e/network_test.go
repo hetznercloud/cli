@@ -54,9 +54,16 @@ func TestNetwork(t *testing.T) {
 	t.Run("list", func(t *testing.T) {
 		out, err := runCommand(t, "network", "list", "-o=columns=servers,ip_range,labels,protection,created,age")
 		require.NoError(t, err)
-		assert.Regexp(t, `SERVERS +IP RANGE +LABELS +PROTECTION +CREATED +AGE
-0 servers +10\.0\.0\.0/24 +delete .*? (?:just now|[0-9]+s)
-`, out)
+		assert.Regexp(t,
+			NewRegex().Start().
+				SeparatedByWhitespace("SERVERS", "IP", "RANGE", "LABELS", "PROTECTION", "CREATED", "AGE").Newline().
+				Lit("0 servers").Whitespace().
+				Lit("10.0.0.0/24").Whitespace().
+				Lit("delete").Whitespace().
+				UnixDate().Whitespace().
+				Age().Newline().End(),
+			out,
+		)
 	})
 
 	t.Run("change-ip-range", func(t *testing.T) {
@@ -168,24 +175,27 @@ func TestNetwork(t *testing.T) {
 	t.Run("describe", func(t *testing.T) {
 		out, err := runCommand(t, "network", "describe", strconv.FormatInt(networkID, 10))
 		require.NoError(t, err)
-		assert.Regexp(t, `^ID:\s+[0-9]+
-Name:\s+new-test-network-[0-9a-f]{8}
-Created:\s+.*?
-IP Range:\s+10\.0\.0\.0\/16
-Expose Routes to vSwitch: yes
-Subnets:
-\s+- Type:\s+cloud
-\s+Network Zone:\s+eu-central
-\s+IP Range:\s+10\.0\.16\.0\/24
-\s+Gateway:\s+10\.0\.0\.1
-Routes:
-\s+- Destination:\s+10\.100\.1\.0\/24
-\s+Gateway:\s+10\.0\.1\.1
-Protection:
-\s+Delete:\s+yes
-Labels:
-\s+foo: bar
-$`, out)
+		assert.Regexp(t, NewRegex().Start().
+			Lit("ID:").Whitespace().Int().Newline().
+			Lit("Name:").Whitespace().Raw(`new-test-network-[0-9a-f]{8}`).Newline().
+			Lit("Created:").Whitespace().UnixDate().Lit(" (").HumanizeTime().Lit(")").Newline().
+			Lit("IP Range:").Whitespace().Lit("10.0.0.0/16").Newline().
+			Lit("Expose Routes to vSwitch:").Whitespace().Lit("yes").Newline().
+			Lit("Subnets:").Newline().
+			Lit("  - Type:").Whitespace().Lit("cloud").Newline().
+			Lit("    Network Zone:").Whitespace().OneOfLit("eu-central", "us-east", "us-west", "ap-southeast").Newline().
+			Lit("    IP Range:").Whitespace().Lit("10.0.16.0/24").Newline().
+			Lit("    Gateway:").Whitespace().Lit("10.0.0.1").Newline().
+			Lit("Routes:").Newline().
+			Lit("  - Destination:").Whitespace().Lit("10.100.1.0/24").Newline().
+			Lit("    Gateway:").Whitespace().Lit("10.0.1.1").Newline().
+			Lit("Protection:").Newline().
+			Lit("  Delete:").Whitespace().Lit("yes").Newline().
+			Lit("Labels:").Newline().
+			Lit("  foo: bar").Newline().
+			End(),
+			out,
+		)
 	})
 
 	t.Run("list", func(t *testing.T) {
@@ -282,20 +292,23 @@ $`, out)
 	t.Run("describe", func(t *testing.T) {
 		out, err := runCommand(t, "network", "describe", strconv.FormatInt(networkID, 10))
 		require.NoError(t, err)
-		assert.Regexp(t, `^ID:\s+[0-9]+
-Name:\s+new-test-network-[0-9a-f]{8}
-Created:\s+.*?
-IP Range:\s+10\.0\.0\.0\/16
-Expose Routes to vSwitch: no
-Subnets:
-\s+No subnets
-Routes:
-\s+No routes
-Protection:
-\s+Delete:\s+no
-Labels:
-\s+No labels
-$`, out)
+		assert.Regexp(t, NewRegex().Start().
+			Lit("ID:").Whitespace().Int().Newline().
+			Lit("Name:").Whitespace().Raw(`new-test-network-[0-9a-f]{8}`).Newline().
+			Lit("Created:").Whitespace().UnixDate().Lit(" (").HumanizeTime().Lit(")").Newline().
+			Lit("IP Range:").Whitespace().Lit("10.0.0.0/16").Newline().
+			Lit("Expose Routes to vSwitch:").Whitespace().Lit("no").Newline().
+			Lit("Subnets:").Newline().
+			Lit("  No subnets").Newline().
+			Lit("Routes:").Newline().
+			Lit("  No routes").Newline().
+			Lit("Protection:").Newline().
+			Lit("  Delete:").Whitespace().Lit("no").Newline().
+			Lit("Labels:").Newline().
+			Lit("  No labels").Newline().
+			End(),
+			out,
+		)
 	})
 
 	t.Run("delete", func(t *testing.T) {
