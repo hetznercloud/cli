@@ -22,7 +22,7 @@ jobs:
       - uses: hetznercloud/tps-action@main
 
       - name: Run tests
-        run: go test -tags e2e -coverpkg=./... -coverprofile=coverage.txt -v -race ./e2e_test
+        run: go test -tags e2e -coverpkg=./... -coverprofile=coverage.txt -v -race ./test/e2e
 
       - name: Upload coverage reports to Codecov
         if: >
