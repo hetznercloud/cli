@@ -109,6 +109,14 @@ func (r RegexBuilder) Int() RegexBuilder {
 	return r.Raw(`[0-9]+`)
 }
 
+func (r RegexBuilder) Float() RegexBuilder {
+	return r.Raw(`[0-9]*\.[0-9]*`)
+}
+
 func (r RegexBuilder) LocationName() RegexBuilder {
 	return r.Raw(`[a-z]{3}[0-9]*`)
+}
+
+func (r RegexBuilder) CountryCode() RegexBuilder {
+	return r.Raw(`[A-Z]{2}`)
 }

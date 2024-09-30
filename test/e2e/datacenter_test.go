@@ -43,19 +43,29 @@ func TestDatacenter(t *testing.T) {
 		t.Run("normal", func(t *testing.T) {
 			out, err := runCommand(t, "datacenter", "describe", TestDatacenterID)
 			require.NoError(t, err)
-			assert.Regexp(t, `ID:\s+[0-9]+
-Name:\s+[a-z0-9\-]+
-Description:\s+[a-zA-Z0-9\- ]+
-Location:
- +Name:\s+[a-z0-9]+
- +Description:\s+[a-zA-Z0-9\- ]+
- +Country:\s+[A-Z]{2}
- +City:\s+[A-Za-z]+
- +Latitude:\s+[0-9\.]+
- +Longitude:\s+[0-9\.]+
-Server Types:
-(\s+- ID: [0-9]+\s+Name: [a-z0-9]+\s+Supported: (true|false)\s+Available: (true|false))+
-`, out)
+
+			assert.Regexp(t,
+				NewRegex().Start().
+					Lit("ID:").Whitespace().Int().Newline().
+					Lit("Name:").Whitespace().Identifier().Newline().
+					Lit("Description:").Whitespace().AnyString().Newline().
+					Lit("Location:").Newline().
+					Lit("  Name:").Whitespace().LocationName().Newline().
+					Lit("  Description:").Whitespace().AnyString().Newline().
+					Lit("  Country:").Whitespace().CountryCode().Newline().
+					Lit("  City:").Whitespace().AnyString().Newline().
+					Lit("  Latitude:").Whitespace().Float().Newline().
+					Lit("  Longitude:").Whitespace().Float().Newline().
+					Lit("Server Types:").Newline().
+					AnyTimes(
+						NewRegex().
+							Lit("  - ID: ").Int().Whitespace().
+							Lit("Name: ").Identifier().Whitespace().
+							Lit("Supported: ").OneOfLit("true", "false").Whitespace().
+							Lit("Available: ").OneOfLit("true", "false").Newline(),
+					).End(),
+				out,
+			)
 		})
 	})
 }
