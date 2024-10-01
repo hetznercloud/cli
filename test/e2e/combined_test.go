@@ -68,24 +68,28 @@ func TestCombined(t *testing.T) {
 		t.Run("describe", func(t *testing.T) {
 			out, err := runCommand(t, "floating-ip", "describe", strconv.FormatInt(floatingIP, 10))
 			require.NoError(t, err)
-			assert.Regexp(t, `ID:\s+[0-9]+
-Type:\s+ipv4
-Name:\s+test-floating-ip-[0-9a-f]{8}
-Description:\s+-
-Created:.*?
-IP:\s+(?:[0-9]{1,3}\.){3}[0-9]{1,3}
-Blocked:\s+no
-Home Location:\s+[a-z]{3}[0-9]*
-Server:
-\s+ID:\s+[0-9]+
-\s+Name:\s+test-server-[0-9a-f]{8}
-DNS:
-.*?
-Protection:
-\s+Delete:\s+no
-Labels:
-\s+No labels
-`, out)
+			assert.Regexp(t,
+				NewRegex().Start().
+					Lit("ID:").Whitespace().Int().Newline().
+					Lit("Type:").Whitespace().Lit("ipv4").Newline().
+					Lit("Name:").Whitespace().Raw(`test-floating-ip-[0-9a-f]{8}`).Newline().
+					Lit("Description:").Whitespace().Lit("-").Newline().
+					Lit("Created:").Whitespace().UnixDate().Lit(" (").HumanizeTime().Lit(")").Newline().
+					Lit("IP:").Whitespace().IPv4().Newline().
+					Lit("Blocked:").Whitespace().Lit("no").Newline().
+					Lit("Home Location:").Whitespace().LocationName().Newline().
+					Lit("Server:").Newline().
+					Lit("  ID:").Whitespace().Int().Newline().
+					Lit("  Name:").Whitespace().Raw(`test-server-[0-9a-f]{8}`).Newline().
+					Lit("DNS:").Newline().
+					Lit("  ").IPv4().Lit(": static.").IPv4().Lit(".clients.your-server.de").Newline().
+					Lit("Protection:").Newline().
+					Lit("  Delete:").Whitespace().Lit("no").Newline().
+					Lit("Labels:").Newline().
+					Lit("  No labels").Newline().
+					End(),
+				out,
+			)
 		})
 
 		t.Run("list", func(t *testing.T) {

@@ -59,9 +59,18 @@ func TestPlacementGroup(t *testing.T) {
 		t.Run("table", func(t *testing.T) {
 			out, err := runCommand(t, "placement-group", "list", "-o=columns=id,name,servers,type,created,age")
 			require.NoError(t, err)
-			assert.Regexp(t, `ID +NAME +SERVERS +TYPE +CREATED +AGE
-[0-9]+ +new-test-placement-group-[0-9a-f]{8} +0 servers +spread .*? (?:just now|[0-9]+s)
-`, out)
+
+			assert.Regexp(t,
+				NewRegex().Start().
+					SeparatedByWhitespace("ID", "NAME", "SERVERS", "TYPE", "CREATED", "AGE").Newline().
+					Int().Whitespace().
+					Raw(`new-test-placement-group-[0-9a-f]{8}`).Whitespace().
+					Lit("0 servers").Whitespace().
+					Lit("spread").Whitespace().
+					UnixDate().Whitespace().
+					Age().Newline().End(),
+				out,
+			)
 		})
 
 		t.Run("json", func(t *testing.T) {
@@ -87,15 +96,20 @@ func TestPlacementGroup(t *testing.T) {
 	t.Run("describe", func(t *testing.T) {
 		out, err := runCommand(t, "placement-group", "describe", strconv.FormatInt(pgID, 10))
 		require.NoError(t, err)
-		assert.Regexp(t, `^ID:\s+[0-9]+
-Name:\s+new-test-placement-group-[0-9a-f]{8}
-Created:\s+.*?
-Labels:
-\s+(baz: qux|foo: bar)
-\s+(baz: qux|foo: bar)
-Servers:
-Type:\s+spread
-$`, out)
+
+		assert.Regexp(t,
+			NewRegex().Start().
+				Lit("ID:").Whitespace().Int().Newline().
+				Lit("Name:").Whitespace().Raw(`new-test-placement-group-[0-9a-f]{8}`).Newline().
+				Lit("Created:").Whitespace().UnixDate().Lit(" (").HumanizeTime().Lit(")").Newline().
+				Lit("Labels:").Newline().
+				Lit("  ").OneOfLit("baz: qux", "foo: bar").Newline().
+				Lit("  ").OneOfLit("baz: qux", "foo: bar").Newline().
+				Lit("Servers:").Newline().
+				Lit("Type:").Whitespace().Lit("spread").Newline().
+				End(),
+			out,
+		)
 	})
 
 	t.Run("remove-label", func(t *testing.T) {

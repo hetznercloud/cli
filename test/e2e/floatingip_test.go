@@ -109,29 +109,33 @@ func TestFloatingIP(t *testing.T) {
 				ipStr, err = runCommand(t, "floating-ip", "describe", strconv.FormatInt(floatingIPId, 10), "--output", "format={{.IP}}")
 				require.NoError(t, err)
 				ipStr = strings.TrimSpace(ipStr)
-				assert.Regexp(t, `^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$`, ipStr)
+				assert.Regexp(t, NewRegex().Start().IPv4().End(), ipStr)
 			})
 
 			t.Run("normal", func(t *testing.T) {
 				out, err := runCommand(t, "floating-ip", "describe", strconv.FormatInt(floatingIPId, 10))
 				require.NoError(t, err)
-				assert.Regexp(t, `ID:\s+[0-9]+
-Type:\s+ipv4
-Name:\s+new-test-floating-ip-[0-9a-f]{8}
-Description:\s+Some description
-Created:.*?
-IP:\s+(?:[0-9]{1,3}\.){3}[0-9]{1,3}
-Blocked:\s+no
-Home Location:\s+[a-z]{3}[0-9]*
-Server:
-\s+Not assigned
-DNS:
-\s+(?:[0-9]{1,3}\.){3}[0-9]{1,3}: s1\.example\.com
-Protection:
-\s+Delete:\s+yes
-Labels:
-\s+foo: bar
-`, out)
+				assert.Regexp(t,
+					NewRegex().Start().
+						Lit("ID:").Whitespace().Int().Newline().
+						Lit("Type:").Whitespace().Lit("ipv4").Newline().
+						Lit("Name:").Whitespace().Raw(`new-test-floating-ip-[0-9a-f]{8}`).Newline().
+						Lit("Description:").Whitespace().Lit("Some description").Newline().
+						Lit("Created:").Whitespace().UnixDate().Lit(" (").HumanizeTime().Lit(")").Newline().
+						Lit("IP:").Whitespace().IPv4().Newline().
+						Lit("Blocked:").Whitespace().Lit("no").Newline().
+						Lit("Home Location:").Whitespace().LocationName().Newline().
+						Lit("Server:").Newline().
+						Lit("  Not assigned").Newline().
+						Lit("DNS:").Newline().
+						Lit("  ").IPv4().Lit(": s1.example.com").Newline().
+						Lit("Protection:").Newline().
+						Lit("  Delete:").Whitespace().Lit("yes").Newline().
+						Lit("Labels:").Newline().
+						Lit("  foo: bar").Newline().
+						End(),
+					out,
+				)
 			})
 		})
 
@@ -139,9 +143,24 @@ Labels:
 			t.Run("table", func(t *testing.T) {
 				out, err := runCommand(t, "floating-ip", "list", "--output", "columns=id,name,type,ip,dns,server,home,blocked,protection,labels,created,age")
 				require.NoError(t, err)
-				assert.Regexp(t, `^ID +NAME +TYPE +IP +DNS +SERVER +HOME +BLOCKED +PROTECTION +LABELS +CREATED +AGE
-[0-9]+ +new-test-floating-ip-[0-9a-f]{8} +ipv4 +(?:[0-9]{1,3}\.){3}[0-9]{1,3} +s1\.example\.com +- +[a-z]{3}[0-9]* +no +delete +foo=bar.*?
-$`, out)
+				assert.Regexp(t,
+					NewRegex().Start().
+						SeparatedByWhitespace("ID", "NAME", "TYPE", "IP", "DNS", "SERVER", "HOME", "BLOCKED", "PROTECTION", "LABELS", "CREATED", "AGE").Newline().
+						Int().Whitespace().
+						Raw(`new-test-floating-ip-[0-9a-f]{8}`).Whitespace().
+						Lit("ipv4").Whitespace().
+						IPv4().Whitespace().
+						Lit("s1.example.com").Whitespace().
+						Lit("-").Whitespace().
+						LocationName().Whitespace().
+						Lit("no").Whitespace().
+						Lit("delete").Whitespace().
+						Lit("foo=bar").Whitespace().
+						UnixDate().Whitespace().
+						Age().Newline().
+						End(),
+					out,
+				)
 			})
 
 			t.Run("json", func(t *testing.T) {
@@ -238,23 +257,27 @@ $`, out)
 			t.Run("normal", func(t *testing.T) {
 				out, err := runCommand(t, "floating-ip", "describe", strconv.FormatInt(floatingIPId, 10))
 				require.NoError(t, err)
-				assert.Regexp(t, `ID:\s+[0-9]+
-Type:\s+ipv6
-Name:\s+test-floating-ipv6-[0-9a-f]{8}
-Description:\s+-
-Created:.*?
-IP:\s+[0-9a-f]+:[0-9a-f]+:[0-9a-f]+:[0-9a-f]+::\/64
-Blocked:\s+no
-Home Location:\s+[a-z]{3}[0-9]*
-Server:
-\s+Not assigned
-DNS:
-\s+No reverse DNS entries
-Protection:
-\s+Delete:\s+no
-Labels:
-\s+No labels
-`, out)
+				assert.Regexp(t,
+					NewRegex().Start().
+						Lit("ID:").Whitespace().Int().Newline().
+						Lit("Type:").Whitespace().Lit("ipv6").Newline().
+						Lit("Name:").Whitespace().Raw(`test-floating-ipv6-[0-9a-f]{8}`).Newline().
+						Lit("Description:").Whitespace().Lit("-").Newline().
+						Lit("Created:").Whitespace().UnixDate().Lit(" (").HumanizeTime().Lit(")").Newline().
+						Lit("IP:").Whitespace().IPv6().Lit("/64").Newline().
+						Lit("Blocked:").Whitespace().Lit("no").Newline().
+						Lit("Home Location:").Whitespace().LocationName().Newline().
+						Lit("Server:").Newline().
+						Lit("  Not assigned").Newline().
+						Lit("DNS:").Newline().
+						Lit("  No reverse DNS entries").Newline().
+						Lit("Protection:").Newline().
+						Lit("  Delete:").Whitespace().Lit("no").Newline().
+						Lit("Labels:").Newline().
+						Lit("  No labels").Newline().
+						End(),
+					out,
+				)
 			})
 		})
 
@@ -275,9 +298,13 @@ Labels:
 		t.Run("list", func(t *testing.T) {
 			out, err := runCommand(t, "floating-ip", "list", "-o", "columns=ip,dns")
 			require.NoError(t, err)
-			assert.Regexp(t, fmt.Sprintf(`^IP +DNS
-%s\/64 +2 entries
-`, ipStr), out)
+			assert.Regexp(t,
+				NewRegex().Start().
+					SeparatedByWhitespace("IP", "DNS").Newline().
+					Lit(ipStr).Lit("/64").Whitespace().Lit("2 entries").Newline().
+					End(),
+				out,
+			)
 		})
 
 		t.Run("delete", func(t *testing.T) {
