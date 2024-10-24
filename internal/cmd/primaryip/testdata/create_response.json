@@ -28,7 +28,9 @@
     "dns_ptr": [],
     "id": 1,
     "ip": "192.168.2.1",
-    "labels": {},
+    "labels": {
+      "foo": "bar"
+    },
     "name": "my-ip",
     "protection": {
       "delete": false
