@@ -31,6 +31,7 @@ func TestCreate(t *testing.T) {
 				Name:         "my-ip",
 				Type:         "ipv4",
 				Datacenter:   "fsn1-dc14",
+				Labels:       map[string]string{"foo": "bar"},
 				AssigneeType: "server",
 				AutoDelete:   hcloud.Ptr(true),
 			},
@@ -42,6 +43,7 @@ func TestCreate(t *testing.T) {
 					IP:         net.ParseIP("192.168.2.1"),
 					Type:       hcloud.PrimaryIPTypeIPv4,
 					AutoDelete: true,
+					Labels:     map[string]string{"foo": "bar"},
 				},
 				Action: &hcloud.Action{ID: 321},
 			},
@@ -52,7 +54,7 @@ func TestCreate(t *testing.T) {
 	fx.ActionWaiter.EXPECT().
 		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321})
 
-	out, errOut, err := fx.Run(cmd, []string{"--name=my-ip", "--type=ipv4", "--datacenter=fsn1-dc14", "--auto-delete"})
+	out, errOut, err := fx.Run(cmd, []string{"--name=my-ip", "--type=ipv4", "--datacenter=fsn1-dc14", "--auto-delete", "--label", "foo=bar"})
 
 	expOut := `Primary IP 1 created
 IPv4: 192.168.2.1
@@ -79,6 +81,7 @@ func TestCreateJSON(t *testing.T) {
 				Name:         "my-ip",
 				Type:         "ipv4",
 				Datacenter:   "fsn1-dc14",
+				Labels:       map[string]string{"foo": "bar"},
 				AssigneeType: "server",
 				AutoDelete:   hcloud.Ptr(true),
 			},
@@ -96,7 +99,7 @@ func TestCreateJSON(t *testing.T) {
 						Location: &hcloud.Location{ID: 1, Name: "fsn1"},
 					},
 					Created:      time.Date(2016, 1, 30, 23, 50, 0, 0, time.UTC),
-					Labels:       make(map[string]string),
+					Labels:       map[string]string{"foo": "bar"},
 					AutoDelete:   true,
 					AssigneeID:   1,
 					AssigneeType: "server",
@@ -108,7 +111,7 @@ func TestCreateJSON(t *testing.T) {
 	fx.ActionWaiter.EXPECT().
 		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321})
 
-	jsonOut, out, err := fx.Run(cmd, []string{"-o=json", "--name=my-ip", "--type=ipv4", "--datacenter=fsn1-dc14", "--auto-delete"})
+	jsonOut, out, err := fx.Run(cmd, []string{"-o=json", "--name=my-ip", "--type=ipv4", "--datacenter=fsn1-dc14", "--auto-delete", "--label", "foo=bar"})
 
 	expOut := "Primary IP 1 created\n"
 

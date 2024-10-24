@@ -45,6 +45,7 @@ var CreateCmd = base.CreateCmd{
 		name, _ := cmd.Flags().GetString("name")
 		assigneeID, _ := cmd.Flags().GetInt64("assignee-id")
 		datacenter, _ := cmd.Flags().GetString("datacenter")
+		labels, _ := cmd.Flags().GetStringToString("label")
 		protection, _ := cmd.Flags().GetStringSlice("enable-protection")
 		autoDelete, _ := cmd.Flags().GetBool("auto-delete")
 
@@ -58,6 +59,7 @@ var CreateCmd = base.CreateCmd{
 			Name:         name,
 			AssigneeType: "server",
 			Datacenter:   datacenter,
+			Labels:       labels,
 		}
 		if assigneeID != 0 {
 			createOpts.AssigneeID = &assigneeID
