@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.48.0](https://github.com/hetznercloud/cli/compare/v1.47.0...v1.48.0) (2024-10-25)
+
+
+### Features
+
+* allow auto-completing context flag ([#861](https://github.com/hetznercloud/cli/issues/861)) ([7495b14](https://github.com/hetznercloud/cli/commit/7495b140e2359c47f5991bc2863674bb02dec9ea))
+* **primary-ip:** allow setting auto-delete on create ([#860](https://github.com/hetznercloud/cli/issues/860)) ([b6aecb3](https://github.com/hetznercloud/cli/commit/b6aecb31893016e05070856c291704403b76a296)), closes [#855](https://github.com/hetznercloud/cli/issues/855)
+
+
+### Bug Fixes
+
+* **image:** only use numerical IDs for label auto-completion ([#865](https://github.com/hetznercloud/cli/issues/865)) ([1d10d92](https://github.com/hetznercloud/cli/commit/1d10d9284a7544971416c1efe8d2452a90b205e0))
+* **primary-ip:** labels ignored in create command ([#885](https://github.com/hetznercloud/cli/issues/885)) ([7a17174](https://github.com/hetznercloud/cli/commit/7a1717412348f26bb14c27ee965f415044bb2b81)), closes [#883](https://github.com/hetznercloud/cli/issues/883)
+
 ## [1.47.0](https://github.com/hetznercloud/cli/compare/v1.46.0...v1.47.0) (2024-08-30)
 
 
