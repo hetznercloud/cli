@@ -29,15 +29,10 @@ builds:
     hooks:
       post:
         - cmd: >
-            {{- if index .Env "APPLE_CERTIFICATE_P12_PASSWORD" -}}
-            rcodesign sign
-              --p12-file certificate.p12
-              --p12-password "{{ .Env.APPLE_CERTIFICATE_P12_PASSWORD }}"
-              --code-signature-flags runtime
-              "{{ .Path }}"
-            {{- else -}}
-            echo "skipping rcodesign sign hook!"
-            {{- end -}}
+            go run github.com/anchore/quill/cmd/quill
+                sign-and-notarize "{{ .Path }}"
+                --dry-run={{ .IsSnapshot }}
+                --ad-hoc={{ .IsSnapshot }}
           output: true
 
 snapshot:
