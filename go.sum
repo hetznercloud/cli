@@ -113,8 +113,8 @@ github.com/go-playground/validator/v10 v10.22.1 h1:40JcKH+bBNGFczGuoBYgX4I6m/i27
 github.com/go-playground/validator/v10 v10.22.1/go.mod h1:dbuPbCMFw/DrkbEynArYaCwl3amGuJotoKCe95atGMM=
 github.com/go-restruct/restruct v1.2.0-alpha h1:2Lp474S/9660+SJjpVxoKuWX09JsXHSrdV7Nv3/gkvc=
 github.com/go-restruct/restruct v1.2.0-alpha/go.mod h1:KqrpKpn4M8OLznErihXTGLlsXFGeLxHUrLRRI/1YjGk=
-github.com/goccy/go-yaml v1.13.3 h1:IXRULR8mAa0MXQobzzp0VOfMUJ8EnaQ4x3jhf7S0/nI=
-github.com/goccy/go-yaml v1.13.3/go.mod h1:IjYwxUiJDoqpx2RmbdjMUceGHZwYLon3sfOGl5Hi9lc=
+github.com/goccy/go-yaml v1.13.4 h1:XOnLX9GqT+kH/gB7YzCMUiDBFU9B7pm3HZz6kyeDPkk=
+github.com/goccy/go-yaml v1.13.4/go.mod h1:IjYwxUiJDoqpx2RmbdjMUceGHZwYLon3sfOGl5Hi9lc=
 github.com/golang-jwt/jwt/v4 v4.5.0 h1:7cYmW1XlMY7h7ii7UhUyChSgS5wUJEnm9uZVTGqOWzg=
 github.com/golang-jwt/jwt/v4 v4.5.0/go.mod h1:m21LjoU+eqJr34lmDMbreY2eSTRJ1cv77w39/MY0Ch0=
 github.com/golang/mock v1.6.0 h1:ErTB+efbowRARo13NNdxyJji2egdxLGQhRaY+DUumQc=
