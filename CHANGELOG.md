@@ -1,5 +1,15 @@
 # Changelog
 
+## [v1.49.0](https://github.com/hetznercloud/cli/releases/tag/v1.49.0)
+
+### Features
+
+- drop support for go 1.21 (#902)
+
+### Bug Fixes
+
+- macOS binary not notarized (#868)
+
 ## [v1.49.0-rc.0](https://github.com/hetznercloud/cli/releases/tag/v1.49.0-rc.0)
 
 ### Features
