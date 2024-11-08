@@ -7,9 +7,9 @@ import (
 	"strings"
 	"testing"
 
-	gomock "github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	gomock "go.uber.org/mock/gomock"
 
 	hcapi2_mock "github.com/hetznercloud/cli/internal/hcapi2/mock"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"

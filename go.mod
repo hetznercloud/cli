@@ -11,7 +11,6 @@ require (
 	github.com/fatih/color v1.18.0
 	github.com/fatih/structs v1.1.0
 	github.com/goccy/go-yaml v1.13.6
-	github.com/golang/mock v1.6.0
 	github.com/guptarohit/asciigraph v0.7.3
 	github.com/hetznercloud/hcloud-go/v2 v2.16.0
 	github.com/jedib0t/go-pretty/v6 v6.6.1
