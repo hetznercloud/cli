@@ -3,9 +3,9 @@ package server_test
 import (
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/server"
 	"github.com/hetznercloud/cli/internal/testutil"

@@ -4,7 +4,7 @@ import (
 	"net"
 	"testing"
 
-	"github.com/golang/mock/gomock"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/server"
 	"github.com/hetznercloud/cli/internal/testutil"

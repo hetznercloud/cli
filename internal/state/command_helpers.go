@@ -8,7 +8,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-//go:generate go run github.com/golang/mock/mockgen -package state -destination zz_command_helper_mock.go . ActionWaiter,TokenEnsurer
+//go:generate go run go.uber.org/mock/mockgen -package state -destination zz_command_helper_mock.go . ActionWaiter,TokenEnsurer
 
 type ActionWaiter interface {
 	WaitForActions(context.Context, *cobra.Command, ...*hcloud.Action) error

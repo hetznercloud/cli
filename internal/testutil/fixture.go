@@ -6,8 +6,8 @@ import (
 	"os"
 	"testing"
 
-	"github.com/golang/mock/gomock"
 	"github.com/spf13/cobra"
+	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	hcapi2_mock "github.com/hetznercloud/cli/internal/hcapi2/mock"
