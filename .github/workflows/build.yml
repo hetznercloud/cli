@@ -20,6 +20,9 @@ jobs:
         with:
           go-version: "1.23"
 
+      - name: Download tools
+        run: go -C ./tools mod download
+
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v6
         with:
