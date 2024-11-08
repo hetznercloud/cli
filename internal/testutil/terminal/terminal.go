@@ -6,7 +6,7 @@ import (
 	"github.com/hetznercloud/cli/internal/ui"
 )
 
-//go:generate go run github.com/golang/mock/mockgen -package terminal -destination zz_terminal_mock.go . Terminal
+//go:generate go run go.uber.org/mock/mockgen -package terminal -destination zz_terminal_mock.go . Terminal
 
 type Terminal interface {
 	StdoutIsTerminal() bool
