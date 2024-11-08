@@ -48,7 +48,7 @@ jobs:
       - name: Upload coverage reports to Codecov
         if: >
           !startsWith(github.head_ref, 'renovate/') &&
-          !startsWith(github.head_ref, 'release-please--')
+          !startsWith(github.head_ref, 'releaser-pleaser--')
         uses: codecov/codecov-action@v4
         with:
           token: ${{ secrets.CODECOV_TOKEN }}

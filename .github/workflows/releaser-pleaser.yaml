@@ -1,0 +1,24 @@
+name: Releaser-pleaser
+
+on:
+  push:
+    branches: [main]
+  pull_request_target:
+    types:
+      - edited
+      - labeled
+      - unlabeled
+
+jobs:
+  releaser-pleaser:
+    # Do not run on forks.
+    if: github.repository == 'hetznercloud/cli'
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: releaser-pleaser
+        uses: apricote/releaser-pleaser@v0.4.1
+        with:
+          token: ${{ secrets.HCLOUD_BOT_TOKEN }}
+          extra-files: |
+            internal/version/version.go
