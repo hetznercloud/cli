@@ -48,8 +48,7 @@ test:unit:
   image: golang:1.23
   script:
     - go test -v -coverpkg=./... -coverprofile=coverage.txt -covermode count ./...
-    - go get github.com/boumenot/gocover-cobertura
-    - go run github.com/boumenot/gocover-cobertura < coverage.txt > coverage.xml
+    - go -C ./tools run github.com/boumenot/gocover-cobertura < coverage.txt > coverage.xml
   artifacts:
     reports:
       coverage_report:
