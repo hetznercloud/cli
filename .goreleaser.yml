@@ -29,7 +29,7 @@ builds:
     hooks:
       post:
         - cmd: >
-            go run github.com/anchore/quill/cmd/quill
+            go -C ./tools run github.com/anchore/quill/cmd/quill
                 sign-and-notarize "{{ .Path }}"
                 --dry-run={{ .IsSnapshot }}
                 --ad-hoc={{ .IsSnapshot }}
