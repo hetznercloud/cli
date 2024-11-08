@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.49.0](https://github.com/hetznercloud/cli/compare/v1.48.0...v1.49.0) (2024-11-08)
+
+
+### Features
+
+* drop support for go 1.21 ([#902](https://github.com/hetznercloud/cli/issues/902)) ([d6bd9bd](https://github.com/hetznercloud/cli/commit/d6bd9bd49d6bb70375edd68502b59787244173cb))
+
+
+### Bug Fixes
+
+* macOS binary not notarized ([#868](https://github.com/hetznercloud/cli/issues/868)) ([0691b32](https://github.com/hetznercloud/cli/commit/0691b32bc55b819211337a598acd6b6dd9bf2625)), closes [#828](https://github.com/hetznercloud/cli/issues/828)
+
 ## [1.48.0](https://github.com/hetznercloud/cli/compare/v1.47.0...v1.48.0) (2024-10-25)
 
 
