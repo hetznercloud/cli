@@ -33,7 +33,7 @@ var ChangeAliasIPsCmd = base.Cmd{
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
-		clear, _ := cmd.Flags().GetBool("clear")
+		clearAll, _ := cmd.Flags().GetBool("clear")
 		idOrName := args[0]
 		server, _, err := s.Client().Server().Get(s, idOrName)
 		if err != nil {
@@ -57,7 +57,7 @@ var ChangeAliasIPsCmd = base.Cmd{
 		opts := hcloud.ServerChangeAliasIPsOpts{
 			Network: network,
 		}
-		if clear {
+		if clearAll {
 			opts.AliasIPs = []net.IP{}
 		} else {
 			for _, aliasIP := range aliasIPs {
