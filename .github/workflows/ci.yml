@@ -27,7 +27,7 @@ jobs:
         uses: golangci/golangci-lint-action@v6
         with:
           # Required: the version of golangci-lint is required and must be specified with patch version
-          version: v1.62.0 # renovate: datasource=github-releases depName=golangci/golangci-lint
+          version: v1.62.2 # renovate: datasource=github-releases depName=golangci/golangci-lint
           # In general linting is quite fast with warm caches, but a fresh run might take some time.
           args: --timeout 5m
 
