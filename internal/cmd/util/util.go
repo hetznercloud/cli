@@ -67,6 +67,8 @@ func GrossPrice(price hcloud.Price) string {
 	switch price.Currency {
 	case "EUR":
 		currencyDisplay = "€"
+	case "USD":
+		currencyDisplay = "$"
 	default:
 		// unchanged
 	}
