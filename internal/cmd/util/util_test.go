@@ -12,8 +12,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	require "github.com/stretchr/testify/require"
 
-	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
+
+	"github.com/hetznercloud/cli/internal/cmd/util"
 )
 
 func TestYesNo(t *testing.T) {
@@ -431,9 +432,14 @@ func TestPrice(t *testing.T) {
 		want     string
 	}{
 		{
-			name:  "known currency",
+			name:  "known currency (EUR)",
 			price: hcloud.Price{Currency: "EUR", Gross: "5.00"},
 			want:  "€\u00a05.00",
+		},
+		{
+			name:  "known currency (USD)",
+			price: hcloud.Price{Currency: "USD", Gross: "5.00"},
+			want:  "$\u00a05.00",
 		},
 		{
 			name:     "unknown currency",
