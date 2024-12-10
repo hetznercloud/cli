@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.49.1](https://github.com/hetznercloud/cli/releases/tag/v1.49.1)
+
+### Bug Fixes
+
+- display $ when the currency is USD (#933)
+
 ## [v1.49.0](https://github.com/hetznercloud/cli/releases/tag/v1.49.0)
 
 ### Features
