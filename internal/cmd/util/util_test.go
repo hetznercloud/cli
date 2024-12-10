@@ -431,9 +431,14 @@ func TestPrice(t *testing.T) {
 		want     string
 	}{
 		{
-			name:  "known currency",
+			name:  "known currency (EUR)",
 			price: hcloud.Price{Currency: "EUR", Gross: "5.00"},
 			want:  "€\u00a05.00",
+		},
+		{
+			name:  "known currency (USD)",
+			price: hcloud.Price{Currency: "USD", Gross: "5.00"},
+			want:  "$\u00a05.00",
 		},
 		{
 			name:     "unknown currency",
