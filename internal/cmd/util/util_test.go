@@ -12,9 +12,8 @@ import (
 	"github.com/stretchr/testify/assert"
 	require "github.com/stretchr/testify/require"
 
-	"github.com/hetznercloud/hcloud-go/v2/hcloud"
-
 	"github.com/hetznercloud/cli/internal/cmd/util"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 func TestYesNo(t *testing.T) {
