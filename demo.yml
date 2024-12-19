@@ -1,0 +1,66 @@
+# ./autocast demo.yml demo.rec
+# asciinema play demo.rec
+settings:
+  title: hcloud CLI demo
+  width: 80
+  height: 24
+  type_speed: 50ms
+
+  environment:
+    - name: HCLOUD_TOKEN
+      value:
+
+instructions:
+  - !Command
+    command: "# Welcome, this is a quick demo of the hcloud CLI"
+  - !Command
+    command: "# Note that we already configured a context attached to our Hetzner Cloud project"
+  - !Command
+    command: ""
+  - !Wait 500ms
+
+  - !Command
+    command: "# First, let's upload our public ssh key"
+  - !Wait 500ms
+  - !Command
+    command: hcloud ssh-key create --name demo --public-key-from-file ~/.ssh/id_ed25519.pub
+  - !Command
+    command: ""
+  - !Wait 2s
+
+  - !Command
+    command: "# We can now configure a default ssh key that will be used when creating new servers"
+  - !Wait 500ms
+  - !Command
+    command: hcloud config set default-ssh-keys demo
+  - !Command
+    command: ""
+  - !Wait 2s
+
+  - !Command
+    command: "# Now, we create a new private network"
+  - !Wait 500ms
+  - !Command
+    command: hcloud network create --name demo --ip-range 10.0.0.0/16
+  - !Command
+    command: ""
+  - !Wait 500ms
+  - !Command
+    command: hcloud network add-subnet demo --type cloud --network-zone eu-central --ip-range 10.0.0.0/24
+  - !Command
+    command: ""
+  - !Wait 2s
+
+  - !Command
+    command: "# Then, we create a new server and attach it the private network"
+  - !Command
+    command: hcloud server create --name demo --image debian-12 --type cx22 --network demo
+  - !Command
+    command: ""
+  - !Wait 2s
+
+  - !Command
+    command: "# We can also list the resources in the project"
+  - !Command
+    command: hcloud all list
+  - !Wait 3s
