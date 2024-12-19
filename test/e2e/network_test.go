@@ -215,7 +215,7 @@ func TestNetwork(t *testing.T) {
         "gateway": "10.0.0.1"
       }
     ],
-	"load_balancers": [],
+    "load_balancers": [],
     "routes": [
       {
         "destination": "10.100.1.0/24",
