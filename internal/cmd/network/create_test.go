@@ -64,14 +64,15 @@ func TestCreateJSON(t *testing.T) {
 			Labels:  make(map[string]string),
 		}).
 		Return(&hcloud.Network{
-			ID:      123,
-			Name:    "myNetwork",
-			IPRange: ipRange,
-			Created: time.Date(2016, 1, 30, 23, 50, 0, 0, time.UTC),
-			Labels:  make(map[string]string),
-			Servers: []*hcloud.Server{{ID: 1}, {ID: 2}, {ID: 3}},
-			Routes:  []hcloud.NetworkRoute{},
-			Subnets: []hcloud.NetworkSubnet{},
+			ID:            123,
+			Name:          "myNetwork",
+			IPRange:       ipRange,
+			Created:       time.Date(2016, 1, 30, 23, 50, 0, 0, time.UTC),
+			Labels:        make(map[string]string),
+			Servers:       []*hcloud.Server{{ID: 1}, {ID: 2}, {ID: 3}},
+			LoadBalancers: []*hcloud.LoadBalancer{{ID: 4}, {ID: 5}, {ID: 6}},
+			Routes:        []hcloud.NetworkRoute{},
+			Subnets:       []hcloud.NetworkSubnet{},
 		}, nil, nil)
 
 	jsonOut, out, err := fx.Run(cmd, []string{"-o=json", "--name", "myNetwork", "--ip-range", "10.0.0.0/24"})
