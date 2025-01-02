@@ -23,16 +23,12 @@ func TestCertificate(t *testing.T) {
 	t.Parallel()
 
 	t.Run("uploaded", func(t *testing.T) {
-		tmpDir, err := os.MkdirTemp(os.TempDir(), "hcloud-certificate-test")
-		defer func() {
-			_ = os.RemoveAll(tmpDir)
-		}()
-
+		tmpDir := t.TempDir()
 		notBefore := time.Now()
 		notAfter := notBefore.Add(365 * 24 * time.Hour)
 		certPath, keyPath := path.Join(tmpDir, "cert.pem"), path.Join(tmpDir, "key.pem")
 		fingerprint := ""
-		err = generateCertificate(certPath, keyPath, &fingerprint, notBefore, notAfter)
+		err := generateCertificate(certPath, keyPath, &fingerprint, notBefore, notAfter)
 		require.NoError(t, err)
 
 		certName := withSuffix("test-certificate-uploaded")
