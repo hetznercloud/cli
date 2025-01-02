@@ -94,7 +94,7 @@ func (r RegexBuilder) Age() RegexBuilder {
 }
 
 func (r RegexBuilder) HumanizeTime() RegexBuilder {
-	return r.OneOf(`now`, `[0-9]+ (?:seconds?|minutes?|hours?|days?|months?|years?) ago`)
+	return r.OneOf(`now`, `[0-9]+ (?:seconds?|minutes?|hours?|days?|months?|years?) (ago|from now)`)
 }
 
 func (r RegexBuilder) Whitespace() RegexBuilder {

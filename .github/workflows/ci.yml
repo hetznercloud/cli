@@ -71,6 +71,10 @@ jobs:
 
       - name: Run tests
         run: go test -tags e2e -coverpkg=./... -coverprofile=coverage.txt -v -race ./test/e2e
+        env:
+          # Domain must be available in the account running the tests. This domain is
+          # available in the account running the public integration tests.
+          CERT_DOMAIN: hc-integrations-test.de
 
       - name: Upload coverage reports to Codecov
         if: >
