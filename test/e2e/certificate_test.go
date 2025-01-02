@@ -27,8 +27,7 @@ func TestCertificate(t *testing.T) {
 		notBefore := time.Now()
 		notAfter := notBefore.Add(365 * 24 * time.Hour)
 		certPath, keyPath := path.Join(tmpDir, "cert.pem"), path.Join(tmpDir, "key.pem")
-		fingerprint := ""
-		err := generateCertificate(certPath, keyPath, &fingerprint, notBefore, notAfter)
+		err := generateCertificate(certPath, keyPath, notBefore, notAfter)
 		require.NoError(t, err)
 
 		certName := withSuffix("test-certificate-uploaded")

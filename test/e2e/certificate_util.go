@@ -5,11 +5,9 @@ package e2e
 import (
 	"crypto/rand"
 	"crypto/rsa"
-	"crypto/sha256"
 	"crypto/x509"
 	"crypto/x509/pkix"
 	"encoding/pem"
-	"fmt"
 	"math/big"
 	"os"
 	"time"
@@ -17,7 +15,7 @@ import (
 
 // Adapted from https://go.dev/src/crypto/tls/generate_cert.go
 
-func generateCertificate(certFile, keyFile string, fingerprint *string, notBefore, notAfter time.Time) error {
+func generateCertificate(certFile, keyFile string, notBefore, notAfter time.Time) error {
 
 	priv, err := rsa.GenerateKey(rand.Reader, 2048)
 	if err != nil {
@@ -50,15 +48,6 @@ func generateCertificate(certFile, keyFile string, fingerprint *string, notBefor
 	derBytes, err := x509.CreateCertificate(rand.Reader, &template, &template, &priv.PublicKey, priv)
 	if err != nil {
 		return err
-	}
-
-	shaSum := sha256.Sum256(derBytes)
-	*fingerprint = ""
-	for i, b := range shaSum {
-		if i > 0 {
-			*fingerprint += ":"
-		}
-		*fingerprint += fmt.Sprintf("%02X", b)
 	}
 
 	certOut, err := os.Create(certFile)
