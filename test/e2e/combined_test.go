@@ -4,17 +4,35 @@ package e2e
 
 import (
 	"fmt"
+	"os"
+	"path"
 	"strconv"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/hetznercloud/hcloud-go/v2/hcloud/exp/kit/sshutil"
 )
 
 func TestCombined(t *testing.T) {
 	// combined tests combine multiple resources and can thus not be run in parallel
+	priv, pub, err := sshutil.GenerateKeyPair()
+	require.NoError(t, err)
+
+	keyDir := t.TempDir()
+	pubKeyPath, privKeyPath := path.Join(keyDir, "id_ed25519.pub"), path.Join(keyDir, "id_ed25519")
+	err = os.WriteFile(privKeyPath, priv, 0600)
+	require.NoError(t, err)
+	err = os.WriteFile(pubKeyPath, pub, 0644)
+	require.NoError(t, err)
+
+	sshKeyName := withSuffix("test-ssh-key")
+	sshKeyID, err := createSSHKey(t, sshKeyName, "--public-key-from-file", pubKeyPath)
+	require.NoError(t, err)
+
 	serverName := withSuffix("test-server")
-	serverID, err := createServer(t, serverName, TestServerType, TestImage)
+	serverID, err := createServer(t, serverName, TestServerType, TestImage, "--ssh-key", strconv.FormatInt(sshKeyID, 10))
 	require.NoError(t, err)
 
 	firewallName := withSuffix("test-firewall")
@@ -105,9 +123,28 @@ func TestCombined(t *testing.T) {
 		})
 	})
 
+	t.Run("ssh", func(t *testing.T) {
+		out, err := runCommand(
+			t, "server", "ssh", strconv.FormatInt(serverID, 10),
+			"-i", privKeyPath,
+			"-o", "StrictHostKeyChecking=no",
+			"-o", "UserKnownHostsFile=/dev/null",
+			"-o", "IdentitiesOnly=yes",
+			"--", "exit",
+		)
+		require.NoError(t, err)
+		assert.Empty(t, out)
+	})
+
 	t.Run("delete-server", func(t *testing.T) {
 		out, err := runCommand(t, "server", "delete", strconv.FormatInt(serverID, 10))
 		require.NoError(t, err)
 		assert.Equal(t, fmt.Sprintf("Server %d deleted\n", serverID), out)
+	})
+
+	t.Run("delete-ssh-key", func(t *testing.T) {
+		out, err := runCommand(t, "ssh-key", "delete", strconv.FormatInt(sshKeyID, 10))
+		require.NoError(t, err)
+		assert.Equal(t, fmt.Sprintf("SSH Key %d deleted\n", sshKeyID), out)
 	})
 }
