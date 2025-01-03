@@ -4,8 +4,6 @@ package e2e
 
 import (
 	"context"
-	"crypto/ed25519"
-	"crypto/rand"
 	"fmt"
 	"strconv"
 	"testing"
@@ -13,9 +11,9 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"github.com/swaggest/assertjson"
-	"golang.org/x/crypto/ssh"
 
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud/exp/kit/sshutil"
 )
 
 func TestSSHKey(t *testing.T) {
@@ -150,17 +148,17 @@ func createSSHKey(t *testing.T, name string, args ...string) (int64, error) {
 }
 
 func generateSSHKey() (string, string, error) {
-	pub, _, err := ed25519.GenerateKey(rand.Reader)
+	// ed25519 SSH key
+	_, pub, err := sshutil.GenerateKeyPair()
 	if err != nil {
 		return "", "", err
 	}
 
-	pubKey, err := ssh.NewPublicKey(pub)
+	// MD5 fingerprint
+	fingerprint, err := sshutil.GetPublicKeyFingerprint(pub)
 	if err != nil {
 		return "", "", err
 	}
 
-	fingerprint := ssh.FingerprintLegacyMD5(pubKey)
-	pubKeyBytes := ssh.MarshalAuthorizedKey(pubKey)
-	return string(pubKeyBytes), fingerprint, nil
+	return string(pub), fingerprint, nil
 }
