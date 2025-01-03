@@ -30,6 +30,7 @@ func TestCreateManaged(t *testing.T) {
 	fx.Client.CertificateClient.EXPECT().
 		CreateCertificate(gomock.Any(), hcloud.CertificateCreateOpts{
 			Name:        "test",
+			Labels:      map[string]string{"foo": "bar"},
 			Type:        hcloud.CertificateTypeManaged,
 			DomainNames: []string{"example.com"},
 		}).
@@ -53,7 +54,7 @@ func TestCreateManaged(t *testing.T) {
 			DomainNames: []string{"example.com"},
 		}, nil, nil)
 
-	out, errOut, err := fx.Run(cmd, []string{"--name", "test", "--type", "managed", "--domain", "example.com"})
+	out, errOut, err := fx.Run(cmd, []string{"--name", "test", "--type", "managed", "--domain", "example.com", "--label", "foo=bar"})
 
 	expOut := "Certificate 123 created\n"
 
@@ -72,6 +73,7 @@ func TestCreateManagedJSON(t *testing.T) {
 	fx.Client.CertificateClient.EXPECT().
 		CreateCertificate(gomock.Any(), hcloud.CertificateCreateOpts{
 			Name:        "test",
+			Labels:      map[string]string{},
 			Type:        hcloud.CertificateTypeManaged,
 			DomainNames: []string{"example.com"},
 		}).
@@ -141,6 +143,7 @@ func TestCreateUploaded(t *testing.T) {
 	fx.Client.CertificateClient.EXPECT().
 		Create(gomock.Any(), hcloud.CertificateCreateOpts{
 			Name:        "test",
+			Labels:      map[string]string{"foo": "bar"},
 			Type:        hcloud.CertificateTypeUploaded,
 			Certificate: "certificate file content",
 			PrivateKey:  "key file content",
@@ -151,7 +154,7 @@ func TestCreateUploaded(t *testing.T) {
 			Type: hcloud.CertificateTypeUploaded,
 		}, nil, nil)
 
-	out, errOut, err := fx.Run(cmd, []string{"--name", "test", "--key-file", "testdata/key.pem", "--cert-file", "testdata/cert.pem"})
+	out, errOut, err := fx.Run(cmd, []string{"--name", "test", "--key-file", "testdata/key.pem", "--cert-file", "testdata/cert.pem", "--label", "foo=bar"})
 
 	expOut := "Certificate 123 created\n"
 
@@ -170,6 +173,7 @@ func TestCreateUploadedJSON(t *testing.T) {
 	fx.Client.CertificateClient.EXPECT().
 		Create(gomock.Any(), hcloud.CertificateCreateOpts{
 			Name:        "test",
+			Labels:      map[string]string{},
 			Type:        hcloud.CertificateTypeUploaded,
 			Certificate: "certificate file content",
 			PrivateKey:  "key file content",

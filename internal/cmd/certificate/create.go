@@ -24,6 +24,8 @@ var CreateCmd = base.CreateCmd{
 		cmd.Flags().String("name", "", "Certificate name (required)")
 		_ = cmd.MarkFlagRequired("name")
 
+		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
+
 		cmd.Flags().StringP("type", "t", string(hcloud.CertificateTypeUploaded),
 			fmt.Sprintf("Type of certificate to create. Valid choices: %v, %v",
 				hcloud.CertificateTypeUploaded, hcloud.CertificateTypeManaged))
@@ -61,6 +63,7 @@ var CreateCmd = base.CreateCmd{
 func createUploaded(s state.State, cmd *cobra.Command) (*hcloud.Certificate, error) {
 	var (
 		name              string
+		labels            map[string]string
 		certFile, keyFile string
 		certPEM, keyPEM   []byte
 		cert              *hcloud.Certificate
@@ -72,6 +75,9 @@ func createUploaded(s state.State, cmd *cobra.Command) (*hcloud.Certificate, err
 		return nil, err
 	}
 	if name, err = cmd.Flags().GetString("name"); err != nil {
+		return nil, err
+	}
+	if labels, err = cmd.Flags().GetStringToString("label"); err != nil {
 		return nil, err
 	}
 	if certFile, err = cmd.Flags().GetString("cert-file"); err != nil {
@@ -90,6 +96,7 @@ func createUploaded(s state.State, cmd *cobra.Command) (*hcloud.Certificate, err
 
 	createOpts := hcloud.CertificateCreateOpts{
 		Name:        name,
+		Labels:      labels,
 		Type:        hcloud.CertificateTypeUploaded,
 		Certificate: string(certPEM),
 		PrivateKey:  string(keyPEM),
@@ -105,6 +112,7 @@ func createUploaded(s state.State, cmd *cobra.Command) (*hcloud.Certificate, err
 func createManaged(s state.State, cmd *cobra.Command) (*hcloud.Certificate, error) {
 	var (
 		name    string
+		labels  map[string]string
 		domains []string
 		res     hcloud.CertificateCreateResult
 		err     error
@@ -119,9 +127,13 @@ func createManaged(s state.State, cmd *cobra.Command) (*hcloud.Certificate, erro
 	if domains, err = cmd.Flags().GetStringSlice("domain"); err != nil {
 		return nil, nil
 	}
+	if labels, err = cmd.Flags().GetStringToString("label"); err != nil {
+		return nil, err
+	}
 
 	createOpts := hcloud.CertificateCreateOpts{
 		Name:        name,
+		Labels:      labels,
 		Type:        hcloud.CertificateTypeManaged,
 		DomainNames: domains,
 	}
