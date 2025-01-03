@@ -8,6 +8,7 @@ import (
 	"os"
 	"path"
 	"strconv"
+	"strings"
 	"testing"
 	"time"
 
@@ -31,7 +32,7 @@ func TestCertificate(t *testing.T) {
 		require.NoError(t, err)
 
 		certName := withSuffix("test-certificate-uploaded")
-		certID, err := createCertificate(t, certName, "--cert-file", certPath, "--key-file", keyPath)
+		certID, err := createCertificate(t, certName, hcloud.CertificateTypeUploaded, "--cert-file", certPath, "--key-file", keyPath)
 		require.NoError(t, err)
 
 		runCertificateTestSuite(t, certName, certID, hcloud.CertificateTypeUploaded, "example.com")
@@ -47,7 +48,7 @@ func TestCertificate(t *testing.T) {
 		certDomain = fmt.Sprintf("%s.%s", randomHex(4), certDomain)
 
 		certName := withSuffix("test-certificate-managed")
-		certID, err := createCertificate(t, certName, "--type", "managed", "--domain", certDomain)
+		certID, err := createCertificate(t, certName, hcloud.CertificateTypeManaged, "--type", "managed", "--domain", certDomain)
 		require.NoError(t, err)
 
 		runCertificateTestSuite(t, certName, certID, hcloud.CertificateTypeManaged, certDomain)
@@ -75,12 +76,6 @@ func runCertificateTestSuite(t *testing.T, certName string, certID int64, certTy
 			require.NoError(t, err)
 			assert.Equal(t, fmt.Sprintf("Label(s) baz added to certificate %d\n", certID), out)
 		})
-
-		t.Run("HC-Staging-CA", func(t *testing.T) {
-			out, err := runCommand(t, "certificate", "add-label", strconv.FormatInt(certID, 10), "HC-Use-Staging-CA=true")
-			require.NoError(t, err)
-			assert.Equal(t, fmt.Sprintf("Label(s) HC-Use-Staging-CA added to certificate %d\n", certID), out)
-		})
 	})
 
 	t.Run("update-name", func(t *testing.T) {
@@ -101,6 +96,12 @@ func runCertificateTestSuite(t *testing.T, certName string, certID int64, certTy
 		out, err := runCommand(t, "certificate", "list", "-o=columns=id,name,labels,type,created,"+
 			"not_valid_before,not_valid_after,domain_names,fingerprint,issuance_status,renewal_status,age")
 		require.NoError(t, err)
+
+		labels := []string{"foo=bar"}
+		if certType == hcloud.CertificateTypeManaged {
+			labels = append([]string{"HC-Use-Staging-CA=true"}, labels...)
+		}
+
 		assert.Regexp(t,
 			NewRegex().Start().
 				SeparatedByWhitespace(
@@ -109,7 +110,7 @@ func runCertificateTestSuite(t *testing.T, certName string, certID int64, certTy
 				).Newline().
 				Lit(strconv.FormatInt(certID, 10)).Whitespace().
 				Lit(certName).Whitespace().
-				Lit("HC-Use-Staging-CA=true, foo=bar").Whitespace().
+				Lit(strings.Join(labels, ", ")).Whitespace().
 				Lit(string(certType)).Whitespace().
 				UnixDate().Whitespace().
 				UnixDate().Whitespace().
@@ -147,8 +148,13 @@ func runCertificateTestSuite(t *testing.T, certName string, certID int64, certTy
 		regex = regex.
 			Lit("Domain names:").Newline().
 			Lit("  - ").Lit(domainName).Newline().
-			Lit("Labels:").Newline().
-			Lit("  HC-Use-Staging-CA:").Whitespace().Lit("true").Newline().
+			Lit("Labels:").Newline()
+
+		if certType == hcloud.CertificateTypeManaged {
+			regex = regex.Lit("  HC-Use-Staging-CA:").Whitespace().Lit("true").Newline()
+		}
+
+		regex = regex.
 			Lit("  foo:").Whitespace().Lit("bar").Newline().
 			Lit("Used By:").Newline().
 			Lit("  Certificate unused").Newline().
@@ -161,7 +167,7 @@ func runCertificateTestSuite(t *testing.T, certName string, certID int64, certTy
 		out, err := runCommand(t, "certificate", "retry", strconv.FormatInt(certID, 10))
 		assert.Empty(t, out)
 		require.Error(t, err)
-		assert.Regexp(t, `certificate not retryable \(unsupported_error, [0-9a-f]{16}\)`, err.Error())
+		assert.Regexp(t, `certificate not retryable \(unsupported_error, [0-9a-f]+\)`, err.Error())
 	})
 
 	t.Run("delete", func(t *testing.T) {
@@ -171,13 +177,17 @@ func runCertificateTestSuite(t *testing.T, certName string, certID int64, certTy
 	})
 }
 
-func createCertificate(t *testing.T, name string, args ...string) (int64, error) {
+func createCertificate(t *testing.T, name string, certificateType hcloud.CertificateType, args ...string) (int64, error) {
 	t.Helper()
 	t.Cleanup(func() {
 		_, _ = client.Certificate.Delete(context.Background(), &hcloud.Certificate{Name: name})
 	})
 
-	out, err := runCommand(t, append([]string{"certificate", "create", "--name", name}, args...)...)
+	if certificateType == hcloud.CertificateTypeManaged {
+		args = append([]string{"--label", "HC-Use-Staging-CA=true"}, args...)
+	}
+
+	out, err := runCommand(t, append([]string{"certificate", "create", "--name", name, "--type", string(certificateType)}, args...)...)
 	if err != nil {
 		return 0, err
 	}
