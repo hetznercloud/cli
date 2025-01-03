@@ -55,12 +55,15 @@ func runCommand(t *testing.T, args ...string) (string, error) {
 	return buf.String(), err
 }
 
-func withSuffix(s string) string {
-	b := make([]byte, 4)
+func randomHex(n int) string {
+	b := make([]byte, n)
 	_, err := rand.Read(b)
 	if err != nil {
 		panic(err)
 	}
-	suffix := hex.EncodeToString(b)
-	return fmt.Sprintf("%s-%s", s, suffix)
+	return hex.EncodeToString(b)
+}
+
+func withSuffix(s string) string {
+	return fmt.Sprintf("%s-%s", s, randomHex(4))
 }

@@ -43,6 +43,9 @@ func TestCertificate(t *testing.T) {
 			t.Skip("Skipping because CERT_DOMAIN is not set")
 		}
 
+		// random subdomain
+		certDomain = fmt.Sprintf("%s.%s", randomHex(4), certDomain)
+
 		certName := withSuffix("test-certificate-managed")
 		certID, err := createCertificate(t, certName, "--type", "managed", "--domain", certDomain)
 		require.NoError(t, err)
@@ -72,6 +75,12 @@ func runCertificateTestSuite(t *testing.T, certName string, certID int64, certTy
 			require.NoError(t, err)
 			assert.Equal(t, fmt.Sprintf("Label(s) baz added to certificate %d\n", certID), out)
 		})
+
+		t.Run("HC-Staging-CA", func(t *testing.T) {
+			out, err := runCommand(t, "certificate", "add-label", strconv.FormatInt(certID, 10), "HC-Use-Staging-CA=true")
+			require.NoError(t, err)
+			assert.Equal(t, fmt.Sprintf("Label(s) HC-Use-Staging-CA added to certificate %d\n", certID), out)
+		})
 	})
 
 	t.Run("update-name", func(t *testing.T) {
@@ -100,7 +109,7 @@ func runCertificateTestSuite(t *testing.T, certName string, certID int64, certTy
 				).Newline().
 				Lit(strconv.FormatInt(certID, 10)).Whitespace().
 				Lit(certName).Whitespace().
-				Lit("foo=bar").Whitespace().
+				Lit("HC-Use-Staging-CA=true, foo=bar").Whitespace().
 				Lit(string(certType)).Whitespace().
 				UnixDate().Whitespace().
 				UnixDate().Whitespace().
@@ -139,6 +148,7 @@ func runCertificateTestSuite(t *testing.T, certName string, certID int64, certTy
 			Lit("Domain names:").Newline().
 			Lit("  - ").Lit(domainName).Newline().
 			Lit("Labels:").Newline().
+			Lit("  HC-Use-Staging-CA:").Whitespace().Lit("true").Newline().
 			Lit("  foo:").Whitespace().Lit("bar").Newline().
 			Lit("Used By:").Newline().
 			Lit("  Certificate unused").Newline().
