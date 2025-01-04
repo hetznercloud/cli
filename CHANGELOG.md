@@ -1,5 +1,16 @@
 # Changelog
 
+## [v1.50.0](https://github.com/hetznercloud/cli/releases/tag/v1.50.0)
+
+### Features
+
+- **certificate**: allow adding labels during create (#949)
+
+### Bug Fixes
+
+- display $ when the currency is USD (#933)
+- **network**: missing load_balancers property in schema
+
 ## [v1.49.0](https://github.com/hetznercloud/cli/releases/tag/v1.49.0)
 
 ### Features
