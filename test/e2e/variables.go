@@ -35,6 +35,9 @@ var (
 
 	// TestLocationName is the default location where we execute our end-to-end tests.
 	TestLocationName = getEnv("TEST_LOCATION", "nbg1")
+
+	// TestISOName is the default ISO used for testing
+	TestISOName = getEnv("TEST_ISO_NAME", "ubuntu-24.04-live-server-amd64.iso")
 )
 
 func getEnv(key, fallback string) string {
