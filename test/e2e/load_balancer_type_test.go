@@ -3,11 +3,15 @@
 package e2e
 
 import (
+	"context"
 	"encoding/json"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
 func TestLoadBalancerType(t *testing.T) {
@@ -33,9 +37,18 @@ func TestLoadBalancerType(t *testing.T) {
 		})
 
 		t.Run("json", func(t *testing.T) {
+			var schemas []schema.LoadBalancerType
+			lbts, err := client.LoadBalancerType.All(context.Background())
+			require.NoError(t, err)
+			for _, lbt := range lbts {
+				schemas = append(schemas, hcloud.SchemaFromLoadBalancerType(lbt))
+			}
+			expectedJson, err := json.Marshal(schemas)
+			require.NoError(t, err)
+
 			out, err := runCommand(t, "load-balancer-type", "list", "-o=json")
 			require.NoError(t, err)
-			assert.True(t, json.Valid([]byte(out)), "is valid JSON")
+			assert.JSONEq(t, string(expectedJson), out)
 		})
 	})
 
@@ -70,6 +83,17 @@ func TestLoadBalancerType(t *testing.T) {
 					).End(),
 				out,
 			)
+		})
+
+		t.Run("json", func(t *testing.T) {
+			lbt, _, err := client.LoadBalancerType.GetByName(context.Background(), TestLoadBalancerTypeName)
+			require.NoError(t, err)
+			expectedJson, err := json.Marshal(hcloud.SchemaFromLoadBalancerType(lbt))
+			require.NoError(t, err)
+
+			out, err := runCommand(t, "load-balancer-type", "describe", TestLoadBalancerTypeName, "-o=json")
+			require.NoError(t, err)
+			assert.JSONEq(t, string(expectedJson), out)
 		})
 	})
 }
