@@ -3,11 +3,15 @@
 package e2e
 
 import (
+	"context"
 	"encoding/json"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
 func TestISO(t *testing.T) {
@@ -32,9 +36,18 @@ func TestISO(t *testing.T) {
 		})
 
 		t.Run("json", func(t *testing.T) {
+			var schemas []schema.ISO
+			isos, err := client.ISO.All(context.Background())
+			require.NoError(t, err)
+			for _, iso := range isos {
+				schemas = append(schemas, hcloud.SchemaFromISO(iso))
+			}
+			expectedJson, err := json.Marshal(schemas)
+			require.NoError(t, err)
+
 			out, err := runCommand(t, "iso", "list", "-o=json")
 			require.NoError(t, err)
-			assert.True(t, json.Valid([]byte(out)), "is valid JSON")
+			assert.JSONEq(t, string(expectedJson), out)
 		})
 	})
 
@@ -59,6 +72,17 @@ func TestISO(t *testing.T) {
 					End(),
 				out,
 			)
+		})
+
+		t.Run("json", func(t *testing.T) {
+			iso, _, err := client.ISO.GetByName(context.Background(), TestISOName)
+			require.NoError(t, err)
+			expectedJson, err := json.Marshal(hcloud.SchemaFromISO(iso))
+			require.NoError(t, err)
+
+			out, err := runCommand(t, "iso", "describe", TestISOName, "-o=json")
+			require.NoError(t, err)
+			assert.JSONEq(t, string(expectedJson), out)
 		})
 	})
 }
