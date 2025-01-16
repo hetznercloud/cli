@@ -86,7 +86,7 @@ func (r RegexBuilder) AnyString() RegexBuilder {
 }
 
 func (r RegexBuilder) Identifier() RegexBuilder {
-	return r.Raw(`[a-zA-Z0-9](?:[a-zA-Z0-9\-.]*[a-zA-Z0-9])?`)
+	return r.Raw(`[a-zA-Z0-9](?:[a-zA-Z0-9\-_.]*[a-zA-Z0-9])?`)
 }
 
 func (r RegexBuilder) Age() RegexBuilder {
