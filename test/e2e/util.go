@@ -117,6 +117,14 @@ func (r RegexBuilder) LocationName() RegexBuilder {
 	return r.Raw(`[a-z]{3}[0-9]*`)
 }
 
+func (r RegexBuilder) Price() RegexBuilder {
+	return r.Raw(`[€$] [0-9]+\.[0-9]+`)
+}
+
+func (r RegexBuilder) IBytes() RegexBuilder {
+	return r.Raw(`[0-9]+(?:\.[0-9]+)? (?:B|[KMGTPE]iB)`)
+}
+
 func (r RegexBuilder) CountryCode() RegexBuilder {
 	return r.Raw(`[A-Z]{2}`)
 }
