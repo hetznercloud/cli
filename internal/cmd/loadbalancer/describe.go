@@ -154,7 +154,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.LoadBalancer]{
 		if len(loadBalancer.Labels) == 0 {
 			cmd.Print("  No labels\n")
 		} else {
-			for key, value := range loadBalancer.Labels {
+			for key, value := range util.IterateInOrder(loadBalancer.Labels) {
 				cmd.Printf("  %s: %s\n", key, value)
 			}
 		}

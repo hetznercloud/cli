@@ -46,7 +46,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Certificate]{
 		if len(cert.Labels) == 0 {
 			cmd.Print("  No labels\n")
 		} else {
-			for key, value := range cert.Labels {
+			for key, value := range util.IterateInOrder(cert.Labels) {
 				cmd.Printf("  %s:\t%s\n", key, value)
 			}
 		}

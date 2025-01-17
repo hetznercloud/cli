@@ -53,7 +53,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.PrimaryIP]{
 		if len(primaryIP.Labels) == 0 {
 			cmd.Print("  No labels\n")
 		} else {
-			for key, value := range primaryIP.Labels {
+			for key, value := range util.IterateInOrder(primaryIP.Labels) {
 				cmd.Printf("  %s: %s\n", key, value)
 			}
 		}
