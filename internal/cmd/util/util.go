@@ -5,8 +5,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"iter"
+	"maps"
 	"reflect"
-	"sort"
+	"slices"
 	"strings"
 	"text/template"
 	"time"
@@ -148,13 +150,7 @@ func SplitLabelVars(label string) (string, string) {
 
 func LabelsToString(labels map[string]string) string {
 	var labelsString []string
-	keys := make([]string, 0, len(labels))
-	for key := range labels {
-		keys = append(keys, key)
-	}
-	sort.Strings(keys)
-	for _, key := range keys {
-		value := labels[key]
+	for key, value := range IterateInOrder(labels) {
 		if value == "" {
 			labelsString = append(labelsString, key)
 		} else {
@@ -367,5 +363,17 @@ func ToStringSliceDelimited(val any) []string {
 		return strings.Split(v, ",")
 	default:
 		return AnyToStringSlice(val)
+	}
+}
+
+// IterateInOrder returns an iterator that iterates over the map in order of the keys.
+func IterateInOrder[M ~map[K]V, K cmp.Ordered, V any](m M) iter.Seq2[K, V] {
+	keys := slices.Sorted(maps.Keys(m))
+	return func(yield func(K, V) bool) {
+		for _, k := range keys {
+			if !yield(k, m[k]) {
+				return
+			}
+		}
 	}
 }

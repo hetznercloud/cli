@@ -62,7 +62,7 @@ var DescribeCmd = base.DescribeCmd{
 		if len(floatingIP.Labels) == 0 {
 			cmd.Print("  No labels\n")
 		} else {
-			for key, value := range floatingIP.Labels {
+			for key, value := range util.IterateInOrder(floatingIP.Labels) {
 				cmd.Printf("  %s: %s\n", key, value)
 			}
 		}

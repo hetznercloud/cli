@@ -186,7 +186,7 @@ var DescribeCmd = base.DescribeCmd{
 		if len(server.Labels) == 0 {
 			cmd.Print("  No labels\n")
 		} else {
-			for key, value := range server.Labels {
+			for key, value := range util.IterateInOrder(server.Labels) {
 				cmd.Printf("  %s: %s\n", key, value)
 			}
 		}

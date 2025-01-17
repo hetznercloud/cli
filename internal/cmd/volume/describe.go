@@ -53,7 +53,7 @@ var DescribeCmd = base.DescribeCmd{
 		if len(volume.Labels) == 0 {
 			cmd.Print("  No labels\n")
 		} else {
-			for key, value := range volume.Labels {
+			for key, value := range util.IterateInOrder(volume.Labels) {
 				cmd.Printf("  %s: %s\n", key, value)
 			}
 		}

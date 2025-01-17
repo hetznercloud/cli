@@ -74,7 +74,7 @@ var DescribeCmd = base.DescribeCmd{
 		if len(image.Labels) == 0 {
 			cmd.Print("  No labels\n")
 		} else {
-			for key, value := range image.Labels {
+			for key, value := range util.IterateInOrder(image.Labels) {
 				cmd.Printf("  %s: %s\n", key, value)
 			}
 		}
