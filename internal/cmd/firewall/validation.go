@@ -3,6 +3,9 @@ package firewall
 import (
 	"fmt"
 	"net"
+	"reflect"
+
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 func ValidateFirewallIP(ip string) (*net.IPNet, error) {
@@ -15,4 +18,11 @@ func ValidateFirewallIP(ip string) (*net.IPNet, error) {
 	}
 
 	return n, nil
+}
+
+func EqualFirewallRule(a, b hcloud.FirewallRule) bool {
+	a.Description = nil
+	b.Description = nil
+
+	return reflect.DeepEqual(a, b)
 }
