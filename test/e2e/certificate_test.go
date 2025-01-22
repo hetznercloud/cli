@@ -16,6 +16,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud/exp/kit/randutil"
 )
 
 const fingerprintRegex = `[0-9A-F]{2}(:[0-9A-F]{2}){31}`
@@ -45,7 +46,7 @@ func TestCertificate(t *testing.T) {
 		}
 
 		// random subdomain
-		certDomain = fmt.Sprintf("%s.%s", randomHex(4), certDomain)
+		certDomain = fmt.Sprintf("%s.%s", randutil.GenerateID(), certDomain)
 
 		certName := withSuffix("test-certificate-managed")
 		certID, err := createCertificate(t, certName, hcloud.CertificateTypeManaged, "--type", "managed", "--domain", certDomain)
