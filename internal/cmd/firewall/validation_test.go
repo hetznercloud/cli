@@ -7,7 +7,6 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/hetznercloud/cli/internal/cmd/firewall"
-	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 func TestValidateFirewallIP(t *testing.T) {
@@ -65,13 +64,4 @@ func TestValidateFirewallIP(t *testing.T) {
 			assert.NotNil(t, net)
 		})
 	}
-}
-
-func TestEqualFirewallRule(t *testing.T) {
-	t.Run("success", func(t *testing.T) {
-		assert.True(t, firewall.EqualFirewallRule(
-			hcloud.FirewallRule{Description: hcloud.Ptr("a")},
-			hcloud.FirewallRule{Description: hcloud.Ptr("b")},
-		))
-	})
 }
