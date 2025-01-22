@@ -4,8 +4,6 @@ package e2e
 
 import (
 	"bytes"
-	"crypto/rand"
-	"encoding/hex"
 	"fmt"
 	"os"
 	"testing"
@@ -16,6 +14,7 @@ import (
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/cli/internal/state/config"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud/exp/kit/randutil"
 )
 
 var client = hcloud.NewClient(hcloud.WithToken(os.Getenv("HCLOUD_TOKEN")))
@@ -55,15 +54,6 @@ func runCommand(t *testing.T, args ...string) (string, error) {
 	return buf.String(), err
 }
 
-func randomHex(n int) string {
-	b := make([]byte, n)
-	_, err := rand.Read(b)
-	if err != nil {
-		panic(err)
-	}
-	return hex.EncodeToString(b)
-}
-
 func withSuffix(s string) string {
-	return fmt.Sprintf("%s-%s", s, randomHex(4))
+	return fmt.Sprintf("%s-%s", s, randutil.GenerateID())
 }
