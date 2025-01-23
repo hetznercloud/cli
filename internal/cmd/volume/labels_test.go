@@ -19,11 +19,13 @@ func TestLabelAdd(t *testing.T) {
 	cmd := volume.LabelCmds.AddCobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
+	vol := &hcloud.Volume{ID: 123}
+
 	fx.Client.VolumeClient.EXPECT().
 		Get(gomock.Any(), "123").
-		Return(&hcloud.Volume{ID: 123}, nil, nil)
+		Return(vol, nil, nil)
 	fx.Client.VolumeClient.EXPECT().
-		Update(gomock.Any(), &hcloud.Volume{ID: 123}, hcloud.VolumeUpdateOpts{
+		Update(gomock.Any(), vol, hcloud.VolumeUpdateOpts{
 			Labels: map[string]string{
 				"key": "value",
 			},
@@ -45,16 +47,18 @@ func TestLabelRemove(t *testing.T) {
 	cmd := volume.LabelCmds.RemoveCobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
+	vol := &hcloud.Volume{
+		ID: 123,
+		Labels: map[string]string{
+			"key": "value",
+		},
+	}
+
 	fx.Client.VolumeClient.EXPECT().
 		Get(gomock.Any(), "123").
-		Return(&hcloud.Volume{
-			ID: 123,
-			Labels: map[string]string{
-				"key": "value",
-			},
-		}, nil, nil)
+		Return(vol, nil, nil)
 	fx.Client.VolumeClient.EXPECT().
-		Update(gomock.Any(), &hcloud.Volume{ID: 123}, hcloud.VolumeUpdateOpts{
+		Update(gomock.Any(), vol, hcloud.VolumeUpdateOpts{
 			Labels: make(map[string]string),
 		})
 

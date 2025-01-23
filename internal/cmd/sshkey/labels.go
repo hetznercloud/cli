@@ -2,6 +2,7 @@ package sshkey
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/hcapi2"
@@ -15,21 +16,30 @@ var LabelCmds = base.LabelCmds{
 	ShortDescriptionRemove: "Remove a label from a SSH Key",
 	NameSuggestions:        func(c hcapi2.Client) func() []string { return c.SSHKey().Names },
 	LabelKeySuggestions:    func(c hcapi2.Client) func(idOrName string) []string { return c.SSHKey().LabelKeys },
-	FetchLabels: func(s state.State, idOrName string) (map[string]string, int64, error) {
+	Fetch: func(s state.State, idOrName string) (any, error) {
 		sshKey, _, err := s.Client().SSHKey().Get(s, idOrName)
 		if err != nil {
-			return nil, 0, err
+			return nil, err
 		}
 		if sshKey == nil {
-			return nil, 0, fmt.Errorf("ssh key not found: %s", idOrName)
+			return nil, fmt.Errorf("ssh key not found: %s", idOrName)
 		}
-		return sshKey.Labels, sshKey.ID, nil
+		return sshKey, nil
 	},
-	SetLabels: func(s state.State, id int64, labels map[string]string) error {
+	SetLabels: func(s state.State, resource any, labels map[string]string) error {
+		sshKey := resource.(*hcloud.SSHKey)
 		opts := hcloud.SSHKeyUpdateOpts{
 			Labels: labels,
 		}
-		_, _, err := s.Client().SSHKey().Update(s, &hcloud.SSHKey{ID: id}, opts)
+		_, _, err := s.Client().SSHKey().Update(s, sshKey, opts)
 		return err
+	},
+	GetLabels: func(resource any) map[string]string {
+		sshKey := resource.(*hcloud.SSHKey)
+		return sshKey.Labels
+	},
+	GetIDOrName: func(resource any) string {
+		sshKey := resource.(*hcloud.SSHKey)
+		return strconv.FormatInt(sshKey.ID, 10)
 	},
 }

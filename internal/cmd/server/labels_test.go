@@ -72,16 +72,18 @@ func TestLabelRemove(t *testing.T) {
 	cmd := server.LabelCmds.RemoveCobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
+	srv := &hcloud.Server{
+		ID: 123,
+		Labels: map[string]string{
+			"key": "value",
+		},
+	}
+
 	fx.Client.ServerClient.EXPECT().
 		Get(gomock.Any(), "123").
-		Return(&hcloud.Server{
-			ID: 123,
-			Labels: map[string]string{
-				"key": "value",
-			},
-		}, nil, nil)
+		Return(srv, nil, nil)
 	fx.Client.ServerClient.EXPECT().
-		Update(gomock.Any(), &hcloud.Server{ID: 123}, hcloud.ServerUpdateOpts{
+		Update(gomock.Any(), srv, hcloud.ServerUpdateOpts{
 			Labels: make(map[string]string),
 		})
 
@@ -101,18 +103,20 @@ func TestMultiLabelRemove(t *testing.T) {
 	cmd := server.LabelCmds.RemoveCobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
+	srv := &hcloud.Server{
+		ID: 123,
+		Labels: map[string]string{
+			"key": "value",
+			"foo": "bar",
+			"baz": "qux",
+		},
+	}
+
 	fx.Client.ServerClient.EXPECT().
 		Get(gomock.Any(), "123").
-		Return(&hcloud.Server{
-			ID: 123,
-			Labels: map[string]string{
-				"key": "value",
-				"foo": "bar",
-				"baz": "qux",
-			},
-		}, nil, nil)
+		Return(srv, nil, nil)
 	fx.Client.ServerClient.EXPECT().
-		Update(gomock.Any(), &hcloud.Server{ID: 123}, hcloud.ServerUpdateOpts{
+		Update(gomock.Any(), srv, hcloud.ServerUpdateOpts{
 			Labels: map[string]string{
 				"key": "value",
 			},

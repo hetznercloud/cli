@@ -45,16 +45,18 @@ func TestLabelRemove(t *testing.T) {
 	cmd := image.LabelCmds.RemoveCobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
+	img := &hcloud.Image{
+		ID: 123,
+		Labels: map[string]string{
+			"key": "value",
+		},
+	}
+
 	fx.Client.ImageClient.EXPECT().
 		GetByID(gomock.Any(), int64(123)).
-		Return(&hcloud.Image{
-			ID: 123,
-			Labels: map[string]string{
-				"key": "value",
-			},
-		}, nil, nil)
+		Return(img, nil, nil)
 	fx.Client.ImageClient.EXPECT().
-		Update(gomock.Any(), &hcloud.Image{ID: 123}, hcloud.ImageUpdateOpts{
+		Update(gomock.Any(), img, hcloud.ImageUpdateOpts{
 			Labels: make(map[string]string),
 		})
 

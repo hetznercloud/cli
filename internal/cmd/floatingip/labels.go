@@ -2,6 +2,7 @@ package floatingip
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/hcapi2"
@@ -15,21 +16,30 @@ var LabelCmds = base.LabelCmds{
 	ShortDescriptionRemove: "Remove a label from an Floating IP",
 	NameSuggestions:        func(c hcapi2.Client) func() []string { return c.FloatingIP().Names },
 	LabelKeySuggestions:    func(c hcapi2.Client) func(idOrName string) []string { return c.FloatingIP().LabelKeys },
-	FetchLabels: func(s state.State, idOrName string) (map[string]string, int64, error) {
+	Fetch: func(s state.State, idOrName string) (any, error) {
 		floatingIP, _, err := s.Client().FloatingIP().Get(s, idOrName)
 		if err != nil {
-			return nil, 0, err
+			return nil, err
 		}
 		if floatingIP == nil {
-			return nil, 0, fmt.Errorf("floating IP not found: %s", idOrName)
+			return nil, fmt.Errorf("floating IP not found: %s", idOrName)
 		}
-		return floatingIP.Labels, floatingIP.ID, nil
+		return floatingIP, nil
 	},
-	SetLabels: func(s state.State, id int64, labels map[string]string) error {
+	SetLabels: func(s state.State, resource any, labels map[string]string) error {
+		floatingIP := resource.(*hcloud.FloatingIP)
 		opts := hcloud.FloatingIPUpdateOpts{
 			Labels: labels,
 		}
-		_, _, err := s.Client().FloatingIP().Update(s, &hcloud.FloatingIP{ID: id}, opts)
+		_, _, err := s.Client().FloatingIP().Update(s, floatingIP, opts)
 		return err
+	},
+	GetLabels: func(resource any) map[string]string {
+		floatingIP := resource.(*hcloud.FloatingIP)
+		return floatingIP.Labels
+	},
+	GetIDOrName: func(resource any) string {
+		floatingIP := resource.(*hcloud.FloatingIP)
+		return strconv.FormatInt(floatingIP.ID, 10)
 	},
 }

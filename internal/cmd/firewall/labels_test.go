@@ -45,16 +45,18 @@ func TestLabelRemove(t *testing.T) {
 	cmd := firewall.LabelCmds.RemoveCobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
+	fw := &hcloud.Firewall{
+		ID: 123,
+		Labels: map[string]string{
+			"key": "value",
+		},
+	}
+
 	fx.Client.FirewallClient.EXPECT().
 		Get(gomock.Any(), "123").
-		Return(&hcloud.Firewall{
-			ID: 123,
-			Labels: map[string]string{
-				"key": "value",
-			},
-		}, nil, nil)
+		Return(fw, nil, nil)
 	fx.Client.FirewallClient.EXPECT().
-		Update(gomock.Any(), &hcloud.Firewall{ID: 123}, hcloud.FirewallUpdateOpts{
+		Update(gomock.Any(), fw, hcloud.FirewallUpdateOpts{
 			Labels: make(map[string]string),
 		})
 

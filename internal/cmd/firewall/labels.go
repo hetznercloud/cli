@@ -2,6 +2,7 @@ package firewall
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/hcapi2"
@@ -15,21 +16,30 @@ var LabelCmds = base.LabelCmds{
 	ShortDescriptionRemove: "Remove a label from an firewall",
 	NameSuggestions:        func(c hcapi2.Client) func() []string { return c.Firewall().Names },
 	LabelKeySuggestions:    func(c hcapi2.Client) func(idOrName string) []string { return c.Firewall().LabelKeys },
-	FetchLabels: func(s state.State, idOrName string) (map[string]string, int64, error) {
+	Fetch: func(s state.State, idOrName string) (any, error) {
 		firewall, _, err := s.Client().Firewall().Get(s, idOrName)
 		if err != nil {
-			return nil, 0, err
+			return nil, err
 		}
 		if firewall == nil {
-			return nil, 0, fmt.Errorf("firewall not found: %s", idOrName)
+			return nil, fmt.Errorf("firewall not found: %s", idOrName)
 		}
-		return firewall.Labels, firewall.ID, nil
+		return firewall, nil
 	},
-	SetLabels: func(s state.State, id int64, labels map[string]string) error {
+	SetLabels: func(s state.State, resource any, labels map[string]string) error {
+		firewall := resource.(*hcloud.Firewall)
 		opts := hcloud.FirewallUpdateOpts{
 			Labels: labels,
 		}
-		_, _, err := s.Client().Firewall().Update(s, &hcloud.Firewall{ID: id}, opts)
+		_, _, err := s.Client().Firewall().Update(s, firewall, opts)
 		return err
+	},
+	GetLabels: func(resource any) map[string]string {
+		firewall := resource.(*hcloud.Firewall)
+		return firewall.Labels
+	},
+	GetIDOrName: func(resource any) string {
+		firewall := resource.(*hcloud.Firewall)
+		return strconv.FormatInt(firewall.ID, 10)
 	},
 }
