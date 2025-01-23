@@ -2,6 +2,7 @@ package firewall
 
 import (
 	"fmt"
+	"reflect"
 
 	"github.com/spf13/cobra"
 
@@ -55,7 +56,7 @@ var DeleteRuleCmd = base.Cmd{
 
 		var rules = make([]hcloud.FirewallRule, 0)
 		for _, existingRule := range firewall.Rules {
-			if !EqualFirewallRule(existingRule, *rule) {
+			if !reflect.DeepEqual(existingRule, *rule) {
 				rules = append(rules, existingRule)
 			}
 		}
