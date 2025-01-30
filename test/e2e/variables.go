@@ -37,7 +37,7 @@ var (
 	TestLocationName = getEnv("TEST_LOCATION", "nbg1")
 
 	// TestISOName is the default ISO used for testing
-	TestISOName = getEnv("TEST_ISO_NAME", "ubuntu-24.04-live-server-amd64.iso")
+	TestISOName = getEnv("TEST_ISO_NAME", "SW_DVD9_Win_Server_STD_CORE_2022__64Bit_German_DC_STD_MLF_X22-74292.iso")
 )
 
 func getEnv(key, fallback string) string {
