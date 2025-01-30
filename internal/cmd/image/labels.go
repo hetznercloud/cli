@@ -10,13 +10,13 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var LabelCmds = base.LabelCmds{
+var LabelCmds = base.LabelCmds[*hcloud.Image]{
 	ResourceNameSingular:   "image",
 	ShortDescriptionAdd:    "Add a label to an image",
 	ShortDescriptionRemove: "Remove a label from an image",
 	NameSuggestions:        func(c hcapi2.Client) func() []string { return c.Image().Names },
 	LabelKeySuggestions:    func(c hcapi2.Client) func(idOrName string) []string { return c.Image().LabelKeys },
-	Fetch: func(s state.State, idOrName string) (any, error) {
+	Fetch: func(s state.State, idOrName string) (*hcloud.Image, error) {
 		id, err := strconv.ParseInt(idOrName, 10, 64)
 		if err != nil {
 			return nil, fmt.Errorf("invalid snapshot or backup ID %q", idOrName)
@@ -30,20 +30,17 @@ var LabelCmds = base.LabelCmds{
 		}
 		return image, nil
 	},
-	SetLabels: func(s state.State, resource any, labels map[string]string) error {
-		image := resource.(*hcloud.Image)
+	SetLabels: func(s state.State, image *hcloud.Image, labels map[string]string) error {
 		opts := hcloud.ImageUpdateOpts{
 			Labels: labels,
 		}
 		_, _, err := s.Client().Image().Update(s, image, opts)
 		return err
 	},
-	GetLabels: func(resource any) map[string]string {
-		image := resource.(*hcloud.Image)
+	GetLabels: func(image *hcloud.Image) map[string]string {
 		return image.Labels
 	},
-	GetIDOrName: func(resource any) string {
-		image := resource.(*hcloud.Image)
+	GetIDOrName: func(image *hcloud.Image) string {
 		return strconv.FormatInt(image.ID, 10)
 	},
 }

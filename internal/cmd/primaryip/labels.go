@@ -10,13 +10,13 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var LabelCmds = base.LabelCmds{
+var LabelCmds = base.LabelCmds[*hcloud.PrimaryIP]{
 	ResourceNameSingular:   "primary-ip",
 	ShortDescriptionAdd:    "Add a label to a Primary IP",
 	ShortDescriptionRemove: "Remove a label from a Primary IP",
 	NameSuggestions:        func(c hcapi2.Client) func() []string { return c.PrimaryIP().Names },
 	LabelKeySuggestions:    func(c hcapi2.Client) func(idOrName string) []string { return c.PrimaryIP().LabelKeys },
-	Fetch: func(s state.State, idOrName string) (any, error) {
+	Fetch: func(s state.State, idOrName string) (*hcloud.PrimaryIP, error) {
 		primaryIP, _, err := s.Client().PrimaryIP().Get(s, idOrName)
 		if err != nil {
 			return nil, err
@@ -26,20 +26,17 @@ var LabelCmds = base.LabelCmds{
 		}
 		return primaryIP, nil
 	},
-	SetLabels: func(s state.State, resource any, labels map[string]string) error {
-		primaryIP := resource.(*hcloud.PrimaryIP)
+	SetLabels: func(s state.State, primaryIP *hcloud.PrimaryIP, labels map[string]string) error {
 		opts := hcloud.PrimaryIPUpdateOpts{
 			Labels: &labels,
 		}
 		_, _, err := s.Client().PrimaryIP().Update(s, primaryIP, opts)
 		return err
 	},
-	GetLabels: func(resource any) map[string]string {
-		primaryIP := resource.(*hcloud.PrimaryIP)
+	GetLabels: func(primaryIP *hcloud.PrimaryIP) map[string]string {
 		return primaryIP.Labels
 	},
-	GetIDOrName: func(resource any) string {
-		primaryIP := resource.(*hcloud.PrimaryIP)
+	GetIDOrName: func(primaryIP *hcloud.PrimaryIP) string {
 		return strconv.FormatInt(primaryIP.ID, 10)
 	},
 }

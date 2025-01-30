@@ -10,13 +10,13 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var LabelCmds = base.LabelCmds{
+var LabelCmds = base.LabelCmds[*hcloud.Server]{
 	ResourceNameSingular:   "server",
 	ShortDescriptionAdd:    "Add a label to a server",
 	ShortDescriptionRemove: "Remove a label from a server",
 	NameSuggestions:        func(c hcapi2.Client) func() []string { return c.Server().Names },
 	LabelKeySuggestions:    func(c hcapi2.Client) func(idOrName string) []string { return c.Server().LabelKeys },
-	Fetch: func(s state.State, idOrName string) (any, error) {
+	Fetch: func(s state.State, idOrName string) (*hcloud.Server, error) {
 		server, _, err := s.Client().Server().Get(s, idOrName)
 		if err != nil {
 			return nil, err
@@ -26,20 +26,17 @@ var LabelCmds = base.LabelCmds{
 		}
 		return server, nil
 	},
-	SetLabels: func(s state.State, resource any, labels map[string]string) error {
-		server := resource.(*hcloud.Server)
+	SetLabels: func(s state.State, server *hcloud.Server, labels map[string]string) error {
 		opts := hcloud.ServerUpdateOpts{
 			Labels: labels,
 		}
 		_, _, err := s.Client().Server().Update(s, server, opts)
 		return err
 	},
-	GetLabels: func(resource any) map[string]string {
-		server := resource.(*hcloud.Server)
+	GetLabels: func(server *hcloud.Server) map[string]string {
 		return server.Labels
 	},
-	GetIDOrName: func(resource any) string {
-		server := resource.(*hcloud.Server)
+	GetIDOrName: func(server *hcloud.Server) string {
 		return strconv.FormatInt(server.ID, 10)
 	},
 }

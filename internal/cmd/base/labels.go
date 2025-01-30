@@ -14,20 +14,20 @@ import (
 )
 
 // LabelCmds allows defining commands for adding labels to resources.
-type LabelCmds struct {
+type LabelCmds[T any] struct {
 	ResourceNameSingular   string
 	ShortDescriptionAdd    string
 	ShortDescriptionRemove string
 	NameSuggestions        func(client hcapi2.Client) func() []string
 	LabelKeySuggestions    func(client hcapi2.Client) func(idOrName string) []string
-	Fetch                  func(s state.State, idOrName string) (any, error)
-	SetLabels              func(s state.State, resource any, labels map[string]string) error
-	GetLabels              func(resource any) map[string]string
-	GetIDOrName            func(resource any) string
+	Fetch                  func(s state.State, idOrName string) (T, error)
+	SetLabels              func(s state.State, resource T, labels map[string]string) error
+	GetLabels              func(resource T) map[string]string
+	GetIDOrName            func(resource T) string
 }
 
 // AddCobraCommand creates a command that can be registered with cobra.
-func (lc *LabelCmds) AddCobraCommand(s state.State) *cobra.Command {
+func (lc *LabelCmds[T]) AddCobraCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   fmt.Sprintf("add-label [--overwrite] <%s> <label>...", util.ToKebabCase(lc.ResourceNameSingular)),
 		Short:                 lc.ShortDescriptionAdd,
@@ -45,7 +45,7 @@ func (lc *LabelCmds) AddCobraCommand(s state.State) *cobra.Command {
 }
 
 // RunAdd executes an add label command
-func (lc *LabelCmds) RunAdd(s state.State, cmd *cobra.Command, args []string) error {
+func (lc *LabelCmds[T]) RunAdd(s state.State, cmd *cobra.Command, args []string) error {
 	overwrite, _ := cmd.Flags().GetBool("overwrite")
 	idOrName := args[0]
 
@@ -91,7 +91,7 @@ func validateAddLabel(_ *cobra.Command, args []string) error {
 }
 
 // RemoveCobraCommand creates a command that can be registered with cobra.
-func (lc *LabelCmds) RemoveCobraCommand(s state.State) *cobra.Command {
+func (lc *LabelCmds[T]) RemoveCobraCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   fmt.Sprintf("remove-label <%s> (--all | <label>...)", util.ToKebabCase(lc.ResourceNameSingular)),
 		Short: lc.ShortDescriptionRemove,
@@ -117,7 +117,7 @@ func (lc *LabelCmds) RemoveCobraCommand(s state.State) *cobra.Command {
 }
 
 // RunRemove executes a remove label command
-func (lc *LabelCmds) RunRemove(s state.State, cmd *cobra.Command, args []string) error {
+func (lc *LabelCmds[T]) RunRemove(s state.State, cmd *cobra.Command, args []string) error {
 	all, _ := cmd.Flags().GetBool("all")
 	idOrName := args[0]
 

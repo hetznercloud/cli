@@ -10,13 +10,13 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var LabelCmds = base.LabelCmds{
+var LabelCmds = base.LabelCmds[*hcloud.FloatingIP]{
 	ResourceNameSingular:   "Floating IP",
 	ShortDescriptionAdd:    "Add a label to an Floating IP",
 	ShortDescriptionRemove: "Remove a label from an Floating IP",
 	NameSuggestions:        func(c hcapi2.Client) func() []string { return c.FloatingIP().Names },
 	LabelKeySuggestions:    func(c hcapi2.Client) func(idOrName string) []string { return c.FloatingIP().LabelKeys },
-	Fetch: func(s state.State, idOrName string) (any, error) {
+	Fetch: func(s state.State, idOrName string) (*hcloud.FloatingIP, error) {
 		floatingIP, _, err := s.Client().FloatingIP().Get(s, idOrName)
 		if err != nil {
 			return nil, err
@@ -26,20 +26,17 @@ var LabelCmds = base.LabelCmds{
 		}
 		return floatingIP, nil
 	},
-	SetLabels: func(s state.State, resource any, labels map[string]string) error {
-		floatingIP := resource.(*hcloud.FloatingIP)
+	SetLabels: func(s state.State, floatingIP *hcloud.FloatingIP, labels map[string]string) error {
 		opts := hcloud.FloatingIPUpdateOpts{
 			Labels: labels,
 		}
 		_, _, err := s.Client().FloatingIP().Update(s, floatingIP, opts)
 		return err
 	},
-	GetLabels: func(resource any) map[string]string {
-		floatingIP := resource.(*hcloud.FloatingIP)
+	GetLabels: func(floatingIP *hcloud.FloatingIP) map[string]string {
 		return floatingIP.Labels
 	},
-	GetIDOrName: func(resource any) string {
-		floatingIP := resource.(*hcloud.FloatingIP)
+	GetIDOrName: func(floatingIP *hcloud.FloatingIP) string {
 		return strconv.FormatInt(floatingIP.ID, 10)
 	},
 }

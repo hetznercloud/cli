@@ -10,13 +10,13 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var LabelCmds = base.LabelCmds{
+var LabelCmds = base.LabelCmds[*hcloud.LoadBalancer]{
 	ResourceNameSingular:   "Load Balancer",
 	ShortDescriptionAdd:    "Add a label to a Load Balancer",
 	ShortDescriptionRemove: "Remove a label from a Load Balancer",
 	NameSuggestions:        func(c hcapi2.Client) func() []string { return c.LoadBalancer().Names },
 	LabelKeySuggestions:    func(c hcapi2.Client) func(idOrName string) []string { return c.LoadBalancer().LabelKeys },
-	Fetch: func(s state.State, idOrName string) (any, error) {
+	Fetch: func(s state.State, idOrName string) (*hcloud.LoadBalancer, error) {
 		loadBalancer, _, err := s.Client().LoadBalancer().Get(s, idOrName)
 		if err != nil {
 			return nil, err
@@ -26,20 +26,17 @@ var LabelCmds = base.LabelCmds{
 		}
 		return loadBalancer, nil
 	},
-	SetLabels: func(s state.State, resource any, labels map[string]string) error {
-		loadBalancer := resource.(*hcloud.LoadBalancer)
+	SetLabels: func(s state.State, loadBalancer *hcloud.LoadBalancer, labels map[string]string) error {
 		opts := hcloud.LoadBalancerUpdateOpts{
 			Labels: labels,
 		}
 		_, _, err := s.Client().LoadBalancer().Update(s, loadBalancer, opts)
 		return err
 	},
-	GetLabels: func(resource any) map[string]string {
-		loadBalancer := resource.(*hcloud.LoadBalancer)
+	GetLabels: func(loadBalancer *hcloud.LoadBalancer) map[string]string {
 		return loadBalancer.Labels
 	},
-	GetIDOrName: func(resource any) string {
-		loadBalancer := resource.(*hcloud.LoadBalancer)
+	GetIDOrName: func(loadBalancer *hcloud.LoadBalancer) string {
 		return strconv.FormatInt(loadBalancer.ID, 10)
 	},
 }
