@@ -2,6 +2,7 @@ package server
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/hcapi2"
@@ -9,27 +10,33 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var LabelCmds = base.LabelCmds{
+var LabelCmds = base.LabelCmds[*hcloud.Server]{
 	ResourceNameSingular:   "server",
 	ShortDescriptionAdd:    "Add a label to a server",
 	ShortDescriptionRemove: "Remove a label from a server",
 	NameSuggestions:        func(c hcapi2.Client) func() []string { return c.Server().Names },
 	LabelKeySuggestions:    func(c hcapi2.Client) func(idOrName string) []string { return c.Server().LabelKeys },
-	FetchLabels: func(s state.State, idOrName string) (map[string]string, int64, error) {
+	Fetch: func(s state.State, idOrName string) (*hcloud.Server, error) {
 		server, _, err := s.Client().Server().Get(s, idOrName)
 		if err != nil {
-			return nil, 0, err
+			return nil, err
 		}
 		if server == nil {
-			return nil, 0, fmt.Errorf("server not found: %s", idOrName)
+			return nil, fmt.Errorf("server not found: %s", idOrName)
 		}
-		return server.Labels, server.ID, nil
+		return server, nil
 	},
-	SetLabels: func(s state.State, id int64, labels map[string]string) error {
+	SetLabels: func(s state.State, server *hcloud.Server, labels map[string]string) error {
 		opts := hcloud.ServerUpdateOpts{
 			Labels: labels,
 		}
-		_, _, err := s.Client().Server().Update(s, &hcloud.Server{ID: id}, opts)
+		_, _, err := s.Client().Server().Update(s, server, opts)
 		return err
+	},
+	GetLabels: func(server *hcloud.Server) map[string]string {
+		return server.Labels
+	},
+	GetIDOrName: func(server *hcloud.Server) string {
+		return strconv.FormatInt(server.ID, 10)
 	},
 }

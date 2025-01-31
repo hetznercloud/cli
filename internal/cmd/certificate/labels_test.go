@@ -45,16 +45,18 @@ func TestLabelRemove(t *testing.T) {
 	cmd := certificate.LabelCmds.RemoveCobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
+	cert := &hcloud.Certificate{
+		ID: 123,
+		Labels: map[string]string{
+			"key": "value",
+		},
+	}
+
 	fx.Client.CertificateClient.EXPECT().
 		Get(gomock.Any(), "123").
-		Return(&hcloud.Certificate{
-			ID: 123,
-			Labels: map[string]string{
-				"key": "value",
-			},
-		}, nil, nil)
+		Return(cert, nil, nil)
 	fx.Client.CertificateClient.EXPECT().
-		Update(gomock.Any(), &hcloud.Certificate{ID: 123}, hcloud.CertificateUpdateOpts{
+		Update(gomock.Any(), cert, hcloud.CertificateUpdateOpts{
 			Labels: make(map[string]string),
 		})
 

@@ -45,16 +45,18 @@ func TestLabelRemove(t *testing.T) {
 	cmd := placementgroup.LabelCmds.RemoveCobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
+	pg := &hcloud.PlacementGroup{
+		ID: 123,
+		Labels: map[string]string{
+			"key": "value",
+		},
+	}
+
 	fx.Client.PlacementGroupClient.EXPECT().
 		Get(gomock.Any(), "123").
-		Return(&hcloud.PlacementGroup{
-			ID: 123,
-			Labels: map[string]string{
-				"key": "value",
-			},
-		}, nil, nil)
+		Return(pg, nil, nil)
 	fx.Client.PlacementGroupClient.EXPECT().
-		Update(gomock.Any(), &hcloud.PlacementGroup{ID: 123}, hcloud.PlacementGroupUpdateOpts{
+		Update(gomock.Any(), pg, hcloud.PlacementGroupUpdateOpts{
 			Labels: make(map[string]string),
 		})
 

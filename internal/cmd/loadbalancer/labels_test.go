@@ -45,16 +45,18 @@ func TestLabelRemove(t *testing.T) {
 	cmd := loadbalancer.LabelCmds.RemoveCobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
+	lb := &hcloud.LoadBalancer{
+		ID: 123,
+		Labels: map[string]string{
+			"key": "value",
+		},
+	}
+
 	fx.Client.LoadBalancerClient.EXPECT().
 		Get(gomock.Any(), "123").
-		Return(&hcloud.LoadBalancer{
-			ID: 123,
-			Labels: map[string]string{
-				"key": "value",
-			},
-		}, nil, nil)
+		Return(lb, nil, nil)
 	fx.Client.LoadBalancerClient.EXPECT().
-		Update(gomock.Any(), &hcloud.LoadBalancer{ID: 123}, hcloud.LoadBalancerUpdateOpts{
+		Update(gomock.Any(), lb, hcloud.LoadBalancerUpdateOpts{
 			Labels: make(map[string]string),
 		})
 

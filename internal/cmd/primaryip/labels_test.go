@@ -45,16 +45,18 @@ func TestLabelRemove(t *testing.T) {
 	cmd := primaryip.LabelCmds.RemoveCobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
+	primaryIP := &hcloud.PrimaryIP{
+		ID: 123,
+		Labels: map[string]string{
+			"key": "value",
+		},
+	}
+
 	fx.Client.PrimaryIPClient.EXPECT().
 		Get(gomock.Any(), "123").
-		Return(&hcloud.PrimaryIP{
-			ID: 123,
-			Labels: map[string]string{
-				"key": "value",
-			},
-		}, nil, nil)
+		Return(primaryIP, nil, nil)
 	fx.Client.PrimaryIPClient.EXPECT().
-		Update(gomock.Any(), &hcloud.PrimaryIP{ID: 123}, hcloud.PrimaryIPUpdateOpts{
+		Update(gomock.Any(), primaryIP, hcloud.PrimaryIPUpdateOpts{
 			Labels: hcloud.Ptr(make(map[string]string)),
 		})
 

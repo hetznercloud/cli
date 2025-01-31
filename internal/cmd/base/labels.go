@@ -14,18 +14,20 @@ import (
 )
 
 // LabelCmds allows defining commands for adding labels to resources.
-type LabelCmds struct {
+type LabelCmds[T any] struct {
 	ResourceNameSingular   string
 	ShortDescriptionAdd    string
 	ShortDescriptionRemove string
 	NameSuggestions        func(client hcapi2.Client) func() []string
 	LabelKeySuggestions    func(client hcapi2.Client) func(idOrName string) []string
-	FetchLabels            func(s state.State, idOrName string) (map[string]string, int64, error)
-	SetLabels              func(s state.State, id int64, labels map[string]string) error
+	Fetch                  func(s state.State, idOrName string) (T, error)
+	SetLabels              func(s state.State, resource T, labels map[string]string) error
+	GetLabels              func(resource T) map[string]string
+	GetIDOrName            func(resource T) string
 }
 
 // AddCobraCommand creates a command that can be registered with cobra.
-func (lc *LabelCmds) AddCobraCommand(s state.State) *cobra.Command {
+func (lc *LabelCmds[T]) AddCobraCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   fmt.Sprintf("add-label [--overwrite] <%s> <label>...", util.ToKebabCase(lc.ResourceNameSingular)),
 		Short:                 lc.ShortDescriptionAdd,
@@ -43,14 +45,16 @@ func (lc *LabelCmds) AddCobraCommand(s state.State) *cobra.Command {
 }
 
 // RunAdd executes an add label command
-func (lc *LabelCmds) RunAdd(s state.State, cmd *cobra.Command, args []string) error {
+func (lc *LabelCmds[T]) RunAdd(s state.State, cmd *cobra.Command, args []string) error {
 	overwrite, _ := cmd.Flags().GetBool("overwrite")
 	idOrName := args[0]
 
-	labels, id, err := lc.FetchLabels(s, idOrName)
+	resource, err := lc.Fetch(s, idOrName)
 	if err != nil {
 		return err
 	}
+
+	labels, idOrName := lc.GetLabels(resource), lc.GetIDOrName(resource)
 
 	if labels == nil {
 		labels = map[string]string{}
@@ -62,17 +66,17 @@ func (lc *LabelCmds) RunAdd(s state.State, cmd *cobra.Command, args []string) er
 		keys = append(keys, key)
 
 		if _, ok := labels[key]; ok && !overwrite {
-			return fmt.Errorf("label %s on %s %d already exists", key, lc.ResourceNameSingular, id)
+			return fmt.Errorf("label %s on %s %s already exists", key, lc.ResourceNameSingular, idOrName)
 		}
 
 		labels[key] = val
 	}
 
-	if err := lc.SetLabels(s, id, labels); err != nil {
+	if err := lc.SetLabels(s, resource, labels); err != nil {
 		return err
 	}
 
-	cmd.Printf("Label(s) %s added to %s %d\n", strings.Join(keys, ", "), lc.ResourceNameSingular, id)
+	cmd.Printf("Label(s) %s added to %s %s\n", strings.Join(keys, ", "), lc.ResourceNameSingular, idOrName)
 	return nil
 }
 
@@ -87,7 +91,7 @@ func validateAddLabel(_ *cobra.Command, args []string) error {
 }
 
 // RemoveCobraCommand creates a command that can be registered with cobra.
-func (lc *LabelCmds) RemoveCobraCommand(s state.State) *cobra.Command {
+func (lc *LabelCmds[T]) RemoveCobraCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   fmt.Sprintf("remove-label <%s> (--all | <label>...)", util.ToKebabCase(lc.ResourceNameSingular)),
 		Short: lc.ShortDescriptionRemove,
@@ -113,34 +117,36 @@ func (lc *LabelCmds) RemoveCobraCommand(s state.State) *cobra.Command {
 }
 
 // RunRemove executes a remove label command
-func (lc *LabelCmds) RunRemove(s state.State, cmd *cobra.Command, args []string) error {
+func (lc *LabelCmds[T]) RunRemove(s state.State, cmd *cobra.Command, args []string) error {
 	all, _ := cmd.Flags().GetBool("all")
 	idOrName := args[0]
 
-	labels, id, err := lc.FetchLabels(s, idOrName)
+	resource, err := lc.Fetch(s, idOrName)
 	if err != nil {
 		return err
 	}
+
+	labels, idOrName := lc.GetLabels(resource), lc.GetIDOrName(resource)
 
 	if all {
 		labels = make(map[string]string)
 	} else {
 		for _, key := range args[1:] {
 			if _, ok := labels[key]; !ok {
-				return fmt.Errorf("label %s on %s %d does not exist", key, lc.ResourceNameSingular, id)
+				return fmt.Errorf("label %s on %s %s does not exist", key, lc.ResourceNameSingular, idOrName)
 			}
 			delete(labels, key)
 		}
 	}
 
-	if err := lc.SetLabels(s, id, labels); err != nil {
+	if err := lc.SetLabels(s, resource, labels); err != nil {
 		return err
 	}
 
 	if all {
-		cmd.Printf("All labels removed from %s %d\n", lc.ResourceNameSingular, id)
+		cmd.Printf("All labels removed from %s %s\n", lc.ResourceNameSingular, idOrName)
 	} else {
-		cmd.Printf("Label(s) %s removed from %s %d\n", strings.Join(args[1:], ", "), lc.ResourceNameSingular, id)
+		cmd.Printf("Label(s) %s removed from %s %s\n", strings.Join(args[1:], ", "), lc.ResourceNameSingular, idOrName)
 	}
 
 	return nil

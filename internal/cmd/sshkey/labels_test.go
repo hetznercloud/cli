@@ -45,16 +45,18 @@ func TestLabelRemove(t *testing.T) {
 	cmd := sshkey.LabelCmds.RemoveCobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
+	sshKey := &hcloud.SSHKey{
+		ID: 123,
+		Labels: map[string]string{
+			"key": "value",
+		},
+	}
+
 	fx.Client.SSHKeyClient.EXPECT().
 		Get(gomock.Any(), "123").
-		Return(&hcloud.SSHKey{
-			ID: 123,
-			Labels: map[string]string{
-				"key": "value",
-			},
-		}, nil, nil)
+		Return(sshKey, nil, nil)
 	fx.Client.SSHKeyClient.EXPECT().
-		Update(gomock.Any(), &hcloud.SSHKey{ID: 123}, hcloud.SSHKeyUpdateOpts{
+		Update(gomock.Any(), sshKey, hcloud.SSHKeyUpdateOpts{
 			Labels: make(map[string]string),
 		})
 

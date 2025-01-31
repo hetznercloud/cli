@@ -2,6 +2,7 @@ package primaryip
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/hcapi2"
@@ -9,27 +10,33 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var LabelCmds = base.LabelCmds{
+var LabelCmds = base.LabelCmds[*hcloud.PrimaryIP]{
 	ResourceNameSingular:   "primary-ip",
 	ShortDescriptionAdd:    "Add a label to a Primary IP",
 	ShortDescriptionRemove: "Remove a label from a Primary IP",
 	NameSuggestions:        func(c hcapi2.Client) func() []string { return c.PrimaryIP().Names },
 	LabelKeySuggestions:    func(c hcapi2.Client) func(idOrName string) []string { return c.PrimaryIP().LabelKeys },
-	FetchLabels: func(s state.State, idOrName string) (map[string]string, int64, error) {
+	Fetch: func(s state.State, idOrName string) (*hcloud.PrimaryIP, error) {
 		primaryIP, _, err := s.Client().PrimaryIP().Get(s, idOrName)
 		if err != nil {
-			return nil, 0, err
+			return nil, err
 		}
 		if primaryIP == nil {
-			return nil, 0, fmt.Errorf("primaryIP not found: %s", idOrName)
+			return nil, fmt.Errorf("primaryIP not found: %s", idOrName)
 		}
-		return primaryIP.Labels, primaryIP.ID, nil
+		return primaryIP, nil
 	},
-	SetLabels: func(s state.State, id int64, labels map[string]string) error {
+	SetLabels: func(s state.State, primaryIP *hcloud.PrimaryIP, labels map[string]string) error {
 		opts := hcloud.PrimaryIPUpdateOpts{
 			Labels: &labels,
 		}
-		_, _, err := s.Client().PrimaryIP().Update(s, &hcloud.PrimaryIP{ID: id}, opts)
+		_, _, err := s.Client().PrimaryIP().Update(s, primaryIP, opts)
 		return err
+	},
+	GetLabels: func(primaryIP *hcloud.PrimaryIP) map[string]string {
+		return primaryIP.Labels
+	},
+	GetIDOrName: func(primaryIP *hcloud.PrimaryIP) string {
+		return strconv.FormatInt(primaryIP.ID, 10)
 	},
 }

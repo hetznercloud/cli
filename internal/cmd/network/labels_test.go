@@ -45,16 +45,18 @@ func TestLabelRemove(t *testing.T) {
 	cmd := network.LabelCmds.RemoveCobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
+	net := &hcloud.Network{
+		ID: 123,
+		Labels: map[string]string{
+			"key": "value",
+		},
+	}
+
 	fx.Client.NetworkClient.EXPECT().
 		Get(gomock.Any(), "123").
-		Return(&hcloud.Network{
-			ID: 123,
-			Labels: map[string]string{
-				"key": "value",
-			},
-		}, nil, nil)
+		Return(net, nil, nil)
 	fx.Client.NetworkClient.EXPECT().
-		Update(gomock.Any(), &hcloud.Network{ID: 123}, hcloud.NetworkUpdateOpts{
+		Update(gomock.Any(), net, hcloud.NetworkUpdateOpts{
 			Labels: make(map[string]string),
 		})
 

@@ -2,6 +2,7 @@ package certificate
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/hcapi2"
@@ -9,27 +10,33 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var LabelCmds = base.LabelCmds{
+var LabelCmds = base.LabelCmds[*hcloud.Certificate]{
 	ResourceNameSingular:   "certificate",
 	ShortDescriptionAdd:    "Add a label to an certificate",
 	ShortDescriptionRemove: "Remove a label from an certificate",
 	NameSuggestions:        func(c hcapi2.Client) func() []string { return c.Certificate().Names },
 	LabelKeySuggestions:    func(c hcapi2.Client) func(idOrName string) []string { return c.Certificate().LabelKeys },
-	FetchLabels: func(s state.State, idOrName string) (map[string]string, int64, error) {
+	Fetch: func(s state.State, idOrName string) (*hcloud.Certificate, error) {
 		certificate, _, err := s.Client().Certificate().Get(s, idOrName)
 		if err != nil {
-			return nil, 0, err
+			return nil, err
 		}
 		if certificate == nil {
-			return nil, 0, fmt.Errorf("certificate not found: %s", idOrName)
+			return nil, fmt.Errorf("certificate not found: %s", idOrName)
 		}
-		return certificate.Labels, certificate.ID, nil
+		return certificate, nil
 	},
-	SetLabels: func(s state.State, id int64, labels map[string]string) error {
+	SetLabels: func(s state.State, cert *hcloud.Certificate, labels map[string]string) error {
 		opts := hcloud.CertificateUpdateOpts{
 			Labels: labels,
 		}
-		_, _, err := s.Client().Certificate().Update(s, &hcloud.Certificate{ID: id}, opts)
+		_, _, err := s.Client().Certificate().Update(s, cert, opts)
 		return err
+	},
+	GetLabels: func(cert *hcloud.Certificate) map[string]string {
+		return cert.Labels
+	},
+	GetIDOrName: func(cert *hcloud.Certificate) string {
+		return strconv.FormatInt(cert.ID, 10)
 	},
 }
