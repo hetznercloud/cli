@@ -12,13 +12,13 @@ import (
 )
 
 // DescribeCmd defines a command for describing a LoadBalancer.
-var DescribeCmd = base.DescribeCmd{
+var DescribeCmd = base.DescribeCmd[*hcloud.LoadBalancer]{
 	ResourceNameSingular: "Load Balancer",
 	ShortDescription:     "Describe a Load Balancer",
 	JSONKeyGetByID:       "load_balancer",
 	JSONKeyGetByName:     "load_balancers",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.LoadBalancer().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, interface{}, error) {
+	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.LoadBalancer, any, error) {
 		lb, _, err := s.Client().LoadBalancer().Get(s, idOrName)
 		if err != nil {
 			return nil, nil, err
@@ -28,9 +28,8 @@ var DescribeCmd = base.DescribeCmd{
 	AdditionalFlags: func(cmd *cobra.Command) {
 		cmd.Flags().Bool("expand-targets", false, "Expand all label_selector targets")
 	},
-	PrintText: func(s state.State, cmd *cobra.Command, resource interface{}) error {
+	PrintText: func(s state.State, cmd *cobra.Command, loadBalancer *hcloud.LoadBalancer) error {
 		withLabelSelectorTargets, _ := cmd.Flags().GetBool("expand-targets")
-		loadBalancer := resource.(*hcloud.LoadBalancer)
 		cmd.Printf("ID:\t\t\t\t%d\n", loadBalancer.ID)
 		cmd.Printf("Name:\t\t\t\t%s\n", loadBalancer.Name)
 		cmd.Printf("Created:\t\t\t%s (%s)\n", util.Datetime(loadBalancer.Created), humanize.Time(loadBalancer.Created))

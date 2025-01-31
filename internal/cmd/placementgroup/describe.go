@@ -11,22 +11,20 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var DescribeCmd = base.DescribeCmd{
+var DescribeCmd = base.DescribeCmd[*hcloud.PlacementGroup]{
 	ResourceNameSingular: "placement group",
 	ShortDescription:     "Describe a placement group",
 	JSONKeyGetByID:       "placement_group",
 	JSONKeyGetByName:     "placement_groups",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.PlacementGroup().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, interface{}, error) {
+	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.PlacementGroup, any, error) {
 		pg, _, err := s.Client().PlacementGroup().Get(s, idOrName)
 		if err != nil {
 			return nil, nil, err
 		}
 		return pg, hcloud.SchemaFromPlacementGroup(pg), nil
 	},
-	PrintText: func(s state.State, cmd *cobra.Command, resource interface{}) error {
-		placementGroup := resource.(*hcloud.PlacementGroup)
-
+	PrintText: func(s state.State, cmd *cobra.Command, placementGroup *hcloud.PlacementGroup) error {
 		cmd.Printf("ID:\t\t%d\n", placementGroup.ID)
 		cmd.Printf("Name:\t\t%s\n", placementGroup.Name)
 		cmd.Printf("Created:\t%s (%s)\n", util.Datetime(placementGroup.Created), humanize.Time(placementGroup.Created))

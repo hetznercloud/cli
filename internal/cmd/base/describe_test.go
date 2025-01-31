@@ -12,10 +12,10 @@ import (
 	"github.com/hetznercloud/cli/internal/testutil"
 )
 
-var fakeDescribeCmd = &base.DescribeCmd{
+var fakeDescribeCmd = &base.DescribeCmd[*fakeResource]{
 	ResourceNameSingular: "Fake resource",
 
-	Fetch: func(_ state.State, cmd *cobra.Command, _ string) (interface{}, interface{}, error) {
+	Fetch: func(_ state.State, cmd *cobra.Command, _ string) (*fakeResource, any, error) {
 		cmd.Println("Fetching fake resource")
 
 		resource := &fakeResource{
@@ -26,8 +26,7 @@ var fakeDescribeCmd = &base.DescribeCmd{
 		return resource, util.Wrap("resource", resource), nil
 	},
 
-	PrintText: func(_ state.State, cmd *cobra.Command, resource interface{}) error {
-		rsc := resource.(*fakeResource)
+	PrintText: func(_ state.State, cmd *cobra.Command, rsc *fakeResource) error {
 		cmd.Printf("ID: %d\n", rsc.ID)
 		cmd.Printf("Name: %s\n", rsc.Name)
 		return nil

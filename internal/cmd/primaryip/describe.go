@@ -11,22 +11,20 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var DescribeCmd = base.DescribeCmd{
+var DescribeCmd = base.DescribeCmd[*hcloud.PrimaryIP]{
 	ResourceNameSingular: "Primary IP",
 	ShortDescription:     "Describe an Primary IP",
 	JSONKeyGetByID:       "primary_ip",
 	JSONKeyGetByName:     "primary_ips",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.PrimaryIP().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, interface{}, error) {
+	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.PrimaryIP, any, error) {
 		ip, _, err := s.Client().PrimaryIP().Get(s, idOrName)
 		if err != nil {
 			return nil, nil, err
 		}
 		return ip, hcloud.SchemaFromPrimaryIP(ip), nil
 	},
-	PrintText: func(_ state.State, cmd *cobra.Command, resource interface{}) error {
-		primaryIP := resource.(*hcloud.PrimaryIP)
-
+	PrintText: func(_ state.State, cmd *cobra.Command, primaryIP *hcloud.PrimaryIP) error {
 		cmd.Printf("ID:\t\t%d\n", primaryIP.ID)
 		cmd.Printf("Name:\t\t%s\n", primaryIP.Name)
 		cmd.Printf("Created:\t%s (%s)\n", util.Datetime(primaryIP.Created), humanize.Time(primaryIP.Created))

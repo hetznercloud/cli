@@ -11,22 +11,20 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var DescribeCmd = base.DescribeCmd{
+var DescribeCmd = base.DescribeCmd[*hcloud.LoadBalancerType]{
 	ResourceNameSingular: "Load Balancer Type",
 	ShortDescription:     "Describe a Load Balancer type",
 	JSONKeyGetByID:       "load_balancer_type",
 	JSONKeyGetByName:     "load_balancer_types",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.LoadBalancerType().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, interface{}, error) {
+	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.LoadBalancerType, any, error) {
 		lbt, _, err := s.Client().LoadBalancerType().Get(s, idOrName)
 		if err != nil {
 			return nil, nil, err
 		}
 		return lbt, hcloud.SchemaFromLoadBalancerType(lbt), nil
 	},
-	PrintText: func(s state.State, cmd *cobra.Command, resource interface{}) error {
-		loadBalancerType := resource.(*hcloud.LoadBalancerType)
-
+	PrintText: func(s state.State, cmd *cobra.Command, loadBalancerType *hcloud.LoadBalancerType) error {
 		cmd.Printf("ID:\t\t\t\t%d\n", loadBalancerType.ID)
 		cmd.Printf("Name:\t\t\t\t%s\n", loadBalancerType.Name)
 		cmd.Printf("Description:\t\t\t%s\n", loadBalancerType.Description)

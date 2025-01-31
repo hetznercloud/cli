@@ -11,21 +11,20 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var DescribeCmd = base.DescribeCmd{
+var DescribeCmd = base.DescribeCmd[*hcloud.Certificate]{
 	ResourceNameSingular: "certificate",
 	ShortDescription:     "Describe an certificate",
 	JSONKeyGetByID:       "certificate",
 	JSONKeyGetByName:     "certificates",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Certificate().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, interface{}, error) {
+	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.Certificate, any, error) {
 		cert, _, err := s.Client().Certificate().Get(s, idOrName)
 		if err != nil {
 			return nil, nil, err
 		}
 		return cert, hcloud.SchemaFromCertificate(cert), nil
 	},
-	PrintText: func(s state.State, cmd *cobra.Command, resource interface{}) error {
-		cert := resource.(*hcloud.Certificate)
+	PrintText: func(s state.State, cmd *cobra.Command, cert *hcloud.Certificate) error {
 		cmd.Printf("ID:\t\t\t%d\n", cert.ID)
 		cmd.Printf("Name:\t\t\t%s\n", cert.Name)
 		cmd.Printf("Type:\t\t\t%s\n", cert.Type)
