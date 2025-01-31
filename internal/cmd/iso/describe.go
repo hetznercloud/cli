@@ -11,22 +11,20 @@ import (
 )
 
 // DescribeCmd defines a command for describing a iso.
-var DescribeCmd = base.DescribeCmd{
+var DescribeCmd = base.DescribeCmd[*hcloud.ISO]{
 	ResourceNameSingular: "iso",
 	ShortDescription:     "Describe a iso",
 	JSONKeyGetByID:       "iso",
 	JSONKeyGetByName:     "isos",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Location().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, interface{}, error) {
+	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.ISO, any, error) {
 		iso, _, err := s.Client().ISO().Get(s, idOrName)
 		if err != nil {
 			return nil, nil, err
 		}
 		return iso, hcloud.SchemaFromISO(iso), nil
 	},
-	PrintText: func(_ state.State, cmd *cobra.Command, resource interface{}) error {
-		iso := resource.(*hcloud.ISO)
-
+	PrintText: func(_ state.State, cmd *cobra.Command, iso *hcloud.ISO) error {
 		cmd.Printf("ID:\t\t%d\n", iso.ID)
 		cmd.Printf("Name:\t\t%s\n", iso.Name)
 		cmd.Printf("Description:\t%s\n", iso.Description)

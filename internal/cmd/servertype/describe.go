@@ -11,22 +11,20 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var DescribeCmd = base.DescribeCmd{
+var DescribeCmd = base.DescribeCmd[*hcloud.ServerType]{
 	ResourceNameSingular: "serverType",
 	ShortDescription:     "Describe a server type",
 	JSONKeyGetByID:       "server_type",
 	JSONKeyGetByName:     "server_types",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.ServerType().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, interface{}, error) {
+	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.ServerType, any, error) {
 		st, _, err := s.Client().ServerType().Get(s, idOrName)
 		if err != nil {
 			return nil, nil, err
 		}
 		return st, hcloud.SchemaFromServerType(st), nil
 	},
-	PrintText: func(s state.State, cmd *cobra.Command, resource interface{}) error {
-		serverType := resource.(*hcloud.ServerType)
-
+	PrintText: func(s state.State, cmd *cobra.Command, serverType *hcloud.ServerType) error {
 		cmd.Printf("ID:\t\t\t%d\n", serverType.ID)
 		cmd.Printf("Name:\t\t\t%s\n", serverType.Name)
 		cmd.Printf("Description:\t\t%s\n", serverType.Description)

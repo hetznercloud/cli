@@ -13,21 +13,20 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var DescribeCmd = base.DescribeCmd{
+var DescribeCmd = base.DescribeCmd[*hcloud.SSHKey]{
 	ResourceNameSingular: "SSH Key",
 	ShortDescription:     "Describe a SSH Key",
 	JSONKeyGetByID:       "ssh_key",
 	JSONKeyGetByName:     "ssh_keys",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.SSHKey().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, interface{}, error) {
+	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.SSHKey, any, error) {
 		key, _, err := s.Client().SSHKey().Get(s, idOrName)
 		if err != nil {
 			return nil, nil, err
 		}
 		return key, hcloud.SchemaFromSSHKey(key), nil
 	},
-	PrintText: func(_ state.State, cmd *cobra.Command, resource interface{}) error {
-		sshKey := resource.(*hcloud.SSHKey)
+	PrintText: func(_ state.State, cmd *cobra.Command, sshKey *hcloud.SSHKey) error {
 		cmd.Printf("ID:\t\t%d\n", sshKey.ID)
 		cmd.Printf("Name:\t\t%s\n", sshKey.Name)
 		cmd.Printf("Created:\t%s (%s)\n", util.Datetime(sshKey.Created), humanize.Time(sshKey.Created))

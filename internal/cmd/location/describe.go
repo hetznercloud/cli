@@ -10,22 +10,20 @@ import (
 )
 
 // DescribeCmd defines a command for describing a location.
-var DescribeCmd = base.DescribeCmd{
+var DescribeCmd = base.DescribeCmd[*hcloud.Location]{
 	ResourceNameSingular: "location",
 	ShortDescription:     "Describe a location",
 	JSONKeyGetByID:       "location",
 	JSONKeyGetByName:     "locations",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Location().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, interface{}, error) {
+	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.Location, any, error) {
 		l, _, err := s.Client().Location().Get(s, idOrName)
 		if err != nil {
 			return nil, nil, err
 		}
 		return l, hcloud.SchemaFromLocation(l), nil
 	},
-	PrintText: func(_ state.State, cmd *cobra.Command, resource interface{}) error {
-		location := resource.(*hcloud.Location)
-
+	PrintText: func(_ state.State, cmd *cobra.Command, location *hcloud.Location) error {
 		cmd.Printf("ID:\t\t%d\n", location.ID)
 		cmd.Printf("Name:\t\t%s\n", location.Name)
 		cmd.Printf("Description:\t%s\n", location.Description)

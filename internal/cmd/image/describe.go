@@ -16,7 +16,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var DescribeCmd = base.DescribeCmd{
+var DescribeCmd = base.DescribeCmd[*hcloud.Image]{
 	ResourceNameSingular: "image",
 	ShortDescription:     "Describe an image",
 	JSONKeyGetByID:       "image",
@@ -26,7 +26,7 @@ var DescribeCmd = base.DescribeCmd{
 		_ = cmd.RegisterFlagCompletionFunc("architecture", cmpl.SuggestCandidates(string(hcloud.ArchitectureX86), string(hcloud.ArchitectureARM)))
 	},
 	NameSuggestions: func(c hcapi2.Client) func() []string { return c.Image().Names },
-	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error) {
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (*hcloud.Image, any, error) {
 		_, err := strconv.ParseInt(idOrName, 10, 64)
 		isID := err == nil
 
@@ -45,9 +45,7 @@ var DescribeCmd = base.DescribeCmd{
 		}
 		return img, hcloud.SchemaFromImage(img), nil
 	},
-	PrintText: func(_ state.State, cmd *cobra.Command, resource interface{}) error {
-		image := resource.(*hcloud.Image)
-
+	PrintText: func(_ state.State, cmd *cobra.Command, image *hcloud.Image) error {
 		cmd.Printf("ID:\t\t%d\n", image.ID)
 		cmd.Printf("Type:\t\t%s\n", image.Type)
 		cmd.Printf("Status:\t\t%s\n", image.Status)

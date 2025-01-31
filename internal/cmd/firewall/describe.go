@@ -13,22 +13,20 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var DescribeCmd = base.DescribeCmd{
+var DescribeCmd = base.DescribeCmd[*hcloud.Firewall]{
 	ResourceNameSingular: "firewall",
 	ShortDescription:     "Describe an firewall",
 	JSONKeyGetByID:       "firewall",
 	JSONKeyGetByName:     "firewalls",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Firewall().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, interface{}, error) {
+	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.Firewall, any, error) {
 		fw, _, err := s.Client().Firewall().Get(s, idOrName)
 		if err != nil {
 			return nil, nil, err
 		}
 		return fw, hcloud.SchemaFromFirewall(fw), nil
 	},
-	PrintText: func(s state.State, cmd *cobra.Command, resource interface{}) error {
-		firewall := resource.(*hcloud.Firewall)
-
+	PrintText: func(s state.State, cmd *cobra.Command, firewall *hcloud.Firewall) error {
 		cmd.Printf("ID:\t\t%d\n", firewall.ID)
 		cmd.Printf("Name:\t\t%s\n", firewall.Name)
 		cmd.Printf("Created:\t%s (%s)\n", util.Datetime(firewall.Created), humanize.Time(firewall.Created))

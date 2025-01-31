@@ -11,22 +11,20 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var DescribeCmd = base.DescribeCmd{
+var DescribeCmd = base.DescribeCmd[*hcloud.Volume]{
 	ResourceNameSingular: "volume",
 	ShortDescription:     "Describe an Volume",
 	JSONKeyGetByID:       "volume",
 	JSONKeyGetByName:     "volumes",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Volume().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, interface{}, error) {
+	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.Volume, any, error) {
 		v, _, err := s.Client().Volume().Get(s, idOrName)
 		if err != nil {
 			return nil, nil, err
 		}
 		return v, hcloud.SchemaFromVolume(v), nil
 	},
-	PrintText: func(s state.State, cmd *cobra.Command, resource interface{}) error {
-		volume := resource.(*hcloud.Volume)
-
+	PrintText: func(s state.State, cmd *cobra.Command, volume *hcloud.Volume) error {
 		cmd.Printf("ID:\t\t%d\n", volume.ID)
 		cmd.Printf("Name:\t\t%s\n", volume.Name)
 		cmd.Printf("Created:\t%s (%s)\n", util.Datetime(volume.Created), humanize.Time(volume.Created))

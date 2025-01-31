@@ -16,7 +16,7 @@ import (
 )
 
 // DescribeCmd allows defining commands for describing a resource.
-type DescribeCmd struct {
+type DescribeCmd[T any] struct {
 	ResourceNameSingular string // e.g. "server"
 	ShortDescription     string
 	// key in API response JSON to use for extracting object from response body for JSON output.
@@ -26,12 +26,12 @@ type DescribeCmd struct {
 	AdditionalFlags  func(*cobra.Command)
 	// Fetch is called to fetch the resource to describe.
 	// The first returned interface is the resource itself as a hcloud struct, the second is the schema for the resource.
-	Fetch     func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, interface{}, error)
-	PrintText func(s state.State, cmd *cobra.Command, resource interface{}) error
+	Fetch     func(s state.State, cmd *cobra.Command, idOrName string) (T, any, error)
+	PrintText func(s state.State, cmd *cobra.Command, resource T) error
 }
 
 // CobraCommand creates a command that can be registered with cobra.
-func (dc *DescribeCmd) CobraCommand(s state.State) *cobra.Command {
+func (dc *DescribeCmd[T]) CobraCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   fmt.Sprintf("describe [options] <%s>", util.ToKebabCase(dc.ResourceNameSingular)),
 		Short:                 dc.ShortDescription,
@@ -52,7 +52,7 @@ func (dc *DescribeCmd) CobraCommand(s state.State) *cobra.Command {
 }
 
 // Run executes a describe command.
-func (dc *DescribeCmd) Run(s state.State, cmd *cobra.Command, args []string) error {
+func (dc *DescribeCmd[T]) Run(s state.State, cmd *cobra.Command, args []string) error {
 	outputFlags := output.FlagsForCommand(cmd)
 
 	quiet, err := config.OptionQuiet.Get(s.Config())
