@@ -12,7 +12,7 @@ require (
 	github.com/fatih/structs v1.1.0
 	github.com/goccy/go-yaml v1.15.16
 	github.com/guptarohit/asciigraph v0.7.3
-	github.com/hetznercloud/hcloud-go/v2 v2.18.0
+	github.com/hetznercloud/hcloud-go/v2 v2.19.0
 	github.com/jedib0t/go-pretty/v6 v6.6.5
 	github.com/spf13/cast v1.7.1
 	github.com/spf13/cobra v1.8.1
