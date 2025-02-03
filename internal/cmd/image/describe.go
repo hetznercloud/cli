@@ -19,8 +19,6 @@ import (
 var DescribeCmd = base.DescribeCmd[*hcloud.Image]{
 	ResourceNameSingular: "image",
 	ShortDescription:     "Describe an image",
-	JSONKeyGetByID:       "image",
-	JSONKeyGetByName:     "images",
 	AdditionalFlags: func(cmd *cobra.Command) {
 		cmd.Flags().StringP("architecture", "a", string(hcloud.ArchitectureX86), "architecture of the image, default is x86")
 		_ = cmd.RegisterFlagCompletionFunc("architecture", cmpl.SuggestCandidates(string(hcloud.ArchitectureX86), string(hcloud.ArchitectureARM)))

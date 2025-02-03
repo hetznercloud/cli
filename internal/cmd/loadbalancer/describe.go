@@ -15,8 +15,6 @@ import (
 var DescribeCmd = base.DescribeCmd[*hcloud.LoadBalancer]{
 	ResourceNameSingular: "Load Balancer",
 	ShortDescription:     "Describe a Load Balancer",
-	JSONKeyGetByID:       "load_balancer",
-	JSONKeyGetByName:     "load_balancers",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.LoadBalancer().Names },
 	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.LoadBalancer, any, error) {
 		lb, _, err := s.Client().LoadBalancer().Get(s, idOrName)
