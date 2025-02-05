@@ -14,8 +14,6 @@ import (
 var DescribeCmd = base.DescribeCmd[*hcloud.ServerType]{
 	ResourceNameSingular: "serverType",
 	ShortDescription:     "Describe a server type",
-	JSONKeyGetByID:       "server_type",
-	JSONKeyGetByName:     "server_types",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.ServerType().Names },
 	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.ServerType, any, error) {
 		st, _, err := s.Client().ServerType().Get(s, idOrName)

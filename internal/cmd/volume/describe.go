@@ -14,8 +14,6 @@ import (
 var DescribeCmd = base.DescribeCmd[*hcloud.Volume]{
 	ResourceNameSingular: "volume",
 	ShortDescription:     "Describe an Volume",
-	JSONKeyGetByID:       "volume",
-	JSONKeyGetByName:     "volumes",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Volume().Names },
 	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.Volume, any, error) {
 		v, _, err := s.Client().Volume().Get(s, idOrName)

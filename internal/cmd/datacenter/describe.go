@@ -15,8 +15,6 @@ import (
 var DescribeCmd = base.DescribeCmd[*hcloud.Datacenter]{
 	ResourceNameSingular: "datacenter",
 	ShortDescription:     "Describe an datacenter",
-	JSONKeyGetByID:       "datacenter",
-	JSONKeyGetByName:     "datacenters",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Datacenter().Names },
 	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.Datacenter, any, error) {
 		dc, _, err := s.Client().Datacenter().Get(s, idOrName)

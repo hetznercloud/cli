@@ -19,11 +19,8 @@ import (
 type DescribeCmd[T any] struct {
 	ResourceNameSingular string // e.g. "server"
 	ShortDescription     string
-	// key in API response JSON to use for extracting object from response body for JSON output.
-	JSONKeyGetByID   string // e.g. "server"
-	JSONKeyGetByName string // e.g. "servers"
-	NameSuggestions  func(client hcapi2.Client) func() []string
-	AdditionalFlags  func(*cobra.Command)
+	NameSuggestions      func(client hcapi2.Client) func() []string
+	AdditionalFlags      func(*cobra.Command)
 	// Fetch is called to fetch the resource to describe.
 	// The first returned interface is the resource itself as a hcloud struct, the second is the schema for the resource.
 	Fetch     func(s state.State, cmd *cobra.Command, idOrName string) (T, any, error)
