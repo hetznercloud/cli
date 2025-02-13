@@ -32,7 +32,7 @@ func TestAddRule(t *testing.T) {
 		SetRules(gomock.Any(), fw, hcloud.FirewallSetRulesOpts{
 			Rules: []hcloud.FirewallRule{{
 				Direction:      hcloud.FirewallRuleDirectionIn,
-				SourceIPs:      []net.IPNet{{IP: net.IP{0, 0, 0, 0}, Mask: net.IPMask{0, 0, 0, 0}}},
+				SourceIPs:      []net.IPNet{{IP: net.IP{0, 0, 0, 0}, Mask: net.IPMask{0, 0, 0, 0}}, {IP: net.IP{127, 0, 0, 1}, Mask: net.IPMask{255, 255, 255, 255}}},
 				DestinationIPs: []net.IPNet{},
 				Protocol:       hcloud.FirewallRuleProtocolTCP,
 				Port:           hcloud.Ptr("80"),
@@ -44,7 +44,7 @@ func TestAddRule(t *testing.T) {
 		WaitForActions(gomock.Any(), gomock.Any(), []*hcloud.Action{{ID: 123}, {ID: 321}}).
 		Return(nil)
 
-	out, errOut, err := fx.Run(cmd, []string{"--direction", "in", "--protocol", "tcp", "--source-ips", "0.0.0.0/0", "--port", "80", "--description", "http", "test"})
+	out, errOut, err := fx.Run(cmd, []string{"--direction", "in", "--protocol", "tcp", "--source-ips", "0.0.0.0/0,127.0.0.1/32", "--port", "80", "--description", "http", "test"})
 
 	expOut := "Firewall Rules for Firewall 123 updated\n"
 
