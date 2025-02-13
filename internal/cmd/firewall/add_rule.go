@@ -31,9 +31,9 @@ var AddRuleCmd = base.Cmd{
 		_ = cmd.RegisterFlagCompletionFunc("protocol", cmpl.SuggestCandidates("icmp", "udp", "tcp", "esp", "gre"))
 		_ = cmd.MarkFlagRequired("protocol")
 
-		cmd.Flags().StringArray("source-ips", []string{}, "Source IPs (CIDR Notation) (required when direction is in)")
+		cmd.Flags().StringSlice("source-ips", []string{}, "Source IPs (CIDR Notation) (required when direction is in)")
 
-		cmd.Flags().StringArray("destination-ips", []string{}, "Destination IPs (CIDR Notation) (required when direction is out)")
+		cmd.Flags().StringSlice("destination-ips", []string{}, "Destination IPs (CIDR Notation) (required when direction is out)")
 
 		cmd.Flags().String("port", "", "Port to which traffic will be allowed, only applicable for protocols TCP and UDP, you can specify port ranges, sample: 80-85")
 
@@ -76,8 +76,8 @@ var AddRuleCmd = base.Cmd{
 func parseRuleFromArgs(flags *pflag.FlagSet) (*hcloud.FirewallRule, error) {
 	direction, _ := flags.GetString("direction")
 	protocol, _ := flags.GetString("protocol")
-	sourceIPs, _ := flags.GetStringArray("source-ips")
-	destinationIPs, _ := flags.GetStringArray("destination-ips")
+	sourceIPs, _ := flags.GetStringSlice("source-ips")
+	destinationIPs, _ := flags.GetStringSlice("destination-ips")
 	port, _ := flags.GetString("port")
 	description, _ := flags.GetString("description")
 
