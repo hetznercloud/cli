@@ -1,5 +1,12 @@
 # Changelog
 
+## [v1.50.1](https://github.com/hetznercloud/cli/releases/tag/v1.50.1)
+
+### Bug Fixes
+
+- allow getting resources with number as name
+- some list flags are not correctly parsed (#987)
+
 ## [v1.50.0](https://github.com/hetznercloud/cli/releases/tag/v1.50.0)
 
 ### Features
