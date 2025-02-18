@@ -62,7 +62,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Network]{
 		if len(network.Labels) == 0 {
 			cmd.Print("  No labels\n")
 		} else {
-			for key, value := range network.Labels {
+			for key, value := range util.IterateInOrder(network.Labels) {
 				cmd.Printf("  %s: %s\n", key, value)
 			}
 		}

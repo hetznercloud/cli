@@ -34,7 +34,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.SSHKey]{
 		if len(sshKey.Labels) == 0 {
 			cmd.Print("  No labels\n")
 		} else {
-			for key, value := range sshKey.Labels {
+			for key, value := range util.IterateInOrder(sshKey.Labels) {
 				cmd.Printf("  %s: %s\n", key, value)
 			}
 		}

@@ -33,7 +33,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Firewall]{
 		if len(firewall.Labels) == 0 {
 			cmd.Print("  No labels\n")
 		} else {
-			for key, value := range firewall.Labels {
+			for key, value := range util.IterateInOrder(firewall.Labels) {
 				cmd.Printf("  %s: %s\n", key, value)
 			}
 		}

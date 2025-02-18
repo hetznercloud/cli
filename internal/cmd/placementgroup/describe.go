@@ -31,7 +31,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.PlacementGroup]{
 		if len(placementGroup.Labels) == 0 {
 			cmd.Print("  No labels\n")
 		} else {
-			for key, value := range placementGroup.Labels {
+			for key, value := range util.IterateInOrder(placementGroup.Labels) {
 				cmd.Printf("  %s: %s\n", key, value)
 			}
 		}

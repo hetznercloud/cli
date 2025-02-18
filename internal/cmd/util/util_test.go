@@ -454,3 +454,28 @@ func TestPrice(t *testing.T) {
 		})
 	}
 }
+
+func TestSortLabels(t *testing.T) {
+	labels := map[string]string{
+		"c": "baz",
+		"a": "foo",
+		"z": "qux",
+		"b": "bar",
+	}
+	expected := [][]string{
+		{"a", "foo"},
+		{"b", "bar"},
+		{"c", "baz"},
+		{"z", "qux"},
+	}
+
+	i := 0
+	for k, v := range util.IterateInOrder(labels) {
+		require.Less(t, i, 4)
+		exp := expected[i]
+		i++
+
+		assert.Equal(t, exp[0], k, "key not equal")
+		assert.Equal(t, exp[1], v, "value not equal")
+	}
+}
