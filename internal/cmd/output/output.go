@@ -6,10 +6,10 @@ import (
 	"reflect"
 	"sort"
 	"strings"
-	"text/tabwriter"
 	"unicode"
 
 	"github.com/fatih/structs"
+	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
@@ -149,8 +149,27 @@ func parseOutputFlags(in []string) Opts {
 
 // NewTable creates a new Table.
 func NewTable(out io.Writer) *Table {
+	style := table.Style{
+		Name:    "minimal",
+		Box:     table.StyleBoxLight,
+		Color:   table.ColorOptionsDefault,
+		Format:  table.FormatOptionsDefault,
+		HTML:    table.DefaultHTMLOptions,
+		Options: table.OptionsNoBordersAndSeparators,
+		Size:    table.SizeOptionsDefault,
+		Title:   table.TitleOptionsDefault,
+	}
+	style.Box.MiddleVertical = "   "
+	style.Box.PaddingLeft = ""
+	style.Box.PaddingRight = ""
+	style.Options.SeparateColumns = true
+
+	w := table.NewWriter()
+	w.SetStyle(style)
+
 	return &Table{
-		w:             tabwriter.NewWriter(out, 0, 0, 3, ' ', 0),
+		out:           out,
+		w:             w,
 		columns:       map[string]bool{},
 		fieldMapping:  map[string]FieldFn{},
 		fieldAlias:    map[string]string{},
@@ -160,14 +179,10 @@ func NewTable(out io.Writer) *Table {
 
 type FieldFn func(obj interface{}) string
 
-type writerFlusher interface {
-	io.Writer
-	Flush() error
-}
-
 // Table is a generic way to format object as a table.
 type Table struct {
-	w             writerFlusher
+	out           io.Writer
+	w             table.Writer
 	columns       map[string]bool
 	fieldMapping  map[string]FieldFn
 	fieldAlias    map[string]string
@@ -248,18 +263,21 @@ func (o *Table) ValidateColumns(cols []string) error {
 
 // WriteHeader writes the table header.
 func (o *Table) WriteHeader(columns []string) {
-	var header []string
+	header := table.Row{}
 	for _, col := range columns {
 		if alias, ok := o.fieldAlias[col]; ok {
 			col = alias
 		}
+
 		header = append(header, strings.ReplaceAll(strings.ToUpper(col), "_", " "))
 	}
-	_, _ = fmt.Fprintln(o.w, strings.Join(header, "\t"))
+	o.w.AppendHeader(header)
 }
 
 func (o *Table) Flush() error {
-	return o.w.Flush()
+	_, _ = o.out.Write([]byte(o.w.Render()))
+	_, _ = o.out.Write([]byte("\n"))
+	return nil
 }
 
 // Write writes a table line.
@@ -270,7 +288,7 @@ func (o *Table) Write(columns []string, obj interface{}) {
 		dataL[strings.ToLower(key)] = value
 	}
 
-	var out []string
+	var out table.Row
 	for _, col := range columns {
 		colName := strings.ToLower(col)
 		if alias, ok := o.fieldAlias[colName]; ok {
@@ -299,7 +317,7 @@ func (o *Table) Write(columns []string, obj interface{}) {
 			out = append(out, fmt.Sprintf("%v", value))
 		}
 	}
-	_, _ = fmt.Fprintln(o.w, strings.Join(out, "\t"))
+	o.w.AppendRow(out)
 }
 
 func fieldName(name string) string {

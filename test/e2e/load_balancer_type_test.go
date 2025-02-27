@@ -30,7 +30,7 @@ func TestLoadBalancerType(t *testing.T) {
 						AnyString().Whitespace().
 						Int().Whitespace().
 						Int().Whitespace().
-						Int().Newline()).
+						Int().OptionalWhitespace().Newline()).
 					End(),
 				out,
 			)

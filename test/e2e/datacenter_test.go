@@ -19,8 +19,8 @@ func TestDatacenter(t *testing.T) {
 			require.NoError(t, err)
 			assert.Regexp(t,
 				NewRegex().Start().
-					SeparatedByWhitespace("ID", "NAME", "DESCRIPTION", "LOCATION").Newline().
-					AnyTimes(NewRegex().Int().Whitespace().Identifier().Whitespace().AnyString().Whitespace().LocationName().Newline()).
+					SeparatedByWhitespace("ID", "NAME", "DESCRIPTION", "LOCATION").OptionalWhitespace().Newline().
+					AnyTimes(NewRegex().Int().Whitespace().Identifier().Whitespace().AnyString().Whitespace().LocationName().OptionalWhitespace().Newline()).
 					End(),
 				out,
 			)

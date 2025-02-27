@@ -44,8 +44,8 @@ token = "yet another super secret token"
 			name:   "default",
 			args:   []string{},
 			config: testConfig,
-			expOut: `ACTIVE   NAME
-*        my-context
+			expOut: `ACTIVE   NAME            
+*        my-context      
          my-other-context
          my-third-context
 `,
@@ -59,7 +59,7 @@ token = "yet another super secret token"
 			name:   "no header",
 			args:   []string{"-o=noheader"},
 			config: testConfig,
-			expOut: `*   my-context
+			expOut: `*   my-context      
     my-other-context
     my-third-context
 `,
@@ -68,7 +68,7 @@ token = "yet another super secret token"
 			name:   "no header only name",
 			args:   []string{"-o=noheader", "-o=columns=name"},
 			config: testConfig,
-			expOut: `my-context
+			expOut: `my-context      
 my-other-context
 my-third-context
 `,
@@ -83,8 +83,8 @@ my-third-context
 			postRun: func() {
 				_ = os.Unsetenv("HCLOUD_CONTEXT")
 			},
-			expOut: `ACTIVE   NAME
-         my-context
+			expOut: `ACTIVE   NAME            
+         my-context      
 *        my-other-context
          my-third-context
 `,

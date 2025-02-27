@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	"strconv"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -52,14 +53,14 @@ func TestSSHKey(t *testing.T) {
 			require.NoError(t, err)
 			assert.Regexp(t,
 				NewRegex().Start().
-					SeparatedByWhitespace("ID", "NAME", "FINGERPRINT", "PUBLIC KEY", "LABELS", "CREATED", "AGE").Newline().
+					SeparatedByWhitespace("ID", "NAME", "FINGERPRINT", "PUBLIC KEY", "LABELS", "CREATED", "AGE").OptionalWhitespace().Newline().
 					Lit(strconv.FormatInt(sshKeyID, 10)).Whitespace().
 					Lit(sshKeyName).Whitespace().
 					Lit(fingerprint).Whitespace().
 					Lit(pubKey).Whitespace().
 					Lit("baz=qux, foo=bar").Whitespace().
 					UnixDate().Whitespace().
-					Age().Newline().
+					Age().OptionalWhitespace().Newline().
 					End(),
 				out,
 			)
@@ -106,7 +107,7 @@ func TestSSHKey(t *testing.T) {
 			Lit("Name:").Whitespace().Lit(sshKeyName).Newline().
 			Lit("Created:").Whitespace().UnixDate().Lit(" (").HumanizeTime().Lit(")").Newline().
 			Lit("Fingerprint:").Whitespace().Lit(fingerprint).Newline().
-			Lit("Public Key:").Newline().Lit(pubKey).
+			Lit("Public Key:").Newline().Lit(pubKey).Newline().
 			Lit("Labels:").Newline().
 			Lit("  foo:").Whitespace().Lit("bar").Newline().
 			End(),
@@ -160,5 +161,5 @@ func generateSSHKey() (string, string, error) {
 		return "", "", err
 	}
 
-	return string(pub), fingerprint, nil
+	return strings.TrimSpace(string(pub)), fingerprint, nil
 }

@@ -3,16 +3,21 @@ package output
 import (
 	"bytes"
 	"io"
-	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
-type writerFlusherStub struct {
+type writerStub struct {
 	bytes.Buffer
 }
 
-func (s writerFlusherStub) Flush() error {
-	return nil
+func reset(to *Table, ws *writerStub) {
+	to.w.ResetHeaders()
+	to.w.ResetRows()
+	to.w.ResetFooters()
+	ws.Reset()
 }
 
 type testFieldsStruct struct {
@@ -21,52 +26,56 @@ type testFieldsStruct struct {
 }
 
 func TestTableOutput(t *testing.T) {
-	var wfs writerFlusherStub
+	var ws writerStub
 	to := NewTable(io.Discard)
-	to.w = &wfs
+	to.out = &ws
 
 	t.Run("AddAllowedFields", func(t *testing.T) {
 		to.AddAllowedFields(testFieldsStruct{})
-		if _, ok := to.allowedFields["name"]; !ok {
-			t.Error("name should be a allowed field")
-		}
+
+		assert.Contains(t, to.allowedFields, "name")
 	})
+
 	t.Run("AddFieldAlias", func(t *testing.T) {
 		to.AddFieldAlias("leeroy_jenkins", "leeroy jenkins")
-		if alias, ok := to.fieldAlias["leeroy_jenkins"]; !ok || alias != "leeroy jenkins" {
-			t.Errorf("leeroy_jenkins alias should be 'leeroy jenkins', is: %v", alias)
-		}
+
+		assert.Contains(t, to.fieldAlias, "leeroy_jenkins")
+		assert.Equal(t, "leeroy jenkins", to.fieldAlias["leeroy_jenkins"])
 	})
+
 	t.Run("AddFieldOutputFn", func(t *testing.T) {
-		to.AddFieldFn("leeroy jenkins", FieldFn(func(interface{}) string {
+		to.AddFieldFn("leeroy jenkins", func(interface{}) string {
 			return "LEEROY JENKINS!!!"
-		}))
-		if _, ok := to.fieldMapping["leeroy jenkins"]; !ok {
-			t.Errorf("'leeroy jenkins' field output fn should be set")
-		}
+		})
+
+		assert.Contains(t, to.fieldMapping, "leeroy jenkins")
 	})
+
 	t.Run("ValidateColumns", func(t *testing.T) {
 		err := to.ValidateColumns([]string{"non-existent", "NAME"})
-		if err == nil ||
-			strings.Contains(err.Error(), "name") ||
-			!strings.Contains(err.Error(), "non-existent") {
-			t.Errorf("error should contain 'non-existent' but not 'name': %v", err)
-		}
+
+		require.ErrorContains(t, err, "non-existent")
+		assert.NotContains(t, err.Error(), "name")
 	})
+
 	t.Run("WriteHeader", func(t *testing.T) {
 		to.WriteHeader([]string{"leeroy_jenkins", "name"})
-		if wfs.String() != "LEEROY JENKINS\tNAME\n" {
-			t.Errorf("written header should be 'LEEROY JENKINS\\tNAME\\n', is: %q", wfs.String())
-		}
-		wfs.Reset()
+		_ = to.Flush()
+
+		assert.Equal(t, "LEEROY JENKINS   NAME\n", ws.String())
+
+		reset(to, &ws)
 	})
+
 	t.Run("WriteLine", func(t *testing.T) {
 		to.Write([]string{"leeroy_jenkins", "name", "number"}, &testFieldsStruct{"test123", 1000000000})
-		if wfs.String() != "LEEROY JENKINS!!!\ttest123\t1000000000\n" {
-			t.Errorf("written line should be 'LEEROY JENKINS!!!\\ttest123\\t1000000000\\n', is: %q", wfs.String())
-		}
-		wfs.Reset()
+		_ = to.Flush()
+
+		assert.Equal(t, "LEEROY JENKINS!!!   test123   1000000000\n", ws.String())
+
+		reset(to, &ws)
 	})
+
 	t.Run("Columns", func(t *testing.T) {
 		if len(to.Columns()) != 3 {
 			t.Errorf("unexpected number of columns: %v", to.Columns())

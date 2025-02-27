@@ -42,7 +42,7 @@ func TestList(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{})
 
-	expOut := `ID   NAME   DESCRIPTION   NETWORK ZONE   COUNTRY   CITY
+	expOut := `ID   NAME   DESCRIPTION   NETWORK ZONE   COUNTRY   CITY       
 1    fsn1   -             eu-central     DE        Falkenstein
 `
 

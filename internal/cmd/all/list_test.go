@@ -179,12 +179,12 @@ func TestListAll(t *testing.T) {
 	expOut := `SERVERS
 ---
 ID    NAME        STATUS    IPV4        IPV6   PRIVATE NET   DATACENTER   AGE
-123   my server   running   192.0.2.1   -      -             hel1-dc2     3d
+123   my server   running   192.0.2.1   -      -             hel1-dc2     3d 
 
 IMAGES
 ---
 ID   TYPE     NAME   DESCRIPTION   ARCHITECTURE   IMAGE SIZE   DISK SIZE   CREATED                        DEPRECATED
-1    backup   test   -             arm            -            20 GB       Wed Aug 20 12:00:00 UTC 2036   -
+1    backup   test   -             arm            -            20 GB       Wed Aug 20 12:00:00 UTC 2036   -         
 
 PLACEMENT GROUPS
 ---
@@ -194,12 +194,12 @@ ID    NAME   SERVERS     TYPE     AGE
 PRIMARY IPS
 ---
 ID    TYPE   NAME   IP          ASSIGNEE   DNS   AUTO DELETE   AGE
-123   ipv4   test   127.0.0.1   -          -     no            2h
+123   ipv4   test   127.0.0.1   -          -     no            2h 
 
 ISOS
 ---
 ID    NAME   DESCRIPTION   TYPE      ARCHITECTURE
-123   test   -             private   arm
+123   test   -             private   arm         
 
 VOLUMES
 ---
@@ -209,12 +209,12 @@ ID    NAME   SIZE    SERVER   LOCATION   AGE
 LOAD BALANCER
 ---
 ID    NAME     HEALTH    IPV4        IPV6   TYPE   LOCATION   NETWORK ZONE   AGE
-123   foobar   healthy   192.0.2.1   ::     lb11   fsn1       eu-central     5h
+123   foobar   healthy   192.0.2.1   ::     lb11   fsn1       eu-central     5h 
 
 FLOATING IPS
 ---
 ID    TYPE   NAME   DESCRIPTION   IP          HOME   SERVER   DNS   AGE
-123   ipv4   test   -             127.0.0.1   fsn1   -        -     1d
+123   ipv4   test   -             127.0.0.1   fsn1   -        -     1d 
 
 NETWORKS
 ---
@@ -223,7 +223,7 @@ ID    NAME       IP RANGE       SERVERS    AGE
 
 FIREWALLS
 ---
-ID    NAME   RULES COUNT   APPLIED TO COUNT
+ID    NAME   RULES COUNT   APPLIED TO COUNT             
 123   test   5 Rules       2 Servers | 0 Label Selectors
 
 CERTIFICATES
@@ -234,7 +234,7 @@ ID    NAME   TYPE      DOMAIN NAMES   NOT VALID AFTER                AGE
 SSH KEYS
 ---
 ID    NAME   FINGERPRINT   AGE
-123   test   -             2h
+123   test   -             2h 
 
 `
 
