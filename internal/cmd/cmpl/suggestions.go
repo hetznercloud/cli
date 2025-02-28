@@ -13,7 +13,7 @@ import (
 // The returned function is mainly intended to be passed to
 // cobra/Command.RegisterFlagCompletionFunc or assigned  to
 // cobra/Command.ValidArgsFunction.
-func SuggestCandidates(cs ...string) func(*cobra.Command, []string, string) ([]string, cobra.ShellCompDirective) {
+func SuggestCandidates(cs ...string) cobra.CompletionFunc {
 	return SuggestCandidatesF(func() []string {
 		return cs
 	})
@@ -23,9 +23,7 @@ func SuggestCandidates(cs ...string) func(*cobra.Command, []string, string) ([]s
 // to obtain a list of completion candidates. Once the list of candidates is
 // obtained the function returned by SuggestCandidatesF behaves like the
 // function returned by SuggestCandidates.
-func SuggestCandidatesF(
-	cf func() []string,
-) func(*cobra.Command, []string, string) ([]string, cobra.ShellCompDirective) {
+func SuggestCandidatesF(cf func() []string) cobra.CompletionFunc {
 	return SuggestCandidatesCtx(func(*cobra.Command, []string) []string {
 		return cf()
 	})
@@ -37,10 +35,8 @@ func SuggestCandidatesF(
 // depend on a previously selected item like a server.
 //
 // Once the list of candidates is obtained the function returned by
-// SuggestCandidatesF behaves like the function returned by SuggestCandidates.
-func SuggestCandidatesCtx(
-	cf func(*cobra.Command, []string) []string,
-) func(*cobra.Command, []string, string) ([]string, cobra.ShellCompDirective) {
+// SuggestCandidatesCtx behaves like the function returned by SuggestCandidates.
+func SuggestCandidatesCtx(cf func(*cobra.Command, []string) []string) cobra.CompletionFunc {
 	return func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		cs := cf(cmd, args)
 		if toComplete == "" {
@@ -60,7 +56,7 @@ func SuggestCandidatesCtx(
 }
 
 // SuggestNothing returns a function that provides no suggestions.
-func SuggestNothing() func(*cobra.Command, []string, string) ([]string, cobra.ShellCompDirective) {
+func SuggestNothing() cobra.CompletionFunc {
 	return func(*cobra.Command, []string, string) ([]string, cobra.ShellCompDirective) {
 		return nil, cobra.ShellCompDirectiveDefault
 	}
@@ -75,9 +71,7 @@ func SuggestNothing() func(*cobra.Command, []string, string) ([]string, cobra.Sh
 // calls the function at vfs[4] if it exists. To skip suggestions for an
 // argument in the middle of a list of arguments pass either nil or
 // SuggestNothing. Using SuggestNothing is preferred.
-func SuggestArgs(
-	vfs ...func(*cobra.Command, []string, string) ([]string, cobra.ShellCompDirective),
-) func(*cobra.Command, []string, string) ([]string, cobra.ShellCompDirective) {
+func SuggestArgs(vfs ...cobra.CompletionFunc) cobra.CompletionFunc {
 	return func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 		// Number of argument to suggest. args contains the already present
 		// command line arguments.
@@ -95,8 +89,7 @@ func SuggestArgs(
 
 // NoFileCompletion returns a function that provides completion suggestions without
 // file completion.
-func NoFileCompletion(f func(*cobra.Command, []string, string) ([]string, cobra.ShellCompDirective)) func(
-	*cobra.Command, []string, string) ([]string, cobra.ShellCompDirective) {
+func NoFileCompletion(f cobra.CompletionFunc) cobra.CompletionFunc {
 	return func(command *cobra.Command, i []string, s string) ([]string, cobra.ShellCompDirective) {
 		candidates, _ := f(command, i, s)
 		return candidates, cobra.ShellCompDirectiveNoFileComp
