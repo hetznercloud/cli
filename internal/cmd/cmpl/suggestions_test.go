@@ -44,7 +44,7 @@ func TestSuggestCandidates(t *testing.T) {
 func TestSuggestArgs(t *testing.T) {
 	tests := []struct {
 		name string
-		vfs  []func(*cobra.Command, []string, string) ([]string, cobra.ShellCompDirective)
+		vfs  []cobra.CompletionFunc
 		args []string
 		sug  []string
 		d    cobra.ShellCompDirective
@@ -58,14 +58,14 @@ func TestSuggestArgs(t *testing.T) {
 		},
 		{
 			name: "suggest the only argument",
-			vfs: []func(*cobra.Command, []string, string) ([]string, cobra.ShellCompDirective){
+			vfs: []cobra.CompletionFunc{
 				cmpl.SuggestCandidates("aaaa"),
 			},
 			sug: []string{"aaaa"},
 		},
 		{
 			name: "suggest the second of three possible arguments",
-			vfs: []func(*cobra.Command, []string, string) ([]string, cobra.ShellCompDirective){
+			vfs: []cobra.CompletionFunc{
 				cmpl.SuggestCandidates("aaaa"),
 				cmpl.SuggestCandidates("bbbb"),
 				cmpl.SuggestCandidates("cccc"),
@@ -75,7 +75,7 @@ func TestSuggestArgs(t *testing.T) {
 		},
 		{
 			name: "skip suggestions using SuggestNothing",
-			vfs: []func(*cobra.Command, []string, string) ([]string, cobra.ShellCompDirective){
+			vfs: []cobra.CompletionFunc{
 				cmpl.SuggestCandidates("aaaa"),
 				cmpl.SuggestNothing(),
 				cmpl.SuggestCandidates("cccc"),
@@ -84,7 +84,7 @@ func TestSuggestArgs(t *testing.T) {
 		},
 		{
 			name: "skip suggestions using nil",
-			vfs: []func(*cobra.Command, []string, string) ([]string, cobra.ShellCompDirective){
+			vfs: []cobra.CompletionFunc{
 				cmpl.SuggestCandidates("aaaa"),
 				nil,
 				cmpl.SuggestCandidates("cccc"),
