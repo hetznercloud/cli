@@ -43,7 +43,7 @@ func TestList(t *testing.T) {
 	out, errOut, err := fx.Run(cmd, []string{})
 
 	expOut := `ID    NAME   DESCRIPTION   TYPE     ARCHITECTURE
-123   test   Test ISO      public   x86
+123   test   Test ISO      public   x86         
 `
 
 	require.NoError(t, err)

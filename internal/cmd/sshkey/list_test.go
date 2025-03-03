@@ -41,7 +41,7 @@ func TestList(t *testing.T) {
 	out, errOut, err := fx.Run(cmd, []string{})
 
 	expOut := `ID    NAME   FINGERPRINT   AGE
-123   test   -             1h
+123   test   -             1h 
 `
 
 	require.NoError(t, err)

@@ -94,8 +94,12 @@ func TestList(t *testing.T) {
 	const resourceSchema = `[{"id": 123, "name": "test"}, {"id": 456, "name": "test2"}, {"id": 789, "name": "test3"}]`
 	testutil.TestCommand(t, fakeListCmd, map[string]testutil.TestCase{
 		"no flags": {
-			Args:   []string{"list"},
-			ExpOut: "ID    NAME\n123   test\n456   test2\n789   test3\n",
+			Args: []string{"list"},
+			ExpOut: `ID    NAME 
+123   test 
+456   test2
+789   test3
+`,
 		},
 		"json": {
 			Args:       []string{"list", "-o=json"},
@@ -108,8 +112,12 @@ func TestList(t *testing.T) {
 			ExpOutType: testutil.DataTypeYAML,
 		},
 		"quiet": {
-			Args:   []string{"list", "--quiet"},
-			ExpOut: "ID    NAME\n123   test\n456   test2\n789   test3\n",
+			Args: []string{"list", "--quiet"},
+			ExpOut: `ID    NAME 
+123   test 
+456   test2
+789   test3
+`,
 		},
 		"json quiet": {
 			Args:       []string{"list", "-o=json", "--quiet"},

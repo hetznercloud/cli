@@ -120,7 +120,7 @@ func runCertificateTestSuite(t *testing.T, certName string, certID int64, certTy
 				Raw(fingerprintRegex).Whitespace().
 				OneOf("completed", "n/a").Whitespace().
 				Lit("n/a").Whitespace().
-				Age().Newline().
+				Age().OptionalWhitespace().Newline().
 				End(),
 			out,
 		)

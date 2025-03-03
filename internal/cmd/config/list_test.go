@@ -58,52 +58,52 @@ func TestList(t *testing.T) {
 		{
 			name: "default",
 			args: []string{},
-			expOut: `KEY                    VALUE
-context                test_context
-debug                  yes
-deeply.nested.option   bar
+			expOut: `KEY                    VALUE                    
+context                test_context             
+debug                  yes                      
+deeply.nested.option   bar                      
 endpoint               https://test-endpoint.com
-poll-interval          1.234s
-quiet                  yes
-token                  [redacted]
+poll-interval          1.234s                   
+quiet                  yes                      
+token                  [redacted]               
 `,
 		},
 		{
 			name: "only key",
 			args: []string{"-o=columns=key"},
-			expOut: `KEY
-context
-debug
+			expOut: `KEY                 
+context             
+debug               
 deeply.nested.option
-endpoint
-poll-interval
-quiet
-token
+endpoint            
+poll-interval       
+quiet               
+token               
 `,
 		},
 		{
 			name: "no header",
 			args: []string{"-o=noheader"},
-			expOut: `context                test_context
-debug                  yes
-deeply.nested.option   bar
+			expOut: `context                test_context             
+debug                  yes                      
+deeply.nested.option   bar                      
 endpoint               https://test-endpoint.com
-poll-interval          1.234s
-quiet                  yes
-token                  [redacted]
+poll-interval          1.234s                   
+quiet                  yes                      
+token                  [redacted]               
 `,
 		},
 		{
 			name: "allow sensitive",
 			args: []string{"--allow-sensitive"},
-			expOut: `KEY                    VALUE
-context                test_context
-debug                  yes
-deeply.nested.option   bar
+			expOut: `KEY                    VALUE                    
+context                test_context             
+debug                  yes                      
+deeply.nested.option   bar                      
 endpoint               https://test-endpoint.com
-poll-interval          1.234s
-quiet                  yes
-token                  super secret token
+poll-interval          1.234s                   
+quiet                  yes                      
+token                  super secret token       
 `,
 		},
 		{

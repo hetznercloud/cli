@@ -35,6 +35,8 @@ const (
 )
 
 func (dt DataType) test(t *testing.T, expected string, actual string, _ ...any) {
+	t.Helper()
+
 	switch dt {
 	case DataTypeJSON:
 		assert.JSONEq(t, expected, actual)

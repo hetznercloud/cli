@@ -101,6 +101,10 @@ func (r RegexBuilder) Whitespace() RegexBuilder {
 	return r.Raw(`\s+`)
 }
 
+func (r RegexBuilder) OptionalWhitespace() RegexBuilder {
+	return r.Raw(`\s*`)
+}
+
 func (r RegexBuilder) Newline() RegexBuilder {
 	return r.Raw("\n")
 }

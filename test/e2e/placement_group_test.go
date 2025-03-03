@@ -62,13 +62,13 @@ func TestPlacementGroup(t *testing.T) {
 
 			assert.Regexp(t,
 				NewRegex().Start().
-					SeparatedByWhitespace("ID", "NAME", "SERVERS", "TYPE", "CREATED", "AGE").Newline().
+					SeparatedByWhitespace("ID", "NAME", "SERVERS", "TYPE", "CREATED", "AGE").OptionalWhitespace().Newline().
 					Int().Whitespace().
 					Raw(`new-test-placement-group-[0-9a-f]{8}`).Whitespace().
 					Lit("0 servers").Whitespace().
 					Lit("spread").Whitespace().
 					UnixDate().Whitespace().
-					Age().Newline().End(),
+					Age().OptionalWhitespace().Newline().End(),
 				out,
 			)
 		})

@@ -29,7 +29,7 @@ func TestISO(t *testing.T) {
 						Identifier().Whitespace().
 						AnyString().Whitespace().
 						OneOfLit("public", "private").Whitespace().
-						OneOf("arm", "x86").Newline()).
+						OneOf("arm", "x86").OptionalWhitespace().Newline()).
 					End(),
 				out,
 			)

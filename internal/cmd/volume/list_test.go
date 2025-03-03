@@ -47,7 +47,7 @@ func TestList(t *testing.T) {
 	out, errOut, err := fx.Run(cmd, []string{})
 
 	expOut := `ID    NAME   SIZE    SERVER     LOCATION   AGE
-123   test   50 GB   myServer   fsn1       1h
+123   test   50 GB   myServer   fsn1       1h 
 `
 
 	require.NoError(t, err)

@@ -42,7 +42,7 @@ func TestList(t *testing.T) {
 	out, errOut, err := fx.Run(cmd, []string{})
 
 	expOut := `ID   NAME        DESCRIPTION                   LOCATION
-4    fsn1-dc14   Falkenstein 1 virtual DC 14   fsn1
+4    fsn1-dc14   Falkenstein 1 virtual DC 14   fsn1    
 `
 
 	require.NoError(t, err)
