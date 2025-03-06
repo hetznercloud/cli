@@ -2,7 +2,7 @@ module tools
 
 go 1.23.4
 
-toolchain go1.23.7
+toolchain go1.24.1
 
 require (
 	github.com/anchore/quill v0.5.1
