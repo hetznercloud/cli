@@ -3,6 +3,7 @@ package base
 import (
 	"errors"
 	"fmt"
+	"slices"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -12,7 +13,6 @@ import (
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
-	"github.com/hetznercloud/hcloud-go/v2/hcloud/exp/kit/sliceutil"
 )
 
 // DeleteCmd allows defining commands for deleting a resource.
@@ -59,7 +59,7 @@ func (dc *DeleteCmd) Run(s state.State, cmd *cobra.Command, args []string) error
 	errs := make([]error, 0, len(args))
 	deleted := make([]string, 0, len(args))
 
-	for _, batch := range sliceutil.Batches(args, deleteBatchSize) {
+	for batch := range slices.Chunk(args, deleteBatchSize) {
 		results := make([]util.ResourceState, len(batch))
 		actions := make([]*hcloud.Action, 0, len(batch))
 
