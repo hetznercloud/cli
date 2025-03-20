@@ -360,9 +360,9 @@ func (mr *MockLoadBalancerClientMockRecorder) GetByName(ctx, name any) *gomock.C
 }
 
 // GetMetrics mocks base method.
-func (m *MockLoadBalancerClient) GetMetrics(ctx context.Context, lb *hcloud.LoadBalancer, opts hcloud.LoadBalancerGetMetricsOpts) (*hcloud.LoadBalancerMetrics, *hcloud.Response, error) {
+func (m *MockLoadBalancerClient) GetMetrics(ctx context.Context, loadBalancer *hcloud.LoadBalancer, opts hcloud.LoadBalancerGetMetricsOpts) (*hcloud.LoadBalancerMetrics, *hcloud.Response, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetMetrics", ctx, lb, opts)
+	ret := m.ctrl.Call(m, "GetMetrics", ctx, loadBalancer, opts)
 	ret0, _ := ret[0].(*hcloud.LoadBalancerMetrics)
 	ret1, _ := ret[1].(*hcloud.Response)
 	ret2, _ := ret[2].(error)
@@ -370,9 +370,9 @@ func (m *MockLoadBalancerClient) GetMetrics(ctx context.Context, lb *hcloud.Load
 }
 
 // GetMetrics indicates an expected call of GetMetrics.
-func (mr *MockLoadBalancerClientMockRecorder) GetMetrics(ctx, lb, opts any) *gomock.Call {
+func (mr *MockLoadBalancerClientMockRecorder) GetMetrics(ctx, loadBalancer, opts any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMetrics", reflect.TypeOf((*MockLoadBalancerClient)(nil).GetMetrics), ctx, lb, opts)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMetrics", reflect.TypeOf((*MockLoadBalancerClient)(nil).GetMetrics), ctx, loadBalancer, opts)
 }
 
 // LabelKeys mocks base method.

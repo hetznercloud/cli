@@ -120,9 +120,9 @@ func (mr *MockPrimaryIPClientMockRecorder) ChangeProtection(ctx, opts any) *gomo
 }
 
 // Create mocks base method.
-func (m *MockPrimaryIPClient) Create(ctx context.Context, reqBody hcloud.PrimaryIPCreateOpts) (*hcloud.PrimaryIPCreateResult, *hcloud.Response, error) {
+func (m *MockPrimaryIPClient) Create(ctx context.Context, opts hcloud.PrimaryIPCreateOpts) (*hcloud.PrimaryIPCreateResult, *hcloud.Response, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", ctx, reqBody)
+	ret := m.ctrl.Call(m, "Create", ctx, opts)
 	ret0, _ := ret[0].(*hcloud.PrimaryIPCreateResult)
 	ret1, _ := ret[1].(*hcloud.Response)
 	ret2, _ := ret[2].(error)
@@ -130,9 +130,9 @@ func (m *MockPrimaryIPClient) Create(ctx context.Context, reqBody hcloud.Primary
 }
 
 // Create indicates an expected call of Create.
-func (mr *MockPrimaryIPClientMockRecorder) Create(ctx, reqBody any) *gomock.Call {
+func (mr *MockPrimaryIPClientMockRecorder) Create(ctx, opts any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockPrimaryIPClient)(nil).Create), ctx, reqBody)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockPrimaryIPClient)(nil).Create), ctx, opts)
 }
 
 // Delete mocks base method.
@@ -303,9 +303,9 @@ func (mr *MockPrimaryIPClientMockRecorder) Unassign(ctx, id any) *gomock.Call {
 }
 
 // Update mocks base method.
-func (m *MockPrimaryIPClient) Update(ctx context.Context, primaryIP *hcloud.PrimaryIP, reqBody hcloud.PrimaryIPUpdateOpts) (*hcloud.PrimaryIP, *hcloud.Response, error) {
+func (m *MockPrimaryIPClient) Update(ctx context.Context, primaryIP *hcloud.PrimaryIP, opts hcloud.PrimaryIPUpdateOpts) (*hcloud.PrimaryIP, *hcloud.Response, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Update", ctx, primaryIP, reqBody)
+	ret := m.ctrl.Call(m, "Update", ctx, primaryIP, opts)
 	ret0, _ := ret[0].(*hcloud.PrimaryIP)
 	ret1, _ := ret[1].(*hcloud.Response)
 	ret2, _ := ret[2].(error)
@@ -313,7 +313,7 @@ func (m *MockPrimaryIPClient) Update(ctx context.Context, primaryIP *hcloud.Prim
 }
 
 // Update indicates an expected call of Update.
-func (mr *MockPrimaryIPClientMockRecorder) Update(ctx, primaryIP, reqBody any) *gomock.Call {
+func (mr *MockPrimaryIPClientMockRecorder) Update(ctx, primaryIP, opts any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockPrimaryIPClient)(nil).Update), ctx, primaryIP, reqBody)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockPrimaryIPClient)(nil).Update), ctx, primaryIP, opts)
 }
