@@ -246,6 +246,20 @@ func (mr *MockNetworkClientMockRecorder) GetByName(ctx, name any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByName", reflect.TypeOf((*MockNetworkClient)(nil).GetByName), ctx, name)
 }
 
+// IDs mocks base method.
+func (m *MockNetworkClient) IDs() []string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "IDs")
+	ret0, _ := ret[0].([]string)
+	return ret0
+}
+
+// IDs indicates an expected call of IDs.
+func (mr *MockNetworkClientMockRecorder) IDs() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IDs", reflect.TypeOf((*MockNetworkClient)(nil).IDs))
+}
+
 // LabelKeys mocks base method.
 func (m *MockNetworkClient) LabelKeys(arg0 string) []string {
 	m.ctrl.T.Helper()
