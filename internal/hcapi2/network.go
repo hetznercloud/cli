@@ -13,7 +13,6 @@ import (
 type NetworkClient interface {
 	hcloud.INetworkClient
 	Names() []string
-	IDs() []string
 	Name(int64) string
 	LabelKeys(string) []string
 }
@@ -65,21 +64,6 @@ func (c *networkClient) Names() []string {
 		i++
 	}
 	return names
-}
-
-// IDs obtains a list of available network IDs as strings. It returns nil if the
-// networks could not be fetched or if there are no networks.
-func (c *networkClient) IDs() []string {
-	if err := c.init(); err != nil || len(c.netsByID) == 0 {
-		return nil
-	}
-	ids := make([]string, len(c.netsByID))
-	i := 0
-	for _, net := range c.netsByID {
-		ids[i] = strconv.FormatInt(net.ID, 10)
-		i++
-	}
-	return ids
 }
 
 // LabelKeys returns a slice containing the keys of all labels assigned

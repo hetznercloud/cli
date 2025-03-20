@@ -1,6 +1,8 @@
 package loadbalancer
 
 import (
+	"fmt"
+
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
@@ -43,8 +45,8 @@ var CreateCmd = base.CreateCmd{
 		cmd.Flags().StringSlice("enable-protection", []string{}, "Enable protection (delete) (default: none)")
 		_ = cmd.RegisterFlagCompletionFunc("enable-protection", cmpl.SuggestCandidates("delete"))
 
-		cmd.Flags().Int64("network", 0, "ID of the network the Load Balancer should be attached to on creation")
-		_ = cmd.RegisterFlagCompletionFunc("network", cmpl.SuggestCandidatesF(client.Network().IDs))
+		cmd.Flags().String("network", "", "Name or ID of the network the Load Balancer should be attached to on creation")
+		_ = cmd.RegisterFlagCompletionFunc("network", cmpl.SuggestCandidatesF(client.Network().Names))
 
 		return cmd
 	},
@@ -56,7 +58,7 @@ var CreateCmd = base.CreateCmd{
 		networkZone, _ := cmd.Flags().GetString("network-zone")
 		labels, _ := cmd.Flags().GetStringToString("label")
 		protection, _ := cmd.Flags().GetStringSlice("enable-protection")
-		network, _ := cmd.Flags().GetInt64("network")
+		network, _ := cmd.Flags().GetString("network")
 
 		protectionOpts, err := getChangeProtectionOpts(true, protection)
 		if err != nil {
@@ -79,8 +81,15 @@ var CreateCmd = base.CreateCmd{
 		if location != "" {
 			createOpts.Location = &hcloud.Location{Name: location}
 		}
-		if network > 0 {
-			createOpts.Network = &hcloud.Network{ID: network}
+		if network != "" {
+			net, _, err := s.Client().Network().Get(s, network)
+			if err != nil {
+				return nil, nil, err
+			}
+			if net == nil {
+				return nil, nil, fmt.Errorf("network not found: %s", network)
+			}
+			createOpts.Network = net
 		}
 		result, _, err := s.Client().LoadBalancer().Create(s, createOpts)
 		if err != nil {
