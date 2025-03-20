@@ -45,7 +45,7 @@ var CreateCmd = base.CreateCmd{
 		cmd.Flags().StringSlice("enable-protection", []string{}, "Enable protection (delete) (default: none)")
 		_ = cmd.RegisterFlagCompletionFunc("enable-protection", cmpl.SuggestCandidates("delete"))
 
-		cmd.Flags().String("network", "", "Name or ID of the network the Load Balancer should be attached to on creation")
+		cmd.Flags().String("network", "", "Name or ID of the Network the Load Balancer should be attached to on creation")
 		_ = cmd.RegisterFlagCompletionFunc("network", cmpl.SuggestCandidatesF(client.Network().Names))
 
 		return cmd
