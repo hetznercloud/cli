@@ -1,5 +1,16 @@
 # Changelog
 
+## [v1.51.0](https://github.com/hetznercloud/cli/releases/tag/v1.51.0)
+
+### Features
+
+- **load-balancer**: allow specifying network on create (#1013)
+
+### Bug Fixes
+
+- allow getting resources with number as name
+- some list flags are not correctly parsed (#987)
+
 ## [v1.50.0](https://github.com/hetznercloud/cli/releases/tag/v1.50.0)
 
 ### Features
