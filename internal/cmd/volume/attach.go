@@ -43,7 +43,7 @@ var AttachCmd = base.Cmd{
 			return err
 		}
 		if server == nil {
-			return fmt.Errorf("server not found: %s", serverIDOrName)
+			return fmt.Errorf("Server not found: %s", serverIDOrName)
 		}
 		automount, _ := cmd.Flags().GetBool("automount")
 		action, _, err := s.Client().Volume().AttachWithOpts(s, volume, hcloud.VolumeAttachOpts{
@@ -59,7 +59,7 @@ var AttachCmd = base.Cmd{
 			return err
 		}
 
-		cmd.Printf("Volume %d attached to server %s\n", volume.ID, server.Name)
+		cmd.Printf("Volume %d attached to Server %s\n", volume.ID, server.Name)
 		return nil
 	},
 }

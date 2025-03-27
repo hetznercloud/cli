@@ -30,7 +30,7 @@ var CreateCmd = base.CreateCmd{
 
 		cmd.Flags().String("name", "", "Name")
 
-		cmd.Flags().String("home-location", "", "Home location")
+		cmd.Flags().String("home-location", "", "Home Location")
 		_ = cmd.RegisterFlagCompletionFunc("home-location", cmpl.SuggestCandidatesF(client.Location().Names))
 
 		cmd.Flags().String("server", "", "Server to assign Floating IP to")
@@ -83,7 +83,7 @@ var CreateCmd = base.CreateCmd{
 				return nil, nil, err
 			}
 			if server == nil {
-				return nil, nil, fmt.Errorf("server not found: %s", serverNameOrID)
+				return nil, nil, fmt.Errorf("Server not found: %s", serverNameOrID)
 			}
 			createOpts.Server = server
 		}

@@ -38,5 +38,5 @@ func TestEnableProtection(t *testing.T) {
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
-	assert.Equal(t, "Resource protection enabled for volume 123\n", out)
+	assert.Equal(t, "Resource protection enabled for Volume 123\n", out)
 }

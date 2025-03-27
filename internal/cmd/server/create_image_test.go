@@ -43,5 +43,5 @@ func TestCreateImage(t *testing.T) {
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
-	assert.Equal(t, "Image 456 created from server 123\n", out)
+	assert.Equal(t, "Image 456 created from Server 123\n", out)
 }

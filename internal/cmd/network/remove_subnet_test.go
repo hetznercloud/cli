@@ -39,7 +39,7 @@ func TestRemoveSubnet(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"123", "--ip-range", "10.0.0.0/24"})
 
-	expOut := "Subnet 10.0.0.0/24 removed from network 123\n"
+	expOut := "Subnet 10.0.0.0/24 removed from Network 123\n"
 
 	require.NoError(t, err)
 	assert.Equal(t, expOut, out)

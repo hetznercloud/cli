@@ -19,7 +19,7 @@ var CreateCmd = base.CreateCmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:                   "create [options] --name <name> --size <size>",
-			Short:                 "Create a volume",
+			Short:                 "Create a Volume",
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
 		}
@@ -35,9 +35,9 @@ var CreateCmd = base.CreateCmd{
 		cmd.Flags().Int("size", 0, "Size (GB) (required)")
 		_ = cmd.MarkFlagRequired("size")
 
-		cmd.Flags().Bool("automount", false, "Automount volume after attach (server must be provided)")
+		cmd.Flags().Bool("automount", false, "Automount Volume after attach (Server must be provided)")
 
-		cmd.Flags().String("format", "", "Format volume after creation (ext4 or xfs)")
+		cmd.Flags().String("format", "", "Format Volume after creation (ext4 or xfs)")
 		_ = cmd.RegisterFlagCompletionFunc("format", cmpl.SuggestCandidates("ext4", "xfs"))
 
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
@@ -82,7 +82,7 @@ var CreateCmd = base.CreateCmd{
 				return nil, nil, err
 			}
 			if server == nil {
-				return nil, nil, fmt.Errorf("server not found: %s", serverIDOrName)
+				return nil, nil, fmt.Errorf("Server not found: %s", serverIDOrName)
 			}
 			createOpts.Server = server
 		}

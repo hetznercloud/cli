@@ -13,7 +13,7 @@ import (
 )
 
 var ListCmd = base.ListCmd{
-	ResourceNamePlural: "locations",
+	ResourceNamePlural: "Locations",
 	JSONKeyGetByName:   "locations",
 	DefaultColumns:     []string{"id", "name", "description", "network_zone", "country", "city"},
 	SortOption:         config.OptionSortLocation,

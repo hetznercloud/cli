@@ -17,7 +17,7 @@ var AddSubnetCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:                   "add-subnet [options] --type <cloud|server|vswitch> --network-zone <zone> <network>",
-			Short:                 "Add a subnet to a network",
+			Short:                 "Add a subnet to a Network",
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Network().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
@@ -72,7 +72,7 @@ var AddSubnetCmd = base.Cmd{
 		if err := s.WaitForActions(s, cmd, action); err != nil {
 			return err
 		}
-		cmd.Printf("Subnet added to network %d\n", network.ID)
+		cmd.Printf("Subnet added to Network %d\n", network.ID)
 
 		return nil
 	},

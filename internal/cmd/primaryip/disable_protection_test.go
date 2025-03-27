@@ -47,7 +47,7 @@ func TestDisableProtection(t *testing.T) {
 	fx.ActionWaiter.EXPECT().WaitForActions(gomock.Any(), gomock.Any(), action).Return(nil)
 	out, errOut, err := fx.Run(cmd, []string{"13"})
 
-	expOut := "Resource protection disabled for primary IP 13\n"
+	expOut := "Resource protection disabled for Primary IP 13\n"
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
@@ -77,7 +77,7 @@ func TestDisableDeleteProtection(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"13", "delete"})
 
-	expOut := "Resource protection disabled for primary IP 13\n"
+	expOut := "Resource protection disabled for Primary IP 13\n"
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)

@@ -47,9 +47,9 @@ func changeProtection(s state.State, cmd *cobra.Command,
 	}
 
 	if enable {
-		cmd.Printf("Resource protection enabled for primary IP %d\n", opts.ID)
+		cmd.Printf("Resource protection enabled for Primary IP %d\n", opts.ID)
 	} else {
-		cmd.Printf("Resource protection disabled for primary IP %d\n", opts.ID)
+		cmd.Printf("Resource protection disabled for Primary IP %d\n", opts.ID)
 	}
 	return nil
 }

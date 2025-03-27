@@ -28,7 +28,7 @@ var PoweronCmd = base.Cmd{
 			return err
 		}
 		if server == nil {
-			return fmt.Errorf("server not found: %s", idOrName)
+			return fmt.Errorf("Server not found: %s", idOrName)
 		}
 
 		action, _, err := s.Client().Server().Poweron(s, server)

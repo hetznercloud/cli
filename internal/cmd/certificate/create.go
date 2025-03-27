@@ -27,17 +27,17 @@ var CreateCmd = base.CreateCmd{
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 
 		cmd.Flags().StringP("type", "t", string(hcloud.CertificateTypeUploaded),
-			fmt.Sprintf("Type of certificate to create. Valid choices: %v, %v",
+			fmt.Sprintf("Type of Certificate to create. Valid choices: %v, %v",
 				hcloud.CertificateTypeUploaded, hcloud.CertificateTypeManaged))
 		_ = cmd.RegisterFlagCompletionFunc(
 			"type",
 			cmpl.SuggestCandidates(string(hcloud.CertificateTypeUploaded), string(hcloud.CertificateTypeManaged)),
 		)
 
-		cmd.Flags().String("cert-file", "", "File containing the PEM encoded certificate (required if type is uploaded)")
+		cmd.Flags().String("cert-file", "", "File containing the PEM encoded Certificate (required if type is uploaded)")
 		cmd.Flags().String("key-file", "",
-			"File containing the PEM encoded private key for the certificate (required if type is uploaded)")
-		cmd.Flags().StringSlice("domain", nil, "One or more domains the certificate is valid for.")
+			"File containing the PEM encoded private key for the Certificate (required if type is uploaded)")
+		cmd.Flags().StringSlice("domain", nil, "One or more domains the Certificate is valid for.")
 
 		return cmd
 	},

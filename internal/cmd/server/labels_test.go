@@ -31,7 +31,7 @@ func TestLabelAdd(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"123", "key=value"})
 
-	expOut := "Label(s) key added to server 123\n"
+	expOut := "Label(s) key added to Server 123\n"
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
@@ -58,7 +58,7 @@ func TestMultiLabelAdd(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"123", "foo=bar", "baz=qux"})
 
-	expOut := "Label(s) foo, baz added to server 123\n"
+	expOut := "Label(s) foo, baz added to Server 123\n"
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
@@ -89,7 +89,7 @@ func TestLabelRemove(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"123", "key"})
 
-	expOut := "Label(s) key removed from server 123\n"
+	expOut := "Label(s) key removed from Server 123\n"
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
@@ -124,7 +124,7 @@ func TestMultiLabelRemove(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"123", "foo", "baz"})
 
-	expOut := "Label(s) foo, baz removed from server 123\n"
+	expOut := "Label(s) foo, baz removed from Server 123\n"
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)

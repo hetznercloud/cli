@@ -42,5 +42,5 @@ func TestDetachFromNetwork(t *testing.T) {
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
-	assert.Equal(t, "Server 123 detached from network 456\n", out)
+	assert.Equal(t, "Server 123 detached from Network 456\n", out)
 }

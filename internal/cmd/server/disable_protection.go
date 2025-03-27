@@ -31,7 +31,7 @@ var DisableProtectionCmd = base.Cmd{
 			return err
 		}
 		if server == nil {
-			return fmt.Errorf("server not found: %s", idOrName)
+			return fmt.Errorf("Server not found: %s", idOrName)
 		}
 
 		opts, err := getChangeProtectionOpts(false, args[1:])

@@ -4,6 +4,8 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
@@ -16,14 +18,14 @@ var AssignCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:   "assign --server <server> <primary-ip>",
-			Short: "Assign a Primary IP to an assignee (usually a server)",
+			Short: "Assign a Primary IP to an assignee (usually a Server)",
 			ValidArgsFunction: cmpl.SuggestArgs(
 				cmpl.SuggestCandidatesF(client.PrimaryIP().Names),
 			),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
 		}
-		cmd.Flags().String("server", "", "Name or ID of the server")
+		cmd.Flags().String("server", "", "Name or ID of the Server")
 		_ = cmd.RegisterFlagCompletionFunc("server", cmpl.SuggestCandidatesF(client.Server().Names))
 		_ = cmd.MarkFlagRequired("server")
 		return cmd
@@ -45,7 +47,7 @@ var AssignCmd = base.Cmd{
 			return err
 		}
 		if server == nil {
-			return fmt.Errorf("server not found: %s", serverIDOrName)
+			return fmt.Errorf("Server not found: %s", serverIDOrName)
 		}
 		opts := hcloud.PrimaryIPAssignOpts{
 			ID:           primaryIP.ID,
@@ -62,7 +64,7 @@ var AssignCmd = base.Cmd{
 			return err
 		}
 
-		cmd.Printf("Primary IP %d assigned to %s %d\n", opts.ID, opts.AssigneeType, opts.AssigneeID)
+		cmd.Printf("Primary IP %d assigned to %s %d\n", opts.ID, cases.Title(language.English).String(opts.AssigneeType), opts.AssigneeID)
 		return nil
 	},
 }

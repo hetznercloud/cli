@@ -11,8 +11,8 @@ import (
 )
 
 var UpdateCmd = base.UpdateCmd{
-	ResourceNameSingular: "SSHKey",
-	ShortDescription:     "Update a SSHKey",
+	ResourceNameSingular: "SSH Key",
+	ShortDescription:     "Update an SSH Key",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.SSHKey().Names },
 	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
 		return s.Client().SSHKey().Get(s, idOrName)

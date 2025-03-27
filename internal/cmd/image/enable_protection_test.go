@@ -30,7 +30,7 @@ func TestEnableProtection(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"123", "delete"})
 
-	expOut := "Resource protection enabled for image 123\n"
+	expOut := "Resource protection enabled for Image 123\n"
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)

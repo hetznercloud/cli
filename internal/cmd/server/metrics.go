@@ -56,7 +56,7 @@ var MetricsCmd = base.Cmd{
 			return err
 		}
 		if server == nil {
-			return fmt.Errorf("server not found: %s", idOrName)
+			return fmt.Errorf("Server not found: %s", idOrName)
 		}
 
 		metricTypesStr, _ := cmd.Flags().GetStringSlice("type")

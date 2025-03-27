@@ -24,7 +24,7 @@ var EnableRescueCmd = base.Cmd{
 		cmd.Flags().String("type", "linux64", "Rescue type")
 		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("linux64"))
 
-		cmd.Flags().StringSlice("ssh-key", nil, "ID or name of SSH key to inject (can be specified multiple times)")
+		cmd.Flags().StringSlice("ssh-key", nil, "ID or name of SSH Key to inject (can be specified multiple times)")
 		_ = cmd.RegisterFlagCompletionFunc("ssh-key", cmpl.SuggestCandidatesF(client.SSHKey().Names))
 		return cmd
 	},
@@ -35,7 +35,7 @@ var EnableRescueCmd = base.Cmd{
 			return err
 		}
 		if server == nil {
-			return fmt.Errorf("server not found: %s", idOrName)
+			return fmt.Errorf("Server not found: %s", idOrName)
 		}
 
 		var (
@@ -60,7 +60,7 @@ var EnableRescueCmd = base.Cmd{
 				return err
 			}
 			if sshKey == nil {
-				return fmt.Errorf("SSH key not found: %s", sshKeyIDOrName)
+				return fmt.Errorf("SSH Key not found: %s", sshKeyIDOrName)
 			}
 			opts.SSHKeys = append(opts.SSHKeys, sshKey)
 		}
@@ -74,7 +74,7 @@ var EnableRescueCmd = base.Cmd{
 			return err
 		}
 
-		cmd.Printf("Rescue enabled for server %d with root password: %s\n", server.ID, result.RootPassword)
+		cmd.Printf("Rescue enabled for Server %d with root password: %s\n", server.ID, result.RootPassword)
 		return nil
 	},
 }

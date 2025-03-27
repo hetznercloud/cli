@@ -13,8 +13,8 @@ import (
 
 // DescribeCmd defines a command for describing a network.
 var DescribeCmd = base.DescribeCmd[*hcloud.Network]{
-	ResourceNameSingular: "network",
-	ShortDescription:     "Describe a network",
+	ResourceNameSingular: "Network",
+	ShortDescription:     "Describe a Network",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Network().Names },
 	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.Network, any, error) {
 		n, _, err := s.Client().Network().Get(s, idOrName)

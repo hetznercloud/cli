@@ -15,7 +15,7 @@ var DetachISOCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		return &cobra.Command{
 			Use:                   "detach-iso <server>",
-			Short:                 "Detach an ISO from a server",
+			Short:                 "Detach an ISO from a Server",
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
@@ -28,7 +28,7 @@ var DetachISOCmd = base.Cmd{
 			return err
 		}
 		if server == nil {
-			return fmt.Errorf("server not found: %s", idOrName)
+			return fmt.Errorf("Server not found: %s", idOrName)
 		}
 
 		action, _, err := s.Client().Server().DetachISO(s, server)
@@ -40,7 +40,7 @@ var DetachISOCmd = base.Cmd{
 			return err
 		}
 
-		cmd.Printf("ISO detached from server %d\n", server.ID)
+		cmd.Printf("ISO detached from Server %d\n", server.ID)
 		return nil
 	},
 }

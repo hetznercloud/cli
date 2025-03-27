@@ -15,7 +15,7 @@ var RemoveFromPlacementGroupCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:               "remove-from-placement-group <server>",
-			Short:             "Removes a server from a placement group",
+			Short:             "Removes a Server from a Placement Group",
 			ValidArgsFunction: cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
 		}
 
@@ -29,7 +29,7 @@ var RemoveFromPlacementGroupCmd = base.Cmd{
 			return err
 		}
 		if server == nil {
-			return fmt.Errorf("server not found: %s", idOrName)
+			return fmt.Errorf("Server not found: %s", idOrName)
 		}
 
 		action, _, err := s.Client().Server().RemoveFromPlacementGroup(s, server)
@@ -41,7 +41,7 @@ var RemoveFromPlacementGroupCmd = base.Cmd{
 			return err
 		}
 
-		cmd.Printf("Server %d removed from placement group\n", server.ID)
+		cmd.Printf("Server %d removed from Placement Group\n", server.ID)
 		return nil
 	},
 }

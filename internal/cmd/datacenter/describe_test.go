@@ -41,7 +41,7 @@ Location:
   Latitude:	0.000000
   Longitude:	0.000000
 Server Types:
-  No server types
+  No Server Types
 `
 
 	require.NoError(t, err)

@@ -41,5 +41,5 @@ func TestRetry(t *testing.T) {
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
-	assert.Equal(t, "Retried issuance of certificate my-test-cert\n", out)
+	assert.Equal(t, "Retried issuance of Certificate my-test-cert\n", out)
 }

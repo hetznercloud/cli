@@ -22,7 +22,7 @@ var LabelCmds = base.LabelCmds[*hcloud.LoadBalancer]{
 			return nil, err
 		}
 		if loadBalancer == nil {
-			return nil, fmt.Errorf("load balancer not found: %s", idOrName)
+			return nil, fmt.Errorf("Load Balancer not found: %s", idOrName)
 		}
 		return loadBalancer, nil
 	},

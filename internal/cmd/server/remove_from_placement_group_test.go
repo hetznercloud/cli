@@ -33,7 +33,7 @@ func TestRemoveFromPlacementGroup(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{srv.Name})
 
-	expOut := `Server 42 removed from placement group
+	expOut := `Server 42 removed from Placement Group
 `
 
 	require.NoError(t, err)
