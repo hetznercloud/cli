@@ -14,14 +14,14 @@ var CreateCmd = base.CreateCmd{
 	BaseCobraCommand: func(hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:   "create [options] --name <name> --type <type>",
-			Short: "Create a placement group",
+			Short: "Create a Placement Group",
 		}
 		cmd.Flags().String("name", "", "Name")
 		_ = cmd.MarkFlagRequired("name")
 
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 
-		cmd.Flags().String("type", "", "Type of the placement group")
+		cmd.Flags().String("type", "", "Type of the Placement Group")
 		_ = cmd.MarkFlagRequired("type")
 		return cmd
 	},

@@ -48,5 +48,5 @@ func TestAttachToNetwork(t *testing.T) {
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
-	assert.Equal(t, "Server 123 attached to network 456\n", out)
+	assert.Equal(t, "Server 123 attached to Network 456\n", out)
 }

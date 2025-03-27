@@ -16,7 +16,7 @@ import (
 
 // SetRdnsCmd allows defining commands for setting the RDNS of a resource.
 type SetRdnsCmd struct {
-	ResourceNameSingular string // e.g. "server"
+	ResourceNameSingular string // e.g. "Server"
 	ShortDescription     string
 	NameSuggestions      func(client hcapi2.Client) func() []string
 	Fetch                func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error)

@@ -31,7 +31,7 @@ func TestLabelAdd(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"123", "key=value"})
 
-	expOut := "Label(s) key added to placement group 123\n"
+	expOut := "Label(s) key added to Placement Group 123\n"
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
@@ -62,7 +62,7 @@ func TestLabelRemove(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"123", "key"})
 
-	expOut := "Label(s) key removed from placement group 123\n"
+	expOut := "Label(s) key removed from Placement Group 123\n"
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)

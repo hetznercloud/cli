@@ -37,11 +37,11 @@ var RebuildCmd = base.Cmd{
 			return err
 		}
 		if server == nil {
-			return fmt.Errorf("server not found: %s", serverIDOrName)
+			return fmt.Errorf("Server not found: %s", serverIDOrName)
 		}
 
 		imageIDOrName, _ := cmd.Flags().GetString("image")
-		// Select correct image based on server type architecture
+		// Select correct image based on Server Type architecture
 		image, _, err := s.Client().Image().GetForArchitecture(s, imageIDOrName, server.ServerType.Architecture)
 		if err != nil {
 			return err
@@ -56,7 +56,7 @@ var RebuildCmd = base.Cmd{
 			if allowDeprecatedImage {
 				cmd.Printf("Attention: image %s is deprecated. It will continue to be available until %s.\n", image.Name, image.Deprecated.AddDate(0, 3, 0).Format(time.DateOnly))
 			} else {
-				return fmt.Errorf("image %s is deprecated, please use --allow-deprecated-image to create a server with this image. It will continue to be available until %s", image.Name, image.Deprecated.AddDate(0, 3, 0).Format(time.DateOnly))
+				return fmt.Errorf("image %s is deprecated, please use --allow-deprecated-image to create a Server with this image. It will continue to be available until %s", image.Name, image.Deprecated.AddDate(0, 3, 0).Format(time.DateOnly))
 			}
 		}
 

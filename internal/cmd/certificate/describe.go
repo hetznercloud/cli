@@ -12,8 +12,8 @@ import (
 )
 
 var DescribeCmd = base.DescribeCmd[*hcloud.Certificate]{
-	ResourceNameSingular: "certificate",
-	ShortDescription:     "Describe an certificate",
+	ResourceNameSingular: "Certificate",
+	ShortDescription:     "Describe a Certificate",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Certificate().Names },
 	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.Certificate, any, error) {
 		cert, _, err := s.Client().Certificate().Get(s, idOrName)

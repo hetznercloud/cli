@@ -25,7 +25,7 @@ var CreateCmd = base.CreateCmd{
 		cmd.Flags().String("name", "", "Load Balancer name (required)")
 		_ = cmd.MarkFlagRequired("name")
 
-		cmd.Flags().String("type", "", "Load Balancer type (ID or name) (required)")
+		cmd.Flags().String("type", "", "Load Balancer Type (ID or name) (required)")
 		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidatesF(client.LoadBalancerType().Names))
 		_ = cmd.MarkFlagRequired("type")
 

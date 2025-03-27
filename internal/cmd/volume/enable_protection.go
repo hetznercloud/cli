@@ -48,9 +48,9 @@ func changeProtection(s state.State, cmd *cobra.Command,
 	}
 
 	if enable {
-		cmd.Printf("Resource protection enabled for volume %d\n", volume.ID)
+		cmd.Printf("Resource protection enabled for Volume %d\n", volume.ID)
 	} else {
-		cmd.Printf("Resource protection disabled for volume %d\n", volume.ID)
+		cmd.Printf("Resource protection disabled for Volume %d\n", volume.ID)
 	}
 	return nil
 }

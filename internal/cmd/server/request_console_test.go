@@ -40,7 +40,7 @@ func TestRequestConsole(t *testing.T) {
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
-	assert.Equal(t, "Console for server 123:\nWebSocket URL: wss://console.hetzner.cloud/?token=123\nVNC Password: root-password\n", out)
+	assert.Equal(t, "Console for Server 123:\nWebSocket URL: wss://console.hetzner.cloud/?token=123\nVNC Password: root-password\n", out)
 }
 
 func TestRequestConsoleJSON(t *testing.T) {

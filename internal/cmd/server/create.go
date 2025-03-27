@@ -40,13 +40,13 @@ var CreateCmd = base.CreateCmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:   "create [options] --name <name> --type <server-type> --image <image>",
-			Short: "Create a server",
+			Short: "Create a Server",
 		}
 
 		cmd.Flags().String("name", "", "Server name (required)")
 		_ = cmd.MarkFlagRequired("name")
 
-		cmd.Flags().String("type", "", "Server type (ID or name) (required)")
+		cmd.Flags().String("type", "", "Server Type (ID or name) (required)")
 		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidatesF(client.ServerType().Names))
 		_ = cmd.MarkFlagRequired("type")
 
@@ -60,26 +60,26 @@ var CreateCmd = base.CreateCmd{
 		cmd.Flags().String("datacenter", "", "Datacenter (ID or name)")
 		_ = cmd.RegisterFlagCompletionFunc("datacenter", cmpl.SuggestCandidatesF(client.Datacenter().Names))
 
-		cmd.Flags().StringSlice("ssh-key", nil, "ID or name of SSH key to inject (can be specified multiple times)")
+		cmd.Flags().StringSlice("ssh-key", nil, "ID or name of SSH Key to inject (can be specified multiple times)")
 		_ = cmd.RegisterFlagCompletionFunc("ssh-key", cmpl.SuggestCandidatesF(client.SSHKey().Names))
 
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 
 		cmd.Flags().StringArray("user-data-from-file", []string{}, "Read user data from specified file (use - to read from stdin)")
 
-		cmd.Flags().Bool("start-after-create", true, "Start server right after creation")
+		cmd.Flags().Bool("start-after-create", true, "Start Server right after creation")
 
 		cmd.Flags().StringSlice("volume", nil, "ID or name of volume to attach (can be specified multiple times)")
 		_ = cmd.RegisterFlagCompletionFunc("volume", cmpl.SuggestCandidatesF(client.Volume().Names))
 
-		cmd.Flags().StringSlice("network", nil, "ID or name of network to attach the server to (can be specified multiple times)")
+		cmd.Flags().StringSlice("network", nil, "ID or name of network to attach the Server to (can be specified multiple times)")
 		_ = cmd.RegisterFlagCompletionFunc("network", cmpl.SuggestCandidatesF(client.Network().Names))
 
-		cmd.Flags().StringSlice("firewall", nil, "ID or name of Firewall to attach the server to (can be specified multiple times)")
+		cmd.Flags().StringSlice("firewall", nil, "ID or name of Firewall to attach the Server to (can be specified multiple times)")
 		_ = cmd.RegisterFlagCompletionFunc("firewall", cmpl.SuggestCandidatesF(client.Firewall().Names))
 
-		cmd.Flags().Bool("automount", false, "Automount volumes after attach (default: false)")
-		cmd.Flags().Bool("allow-deprecated-image", false, "Enable the use of deprecated images (default: false)")
+		cmd.Flags().Bool("automount", false, "Automount Volumes after attach (default: false)")
+		cmd.Flags().Bool("allow-deprecated-image", false, "Enable the use of deprecated Images (default: false)")
 
 		cmd.Flags().String("placement-group", "", "Placement Group (ID of name)")
 		_ = cmd.RegisterFlagCompletionFunc("placement-group", cmpl.SuggestCandidatesF(client.PlacementGroup().Names))
@@ -88,8 +88,8 @@ var CreateCmd = base.CreateCmd{
 		cmd.Flags().String("primary-ipv6", "", "Primary IPv6 (ID of name)")
 		_ = cmd.RegisterFlagCompletionFunc("primary-ipv6", cmpl.SuggestCandidatesF(client.PrimaryIP().IPv6Names))
 
-		cmd.Flags().Bool("without-ipv4", false, "Creates the server without an IPv4 (default: false)")
-		cmd.Flags().Bool("without-ipv6", false, "Creates the server without an IPv6 (default: false)")
+		cmd.Flags().Bool("without-ipv4", false, "Creates the Server without an IPv4 (default: false)")
+		cmd.Flags().Bool("without-ipv6", false, "Creates the Server without an IPv6 (default: false)")
 
 		cmd.Flags().StringSlice("enable-protection", []string{}, "Enable protection (delete, rebuild) (default: none)")
 		_ = cmd.RegisterFlagCompletionFunc("enable-protection", cmpl.SuggestCandidates("delete", "rebuild"))
@@ -136,7 +136,7 @@ var CreateCmd = base.CreateCmd{
 				return nil, nil, err
 			}
 
-			cmd.Printf("Backups enabled for server %d\n", server.ID)
+			cmd.Printf("Backups enabled for Server %d\n", server.ID)
 		}
 
 		return createResult{Server: server, RootPassword: result.RootPassword},
@@ -265,7 +265,7 @@ func createOptsFromFlags(
 		return
 	}
 	if serverType == nil {
-		err = fmt.Errorf("server type not found: %s", serverTypeName)
+		err = fmt.Errorf("Server Type not found: %s", serverTypeName)
 		return
 	}
 
@@ -273,7 +273,7 @@ func createOptsFromFlags(
 		cmd.Print(warningDeprecatedServerType(serverType))
 	}
 
-	// Select correct image based on server type architecture
+	// Select correct image based on Server Type architecture
 	image, _, err := s.Client().Image().GetForArchitecture(s, imageIDorName, serverType.Architecture)
 	if err != nil {
 		return
@@ -288,13 +288,13 @@ func createOptsFromFlags(
 		if allowDeprecatedImage {
 			cmd.Printf("Attention: image %s is deprecated. It will continue to be available until %s.\n", image.Name, image.Deprecated.AddDate(0, 3, 0).Format(time.DateOnly))
 		} else {
-			err = fmt.Errorf("image %s is deprecated, please use --allow-deprecated-image to create a server with this image. It will continue to be available until %s", image.Name, image.Deprecated.AddDate(0, 3, 0).Format(time.DateOnly))
+			err = fmt.Errorf("image %s is deprecated, please use --allow-deprecated-image to create a Server with this Image. It will continue to be available until %s", image.Name, image.Deprecated.AddDate(0, 3, 0).Format(time.DateOnly))
 			return
 		}
 	}
 
 	if withoutIPv4 && withoutIPv6 && len(networks) == 0 {
-		err = fmt.Errorf("a server can not be created without IPv4, IPv6 and a private network. Choose at least one of those options to create the server")
+		err = fmt.Errorf("a Server can not be created without IPv4, IPv6 and a private Network. Choose at least one of those options to create the Server")
 		return
 	}
 	createOpts = hcloud.ServerCreateOpts{
@@ -319,7 +319,7 @@ func createOptsFromFlags(
 			return
 		}
 		if primaryIPv4 == nil {
-			err = fmt.Errorf("primary ipv4 not found: %s", primaryIPv4IDorName)
+			err = fmt.Errorf("Primary IPv4 not found: %s", primaryIPv4IDorName)
 			return
 		}
 		publicNetConfiguration.IPv4 = primaryIPv4
@@ -331,7 +331,7 @@ func createOptsFromFlags(
 			return
 		}
 		if primaryIPv6 == nil {
-			err = fmt.Errorf("primary ipv6 not found: %s", primaryIPv6IDorName)
+			err = fmt.Errorf("Primary IPv6 not found: %s", primaryIPv6IDorName)
 			return
 		}
 		publicNetConfiguration.IPv6 = primaryIPv6
@@ -377,7 +377,7 @@ func createOptsFromFlags(
 		}
 
 		if sshKey == nil {
-			err = fmt.Errorf("SSH key not found: %s", sshKeyIDOrName)
+			err = fmt.Errorf("SSH Key not found: %s", sshKeyIDOrName)
 			return
 		}
 		createOpts.SSHKeys = append(createOpts.SSHKeys, sshKey)
@@ -435,7 +435,7 @@ func createOptsFromFlags(
 			return
 		}
 		if placementGroup == nil {
-			err = fmt.Errorf("placement group not found: %s", placementGroupIDorName)
+			err = fmt.Errorf("Placement Group not found: %s", placementGroupIDorName)
 			return
 		}
 		createOpts.PlacementGroup = placementGroup
@@ -457,21 +457,21 @@ func getSSHKeyForFingerprint(
 		err = nil
 		return
 	} else if err != nil {
-		err = fmt.Errorf("lookup SSH key by fingerprint: %w", err)
+		err = fmt.Errorf("lookup SSH Key by fingerprint: %w", err)
 		return
 	}
 
 	if publicKey, _, _, _, err = ssh.ParseAuthorizedKey(fileContent); err != nil {
-		err = fmt.Errorf("lookup SSH key by fingerprint: %w", err)
+		err = fmt.Errorf("lookup SSH Key by fingerprint: %w", err)
 		return
 	}
 	sshKey, _, err = s.Client().SSHKey().GetByFingerprint(s, ssh.FingerprintLegacyMD5(publicKey))
 	if err != nil {
-		err = fmt.Errorf("lookup SSH key by fingerprint: %w", err)
+		err = fmt.Errorf("lookup SSH Key by fingerprint: %w", err)
 		return
 	}
 	if sshKey == nil {
-		err = fmt.Errorf("SSH key not found by using fingerprint of public key: %s", file)
+		err = fmt.Errorf("SSH Key not found by using fingerprint of public key: %s", file)
 		return
 	}
 	return

@@ -26,7 +26,7 @@ var CreateCmd = base.CreateCmd{
 		cmd.Flags().String("name", "", "Name (required)")
 		_ = cmd.MarkFlagRequired("name")
 
-		cmd.Flags().Int64("assignee-id", 0, "Assignee (usually a server) to assign Primary IP to")
+		cmd.Flags().Int64("assignee-id", 0, "Assignee (usually a Server) to assign Primary IP to")
 
 		cmd.Flags().String("datacenter", "", "Datacenter (ID or name)")
 		_ = cmd.RegisterFlagCompletionFunc("datacenter", cmpl.SuggestCandidatesF(client.Datacenter().Names))

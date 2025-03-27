@@ -20,7 +20,7 @@ var IPCmd = base.Cmd{
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
 		}
-		cmd.Flags().BoolP("ipv6", "6", false, "Print the first address of the IPv6 public server network")
+		cmd.Flags().BoolP("ipv6", "6", false, "Print the first address of the IPv6 public Server Network")
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
@@ -31,16 +31,16 @@ var IPCmd = base.Cmd{
 			return err
 		}
 		if server == nil {
-			return fmt.Errorf("server not found: %s", idOrName)
+			return fmt.Errorf("Server not found: %s", idOrName)
 		}
 		if ipv6 {
 			if server.PublicNet.IPv6.IsUnspecified() {
-				return fmt.Errorf("server %s has no primary IPv6", idOrName)
+				return fmt.Errorf("Server %s has no Primary IPv6", idOrName)
 			}
 			cmd.Println(server.PublicNet.IPv6.IP.String() + "1")
 		} else {
 			if server.PublicNet.IPv4.IsUnspecified() {
-				return fmt.Errorf("server %s has no primary IPv4", idOrName)
+				return fmt.Errorf("Server %s has no Primary IPv4", idOrName)
 			}
 			cmd.Println(server.PublicNet.IPv4.IP.String())
 		}

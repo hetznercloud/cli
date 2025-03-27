@@ -17,7 +17,7 @@ var CreateCmd = base.CreateCmd{
 	BaseCobraCommand: func(hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:   "create [options] --name <name> (--public-key <key> | --public-key-from-file <file>)",
-			Short: "Create a SSH key",
+			Short: "Create an SSH Key",
 		}
 		cmd.Flags().String("name", "", "Key name (required)")
 		_ = cmd.MarkFlagRequired("name")
@@ -61,7 +61,7 @@ var CreateCmd = base.CreateCmd{
 			return nil, nil, err
 		}
 
-		cmd.Printf("SSH key %d created\n", sshKey.ID)
+		cmd.Printf("SSH Key %d created\n", sshKey.ID)
 
 		return sshKey, util.Wrap("ssh_key", hcloud.SchemaFromSSHKey(sshKey)), nil
 	},

@@ -12,8 +12,8 @@ import (
 
 var LabelCmds = base.LabelCmds[*hcloud.SSHKey]{
 	ResourceNameSingular:   "SSH Key",
-	ShortDescriptionAdd:    "Add a label to a SSH Key",
-	ShortDescriptionRemove: "Remove a label from a SSH Key",
+	ShortDescriptionAdd:    "Add a label to an SSH Key",
+	ShortDescriptionRemove: "Remove a label from an SSH Key",
 	NameSuggestions:        func(c hcapi2.Client) func() []string { return c.SSHKey().Names },
 	LabelKeySuggestions:    func(c hcapi2.Client) func(idOrName string) []string { return c.SSHKey().LabelKeys },
 	Fetch: func(s state.State, idOrName string) (*hcloud.SSHKey, error) {
@@ -22,7 +22,7 @@ var LabelCmds = base.LabelCmds[*hcloud.SSHKey]{
 			return nil, err
 		}
 		if sshKey == nil {
-			return nil, fmt.Errorf("ssh key not found: %s", idOrName)
+			return nil, fmt.Errorf("SSH Key not found: %s", idOrName)
 		}
 		return sshKey, nil
 	},

@@ -47,5 +47,5 @@ func TestChangeAliasIPs(t *testing.T) {
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
-	assert.Equal(t, "Alias IPs changed for server 123 in network 456\n", out)
+	assert.Equal(t, "Alias IPs changed for Server 123 in Network 456\n", out)
 }

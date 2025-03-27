@@ -36,5 +36,5 @@ func TestDisableBackup(t *testing.T) {
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
-	assert.Equal(t, "Backup disabled for server 123\n", out)
+	assert.Equal(t, "Backup disabled for Server 123\n", out)
 }

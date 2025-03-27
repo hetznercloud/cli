@@ -16,7 +16,7 @@ var CreateImageCmd = base.Cmd{
 	BaseCobraCommand: func(hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:   "create-image [options] --type <snapshot|backup> <server>",
-			Short: "Create an image from a server",
+			Short: "Create an Image from a Server",
 		}
 		cmd.Flags().String("type", "", "Image type (required)")
 		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("backup", "snapshot"))
@@ -35,7 +35,7 @@ var CreateImageCmd = base.Cmd{
 			return err
 		}
 		if server == nil {
-			return fmt.Errorf("server not found: %s", idOrName)
+			return fmt.Errorf("Server not found: %s", idOrName)
 		}
 
 		imageType, _ := cmd.Flags().GetString("type")
@@ -63,7 +63,7 @@ var CreateImageCmd = base.Cmd{
 			return err
 		}
 
-		cmd.Printf("Image %d created from server %d\n", result.Image.ID, server.ID)
+		cmd.Printf("Image %d created from Server %d\n", result.Image.ID, server.ID)
 
 		return nil
 	},

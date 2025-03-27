@@ -32,7 +32,7 @@ var EnableBackupCmd = base.Cmd{
 			return err
 		}
 		if server == nil {
-			return fmt.Errorf("server not found: %s", idOrName)
+			return fmt.Errorf("Server not found: %s", idOrName)
 		}
 
 		window, _ := cmd.Flags().GetString("window")
@@ -49,7 +49,7 @@ var EnableBackupCmd = base.Cmd{
 			return err
 		}
 
-		cmd.Printf("Backup enabled for server %d\n", server.ID)
+		cmd.Printf("Backup enabled for Server %d\n", server.ID)
 		return nil
 	},
 }

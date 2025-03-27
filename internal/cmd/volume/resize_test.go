@@ -34,7 +34,7 @@ func TestResize(t *testing.T) {
 	out, errOut, err := fx.Run(cmd, []string{"123", "--size", "42"})
 
 	expOut := `Volume 123 resized
-You might need to adjust the filesystem size on the server too
+You might need to adjust the filesystem size on the Server too
 `
 
 	require.NoError(t, err)

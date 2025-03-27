@@ -41,7 +41,7 @@ var ChangeTypeCmd = base.Cmd{
 			return err
 		}
 		if loadBalancerType == nil {
-			return fmt.Errorf("Load Balancer type not found: %s", loadBalancerTypeIDOrName)
+			return fmt.Errorf("Load Balancer Type not found: %s", loadBalancerTypeIDOrName)
 		}
 
 		opts := hcloud.LoadBalancerChangeTypeOpts{

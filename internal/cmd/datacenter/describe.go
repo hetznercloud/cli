@@ -13,8 +13,8 @@ import (
 )
 
 var DescribeCmd = base.DescribeCmd[*hcloud.Datacenter]{
-	ResourceNameSingular: "datacenter",
-	ShortDescription:     "Describe an datacenter",
+	ResourceNameSingular: "Datacenter",
+	ShortDescription:     "Describe a Datacenter",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Datacenter().Names },
 	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.Datacenter, any, error) {
 		dc, _, err := s.Client().Datacenter().Get(s, idOrName)
@@ -68,7 +68,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Datacenter]{
 				)
 			}
 		} else {
-			cmd.Printf("  No server types\n")
+			cmd.Printf("  No Server Types\n")
 		}
 
 		return nil

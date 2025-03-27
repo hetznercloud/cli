@@ -17,7 +17,7 @@ var ResetPasswordCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:                   "reset-password [options] <server>",
-			Short:                 "Reset the root password of a server",
+			Short:                 "Reset the root password of a Server",
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
@@ -34,7 +34,7 @@ var ResetPasswordCmd = base.Cmd{
 			return err
 		}
 		if server == nil {
-			return fmt.Errorf("server not found: %s", idOrName)
+			return fmt.Errorf("Server not found: %s", idOrName)
 		}
 
 		result, _, err := s.Client().Server().ResetPassword(s, server)
@@ -55,7 +55,7 @@ var ResetPasswordCmd = base.Cmd{
 			return util.DescribeYAML(cmd.OutOrStdout(), schema)
 		}
 
-		cmd.Printf("Password of server %d reset to: %s\n", server.ID, result.RootPassword)
+		cmd.Printf("Password of Server %d reset to: %s\n", server.ID, result.RootPassword)
 		return nil
 	},
 }

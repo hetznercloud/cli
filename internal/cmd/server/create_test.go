@@ -286,8 +286,8 @@ func TestCreateProtectionBackup(t *testing.T) {
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	expOut := `Server 1234 created
-Resource protection enabled for server 1234
-Backups enabled for server 1234
+Resource protection enabled for Server 1234
+Backups enabled for Server 1234
 IPv4: 192.0.2.1
 `
 	assert.Equal(t, expOut, out)

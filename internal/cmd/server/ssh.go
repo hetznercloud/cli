@@ -23,7 +23,7 @@ var SSHCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:                   "ssh [options] <server> [--] [ssh options] [command [argument...]]",
-			Short:                 "Spawn an SSH connection for the server",
+			Short:                 "Spawn an SSH connection for the Server",
 			Args:                  util.ValidateLenient,
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
 			TraverseChildren:      true,
@@ -42,7 +42,7 @@ var SSHCmd = base.Cmd{
 			return err
 		}
 		if server == nil {
-			return fmt.Errorf("server not found: %s", idOrName)
+			return fmt.Errorf("Server not found: %s", idOrName)
 		}
 
 		useIPv6, _ := cmd.Flags().GetBool("ipv6")
@@ -52,7 +52,7 @@ var SSHCmd = base.Cmd{
 		ipAddress := server.PublicNet.IPv4.IP
 		if server.PublicNet.IPv4.IsUnspecified() || useIPv6 {
 			if server.PublicNet.IPv6.IsUnspecified() {
-				return fmt.Errorf("server %s does not have a assigned primary ipv4 or ipv6", idOrName)
+				return fmt.Errorf("Server %s does not have a assigned Primary IPv4 or IPv6", idOrName)
 			}
 			ipAddress = server.PublicNet.IPv6.Network.IP
 			// increment last byte to get the ::1 IP, which is routed

@@ -39,7 +39,7 @@ func TestAttach(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"123", "--server", "456"})
 
-	expOut := "Volume 123 attached to server myServer\n"
+	expOut := "Volume 123 attached to Server myServer\n"
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)

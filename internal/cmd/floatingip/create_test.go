@@ -129,7 +129,7 @@ func TestCreateProtection(t *testing.T) {
 	out, errOut, err := fx.Run(cmd, []string{"--name", "myFloatingIP", "--type", "ipv4", "--home-location", "fsn1", "--enable-protection", "delete"})
 
 	expOut := `Floating IP 123 created
-Resource protection enabled for floating IP 123
+Resource protection enabled for Floating IP 123
 IPv4: 192.168.2.1
 `
 

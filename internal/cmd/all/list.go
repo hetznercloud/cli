@@ -52,7 +52,7 @@ var ListCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:   "list [options]",
 			Short: "List all resources in the project",
-			Long: `List all resources in the project. This does not include static/public resources like locations, public ISOs, etc.
+			Long: `List all resources in the project. This does not include static/public resources like Locations, public ISOs, etc.
 
 Listed resources are:
 ` + strings.Join(resources, "\n"),

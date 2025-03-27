@@ -69,7 +69,7 @@ func TestRebuildDeprecated(t *testing.T) {
 	args := []string{"my-server", "--image", "ubuntu-22.04"}
 	out, errOut, err := fx.Run(cmd, args)
 
-	errorMsg := "image ubuntu-22.04 is deprecated, please use --allow-deprecated-image to create a server with this image. It will continue to be available until 2036-08-20"
+	errorMsg := "image ubuntu-22.04 is deprecated, please use --allow-deprecated-image to create a Server with this image. It will continue to be available until 2036-08-20"
 
 	require.Error(t, err, errorMsg)
 	assert.Equal(t, "Error: "+errorMsg+"\n", errOut)

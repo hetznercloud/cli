@@ -33,7 +33,7 @@ func TestEnableProtection(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"test", "delete"})
 
-	expOut := "Resource protection enabled for floating IP 123\n"
+	expOut := "Resource protection enabled for Floating IP 123\n"
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
