@@ -1,11 +1,15 @@
-## hcloud iso
+## hcloud context unset
 
-Manage ISOs
+Unset used context
+
+```
+hcloud context unset
+```
 
 ### Options
 
 ```
-  -h, --help   help for iso
+  -h, --help   help for unset
 ```
 
 ### Options inherited from parent commands
@@ -22,6 +26,4 @@ Manage ISOs
 
 ### SEE ALSO
 
-* [hcloud](hcloud.md)	 - Hetzner Cloud CLI
-* [hcloud iso describe](hcloud_iso_describe.md)	 - Describe a iso
-* [hcloud iso list](hcloud_iso_list.md)	 - List ISOs
+* [hcloud context](hcloud_context.md)	 - Manage contexts
