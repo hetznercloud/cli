@@ -11,7 +11,7 @@ Manage contexts
 ### Options inherited from parent commands
 
 ```
-      --config string            Config file path (default "/Users/paul/.config/hcloud/cli.toml")
+      --config string            Config file path (default "~/.config/hcloud/cli.toml")
       --context string           Currently active context
       --debug                    Enable debug output
       --debug-file string        File to write debug output to
@@ -27,4 +27,5 @@ Manage contexts
 * [hcloud context create](hcloud_context_create.md)	 - Create a new context
 * [hcloud context delete](hcloud_context_delete.md)	 - Delete a context
 * [hcloud context list](hcloud_context_list.md)	 - List contexts
+* [hcloud context unset](hcloud_context_unset.md)	 - Unset used context
 * [hcloud context use](hcloud_context_use.md)	 - Use a context

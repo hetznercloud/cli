@@ -19,7 +19,7 @@ hcloud firewall create [options] --name <name>
 ### Options inherited from parent commands
 
 ```
-      --config string            Config file path (default "/Users/paul/.config/hcloud/cli.toml")
+      --config string            Config file path (default "~/.config/hcloud/cli.toml")
       --context string           Currently active context
       --debug                    Enable debug output
       --debug-file string        File to write debug output to

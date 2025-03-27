@@ -28,6 +28,9 @@ for each context. Below is a list of all non-preference options:
 │ OPTION  │ DESCRIPTION          │ TYPE   │ CONFIG KEY     │ ENVIRONMENT VARIABLE │ FLAG      │
 ├─────────┼──────────────────────┼────────┼────────────────┼──────────────────────┼───────────┤
 │ config  │ Config file path     │ string │                │ HCLOUD_CONFIG        │ --config  │
+│         │ (default             │        │                │                      │           │
+│         │ "~/.config/hcloud/cl │        │                │                      │           │
+│         │ i.toml")             │        │                │                      │           │
 ├─────────┼──────────────────────┼────────┼────────────────┼──────────────────────┼───────────┤
 │ context │ Currently active     │ string │ active_context │ HCLOUD_CONTEXT       │ --context │
 │         │ context              │        │                │                      │           │
@@ -79,7 +82,7 @@ on disk, run 'hcloud config get config'.
 ### Options inherited from parent commands
 
 ```
-      --config string            Config file path (default "/Users/paul/.config/hcloud/cli.toml")
+      --config string            Config file path (default "~/.config/hcloud/cli.toml")
       --context string           Currently active context
       --debug                    Enable debug output
       --debug-file string        File to write debug output to

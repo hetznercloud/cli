@@ -13,9 +13,11 @@ import (
 	"github.com/hetznercloud/cli/internal/state/config"
 )
 
+//go:generate go run $GOFILE
+
 func run() error {
 	// Define the directory where the docs will be generated
-	dir := "docs/reference"
+	dir := "../../docs/reference"
 
 	// Clean the directory to make sure outdated files don't persist
 	err := os.RemoveAll(dir)
@@ -65,7 +67,6 @@ func run() error {
 		}
 	}
 
-	fmt.Println("Docs generated successfully in", dir)
 	return nil
 }
 
