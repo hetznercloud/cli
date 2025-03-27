@@ -116,6 +116,10 @@ func (cfg *config) Read(f any) error {
 		cfg.path = cfgPath
 	}
 
+	if cfg.path == "" {
+		cfg.path = DefaultConfigPath()
+	}
+
 	if f == nil || ok {
 		// read config from file
 		cfgBytes, err = os.ReadFile(cfg.path)
