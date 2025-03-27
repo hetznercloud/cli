@@ -83,8 +83,8 @@ var Options = make(map[string]IOption)
 var (
 	OptionConfig = newOpt(
 		"config",
-		"Config file path",
-		DefaultConfigPath(),
+		"Config file path (default \"~/.config/hcloud/cli.toml\")",
+		"",
 		OptionFlagPFlag|OptionFlagEnv,
 		nil,
 		nil,
