@@ -40,7 +40,7 @@ func run() error {
 
 	// Generate the docs
 	if err := doc.GenMarkdownTree(cmd, dir); err != nil {
-		return fmt.Errorf("error generating docs: %v", err)
+		return fmt.Errorf("error generating docs: %w", err)
 	}
 
 	files, err := os.ReadDir(dir)
