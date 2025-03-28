@@ -10,9 +10,9 @@ import (
 )
 
 var DeleteCmd = base.DeleteCmd{
-	ResourceNameSingular: "firewall",
-	ResourceNamePlural:   "firewalls",
-	ShortDescription:     "Delete a firewall",
+	ResourceNameSingular: "Firewall",
+	ResourceNamePlural:   "Firewalls",
+	ShortDescription:     "Delete a Firewall",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Firewall().Names },
 	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
 		return s.Client().Firewall().Get(s, idOrName)

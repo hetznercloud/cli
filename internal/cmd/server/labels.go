@@ -11,9 +11,9 @@ import (
 )
 
 var LabelCmds = base.LabelCmds[*hcloud.Server]{
-	ResourceNameSingular:   "server",
-	ShortDescriptionAdd:    "Add a label to a server",
-	ShortDescriptionRemove: "Remove a label from a server",
+	ResourceNameSingular:   "Server",
+	ShortDescriptionAdd:    "Add a label to a Server",
+	ShortDescriptionRemove: "Remove a label from a Server",
 	NameSuggestions:        func(c hcapi2.Client) func() []string { return c.Server().Names },
 	LabelKeySuggestions:    func(c hcapi2.Client) func(idOrName string) []string { return c.Server().LabelKeys },
 	Fetch: func(s state.State, idOrName string) (*hcloud.Server, error) {
@@ -22,7 +22,7 @@ var LabelCmds = base.LabelCmds[*hcloud.Server]{
 			return nil, err
 		}
 		if server == nil {
-			return nil, fmt.Errorf("server not found: %s", idOrName)
+			return nil, fmt.Errorf("Server not found: %s", idOrName)
 		}
 		return server, nil
 	},

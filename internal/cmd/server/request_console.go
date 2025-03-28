@@ -17,7 +17,7 @@ var RequestConsoleCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:                   "request-console [options] <server>",
-			Short:                 "Request a WebSocket VNC console for a server",
+			Short:                 "Request a WebSocket VNC console for a Server",
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
@@ -33,7 +33,7 @@ var RequestConsoleCmd = base.Cmd{
 			return err
 		}
 		if server == nil {
-			return fmt.Errorf("server not found: %s", idOrName)
+			return fmt.Errorf("Server not found: %s", idOrName)
 		}
 
 		result, _, err := s.Client().Server().RequestConsole(s, server)
@@ -60,7 +60,7 @@ var RequestConsoleCmd = base.Cmd{
 			return util.DescribeYAML(cmd.OutOrStdout(), schema)
 		}
 
-		cmd.Printf("Console for server %d:\n", server.ID)
+		cmd.Printf("Console for Server %d:\n", server.ID)
 		cmd.Printf("WebSocket URL: %s\n", result.WSSURL)
 		cmd.Printf("VNC Password: %s\n", result.Password)
 		return nil

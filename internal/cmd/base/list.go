@@ -19,8 +19,8 @@ import (
 // ListCmd allows defining commands for listing resources
 type ListCmd struct {
 	SortOption         *config.Option[[]string]
-	ResourceNamePlural string // e.g. "servers"
-	JSONKeyGetByName   string // e.g. "servers"
+	ResourceNamePlural string // e.g. "Servers"
+	JSONKeyGetByName   string // e.g. "Servers"
 	DefaultColumns     []string
 	Fetch              func(state.State, *pflag.FlagSet, hcloud.ListOpts, []string) ([]interface{}, error)
 	AdditionalFlags    func(*cobra.Command)

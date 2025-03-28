@@ -48,9 +48,9 @@ func changeProtection(s state.State, cmd *cobra.Command,
 	}
 
 	if enable {
-		cmd.Printf("Resource protection enabled for floating IP %d\n", floatingIP.ID)
+		cmd.Printf("Resource protection enabled for Floating IP %d\n", floatingIP.ID)
 	} else {
-		cmd.Printf("Resource protection disabled for floating IP %d\n", floatingIP.ID)
+		cmd.Printf("Resource protection disabled for Floating IP %d\n", floatingIP.ID)
 	}
 	return nil
 }

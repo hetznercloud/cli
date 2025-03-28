@@ -15,7 +15,7 @@ var ResetCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		return &cobra.Command{
 			Use:                   "reset [options] <server>",
-			Short:                 "Reset a server",
+			Short:                 "Reset a Server",
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
@@ -28,7 +28,7 @@ var ResetCmd = base.Cmd{
 			return err
 		}
 		if server == nil {
-			return fmt.Errorf("server not found: %s", idOrName)
+			return fmt.Errorf("Server not found: %s", idOrName)
 		}
 
 		action, _, err := s.Client().Server().Reset(s, server)

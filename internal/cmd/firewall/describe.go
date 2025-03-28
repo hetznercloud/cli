@@ -14,8 +14,8 @@ import (
 )
 
 var DescribeCmd = base.DescribeCmd[*hcloud.Firewall]{
-	ResourceNameSingular: "firewall",
-	ShortDescription:     "Describe an firewall",
+	ResourceNameSingular: "Firewall",
+	ShortDescription:     "Describe a Firewall",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Firewall().Names },
 	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.Firewall, any, error) {
 		fw, _, err := s.Client().Firewall().Get(s, idOrName)

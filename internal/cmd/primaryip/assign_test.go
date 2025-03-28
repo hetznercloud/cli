@@ -59,7 +59,7 @@ func TestAssign(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"13", "--server", "15"})
 
-	expOut := "Primary IP 13 assigned to server 15\n"
+	expOut := "Primary IP 13 assigned to Server 15\n"
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)

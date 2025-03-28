@@ -11,9 +11,9 @@ import (
 )
 
 var LabelCmds = base.LabelCmds[*hcloud.Certificate]{
-	ResourceNameSingular:   "certificate",
-	ShortDescriptionAdd:    "Add a label to an certificate",
-	ShortDescriptionRemove: "Remove a label from an certificate",
+	ResourceNameSingular:   "Certificate",
+	ShortDescriptionAdd:    "Add a label to a Certificate",
+	ShortDescriptionRemove: "Remove a label from a Certificate",
 	NameSuggestions:        func(c hcapi2.Client) func() []string { return c.Certificate().Names },
 	LabelKeySuggestions:    func(c hcapi2.Client) func(idOrName string) []string { return c.Certificate().LabelKeys },
 	Fetch: func(s state.State, idOrName string) (*hcloud.Certificate, error) {
@@ -22,7 +22,7 @@ var LabelCmds = base.LabelCmds[*hcloud.Certificate]{
 			return nil, err
 		}
 		if certificate == nil {
-			return nil, fmt.Errorf("certificate not found: %s", idOrName)
+			return nil, fmt.Errorf("Certificate not found: %s", idOrName)
 		}
 		return certificate, nil
 	},

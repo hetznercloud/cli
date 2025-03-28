@@ -16,7 +16,7 @@ var DetachFromNetworkCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:                   "detach-from-network --network <network> <server>",
-			Short:                 "Detach a server from a network",
+			Short:                 "Detach a Server from a Network",
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
@@ -34,7 +34,7 @@ var DetachFromNetworkCmd = base.Cmd{
 			return err
 		}
 		if server == nil {
-			return fmt.Errorf("server not found: %s", idOrName)
+			return fmt.Errorf("Server not found: %s", idOrName)
 		}
 		networkIDOrName, _ := cmd.Flags().GetString("network")
 		network, _, err := s.Client().Network().Get(s, networkIDOrName)
@@ -42,7 +42,7 @@ var DetachFromNetworkCmd = base.Cmd{
 			return err
 		}
 		if network == nil {
-			return fmt.Errorf("network not found: %s", networkIDOrName)
+			return fmt.Errorf("Network not found: %s", networkIDOrName)
 		}
 
 		opts := hcloud.ServerDetachFromNetworkOpts{
@@ -57,7 +57,7 @@ var DetachFromNetworkCmd = base.Cmd{
 			return err
 		}
 
-		cmd.Printf("Server %d detached from network %d\n", server.ID, network.ID)
+		cmd.Printf("Server %d detached from Network %d\n", server.ID, network.ID)
 		return nil
 	},
 }

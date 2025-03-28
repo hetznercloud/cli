@@ -15,7 +15,7 @@ var PoweroffCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		return &cobra.Command{
 			Use:                   "poweroff <server>",
-			Short:                 "Poweroff a server",
+			Short:                 "Poweroff a Server",
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
@@ -28,7 +28,7 @@ var PoweroffCmd = base.Cmd{
 			return err
 		}
 		if server == nil {
-			return fmt.Errorf("server not found: %s", idOrName)
+			return fmt.Errorf("Server not found: %s", idOrName)
 		}
 
 		action, _, err := s.Client().Server().Poweroff(s, server)

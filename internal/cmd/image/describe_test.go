@@ -31,7 +31,7 @@ func TestDescribe(t *testing.T) {
 		Status:       hcloud.ImageStatusAvailable,
 		Name:         "test",
 		Created:      time.Date(2036, 8, 12, 12, 0, 0, 0, time.UTC),
-		Description:  "Test image",
+		Description:  "Test Image",
 		ImageSize:    20.0,
 		DiskSize:     20.0,
 		Architecture: hcloud.ArchitectureX86,
@@ -51,7 +51,7 @@ Type:		system
 Status:		available
 Name:		test
 Created:	%s (%s)
-Description:	Test image
+Description:	Test Image
 Image size:	20.00 GB
 Disk size:	20 GB
 OS flavor:	

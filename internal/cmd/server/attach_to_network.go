@@ -17,7 +17,7 @@ var AttachToNetworkCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:                   "attach-to-network [options] --network <network> <server>",
-			Short:                 "Attach a server to a network",
+			Short:                 "Attach a Server to a Network",
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
@@ -27,8 +27,8 @@ var AttachToNetworkCmd = base.Cmd{
 		_ = cmd.RegisterFlagCompletionFunc("network", cmpl.SuggestCandidatesF(client.Network().Names))
 		_ = cmd.MarkFlagRequired("network")
 
-		cmd.Flags().IP("ip", nil, "IP address to assign to the server (auto-assigned if omitted)")
-		cmd.Flags().IPSlice("alias-ips", []net.IP{}, "Additional IP addresses to be assigned to the server")
+		cmd.Flags().IP("ip", nil, "IP address to assign to the Server (auto-assigned if omitted)")
+		cmd.Flags().IPSlice("alias-ips", []net.IP{}, "Additional IP addresses to be assigned to the Server")
 
 		return cmd
 	},
@@ -39,7 +39,7 @@ var AttachToNetworkCmd = base.Cmd{
 			return err
 		}
 		if server == nil {
-			return fmt.Errorf("server not found: %s", idOrName)
+			return fmt.Errorf("Server not found: %s", idOrName)
 		}
 
 		networkIDOrName, _ := cmd.Flags().GetString("network")
@@ -48,7 +48,7 @@ var AttachToNetworkCmd = base.Cmd{
 			return err
 		}
 		if network == nil {
-			return fmt.Errorf("network not found: %s", networkIDOrName)
+			return fmt.Errorf("Network not found: %s", networkIDOrName)
 		}
 
 		ip, _ := cmd.Flags().GetIP("ip")
@@ -69,7 +69,7 @@ var AttachToNetworkCmd = base.Cmd{
 			return err
 		}
 
-		cmd.Printf("Server %d attached to network %d\n", server.ID, network.ID)
+		cmd.Printf("Server %d attached to Network %d\n", server.ID, network.ID)
 		return nil
 	},
 }

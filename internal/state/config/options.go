@@ -162,7 +162,7 @@ var (
 
 	OptionDefaultSSHKeys = newOpt(
 		"default-ssh-keys",
-		"Default SSH keys for new servers",
+		"Default SSH Keys for new Servers",
 		[]string{},
 		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
 		nil,

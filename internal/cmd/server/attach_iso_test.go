@@ -40,5 +40,5 @@ func TestAttachISO(t *testing.T) {
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
-	assert.Equal(t, "ISO my-iso attached to server 123\n", out)
+	assert.Equal(t, "ISO my-iso attached to Server 123\n", out)
 }

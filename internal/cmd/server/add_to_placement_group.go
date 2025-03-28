@@ -15,7 +15,7 @@ var AddToPlacementGroupCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:               "add-to-placement-group --placement-group <placement-group> <server>",
-			Short:             "Add a server to a placement group",
+			Short:             "Add a Server to a Placement Group",
 			ValidArgsFunction: cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
 		}
 
@@ -32,7 +32,7 @@ var AddToPlacementGroupCmd = base.Cmd{
 			return err
 		}
 		if server == nil {
-			return fmt.Errorf("server not found %s", idOrName)
+			return fmt.Errorf("Server not found %s", idOrName)
 		}
 
 		placementGroupIDOrName, _ := cmd.Flags().GetString("placement-group")
@@ -41,7 +41,7 @@ var AddToPlacementGroupCmd = base.Cmd{
 			return err
 		}
 		if placementGroup == nil {
-			return fmt.Errorf("placement group not found %s", placementGroupIDOrName)
+			return fmt.Errorf("Placement Group not found: %s", placementGroupIDOrName)
 		}
 
 		action, _, err := s.Client().Server().AddToPlacementGroup(s, server, placementGroup)
@@ -53,7 +53,7 @@ var AddToPlacementGroupCmd = base.Cmd{
 			return err
 		}
 
-		cmd.Printf("Server %d added to placement group %s\n", server.ID, placementGroupIDOrName)
+		cmd.Printf("Server %d added to Placement Group %s\n", server.ID, placementGroupIDOrName)
 		return nil
 	},
 }

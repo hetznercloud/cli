@@ -11,9 +11,9 @@ import (
 )
 
 var LabelCmds = base.LabelCmds[*hcloud.Image]{
-	ResourceNameSingular:   "image",
-	ShortDescriptionAdd:    "Add a label to an image",
-	ShortDescriptionRemove: "Remove a label from an image",
+	ResourceNameSingular:   "Image",
+	ShortDescriptionAdd:    "Add a label to an Image",
+	ShortDescriptionRemove: "Remove a label from an Image",
 	NameSuggestions:        func(c hcapi2.Client) func() []string { return c.Image().Names },
 	LabelKeySuggestions:    func(c hcapi2.Client) func(idOrName string) []string { return c.Image().LabelKeys },
 	Fetch: func(s state.State, idOrName string) (*hcloud.Image, error) {
@@ -26,7 +26,7 @@ var LabelCmds = base.LabelCmds[*hcloud.Image]{
 			return nil, err
 		}
 		if image == nil {
-			return nil, fmt.Errorf("image not found: %s", idOrName)
+			return nil, fmt.Errorf("Image not found: %s", idOrName)
 		}
 		return image, nil
 	},

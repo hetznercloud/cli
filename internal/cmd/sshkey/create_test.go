@@ -38,7 +38,7 @@ func TestCreate(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"--name", "test", "--public-key", "test"})
 
-	expOut := "SSH key 123 created\n"
+	expOut := "SSH Key 123 created\n"
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
@@ -71,7 +71,7 @@ func TestCreateJSON(t *testing.T) {
 
 	jsonOut, out, err := fx.Run(cmd, []string{"-o=json", "--name", "test", "--public-key", "test"})
 
-	expOut := "SSH key 123 created\n"
+	expOut := "SSH Key 123 created\n"
 
 	require.NoError(t, err)
 	assert.Equal(t, expOut, out)

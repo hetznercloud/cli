@@ -17,8 +17,8 @@ import (
 
 // DeleteCmd allows defining commands for deleting a resource.
 type DeleteCmd struct {
-	ResourceNameSingular string // e.g. "server"
-	ResourceNamePlural   string // e.g. "servers"
+	ResourceNameSingular string // e.g. "Server"
+	ResourceNamePlural   string // e.g. "Servers"
 	ShortDescription     string
 	NameSuggestions      func(client hcapi2.Client) func() []string
 	AdditionalFlags      func(*cobra.Command)

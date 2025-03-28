@@ -16,7 +16,7 @@ import (
 
 // UpdateCmd allows defining commands for updating a resource.
 type UpdateCmd struct {
-	ResourceNameSingular string // e.g. "server"
+	ResourceNameSingular string // e.g. "Server"
 	ShortDescription     string
 	NameSuggestions      func(client hcapi2.Client) func() []string
 	DefineFlags          func(*cobra.Command)

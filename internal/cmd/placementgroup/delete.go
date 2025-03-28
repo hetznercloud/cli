@@ -10,9 +10,9 @@ import (
 )
 
 var DeleteCmd = base.DeleteCmd{
-	ResourceNameSingular: "placement group",
-	ResourceNamePlural:   "placement groups",
-	ShortDescription:     "Delete a placement group",
+	ResourceNameSingular: "Placement Group",
+	ResourceNamePlural:   "Placement Groups",
+	ShortDescription:     "Delete a Placement Group",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.PlacementGroup().Names },
 	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
 		return s.Client().PlacementGroup().Get(s, idOrName)

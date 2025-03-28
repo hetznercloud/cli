@@ -12,8 +12,8 @@ import (
 )
 
 var DescribeCmd = base.DescribeCmd[*hcloud.ServerType]{
-	ResourceNameSingular: "serverType",
-	ShortDescription:     "Describe a server type",
+	ResourceNameSingular: "Server Type",
+	ShortDescription:     "Describe a Server Type",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.ServerType().Names },
 	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.ServerType, any, error) {
 		st, _, err := s.Client().ServerType().Get(s, idOrName)
@@ -36,7 +36,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.ServerType]{
 
 		pricings, err := fullPricingInfo(s, serverType)
 		if err != nil {
-			cmd.PrintErrf("failed to get prices for server type: %v", err)
+			cmd.PrintErrf("failed to get prices for Server Type: %v", err)
 		}
 
 		if pricings != nil {

@@ -13,7 +13,7 @@ import (
 
 var DescribeCmd = base.DescribeCmd[*hcloud.LoadBalancerType]{
 	ResourceNameSingular: "Load Balancer Type",
-	ShortDescription:     "Describe a Load Balancer type",
+	ShortDescription:     "Describe a Load Balancer Type",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.LoadBalancerType().Names },
 	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.LoadBalancerType, any, error) {
 		lbt, _, err := s.Client().LoadBalancerType().Get(s, idOrName)
@@ -33,7 +33,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.LoadBalancerType]{
 
 		pricings, err := fullPricingInfo(s, loadBalancerType)
 		if err != nil {
-			cmd.PrintErrf("failed to get prices for load balancer type: %v", err)
+			cmd.PrintErrf("failed to get prices for Load Balancer Type: %v", err)
 		}
 
 		if pricings != nil {

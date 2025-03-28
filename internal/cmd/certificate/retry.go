@@ -14,7 +14,7 @@ var RetryCmd = base.Cmd{
 	BaseCobraCommand: func(_ hcapi2.Client) *cobra.Command {
 		return &cobra.Command{
 			Use:                   "retry <certificate>",
-			Short:                 "Retry a managed certificate's issuance",
+			Short:                 "Retry a Managed Certificate's issuance",
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
 		}
@@ -26,7 +26,7 @@ var RetryCmd = base.Cmd{
 			return err
 		}
 		if certificate == nil {
-			return fmt.Errorf("certificate not found: %s", idOrName)
+			return fmt.Errorf("Certificate not found: %s", idOrName)
 		}
 
 		action, _, err := s.Client().Certificate().RetryIssuance(s, certificate)
@@ -38,7 +38,7 @@ var RetryCmd = base.Cmd{
 			return err
 		}
 
-		cmd.Printf("Retried issuance of certificate %s\n", certificate.Name)
+		cmd.Printf("Retried issuance of Certificate %s\n", certificate.Name)
 		return nil
 	},
 }

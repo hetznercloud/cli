@@ -11,8 +11,8 @@ import (
 )
 
 var UpdateCmd = base.UpdateCmd{
-	ResourceNameSingular: "certificate",
-	ShortDescription:     "Update a certificate",
+	ResourceNameSingular: "Certificate",
+	ShortDescription:     "Update a Certificate",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Firewall().Names },
 	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
 		return s.Client().Certificate().Get(s, idOrName)

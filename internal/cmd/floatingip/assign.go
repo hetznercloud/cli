@@ -40,7 +40,7 @@ var AssignCmd = base.Cmd{
 			return err
 		}
 		if server == nil {
-			return fmt.Errorf("server not found: %s", serverIDOrName)
+			return fmt.Errorf("Server not found: %s", serverIDOrName)
 		}
 
 		action, _, err := s.Client().FloatingIP().Assign(s, floatingIP, server)
@@ -52,7 +52,7 @@ var AssignCmd = base.Cmd{
 			return err
 		}
 
-		cmd.Printf("Floating IP %d assigned to server %d\n", floatingIP.ID, server.ID)
+		cmd.Printf("Floating IP %d assigned to Server %d\n", floatingIP.ID, server.ID)
 		return nil
 	},
 }

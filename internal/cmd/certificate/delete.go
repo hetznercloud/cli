@@ -10,9 +10,9 @@ import (
 )
 
 var DeleteCmd = base.DeleteCmd{
-	ResourceNameSingular: "certificate",
-	ResourceNamePlural:   "certificates",
-	ShortDescription:     "Delete a certificate",
+	ResourceNameSingular: "Certificate",
+	ResourceNamePlural:   "Certificates",
+	ShortDescription:     "Delete a Certificate",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Firewall().Names },
 	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
 		return s.Client().Certificate().Get(s, idOrName)

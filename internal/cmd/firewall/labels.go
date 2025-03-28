@@ -11,9 +11,9 @@ import (
 )
 
 var LabelCmds = base.LabelCmds[*hcloud.Firewall]{
-	ResourceNameSingular:   "firewall",
-	ShortDescriptionAdd:    "Add a label to an firewall",
-	ShortDescriptionRemove: "Remove a label from an firewall",
+	ResourceNameSingular:   "Firewall",
+	ShortDescriptionAdd:    "Add a label to a Firewall",
+	ShortDescriptionRemove: "Remove a label from a Firewall",
 	NameSuggestions:        func(c hcapi2.Client) func() []string { return c.Firewall().Names },
 	LabelKeySuggestions:    func(c hcapi2.Client) func(idOrName string) []string { return c.Firewall().LabelKeys },
 	Fetch: func(s state.State, idOrName string) (*hcloud.Firewall, error) {
@@ -22,7 +22,7 @@ var LabelCmds = base.LabelCmds[*hcloud.Firewall]{
 			return nil, err
 		}
 		if firewall == nil {
-			return nil, fmt.Errorf("firewall not found: %s", idOrName)
+			return nil, fmt.Errorf("Firewall not found: %s", idOrName)
 		}
 		return firewall, nil
 	},
