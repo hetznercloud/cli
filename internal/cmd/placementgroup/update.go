@@ -18,7 +18,7 @@ var UpdateCmd = base.UpdateCmd{
 		return s.Client().PlacementGroup().Get(s, idOrName)
 	},
 	DefineFlags: func(cmd *cobra.Command) {
-		cmd.Flags().String("name", "", "Placement group name")
+		cmd.Flags().String("name", "", "Placement Group name")
 	},
 	Update: func(s state.State, _ *cobra.Command, resource interface{}, flags map[string]pflag.Value) error {
 		placementGroup := resource.(*hcloud.PlacementGroup)

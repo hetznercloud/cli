@@ -27,7 +27,7 @@ var DetachCmd = base.Cmd{
 			return err
 		}
 		if volume == nil {
-			return fmt.Errorf("volume not found: %s", args[0])
+			return fmt.Errorf("Volume not found: %s", args[0])
 		}
 
 		action, _, err := s.Client().Volume().Detach(s, volume)

@@ -47,7 +47,7 @@ var CreateCmd = base.CreateCmd{
 			}
 		}
 
-		cmd.Printf("Placement group %d created\n", result.PlacementGroup.ID)
+		cmd.Printf("Placement Group %d created\n", result.PlacementGroup.ID)
 
 		return result.PlacementGroup, util.Wrap("placement_group", hcloud.SchemaFromPlacementGroup(result.PlacementGroup)), nil
 	},

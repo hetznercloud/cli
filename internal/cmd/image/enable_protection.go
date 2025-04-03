@@ -74,7 +74,7 @@ var EnableProtectionCmd = base.Cmd{
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		imageID, err := strconv.ParseInt(args[0], 10, 64)
 		if err != nil {
-			return errors.New("invalid image ID")
+			return errors.New("invalid Image ID")
 		}
 		image := &hcloud.Image{ID: imageID}
 

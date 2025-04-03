@@ -16,7 +16,7 @@ var AttachCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:                   "attach [--automount] --server <server> <volume>",
-			Short:                 "Attach a volume to a server",
+			Short:                 "Attach a Volume to a Server",
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Volume().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
@@ -24,7 +24,7 @@ var AttachCmd = base.Cmd{
 		cmd.Flags().String("server", "", "Server (ID or name) (required)")
 		_ = cmd.RegisterFlagCompletionFunc("server", cmpl.SuggestCandidatesF(client.Server().Names))
 		_ = cmd.MarkFlagRequired("server")
-		cmd.Flags().Bool("automount", false, "Automount volume after attach")
+		cmd.Flags().Bool("automount", false, "Automount Volume after attach")
 
 		return cmd
 	},
