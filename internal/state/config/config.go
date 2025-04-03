@@ -106,10 +106,6 @@ func (cfg *config) Read(f any) error {
 	// load env already so we can determine the active context
 	cfg.v.AutomaticEnv()
 
-	var (
-		cfgBytes []byte
-	)
-
 	cfg.path, err = OptionConfig.Get(cfg)
 	if err != nil {
 		return err
@@ -124,6 +120,7 @@ func (cfg *config) Read(f any) error {
 		cfg.path = DefaultConfigPath()
 	}
 
+	var cfgBytes []byte
 	if f == nil || ok {
 		// read config from file
 		cfgBytes, err = os.ReadFile(cfg.path)
