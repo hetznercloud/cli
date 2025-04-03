@@ -35,7 +35,7 @@ var UpdateServiceCmd = base.Cmd{
 		cmd.Flags().Bool("http-sticky-sessions", false, "Enable or disable (with --http-sticky-sessions=false) Sticky Sessions")
 		cmd.Flags().String("http-cookie-name", "", "Sticky Sessions: Cookie Name which will be set")
 		cmd.Flags().Duration("http-cookie-lifetime", 0, "Sticky Sessions: Lifetime of the cookie")
-		cmd.Flags().Int64Slice("http-certificates", []int64{}, "ID of Certificates which are attached to this Load Balancer")
+		cmd.Flags().StringSlice("http-certificates", []string{}, "IDs or names of Certificates which should be attached to this Load Balancer")
 
 		cmd.Flags().String("health-check-protocol", "", "The protocol the health check is performed over")
 		cmd.Flags().Int("health-check-port", 0, "The port the health check is performed over")
@@ -104,9 +104,13 @@ var UpdateServiceCmd = base.Cmd{
 			opts.HTTP.CookieLifetime = &cookieLifetime
 		}
 		if cmd.Flag("http-certificates").Changed {
-			certificates, _ := cmd.Flags().GetInt64Slice("http-certificates")
-			for _, certificateID := range certificates {
-				opts.HTTP.Certificates = append(opts.HTTP.Certificates, &hcloud.Certificate{ID: certificateID})
+			certificates, _ := cmd.Flags().GetStringSlice("http-certificates")
+			for _, idOrName := range certificates {
+				cert, _, err := s.Client().Certificate().Get(s, idOrName)
+				if err != nil {
+					return err
+				}
+				opts.HTTP.Certificates = append(opts.HTTP.Certificates, cert)
 			}
 		}
 		// Health Check

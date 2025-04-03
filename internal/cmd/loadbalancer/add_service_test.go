@@ -58,6 +58,9 @@ func TestAddServiceWithHealthCheck(t *testing.T) {
 	fx.Client.LoadBalancerClient.EXPECT().
 		Get(gomock.Any(), "123").
 		Return(&hcloud.LoadBalancer{ID: 123}, nil, nil)
+	fx.Client.CertificateClient.EXPECT().
+		Get(gomock.Any(), "1").
+		Return(&hcloud.Certificate{ID: 1}, nil, nil)
 	fx.Client.LoadBalancerClient.EXPECT().
 		AddService(gomock.Any(), &hcloud.LoadBalancer{ID: 123}, hcloud.LoadBalancerAddServiceOpts{
 			Protocol:        hcloud.LoadBalancerServiceProtocolHTTP,

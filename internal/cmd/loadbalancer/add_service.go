@@ -32,7 +32,7 @@ var AddServiceCmd = base.Cmd{
 		cmd.Flags().Bool("http-sticky-sessions", false, "Enable Sticky Sessions")
 		cmd.Flags().String("http-cookie-name", "", "Sticky Sessions: Cookie Name we set")
 		cmd.Flags().Duration("http-cookie-lifetime", 0, "Sticky Sessions: Lifetime of the cookie")
-		cmd.Flags().Int64Slice("http-certificates", []int64{}, "ID of Certificates which are attached to this Load Balancer")
+		cmd.Flags().StringSlice("http-certificates", []string{}, "IDs or names of Certificates which should be attached to this Load Balancer")
 		cmd.Flags().Bool("http-redirect-http", false, "Redirect all traffic on port 80 to port 443")
 
 		cmd.Flags().String("health-check-protocol", "", "The protocol the health check is performed over")
@@ -53,7 +53,7 @@ var AddServiceCmd = base.Cmd{
 		protocol, _ := cmd.Flags().GetString("protocol")
 		listenPort, _ := cmd.Flags().GetInt("listen-port")
 		destinationPort, _ := cmd.Flags().GetInt("destination-port")
-		httpCertificates, _ := cmd.Flags().GetInt64Slice("http-certificates")
+		httpCertificates, _ := cmd.Flags().GetStringSlice("http-certificates")
 
 		if protocol == "" {
 			return fmt.Errorf("required flag protocol not set")
@@ -123,8 +123,12 @@ var AddServiceCmd = base.Cmd{
 			if httpCookieLifetime != 0 {
 				opts.HTTP.CookieLifetime = &httpCookieLifetime
 			}
-			for _, certificateID := range httpCertificates {
-				opts.HTTP.Certificates = append(opts.HTTP.Certificates, &hcloud.Certificate{ID: certificateID})
+			for _, idOrName := range httpCertificates {
+				cert, _, err := s.Client().Certificate().Get(s, idOrName)
+				if err != nil {
+					return err
+				}
+				opts.HTTP.Certificates = append(opts.HTTP.Certificates, cert)
 			}
 		}
 

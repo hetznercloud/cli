@@ -23,6 +23,9 @@ func TestUpdateService(t *testing.T) {
 	fx.Client.LoadBalancerClient.EXPECT().
 		Get(gomock.Any(), "123").
 		Return(&hcloud.LoadBalancer{ID: 123}, nil, nil)
+	fx.Client.CertificateClient.EXPECT().
+		Get(gomock.Any(), "1").
+		Return(&hcloud.Certificate{ID: 1}, nil, nil)
 	fx.Client.LoadBalancerClient.EXPECT().
 		UpdateService(gomock.Any(), &hcloud.LoadBalancer{ID: 123}, 80, hcloud.LoadBalancerUpdateServiceOpts{
 			DestinationPort: hcloud.Ptr(8080),
