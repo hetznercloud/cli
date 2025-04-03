@@ -99,7 +99,7 @@ func (cfg *config) Read(f any) error {
 	cfg.fs.ParseErrorsWhitelist.UnknownFlags = true
 
 	err := cfg.fs.Parse(os.Args[1:])
-	if err != nil {
+	if err != nil && !errors.Is(err, pflag.ErrHelp) {
 		return err
 	}
 
