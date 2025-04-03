@@ -20,7 +20,7 @@ var ResizeCmd = base.Cmd{
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
 		}
-		cmd.Flags().Int("size", 0, "New size (GB) of the volume (required)")
+		cmd.Flags().Int("size", 0, "New size (GB) of the Volume (required)")
 		_ = cmd.MarkFlagRequired("size")
 		return cmd
 	},

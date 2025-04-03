@@ -48,9 +48,9 @@ func changeProtection(s state.State, cmd *cobra.Command,
 	}
 
 	if enable {
-		cmd.Printf("Resource protection enabled for network %d\n", network.ID)
+		cmd.Printf("Resource protection enabled for Network %d\n", network.ID)
 	} else {
-		cmd.Printf("Resource protection disabled for network %d\n", network.ID)
+		cmd.Printf("Resource protection disabled for Network %d\n", network.ID)
 	}
 	return nil
 }
@@ -75,7 +75,7 @@ var EnableProtectionCmd = base.Cmd{
 			return err
 		}
 		if network == nil {
-			return fmt.Errorf("network not found: %s", idOrName)
+			return fmt.Errorf("Network not found: %s", idOrName)
 		}
 
 		opts, err := getChangeProtectionOpts(true, args[1:])

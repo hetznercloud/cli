@@ -17,13 +17,13 @@ var AddRouteCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:                   "add-route --destination <destination> --gateway <ip> <network>",
-			Short:                 "Add a route to a network",
+			Short:                 "Add a route to a Network",
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Network().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
 		}
 
-		cmd.Flags().IPNet("destination", net.IPNet{}, "Destination network or host (required)")
+		cmd.Flags().IPNet("destination", net.IPNet{}, "Destination Network or host (required)")
 		_ = cmd.MarkFlagRequired("destination")
 
 		cmd.Flags().IP("gateway", net.IP{}, "Gateway IP address (required)")
@@ -41,7 +41,7 @@ var AddRouteCmd = base.Cmd{
 			return err
 		}
 		if network == nil {
-			return fmt.Errorf("network not found: %s", idOrName)
+			return fmt.Errorf("Network not found: %s", idOrName)
 		}
 
 		opts := hcloud.NetworkAddRouteOpts{
@@ -57,7 +57,7 @@ var AddRouteCmd = base.Cmd{
 		if err := s.WaitForActions(s, cmd, action); err != nil {
 			return err
 		}
-		cmd.Printf("Route added to network %d\n", network.ID)
+		cmd.Printf("Route added to Network %d\n", network.ID)
 
 		return nil
 	},

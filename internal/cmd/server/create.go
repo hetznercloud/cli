@@ -69,10 +69,10 @@ var CreateCmd = base.CreateCmd{
 
 		cmd.Flags().Bool("start-after-create", true, "Start Server right after creation")
 
-		cmd.Flags().StringSlice("volume", nil, "ID or name of volume to attach (can be specified multiple times)")
+		cmd.Flags().StringSlice("volume", nil, "ID or name of Volume to attach (can be specified multiple times)")
 		_ = cmd.RegisterFlagCompletionFunc("volume", cmpl.SuggestCandidatesF(client.Volume().Names))
 
-		cmd.Flags().StringSlice("network", nil, "ID or name of network to attach the Server to (can be specified multiple times)")
+		cmd.Flags().StringSlice("network", nil, "ID or name of Network to attach the Server to (can be specified multiple times)")
 		_ = cmd.RegisterFlagCompletionFunc("network", cmpl.SuggestCandidatesF(client.Network().Names))
 
 		cmd.Flags().StringSlice("firewall", nil, "ID or name of Firewall to attach the Server to (can be specified multiple times)")
@@ -286,7 +286,7 @@ func createOptsFromFlags(
 
 	if !image.Deprecated.IsZero() {
 		if allowDeprecatedImage {
-			cmd.Printf("Attention: image %s is deprecated. It will continue to be available until %s.\n", image.Name, image.Deprecated.AddDate(0, 3, 0).Format(time.DateOnly))
+			cmd.Printf("Attention: Image %s is deprecated. It will continue to be available until %s.\n", image.Name, image.Deprecated.AddDate(0, 3, 0).Format(time.DateOnly))
 		} else {
 			err = fmt.Errorf("image %s is deprecated, please use --allow-deprecated-image to create a Server with this Image. It will continue to be available until %s", image.Name, image.Deprecated.AddDate(0, 3, 0).Format(time.DateOnly))
 			return
@@ -403,7 +403,7 @@ func createOptsFromFlags(
 		}
 
 		if network == nil {
-			err = fmt.Errorf("network not found: %s", networkIDOrName)
+			err = fmt.Errorf("Network not found: %s", networkIDOrName)
 			return
 		}
 		createOpts.Networks = append(createOpts.Networks, network)

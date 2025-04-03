@@ -44,7 +44,7 @@ func TestRebuild(t *testing.T) {
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
-	assert.Equal(t, "Server 123 rebuilt with image ubuntu-22.04\nRoot password: root-password\n", out)
+	assert.Equal(t, "Server 123 rebuilt with Image ubuntu-22.04\nRoot password: root-password\n", out)
 }
 
 func TestRebuildDeprecated(t *testing.T) {

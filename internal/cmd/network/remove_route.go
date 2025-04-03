@@ -56,7 +56,7 @@ var RemoveRouteCmd = base.Cmd{
 		if err := s.WaitForActions(s, cmd, action); err != nil {
 			return err
 		}
-		cmd.Printf("Route removed from network %d\n", network.ID)
+		cmd.Printf("Route removed from Network %d\n", network.ID)
 
 		return nil
 	},

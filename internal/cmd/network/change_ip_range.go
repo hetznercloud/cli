@@ -17,7 +17,7 @@ var ChangeIPRangeCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:                   "change-ip-range --ip-range <ip-range> <network>",
-			Short:                 "Change the IP range of a network",
+			Short:                 "Change the IP range of a Network",
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Network().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
@@ -35,7 +35,7 @@ var ChangeIPRangeCmd = base.Cmd{
 			return err
 		}
 		if network == nil {
-			return fmt.Errorf("network not found: %s", idOrName)
+			return fmt.Errorf("Network not found: %s", idOrName)
 		}
 
 		ipRange, _ := cmd.Flags().GetIPNet("ip-range")
@@ -51,7 +51,7 @@ var ChangeIPRangeCmd = base.Cmd{
 		if err := s.WaitForActions(s, cmd, action); err != nil {
 			return err
 		}
-		cmd.Printf("IP range of network %d changed\n", network.ID)
+		cmd.Printf("IP range of Network %d changed\n", network.ID)
 		return nil
 	},
 }

@@ -87,7 +87,7 @@ var CreateCmd = base.CreateCmd{
 				return nil, nil, err
 			}
 			if net == nil {
-				return nil, nil, fmt.Errorf("network not found: %s", network)
+				return nil, nil, fmt.Errorf("Network not found: %s", network)
 			}
 			createOpts.Network = net
 		}

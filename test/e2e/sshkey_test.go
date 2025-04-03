@@ -30,7 +30,7 @@ func TestSSHKey(t *testing.T) {
 	t.Run("add-label", func(t *testing.T) {
 		t.Run("non-existing", func(t *testing.T) {
 			out, err := runCommand(t, "ssh-key", "add-label", "non-existing-ssh-key", "foo=bar")
-			require.EqualError(t, err, "ssh key not found: non-existing-ssh-key")
+			require.EqualError(t, err, "SSH Key not found: non-existing-ssh-key")
 			assert.Empty(t, out)
 		})
 
@@ -96,7 +96,7 @@ func TestSSHKey(t *testing.T) {
 		sshKeyName = withSuffix("new-test-ssh-key")
 		out, err := runCommand(t, "ssh-key", "update", strconv.FormatInt(sshKeyID, 10), "--name", sshKeyName)
 		require.NoError(t, err)
-		assert.Equal(t, fmt.Sprintf("SSHKey %d updated\n", sshKeyID), out)
+		assert.Equal(t, fmt.Sprintf("SSH Key %d updated\n", sshKeyID), out)
 	})
 
 	t.Run("describe", func(t *testing.T) {
@@ -133,7 +133,7 @@ func createSSHKey(t *testing.T, name string, args ...string) (int64, error) {
 		return 0, err
 	}
 
-	if !assert.Regexp(t, `^SSH key [0-9]+ created\n$`, out) {
+	if !assert.Regexp(t, `^SSH Key [0-9]+ created\n$`, out) {
 		return 0, fmt.Errorf("invalid response: %s", out)
 	}
 

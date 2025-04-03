@@ -36,7 +36,7 @@ func TestDatacenter(t *testing.T) {
 	t.Run("describe", func(t *testing.T) {
 		t.Run("non-existing", func(t *testing.T) {
 			out, err := runCommand(t, "datacenter", "describe", "123456")
-			require.EqualError(t, err, "datacenter not found: 123456")
+			require.EqualError(t, err, "Datacenter not found: 123456")
 			assert.Empty(t, out)
 		})
 

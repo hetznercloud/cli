@@ -46,7 +46,7 @@ var AttachToNetworkCmd = base.Cmd{
 			return err
 		}
 		if network == nil {
-			return fmt.Errorf("network not found: %s", networkIDOrName)
+			return fmt.Errorf("Network not found: %s", networkIDOrName)
 		}
 
 		ip, _ := cmd.Flags().GetIP("ip")
@@ -65,7 +65,7 @@ var AttachToNetworkCmd = base.Cmd{
 			return err
 		}
 
-		cmd.Printf("Load Balancer %d attached to network %d\n", loadBalancer.ID, network.ID)
+		cmd.Printf("Load Balancer %d attached to Network %d\n", loadBalancer.ID, network.ID)
 		return nil
 	},
 }

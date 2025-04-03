@@ -46,7 +46,7 @@ var CreateImageCmd = base.Cmd{
 		case hcloud.ImageTypeBackup, hcloud.ImageTypeSnapshot:
 			break
 		default:
-			return fmt.Errorf("invalid image type: %v", imageType)
+			return fmt.Errorf("invalid Image type: %v", imageType)
 		}
 
 		opts := &hcloud.ServerCreateImageOpts{

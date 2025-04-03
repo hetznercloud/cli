@@ -37,7 +37,7 @@ func TestChangeIPRange(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"123", "--ip-range", "10.0.0.0/24"})
 
-	expOut := "IP range of network 123 changed\n"
+	expOut := "IP range of Network 123 changed\n"
 
 	require.NoError(t, err)
 	assert.Equal(t, expOut, out)

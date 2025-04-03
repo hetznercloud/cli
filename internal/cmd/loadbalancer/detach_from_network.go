@@ -41,7 +41,7 @@ var DetachFromNetworkCmd = base.Cmd{
 			return err
 		}
 		if network == nil {
-			return fmt.Errorf("network not found: %s", networkIDOrName)
+			return fmt.Errorf("Network not found: %s", networkIDOrName)
 		}
 
 		opts := hcloud.LoadBalancerDetachFromNetworkOpts{

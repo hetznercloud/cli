@@ -27,7 +27,7 @@ var AddSubnetCmd = base.Cmd{
 		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("cloud", "server", "vswitch"))
 		_ = cmd.MarkFlagRequired("type")
 
-		cmd.Flags().String("network-zone", "", "Name of network zone (required)")
+		cmd.Flags().String("network-zone", "", "Name of Network zone (required)")
 		_ = cmd.RegisterFlagCompletionFunc("network-zone", cmpl.SuggestCandidatesF(client.Location().NetworkZones))
 		_ = cmd.MarkFlagRequired("network-zone")
 
@@ -48,7 +48,7 @@ var AddSubnetCmd = base.Cmd{
 			return err
 		}
 		if network == nil {
-			return fmt.Errorf("network not found: %s", idOrName)
+			return fmt.Errorf("Network not found: %s", idOrName)
 		}
 		subnet := hcloud.NetworkSubnet{
 			Type:        hcloud.NetworkSubnetType(subnetType),

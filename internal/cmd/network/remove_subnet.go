@@ -34,7 +34,7 @@ var RemoveSubnetCmd = base.Cmd{
 			return err
 		}
 		if network == nil {
-			return fmt.Errorf("network not found: %s", idOrName)
+			return fmt.Errorf("Network not found: %s", idOrName)
 		}
 
 		opts := hcloud.NetworkDeleteSubnetOpts{

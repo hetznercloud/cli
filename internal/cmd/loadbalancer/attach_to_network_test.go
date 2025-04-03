@@ -36,7 +36,7 @@ func TestAttachToNetwork(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"123", "--network", "my-network"})
 
-	expOut := "Load Balancer 123 attached to network 321\n"
+	expOut := "Load Balancer 123 attached to Network 321\n"
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)

@@ -40,7 +40,7 @@ func TestAddRoute(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"123", "--destination", "10.0.0.0/24", "--gateway", "10.0.0.1"})
 
-	expOut := "Route added to network 123\n"
+	expOut := "Route added to Network 123\n"
 
 	require.NoError(t, err)
 	assert.Equal(t, expOut, out)

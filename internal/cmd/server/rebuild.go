@@ -23,7 +23,7 @@ var RebuildCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 
-		cmd.Flags().String("image", "", "ID or name of image to rebuild from (required)")
+		cmd.Flags().String("image", "", "ID or name of Image to rebuild from (required)")
 		_ = cmd.RegisterFlagCompletionFunc("image", cmpl.SuggestCandidatesF(client.Image().Names))
 		_ = cmd.MarkFlagRequired("image")
 		cmd.Flags().Bool("allow-deprecated-image", false, "Enable the use of deprecated images (default: false)")
@@ -54,7 +54,7 @@ var RebuildCmd = base.Cmd{
 		allowDeprecatedImage, _ := cmd.Flags().GetBool("allow-deprecated-image")
 		if !image.Deprecated.IsZero() {
 			if allowDeprecatedImage {
-				cmd.Printf("Attention: image %s is deprecated. It will continue to be available until %s.\n", image.Name, image.Deprecated.AddDate(0, 3, 0).Format(time.DateOnly))
+				cmd.Printf("Attention: Image %s is deprecated. It will continue to be available until %s.\n", image.Name, image.Deprecated.AddDate(0, 3, 0).Format(time.DateOnly))
 			} else {
 				return fmt.Errorf("image %s is deprecated, please use --allow-deprecated-image to create a Server with this image. It will continue to be available until %s", image.Name, image.Deprecated.AddDate(0, 3, 0).Format(time.DateOnly))
 			}
@@ -72,7 +72,7 @@ var RebuildCmd = base.Cmd{
 			return err
 		}
 
-		cmd.Printf("Server %d rebuilt with image %s\n", server.ID, image.Name)
+		cmd.Printf("Server %d rebuilt with Image %s\n", server.ID, image.Name)
 
 		// Only print the root password if it's not empty,
 		// which is only the case if it wasn't created with an SSH key.

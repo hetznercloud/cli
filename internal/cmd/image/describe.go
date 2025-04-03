@@ -76,7 +76,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Image]{
 		}
 
 		if !image.Deprecated.IsZero() {
-			cmd.Printf("\nAttention: This image is deprecated and will be removed in the future.\n")
+			cmd.Printf("\nAttention: This Image is deprecated and will be removed in the future.\n")
 		}
 		return nil
 	},
