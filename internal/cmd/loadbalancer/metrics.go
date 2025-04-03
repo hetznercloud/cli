@@ -57,7 +57,7 @@ var MetricsCmd = base.Cmd{
 			return err
 		}
 		if LoadBalancer == nil {
-			return fmt.Errorf("LoadBalancer not found: %s", idOrName)
+			return fmt.Errorf("Load Balancer not found: %s", idOrName)
 		}
 
 		metricTypesStr, _ := cmd.Flags().GetStringSlice("type")
