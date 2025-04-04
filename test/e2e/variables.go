@@ -38,6 +38,9 @@ var (
 
 	// TestISOName is the default ISO used for testing
 	TestISOName = getEnv("TEST_ISO_NAME", "SW_DVD9_Win_Server_STD_CORE_2022__64Bit_German_DC_STD_MLF_X22-74292.iso")
+
+	// TestNetworkZone is the default network zone used for testing
+	TestNetworkZone = getEnv("TEST_NETWORK_ZONE", "eu-central")
 )
 
 func getEnv(key, fallback string) string {

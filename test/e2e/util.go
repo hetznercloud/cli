@@ -78,7 +78,7 @@ func (r RegexBuilder) IPv4() RegexBuilder {
 }
 
 func (r RegexBuilder) IPv6() RegexBuilder {
-	return r.Raw(`[0-9a-f]+:[0-9a-f]+:[0-9a-f]+:[0-9a-f]+::`)
+	return r.Raw(`[0-9a-f]+:[0-9a-f]+:[0-9a-f]+:[0-9a-f]+::[0-9]?`)
 }
 
 func (r RegexBuilder) AnyString() RegexBuilder {
