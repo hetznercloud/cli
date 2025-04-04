@@ -11,9 +11,9 @@ import (
 )
 
 var LabelCmds = base.LabelCmds[*hcloud.PlacementGroup]{
-	ResourceNameSingular:   "placement group",
-	ShortDescriptionAdd:    "Add a label to a placement group",
-	ShortDescriptionRemove: "Remove a label from a placement group",
+	ResourceNameSingular:   "Placement Group",
+	ShortDescriptionAdd:    "Add a label to a Placement Group",
+	ShortDescriptionRemove: "Remove a label from a Placement Group",
 	NameSuggestions:        func(c hcapi2.Client) func() []string { return c.PlacementGroup().Names },
 	LabelKeySuggestions:    func(c hcapi2.Client) func(idOrName string) []string { return c.PlacementGroup().LabelKeys },
 	Fetch: func(s state.State, idOrName string) (*hcloud.PlacementGroup, error) {
@@ -22,7 +22,7 @@ var LabelCmds = base.LabelCmds[*hcloud.PlacementGroup]{
 			return nil, err
 		}
 		if placementGroup == nil {
-			return nil, fmt.Errorf("placement group not found: %s", idOrName)
+			return nil, fmt.Errorf("Placement Group not found: %s", idOrName)
 		}
 		return placementGroup, nil
 	},

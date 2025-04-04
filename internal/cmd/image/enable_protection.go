@@ -50,9 +50,9 @@ func changeProtection(s state.State, cmd *cobra.Command,
 	}
 
 	if enable {
-		cmd.Printf("Resource protection enabled for image %d\n", image.ID)
+		cmd.Printf("Resource protection enabled for Image %d\n", image.ID)
 	} else {
-		cmd.Printf("Resource protection disabled for image %d\n", image.ID)
+		cmd.Printf("Resource protection disabled for Image %d\n", image.ID)
 	}
 	return nil
 }
@@ -62,7 +62,7 @@ var EnableProtectionCmd = base.Cmd{
 
 		return &cobra.Command{
 			Use:   "enable-protection <image> <protection-level>...",
-			Short: "Enable resource protection for an image",
+			Short: "Enable resource protection for an Image",
 			ValidArgsFunction: cmpl.SuggestArgs(
 				cmpl.SuggestCandidatesF(client.Image().Names),
 				cmpl.SuggestCandidates("delete"),
@@ -74,7 +74,7 @@ var EnableProtectionCmd = base.Cmd{
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		imageID, err := strconv.ParseInt(args[0], 10, 64)
 		if err != nil {
-			return errors.New("invalid image ID")
+			return errors.New("invalid Image ID")
 		}
 		image := &hcloud.Image{ID: imageID}
 

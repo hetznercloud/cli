@@ -50,9 +50,9 @@ func changeProtection(s state.State, cmd *cobra.Command,
 	}
 
 	if enable {
-		cmd.Printf("Resource protection enabled for server %d\n", server.ID)
+		cmd.Printf("Resource protection enabled for Server %d\n", server.ID)
 	} else {
-		cmd.Printf("Resource protection disabled for server %d\n", server.ID)
+		cmd.Printf("Resource protection disabled for Server %d\n", server.ID)
 	}
 	return nil
 }
@@ -77,7 +77,7 @@ var EnableProtectionCmd = base.Cmd{
 			return err
 		}
 		if server == nil {
-			return fmt.Errorf("server not found: %s", idOrName)
+			return fmt.Errorf("Server not found: %s", idOrName)
 		}
 
 		opts, err := getChangeProtectionOpts(true, args[1:])

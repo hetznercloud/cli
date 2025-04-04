@@ -38,7 +38,7 @@ func TestChangeType(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"123", "lb21"})
 
-	expOut := "LoadBalancer 123 changed to type lb21\n"
+	expOut := "Load Balancer 123 changed to type lb21\n"
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)

@@ -25,7 +25,7 @@ var ChangeTypeCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 
-		cmd.Flags().Bool("keep-disk", false, "Keep disk size of current server type. This enables downgrading the server.")
+		cmd.Flags().Bool("keep-disk", false, "Keep disk size of current Server Type. This enables downgrading the server.")
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
@@ -35,7 +35,7 @@ var ChangeTypeCmd = base.Cmd{
 			return err
 		}
 		if server == nil {
-			return fmt.Errorf("server not found: %s", idOrName)
+			return fmt.Errorf("Server not found: %s", idOrName)
 		}
 
 		serverTypeIDOrName := args[1]
@@ -44,7 +44,7 @@ var ChangeTypeCmd = base.Cmd{
 			return err
 		}
 		if serverType == nil {
-			return fmt.Errorf("server type not found: %s", serverTypeIDOrName)
+			return fmt.Errorf("Server Type not found: %s", serverTypeIDOrName)
 		}
 
 		if serverType.IsDeprecated() {

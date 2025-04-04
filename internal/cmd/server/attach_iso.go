@@ -32,7 +32,7 @@ var AttachISOCmd = base.Cmd{
 			return err
 		}
 		if server == nil {
-			return fmt.Errorf("server not found: %s", idOrName)
+			return fmt.Errorf("Server not found: %s", idOrName)
 		}
 
 		isoIDOrName := args[1]
@@ -47,7 +47,7 @@ var AttachISOCmd = base.Cmd{
 		// If ISO architecture is empty -> wildcard/unknown     --> allow
 		// If ISO architecture is set and does not match server -->  deny
 		if iso.Architecture != nil && *iso.Architecture != server.ServerType.Architecture {
-			return errors.New("failed to attach iso: iso has a different architecture than the server")
+			return errors.New("failed to attach ISO: ISO has a different architecture than the server")
 		}
 
 		action, _, err := s.Client().Server().AttachISO(s, server, iso)
@@ -59,7 +59,7 @@ var AttachISOCmd = base.Cmd{
 			return err
 		}
 
-		cmd.Printf("ISO %s attached to server %d\n", iso.Name, server.ID)
+		cmd.Printf("ISO %s attached to Server %d\n", iso.Name, server.ID)
 		return nil
 	},
 }

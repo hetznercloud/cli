@@ -17,7 +17,7 @@ var AddSubnetCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:                   "add-subnet [options] --type <cloud|server|vswitch> --network-zone <zone> <network>",
-			Short:                 "Add a subnet to a network",
+			Short:                 "Add a subnet to a Network",
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Network().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
@@ -27,7 +27,7 @@ var AddSubnetCmd = base.Cmd{
 		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("cloud", "server", "vswitch"))
 		_ = cmd.MarkFlagRequired("type")
 
-		cmd.Flags().String("network-zone", "", "Name of network zone (required)")
+		cmd.Flags().String("network-zone", "", "Name of Network zone (required)")
 		_ = cmd.RegisterFlagCompletionFunc("network-zone", cmpl.SuggestCandidatesF(client.Location().NetworkZones))
 		_ = cmd.MarkFlagRequired("network-zone")
 
@@ -48,7 +48,7 @@ var AddSubnetCmd = base.Cmd{
 			return err
 		}
 		if network == nil {
-			return fmt.Errorf("network not found: %s", idOrName)
+			return fmt.Errorf("Network not found: %s", idOrName)
 		}
 		subnet := hcloud.NetworkSubnet{
 			Type:        hcloud.NetworkSubnetType(subnetType),
@@ -72,7 +72,7 @@ var AddSubnetCmd = base.Cmd{
 		if err := s.WaitForActions(s, cmd, action); err != nil {
 			return err
 		}
-		cmd.Printf("Subnet added to network %d\n", network.ID)
+		cmd.Printf("Subnet added to Network %d\n", network.ID)
 
 		return nil
 	},

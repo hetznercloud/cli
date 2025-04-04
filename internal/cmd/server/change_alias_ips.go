@@ -17,7 +17,7 @@ var ChangeAliasIPsCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:                   "change-alias-ips [options] --network <network> <server>",
-			Short:                 "Change a server's alias IPs in a network",
+			Short:                 "Change a server's alias IPs in a Network",
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
@@ -40,7 +40,7 @@ var ChangeAliasIPsCmd = base.Cmd{
 			return err
 		}
 		if server == nil {
-			return fmt.Errorf("server not found: %s", idOrName)
+			return fmt.Errorf("Server not found: %s", idOrName)
 		}
 
 		networkIDOrName, _ := cmd.Flags().GetString("network")
@@ -49,7 +49,7 @@ var ChangeAliasIPsCmd = base.Cmd{
 			return err
 		}
 		if network == nil {
-			return fmt.Errorf("network not found: %s", networkIDOrName)
+			return fmt.Errorf("Network not found: %s", networkIDOrName)
 		}
 
 		aliasIPs, _ := cmd.Flags().GetStringSlice("alias-ips")
@@ -74,7 +74,7 @@ var ChangeAliasIPsCmd = base.Cmd{
 			return err
 		}
 
-		cmd.Printf("Alias IPs changed for server %d in network %d\n", server.ID, network.ID)
+		cmd.Printf("Alias IPs changed for Server %d in Network %d\n", server.ID, network.ID)
 		return nil
 	},
 }

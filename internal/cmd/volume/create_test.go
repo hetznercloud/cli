@@ -137,7 +137,7 @@ func TestCreateProtection(t *testing.T) {
 	out, errOut, err := fx.Run(cmd, []string{"--name", "test", "--size", "20", "--location", "fsn1", "--enable-protection", "delete"})
 
 	expOut := `Volume 123 created
-Resource protection enabled for volume 123
+Resource protection enabled for Volume 123
 `
 
 	require.NoError(t, err)

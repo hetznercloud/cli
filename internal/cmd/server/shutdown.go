@@ -22,7 +22,7 @@ var ShutdownCmd = base.Cmd{
 		const description = "Shuts down a Server gracefully by sending an ACPI shutdown request. " +
 			"The Server operating system must support ACPI and react to the request, " +
 			"otherwise the Server will not shut down. Use the --wait flag to wait for the " +
-			"server to shut down before returning."
+			"Server to shut down before returning."
 
 		cmd := &cobra.Command{
 			Use:                   "shutdown [options] <server>",
@@ -33,7 +33,7 @@ var ShutdownCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 
-		cmd.Flags().Bool("wait", false, "Wait for the server to shut down before exiting")
+		cmd.Flags().Bool("wait", false, "Wait for the Server to shut down before exiting")
 		cmd.Flags().Duration("wait-timeout", 30*time.Second, "Timeout for waiting for off state after shutdown")
 
 		return cmd
@@ -49,7 +49,7 @@ var ShutdownCmd = base.Cmd{
 			return err
 		}
 		if server == nil {
-			return fmt.Errorf("server not found: %s", idOrName)
+			return fmt.Errorf("Server not found: %s", idOrName)
 		}
 
 		action, _, err := s.Client().Server().Shutdown(s, server)
@@ -61,7 +61,7 @@ var ShutdownCmd = base.Cmd{
 			return err
 		}
 
-		cmd.Printf("Sent shutdown signal to server %d\n", server.ID)
+		cmd.Printf("Sent shutdown signal to Server %d\n", server.ID)
 
 		if wait {
 			start := time.Now()
@@ -76,7 +76,7 @@ var ShutdownCmd = base.Cmd{
 
 			progress := ui.NewProgress(
 				os.Stderr,
-				ui.FakeActionMessage("Waiting for server to shut down"),
+				ui.FakeActionMessage("Waiting for Server to shut down"),
 				ui.ActionResourcesMessage(&hcloud.ActionResource{ID: server.ID, Type: hcloud.ActionResourceTypeServer}),
 			)
 			progress.Start()

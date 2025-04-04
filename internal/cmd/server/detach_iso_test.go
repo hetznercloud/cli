@@ -36,5 +36,5 @@ func TestDetachISO(t *testing.T) {
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
-	assert.Equal(t, "ISO detached from server 123\n", out)
+	assert.Equal(t, "ISO detached from Server 123\n", out)
 }

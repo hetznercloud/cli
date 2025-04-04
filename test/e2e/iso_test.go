@@ -54,7 +54,7 @@ func TestISO(t *testing.T) {
 	t.Run("describe", func(t *testing.T) {
 		t.Run("non-existing", func(t *testing.T) {
 			out, err := runCommand(t, "iso", "describe", "non-existing-iso")
-			require.EqualError(t, err, "iso not found: non-existing-iso")
+			require.EqualError(t, err, "ISO not found: non-existing-iso")
 			assert.Empty(t, out)
 		})
 

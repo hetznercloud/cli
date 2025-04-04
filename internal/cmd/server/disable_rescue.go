@@ -28,7 +28,7 @@ var DisableRescueCmd = base.Cmd{
 			return err
 		}
 		if server == nil {
-			return fmt.Errorf("server not found: %s", idOrName)
+			return fmt.Errorf("Server not found: %s", idOrName)
 		}
 
 		action, _, err := s.Client().Server().DisableRescue(s, server)
@@ -40,7 +40,7 @@ var DisableRescueCmd = base.Cmd{
 			return err
 		}
 
-		cmd.Printf("Rescue disabled for server %d\n", server.ID)
+		cmd.Printf("Rescue disabled for Server %d\n", server.ID)
 		return nil
 	},
 }

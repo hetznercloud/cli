@@ -39,14 +39,14 @@ func TestNetwork(t *testing.T) {
 
 		t.Run("non-existing-network", func(t *testing.T) {
 			out, err := runCommand(t, "network", "enable-protection", "non-existing-network", "delete")
-			require.EqualError(t, err, "network not found: non-existing-network")
+			require.EqualError(t, err, "Network not found: non-existing-network")
 			assert.Empty(t, out)
 		})
 
 		t.Run("delete", func(t *testing.T) {
 			out, err := runCommand(t, "network", "enable-protection", strconv.FormatInt(networkID, 10), "delete")
 			require.NoError(t, err)
-			assert.Equal(t, fmt.Sprintf("Resource protection enabled for network %d\n", networkID), out)
+			assert.Equal(t, fmt.Sprintf("Resource protection enabled for Network %d\n", networkID), out)
 		})
 	})
 
@@ -68,14 +68,14 @@ func TestNetwork(t *testing.T) {
 	t.Run("change-ip-range", func(t *testing.T) {
 		t.Run("non-existing-network", func(t *testing.T) {
 			out, err := runCommand(t, "network", "change-ip-range", "--ip-range", "10.0.2.0/16", "non-existing-network")
-			require.EqualError(t, err, "network not found: non-existing-network")
+			require.EqualError(t, err, "Network not found: non-existing-network")
 			assert.Empty(t, out)
 		})
 
 		t.Run("normal", func(t *testing.T) {
 			out, err := runCommand(t, "network", "change-ip-range", "--ip-range", "10.0.2.0/16", networkName)
 			require.NoError(t, err)
-			assert.Equal(t, fmt.Sprintf("IP range of network %d changed\n", networkID), out)
+			assert.Equal(t, fmt.Sprintf("IP range of Network %d changed\n", networkID), out)
 		})
 	})
 
@@ -83,7 +83,7 @@ func TestNetwork(t *testing.T) {
 		t.Run("add", func(t *testing.T) {
 			t.Run("non-existing-network", func(t *testing.T) {
 				out, err := runCommand(t, "network", "add-label", "non-existing-network", "foo=bar")
-				require.EqualError(t, err, "network not found: non-existing-network")
+				require.EqualError(t, err, "Network not found: non-existing-network")
 				assert.Empty(t, out)
 			})
 
@@ -125,7 +125,7 @@ func TestNetwork(t *testing.T) {
 	t.Run("add-subnet", func(t *testing.T) {
 		t.Run("non-existing-network", func(t *testing.T) {
 			out, err := runCommand(t, "network", "add-subnet", "--type", "cloud", "--network-zone", "eu-central", "--ip-range", "10.0.16.0/24", "non-existing-network")
-			require.EqualError(t, err, "network not found: non-existing-network")
+			require.EqualError(t, err, "Network not found: non-existing-network")
 			assert.Empty(t, out)
 		})
 
@@ -138,14 +138,14 @@ func TestNetwork(t *testing.T) {
 		t.Run("normal", func(t *testing.T) {
 			out, err := runCommand(t, "network", "add-subnet", "--type", "cloud", "--network-zone", "eu-central", "--ip-range", "10.0.16.0/24", strconv.FormatInt(networkID, 10))
 			require.NoError(t, err)
-			assert.Equal(t, fmt.Sprintf("Subnet added to network %d\n", networkID), out)
+			assert.Equal(t, fmt.Sprintf("Subnet added to Network %d\n", networkID), out)
 		})
 	})
 
 	t.Run("add-route", func(t *testing.T) {
 		t.Run("non-existing-network", func(t *testing.T) {
 			out, err := runCommand(t, "network", "add-route", "--destination", "10.100.1.0/24", "--gateway", "10.0.1.1", "non-existing-network")
-			require.EqualError(t, err, "network not found: non-existing-network")
+			require.EqualError(t, err, "Network not found: non-existing-network")
 			assert.Empty(t, out)
 
 		})
@@ -153,21 +153,21 @@ func TestNetwork(t *testing.T) {
 		t.Run("normal", func(t *testing.T) {
 			out, err := runCommand(t, "network", "add-route", "--destination", "10.100.1.0/24", "--gateway", "10.0.1.1", strconv.FormatInt(networkID, 10))
 			require.NoError(t, err)
-			assert.Equal(t, fmt.Sprintf("Route added to network %d\n", networkID), out)
+			assert.Equal(t, fmt.Sprintf("Route added to Network %d\n", networkID), out)
 		})
 	})
 
 	t.Run("expose-routes-to-vswitch", func(t *testing.T) {
 		t.Run("non-existing-network", func(t *testing.T) {
 			out, err := runCommand(t, "network", "expose-routes-to-vswitch", "non-existing-network")
-			require.EqualError(t, err, "network not found: non-existing-network")
+			require.EqualError(t, err, "Network not found: non-existing-network")
 			assert.Empty(t, out)
 		})
 
 		t.Run("normal", func(t *testing.T) {
 			out, err := runCommand(t, "network", "expose-routes-to-vswitch", strconv.FormatInt(networkID, 10))
 			require.NoError(t, err)
-			assert.Equal(t, fmt.Sprintf("Exposing routes to connected vSwitch of network %s enabled\n", networkName), out)
+			assert.Equal(t, fmt.Sprintf("Exposing routes to connected vSwitch of Network %s enabled\n", networkName), out)
 		})
 	})
 
@@ -238,42 +238,42 @@ func TestNetwork(t *testing.T) {
 	t.Run("remove-route", func(t *testing.T) {
 		t.Run("non-existing-network", func(t *testing.T) {
 			out, err := runCommand(t, "network", "remove-route", "--destination", "10.100.1.0/24", "--gateway", "10.0.1.1", "non-existing-network")
-			require.EqualError(t, err, "network not found: non-existing-network")
+			require.EqualError(t, err, "Network not found: non-existing-network")
 			assert.Empty(t, out)
 		})
 
 		t.Run("normal", func(t *testing.T) {
 			out, err := runCommand(t, "network", "remove-route", "--destination", "10.100.1.0/24", "--gateway", "10.0.1.1", strconv.FormatInt(networkID, 10))
 			require.NoError(t, err)
-			assert.Equal(t, fmt.Sprintf("Route removed from network %d\n", networkID), out)
+			assert.Equal(t, fmt.Sprintf("Route removed from Network %d\n", networkID), out)
 		})
 	})
 
 	t.Run("remove-subnet", func(t *testing.T) {
 		t.Run("non-existing-network", func(t *testing.T) {
 			out, err := runCommand(t, "network", "remove-subnet", "--ip-range", "10.0.16.0/24", "non-existing-network")
-			require.EqualError(t, err, "network not found: non-existing-network")
+			require.EqualError(t, err, "Network not found: non-existing-network")
 			assert.Empty(t, out)
 		})
 
 		t.Run("normal", func(t *testing.T) {
 			out, err := runCommand(t, "network", "remove-subnet", "--ip-range", "10.0.16.0/24", strconv.FormatInt(networkID, 10))
 			require.NoError(t, err)
-			assert.Equal(t, fmt.Sprintf("Subnet 10.0.16.0/24 removed from network %d\n", networkID), out)
+			assert.Equal(t, fmt.Sprintf("Subnet 10.0.16.0/24 removed from Network %d\n", networkID), out)
 		})
 	})
 
 	t.Run("disable-protection", func(t *testing.T) {
 		t.Run("non-existing-network", func(t *testing.T) {
 			out, err := runCommand(t, "network", "disable-protection", "non-existing-network", "delete")
-			require.EqualError(t, err, "network not found: non-existing-network")
+			require.EqualError(t, err, "Network not found: non-existing-network")
 			assert.Empty(t, out)
 		})
 
 		t.Run("normal", func(t *testing.T) {
 			out, err := runCommand(t, "network", "disable-protection", strconv.FormatInt(networkID, 10), "delete")
 			require.NoError(t, err)
-			assert.Equal(t, fmt.Sprintf("Resource protection disabled for network %d\n", networkID), out)
+			assert.Equal(t, fmt.Sprintf("Resource protection disabled for Network %d\n", networkID), out)
 		})
 	})
 
@@ -286,7 +286,7 @@ func TestNetwork(t *testing.T) {
 	t.Run("disable-expose-routes-to-vswitch", func(t *testing.T) {
 		out, err := runCommand(t, "network", "expose-routes-to-vswitch", "--disable", strconv.FormatInt(networkID, 10))
 		require.NoError(t, err)
-		assert.Equal(t, fmt.Sprintf("Exposing routes to connected vSwitch of network %s disabled\n", networkName), out)
+		assert.Equal(t, fmt.Sprintf("Exposing routes to connected vSwitch of Network %s disabled\n", networkName), out)
 	})
 
 	t.Run("describe", func(t *testing.T) {

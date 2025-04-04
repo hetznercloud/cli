@@ -61,7 +61,7 @@ func TestCombined(t *testing.T) {
 		t.Run("delete", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "delete", strconv.FormatInt(firewallID, 10))
 			require.NoError(t, err)
-			assert.Equal(t, fmt.Sprintf("firewall %d deleted\n", firewallID), out)
+			assert.Equal(t, fmt.Sprintf("Firewall %d deleted\n", firewallID), out)
 		})
 
 	})
@@ -80,7 +80,7 @@ func TestCombined(t *testing.T) {
 		t.Run("assign", func(t *testing.T) {
 			out, err := runCommand(t, "floating-ip", "assign", strconv.FormatInt(floatingIP, 10), strconv.FormatInt(serverID, 10))
 			require.NoError(t, err)
-			assert.Equal(t, fmt.Sprintf("Floating IP %d assigned to server %d\n", floatingIP, serverID), out)
+			assert.Equal(t, fmt.Sprintf("Floating IP %d assigned to Server %d\n", floatingIP, serverID), out)
 		})
 
 		t.Run("describe", func(t *testing.T) {

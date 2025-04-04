@@ -15,7 +15,7 @@ var DetachCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		return &cobra.Command{
 			Use:                   "detach <volume>",
-			Short:                 "Detach a volume",
+			Short:                 "Detach a Volume",
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Volume().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
@@ -27,7 +27,7 @@ var DetachCmd = base.Cmd{
 			return err
 		}
 		if volume == nil {
-			return fmt.Errorf("volume not found: %s", args[0])
+			return fmt.Errorf("Volume not found: %s", args[0])
 		}
 
 		action, _, err := s.Client().Volume().Detach(s, volume)

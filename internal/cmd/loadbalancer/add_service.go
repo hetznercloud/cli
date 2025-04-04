@@ -71,7 +71,7 @@ var AddServiceCmd = base.Cmd{
 			}
 		case hcloud.LoadBalancerServiceProtocolHTTPS:
 			if len(httpCertificates) == 0 {
-				return fmt.Errorf("no certificate specified")
+				return fmt.Errorf("no Certificate specified")
 			}
 		default:
 			return fmt.Errorf("%s is not a valid protocol", protocol)

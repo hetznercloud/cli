@@ -36,5 +36,5 @@ func TestDisableRescue(t *testing.T) {
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
-	assert.Equal(t, "Rescue disabled for server 123\n", out)
+	assert.Equal(t, "Rescue disabled for Server 123\n", out)
 }

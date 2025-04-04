@@ -24,20 +24,20 @@ func TestFirewall(t *testing.T) {
 	t.Run("add-label", func(t *testing.T) {
 		t.Run("non-existing", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "add-label", "non-existing-firewall", "foo=bar")
-			require.EqualError(t, err, "firewall not found: non-existing-firewall")
+			require.EqualError(t, err, "Firewall not found: non-existing-firewall")
 			assert.Empty(t, out)
 		})
 
 		t.Run("1", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "add-label", strconv.FormatInt(firewallID, 10), "foo=bar")
 			require.NoError(t, err)
-			assert.Equal(t, fmt.Sprintf("Label(s) foo added to firewall %d\n", firewallID), out)
+			assert.Equal(t, fmt.Sprintf("Label(s) foo added to Firewall %d\n", firewallID), out)
 		})
 
 		t.Run("2", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "add-label", strconv.FormatInt(firewallID, 10), "baz=qux")
 			require.NoError(t, err)
-			assert.Equal(t, fmt.Sprintf("Label(s) baz added to firewall %d\n", firewallID), out)
+			assert.Equal(t, fmt.Sprintf("Label(s) baz added to Firewall %d\n", firewallID), out)
 		})
 	})
 
@@ -52,7 +52,7 @@ func TestFirewall(t *testing.T) {
 	t.Run("remove-label", func(t *testing.T) {
 		out, err := runCommand(t, "firewall", "remove-label", firewallName, "baz")
 		require.NoError(t, err)
-		assert.Equal(t, fmt.Sprintf("Label(s) baz removed from firewall %d\n", firewallID), out)
+		assert.Equal(t, fmt.Sprintf("Label(s) baz removed from Firewall %d\n", firewallID), out)
 	})
 
 	t.Run("add-rule", func(t *testing.T) {
@@ -299,7 +299,7 @@ func TestFirewall(t *testing.T) {
 	t.Run("delete", func(t *testing.T) {
 		out, err := runCommand(t, "firewall", "delete", strconv.FormatInt(firewallID, 10))
 		require.NoError(t, err)
-		assert.Equal(t, fmt.Sprintf("firewall %d deleted\n", firewallID), out)
+		assert.Equal(t, fmt.Sprintf("Firewall %d deleted\n", firewallID), out)
 	})
 }
 

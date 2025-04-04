@@ -39,5 +39,5 @@ func TestEnableRescue(t *testing.T) {
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
-	assert.Equal(t, "Rescue enabled for server 123 with root password: root-password\n", out)
+	assert.Equal(t, "Rescue enabled for Server 123 with root password: root-password\n", out)
 }

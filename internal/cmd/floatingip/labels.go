@@ -12,8 +12,8 @@ import (
 
 var LabelCmds = base.LabelCmds[*hcloud.FloatingIP]{
 	ResourceNameSingular:   "Floating IP",
-	ShortDescriptionAdd:    "Add a label to an Floating IP",
-	ShortDescriptionRemove: "Remove a label from an Floating IP",
+	ShortDescriptionAdd:    "Add a label to a Floating IP",
+	ShortDescriptionRemove: "Remove a label from a Floating IP",
 	NameSuggestions:        func(c hcapi2.Client) func() []string { return c.FloatingIP().Names },
 	LabelKeySuggestions:    func(c hcapi2.Client) func(idOrName string) []string { return c.FloatingIP().LabelKeys },
 	Fetch: func(s state.State, idOrName string) (*hcloud.FloatingIP, error) {
@@ -22,7 +22,7 @@ var LabelCmds = base.LabelCmds[*hcloud.FloatingIP]{
 			return nil, err
 		}
 		if floatingIP == nil {
-			return nil, fmt.Errorf("floating IP not found: %s", idOrName)
+			return nil, fmt.Errorf("Floating IP not found: %s", idOrName)
 		}
 		return floatingIP, nil
 	},

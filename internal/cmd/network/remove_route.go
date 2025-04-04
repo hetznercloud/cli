@@ -17,13 +17,13 @@ var RemoveRouteCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:                   "remove-route --destination <destination> --gateway <ip> <network>",
-			Short:                 "Remove a route from a network",
+			Short:                 "Remove a route from a Network",
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Network().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
 		}
 
-		cmd.Flags().IPNet("destination", net.IPNet{}, "Destination network or host (required)")
+		cmd.Flags().IPNet("destination", net.IPNet{}, "Destination Network or host (required)")
 		_ = cmd.MarkFlagRequired("destination")
 
 		cmd.Flags().IP("gateway", net.IP{}, "Gateway IP address (required)")
@@ -40,7 +40,7 @@ var RemoveRouteCmd = base.Cmd{
 			return err
 		}
 		if network == nil {
-			return fmt.Errorf("network not found: %s", idOrName)
+			return fmt.Errorf("Network not found: %s", idOrName)
 		}
 
 		opts := hcloud.NetworkDeleteRouteOpts{
@@ -56,7 +56,7 @@ var RemoveRouteCmd = base.Cmd{
 		if err := s.WaitForActions(s, cmd, action); err != nil {
 			return err
 		}
-		cmd.Printf("Route removed from network %d\n", network.ID)
+		cmd.Printf("Route removed from Network %d\n", network.ID)
 
 		return nil
 	},

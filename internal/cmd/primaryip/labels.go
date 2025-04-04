@@ -11,7 +11,7 @@ import (
 )
 
 var LabelCmds = base.LabelCmds[*hcloud.PrimaryIP]{
-	ResourceNameSingular:   "primary-ip",
+	ResourceNameSingular:   "Primary IP",
 	ShortDescriptionAdd:    "Add a label to a Primary IP",
 	ShortDescriptionRemove: "Remove a label from a Primary IP",
 	NameSuggestions:        func(c hcapi2.Client) func() []string { return c.PrimaryIP().Names },

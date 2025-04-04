@@ -29,7 +29,7 @@ func TestFloatingIP(t *testing.T) {
 		require.EqualError(t, err, "one of --home-location or --server is required")
 
 		_, err = createFloatingIP(t, floatingIPName, "ipv4", "--server", "non-existing-server")
-		require.EqualError(t, err, "server not found: non-existing-server")
+		require.EqualError(t, err, "Server not found: non-existing-server")
 
 		floatingIPId, err := createFloatingIP(t, floatingIPName, "ipv4", "--home-location", TestLocationName)
 		require.NoError(t, err)
@@ -37,7 +37,7 @@ func TestFloatingIP(t *testing.T) {
 		t.Run("labels", func(t *testing.T) {
 			t.Run("add-label-non-existing-floating-ip", func(t *testing.T) {
 				out, err := runCommand(t, "floating-ip", "add-label", "non-existing-floating-ip", "foo=bar")
-				require.EqualError(t, err, "floating IP not found: non-existing-floating-ip")
+				require.EqualError(t, err, "Floating IP not found: non-existing-floating-ip")
 				assert.Empty(t, out)
 			})
 
@@ -76,7 +76,7 @@ func TestFloatingIP(t *testing.T) {
 
 			t.Run("non-existing-server", func(t *testing.T) {
 				out, err := runCommand(t, "floating-ip", "assign", strconv.FormatInt(floatingIPId, 10), "non-existing-server")
-				require.EqualError(t, err, "server not found: non-existing-server")
+				require.EqualError(t, err, "Server not found: non-existing-server")
 				assert.Empty(t, out)
 			})
 		})
@@ -97,7 +97,7 @@ func TestFloatingIP(t *testing.T) {
 			t.Run("enable-delete-protection", func(t *testing.T) {
 				out, err := runCommand(t, "floating-ip", "enable-protection", strconv.FormatInt(floatingIPId, 10), "delete")
 				require.NoError(t, err)
-				assert.Equal(t, fmt.Sprintf("Resource protection enabled for floating IP %d\n", floatingIPId), out)
+				assert.Equal(t, fmt.Sprintf("Resource protection enabled for Floating IP %d\n", floatingIPId), out)
 			})
 		})
 
@@ -227,7 +227,7 @@ func TestFloatingIP(t *testing.T) {
 			t.Run("disable-delete-protection", func(t *testing.T) {
 				out, err := runCommand(t, "floating-ip", "disable-protection", strconv.FormatInt(floatingIPId, 10), "delete")
 				require.NoError(t, err)
-				assert.Equal(t, fmt.Sprintf("Resource protection disabled for floating IP %d\n", floatingIPId), out)
+				assert.Equal(t, fmt.Sprintf("Resource protection disabled for Floating IP %d\n", floatingIPId), out)
 			})
 		})
 

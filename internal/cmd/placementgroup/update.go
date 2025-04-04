@@ -11,14 +11,14 @@ import (
 )
 
 var UpdateCmd = base.UpdateCmd{
-	ResourceNameSingular: "placement group",
-	ShortDescription:     "Update a placement group",
+	ResourceNameSingular: "Placement Group",
+	ShortDescription:     "Update a Placement Group",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.PlacementGroup().Names },
 	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
 		return s.Client().PlacementGroup().Get(s, idOrName)
 	},
 	DefineFlags: func(cmd *cobra.Command) {
-		cmd.Flags().String("name", "", "Placement group name")
+		cmd.Flags().String("name", "", "Placement Group name")
 	},
 	Update: func(s state.State, _ *cobra.Command, resource interface{}, flags map[string]pflag.Value) error {
 		placementGroup := resource.(*hcloud.PlacementGroup)

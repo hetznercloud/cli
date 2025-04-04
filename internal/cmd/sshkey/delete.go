@@ -12,7 +12,7 @@ import (
 var DeleteCmd = base.DeleteCmd{
 	ResourceNameSingular: "SSH Key",
 	ResourceNamePlural:   "SSH Keys",
-	ShortDescription:     "Delete a SSH Key",
+	ShortDescription:     "Delete an SSH Key",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.SSHKey().Names },
 	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
 		return s.Client().SSHKey().Get(s, idOrName)

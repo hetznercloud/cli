@@ -47,7 +47,7 @@ func TestCreate(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"--name", placementGroup.Name, "--type", string(placementGroup.Type)})
 
-	expOut := `Placement group 897 created
+	expOut := `Placement Group 897 created
 `
 
 	require.NoError(t, err)
@@ -89,7 +89,7 @@ func TestCreateJSON(t *testing.T) {
 
 	jsonOut, out, err := fx.Run(cmd, []string{"-o=json", "--name", "myPlacementGroup", "--type", "spread"})
 
-	expOut := "Placement group 897 created\n"
+	expOut := "Placement Group 897 created\n"
 
 	require.NoError(t, err)
 	assert.Equal(t, expOut, out)

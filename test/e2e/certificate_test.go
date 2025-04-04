@@ -62,20 +62,20 @@ func runCertificateTestSuite(t *testing.T, certName string, certID int64, certTy
 	t.Run("add-label", func(t *testing.T) {
 		t.Run("non-existing", func(t *testing.T) {
 			out, err := runCommand(t, "certificate", "add-label", "non-existing-certificate", "foo=bar")
-			require.EqualError(t, err, "certificate not found: non-existing-certificate")
+			require.EqualError(t, err, "Certificate not found: non-existing-certificate")
 			assert.Empty(t, out)
 		})
 
 		t.Run("1", func(t *testing.T) {
 			out, err := runCommand(t, "certificate", "add-label", strconv.FormatInt(certID, 10), "foo=bar")
 			require.NoError(t, err)
-			assert.Equal(t, fmt.Sprintf("Label(s) foo added to certificate %d\n", certID), out)
+			assert.Equal(t, fmt.Sprintf("Label(s) foo added to Certificate %d\n", certID), out)
 		})
 
 		t.Run("2", func(t *testing.T) {
 			out, err := runCommand(t, "certificate", "add-label", strconv.FormatInt(certID, 10), "baz=qux")
 			require.NoError(t, err)
-			assert.Equal(t, fmt.Sprintf("Label(s) baz added to certificate %d\n", certID), out)
+			assert.Equal(t, fmt.Sprintf("Label(s) baz added to Certificate %d\n", certID), out)
 		})
 	})
 
@@ -84,13 +84,13 @@ func runCertificateTestSuite(t *testing.T, certName string, certID int64, certTy
 
 		out, err := runCommand(t, "certificate", "update", strconv.FormatInt(certID, 10), "--name", certName)
 		require.NoError(t, err)
-		assert.Equal(t, fmt.Sprintf("certificate %d updated\n", certID), out)
+		assert.Equal(t, fmt.Sprintf("Certificate %d updated\n", certID), out)
 	})
 
 	t.Run("remove-label", func(t *testing.T) {
 		out, err := runCommand(t, "certificate", "remove-label", certName, "baz")
 		require.NoError(t, err)
-		assert.Equal(t, fmt.Sprintf("Label(s) baz removed from certificate %d\n", certID), out)
+		assert.Equal(t, fmt.Sprintf("Label(s) baz removed from Certificate %d\n", certID), out)
 	})
 
 	t.Run("list", func(t *testing.T) {
@@ -174,7 +174,7 @@ func runCertificateTestSuite(t *testing.T, certName string, certID int64, certTy
 	t.Run("delete", func(t *testing.T) {
 		out, err := runCommand(t, "certificate", "delete", strconv.FormatInt(certID, 10))
 		require.NoError(t, err)
-		assert.Equal(t, fmt.Sprintf("certificate %d deleted\n", certID), out)
+		assert.Equal(t, fmt.Sprintf("Certificate %d deleted\n", certID), out)
 	})
 }
 

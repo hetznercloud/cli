@@ -39,5 +39,5 @@ func TestResetPassword(t *testing.T) {
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
-	assert.Equal(t, "Password of server 123 reset to: root-password\n", out)
+	assert.Equal(t, "Password of Server 123 reset to: root-password\n", out)
 }

@@ -6,8 +6,8 @@
 │ debug-file       │ File to write debug  │ string      │ debug_file       │ HCLOUD_DEBUG_FILE       │ --debug-file    │
 │                  │ output to            │             │                  │                         │                 │
 ├──────────────────┼──────────────────────┼─────────────┼──────────────────┼─────────────────────────┼─────────────────┤
-│ default-ssh-keys │ Default SSH keys for │ string list │ default_ssh_keys │ HCLOUD_DEFAULT_SSH_KEYS │                 │
-│                  │ new servers          │             │                  │                         │                 │
+│ default-ssh-keys │ Default SSH Keys for │ string list │ default_ssh_keys │ HCLOUD_DEFAULT_SSH_KEYS │                 │
+│                  │ new Servers          │             │                  │                         │                 │
 ├──────────────────┼──────────────────────┼─────────────┼──────────────────┼─────────────────────────┼─────────────────┤
 │ endpoint         │ Hetzner Cloud API    │ string      │ endpoint         │ HCLOUD_ENDPOINT         │ --endpoint      │
 │                  │ endpoint             │             │                  │                         │                 │

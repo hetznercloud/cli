@@ -17,10 +17,10 @@ import (
 )
 
 var DescribeCmd = base.DescribeCmd[*hcloud.Image]{
-	ResourceNameSingular: "image",
-	ShortDescription:     "Describe an image",
+	ResourceNameSingular: "Image",
+	ShortDescription:     "Describe an Image",
 	AdditionalFlags: func(cmd *cobra.Command) {
-		cmd.Flags().StringP("architecture", "a", string(hcloud.ArchitectureX86), "architecture of the image, default is x86")
+		cmd.Flags().StringP("architecture", "a", string(hcloud.ArchitectureX86), "architecture of the Image, default is x86")
 		_ = cmd.RegisterFlagCompletionFunc("architecture", cmpl.SuggestCandidates(string(hcloud.ArchitectureX86), string(hcloud.ArchitectureARM)))
 	},
 	NameSuggestions: func(c hcapi2.Client) func() []string { return c.Image().Names },
@@ -76,7 +76,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Image]{
 		}
 
 		if !image.Deprecated.IsZero() {
-			cmd.Printf("\nAttention: This image is deprecated and will be removed in the future.\n")
+			cmd.Printf("\nAttention: This Image is deprecated and will be removed in the future.\n")
 		}
 		return nil
 	},

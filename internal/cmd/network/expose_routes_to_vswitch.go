@@ -34,7 +34,7 @@ var ExposeRoutesToVSwitchCmd = base.Cmd{
 			return err
 		}
 		if network == nil {
-			return fmt.Errorf("network not found: %s", idOrName)
+			return fmt.Errorf("Network not found: %s", idOrName)
 		}
 
 		disable, _ := cmd.Flags().GetBool("disable")
@@ -48,9 +48,9 @@ var ExposeRoutesToVSwitchCmd = base.Cmd{
 		}
 
 		if disable {
-			cmd.Printf("Exposing routes to connected vSwitch of network %s disabled\n", network.Name)
+			cmd.Printf("Exposing routes to connected vSwitch of Network %s disabled\n", network.Name)
 		} else {
-			cmd.Printf("Exposing routes to connected vSwitch of network %s enabled\n", network.Name)
+			cmd.Printf("Exposing routes to connected vSwitch of Network %s enabled\n", network.Name)
 		}
 
 		return nil

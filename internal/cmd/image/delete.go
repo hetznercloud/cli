@@ -13,9 +13,9 @@ import (
 )
 
 var DeleteCmd = base.DeleteCmd{
-	ResourceNameSingular: "image",
-	ResourceNamePlural:   "images",
-	ShortDescription:     "Delete an image",
+	ResourceNameSingular: "Image",
+	ResourceNamePlural:   "Images",
+	ShortDescription:     "Delete an Image",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Image().Names },
 	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
 		id, err := strconv.ParseInt(idOrName, 10, 64)

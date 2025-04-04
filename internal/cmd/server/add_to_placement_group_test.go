@@ -42,7 +42,7 @@ func TestAddToPlacementGroup(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"-g", placementGroup.Name, server.Name})
 
-	expOut := `Server 42 added to placement group my Placement Group
+	expOut := `Server 42 added to Placement Group my Placement Group
 `
 
 	require.NoError(t, err)

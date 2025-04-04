@@ -18,7 +18,7 @@ var UpdateCmd = base.UpdateCmd{
 		return s.Client().LoadBalancer().Get(s, idOrName)
 	},
 	DefineFlags: func(cmd *cobra.Command) {
-		cmd.Flags().String("name", "", "LoadBalancer name")
+		cmd.Flags().String("name", "", "Load Balancer name")
 	},
 	Update: func(s state.State, _ *cobra.Command, resource interface{}, flags map[string]pflag.Value) error {
 		floatingIP := resource.(*hcloud.LoadBalancer)

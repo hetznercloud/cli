@@ -41,7 +41,7 @@ var ListCmd = base.ListCmd{
 	SortOption:         config.OptionSortServer,
 
 	AdditionalFlags: func(cmd *cobra.Command) {
-		cmd.Flags().StringSlice("status", nil, "Only servers with one of these statuses are displayed")
+		cmd.Flags().StringSlice("status", nil, "Only Servers with one of these statuses are displayed")
 		_ = cmd.RegisterFlagCompletionFunc("status", cmpl.SuggestCandidates(serverStatusStrings...))
 	},
 

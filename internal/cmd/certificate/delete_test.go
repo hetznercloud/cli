@@ -33,7 +33,7 @@ func TestDelete(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"test"})
 
-	expOut := "certificate test deleted\n"
+	expOut := "Certificate test deleted\n"
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
@@ -77,5 +77,5 @@ func TestDeleteMultiple(t *testing.T) {
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
-	assert.Equal(t, "certificates test1, test2, test3 deleted\n", out)
+	assert.Equal(t, "Certificates test1, test2, test3 deleted\n", out)
 }

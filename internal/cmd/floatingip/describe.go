@@ -13,7 +13,7 @@ import (
 
 var DescribeCmd = base.DescribeCmd[*hcloud.FloatingIP]{
 	ResourceNameSingular: "Floating IP",
-	ShortDescription:     "Describe an Floating IP",
+	ShortDescription:     "Describe a Floating IP",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.FloatingIP().Names },
 	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.FloatingIP, any, error) {
 		ip, _, err := s.Client().FloatingIP().Get(s, idOrName)

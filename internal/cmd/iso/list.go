@@ -24,7 +24,7 @@ var ListCmd = base.ListCmd{
 	SortOption:         nil, // ISOs does not support sorting
 
 	AdditionalFlags: func(cmd *cobra.Command) {
-		cmd.Flags().StringSlice("architecture", []string{}, "Only show images of given architecture: x86|arm")
+		cmd.Flags().StringSlice("architecture", []string{}, "Only show Images of given architecture: x86|arm")
 		_ = cmd.RegisterFlagCompletionFunc("architecture", cmpl.SuggestCandidates(string(hcloud.ArchitectureX86), string(hcloud.ArchitectureARM)))
 
 		cmd.Flags().Bool("include-architecture-wildcard", false, "Include ISOs with unknown architecture, only required if you want so show custom ISOs and still filter for architecture.")

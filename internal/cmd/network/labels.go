@@ -22,7 +22,7 @@ var LabelCmds = base.LabelCmds[*hcloud.Network]{
 			return nil, err
 		}
 		if network == nil {
-			return nil, fmt.Errorf("network not found: %s", idOrName)
+			return nil, fmt.Errorf("Network not found: %s", idOrName)
 		}
 		return network, nil
 	},

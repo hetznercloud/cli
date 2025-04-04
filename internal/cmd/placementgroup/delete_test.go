@@ -37,7 +37,7 @@ func TestDelete(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{placementGroup.Name})
 
-	expOut := "placement group my Placement Group deleted\n"
+	expOut := "Placement Group my Placement Group deleted\n"
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
@@ -81,5 +81,5 @@ func TestDeleteMultiple(t *testing.T) {
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
-	assert.Equal(t, "placement groups test1, test2, test3 deleted\n", out)
+	assert.Equal(t, "Placement Groups test1, test2, test3 deleted\n", out)
 }

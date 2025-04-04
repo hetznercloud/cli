@@ -37,7 +37,7 @@ var AddRuleCmd = base.Cmd{
 
 		cmd.Flags().String("port", "", "Port to which traffic will be allowed, only applicable for protocols TCP and UDP, you can specify port ranges, sample: 80-85")
 
-		cmd.Flags().String("description", "", "Description of the firewall rule")
+		cmd.Flags().String("description", "", "Description of the Firewall rule")
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {

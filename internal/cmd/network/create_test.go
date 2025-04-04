@@ -115,7 +115,7 @@ func TestCreateProtection(t *testing.T) {
 	out, errOut, err := fx.Run(cmd, []string{"--name", "myNetwork", "--ip-range", "10.0.0.0/24", "--enable-protection", "delete"})
 
 	expOut := `Network 123 created
-Resource protection enabled for network 123
+Resource protection enabled for Network 123
 `
 
 	require.NoError(t, err)

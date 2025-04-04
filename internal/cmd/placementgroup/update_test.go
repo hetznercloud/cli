@@ -29,7 +29,7 @@ func TestUpdateName(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"123", "--name", "new-name"})
 
-	expOut := "placement group 123 updated\n"
+	expOut := "Placement Group 123 updated\n"
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)

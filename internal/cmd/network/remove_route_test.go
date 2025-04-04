@@ -40,7 +40,7 @@ func TestRemoveRoute(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"123", "--destination", "10.0.0.0/24", "--gateway", "10.0.0.1"})
 
-	expOut := "Route removed from network 123\n"
+	expOut := "Route removed from Network 123\n"
 
 	require.NoError(t, err)
 	assert.Equal(t, expOut, out)

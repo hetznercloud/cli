@@ -17,7 +17,7 @@ import (
 
 // DescribeCmd allows defining commands for describing a resource.
 type DescribeCmd[T any] struct {
-	ResourceNameSingular string // e.g. "server"
+	ResourceNameSingular string // e.g. "Server"
 	ShortDescription     string
 	NameSuggestions      func(client hcapi2.Client) func() []string
 	AdditionalFlags      func(*cobra.Command)

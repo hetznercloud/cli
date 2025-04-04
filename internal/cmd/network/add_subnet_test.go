@@ -41,7 +41,7 @@ func TestAddSubnet(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"123", "--type", "cloud", "--network-zone", "eu-central", "--ip-range", "10.0.0.0/24"})
 
-	expOut := "Subnet added to network 123\n"
+	expOut := "Subnet added to Network 123\n"
 
 	require.NoError(t, err)
 	assert.Equal(t, expOut, out)

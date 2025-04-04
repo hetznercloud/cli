@@ -16,7 +16,7 @@ import (
 )
 
 var ListCmd = base.ListCmd{
-	ResourceNamePlural: "SSH keys",
+	ResourceNamePlural: "SSH Keys",
 	JSONKeyGetByName:   "ssh_keys",
 	DefaultColumns:     []string{"id", "name", "fingerprint", "age"},
 	SortOption:         config.OptionSortSSHKey,

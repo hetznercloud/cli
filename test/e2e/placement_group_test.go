@@ -29,20 +29,20 @@ func TestPlacementGroup(t *testing.T) {
 	t.Run("add-label", func(t *testing.T) {
 		t.Run("non-existing-placement-group", func(t *testing.T) {
 			out, err = runCommand(t, "placement-group", "add-label", "non-existing-placement-group", "foo=bar")
-			require.EqualError(t, err, "placement group not found: non-existing-placement-group")
+			require.EqualError(t, err, "Placement Group not found: non-existing-placement-group")
 			assert.Empty(t, out)
 		})
 
 		t.Run("1", func(t *testing.T) {
 			out, err = runCommand(t, "placement-group", "add-label", pgName, "foo=bar")
 			require.NoError(t, err)
-			assert.Equal(t, fmt.Sprintf("Label(s) foo added to placement group %d\n", pgID), out)
+			assert.Equal(t, fmt.Sprintf("Label(s) foo added to Placement Group %d\n", pgID), out)
 		})
 
 		t.Run("2", func(t *testing.T) {
 			out, err = runCommand(t, "placement-group", "add-label", pgName, "baz=qux")
 			require.NoError(t, err)
-			assert.Equal(t, fmt.Sprintf("Label(s) baz added to placement group %d\n", pgID), out)
+			assert.Equal(t, fmt.Sprintf("Label(s) baz added to Placement Group %d\n", pgID), out)
 		})
 	})
 
@@ -52,7 +52,7 @@ func TestPlacementGroup(t *testing.T) {
 	t.Run("update-name", func(t *testing.T) {
 		out, err := runCommand(t, "placement-group", "update", oldPgName, "--name", pgName)
 		require.NoError(t, err)
-		assert.Equal(t, fmt.Sprintf("placement group %s updated\n", oldPgName), out)
+		assert.Equal(t, fmt.Sprintf("Placement Group %s updated\n", oldPgName), out)
 	})
 
 	t.Run("list", func(t *testing.T) {
@@ -115,13 +115,13 @@ func TestPlacementGroup(t *testing.T) {
 	t.Run("remove-label", func(t *testing.T) {
 		out, err := runCommand(t, "placement-group", "remove-label", pgName, "baz")
 		require.NoError(t, err)
-		assert.Equal(t, fmt.Sprintf("Label(s) baz removed from placement group %d\n", pgID), out)
+		assert.Equal(t, fmt.Sprintf("Label(s) baz removed from Placement Group %d\n", pgID), out)
 	})
 
 	t.Run("delete", func(t *testing.T) {
 		out, err := runCommand(t, "placement-group", "delete", strconv.FormatInt(pgID, 10))
 		require.NoError(t, err)
-		assert.Equal(t, fmt.Sprintf("placement group %d deleted\n", pgID), out)
+		assert.Equal(t, fmt.Sprintf("Placement Group %d deleted\n", pgID), out)
 	})
 }
 
@@ -136,7 +136,7 @@ func createPlacementGroup(t *testing.T, name string, args ...string) (int64, err
 		return 0, err
 	}
 
-	if !assert.Regexp(t, `^Placement group [0-9]+ created\n$`, out) {
+	if !assert.Regexp(t, `^Placement Group [0-9]+ created\n$`, out) {
 		return 0, fmt.Errorf("invalid response: %s", out)
 	}
 

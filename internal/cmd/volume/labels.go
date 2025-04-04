@@ -22,7 +22,7 @@ var LabelCmds = base.LabelCmds[*hcloud.Volume]{
 			return nil, err
 		}
 		if volume == nil {
-			return nil, fmt.Errorf("volume not found: %s", idOrName)
+			return nil, fmt.Errorf("Volume not found: %s", idOrName)
 		}
 		return volume, nil
 	},

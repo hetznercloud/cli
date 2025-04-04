@@ -27,10 +27,10 @@ var ListCmd = base.ListCmd{
 	SortOption:         config.OptionSortImage,
 
 	AdditionalFlags: func(cmd *cobra.Command) {
-		cmd.Flags().StringSliceP("type", "t", []string{}, "Only show images of given type: system|app|snapshot|backup")
+		cmd.Flags().StringSliceP("type", "t", []string{}, "Only show Images of given type: system|app|snapshot|backup")
 		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("backup", "snapshot", "system", "app"))
 
-		cmd.Flags().StringSliceP("architecture", "a", []string{}, "Only show images of given architecture: x86|arm")
+		cmd.Flags().StringSliceP("architecture", "a", []string{}, "Only show Images of given architecture: x86|arm")
 		_ = cmd.RegisterFlagCompletionFunc("architecture", cmpl.SuggestCandidates(string(hcloud.ArchitectureX86), string(hcloud.ArchitectureARM)))
 	},
 	Fetch: func(s state.State, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
@@ -49,7 +49,7 @@ var ListCmd = base.ListCmd{
 			}
 		}
 		if len(unknown) > 0 {
-			return nil, fmt.Errorf("unknown image type: %s", strings.Join(unknown, ", "))
+			return nil, fmt.Errorf("unknown Image type: %s", strings.Join(unknown, ", "))
 		}
 
 		architecture, _ := flags.GetStringSlice("architecture")

@@ -35,7 +35,7 @@ func TestExposeRoutesToVSwitchEnable(t *testing.T) {
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
-	assert.Equal(t, "Exposing routes to connected vSwitch of network myNetwork enabled\n", out)
+	assert.Equal(t, "Exposing routes to connected vSwitch of Network myNetwork enabled\n", out)
 }
 
 func TestExposeRoutesToVSwitchDisable(t *testing.T) {
@@ -61,5 +61,5 @@ func TestExposeRoutesToVSwitchDisable(t *testing.T) {
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
-	assert.Equal(t, "Exposing routes to connected vSwitch of network myNetwork disabled\n", out)
+	assert.Equal(t, "Exposing routes to connected vSwitch of Network myNetwork disabled\n", out)
 }

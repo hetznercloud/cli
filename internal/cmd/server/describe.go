@@ -14,8 +14,8 @@ import (
 )
 
 var DescribeCmd = base.DescribeCmd[*hcloud.Server]{
-	ResourceNameSingular: "server",
-	ShortDescription:     "Describe a server",
+	ResourceNameSingular: "Server",
+	ShortDescription:     "Describe a Server",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Server().Names },
 	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.Server, any, error) {
 		srv, _, err := s.Client().Server().Get(s, idOrName)
@@ -80,7 +80,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Server]{
 			for _, n := range server.PrivateNet {
 				network, _, err := s.Client().Network().GetByID(s, n.Network.ID)
 				if err != nil {
-					return fmt.Errorf("error fetching network: %w", err)
+					return fmt.Errorf("error fetching Network: %w", err)
 				}
 				cmd.Printf("  - ID:\t\t\t%d\n", network.ID)
 				cmd.Printf("    Name:\t\t%s\n", network.Name)
