@@ -14,7 +14,7 @@ var RetryCmd = base.Cmd{
 	BaseCobraCommand: func(_ hcapi2.Client) *cobra.Command {
 		return &cobra.Command{
 			Use:                   "retry <certificate>",
-			Short:                 "Retry a Managed Certificate's issuance",
+			Short:                 "Retry a managed Certificate's issuance",
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
 		}
