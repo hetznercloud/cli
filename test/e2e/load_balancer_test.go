@@ -30,7 +30,7 @@ func TestLoadBalancer(t *testing.T) {
 		t.Run("add-label", func(t *testing.T) {
 			t.Run("non-existing", func(t *testing.T) {
 				out, err := runCommand(t, "load-balancer", "add-label", "non-existing-load-balancer", "foo=bar")
-				require.EqualError(t, err, "load balancer not found: non-existing-load-balancer")
+				require.EqualError(t, err, "Load Balancer not found: non-existing-load-balancer")
 				assert.Empty(t, out)
 			})
 
@@ -84,7 +84,7 @@ func TestLoadBalancer(t *testing.T) {
 		t.Run("normal", func(t *testing.T) {
 			out, err := runCommand(t, "load-balancer", "change-type", strconv.FormatInt(lbID, 10), TestLoadBalancerTypeName)
 			require.NoError(t, err)
-			assert.Equal(t, fmt.Sprintf("LoadBalancer %d changed to type %s\n", lbID, TestLoadBalancerTypeName), out)
+			assert.Equal(t, fmt.Sprintf("Load Balancer %d changed to type %s\n", lbID, TestLoadBalancerTypeName), out)
 		})
 	})
 

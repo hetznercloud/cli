@@ -35,7 +35,7 @@ func TestCombined(t *testing.T) {
 		t.Run("add-subnet", func(t *testing.T) {
 			out, err := runCommand(t, "network", "add-subnet", "--type", "cloud", "--network-zone", TestNetworkZone, "--ip-range", "10.0.1.0/24", strconv.FormatInt(networkID, 10))
 			require.NoError(t, err)
-			assert.Equal(t, fmt.Sprintf("Subnet added to network %d\n", networkID), out)
+			assert.Equal(t, fmt.Sprintf("Subnet added to Network %d\n", networkID), out)
 		})
 	})
 
@@ -65,7 +65,7 @@ func TestCombined(t *testing.T) {
 		t.Run("attach-to-network", func(t *testing.T) {
 			out, err := runCommand(t, "load-balancer", "attach-to-network", strconv.FormatInt(loadBalancerID, 10), "--network", strconv.FormatInt(networkID, 10))
 			require.NoError(t, err)
-			assert.Equal(t, fmt.Sprintf("Load Balancer %d attached to network %d\n", loadBalancerID, networkID), out)
+			assert.Equal(t, fmt.Sprintf("Load Balancer %d attached to Network %d\n", loadBalancerID, networkID), out)
 		})
 
 		t.Run("disable-public-interface", func(t *testing.T) {
