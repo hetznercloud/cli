@@ -95,16 +95,16 @@ func (cfg *config) reset() {
 }
 
 func (cfg *config) Read(f any) error {
-	// error is ignored since invalid flags are already handled by cobra
-	_ = cfg.fs.Parse(os.Args[1:])
+	// we ignore unknown flags since we are only interested in config option flags
+	cfg.fs.ParseErrorsWhitelist.UnknownFlags = true
+
+	err := cfg.fs.Parse(os.Args[1:])
+	if err != nil && !errors.Is(err, pflag.ErrHelp) {
+		return err
+	}
 
 	// load env already so we can determine the active context
 	cfg.v.AutomaticEnv()
-
-	var (
-		cfgBytes []byte
-		err      error
-	)
 
 	cfg.path, err = OptionConfig.Get(cfg)
 	if err != nil {
@@ -120,6 +120,7 @@ func (cfg *config) Read(f any) error {
 		cfg.path = DefaultConfigPath()
 	}
 
+	var cfgBytes []byte
 	if f == nil || ok {
 		// read config from file
 		cfgBytes, err = os.ReadFile(cfg.path)
