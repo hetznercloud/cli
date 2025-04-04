@@ -1,6 +1,6 @@
 ## hcloud server poweroff
 
-Poweroff a server
+Poweroff a Server
 
 ```
 hcloud server poweroff <server>
@@ -26,4 +26,4 @@ hcloud server poweroff <server>
 
 ### SEE ALSO
 
-* [hcloud server](hcloud_server.md)	 - Manage servers
+* [hcloud server](hcloud_server.md)	 - Manage Servers

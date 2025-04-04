@@ -1,6 +1,6 @@
 ## hcloud ssh-key
 
-Manage SSH keys
+Manage SSH Keys
 
 ### Options
 
@@ -23,10 +23,10 @@ Manage SSH keys
 ### SEE ALSO
 
 * [hcloud](hcloud.md)	 - Hetzner Cloud CLI
-* [hcloud ssh-key add-label](hcloud_ssh-key_add-label.md)	 - Add a label to a SSH Key
-* [hcloud ssh-key create](hcloud_ssh-key_create.md)	 - Create a SSH key
-* [hcloud ssh-key delete](hcloud_ssh-key_delete.md)	 - Delete a SSH Key
-* [hcloud ssh-key describe](hcloud_ssh-key_describe.md)	 - Describe a SSH Key
-* [hcloud ssh-key list](hcloud_ssh-key_list.md)	 - List SSH keys
-* [hcloud ssh-key remove-label](hcloud_ssh-key_remove-label.md)	 - Remove a label from a SSH Key
-* [hcloud ssh-key update](hcloud_ssh-key_update.md)	 - Update a SSHKey
+* [hcloud ssh-key add-label](hcloud_ssh-key_add-label.md)	 - Add a label to an SSH Key
+* [hcloud ssh-key create](hcloud_ssh-key_create.md)	 - Create an SSH Key
+* [hcloud ssh-key delete](hcloud_ssh-key_delete.md)	 - Delete an SSH Key
+* [hcloud ssh-key describe](hcloud_ssh-key_describe.md)	 - Describe an SSH Key
+* [hcloud ssh-key list](hcloud_ssh-key_list.md)	 - List SSH Keys
+* [hcloud ssh-key remove-label](hcloud_ssh-key_remove-label.md)	 - Remove a label from an SSH Key
+* [hcloud ssh-key update](hcloud_ssh-key_update.md)	 - Update an SSH Key

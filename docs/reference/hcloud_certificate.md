@@ -1,6 +1,6 @@
 ## hcloud certificate
 
-Manage certificates
+Manage Certificates
 
 ### Options
 
@@ -23,11 +23,11 @@ Manage certificates
 ### SEE ALSO
 
 * [hcloud](hcloud.md)	 - Hetzner Cloud CLI
-* [hcloud certificate add-label](hcloud_certificate_add-label.md)	 - Add a label to an certificate
+* [hcloud certificate add-label](hcloud_certificate_add-label.md)	 - Add a label to a Certificate
 * [hcloud certificate create](hcloud_certificate_create.md)	 - Create or upload a Certificate
-* [hcloud certificate delete](hcloud_certificate_delete.md)	 - Delete a certificate
-* [hcloud certificate describe](hcloud_certificate_describe.md)	 - Describe an certificate
+* [hcloud certificate delete](hcloud_certificate_delete.md)	 - Delete a Certificate
+* [hcloud certificate describe](hcloud_certificate_describe.md)	 - Describe a Certificate
 * [hcloud certificate list](hcloud_certificate_list.md)	 - List Certificates
-* [hcloud certificate remove-label](hcloud_certificate_remove-label.md)	 - Remove a label from an certificate
-* [hcloud certificate retry](hcloud_certificate_retry.md)	 - Retry a managed certificate's issuance
-* [hcloud certificate update](hcloud_certificate_update.md)	 - Update a certificate
+* [hcloud certificate remove-label](hcloud_certificate_remove-label.md)	 - Remove a label from a Certificate
+* [hcloud certificate retry](hcloud_certificate_retry.md)	 - Retry a managed Certificate's issuance
+* [hcloud certificate update](hcloud_certificate_update.md)	 - Update a Certificate

@@ -1,6 +1,6 @@
 ## hcloud placement-group create
 
-Create a placement group
+Create a Placement Group
 
 ```
 hcloud placement-group create [options] --name <name> --type <type>
@@ -13,7 +13,7 @@ hcloud placement-group create [options] --name <name> --type <type>
       --label stringToString   User-defined labels ('key=value') (can be specified multiple times) (default [])
       --name string            Name
   -o, --output stringArray     output options: json|yaml
-      --type string            Type of the placement group
+      --type string            Type of the Placement Group
 ```
 
 ### Options inherited from parent commands

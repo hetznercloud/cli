@@ -1,6 +1,6 @@
 ## hcloud server request-console
 
-Request a WebSocket VNC console for a server
+Request a WebSocket VNC console for a Server
 
 ```
 hcloud server request-console [options] <server>
@@ -27,4 +27,4 @@ hcloud server request-console [options] <server>
 
 ### SEE ALSO
 
-* [hcloud server](hcloud_server.md)	 - Manage servers
+* [hcloud server](hcloud_server.md)	 - Manage Servers

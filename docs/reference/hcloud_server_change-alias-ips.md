@@ -1,6 +1,6 @@
 ## hcloud server change-alias-ips
 
-Change a server's alias IPs in a network
+Change a server's alias IPs in a Network
 
 ```
 hcloud server change-alias-ips [options] --network <network> <server>
@@ -29,4 +29,4 @@ hcloud server change-alias-ips [options] --network <network> <server>
 
 ### SEE ALSO
 
-* [hcloud server](hcloud_server.md)	 - Manage servers
+* [hcloud server](hcloud_server.md)	 - Manage Servers

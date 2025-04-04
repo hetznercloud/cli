@@ -1,6 +1,6 @@
 ## hcloud server remove-label
 
-Remove a label from a server
+Remove a label from a Server
 
 ```
 hcloud server remove-label <server> (--all | <label>...)
@@ -27,4 +27,4 @@ hcloud server remove-label <server> (--all | <label>...)
 
 ### SEE ALSO
 
-* [hcloud server](hcloud_server.md)	 - Manage servers
+* [hcloud server](hcloud_server.md)	 - Manage Servers

@@ -1,6 +1,6 @@
 ## hcloud iso describe
 
-Describe a iso
+Describe an ISO
 
 ```
 hcloud iso describe [options] <iso>
@@ -27,4 +27,4 @@ hcloud iso describe [options] <iso>
 
 ### SEE ALSO
 
-* [hcloud iso](hcloud_iso.md)	 - Manage ISOs
+* [hcloud iso](hcloud_iso.md)	 - View ISOs

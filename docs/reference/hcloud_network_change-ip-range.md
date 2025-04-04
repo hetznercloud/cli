@@ -1,6 +1,6 @@
 ## hcloud network change-ip-range
 
-Change the IP range of a network
+Change the IP range of a Network
 
 ```
 hcloud network change-ip-range --ip-range <ip-range> <network>
@@ -27,4 +27,4 @@ hcloud network change-ip-range --ip-range <ip-range> <network>
 
 ### SEE ALSO
 
-* [hcloud network](hcloud_network.md)	 - Manage networks
+* [hcloud network](hcloud_network.md)	 - Manage Networks

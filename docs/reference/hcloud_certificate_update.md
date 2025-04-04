@@ -1,6 +1,6 @@
 ## hcloud certificate update
 
-Update a certificate
+Update a Certificate
 
 ```
 hcloud certificate update [options] <certificate>
@@ -27,4 +27,4 @@ hcloud certificate update [options] <certificate>
 
 ### SEE ALSO
 
-* [hcloud certificate](hcloud_certificate.md)	 - Manage certificates
+* [hcloud certificate](hcloud_certificate.md)	 - Manage Certificates

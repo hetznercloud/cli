@@ -1,6 +1,6 @@
 ## hcloud ssh-key create
 
-Create a SSH key
+Create an SSH Key
 
 ```
 hcloud ssh-key create [options] --name <name> (--public-key <key> | --public-key-from-file <file>)
@@ -31,4 +31,4 @@ hcloud ssh-key create [options] --name <name> (--public-key <key> | --public-key
 
 ### SEE ALSO
 
-* [hcloud ssh-key](hcloud_ssh-key.md)	 - Manage SSH keys
+* [hcloud ssh-key](hcloud_ssh-key.md)	 - Manage SSH Keys

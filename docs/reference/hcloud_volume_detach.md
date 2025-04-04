@@ -1,6 +1,6 @@
 ## hcloud volume detach
 
-Detach a volume
+Detach a Volume
 
 ```
 hcloud volume detach <volume>

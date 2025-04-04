@@ -1,6 +1,6 @@
 ## hcloud server reset-password
 
-Reset the root password of a server
+Reset the root password of a Server
 
 ```
 hcloud server reset-password [options] <server>
@@ -27,4 +27,4 @@ hcloud server reset-password [options] <server>
 
 ### SEE ALSO
 
-* [hcloud server](hcloud_server.md)	 - Manage servers
+* [hcloud server](hcloud_server.md)	 - Manage Servers

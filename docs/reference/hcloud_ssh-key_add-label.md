@@ -1,6 +1,6 @@
 ## hcloud ssh-key add-label
 
-Add a label to a SSH Key
+Add a label to an SSH Key
 
 ```
 hcloud ssh-key add-label [--overwrite] <ssh-key> <label>...
@@ -27,4 +27,4 @@ hcloud ssh-key add-label [--overwrite] <ssh-key> <label>...
 
 ### SEE ALSO
 
-* [hcloud ssh-key](hcloud_ssh-key.md)	 - Manage SSH keys
+* [hcloud ssh-key](hcloud_ssh-key.md)	 - Manage SSH Keys

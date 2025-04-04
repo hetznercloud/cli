@@ -1,6 +1,6 @@
 ## hcloud volume create
 
-Create a volume
+Create a Volume
 
 ```
 hcloud volume create [options] --name <name> --size <size>
@@ -9,9 +9,9 @@ hcloud volume create [options] --name <name> --size <size>
 ### Options
 
 ```
-      --automount                   Automount volume after attach (server must be provided)
+      --automount                   Automount Volume after attach (Server must be provided)
       --enable-protection strings   Enable protection (delete) (default: none)
-      --format string               Format volume after creation (ext4 or xfs)
+      --format string               Format Volume after creation (ext4 or xfs)
   -h, --help                        help for create
       --label stringToString        User-defined labels ('key=value') (can be specified multiple times) (default [])
       --location string             Location (ID or name)

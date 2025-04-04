@@ -1,6 +1,6 @@
 ## hcloud image enable-protection
 
-Enable resource protection for an image
+Enable resource protection for an Image
 
 ```
 hcloud image enable-protection <image> <protection-level>...
@@ -26,4 +26,4 @@ hcloud image enable-protection <image> <protection-level>...
 
 ### SEE ALSO
 
-* [hcloud image](hcloud_image.md)	 - Manage images
+* [hcloud image](hcloud_image.md)	 - Manage Images

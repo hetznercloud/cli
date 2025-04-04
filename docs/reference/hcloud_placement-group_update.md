@@ -1,6 +1,6 @@
 ## hcloud placement-group update
 
-Update a placement group
+Update a Placement Group
 
 ```
 hcloud placement-group update [options] <placement-group>
@@ -10,7 +10,7 @@ hcloud placement-group update [options] <placement-group>
 
 ```
   -h, --help          help for update
-      --name string   Placement group name
+      --name string   Placement Group name
 ```
 
 ### Options inherited from parent commands

@@ -12,7 +12,7 @@ hcloud floating-ip create [options] --type <ipv4|ipv6> (--home-location <locatio
       --description string          Description
       --enable-protection strings   Enable protection (delete) (default: none)
   -h, --help                        help for create
-      --home-location string        Home location
+      --home-location string        Home Location
       --label stringToString        User-defined labels ('key=value') (can be specified multiple times) (default [])
       --name string                 Name
   -o, --output stringArray          output options: json|yaml

@@ -4,7 +4,7 @@ Shutdown a server
 
 ### Synopsis
 
-Shuts down a Server gracefully by sending an ACPI shutdown request. The Server operating system must support ACPI and react to the request, otherwise the Server will not shut down. Use the --wait flag to wait for the server to shut down before returning.
+Shuts down a Server gracefully by sending an ACPI shutdown request. The Server operating system must support ACPI and react to the request, otherwise the Server will not shut down. Use the --wait flag to wait for the Server to shut down before returning.
 
 ```
 hcloud server shutdown [options] <server>
@@ -14,7 +14,7 @@ hcloud server shutdown [options] <server>
 
 ```
   -h, --help                    help for shutdown
-      --wait                    Wait for the server to shut down before exiting
+      --wait                    Wait for the Server to shut down before exiting
       --wait-timeout duration   Timeout for waiting for off state after shutdown (default 30s)
 ```
 
@@ -32,4 +32,4 @@ hcloud server shutdown [options] <server>
 
 ### SEE ALSO
 
-* [hcloud server](hcloud_server.md)	 - Manage servers
+* [hcloud server](hcloud_server.md)	 - Manage Servers

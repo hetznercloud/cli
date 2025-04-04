@@ -1,6 +1,6 @@
 ## hcloud network remove-subnet
 
-Remove a subnet from a network
+Remove a subnet from a Network
 
 ```
 hcloud network remove-subnet --ip-range <ip-range> <network>
@@ -27,4 +27,4 @@ hcloud network remove-subnet --ip-range <ip-range> <network>
 
 ### SEE ALSO
 
-* [hcloud network](hcloud_network.md)	 - Manage networks
+* [hcloud network](hcloud_network.md)	 - Manage Networks

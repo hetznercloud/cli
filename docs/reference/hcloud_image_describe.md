@@ -1,6 +1,6 @@
 ## hcloud image describe
 
-Describe an image
+Describe an Image
 
 ```
 hcloud image describe [options] <image>
@@ -9,7 +9,7 @@ hcloud image describe [options] <image>
 ### Options
 
 ```
-  -a, --architecture string   architecture of the image, default is x86 (default "x86")
+  -a, --architecture string   architecture of the Image, default is x86 (default "x86")
   -h, --help                  help for describe
   -o, --output stringArray    output options: json|yaml|format
 ```
@@ -28,4 +28,4 @@ hcloud image describe [options] <image>
 
 ### SEE ALSO
 
-* [hcloud image](hcloud_image.md)	 - Manage images
+* [hcloud image](hcloud_image.md)	 - Manage Images

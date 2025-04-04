@@ -1,6 +1,6 @@
 ## hcloud network describe
 
-Describe a network
+Describe a Network
 
 ```
 hcloud network describe [options] <network>
@@ -27,4 +27,4 @@ hcloud network describe [options] <network>
 
 ### SEE ALSO
 
-* [hcloud network](hcloud_network.md)	 - Manage networks
+* [hcloud network](hcloud_network.md)	 - Manage Networks

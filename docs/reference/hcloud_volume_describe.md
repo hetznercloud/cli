@@ -1,6 +1,6 @@
 ## hcloud volume describe
 
-Describe an Volume
+Describe a Volume
 
 ```
 hcloud volume describe [options] <volume>

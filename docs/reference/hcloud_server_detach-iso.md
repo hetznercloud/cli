@@ -1,6 +1,6 @@
 ## hcloud server detach-iso
 
-Detach an ISO from a server
+Detach an ISO from a Server
 
 ```
 hcloud server detach-iso <server>
@@ -26,4 +26,4 @@ hcloud server detach-iso <server>
 
 ### SEE ALSO
 
-* [hcloud server](hcloud_server.md)	 - Manage servers
+* [hcloud server](hcloud_server.md)	 - Manage Servers

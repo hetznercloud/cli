@@ -10,7 +10,7 @@ hcloud server ip [--ipv6] <server>
 
 ```
   -h, --help   help for ip
-  -6, --ipv6   Print the first address of the IPv6 public server network
+  -6, --ipv6   Print the first address of the Server's Primary IPv6 network
 ```
 
 ### Options inherited from parent commands
@@ -27,4 +27,4 @@ hcloud server ip [--ipv6] <server>
 
 ### SEE ALSO
 
-* [hcloud server](hcloud_server.md)	 - Manage servers
+* [hcloud server](hcloud_server.md)	 - Manage Servers

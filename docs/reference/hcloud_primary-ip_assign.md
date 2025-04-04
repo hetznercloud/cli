@@ -1,6 +1,6 @@
 ## hcloud primary-ip assign
 
-Assign a Primary IP to an assignee (usually a server)
+Assign a Primary IP to an assignee (usually a Server)
 
 ```
 hcloud primary-ip assign --server <server> <primary-ip>
@@ -10,7 +10,7 @@ hcloud primary-ip assign --server <server> <primary-ip>
 
 ```
   -h, --help            help for assign
-      --server string   Name or ID of the server
+      --server string   Name or ID of the Server
 ```
 
 ### Options inherited from parent commands

@@ -1,6 +1,6 @@
 ## hcloud image update
 
-Update an image
+Update an Image
 
 ```
 hcloud image update [options] <image>
@@ -28,4 +28,4 @@ hcloud image update [options] <image>
 
 ### SEE ALSO
 
-* [hcloud image](hcloud_image.md)	 - Manage images
+* [hcloud image](hcloud_image.md)	 - Manage Images

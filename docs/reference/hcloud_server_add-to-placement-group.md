@@ -1,6 +1,6 @@
 ## hcloud server add-to-placement-group
 
-Add a server to a placement group
+Add a Server to a Placement Group
 
 ```
 hcloud server add-to-placement-group --placement-group <placement-group> <server>
@@ -27,4 +27,4 @@ hcloud server add-to-placement-group --placement-group <placement-group> <server
 
 ### SEE ALSO
 
-* [hcloud server](hcloud_server.md)	 - Manage servers
+* [hcloud server](hcloud_server.md)	 - Manage Servers

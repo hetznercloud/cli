@@ -1,6 +1,6 @@
 ## hcloud server reset
 
-Reset a server
+Reset a Server
 
 ```
 hcloud server reset [options] <server>
@@ -26,4 +26,4 @@ hcloud server reset [options] <server>
 
 ### SEE ALSO
 
-* [hcloud server](hcloud_server.md)	 - Manage servers
+* [hcloud server](hcloud_server.md)	 - Manage Servers

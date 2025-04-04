@@ -1,6 +1,6 @@
 ## hcloud iso
 
-Manage ISOs
+View ISOs
 
 ### Options
 
@@ -23,5 +23,5 @@ Manage ISOs
 ### SEE ALSO
 
 * [hcloud](hcloud.md)	 - Hetzner Cloud CLI
-* [hcloud iso describe](hcloud_iso_describe.md)	 - Describe a iso
+* [hcloud iso describe](hcloud_iso_describe.md)	 - Describe an ISO
 * [hcloud iso list](hcloud_iso_list.md)	 - List ISOs

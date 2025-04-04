@@ -24,10 +24,10 @@ Manage Primary IPs
 
 * [hcloud](hcloud.md)	 - Hetzner Cloud CLI
 * [hcloud primary-ip add-label](hcloud_primary-ip_add-label.md)	 - Add a label to a Primary IP
-* [hcloud primary-ip assign](hcloud_primary-ip_assign.md)	 - Assign a Primary IP to an assignee (usually a server)
+* [hcloud primary-ip assign](hcloud_primary-ip_assign.md)	 - Assign a Primary IP to an assignee (usually a Server)
 * [hcloud primary-ip create](hcloud_primary-ip_create.md)	 - Create a Primary IP
 * [hcloud primary-ip delete](hcloud_primary-ip_delete.md)	 - Delete a Primary IP
-* [hcloud primary-ip describe](hcloud_primary-ip_describe.md)	 - Describe an Primary IP
+* [hcloud primary-ip describe](hcloud_primary-ip_describe.md)	 - Describe a Primary IP
 * [hcloud primary-ip disable-protection](hcloud_primary-ip_disable-protection.md)	 - Disable Protection for a Primary IP
 * [hcloud primary-ip enable-protection](hcloud_primary-ip_enable-protection.md)	 - Enable Protection for a Primary IP
 * [hcloud primary-ip list](hcloud_primary-ip_list.md)	 - List Primary IPs

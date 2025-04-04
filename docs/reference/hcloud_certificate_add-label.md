@@ -1,6 +1,6 @@
 ## hcloud certificate add-label
 
-Add a label to an certificate
+Add a label to a Certificate
 
 ```
 hcloud certificate add-label [--overwrite] <certificate> <label>...
@@ -27,4 +27,4 @@ hcloud certificate add-label [--overwrite] <certificate> <label>...
 
 ### SEE ALSO
 
-* [hcloud certificate](hcloud_certificate.md)	 - Manage certificates
+* [hcloud certificate](hcloud_certificate.md)	 - Manage Certificates

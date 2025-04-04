@@ -1,6 +1,6 @@
 ## hcloud firewall describe
 
-Describe an firewall
+Describe a Firewall
 
 ```
 hcloud firewall describe [options] <firewall>

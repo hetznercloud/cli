@@ -1,6 +1,6 @@
 ## hcloud server-type
 
-Manage server types
+View Server Types
 
 ### Options
 
@@ -23,5 +23,5 @@ Manage server types
 ### SEE ALSO
 
 * [hcloud](hcloud.md)	 - Hetzner Cloud CLI
-* [hcloud server-type describe](hcloud_server-type_describe.md)	 - Describe a server type
+* [hcloud server-type describe](hcloud_server-type_describe.md)	 - Describe a Server Type
 * [hcloud server-type list](hcloud_server-type_list.md)	 - List Server Types

@@ -1,6 +1,6 @@
 ## hcloud network create
 
-Create a network
+Create a Network
 
 ```
 hcloud network create [options] --name <name> --ip-range <ip-range>
@@ -10,7 +10,7 @@ hcloud network create [options] --name <name> --ip-range <ip-range>
 
 ```
       --enable-protection strings   Enable protection (delete) (default: none)
-      --expose-routes-to-vswitch    Expose routes from this network to the vSwitch connection. It only takes effect if a vSwitch connection is active.
+      --expose-routes-to-vswitch    Expose routes from this Network to the vSwitch connection. It only takes effect if a vSwitch connection is active.
   -h, --help                        help for create
       --ip-range ipNet              Network IP range (required)
       --label stringToString        User-defined labels ('key=value') (can be specified multiple times) (default [])
@@ -32,4 +32,4 @@ hcloud network create [options] --name <name> --ip-range <ip-range>
 
 ### SEE ALSO
 
-* [hcloud network](hcloud_network.md)	 - Manage networks
+* [hcloud network](hcloud_network.md)	 - Manage Networks

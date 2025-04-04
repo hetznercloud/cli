@@ -1,6 +1,6 @@
 ## hcloud placement-group add-label
 
-Add a label to a placement group
+Add a label to a Placement Group
 
 ```
 hcloud placement-group add-label [--overwrite] <placement-group> <label>...

@@ -9,7 +9,7 @@ hcloud primary-ip create [options] --type <ipv4|ipv6> --name <name>
 ### Options
 
 ```
-      --assignee-id int             Assignee (usually a server) to assign Primary IP to
+      --assignee-id int             Assignee (usually a Server) to assign Primary IP to
       --auto-delete                 Delete Primary IP if assigned resource is deleted
       --datacenter string           Datacenter (ID or name)
       --enable-protection strings   Enable protection (delete) (default: none)

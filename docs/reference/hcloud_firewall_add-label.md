@@ -1,6 +1,6 @@
 ## hcloud firewall add-label
 
-Add a label to an firewall
+Add a label to a Firewall
 
 ```
 hcloud firewall add-label [--overwrite] <firewall> <label>...

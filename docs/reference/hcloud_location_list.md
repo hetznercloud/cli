@@ -1,10 +1,10 @@
 ## hcloud location list
 
-List locations
+List Locations
 
 ### Synopsis
 
-Displays a list of locations.
+Displays a list of Locations.
 
 Output can be controlled with the -o flag. Use -o noheader to suppress the
 table header. Displayed columns and their order can be set with
@@ -47,4 +47,4 @@ hcloud location list [options]
 
 ### SEE ALSO
 
-* [hcloud location](hcloud_location.md)	 - Manage locations
+* [hcloud location](hcloud_location.md)	 - View Locations

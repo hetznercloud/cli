@@ -1,6 +1,6 @@
 ## hcloud floating-ip add-label
 
-Add a label to an Floating IP
+Add a label to a Floating IP
 
 ```
 hcloud floating-ip add-label [--overwrite] <floating-ip> <label>...

@@ -1,6 +1,6 @@
 ## hcloud image delete
 
-Delete an image
+Delete an Image
 
 ```
 hcloud image delete <image>...
@@ -26,4 +26,4 @@ hcloud image delete <image>...
 
 ### SEE ALSO
 
-* [hcloud image](hcloud_image.md)	 - Manage images
+* [hcloud image](hcloud_image.md)	 - Manage Images

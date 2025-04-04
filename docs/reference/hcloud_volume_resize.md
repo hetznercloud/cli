@@ -10,7 +10,7 @@ hcloud volume resize --size <size> <volume>
 
 ```
   -h, --help       help for resize
-      --size int   New size (GB) of the volume (required)
+      --size int   New size (GB) of the Volume (required)
 ```
 
 ### Options inherited from parent commands

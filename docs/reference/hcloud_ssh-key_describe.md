@@ -1,6 +1,6 @@
 ## hcloud ssh-key describe
 
-Describe a SSH Key
+Describe an SSH Key
 
 ```
 hcloud ssh-key describe [options] <ssh-key>
@@ -27,4 +27,4 @@ hcloud ssh-key describe [options] <ssh-key>
 
 ### SEE ALSO
 
-* [hcloud ssh-key](hcloud_ssh-key.md)	 - Manage SSH keys
+* [hcloud ssh-key](hcloud_ssh-key.md)	 - Manage SSH Keys

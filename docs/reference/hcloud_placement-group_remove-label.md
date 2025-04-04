@@ -1,6 +1,6 @@
 ## hcloud placement-group remove-label
 
-Remove a label from a placement group
+Remove a label from a Placement Group
 
 ```
 hcloud placement-group remove-label <placement-group> (--all | <label>...)

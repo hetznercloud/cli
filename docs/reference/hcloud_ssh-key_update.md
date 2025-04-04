@@ -1,9 +1,9 @@
 ## hcloud ssh-key update
 
-Update a SSHKey
+Update an SSH Key
 
 ```
-hcloud ssh-key update [options] <sshkey>
+hcloud ssh-key update [options] <ssh-key>
 ```
 
 ### Options
@@ -27,4 +27,4 @@ hcloud ssh-key update [options] <sshkey>
 
 ### SEE ALSO
 
-* [hcloud ssh-key](hcloud_ssh-key.md)	 - Manage SSH keys
+* [hcloud ssh-key](hcloud_ssh-key.md)	 - Manage SSH Keys

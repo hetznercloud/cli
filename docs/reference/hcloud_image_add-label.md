@@ -1,6 +1,6 @@
 ## hcloud image add-label
 
-Add a label to an image
+Add a label to an Image
 
 ```
 hcloud image add-label [--overwrite] <image> <label>...
@@ -27,4 +27,4 @@ hcloud image add-label [--overwrite] <image> <label>...
 
 ### SEE ALSO
 
-* [hcloud image](hcloud_image.md)	 - Manage images
+* [hcloud image](hcloud_image.md)	 - Manage Images

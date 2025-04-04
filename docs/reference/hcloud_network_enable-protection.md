@@ -26,4 +26,4 @@ hcloud network enable-protection <network> <protection-level>...
 
 ### SEE ALSO
 
-* [hcloud network](hcloud_network.md)	 - Manage networks
+* [hcloud network](hcloud_network.md)	 - Manage Networks

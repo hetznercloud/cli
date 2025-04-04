@@ -1,6 +1,6 @@
 ## hcloud server detach-from-network
 
-Detach a server from a network
+Detach a Server from a Network
 
 ```
 hcloud server detach-from-network --network <network> <server>
@@ -27,4 +27,4 @@ hcloud server detach-from-network --network <network> <server>
 
 ### SEE ALSO
 
-* [hcloud server](hcloud_server.md)	 - Manage servers
+* [hcloud server](hcloud_server.md)	 - Manage Servers

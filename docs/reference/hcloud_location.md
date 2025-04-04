@@ -1,6 +1,6 @@
 ## hcloud location
 
-Manage locations
+View Locations
 
 ### Options
 
@@ -23,5 +23,5 @@ Manage locations
 ### SEE ALSO
 
 * [hcloud](hcloud.md)	 - Hetzner Cloud CLI
-* [hcloud location describe](hcloud_location_describe.md)	 - Describe a location
-* [hcloud location list](hcloud_location_list.md)	 - List locations
+* [hcloud location describe](hcloud_location_describe.md)	 - Describe a Location
+* [hcloud location list](hcloud_location_list.md)	 - List Locations

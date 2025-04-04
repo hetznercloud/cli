@@ -1,6 +1,6 @@
 ## hcloud network add-subnet
 
-Add a subnet to a network
+Add a subnet to a Network
 
 ```
 hcloud network add-subnet [options] --type <cloud|server|vswitch> --network-zone <zone> <network>
@@ -11,7 +11,7 @@ hcloud network add-subnet [options] --type <cloud|server|vswitch> --network-zone
 ```
   -h, --help                  help for add-subnet
       --ip-range ipNet        Range to allocate IPs from
-      --network-zone string   Name of network zone (required)
+      --network-zone string   Name of Network zone (required)
       --type string           Type of subnet (required)
       --vswitch-id int        ID of the vSwitch
 ```
@@ -30,4 +30,4 @@ hcloud network add-subnet [options] --type <cloud|server|vswitch> --network-zone
 
 ### SEE ALSO
 
-* [hcloud network](hcloud_network.md)	 - Manage networks
+* [hcloud network](hcloud_network.md)	 - Manage Networks

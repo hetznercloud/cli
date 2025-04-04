@@ -45,7 +45,7 @@ hcloud server list [options]
   -o, --output stringArray   output options: noheader|columns=...|json|yaml
   -l, --selector string      Selector to filter by labels
   -s, --sort strings         Determine the sorting of the result
-      --status strings       Only servers with one of these statuses are displayed
+      --status strings       Only Servers with one of these statuses are displayed
 ```
 
 ### Options inherited from parent commands
@@ -62,4 +62,4 @@ hcloud server list [options]
 
 ### SEE ALSO
 
-* [hcloud server](hcloud_server.md)	 - Manage servers
+* [hcloud server](hcloud_server.md)	 - Manage Servers

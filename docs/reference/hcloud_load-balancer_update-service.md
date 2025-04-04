@@ -21,7 +21,7 @@ hcloud load-balancer update-service [options] --listen-port <1-65535> <load-bala
       --health-check-retries int                 Number of retries after a health check is marked as failed (default 3)
       --health-check-timeout duration            The timeout after a health check is marked as failed (default 10s)
   -h, --help                                     help for update-service
-      --http-certificates int64Slice             ID of Certificates which are attached to this Load Balancer (default [])
+      --http-certificates strings                IDs or names of Certificates which should be attached to this Load Balancer
       --http-cookie-lifetime duration            Sticky Sessions: Lifetime of the cookie
       --http-cookie-name string                  Sticky Sessions: Cookie Name which will be set
       --http-redirect-http                       Enable or disable redirect all traffic on port 80 to port 443

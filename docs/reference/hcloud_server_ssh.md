@@ -1,6 +1,6 @@
 ## hcloud server ssh
 
-Spawn an SSH connection for the server
+Spawn an SSH connection for the Server
 
 ```
 hcloud server ssh [options] <server> [--] [ssh options] [command [argument...]]
@@ -29,4 +29,4 @@ hcloud server ssh [options] <server> [--] [ssh options] [command [argument...]]
 
 ### SEE ALSO
 
-* [hcloud server](hcloud_server.md)	 - Manage servers
+* [hcloud server](hcloud_server.md)	 - Manage Servers

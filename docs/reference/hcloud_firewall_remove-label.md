@@ -1,6 +1,6 @@
 ## hcloud firewall remove-label
 
-Remove a label from an firewall
+Remove a label from a Firewall
 
 ```
 hcloud firewall remove-label <firewall> (--all | <label>...)

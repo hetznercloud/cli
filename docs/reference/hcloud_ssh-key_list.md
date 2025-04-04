@@ -1,10 +1,10 @@
 ## hcloud ssh-key list
 
-List SSH keys
+List SSH Keys
 
 ### Synopsis
 
-Displays a list of SSH keys.
+Displays a list of SSH Keys.
 
 Output can be controlled with the -o flag. Use -o noheader to suppress the
 table header. Displayed columns and their order can be set with
@@ -46,4 +46,4 @@ hcloud ssh-key list [options]
 
 ### SEE ALSO
 
-* [hcloud ssh-key](hcloud_ssh-key.md)	 - Manage SSH keys
+* [hcloud ssh-key](hcloud_ssh-key.md)	 - Manage SSH Keys

@@ -26,4 +26,4 @@ hcloud server disable-protection <server> <protection-level>...
 
 ### SEE ALSO
 
-* [hcloud server](hcloud_server.md)	 - Manage servers
+* [hcloud server](hcloud_server.md)	 - Manage Servers

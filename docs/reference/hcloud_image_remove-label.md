@@ -1,6 +1,6 @@
 ## hcloud image remove-label
 
-Remove a label from an image
+Remove a label from an Image
 
 ```
 hcloud image remove-label <image> (--all | <label>...)
@@ -27,4 +27,4 @@ hcloud image remove-label <image> (--all | <label>...)
 
 ### SEE ALSO
 
-* [hcloud image](hcloud_image.md)	 - Manage images
+* [hcloud image](hcloud_image.md)	 - Manage Images

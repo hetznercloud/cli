@@ -1,6 +1,6 @@
 ## hcloud firewall delete
 
-Delete a firewall
+Delete a Firewall
 
 ```
 hcloud firewall delete <firewall>...

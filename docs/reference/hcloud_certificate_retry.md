@@ -1,6 +1,6 @@
 ## hcloud certificate retry
 
-Retry a managed certificate's issuance
+Retry a managed Certificate's issuance
 
 ```
 hcloud certificate retry <certificate>
@@ -26,4 +26,4 @@ hcloud certificate retry <certificate>
 
 ### SEE ALSO
 
-* [hcloud certificate](hcloud_certificate.md)	 - Manage certificates
+* [hcloud certificate](hcloud_certificate.md)	 - Manage Certificates

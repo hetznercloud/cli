@@ -1,6 +1,6 @@
 ## hcloud firewall update
 
-Update a firewall
+Update a Firewall
 
 ```
 hcloud firewall update [options] <firewall>

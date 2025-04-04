@@ -1,6 +1,6 @@
 ## hcloud floating-ip remove-label
 
-Remove a label from an Floating IP
+Remove a label from a Floating IP
 
 ```
 hcloud floating-ip remove-label <floating-ip> (--all | <label>...)

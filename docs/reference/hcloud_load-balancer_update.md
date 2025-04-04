@@ -10,7 +10,7 @@ hcloud load-balancer update [options] <load-balancer>
 
 ```
   -h, --help          help for update
-      --name string   LoadBalancer name
+      --name string   Load Balancer name
 ```
 
 ### Options inherited from parent commands

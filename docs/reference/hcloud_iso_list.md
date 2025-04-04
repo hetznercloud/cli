@@ -24,7 +24,7 @@ hcloud iso list [options]
 ### Options
 
 ```
-      --architecture strings            Only show images of given architecture: x86|arm
+      --architecture strings            Only show Images of given architecture: x86|arm
   -h, --help                            help for list
       --include-architecture-wildcard   Include ISOs with unknown architecture, only required if you want so show custom ISOs and still filter for architecture.
   -o, --output stringArray              output options: noheader|columns=...|json|yaml
@@ -47,4 +47,4 @@ hcloud iso list [options]
 
 ### SEE ALSO
 
-* [hcloud iso](hcloud_iso.md)	 - Manage ISOs
+* [hcloud iso](hcloud_iso.md)	 - View ISOs

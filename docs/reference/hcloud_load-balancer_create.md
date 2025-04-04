@@ -18,7 +18,7 @@ hcloud load-balancer create [options] --name <name> --type <type>
       --network string              Name or ID of the Network the Load Balancer should be attached to on creation
       --network-zone string         Network Zone
   -o, --output stringArray          output options: json|yaml
-      --type string                 Load Balancer type (ID or name) (required)
+      --type string                 Load Balancer Type (ID or name) (required)
 ```
 
 ### Options inherited from parent commands

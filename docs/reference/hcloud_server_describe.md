@@ -1,6 +1,6 @@
 ## hcloud server describe
 
-Describe a server
+Describe a Server
 
 ```
 hcloud server describe [options] <server>
@@ -27,4 +27,4 @@ hcloud server describe [options] <server>
 
 ### SEE ALSO
 
-* [hcloud server](hcloud_server.md)	 - Manage servers
+* [hcloud server](hcloud_server.md)	 - Manage Servers

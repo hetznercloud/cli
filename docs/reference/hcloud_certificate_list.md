@@ -51,4 +51,4 @@ hcloud certificate list [options]
 
 ### SEE ALSO
 
-* [hcloud certificate](hcloud_certificate.md)	 - Manage certificates
+* [hcloud certificate](hcloud_certificate.md)	 - Manage Certificates

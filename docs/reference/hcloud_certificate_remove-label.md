@@ -1,6 +1,6 @@
 ## hcloud certificate remove-label
 
-Remove a label from an certificate
+Remove a label from a Certificate
 
 ```
 hcloud certificate remove-label <certificate> (--all | <label>...)
@@ -27,4 +27,4 @@ hcloud certificate remove-label <certificate> (--all | <label>...)
 
 ### SEE ALSO
 
-* [hcloud certificate](hcloud_certificate.md)	 - Manage certificates
+* [hcloud certificate](hcloud_certificate.md)	 - Manage Certificates

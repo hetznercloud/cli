@@ -1,6 +1,6 @@
 ## hcloud image
 
-Manage images
+Manage Images
 
 ### Options
 
@@ -23,11 +23,11 @@ Manage images
 ### SEE ALSO
 
 * [hcloud](hcloud.md)	 - Hetzner Cloud CLI
-* [hcloud image add-label](hcloud_image_add-label.md)	 - Add a label to an image
-* [hcloud image delete](hcloud_image_delete.md)	 - Delete an image
-* [hcloud image describe](hcloud_image_describe.md)	 - Describe an image
-* [hcloud image disable-protection](hcloud_image_disable-protection.md)	 - Disable resource protection for an image
-* [hcloud image enable-protection](hcloud_image_enable-protection.md)	 - Enable resource protection for an image
+* [hcloud image add-label](hcloud_image_add-label.md)	 - Add a label to an Image
+* [hcloud image delete](hcloud_image_delete.md)	 - Delete an Image
+* [hcloud image describe](hcloud_image_describe.md)	 - Describe an Image
+* [hcloud image disable-protection](hcloud_image_disable-protection.md)	 - Disable resource protection for an Image
+* [hcloud image enable-protection](hcloud_image_enable-protection.md)	 - Enable resource protection for an Image
 * [hcloud image list](hcloud_image_list.md)	 - List Images
-* [hcloud image remove-label](hcloud_image_remove-label.md)	 - Remove a label from an image
-* [hcloud image update](hcloud_image_update.md)	 - Update an image
+* [hcloud image remove-label](hcloud_image_remove-label.md)	 - Remove a label from an Image
+* [hcloud image update](hcloud_image_update.md)	 - Update an Image

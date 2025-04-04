@@ -37,12 +37,12 @@ hcloud image list [options]
 ### Options
 
 ```
-  -a, --architecture strings   Only show images of given architecture: x86|arm
+  -a, --architecture strings   Only show Images of given architecture: x86|arm
   -h, --help                   help for list
   -o, --output stringArray     output options: noheader|columns=...|json|yaml
   -l, --selector string        Selector to filter by labels
   -s, --sort strings           Determine the sorting of the result
-  -t, --type strings           Only show images of given type: system|app|snapshot|backup
+  -t, --type strings           Only show Images of given type: system|app|snapshot|backup
 ```
 
 ### Options inherited from parent commands
@@ -59,4 +59,4 @@ hcloud image list [options]
 
 ### SEE ALSO
 
-* [hcloud image](hcloud_image.md)	 - Manage images
+* [hcloud image](hcloud_image.md)	 - Manage Images

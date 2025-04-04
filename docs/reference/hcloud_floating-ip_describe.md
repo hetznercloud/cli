@@ -1,6 +1,6 @@
 ## hcloud floating-ip describe
 
-Describe an Floating IP
+Describe a Floating IP
 
 ```
 hcloud floating-ip describe [options] <floating-ip>

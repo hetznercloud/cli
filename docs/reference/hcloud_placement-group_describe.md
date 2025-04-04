@@ -1,6 +1,6 @@
 ## hcloud placement-group describe
 
-Describe a placement group
+Describe a Placement Group
 
 ```
 hcloud placement-group describe [options] <placement-group>

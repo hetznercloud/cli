@@ -1,6 +1,6 @@
 ## hcloud server attach-to-network
 
-Attach a server to a network
+Attach a Server to a Network
 
 ```
 hcloud server attach-to-network [options] --network <network> <server>
@@ -9,9 +9,9 @@ hcloud server attach-to-network [options] --network <network> <server>
 ### Options
 
 ```
-      --alias-ips ipSlice   Additional IP addresses to be assigned to the server (default [])
+      --alias-ips ipSlice   Additional IP addresses to be assigned to the Server (default [])
   -h, --help                help for attach-to-network
-      --ip ip               IP address to assign to the server (auto-assigned if omitted)
+      --ip ip               IP address to assign to the Server (auto-assigned if omitted)
   -n, --network string      Network (ID or name) (required)
 ```
 
@@ -29,4 +29,4 @@ hcloud server attach-to-network [options] --network <network> <server>
 
 ### SEE ALSO
 
-* [hcloud server](hcloud_server.md)	 - Manage servers
+* [hcloud server](hcloud_server.md)	 - Manage Servers

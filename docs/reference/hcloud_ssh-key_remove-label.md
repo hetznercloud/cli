@@ -1,6 +1,6 @@
 ## hcloud ssh-key remove-label
 
-Remove a label from a SSH Key
+Remove a label from an SSH Key
 
 ```
 hcloud ssh-key remove-label <ssh-key> (--all | <label>...)
@@ -27,4 +27,4 @@ hcloud ssh-key remove-label <ssh-key> (--all | <label>...)
 
 ### SEE ALSO
 
-* [hcloud ssh-key](hcloud_ssh-key.md)	 - Manage SSH keys
+* [hcloud ssh-key](hcloud_ssh-key.md)	 - Manage SSH Keys

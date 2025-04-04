@@ -1,6 +1,6 @@
 ## hcloud primary-ip describe
 
-Describe an Primary IP
+Describe a Primary IP
 
 ```
 hcloud primary-ip describe [options] <primary-ip>

@@ -22,23 +22,23 @@ A command-line interface for Hetzner Cloud
 ### SEE ALSO
 
 * [hcloud all](hcloud_all.md)	 - Commands that apply to all resources
-* [hcloud certificate](hcloud_certificate.md)	 - Manage certificates
+* [hcloud certificate](hcloud_certificate.md)	 - Manage Certificates
 * [hcloud completion](hcloud_completion.md)	 - Output shell completion code for the specified shell
 * [hcloud config](hcloud_config.md)	 - Manage configuration
 * [hcloud context](hcloud_context.md)	 - Manage contexts
-* [hcloud datacenter](hcloud_datacenter.md)	 - Manage datacenters
+* [hcloud datacenter](hcloud_datacenter.md)	 - View Datacenters
 * [hcloud firewall](hcloud_firewall.md)	 - Manage Firewalls
 * [hcloud floating-ip](hcloud_floating-ip.md)	 - Manage Floating IPs
-* [hcloud image](hcloud_image.md)	 - Manage images
-* [hcloud iso](hcloud_iso.md)	 - Manage ISOs
+* [hcloud image](hcloud_image.md)	 - Manage Images
+* [hcloud iso](hcloud_iso.md)	 - View ISOs
 * [hcloud load-balancer](hcloud_load-balancer.md)	 - Manage Load Balancers
-* [hcloud load-balancer-type](hcloud_load-balancer-type.md)	 - Manage Load Balancer types
-* [hcloud location](hcloud_location.md)	 - Manage locations
-* [hcloud network](hcloud_network.md)	 - Manage networks
+* [hcloud load-balancer-type](hcloud_load-balancer-type.md)	 - View Load Balancer Types
+* [hcloud location](hcloud_location.md)	 - View Locations
+* [hcloud network](hcloud_network.md)	 - Manage Networks
 * [hcloud placement-group](hcloud_placement-group.md)	 - Manage Placement Groups
 * [hcloud primary-ip](hcloud_primary-ip.md)	 - Manage Primary IPs
-* [hcloud server](hcloud_server.md)	 - Manage servers
-* [hcloud server-type](hcloud_server-type.md)	 - Manage server types
-* [hcloud ssh-key](hcloud_ssh-key.md)	 - Manage SSH keys
+* [hcloud server](hcloud_server.md)	 - Manage Servers
+* [hcloud server-type](hcloud_server-type.md)	 - View Server Types
+* [hcloud ssh-key](hcloud_ssh-key.md)	 - Manage SSH Keys
 * [hcloud version](hcloud_version.md)	 - Print version information
 * [hcloud volume](hcloud_volume.md)	 - Manage Volumes

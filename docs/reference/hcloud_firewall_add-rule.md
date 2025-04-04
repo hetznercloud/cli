@@ -9,7 +9,7 @@ hcloud firewall add-rule [options] (--direction in --source-ips <ips> | --direct
 ### Options
 
 ```
-      --description string        Description of the firewall rule
+      --description string        Description of the Firewall rule
       --destination-ips strings   Destination IPs (CIDR Notation) (required when direction is out)
       --direction string          Direction (in, out) (required)
   -h, --help                      help for add-rule

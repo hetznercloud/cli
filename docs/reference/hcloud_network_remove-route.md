@@ -1,6 +1,6 @@
 ## hcloud network remove-route
 
-Remove a route from a network
+Remove a route from a Network
 
 ```
 hcloud network remove-route --destination <destination> --gateway <ip> <network>
@@ -9,7 +9,7 @@ hcloud network remove-route --destination <destination> --gateway <ip> <network>
 ### Options
 
 ```
-      --destination ipNet   Destination network or host (required)
+      --destination ipNet   Destination Network or host (required)
       --gateway ip          Gateway IP address (required)
   -h, --help                help for remove-route
 ```
@@ -28,4 +28,4 @@ hcloud network remove-route --destination <destination> --gateway <ip> <network>
 
 ### SEE ALSO
 
-* [hcloud network](hcloud_network.md)	 - Manage networks
+* [hcloud network](hcloud_network.md)	 - Manage Networks

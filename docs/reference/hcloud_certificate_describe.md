@@ -1,6 +1,6 @@
 ## hcloud certificate describe
 
-Describe an certificate
+Describe a Certificate
 
 ```
 hcloud certificate describe [options] <certificate>
@@ -27,4 +27,4 @@ hcloud certificate describe [options] <certificate>
 
 ### SEE ALSO
 
-* [hcloud certificate](hcloud_certificate.md)	 - Manage certificates
+* [hcloud certificate](hcloud_certificate.md)	 - Manage Certificates

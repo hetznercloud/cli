@@ -1,6 +1,6 @@
 ## hcloud load-balancer-type
 
-Manage Load Balancer types
+View Load Balancer Types
 
 ### Options
 
@@ -23,5 +23,5 @@ Manage Load Balancer types
 ### SEE ALSO
 
 * [hcloud](hcloud.md)	 - Hetzner Cloud CLI
-* [hcloud load-balancer-type describe](hcloud_load-balancer-type_describe.md)	 - Describe a Load Balancer type
+* [hcloud load-balancer-type describe](hcloud_load-balancer-type_describe.md)	 - Describe a Load Balancer Type
 * [hcloud load-balancer-type list](hcloud_load-balancer-type_list.md)	 - List Load Balancer Types

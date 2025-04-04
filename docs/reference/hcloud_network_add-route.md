@@ -1,6 +1,6 @@
 ## hcloud network add-route
 
-Add a route to a network
+Add a route to a Network
 
 ```
 hcloud network add-route --destination <destination> --gateway <ip> <network>
@@ -9,7 +9,7 @@ hcloud network add-route --destination <destination> --gateway <ip> <network>
 ### Options
 
 ```
-      --destination ipNet   Destination network or host (required)
+      --destination ipNet   Destination Network or host (required)
       --gateway ip          Gateway IP address (required)
   -h, --help                help for add-route
 ```
@@ -28,4 +28,4 @@ hcloud network add-route --destination <destination> --gateway <ip> <network>
 
 ### SEE ALSO
 
-* [hcloud network](hcloud_network.md)	 - Manage networks
+* [hcloud network](hcloud_network.md)	 - Manage Networks

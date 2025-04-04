@@ -1,6 +1,6 @@
 ## hcloud placement-group delete
 
-Delete a placement group
+Delete a Placement Group
 
 ```
 hcloud placement-group delete <placement-group>...

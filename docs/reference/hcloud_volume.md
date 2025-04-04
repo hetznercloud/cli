@@ -24,11 +24,11 @@ Manage Volumes
 
 * [hcloud](hcloud.md)	 - Hetzner Cloud CLI
 * [hcloud volume add-label](hcloud_volume_add-label.md)	 - Add a label to a Volume
-* [hcloud volume attach](hcloud_volume_attach.md)	 - Attach a volume to a server
-* [hcloud volume create](hcloud_volume_create.md)	 - Create a volume
+* [hcloud volume attach](hcloud_volume_attach.md)	 - Attach a Volume to a Server
+* [hcloud volume create](hcloud_volume_create.md)	 - Create a Volume
 * [hcloud volume delete](hcloud_volume_delete.md)	 - Delete a Volume
-* [hcloud volume describe](hcloud_volume_describe.md)	 - Describe an Volume
-* [hcloud volume detach](hcloud_volume_detach.md)	 - Detach a volume
+* [hcloud volume describe](hcloud_volume_describe.md)	 - Describe a Volume
+* [hcloud volume detach](hcloud_volume_detach.md)	 - Detach a Volume
 * [hcloud volume disable-protection](hcloud_volume_disable-protection.md)	 - Disable resource protection for a volume
 * [hcloud volume enable-protection](hcloud_volume_enable-protection.md)	 - Enable resource protection for a volume
 * [hcloud volume list](hcloud_volume_list.md)	 - List Volumes

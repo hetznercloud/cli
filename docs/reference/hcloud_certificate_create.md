@@ -10,13 +10,13 @@ hcloud certificate create [options] --name <name> (--type managed --domain <doma
 
 ```
       --cert-file string       File containing the PEM encoded certificate (required if type is uploaded)
-      --domain strings         One or more domains the certificate is valid for.
+      --domain strings         One or more domains the Certificate is valid for.
   -h, --help                   help for create
       --key-file string        File containing the PEM encoded private key for the certificate (required if type is uploaded)
       --label stringToString   User-defined labels ('key=value') (can be specified multiple times) (default [])
       --name string            Certificate name (required)
   -o, --output stringArray     output options: json|yaml
-  -t, --type string            Type of certificate to create. Valid choices: uploaded, managed (default "uploaded")
+  -t, --type string            Type of Certificate to create. Valid choices: uploaded, managed (default "uploaded")
 ```
 
 ### Options inherited from parent commands
@@ -33,4 +33,4 @@ hcloud certificate create [options] --name <name> (--type managed --domain <doma
 
 ### SEE ALSO
 
-* [hcloud certificate](hcloud_certificate.md)	 - Manage certificates
+* [hcloud certificate](hcloud_certificate.md)	 - Manage Certificates

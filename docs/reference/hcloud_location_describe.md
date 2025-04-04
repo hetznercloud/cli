@@ -1,6 +1,6 @@
 ## hcloud location describe
 
-Describe a location
+Describe a Location
 
 ```
 hcloud location describe [options] <location>
@@ -27,4 +27,4 @@ hcloud location describe [options] <location>
 
 ### SEE ALSO
 
-* [hcloud location](hcloud_location.md)	 - Manage locations
+* [hcloud location](hcloud_location.md)	 - View Locations

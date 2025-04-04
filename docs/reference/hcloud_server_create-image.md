@@ -1,6 +1,6 @@
 ## hcloud server create-image
 
-Create an image from a server
+Create an Image from a Server
 
 ```
 hcloud server create-image [options] --type <snapshot|backup> <server>
@@ -29,4 +29,4 @@ hcloud server create-image [options] --type <snapshot|backup> <server>
 
 ### SEE ALSO
 
-* [hcloud server](hcloud_server.md)	 - Manage servers
+* [hcloud server](hcloud_server.md)	 - Manage Servers

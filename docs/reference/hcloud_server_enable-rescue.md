@@ -10,7 +10,7 @@ hcloud server enable-rescue [options] <server>
 
 ```
   -h, --help              help for enable-rescue
-      --ssh-key strings   ID or name of SSH key to inject (can be specified multiple times)
+      --ssh-key strings   ID or name of SSH Key to inject (can be specified multiple times)
       --type string       Rescue type (default "linux64")
 ```
 
@@ -28,4 +28,4 @@ hcloud server enable-rescue [options] <server>
 
 ### SEE ALSO
 
-* [hcloud server](hcloud_server.md)	 - Manage servers
+* [hcloud server](hcloud_server.md)	 - Manage Servers

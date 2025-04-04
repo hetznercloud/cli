@@ -1,9 +1,9 @@
 ## hcloud server-type describe
 
-Describe a server type
+Describe a Server Type
 
 ```
-hcloud server-type describe [options] <servertype>
+hcloud server-type describe [options] <server-type>
 ```
 
 ### Options
@@ -27,4 +27,4 @@ hcloud server-type describe [options] <servertype>
 
 ### SEE ALSO
 
-* [hcloud server-type](hcloud_server-type.md)	 - Manage server types
+* [hcloud server-type](hcloud_server-type.md)	 - View Server Types

@@ -1,6 +1,6 @@
 ## hcloud server add-label
 
-Add a label to a server
+Add a label to a Server
 
 ```
 hcloud server add-label [--overwrite] <server> <label>...
@@ -27,4 +27,4 @@ hcloud server add-label [--overwrite] <server> <label>...
 
 ### SEE ALSO
 
-* [hcloud server](hcloud_server.md)	 - Manage servers
+* [hcloud server](hcloud_server.md)	 - Manage Servers

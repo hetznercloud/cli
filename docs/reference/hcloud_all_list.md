@@ -4,7 +4,7 @@ List all resources in the project
 
 ### Synopsis
 
-List all resources in the project. This does not include static/public resources like locations, public ISOs, etc.
+List all resources in the project. This does not include static/public resources like Locations, public ISOs, etc.
 
 Listed resources are:
  - Servers
@@ -18,7 +18,7 @@ Listed resources are:
  - Networks
  - Firewalls
  - Certificates
- - SSH keys
+ - SSH Keys
 
 ```
 hcloud all list [options]

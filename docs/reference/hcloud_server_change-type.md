@@ -10,7 +10,7 @@ hcloud server change-type [--keep-disk] <server> <server-type>
 
 ```
   -h, --help        help for change-type
-      --keep-disk   Keep disk size of current server type. This enables downgrading the server.
+      --keep-disk   Keep disk size of current Server Type. This enables downgrading the server.
 ```
 
 ### Options inherited from parent commands
@@ -27,4 +27,4 @@ hcloud server change-type [--keep-disk] <server> <server-type>
 
 ### SEE ALSO
 
-* [hcloud server](hcloud_server.md)	 - Manage servers
+* [hcloud server](hcloud_server.md)	 - Manage Servers

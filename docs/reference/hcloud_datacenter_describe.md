@@ -1,6 +1,6 @@
 ## hcloud datacenter describe
 
-Describe an datacenter
+Describe a Datacenter
 
 ```
 hcloud datacenter describe [options] <datacenter>
@@ -27,4 +27,4 @@ hcloud datacenter describe [options] <datacenter>
 
 ### SEE ALSO
 
-* [hcloud datacenter](hcloud_datacenter.md)	 - Manage datacenters
+* [hcloud datacenter](hcloud_datacenter.md)	 - View Datacenters

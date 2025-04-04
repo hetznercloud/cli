@@ -23,10 +23,10 @@ Manage Placement Groups
 ### SEE ALSO
 
 * [hcloud](hcloud.md)	 - Hetzner Cloud CLI
-* [hcloud placement-group add-label](hcloud_placement-group_add-label.md)	 - Add a label to a placement group
-* [hcloud placement-group create](hcloud_placement-group_create.md)	 - Create a placement group
-* [hcloud placement-group delete](hcloud_placement-group_delete.md)	 - Delete a placement group
-* [hcloud placement-group describe](hcloud_placement-group_describe.md)	 - Describe a placement group
+* [hcloud placement-group add-label](hcloud_placement-group_add-label.md)	 - Add a label to a Placement Group
+* [hcloud placement-group create](hcloud_placement-group_create.md)	 - Create a Placement Group
+* [hcloud placement-group delete](hcloud_placement-group_delete.md)	 - Delete a Placement Group
+* [hcloud placement-group describe](hcloud_placement-group_describe.md)	 - Describe a Placement Group
 * [hcloud placement-group list](hcloud_placement-group_list.md)	 - List Placement Groups
-* [hcloud placement-group remove-label](hcloud_placement-group_remove-label.md)	 - Remove a label from a placement group
-* [hcloud placement-group update](hcloud_placement-group_update.md)	 - Update a placement group
+* [hcloud placement-group remove-label](hcloud_placement-group_remove-label.md)	 - Remove a label from a Placement Group
+* [hcloud placement-group update](hcloud_placement-group_update.md)	 - Update a Placement Group

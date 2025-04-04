@@ -1,6 +1,6 @@
 ## hcloud server remove-from-placement-group
 
-Removes a server from a placement group
+Removes a Server from a Placement Group
 
 ```
 hcloud server remove-from-placement-group <server>
@@ -26,4 +26,4 @@ hcloud server remove-from-placement-group <server>
 
 ### SEE ALSO
 
-* [hcloud server](hcloud_server.md)	 - Manage servers
+* [hcloud server](hcloud_server.md)	 - Manage Servers
