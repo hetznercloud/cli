@@ -40,7 +40,7 @@ func TestOptionFlagParsing(t *testing.T) {
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
-	assert.Equal(t, "Server 2 attached to network 1\n", out)
+	assert.Equal(t, "Server 2 attached to Network 1\n", out)
 
 	val, err := config.OptionDebug.Get(fx.State().Config())
 	require.NoError(t, err)
