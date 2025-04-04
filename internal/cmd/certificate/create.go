@@ -34,9 +34,9 @@ var CreateCmd = base.CreateCmd{
 			cmpl.SuggestCandidates(string(hcloud.CertificateTypeUploaded), string(hcloud.CertificateTypeManaged)),
 		)
 
-		cmd.Flags().String("cert-file", "", "File containing the PEM encoded Certificate (required if type is uploaded)")
+		cmd.Flags().String("cert-file", "", "File containing the PEM encoded certificate (required if type is uploaded)")
 		cmd.Flags().String("key-file", "",
-			"File containing the PEM encoded private key for the Certificate (required if type is uploaded)")
+			"File containing the PEM encoded private key for the certificate (required if type is uploaded)")
 		cmd.Flags().StringSlice("domain", nil, "One or more domains the Certificate is valid for.")
 
 		return cmd
