@@ -20,7 +20,7 @@ var IPCmd = base.Cmd{
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
 		}
-		cmd.Flags().BoolP("ipv6", "6", false, "Print the first address of the IPv6 public Server Network")
+		cmd.Flags().BoolP("ipv6", "6", false, "Print the first address of the IPv6 public server network")
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
