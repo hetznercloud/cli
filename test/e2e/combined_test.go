@@ -27,17 +27,111 @@ func TestCombined(t *testing.T) {
 	err = os.WriteFile(pubKeyPath, pub, 0644)
 	require.NoError(t, err)
 
+	networkName := withSuffix("test-network")
+	networkID, err := createNetwork(t, networkName, "--ip-range", "10.0.0.0/16")
+	require.NoError(t, err)
+
+	t.Run("network", func(t *testing.T) {
+		t.Run("add-subnet", func(t *testing.T) {
+			out, err := runCommand(t, "network", "add-subnet", "--type", "cloud", "--network-zone", TestNetworkZone, "--ip-range", "10.0.1.0/24", strconv.FormatInt(networkID, 10))
+			require.NoError(t, err)
+			assert.Equal(t, fmt.Sprintf("Subnet added to network %d\n", networkID), out)
+		})
+	})
+
 	sshKeyName := withSuffix("test-ssh-key")
 	sshKeyID, err := createSSHKey(t, sshKeyName, "--public-key-from-file", pubKeyPath)
 	require.NoError(t, err)
 
 	serverName := withSuffix("test-server")
-	serverID, err := createServer(t, serverName, TestServerType, TestImage, "--ssh-key", strconv.FormatInt(sshKeyID, 10))
+	serverID, err := createServer(t, serverName, TestServerType, TestImage, "--ssh-key", strconv.FormatInt(sshKeyID, 10), "--network", strconv.FormatInt(networkID, 10))
 	require.NoError(t, err)
 
 	firewallName := withSuffix("test-firewall")
 	firewallID, err := createFirewall(t, firewallName)
 	require.NoError(t, err)
+
+	loadBalancerName := withSuffix("test-load-balancer")
+	loadBalancerID, err := createLoadBalancer(t, loadBalancerName, "--location", TestLocationName, "--type", TestLoadBalancerTypeName, "--network", strconv.FormatInt(networkID, 10))
+	require.NoError(t, err)
+
+	t.Run("load-balancer", func(t *testing.T) {
+		t.Run("detach-from-network", func(t *testing.T) {
+			out, err := runCommand(t, "load-balancer", "detach-from-network", strconv.FormatInt(loadBalancerID, 10), "--network", strconv.FormatInt(networkID, 10))
+			require.NoError(t, err)
+			assert.Equal(t, fmt.Sprintf("Load Balancer %d detached from Network %d\n", loadBalancerID, networkID), out)
+		})
+
+		t.Run("attach-to-network", func(t *testing.T) {
+			out, err := runCommand(t, "load-balancer", "attach-to-network", strconv.FormatInt(loadBalancerID, 10), "--network", strconv.FormatInt(networkID, 10))
+			require.NoError(t, err)
+			assert.Equal(t, fmt.Sprintf("Load Balancer %d attached to network %d\n", loadBalancerID, networkID), out)
+		})
+
+		t.Run("disable-public-interface", func(t *testing.T) {
+			out, err := runCommand(t, "load-balancer", "disable-public-interface", strconv.FormatInt(loadBalancerID, 10))
+			require.NoError(t, err)
+			assert.Equal(t, fmt.Sprintf("Public interface of Load Balancer %d was disabled\n", loadBalancerID), out)
+		})
+
+		t.Run("add-target", func(t *testing.T) {
+			t.Run("non-existing-load-balancer", func(t *testing.T) {
+				out, err := runCommand(t, "load-balancer", "add-target", "non-existing-load-balancer", "--server", "my-server")
+				require.EqualError(t, err, "Load Balancer not found: non-existing-load-balancer")
+				assert.Empty(t, out)
+			})
+
+			t.Run("label-selector", func(t *testing.T) {
+				out, err := runCommand(t, "load-balancer", "add-target", strconv.FormatInt(loadBalancerID, 10), "--label-selector", "foo=bar")
+				require.NoError(t, err)
+				assert.Equal(t, fmt.Sprintf("Target added to Load Balancer %d\n", loadBalancerID), out)
+			})
+
+			t.Run("server", func(t *testing.T) {
+				out, err := runCommand(t, "load-balancer", "add-target", strconv.FormatInt(loadBalancerID, 10), "--server", strconv.FormatInt(serverID, 10), "--use-private-ip")
+				require.NoError(t, err)
+				assert.Equal(t, fmt.Sprintf("Target added to Load Balancer %d\n", loadBalancerID), out)
+			})
+		})
+
+		t.Run("add-service", func(t *testing.T) {
+			out, err := runCommand(t, "load-balancer", "add-service", "--protocol", "http", "--listen-port", "80", "--destination-port", "80", strconv.FormatInt(loadBalancerID, 10))
+			require.NoError(t, err)
+			assert.Equal(t, fmt.Sprintf("Service was added to Load Balancer %d\n", loadBalancerID), out)
+		})
+
+		t.Run("update-service", func(t *testing.T) {
+			out, err := runCommand(t, "load-balancer", "update-service", strconv.FormatInt(loadBalancerID, 10), "--listen-port", "80", "--destination-port", "8080")
+			require.NoError(t, err)
+			assert.Equal(t, fmt.Sprintf("Service 80 on Load Balancer %d was updated\n", loadBalancerID), out)
+		})
+
+		t.Run("delete-service", func(t *testing.T) {
+			out, err := runCommand(t, "load-balancer", "delete-service", strconv.FormatInt(loadBalancerID, 10), "--listen-port", "80")
+			require.NoError(t, err)
+			assert.Equal(t, fmt.Sprintf("Service on port 80 deleted from Load Balancer %d\n", loadBalancerID), out)
+		})
+
+		t.Run("remove-target", func(t *testing.T) {
+			t.Run("non-existing-load-balancer", func(t *testing.T) {
+				out, err := runCommand(t, "load-balancer", "remove-target", "non-existing-load-balancer", "--server", "my-server")
+				require.EqualError(t, err, "Load Balancer not found: non-existing-load-balancer")
+				assert.Empty(t, out)
+			})
+
+			t.Run("label-selector", func(t *testing.T) {
+				out, err := runCommand(t, "load-balancer", "remove-target", strconv.FormatInt(loadBalancerID, 10), "--label-selector", "foo=bar")
+				require.NoError(t, err)
+				assert.Equal(t, fmt.Sprintf("Target removed from Load Balancer %d\n", loadBalancerID), out)
+			})
+
+			t.Run("server", func(t *testing.T) {
+				out, err := runCommand(t, "load-balancer", "remove-target", strconv.FormatInt(loadBalancerID, 10), "--server", strconv.FormatInt(serverID, 10))
+				require.NoError(t, err)
+				assert.Equal(t, fmt.Sprintf("Target removed from Load Balancer %d\n", loadBalancerID), out)
+			})
+		})
+	})
 
 	t.Run("firewall", func(t *testing.T) {
 		t.Run("apply-to-server", func(t *testing.T) {
@@ -146,5 +240,17 @@ func TestCombined(t *testing.T) {
 		out, err := runCommand(t, "ssh-key", "delete", strconv.FormatInt(sshKeyID, 10))
 		require.NoError(t, err)
 		assert.Equal(t, fmt.Sprintf("SSH Key %d deleted\n", sshKeyID), out)
+	})
+
+	t.Run("delete-network", func(t *testing.T) {
+		out, err := runCommand(t, "network", "delete", strconv.FormatInt(networkID, 10))
+		require.NoError(t, err)
+		assert.Equal(t, fmt.Sprintf("Network %d deleted\n", networkID), out)
+	})
+
+	t.Run("delete-load-balancer", func(t *testing.T) {
+		out, err := runCommand(t, "load-balancer", "delete", strconv.FormatInt(loadBalancerID, 10))
+		require.NoError(t, err)
+		assert.Equal(t, fmt.Sprintf("Load Balancer %d deleted\n", loadBalancerID), out)
 	})
 }

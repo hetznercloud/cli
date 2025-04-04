@@ -170,47 +170,6 @@ func TestLoadBalancer(t *testing.T) {
 		assert.Equal(t, fmt.Sprintf("Load Balancer %d updated\n", lbID), out)
 	})
 
-	/*
-		t.Run("add-target", func(t *testing.T) {
-			t.Run("non-existing-load-balancer", func(t *testing.T) {
-				out, err := runCommand(t, "load-balancer", "add-target", "non-existing-load-balancer", "--server", "my-server")
-				require.EqualError(t, err, "Load Balancer not found: non-existing-load-balancer")
-				assert.Empty(t, out)
-			})
-
-			t.Run("label-selector", func(t *testing.T) {
-				out, err := runCommand(t, "load-balancer", "add-target", strconv.FormatInt(lbID, 10), "--label-selector", "foo=bar")
-				require.NoError(t, err)
-				assert.Equal(t, fmt.Sprintf("Target added to Load Balancer %d\n", lbID), out)
-			})
-
-			t.Run("ip", func(t *testing.T) {
-				out, err := runCommand(t, "load-balancer", "add-target", strconv.FormatInt(lbID, 10), "--ip", "10.0.0.123")
-				require.NoError(t, err)
-				assert.Equal(t, fmt.Sprintf("Target added to Load Balancer %d\n", lbID), out)
-			})
-		})
-
-		t.Run("remove-target", func(t *testing.T) {
-			t.Run("non-existing-load-balancer", func(t *testing.T) {
-				out, err := runCommand(t, "load-balancer", "remove-target", "non-existing-load-balancer", "--server", "my-server")
-				require.EqualError(t, err, "Load Balancer not found: non-existing-load-balancer")
-				assert.Empty(t, out)
-			})
-
-			t.Run("label-selector", func(t *testing.T) {
-				out, err := runCommand(t, "load-balancer", "remove-target", strconv.FormatInt(lbID, 10), "--label-selector", "foo=bar")
-				require.NoError(t, err)
-				assert.Equal(t, fmt.Sprintf("Target removed from Load Balancer %d\n", lbID), out)
-			})
-
-			t.Run("ip", func(t *testing.T) {
-				out, err := runCommand(t, "load-balancer", "remove-target", strconv.FormatInt(lbID, 10), "--ip", "10.0.0.123")
-				require.NoError(t, err)
-				assert.Equal(t, fmt.Sprintf("Target removed from Load Balancer %d\n", lbID), out)
-			})
-		})*/
-
 	t.Run("disable-protection", func(t *testing.T) {
 		t.Run("non-existing-load-balancer", func(t *testing.T) {
 			out, err := runCommand(t, "load-balancer", "disable-protection", "non-existing-load-balancer", "delete")
