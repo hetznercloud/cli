@@ -58,6 +58,8 @@ how to embed it yourself.
 
 See `hcloud help` for a list of commands.
 
+You can also check out the [command reference](docs/reference) for help.
+
 ## Shell Completion
 
 `hcloud` provides completions for various shells.
