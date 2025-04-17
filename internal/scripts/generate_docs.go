@@ -19,15 +19,26 @@ func run() error {
 	// Define the directory where the docs will be generated
 	dir := "../../docs/reference"
 
-	// Clean the directory to make sure outdated files don't persist
-	err := os.RemoveAll(dir)
-	if err != nil {
-		return fmt.Errorf("could not remove docs directory: %w", err)
-	}
-
-	// Create directory again
+	// Make sure the directory exists
 	if err := os.MkdirAll(dir, 0755); err != nil {
 		return fmt.Errorf("error creating docs directory: %w", err)
+	}
+
+	// Clean the directory to make sure outdated files don't persist
+	files, err := os.ReadDir(dir)
+	if err != nil {
+		return fmt.Errorf("error listing doc files: %w", err)
+	}
+	for _, f := range files {
+		if !f.IsDir() && f.Name() == "README.md" {
+			// we want to keep the README.md file
+			continue
+		}
+		filepath := path.Join(dir, f.Name())
+		err = os.Remove(filepath)
+		if err != nil {
+			return fmt.Errorf("could not remove file at %q: %w", filepath, err)
+		}
 	}
 
 	cfg := config.New()
@@ -43,7 +54,7 @@ func run() error {
 		return fmt.Errorf("error generating docs: %w", err)
 	}
 
-	files, err := os.ReadDir(dir)
+	files, err = os.ReadDir(dir)
 	if err != nil {
 		return fmt.Errorf("error listing doc files: %w", err)
 	}
