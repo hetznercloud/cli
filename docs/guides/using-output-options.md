@@ -162,3 +162,6 @@ ID   NAME   NETWORK ZONE
 
 Using the ``--help`` flag will show you a list of all available columns for this command. Note that these might include
 more than the default columns.
+
+> [!NOTE]
+> You can also combine both options to use them at once: ``--output noheader --output columns=id,name,network_zone`` 
