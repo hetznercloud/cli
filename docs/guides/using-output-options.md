@@ -122,7 +122,7 @@ You can find the structs in the [hcloud-go source code](https://github.com/hetzn
 For example, you could obtain the number of cores of a server using the following command:
 
 ```bash
-$ hcloud server describe my-server --output format={{.ServerType.Cores}}
+$ hcloud server describe my-server --output format='{{.ServerType.Cores}}'
 2
 ```
 
