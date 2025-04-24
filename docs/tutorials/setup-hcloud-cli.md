@@ -23,12 +23,10 @@ If you have Go installed, you can also install hcloud CLI from source using the 
 go install github.com/hetznercloud/cli@latest
 ```
 
-> **Note**
->
+> [!NOTE]
 > Binaries built with Go will not have the correct version embedded.
 
-> **Note**
-> 
+> [!NOTE]
 > Both of the above installation methods do not provide automatic updates. Please make sure to keep your installation up to date manually.
 
 ### 1.3 Installation using Homebrew
@@ -49,8 +47,7 @@ scoop install hcloud
 
 ---
 
-> **Warning**
->
+> [!WARNING]
 > Debian-based distributions (using apt) provide outdated versions of the hcloud CLI.
 > Please consider one of the other installation methods.
 

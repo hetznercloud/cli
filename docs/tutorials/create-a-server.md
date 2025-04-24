@@ -28,11 +28,11 @@ You can upload your SSH key to Hetzner Cloud using the following command:
 hcloud ssh-key create --name my-ssh-key --public-key-from-file ~/.ssh/hcloud.pub
 ```
 
-**Pro Tip**: You can set this SSH key as the default SSH key for your context using the following command:
-
-```bash
-hcloud config set default-ssh-keys my-ssh-key
-```
+> [!TIP]
+> You can set this SSH key as the default SSH key for your context using the following command:
+> ```bash
+> hcloud config set default-ssh-keys my-ssh-key
+> ```
 
 ## 2. Create a Server
 
