@@ -15,6 +15,14 @@ Before you begin, ensure you have the following:
 You can download pre-built binaries from our [GitHub releases](https://github.com/hetznercloud/cli/releases). 
 Install them by extracting the archive and moving the binary to a directory in your `PATH`.
 
+On a 64-bit Linux system, it could look something like this:
+
+```bash
+curl -LO https://github.com/hetznercloud/cli/releases/download/v1.50.0/hcloud-darwin-amd64.tar.gz
+sudo tar -C /usr/local/bin -xzf hcloud-darwin-amd64.tar.gz
+rm hcloud-darwin-amd64.tar.gz
+```
+
 ### 1.2 Installation using Go
 
 If you have Go installed, you can also install hcloud CLI from source using the following command:
