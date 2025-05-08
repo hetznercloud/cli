@@ -6,7 +6,7 @@ This documentation is written and organized following the [Diátaxis](https://di
 
 - [Tutorials](tutorials)
 - [Guides](guides)
-- [Reference](reference)
+- [Reference](reference/hcloud.md)
 
 ## Getting help
 
