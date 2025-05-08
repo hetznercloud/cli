@@ -35,6 +35,21 @@ builds:
                 --ad-hoc={{ .IsSnapshot }}
           output: true
 
+kos:
+  - id: container-images
+    build: hcloud-build
+    repositories:
+      - hetznercloud/cli
+    platforms:
+      - linux/amd64
+      - linux/arm64
+    base_import_paths: true
+    labels:
+      org.opencontainers.image.source: https://github.com/apricote/hcloud-upload-image
+    tags:
+      - latest
+      - "{{.Tag}}"
+
 snapshot:
   version_template: "{{ .Version }}-dev+{{ .ShortCommit }}"
 

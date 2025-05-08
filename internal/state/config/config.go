@@ -72,6 +72,8 @@ type config struct {
 	schema        Schema
 }
 
+var defaultConfigPathOverride string
+
 func New() Config {
 	cfg := &config{}
 	cfg.reset()
@@ -117,7 +119,11 @@ func (cfg *config) Read(f any) error {
 	}
 
 	if cfg.path == "" {
-		cfg.path = DefaultConfigPath()
+		if defaultConfigPathOverride != "" {
+			cfg.path = defaultConfigPathOverride
+		} else {
+			cfg.path = DefaultConfigPath()
+		}
 	}
 
 	var cfgBytes []byte
