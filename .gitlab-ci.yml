@@ -48,11 +48,12 @@ test:unit:
   stage: test
   image: golang:1.24
   script:
-    - go test -v -coverpkg=./... -coverprofile=coverage.txt -covermode count ./...
-    - go -C ./tools run github.com/boumenot/gocover-cobertura < coverage.txt > coverage.xml
+    - go test -v -coverpkg=./... -coverprofile=coverage.txt ./... 2>&1 | tee test.out
+    - go -C ./tools run github.com/jstemmer/go-junit-report/v2@latest < test.out > report.xml
   artifacts:
+    when: always
     reports:
-      coverage_report:
-        coverage_format: cobertura
-        path: coverage.xml
+      junit: report.xml
+    paths:
+      - report.xml
   coverage: "/coverage: \\d+.\\d+% of statements/"
