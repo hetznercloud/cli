@@ -38,6 +38,7 @@ builds:
 kos:
   - id: container-images
     build: hcloud-build
+    main: ./cmd/hcloud/
     repositories:
       - hetznercloud/cli
     platforms:
