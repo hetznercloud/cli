@@ -131,6 +131,9 @@ $ hcloud server describe my-server --output format='{{.ServerType.Cores}}'
 `list` commands support table options as well. These options allow you to customize the output format of the output table,
 if not using JSON or YAML.
 
+> [!NOTE]
+> You can also combine both of the below options to use them at once: ``--output noheader --output columns=id,name,network_zone``
+
 ### noheader
 
 This option removes the header from the output table.
@@ -162,6 +165,3 @@ ID   NAME   NETWORK ZONE
 
 Using the ``--help`` flag will show you a list of all available columns for this command. Note that these might include
 more than the default columns.
-
-> [!NOTE]
-> You can also combine both options to use them at once: ``--output noheader --output columns=id,name,network_zone`` 
