@@ -42,6 +42,19 @@ If you have Go installed, you can build and install the latest version of
 prebuilt binaries or check out [`.goreleaser.yml`](.goreleaser.yml) to learn
 how to embed it yourself.
 
+### Docker
+
+A docker image is published at `hetznercloud/cli`.
+
+```bash
+docker run --rm -e HCLOUD_TOKEN="<your token>" hetznercloud/cli:latest <command>
+```
+
+If you want to use (and persist) your configuration, you can mount it to `/config.toml`:
+```bash
+docker run --rm -v ~/.config/hcloud/cli.toml:/config.toml hetznercloud/cli:latest <command>
+```
+
 ## Getting Started
 
 1.  Visit the Hetzner Cloud Console at [console.hetzner.cloud](https://console.hetzner.cloud/),

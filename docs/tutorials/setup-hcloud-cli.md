@@ -53,6 +53,25 @@ On Windows, you can install `hcloud` using scoop:
 scoop install hcloud
 ```
 
+### 1.5 Using hcloud with Docker
+
+Instead of installing hcloud on the host, you can also use our docker image at `hetznercloud/cli`.
+
+```bash
+docker run --rm -e HCLOUD_TOKEN="<your token>" hetznercloud/cli:latest <command>
+```
+
+If you want to use (and persist) your configuration, you can mount it to `/config.toml`:
+```bash
+docker run --rm -v ~/.config/hcloud/cli.toml:/config.toml hetznercloud/cli:latest <command>
+```
+
+The image is based on Alpine Linux, so a shell is available in the image. You can use it to run commands interactively:
+
+```bash
+docker run -it --rm --entrypoint /bin/sh hetznercloud/cli:latest
+```
+
 ---
 
 > [!WARNING]

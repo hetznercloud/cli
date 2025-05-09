@@ -35,6 +35,29 @@ builds:
                 --ad-hoc={{ .IsSnapshot }}
           output: true
 
+kos:
+  - id: container-images
+    build: hcloud-build
+    main: ./cmd/hcloud/
+    repositories:
+      - hetznercloud/cli
+    platforms:
+      - linux/amd64
+      - linux/arm64
+    base_import_paths: true
+    base_image: alpine
+    labels:
+      org.opencontainers.image.source: https://github.com/hetznercloud/cli
+    tags:
+      - latest
+      - "{{.Tag}}"
+    ldflags:
+      - -s
+      - -w
+      - -X {{ .ModulePath }}/internal/version.version={{ .Version }}
+      - -X {{ .ModulePath }}/internal/version.versionPrerelease={{- if .IsSnapshot -}}dev+{{ .ShortCommit }}{{- end -}}
+      - -X {{ .ModulePath }}/internal/state/config.defaultConfigPathOverride=/config.toml
+
 snapshot:
   version_template: "{{ .Version }}"
 
