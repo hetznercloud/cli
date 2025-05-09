@@ -45,6 +45,7 @@ kos:
       - linux/amd64
       - linux/arm64
     base_import_paths: true
+    base_image: alpine
     labels:
       org.opencontainers.image.source: https://github.com/hetznercloud/cli
     tags:
