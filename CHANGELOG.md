@@ -1,5 +1,7 @@
 # Changelog
 
+## [v1.51.0-rc.2](https://github.com/hetznercloud/cli/releases/tag/v1.51.0-rc.2)
+
 ## [v1.51.0-rc.1](https://github.com/hetznercloud/cli/releases/tag/v1.51.0-rc.1)
 
 ### Bug Fixes
