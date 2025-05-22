@@ -44,7 +44,6 @@ kos:
     platforms:
       - linux/amd64
       - linux/arm64
-    base_import_paths: true
     base_image: alpine
     bare: true
     labels:
