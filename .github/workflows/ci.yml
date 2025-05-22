@@ -15,10 +15,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Go
-        uses: actions/setup-go@v5
+      - name: Set up tools
+        uses: jdx/mise-action@v2
         with:
-          go-version: "1.24"
+          version: v2025.5.9
 
       - name: Run gofmt
         run: diff -u <(echo -n) <(gofmt -d -s .)
@@ -26,8 +26,8 @@ jobs:
       - name: Run golangci-lint
         uses: golangci/golangci-lint-action@v6
         with:
-          # Required: the version of golangci-lint is required and must be specified with patch version
-          version: v1.64.8 # renovate: datasource=github-releases depName=golangci/golangci-lint
+          # golangci-lint was already installed in a previous step.
+          install-mode: none
           # In general linting is quite fast with warm caches, but a fresh run might take some time.
           args: --timeout 5m
 
@@ -37,10 +37,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Go
-        uses: actions/setup-go@v5
+      - name: Set up tools
+        uses: jdx/mise-action@v2
         with:
-          go-version: "1.24"
+          version: v2025.5.9
 
       - name: Run tests
         run: go test -coverpkg=./... -coverprofile=coverage.txt -v -race ./...
@@ -62,10 +62,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Go
-        uses: actions/setup-go@v5
+      - name: Set up tools
+        uses: jdx/mise-action@v2
         with:
-          go-version: "1.24"
+          version: v2025.5.9
 
       - uses: hetznercloud/tps-action@main
 
@@ -91,10 +91,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Go
-        uses: actions/setup-go@v5
+      - name: Set up tools
+        uses: jdx/mise-action@v2
         with:
-          go-version: "1.24"
+          version: v2025.5.9
 
       - name: Delete old generated files
         run: find . -name 'zz_*.go' -delete
@@ -114,10 +114,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Go
-        uses: actions/setup-go@v5
+      - name: Set up tools
+        uses: jdx/mise-action@v2
         with:
-          go-version: "1.24"
+          version: v2025.5.9
 
       - name: Run go mod tidy
         run: go mod tidy

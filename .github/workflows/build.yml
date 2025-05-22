@@ -15,19 +15,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Go
-        uses: actions/setup-go@v5
+      - name: Set up tools
+        uses: jdx/mise-action@v2
         with:
-          go-version: "1.24"
-
-      - name: Download tools
-        run: go -C ./tools mod download
+          version: v2025.5.9
 
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v6
-        with:
-          version: 2.x
-          args: release --clean --snapshot --skip=sign
+        run: goreleaser release --clean --snapshot --skip=sign
 
       - uses: actions/upload-artifact@v4
         with:

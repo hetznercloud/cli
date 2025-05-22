@@ -11,6 +11,7 @@ require (
 	github.com/fatih/color v1.18.0
 	github.com/fatih/structs v1.1.0
 	github.com/goccy/go-yaml v1.17.1
+	github.com/golang/mock v1.6.0
 	github.com/guptarohit/asciigraph v0.7.3
 	github.com/hetznercloud/hcloud-go/v2 v2.21.0
 	github.com/jedib0t/go-pretty/v6 v6.6.7
@@ -60,11 +61,8 @@ require (
 	github.com/yudai/golcs v0.0.0-20170316035057-ecda9a501e82 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.9.0 // indirect
-	golang.org/x/mod v0.21.0 // indirect
 	golang.org/x/net v0.37.0 // indirect
-	golang.org/x/sync v0.14.0 // indirect
 	golang.org/x/sys v0.33.0 // indirect
-	golang.org/x/tools v0.25.0 // indirect
 	google.golang.org/protobuf v1.36.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
