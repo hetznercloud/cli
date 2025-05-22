@@ -21,13 +21,10 @@ jobs:
           username: ${{ secrets.DOCKER_USER }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Set up Go
-        uses: actions/setup-go@v5
+      - name: Set up tools
+        uses: jdx/mise-action@v2
         with:
-          go-version: "1.24"
-
-      - name: Download tools
-        run: go -C ./tools mod download
+          version: v2025.5.9
 
       - name: Import GPG key
         id: import_gpg
@@ -37,10 +34,7 @@ jobs:
           passphrase: ${{ secrets.GPG_PASSPHRASE }}
 
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v6
-        with:
-          version: 2.x
-          args: release --clean --skip=validate
+        run: goreleaser release --clean --skip=validate
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           QUILL_SIGN_P12: ${{ secrets.APPLE_CERTIFICATE_P12_FILE }}
