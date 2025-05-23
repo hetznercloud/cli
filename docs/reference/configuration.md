@@ -22,4 +22,4 @@ already enough in many cases.
 
 You can use the `hcloud config` command to manage your configuration, for example
 to get, list, set and unset configuration options and preferences. You can view a list
-of all available options and preferences by running `hcloud config --help`.
+of all available options and preferences [here](manual/hcloud_config.md#synopsis).
