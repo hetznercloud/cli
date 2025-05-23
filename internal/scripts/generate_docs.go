@@ -62,6 +62,7 @@ func run() error {
 			return fmt.Errorf("could not read file at %q: %w", filepath, err)
 		}
 		bytes = generatedOnRegex.ReplaceAll(bytes, nil)
+		// We do this to wrap tables in a code block. Otherwise, they won't be displayed properly in markdown viewers.
 		bytes = []byte(strings.ReplaceAll(string(bytes), "┌", "```\n┌"))
 		bytes = []byte(strings.ReplaceAll(string(bytes), "┘", "┘\n```"))
 		err = os.WriteFile(filepath, bytes, f.Type())
