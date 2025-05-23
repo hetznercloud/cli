@@ -13,7 +13,7 @@
 ## Docs
 
 - See [setting up hcloud](docs/tutorials/setup-hcloud-cli.md) for instructions on how to install and configure the CLI.
-- See the [manual](docs/reference/manual) for a list of all available commands and their options.
+- See the [manual](docs/reference/manual/hcloud.md) for a list of all available commands and their options.
 
 For additional information, see the [documentation](docs).
 
