@@ -29,7 +29,7 @@ var AddTargetCmd = base.Cmd{
 
 		cmd.Flags().String("label-selector", "", "Label Selector")
 
-		cmd.Flags().Bool("use-private-ip", false, "Determine if the Load Balancer should connect to the target via the network")
+		cmd.Flags().Bool("use-private-ip", false, "Determine if the Load Balancer should connect to the target via the network (true, false)")
 		cmd.Flags().String("ip", "", "Use the passed IP address as target")
 		return cmd
 	},

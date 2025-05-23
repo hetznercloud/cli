@@ -30,7 +30,7 @@ var SSHCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 		cmd.Flags().SetInterspersed(false) // To make "hcloud server ssh <server> uname -a" execute "uname -a"
-		cmd.Flags().Bool("ipv6", false, "Establish SSH connection to IPv6 address")
+		cmd.Flags().Bool("ipv6", false, "Establish SSH connection to IPv6 address (true, false)")
 		cmd.Flags().StringP("user", "u", "root", "Username for SSH connection")
 		cmd.Flags().IntP("port", "p", 22, "Port for SSH connection")
 		return cmd

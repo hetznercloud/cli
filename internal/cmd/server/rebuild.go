@@ -26,7 +26,7 @@ var RebuildCmd = base.Cmd{
 		cmd.Flags().String("image", "", "ID or name of Image to rebuild from (required)")
 		_ = cmd.RegisterFlagCompletionFunc("image", cmpl.SuggestCandidatesF(client.Image().Names))
 		_ = cmd.MarkFlagRequired("image")
-		cmd.Flags().Bool("allow-deprecated-image", false, "Enable the use of deprecated images (default: false)")
+		cmd.Flags().Bool("allow-deprecated-image", false, "Enable the use of deprecated images (default: false) (true, false)")
 
 		return cmd
 	},

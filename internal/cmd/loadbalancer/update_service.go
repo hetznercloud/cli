@@ -29,10 +29,10 @@ var UpdateServiceCmd = base.Cmd{
 		cmd.Flags().Int("destination-port", 0, "Destination port of the service on the targets")
 
 		cmd.Flags().String("protocol", "", "The protocol to use for load balancing traffic")
-		cmd.Flags().Bool("proxy-protocol", false, "Enable or disable (with --proxy-protocol=false) Proxy Protocol")
-		cmd.Flags().Bool("http-redirect-http", false, "Enable or disable redirect all traffic on port 80 to port 443")
+		cmd.Flags().Bool("proxy-protocol", false, "Enable or disable (with --proxy-protocol=false) Proxy Protocol (true, false)")
+		cmd.Flags().Bool("http-redirect-http", false, "Enable or disable redirect all traffic on port 80 to port 443 (true, false)")
 
-		cmd.Flags().Bool("http-sticky-sessions", false, "Enable or disable (with --http-sticky-sessions=false) Sticky Sessions")
+		cmd.Flags().Bool("http-sticky-sessions", false, "Enable or disable (with --http-sticky-sessions=false) Sticky Sessions (true, false)")
 		cmd.Flags().String("http-cookie-name", "", "Sticky Sessions: Cookie Name which will be set")
 		cmd.Flags().Duration("http-cookie-lifetime", 0, "Sticky Sessions: Lifetime of the cookie")
 		cmd.Flags().StringSlice("http-certificates", []string{}, "IDs or names of Certificates which should be attached to this Load Balancer")
@@ -48,7 +48,7 @@ var UpdateServiceCmd = base.Cmd{
 
 		cmd.Flags().StringSlice("health-check-http-status-codes", []string{}, "List of status codes we expect to determine a target as healthy")
 		cmd.Flags().String("health-check-http-response", "", "The response we expect to determine a target as healthy")
-		cmd.Flags().Bool("health-check-http-tls", false, "Determine if the health check should verify if the target answers with a valid TLS certificate")
+		cmd.Flags().Bool("health-check-http-tls", false, "Determine if the health check should verify if the target answers with a valid TLS certificate (true, false)")
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {

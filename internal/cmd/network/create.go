@@ -26,7 +26,7 @@ var CreateCmd = base.CreateCmd{
 		cmd.Flags().IPNet("ip-range", net.IPNet{}, "Network IP range (required)")
 		_ = cmd.MarkFlagRequired("ip-range")
 
-		cmd.Flags().Bool("expose-routes-to-vswitch", false, "Expose routes from this Network to the vSwitch connection. It only takes effect if a vSwitch connection is active.")
+		cmd.Flags().Bool("expose-routes-to-vswitch", false, "Expose routes from this Network to the vSwitch connection. It only takes effect if a vSwitch connection is active. (true, false)")
 
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 
