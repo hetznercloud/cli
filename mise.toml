@@ -9,3 +9,4 @@ goreleaser = "v2.9.0"
 [settings]
 # Experimental features are needed for the Go backend
 experimental = true
+activate_aggressive = true
