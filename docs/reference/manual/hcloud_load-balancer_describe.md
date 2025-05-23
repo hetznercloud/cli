@@ -9,7 +9,7 @@ hcloud load-balancer describe [options] <load-balancer>
 ### Options
 
 ```
-      --expand-targets       Expand all label_selector targets
+      --expand-targets       Expand all label_selector targets (true, false)
   -h, --help                 help for describe
   -o, --output stringArray   output options: json|yaml|format
 ```

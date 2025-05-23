@@ -9,9 +9,9 @@ hcloud config list
 ### Options
 
 ```
-  -a, --all                  Also show default values
-      --allow-sensitive      Allow showing sensitive values
-  -g, --global               Only show global values
+  -a, --all                  Also show default values (true, false)
+      --allow-sensitive      Allow showing sensitive values (true, false)
+  -g, --global               Only show global values (true, false)
   -h, --help                 help for list
   -o, --output stringArray   output options: noheader|columns=...|json|yaml
 ```

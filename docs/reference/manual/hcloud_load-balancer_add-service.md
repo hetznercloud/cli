@@ -14,7 +14,7 @@ hcloud load-balancer add-service [options] (--protocol http | --protocol tcp --l
       --health-check-http-path string            The path we request when performing a http health check
       --health-check-http-response string        The response we expect to determine a target as healthy
       --health-check-http-status-codes strings   List of status codes we expect to determine a target as healthy
-      --health-check-http-tls                    Determine if the health check should verify if the target answers with a valid TLS certificate
+      --health-check-http-tls                    Determine if the health check should verify if the target answers with a valid TLS certificate (true, false)
       --health-check-interval duration           The interval the health check is performed (default 15s)
       --health-check-port int                    The port the health check is performed over
       --health-check-protocol string             The protocol the health check is performed over
@@ -24,11 +24,11 @@ hcloud load-balancer add-service [options] (--protocol http | --protocol tcp --l
       --http-certificates strings                IDs or names of Certificates which should be attached to this Load Balancer
       --http-cookie-lifetime duration            Sticky Sessions: Lifetime of the cookie
       --http-cookie-name string                  Sticky Sessions: Cookie Name we set
-      --http-redirect-http                       Redirect all traffic on port 80 to port 443
-      --http-sticky-sessions                     Enable Sticky Sessions
+      --http-redirect-http                       Redirect all traffic on port 80 to port 443 (true, false)
+      --http-sticky-sessions                     Enable Sticky Sessions (true, false)
       --listen-port int                          Listen port of the service
       --protocol string                          Protocol of the service (required)
-      --proxy-protocol                           Enable proxyprotocol
+      --proxy-protocol                           Enable proxyprotocol (true, false)
 ```
 
 ### Options inherited from parent commands

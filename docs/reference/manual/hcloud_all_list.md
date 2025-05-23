@@ -29,7 +29,7 @@ hcloud all list [options]
 ```
   -h, --help                 help for list
   -o, --output stringArray   output options: json|yaml
-      --paid                 Only list resources that cost money
+      --paid                 Only list resources that cost money (true, false)
   -l, --selector string      Selector to filter by labels
 ```
 

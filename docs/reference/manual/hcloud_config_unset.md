@@ -13,7 +13,7 @@ hcloud config unset <key>
 ### Options
 
 ```
-      --global   Unset the value globally (for all contexts)
+      --global   Unset the value globally (for all contexts) (true, false)
   -h, --help     help for unset
 ```
 

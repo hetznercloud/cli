@@ -13,7 +13,7 @@ hcloud config remove <key> <value>...
 ### Options
 
 ```
-      --global   Remove the value(s) globally (for all contexts)
+      --global   Remove the value(s) globally (for all contexts) (true, false)
   -h, --help     help for remove
 ```
 

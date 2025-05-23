@@ -9,7 +9,7 @@ hcloud server rebuild [--allow-deprecated-image] --image <image> <server>
 ### Options
 
 ```
-      --allow-deprecated-image   Enable the use of deprecated images (default: false)
+      --allow-deprecated-image   Enable the use of deprecated images (default: false) (true, false)
   -h, --help                     help for rebuild
       --image string             ID or name of Image to rebuild from (required)
 ```

@@ -10,7 +10,7 @@ hcloud server ssh [options] <server> [--] [ssh options] [command [argument...]]
 
 ```
   -h, --help          help for ssh
-      --ipv6          Establish SSH connection to IPv6 address
+      --ipv6          Establish SSH connection to IPv6 address (true, false)
   -p, --port int      Port for SSH connection (default 22)
   -u, --user string   Username for SSH connection (default "root")
 ```

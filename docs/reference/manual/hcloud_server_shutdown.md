@@ -14,7 +14,7 @@ hcloud server shutdown [options] <server>
 
 ```
   -h, --help                    help for shutdown
-      --wait                    Wait for the Server to shut down before exiting
+      --wait                    Wait for the Server to shut down before exiting (true, false)
       --wait-timeout duration   Timeout for waiting for off state after shutdown (default 30s)
 ```
 
