@@ -24,6 +24,7 @@ Option values can have following types:
 Most options are 'preferences' - these options can be set globally and can additionally be overridden
 for each context. Below is a list of all non-preference options:
 
+```
 ┌─────────┬──────────────────────┬────────┬────────────────┬──────────────────────┬───────────┐
 │ OPTION  │ DESCRIPTION          │ TYPE   │ CONFIG KEY     │ ENVIRONMENT VARIABLE │ FLAG      │
 ├─────────┼──────────────────────┼────────┼────────────────┼──────────────────────┼───────────┤
@@ -38,11 +39,13 @@ for each context. Below is a list of all non-preference options:
 │ token   │ Hetzner Cloud API    │ string │ token          │ HCLOUD_TOKEN         │           │
 │         │ token                │        │                │                      │           │
 └─────────┴──────────────────────┴────────┴────────────────┴──────────────────────┴───────────┘
+```
 
 Since the above options are not preferences, they cannot be modified with 'hcloud config set' or 
 'hcloud config unset'. However, you are able to retrieve them using 'hcloud config get' and 'hcloud config list'.
 Following options are preferences and can be used with set/unset/add/remove:
 
+```
 ┌──────────────────┬──────────────────────┬─────────────┬──────────────────┬─────────────────────────┬─────────────────┐
 │ OPTION           │ DESCRIPTION          │ TYPE        │ CONFIG KEY       │ ENVIRONMENT VARIABLE    │ FLAG            │
 ├──────────────────┼──────────────────────┼─────────────┼──────────────────┼─────────────────────────┼─────────────────┤
@@ -68,6 +71,7 @@ Following options are preferences and can be used with set/unset/add/remove:
 │ sort.<resource>  │ Default sorting for  │ string list │ sort.<resource>  │ HCLOUD_SORT_<RESOURCE>  │                 │
 │                  │ resource             │             │                  │                         │                 │
 └──────────────────┴──────────────────────┴─────────────┴──────────────────┴─────────────────────────┴─────────────────┘
+```
 
 Options will be persisted in the configuration file. To find out where your configuration file is located
 on disk, run 'hcloud config get config'.

@@ -5,6 +5,7 @@ import (
 	"os"
 	"path"
 	"regexp"
+	"strings"
 
 	"github.com/spf13/cobra/doc"
 
@@ -61,6 +62,8 @@ func run() error {
 			return fmt.Errorf("could not read file at %q: %w", filepath, err)
 		}
 		bytes = generatedOnRegex.ReplaceAll(bytes, nil)
+		bytes = []byte(strings.ReplaceAll(string(bytes), "┌", "```\n┌"))
+		bytes = []byte(strings.ReplaceAll(string(bytes), "┘", "┘\n```"))
 		err = os.WriteFile(filepath, bytes, f.Type())
 		if err != nil {
 			return fmt.Errorf("could not write file at %q: %w", filepath, err)
