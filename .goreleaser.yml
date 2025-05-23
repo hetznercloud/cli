@@ -97,3 +97,4 @@ archives:
 
 release:
   draft: false
+  prerelease: auto
