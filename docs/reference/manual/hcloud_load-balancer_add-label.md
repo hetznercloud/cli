@@ -10,7 +10,7 @@ hcloud load-balancer add-label [--overwrite] <load-balancer> <label>...
 
 ```
   -h, --help        help for add-label
-  -o, --overwrite   Overwrite label if it exists already
+  -o, --overwrite   Overwrite label if it exists already (true, false)
 ```
 
 ### Options inherited from parent commands

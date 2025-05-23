@@ -13,7 +13,7 @@ hcloud config add <key> <value>...
 ### Options
 
 ```
-      --global   Set the value globally (for all contexts)
+      --global   Set the value globally (for all contexts) (true, false)
   -h, --help     help for add
 ```
 

@@ -27,13 +27,13 @@ var AddServiceCmd = base.Cmd{
 
 		cmd.Flags().Int("listen-port", 0, "Listen port of the service")
 		cmd.Flags().Int("destination-port", 0, "Destination port of the service on the targets")
-		cmd.Flags().Bool("proxy-protocol", false, "Enable proxyprotocol")
+		cmd.Flags().Bool("proxy-protocol", false, "Enable proxyprotocol (true, false)")
 
-		cmd.Flags().Bool("http-sticky-sessions", false, "Enable Sticky Sessions")
+		cmd.Flags().Bool("http-sticky-sessions", false, "Enable Sticky Sessions (true, false)")
 		cmd.Flags().String("http-cookie-name", "", "Sticky Sessions: Cookie Name we set")
 		cmd.Flags().Duration("http-cookie-lifetime", 0, "Sticky Sessions: Lifetime of the cookie")
 		cmd.Flags().StringSlice("http-certificates", []string{}, "IDs or names of Certificates which should be attached to this Load Balancer")
-		cmd.Flags().Bool("http-redirect-http", false, "Redirect all traffic on port 80 to port 443")
+		cmd.Flags().Bool("http-redirect-http", false, "Redirect all traffic on port 80 to port 443 (true, false)")
 
 		cmd.Flags().String("health-check-protocol", "", "The protocol the health check is performed over")
 		cmd.Flags().Int("health-check-port", 0, "The port the health check is performed over")
@@ -45,7 +45,7 @@ var AddServiceCmd = base.Cmd{
 		cmd.Flags().String("health-check-http-path", "", "The path we request when performing a http health check")
 		cmd.Flags().StringSlice("health-check-http-status-codes", []string{}, "List of status codes we expect to determine a target as healthy")
 		cmd.Flags().String("health-check-http-response", "", "The response we expect to determine a target as healthy")
-		cmd.Flags().Bool("health-check-http-tls", false, "Determine if the health check should verify if the target answers with a valid TLS certificate")
+		cmd.Flags().Bool("health-check-http-tls", false, "Determine if the health check should verify if the target answers with a valid TLS certificate (true, false)")
 
 		return cmd
 	},

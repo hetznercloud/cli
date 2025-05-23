@@ -9,7 +9,7 @@ hcloud volume create [options] --name <name> --size <size>
 ### Options
 
 ```
-      --automount                   Automount Volume after attach (Server must be provided)
+      --automount                   Automount Volume after attach (Server must be provided) (true, false)
       --enable-protection strings   Enable protection (delete) (default: none)
       --format string               Format Volume after creation (ext4 or xfs)
   -h, --help                        help for create

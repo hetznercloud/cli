@@ -27,7 +27,7 @@ func NewAddCommand(s state.State) *cobra.Command {
 			cmpl.SuggestCandidatesCtx(suggestOptionCompletions),
 		)),
 	}
-	cmd.Flags().Bool("global", false, "Set the value globally (for all contexts)")
+	cmd.Flags().Bool("global", false, "Set the value globally (for all contexts) (true, false)")
 	return cmd
 }
 

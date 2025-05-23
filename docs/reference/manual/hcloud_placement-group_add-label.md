@@ -10,7 +10,7 @@ hcloud placement-group add-label [--overwrite] <placement-group> <label>...
 
 ```
   -h, --help        help for add-label
-  -o, --overwrite   Overwrite label if it exists already
+  -o, --overwrite   Overwrite label if it exists already (true, false)
 ```
 
 ### Options inherited from parent commands

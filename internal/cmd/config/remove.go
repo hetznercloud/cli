@@ -28,7 +28,7 @@ func NewRemoveCommand(s state.State) *cobra.Command {
 			cmpl.SuggestCandidatesCtx(suggestOptionCompletions),
 		)),
 	}
-	cmd.Flags().Bool("global", false, "Remove the value(s) globally (for all contexts)")
+	cmd.Flags().Bool("global", false, "Remove the value(s) globally (for all contexts) (true, false)")
 	return cmd
 }
 

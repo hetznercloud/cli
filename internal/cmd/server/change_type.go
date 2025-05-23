@@ -25,7 +25,7 @@ var ChangeTypeCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 
-		cmd.Flags().Bool("keep-disk", false, "Keep disk size of current Server Type. This enables downgrading the server.")
+		cmd.Flags().Bool("keep-disk", false, "Keep disk size of current Server Type. This enables downgrading the server. (true, false)")
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {

@@ -10,7 +10,7 @@ hcloud network create [options] --name <name> --ip-range <ip-range>
 
 ```
       --enable-protection strings   Enable protection (delete) (default: none)
-      --expose-routes-to-vswitch    Expose routes from this Network to the vSwitch connection. It only takes effect if a vSwitch connection is active.
+      --expose-routes-to-vswitch    Expose routes from this Network to the vSwitch connection. It only takes effect if a vSwitch connection is active. (true, false)
   -h, --help                        help for create
       --ip-range ipNet              Network IP range (required)
       --label stringToString        User-defined labels ('key=value') (can be specified multiple times) (default [])

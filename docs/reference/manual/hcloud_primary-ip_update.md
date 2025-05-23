@@ -9,7 +9,7 @@ hcloud primary-ip update [options] <primary-ip>
 ### Options
 
 ```
-      --auto-delete   Delete this Primary IP when the resource it is assigned to is deleted
+      --auto-delete   Delete this Primary IP when the resource it is assigned to is deleted (true, false)
   -h, --help          help for update
       --name string   Primary IP name
 ```

@@ -23,8 +23,8 @@ func NewGetCommand(s state.State) *cobra.Command {
 		RunE:                  state.Wrap(s, runGet),
 		ValidArgsFunction:     cmpl.NoFileCompletion(cmpl.SuggestCandidates(getOptionNames(0)...)),
 	}
-	cmd.Flags().Bool("global", false, "Get the value globally")
-	cmd.Flags().Bool("allow-sensitive", false, "Allow showing sensitive values")
+	cmd.Flags().Bool("global", false, "Get the value globally (true, false)")
+	cmd.Flags().Bool("allow-sensitive", false, "Allow showing sensitive values (true, false)")
 	return cmd
 }
 

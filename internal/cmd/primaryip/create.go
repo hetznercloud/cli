@@ -36,7 +36,7 @@ var CreateCmd = base.CreateCmd{
 		cmd.Flags().StringSlice("enable-protection", []string{}, "Enable protection (delete) (default: none)")
 		_ = cmd.RegisterFlagCompletionFunc("enable-protection", cmpl.SuggestCandidates("delete"))
 
-		cmd.Flags().Bool("auto-delete", false, "Delete Primary IP if assigned resource is deleted")
+		cmd.Flags().Bool("auto-delete", false, "Delete Primary IP if assigned resource is deleted (true, false)")
 
 		return cmd
 	},

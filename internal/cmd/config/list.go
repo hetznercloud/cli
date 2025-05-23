@@ -24,9 +24,9 @@ func NewListCommand(s state.State) *cobra.Command {
 		SilenceUsage:          true,
 		RunE:                  state.Wrap(s, runList),
 	}
-	cmd.Flags().BoolP("all", "a", false, "Also show default values")
-	cmd.Flags().BoolP("global", "g", false, "Only show global values")
-	cmd.Flags().Bool("allow-sensitive", false, "Allow showing sensitive values")
+	cmd.Flags().BoolP("all", "a", false, "Also show default values (true, false)")
+	cmd.Flags().BoolP("global", "g", false, "Only show global values (true, false)")
+	cmd.Flags().Bool("allow-sensitive", false, "Allow showing sensitive values (true, false)")
 
 	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(outputColumns), output.OptionJSON(), output.OptionYAML())
 	return cmd

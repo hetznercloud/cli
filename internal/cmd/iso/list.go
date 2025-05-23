@@ -27,7 +27,7 @@ var ListCmd = base.ListCmd{
 		cmd.Flags().StringSlice("architecture", []string{}, "Only show Images of given architecture: x86|arm")
 		_ = cmd.RegisterFlagCompletionFunc("architecture", cmpl.SuggestCandidates(string(hcloud.ArchitectureX86), string(hcloud.ArchitectureARM)))
 
-		cmd.Flags().Bool("include-architecture-wildcard", false, "Include ISOs with unknown architecture, only required if you want so show custom ISOs and still filter for architecture.")
+		cmd.Flags().Bool("include-architecture-wildcard", false, "Include ISOs with unknown architecture, only required if you want so show custom ISOs and still filter for architecture. (true, false)")
 
 		cmd.Flags().StringSlice("type", []string{"public", "private"}, "Types to include (public, private)")
 		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("public", "private"))

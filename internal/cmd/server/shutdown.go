@@ -33,7 +33,7 @@ var ShutdownCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 
-		cmd.Flags().Bool("wait", false, "Wait for the Server to shut down before exiting")
+		cmd.Flags().Bool("wait", false, "Wait for the Server to shut down before exiting (true, false)")
 		cmd.Flags().Duration("wait-timeout", 30*time.Second, "Timeout for waiting for off state after shutdown")
 
 		return cmd

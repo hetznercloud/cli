@@ -67,7 +67,7 @@ var CreateCmd = base.CreateCmd{
 
 		cmd.Flags().StringArray("user-data-from-file", []string{}, "Read user data from specified file (use - to read from stdin)")
 
-		cmd.Flags().Bool("start-after-create", true, "Start Server right after creation")
+		cmd.Flags().Bool("start-after-create", true, "Start Server right after creation (true, false)")
 
 		cmd.Flags().StringSlice("volume", nil, "ID or name of Volume to attach (can be specified multiple times)")
 		_ = cmd.RegisterFlagCompletionFunc("volume", cmpl.SuggestCandidatesF(client.Volume().Names))
@@ -78,8 +78,8 @@ var CreateCmd = base.CreateCmd{
 		cmd.Flags().StringSlice("firewall", nil, "ID or name of Firewall to attach the Server to (can be specified multiple times)")
 		_ = cmd.RegisterFlagCompletionFunc("firewall", cmpl.SuggestCandidatesF(client.Firewall().Names))
 
-		cmd.Flags().Bool("automount", false, "Automount Volumes after attach (default: false)")
-		cmd.Flags().Bool("allow-deprecated-image", false, "Enable the use of deprecated Images (default: false)")
+		cmd.Flags().Bool("automount", false, "Automount Volumes after attach (default: false) (true, false)")
+		cmd.Flags().Bool("allow-deprecated-image", false, "Enable the use of deprecated Images (default: false) (true, false)")
 
 		cmd.Flags().String("placement-group", "", "Placement Group (ID of name)")
 		_ = cmd.RegisterFlagCompletionFunc("placement-group", cmpl.SuggestCandidatesF(client.PlacementGroup().Names))
@@ -88,13 +88,13 @@ var CreateCmd = base.CreateCmd{
 		cmd.Flags().String("primary-ipv6", "", "Primary IPv6 (ID of name)")
 		_ = cmd.RegisterFlagCompletionFunc("primary-ipv6", cmpl.SuggestCandidatesF(client.PrimaryIP().IPv6Names))
 
-		cmd.Flags().Bool("without-ipv4", false, "Creates the Server without an IPv4 (default: false)")
-		cmd.Flags().Bool("without-ipv6", false, "Creates the Server without an IPv6 (default: false)")
+		cmd.Flags().Bool("without-ipv4", false, "Creates the Server without an IPv4 (default: false) (true, false)")
+		cmd.Flags().Bool("without-ipv6", false, "Creates the Server without an IPv6 (default: false) (true, false)")
 
 		cmd.Flags().StringSlice("enable-protection", []string{}, "Enable protection (delete, rebuild) (default: none)")
 		_ = cmd.RegisterFlagCompletionFunc("enable-protection", cmpl.SuggestCandidates("delete", "rebuild"))
 
-		cmd.Flags().Bool("enable-backup", false, "Enable automatic backups")
+		cmd.Flags().Bool("enable-backup", false, "Enable automatic backups (true, false)")
 
 		return cmd
 	},

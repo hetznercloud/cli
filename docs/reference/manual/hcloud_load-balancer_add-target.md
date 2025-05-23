@@ -13,7 +13,7 @@ hcloud load-balancer add-target [options] (--server <server> | --label-selector 
       --ip string               Use the passed IP address as target
       --label-selector string   Label Selector
       --server string           Name or ID of the server
-      --use-private-ip          Determine if the Load Balancer should connect to the target via the network
+      --use-private-ip          Determine if the Load Balancer should connect to the target via the network (true, false)
 ```
 
 ### Options inherited from parent commands

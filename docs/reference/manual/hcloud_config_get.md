@@ -13,8 +13,8 @@ hcloud config get <key>
 ### Options
 
 ```
-      --allow-sensitive   Allow showing sensitive values
-      --global            Get the value globally
+      --allow-sensitive   Allow showing sensitive values (true, false)
+      --global            Get the value globally (true, false)
   -h, --help              help for get
 ```
 

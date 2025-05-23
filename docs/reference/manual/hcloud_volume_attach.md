@@ -9,7 +9,7 @@ hcloud volume attach [--automount] --server <server> <volume>
 ### Options
 
 ```
-      --automount       Automount Volume after attach
+      --automount       Automount Volume after attach (true, false)
   -h, --help            help for attach
       --server string   Server (ID or name) (required)
 ```
