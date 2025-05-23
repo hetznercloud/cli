@@ -94,6 +94,7 @@ archives:
     files:
       - LICENSE
       - README.md
+      - docs/**/*
 
 release:
   draft: false
