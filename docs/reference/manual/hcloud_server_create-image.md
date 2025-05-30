@@ -12,7 +12,7 @@ hcloud server create-image [options] --type <snapshot|backup> <server>
       --description string     Image description
   -h, --help                   help for create-image
       --label stringToString   User-defined labels ('key=value') (can be specified multiple times) (default [])
-      --type string            Image type (required)
+      --type string            Image type (backup, snapshot) (required)
 ```
 
 ### Options inherited from parent commands
