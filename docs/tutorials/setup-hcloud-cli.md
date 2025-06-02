@@ -18,9 +18,9 @@ Install them by extracting the archive and moving the binary to a directory in y
 On a 64-bit Linux system, it could look something like this:
 
 ```bash
-curl -LO https://github.com/hetznercloud/cli/releases/download/v1.50.0/hcloud-darwin-amd64.tar.gz
-sudo tar -C /usr/local/bin -xzf hcloud-darwin-amd64.tar.gz
-rm hcloud-darwin-amd64.tar.gz
+curl -LO https://github.com/hetznercloud/cli/releases/download/v1.51.0/hcloud-linux-amd64.tar.gz
+sudo tar -C /usr/local/bin -xzf hcloud-linux-amd64.tar.gz
+rm hcloud-linux-amd64.tar.gz
 ```
 
 ### 1.2 Installation using Go
