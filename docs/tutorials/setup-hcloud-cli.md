@@ -18,8 +18,8 @@ Install them by extracting the archive and moving the binary to a directory in y
 On a 64-bit Linux system, it could look something like this:
 
 ```bash
-curl -LO https://github.com/hetznercloud/cli/releases/download/v1.51.0/hcloud-linux-amd64.tar.gz
-sudo tar -C /usr/local/bin -xzf hcloud-linux-amd64.tar.gz
+curl -sSLO https://github.com/hetznercloud/cli/releases/download/v1.51.0/hcloud-linux-amd64.tar.gz
+sudo tar -C /usr/local/bin --no-same-owner -xzf hcloud-linux-amd64.tar.gz hcloud
 rm hcloud-linux-amd64.tar.gz
 ```
 
