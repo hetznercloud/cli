@@ -19,7 +19,7 @@ On a 64-bit Linux system, it could look something like this:
 
 ```bash
 curl -sSLO https://github.com/hetznercloud/cli/releases/download/v1.51.0/hcloud-linux-amd64.tar.gz
-sudo tar -C /usr/local/bin -xzf hcloud-linux-amd64.tar.gz
+sudo tar -C /usr/local/bin --no-same-owner -xzf hcloud-linux-amd64.tar.gz hcloud
 rm hcloud-linux-amd64.tar.gz
 ```
 
