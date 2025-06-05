@@ -18,7 +18,7 @@ var CreateImageCmd = base.Cmd{
 			Use:   "create-image [options] --type <snapshot|backup> <server>",
 			Short: "Create an Image from a Server",
 		}
-		cmd.Flags().String("type", "", "Image type (required)")
+		cmd.Flags().String("type", "", "Image type (backup, snapshot) (required)")
 		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("backup", "snapshot"))
 		_ = cmd.MarkFlagRequired("type")
 
