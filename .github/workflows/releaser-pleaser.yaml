@@ -22,3 +22,4 @@ jobs:
           token: ${{ secrets.HCLOUD_BOT_TOKEN }}
           extra-files: |
             internal/version/version.go
+            docs/tutorials/setup-hcloud-cli.md
