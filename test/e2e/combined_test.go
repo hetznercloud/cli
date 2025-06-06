@@ -7,6 +7,7 @@ import (
 	"os"
 	"path"
 	"strconv"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -44,7 +45,7 @@ func TestCombined(t *testing.T) {
 	require.NoError(t, err)
 
 	serverName := withSuffix("test-server")
-	serverID, err := createServer(t, serverName, TestServerType, TestImage, "--ssh-key", strconv.FormatInt(sshKeyID, 10), "--network", strconv.FormatInt(networkID, 10))
+	serverID, err := createServer(t, serverName, TestServerType, TestImageName, "--ssh-key", strconv.FormatInt(sshKeyID, 10), "--network", strconv.FormatInt(networkID, 10))
 	require.NoError(t, err)
 
 	firewallName := withSuffix("test-firewall")
@@ -228,6 +229,82 @@ func TestCombined(t *testing.T) {
 		)
 		require.NoError(t, err)
 		assert.Empty(t, out)
+	})
+
+	t.Run("image", func(t *testing.T) {
+		var id int64
+
+		t.Run("create-image", func(t *testing.T) {
+			out, err := runCommand(t, "server", "create-image", strconv.FormatInt(serverID, 10), "--type", "snapshot")
+			require.NoError(t, err)
+			assert.Regexp(t, `^Image [0-9]+ created from Server [0-9]+\n$`, out)
+
+			id, err = strconv.ParseInt(out[6:strings.Index(out, " created")], 10, 64)
+			require.NoError(t, err)
+		})
+
+		t.Run("update", func(t *testing.T) {
+			out, err := runCommand(t, "image", "update", strconv.FormatInt(id, 10), "--description", "This is a test image")
+			require.NoError(t, err)
+			assert.Equal(t, fmt.Sprintf("Image %d updated\n", id), out)
+		})
+
+		t.Run("add-label", func(t *testing.T) {
+			out, err := runCommand(t, "image", "add-label", strconv.FormatInt(id, 10), "foo=bar")
+			require.NoError(t, err)
+			assert.Equal(t, fmt.Sprintf("Label(s) foo added to Image %d\n", id), out)
+		})
+
+		t.Run("enable-protection", func(t *testing.T) {
+			out, err := runCommand(t, "image", "enable-protection", strconv.FormatInt(id, 10), "delete")
+			require.NoError(t, err)
+			assert.Equal(t, fmt.Sprintf("Resource protection enabled for Image %d\n", id), out)
+		})
+
+		t.Run("describe", func(t *testing.T) {
+			out, err := runCommand(t, "image", "describe", strconv.FormatInt(id, 10))
+			require.NoError(t, err)
+			assert.Regexp(t,
+				NewRegex().Start().
+					Lit("ID:").Whitespace().Int().Newline().
+					Lit("Type:").Whitespace().Lit("snapshot").Newline().
+					Lit("Status:").Whitespace().Lit("available").Newline().
+					Lit("Name:").Whitespace().Lit("-").Newline().
+					Lit("Created:").Whitespace().UnixDate().Lit(" (").HumanizeTime().Lit(")").Newline().
+					Lit("Description:").Whitespace().Lit("This is a test image").Newline().
+					Lit("Image size:").Whitespace().FileSize().Newline().
+					Lit("Disk size:").Whitespace().FileSize().Newline().
+					Lit("OS flavor:").Whitespace().Identifier().Newline().
+					Lit("OS version:").Whitespace().Lit("-").Newline().
+					Lit("Architecture:").Whitespace().OneOfLit("x86", "arm").Newline().
+					Lit("Rapid deploy:").Whitespace().Lit("no").Newline().
+					Lit("Protection:").Newline().
+					Lit("  Delete:").Whitespace().Lit("yes").Newline().
+					Lit("Labels:").Newline().
+					Lit("  foo: bar").Newline().
+					End(),
+				out,
+			)
+		})
+
+		t.Run("delete-protected", func(t *testing.T) {
+			out, err := runCommand(t, "image", "delete", strconv.FormatInt(id, 10))
+			require.Error(t, err)
+			assert.Regexp(t, `^snapshot deletion is protected \(protected, [0-9a-f]+\)$`, err.Error())
+			assert.Empty(t, out)
+		})
+
+		t.Run("disable-protection", func(t *testing.T) {
+			out, err := runCommand(t, "image", "disable-protection", strconv.FormatInt(id, 10), "delete")
+			require.NoError(t, err)
+			assert.Equal(t, fmt.Sprintf("Resource protection disabled for Image %d\n", id), out)
+		})
+
+		t.Run("delete-image", func(t *testing.T) {
+			out, err := runCommand(t, "image", "delete", strconv.FormatInt(id, 10))
+			require.NoError(t, err)
+			assert.Equal(t, fmt.Sprintf("Image %d deleted\n", id), out)
+		})
 	})
 
 	t.Run("delete-server", func(t *testing.T) {
