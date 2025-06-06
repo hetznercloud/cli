@@ -9,8 +9,8 @@ import (
 )
 
 var (
-	// TestImage is the system image that is used in end-to-end tests.
-	TestImage = getEnv("TEST_IMAGE", "ubuntu-24.04")
+	// TestImageName is the name of the system image that is used in end-to-end tests.
+	TestImageName = getEnv("TEST_IMAGE", "ubuntu-24.04")
 
 	// TestImageID is the system image ID that is used in end-to-end tests.
 	TestImageID = getEnv("TEST_IMAGE_ID", "161547269")
