@@ -16,6 +16,8 @@ linters:
     - wrapcheck # Very annoying to wrap errors everywhere
     # preset import
     - depguard
+    # we want to allow the use of replace directives in go.mod files
+    - gomoddirectives
 
 linters-settings:
   gci:
