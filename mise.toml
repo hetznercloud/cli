@@ -6,7 +6,6 @@ go = "1.24.4"
 golangci-lint = "v1.64.8"
 goreleaser = "v2.9.0"
 "ubi:anchore/quill" = "v0.5.1"                         # renovate: datasource=github-releases depName=anchore/quill
-"ubi:jstemmer/go-junit-report" = "v2.1.0"              # renovate: datasource=github-releases depName=jstemmer/go-junit-report
 
 [settings]
 # Experimental features are needed for the Go backend
