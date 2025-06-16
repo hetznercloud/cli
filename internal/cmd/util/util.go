@@ -3,6 +3,7 @@ package util
 import (
 	"cmp"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io"
 	"iter"
@@ -376,4 +377,29 @@ func IterateInOrder[M ~map[K]V, K cmp.Ordered, V any](m M) iter.Seq2[K, V] {
 			}
 		}
 	}
+}
+
+func FormatHcloudError(err error) string {
+	if err == nil {
+		return ""
+	}
+
+	var hcloudErr hcloud.Error
+	if !errors.As(err, &hcloudErr) {
+		return err.Error()
+	}
+
+	switch hcloudErr.Code {
+	case hcloud.ErrorCodeInvalidInput:
+		details := hcloudErr.Details.(hcloud.ErrorDetailsInvalidInput)
+		var errBuilder strings.Builder
+		errBuilder.WriteString(hcloudErr.Message)
+		for _, field := range details.Fields {
+			fieldMsg := strings.Join(field.Messages, ", ")
+			errBuilder.WriteString(fmt.Sprintf("\n- %s: %s", field.Name, fieldMsg))
+		}
+		return errBuilder.String()
+	}
+
+	return err.Error()
 }

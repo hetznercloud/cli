@@ -479,3 +479,36 @@ func TestSortLabels(t *testing.T) {
 		assert.Equal(t, exp[1], v, "value not equal")
 	}
 }
+
+func TestFormatHcloudError(t *testing.T) {
+	normalErr := errors.New("normal error")
+	assert.Equal(t, "normal error", util.FormatHcloudError(normalErr))
+
+	var nilError error = nil
+	assert.Equal(t, "", util.FormatHcloudError(nilError))
+
+	invalidInputError := hcloud.Error{
+		Code:    hcloud.ErrorCodeInvalidInput,
+		Message: "Invalid input",
+		Details: hcloud.ErrorDetailsInvalidInput{
+			Fields: []hcloud.ErrorDetailsInvalidInputField{
+				{
+					Name: "foo",
+					Messages: []string{
+						"Invalid value",
+					},
+				},
+				{
+					Name: "bar",
+					Messages: []string{
+						"Must be a number",
+						"Must be greater than 0",
+					},
+				},
+			},
+		},
+	}
+	assert.Equal(t, `Invalid input
+- foo: Invalid value
+- bar: Must be a number, Must be greater than 0`, util.FormatHcloudError(invalidInputError))
+}
