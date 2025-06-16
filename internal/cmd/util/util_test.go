@@ -505,7 +505,7 @@ func TestFormatHcloudError(t *testing.T) {
 			},
 		},
 	}
-	assert.Equal(t, `Invalid input
+	assert.Equal(t, `Invalid input (invalid_input)
 - foo: Invalid value
 - bar: Must be a number, Must be greater than 0`, util.FormatHcloudError(invalidInputError))
 }
