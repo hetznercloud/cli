@@ -1,5 +1,9 @@
 name: Releaser-pleaser
 
+concurrency:
+  group: releaser-pleaser
+  cancel-in-progress: true
+
 on:
   push:
     branches: [main]
