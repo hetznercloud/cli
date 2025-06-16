@@ -484,7 +484,7 @@ func TestFormatHcloudError(t *testing.T) {
 	normalErr := errors.New("normal error")
 	assert.Equal(t, "normal error", util.FormatHcloudError(normalErr))
 
-	var nilError error = nil
+	var nilError error
 	assert.Equal(t, "", util.FormatHcloudError(nilError))
 
 	invalidInputError := hcloud.Error{

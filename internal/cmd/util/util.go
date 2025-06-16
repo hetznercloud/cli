@@ -399,7 +399,8 @@ func FormatHcloudError(err error) string {
 			errBuilder.WriteString(fmt.Sprintf("\n- %s: %s", field.Name, fieldMsg))
 		}
 		return errBuilder.String()
-	}
 
-	return err.Error()
+	default:
+		return err.Error()
+	}
 }
