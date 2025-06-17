@@ -43,6 +43,22 @@ func TestDescribe(t *testing.T) {
 					ID: 321,
 				},
 			},
+			{
+				Type: hcloud.FirewallResourceTypeLabelSelector,
+				LabelSelector: &hcloud.FirewallResourceLabelSelector{
+					Selector: "foobar",
+				},
+				AppliedToResources: []hcloud.FirewallAppliedResource{
+					{
+						Type:   hcloud.FirewallAppliedResourceTypeServer,
+						Server: &hcloud.FirewallResourceServer{ID: 123},
+					},
+					{
+						Type:   hcloud.FirewallAppliedResourceTypeServer,
+						Server: &hcloud.FirewallResourceServer{ID: 456},
+					},
+				},
+			},
 		},
 		Labels: map[string]string{
 			"key": "value",
@@ -74,6 +90,11 @@ Applied To:
   - Type:		server
     Server ID:		321
     Server Name:	myServer
+  - Type:		label_selector
+    Label Selector:	foobar
+    Applied to resources:
+      Server 123
+      Server 456
 `, util.Datetime(fw.Created), humanize.Time(fw.Created))
 
 	require.NoError(t, err)
