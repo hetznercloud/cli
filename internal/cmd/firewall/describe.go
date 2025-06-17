@@ -79,6 +79,15 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Firewall]{
 					cmd.Printf("    Server Name:\t%s\n", s.Client().Server().ServerName(resource.Server.ID))
 				case hcloud.FirewallResourceTypeLabelSelector:
 					cmd.Printf("    Label Selector:\t%s\n", resource.LabelSelector.Selector)
+					if len(resource.AppliedToResources) > 0 {
+						cmd.Printf("    Applied to resources:\n")
+						for _, appliedTo := range resource.AppliedToResources {
+							switch appliedTo.Type {
+							case hcloud.FirewallAppliedResourceTypeServer:
+								cmd.Printf("      Server %d\n", appliedTo.Server.ID)
+							}
+						}
+					}
 				}
 			}
 		}
