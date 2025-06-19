@@ -1,9 +1,5 @@
 name: Releaser-pleaser
 
-concurrency:
-  group: releaser-pleaser
-  cancel-in-progress: true
-
 on:
   push:
     branches: [main]
@@ -12,6 +8,10 @@ on:
       - edited
       - labeled
       - unlabeled
+
+concurrency:
+  group: releaser-pleaser
+  cancel-in-progress: true
 
 jobs:
   releaser-pleaser:
