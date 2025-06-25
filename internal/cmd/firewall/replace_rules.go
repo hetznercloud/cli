@@ -21,7 +21,7 @@ var ReplaceRulesCmd = base.Cmd{
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
 		}
-		cmd.Flags().String("rules-file", "", "JSON file containing your routes (use - to read from stdin). The structure of the file needs to be the same as within the API: https://docs.hetzner.cloud/#firewalls-get-a-firewall")
+		cmd.Flags().String("rules-file", "", "JSON file containing your routes (use - to read from stdin). The structure of the file needs to be the same as within the API: https://docs.hetzner.cloud/reference/cloud#firewalls-get-a-firewall")
 		_ = cmd.MarkFlagRequired("rules-file")
 		return cmd
 	},
