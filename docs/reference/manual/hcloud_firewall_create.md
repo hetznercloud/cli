@@ -13,7 +13,7 @@ hcloud firewall create [options] --name <name>
       --label stringToString   User-defined labels ('key=value') (can be specified multiple times) (default [])
       --name string            Name
   -o, --output stringArray     output options: json|yaml
-      --rules-file string      JSON file containing your routes (use - to read from stdin). The structure of the file needs to be the same as within the API: https://docs.hetzner.cloud/#firewalls-get-a-firewall 
+      --rules-file string      JSON file containing your routes (use - to read from stdin). The structure of the file needs to be the same as within the API: https://docs.hetzner.cloud/reference/cloud#firewalls-get-a-firewall 
 ```
 
 ### Options inherited from parent commands
