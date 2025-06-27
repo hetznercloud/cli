@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/hetznercloud/cli/internal/cli"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/cli/internal/state/config"
 )
@@ -29,6 +30,6 @@ func main() {
 	rootCommand := cli.NewRootCommand(s)
 
 	if err := rootCommand.Execute(); err != nil {
-		log.Fatalln(err)
+		log.Fatalln(util.FormatHcloudError(err))
 	}
 }
