@@ -10,6 +10,7 @@ import (
 func NewCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "iso",
+		Aliases:               []string{"isos"},
 		Short:                 "View ISOs",
 		Args:                  util.Validate,
 		TraverseChildren:      true,

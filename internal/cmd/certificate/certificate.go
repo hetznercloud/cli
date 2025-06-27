@@ -10,6 +10,7 @@ import (
 func NewCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "certificate",
+		Aliases:               []string{"certificates"},
 		Short:                 "Manage Certificates",
 		Args:                  util.Validate,
 		TraverseChildren:      true,
