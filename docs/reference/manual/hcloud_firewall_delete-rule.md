@@ -9,7 +9,6 @@ hcloud firewall delete-rule [options] (--direction in --source-ips <ips> | --dir
 ### Options
 
 ```
-      --description string        Description of the Firewall rule
       --destination-ips strings   Destination IPs (CIDR Notation) (required when direction is out)
       --direction string          Direction (in, out) (required)
   -h, --help                      help for delete-rule
