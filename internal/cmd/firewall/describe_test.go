@@ -48,13 +48,13 @@ func TestDescribe(t *testing.T) {
 				LabelSelector: &hcloud.FirewallResourceLabelSelector{
 					Selector: "foobar",
 				},
-				AppliedToResources: []hcloud.FirewallAppliedResource{
+				AppliedToResources: []hcloud.FirewallResource{
 					{
-						Type:   hcloud.FirewallAppliedResourceTypeServer,
+						Type:   hcloud.FirewallResourceTypeServer,
 						Server: &hcloud.FirewallResourceServer{ID: 123},
 					},
 					{
-						Type:   hcloud.FirewallAppliedResourceTypeServer,
+						Type:   hcloud.FirewallResourceTypeServer,
 						Server: &hcloud.FirewallResourceServer{ID: 456},
 					},
 				},
