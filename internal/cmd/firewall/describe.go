@@ -83,7 +83,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Firewall]{
 						cmd.Printf("    Applied to resources:\n")
 						for _, appliedTo := range resource.AppliedToResources {
 							switch appliedTo.Type {
-							case hcloud.FirewallAppliedResourceTypeServer:
+							case hcloud.FirewallResourceTypeServer:
 								cmd.Printf("      Server %d\n", appliedTo.Server.ID)
 							}
 						}
