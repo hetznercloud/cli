@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
@@ -23,9 +24,23 @@ type ListCmd struct {
 	JSONKeyGetByName   string // e.g. "Servers"
 	DefaultColumns     []string
 	Fetch              func(state.State, *pflag.FlagSet, hcloud.ListOpts, []string) ([]interface{}, error)
-	AdditionalFlags    func(*cobra.Command)
-	OutputTable        func(t *output.Table, client hcapi2.Client)
-	Schema             func([]interface{}) interface{}
+	// Can be set in case the resource has more than a single identifier that is used in the positional arguments.
+	// See [ListCmd.PositionalArgumentOverride].
+	FetchWithArgs   func(s state.State, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string, args []string) ([]interface{}, error)
+	AdditionalFlags func(*cobra.Command)
+	OutputTable     func(t *output.Table, client hcapi2.Client)
+	Schema          func([]interface{}) interface{}
+
+	// In case the resource does not have a single identifier that matches [ListCmd.ResourceNamePlural], this field
+	// can be set to define the list of positional arguments.
+	// For example, passing:
+	//     []string{"a", "b", "c"}
+	// Would result in the usage string:
+	//     <a> <b> <c>
+	PositionalArgumentOverride []string
+
+	// Can be set if auto-completion is needed (usually if [ListCmd.FetchWithArgs] is used)
+	ValidArgsFunction func(client hcapi2.Client) cobra.CompletionFunc
 }
 
 // CobraCommand creates a command that can be registered with cobra.
@@ -35,7 +50,7 @@ func (lc *ListCmd) CobraCommand(s state.State) *cobra.Command {
 	outputColumns := t.Columns()
 
 	cmd := &cobra.Command{
-		Use:   "list [options]",
+		Use:   fmt.Sprintf("list [options]%s", listPositionalArguments(lc.PositionalArgumentOverride)),
 		Short: fmt.Sprintf("List %s", lc.ResourceNamePlural),
 		Long: util.ListLongDescription(
 			fmt.Sprintf("Displays a list of %s.", lc.ResourceNamePlural),
@@ -45,10 +60,15 @@ func (lc *ListCmd) CobraCommand(s state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               s.EnsureToken,
-		RunE: func(cmd *cobra.Command, _ []string) error {
-			return lc.Run(s, cmd)
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return lc.Run(s, cmd, args)
 		},
 	}
+
+	if lc.ValidArgsFunction != nil {
+		cmd.ValidArgsFunction = cmpl.SuggestArgs(lc.ValidArgsFunction(s.Client()))
+	}
+
 	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(outputColumns), output.OptionJSON(), output.OptionYAML())
 	cmd.Flags().StringP("selector", "l", "", "Selector to filter by labels")
 	if lc.AdditionalFlags != nil {
@@ -59,7 +79,7 @@ func (lc *ListCmd) CobraCommand(s state.State) *cobra.Command {
 }
 
 // Run executes a list command
-func (lc *ListCmd) Run(s state.State, cmd *cobra.Command) error {
+func (lc *ListCmd) Run(s state.State, cmd *cobra.Command, args []string) error {
 	outOpts := output.FlagsForCommand(cmd)
 
 	quiet, err := config.OptionQuiet.Get(s.Config())
@@ -88,7 +108,12 @@ func (lc *ListCmd) Run(s state.State, cmd *cobra.Command) error {
 		PerPage:       50,
 	}
 
-	resources, err := lc.Fetch(s, cmd.Flags(), listOpts, sorts)
+	var resources []any
+	if lc.FetchWithArgs != nil {
+		resources, err = lc.FetchWithArgs(s, cmd.Flags(), listOpts, sorts, args)
+	} else {
+		resources, err = lc.Fetch(s, cmd.Flags(), listOpts, sorts)
+	}
 	if err != nil {
 		return err
 	}
@@ -122,4 +147,12 @@ func (lc *ListCmd) Run(s state.State, cmd *cobra.Command) error {
 		t.Write(cols, resource)
 	}
 	return t.Flush()
+}
+
+func listPositionalArguments(positionalArgumentOverride []string) string {
+	if len(positionalArgumentOverride) == 0 {
+		return ""
+	}
+
+	return " " + positionalArguments("", positionalArgumentOverride)
 }

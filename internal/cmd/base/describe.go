@@ -2,8 +2,10 @@ package base
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"reflect"
+	"strings"
 
 	"github.com/spf13/cobra"
 
@@ -23,17 +25,46 @@ type DescribeCmd[T any] struct {
 	AdditionalFlags      func(*cobra.Command)
 	// Fetch is called to fetch the resource to describe.
 	// The first returned interface is the resource itself as a hcloud struct, the second is the schema for the resource.
-	Fetch     func(s state.State, cmd *cobra.Command, idOrName string) (T, any, error)
-	PrintText func(s state.State, cmd *cobra.Command, resource T) error
+	Fetch func(s state.State, cmd *cobra.Command, idOrName string) (T, any, error)
+	// Can be set in case the resource has more than a single identifier that is used in the positional arguments.
+	// See [DescribeCmd.PositionalArgumentOverride].
+	FetchWithArgs func(s state.State, cmd *cobra.Command, args []string) (T, any, error)
+
+	PrintText   func(s state.State, cmd *cobra.Command, resource T) error
+	GetIDOrName func(resource T) string
+
+	// In case the resource does not have a single identifier that matches [DescribeCmd.ResourceNameSingular], this field
+	// can be set to define the list of positional arguments.
+	// For example, passing:
+	//     []string{"a", "b", "c"}
+	// Would result in the usage string:
+	//     <a> <b> <c>
+	PositionalArgumentOverride []string
+
+	// Can be set if the default [DescribeCmd.NameSuggestions] is not enough. This is usually the case when
+	// [DescribeCmd.FetchWithArgs] and [DescribeCmd.PositionalArgumentOverride] is being used.
+	ValidArgsFunction func(client hcapi2.Client) []cobra.CompletionFunc
 }
 
 // CobraCommand creates a command that can be registered with cobra.
 func (dc *DescribeCmd[T]) CobraCommand(s state.State) *cobra.Command {
+	var suggestArgs []cobra.CompletionFunc
+	switch {
+	case dc.NameSuggestions != nil:
+		suggestArgs = append(suggestArgs,
+			cmpl.SuggestCandidatesF(dc.NameSuggestions(s.Client())),
+		)
+	case dc.ValidArgsFunction != nil:
+		suggestArgs = append(suggestArgs, dc.ValidArgsFunction(s.Client())...)
+	default:
+		log.Fatalf("describe command %s is missing ValidArgsFunction or NameSuggestions", dc.ResourceNameSingular)
+	}
+
 	cmd := &cobra.Command{
-		Use:                   fmt.Sprintf("describe [options] <%s>", util.ToKebabCase(dc.ResourceNameSingular)),
+		Use:                   fmt.Sprintf("describe [options] %s", positionalArguments(dc.ResourceNameSingular, dc.PositionalArgumentOverride)),
 		Short:                 dc.ShortDescription,
 		Args:                  util.Validate,
-		ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(dc.NameSuggestions(s.Client()))),
+		ValidArgsFunction:     cmpl.SuggestArgs(suggestArgs...),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               util.ChainRunE(s.EnsureToken),
@@ -41,10 +72,13 @@ func (dc *DescribeCmd[T]) CobraCommand(s state.State) *cobra.Command {
 			return dc.Run(s, cmd, args)
 		},
 	}
+
 	output.AddFlag(cmd, output.OptionJSON(), output.OptionYAML(), output.OptionFormat())
+
 	if dc.AdditionalFlags != nil {
 		dc.AdditionalFlags(cmd)
 	}
+
 	return cmd
 }
 
@@ -69,8 +103,13 @@ func (dc *DescribeCmd[T]) Run(s state.State, cmd *cobra.Command, args []string) 
 		}
 	}
 
-	idOrName := args[0]
-	resource, schema, err := dc.Fetch(s, cmd, idOrName)
+	var resource T
+	var schema any
+	if dc.FetchWithArgs != nil {
+		resource, schema, err = dc.FetchWithArgs(s, cmd, args)
+	} else {
+		resource, schema, err = dc.Fetch(s, cmd, args[0])
+	}
 	if err != nil {
 		return err
 	}
@@ -78,7 +117,7 @@ func (dc *DescribeCmd[T]) Run(s state.State, cmd *cobra.Command, args []string) 
 	// resource is an interface that always has a type, so the interface is never nil
 	// (i.e. == nil) is always false.
 	if reflect.ValueOf(resource).IsNil() {
-		return fmt.Errorf("%s not found: %s", dc.ResourceNameSingular, idOrName)
+		return fmt.Errorf("%s not found: %s", dc.ResourceNameSingular, strings.Join(args, " "))
 	}
 
 	switch {
