@@ -1,7 +1,9 @@
 package firewall
 
 import (
+	"fmt"
 	"net"
+	"strings"
 
 	"github.com/dustin/go-humanize"
 	"github.com/spf13/cobra"
@@ -71,26 +73,32 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Firewall]{
 		if len(firewall.AppliedTo) == 0 {
 			cmd.Print("  Not applied\n")
 		} else {
-			for _, resource := range firewall.AppliedTo {
-				cmd.Printf("  - Type:\t\t%s\n", resource.Type)
-				switch resource.Type {
-				case hcloud.FirewallResourceTypeServer:
-					cmd.Printf("    Server ID:\t\t%d\n", resource.Server.ID)
-					cmd.Printf("    Server Name:\t%s\n", s.Client().Server().ServerName(resource.Server.ID))
-				case hcloud.FirewallResourceTypeLabelSelector:
-					cmd.Printf("    Label Selector:\t%s\n", resource.LabelSelector.Selector)
-					if len(resource.AppliedToResources) > 0 {
-						cmd.Printf("    Applied to resources:\n")
-						for _, appliedTo := range resource.AppliedToResources {
-							switch appliedTo.Type {
-							case hcloud.FirewallResourceTypeServer:
-								cmd.Printf("      Server %d\n", appliedTo.Server.ID)
-							}
-						}
-					}
-				}
-			}
+			cmd.Print(describeResources(s, firewall.AppliedTo))
 		}
 		return nil
 	},
+}
+
+func describeResources(s state.State, resources []hcloud.FirewallResource) string {
+	var sb strings.Builder
+
+	for _, resource := range resources {
+		sb.WriteString(fmt.Sprintf("  - Type:\t\t%s\n", resource.Type))
+
+		switch resource.Type {
+		case hcloud.FirewallResourceTypeServer:
+			sb.WriteString(fmt.Sprintf("    Server ID:\t\t%d\n", resource.Server.ID))
+			sb.WriteString(fmt.Sprintf("    Server Name:\t%s\n", s.Client().Server().ServerName(resource.Server.ID)))
+
+		case hcloud.FirewallResourceTypeLabelSelector:
+			sb.WriteString(fmt.Sprintf("    Label Selector:\t%s\n", resource.LabelSelector.Selector))
+			if len(resource.AppliedToResources) > 0 {
+				sb.WriteString(fmt.Sprintf("    Applied to resources:\n"))
+				substr := describeResources(s, resource.AppliedToResources)
+				sb.WriteString(util.PrefixLines(substr, "  "))
+			}
+		}
+	}
+
+	return sb.String()
 }
