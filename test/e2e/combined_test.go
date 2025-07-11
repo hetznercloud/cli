@@ -291,7 +291,7 @@ func TestCombined(t *testing.T) {
 					Lit("Image size:").Whitespace().FileSize().Newline().
 					Lit("Disk size:").Whitespace().FileSize().Newline().
 					Lit("OS flavor:").Whitespace().Identifier().Newline().
-					Lit("OS version:").Whitespace().Lit("-").Newline().
+					Lit("OS version:").Whitespace().Identifier().Newline().
 					Lit("Architecture:").Whitespace().OneOfLit("x86", "arm").Newline().
 					Lit("Rapid deploy:").Whitespace().Lit("no").Newline().
 					Lit("Protection:").Newline().
