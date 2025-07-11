@@ -7,6 +7,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 )
@@ -14,7 +15,8 @@ import (
 var DisableProtectionCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		return &cobra.Command{
-			Use:   "disable-protection <server> <protection-level>...",
+			Use:   "disable-protection <server> rebuild|delete...",
+			Args:  util.ValidateLenient,
 			Short: "Disable resource protection for a server",
 			ValidArgsFunction: cmpl.SuggestArgs(
 				cmpl.SuggestCandidatesF(client.Server().Names),

@@ -3,7 +3,7 @@
 Enable resource protection for a volume
 
 ```
-hcloud volume enable-protection <volume> <protection-level>...
+hcloud volume enable-protection <volume> delete
 ```
 
 ### Options

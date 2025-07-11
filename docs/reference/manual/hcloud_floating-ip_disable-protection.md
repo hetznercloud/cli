@@ -3,7 +3,7 @@
 Disable resource protection for a Floating IP
 
 ```
-hcloud floating-ip disable-protection <floating-ip> <protection-level>...
+hcloud floating-ip disable-protection <floating-ip> delete
 ```
 
 ### Options
