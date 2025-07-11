@@ -83,15 +83,31 @@ func TestCombined(t *testing.T) {
 			})
 
 			t.Run("label-selector", func(t *testing.T) {
-				out, err := runCommand(t, "load-balancer", "add-target", strconv.FormatInt(loadBalancerID, 10), "--label-selector", "foo=bar")
-				require.NoError(t, err)
-				assert.Equal(t, fmt.Sprintf("Target added to Load Balancer %d\n", loadBalancerID), out)
+				t.Run("public-ip", func(t *testing.T) {
+					out, err := runCommand(t, "load-balancer", "add-target", strconv.FormatInt(loadBalancerID, 10), "--label-selector", "foo=bar")
+					assert.Regexp(t, `^load balancer public interface is disabled, cannot add target using public IP \(load_balancer_public_interface_disabled, [0-9a-f]+\)$`, err.Error())
+					assert.Empty(t, out)
+				})
+
+				t.Run("private-ip", func(t *testing.T) {
+					out, err := runCommand(t, "load-balancer", "add-target", strconv.FormatInt(loadBalancerID, 10), "--label-selector", "foo=bar", "--use-private-ip")
+					require.NoError(t, err)
+					assert.Equal(t, fmt.Sprintf("Target added to Load Balancer %d\n", loadBalancerID), out)
+				})
 			})
 
 			t.Run("server", func(t *testing.T) {
-				out, err := runCommand(t, "load-balancer", "add-target", strconv.FormatInt(loadBalancerID, 10), "--server", strconv.FormatInt(serverID, 10), "--use-private-ip")
-				require.NoError(t, err)
-				assert.Equal(t, fmt.Sprintf("Target added to Load Balancer %d\n", loadBalancerID), out)
+				t.Run("public-ip", func(t *testing.T) {
+					out, err := runCommand(t, "load-balancer", "add-target", strconv.FormatInt(loadBalancerID, 10), "--server", strconv.FormatInt(serverID, 10))
+					assert.Regexp(t, `^load balancer public interface is disabled, cannot add target using public IP \(load_balancer_public_interface_disabled, [0-9a-f]+\)$`, err.Error())
+					assert.Empty(t, out)
+				})
+
+				t.Run("private-ip", func(t *testing.T) {
+					out, err := runCommand(t, "load-balancer", "add-target", strconv.FormatInt(loadBalancerID, 10), "--server", strconv.FormatInt(serverID, 10), "--use-private-ip")
+					require.NoError(t, err)
+					assert.Equal(t, fmt.Sprintf("Target added to Load Balancer %d\n", loadBalancerID), out)
+				})
 			})
 		})
 
