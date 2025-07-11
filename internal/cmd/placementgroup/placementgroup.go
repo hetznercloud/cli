@@ -10,6 +10,7 @@ import (
 func NewCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "placement-group",
+		Aliases:               []string{"placement-groups"},
 		Short:                 "Manage Placement Groups",
 		Args:                  util.Validate,
 		TraverseChildren:      true,

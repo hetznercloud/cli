@@ -10,6 +10,7 @@ import (
 func NewCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "primary-ip",
+		Aliases:               []string{"primary-ips"},
 		Short:                 "Manage Primary IPs",
 		Args:                  util.Validate,
 		TraverseChildren:      true,

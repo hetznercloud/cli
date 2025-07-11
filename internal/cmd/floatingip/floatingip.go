@@ -10,6 +10,7 @@ import (
 func NewCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "floating-ip",
+		Aliases:               []string{"floating-ips"},
 		Short:                 "Manage Floating IPs",
 		Args:                  util.Validate,
 		TraverseChildren:      true,

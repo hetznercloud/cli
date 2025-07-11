@@ -10,6 +10,7 @@ import (
 func NewCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "network",
+		Aliases:               []string{"networks"},
 		Short:                 "Manage Networks",
 		Args:                  util.Validate,
 		TraverseChildren:      true,

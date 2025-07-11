@@ -11,7 +11,7 @@ func NewCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "load-balancer",
 		Short:                 "Manage Load Balancers",
-		Aliases:               []string{"loadbalancer"},
+		Aliases:               []string{"loadbalancer", "load-balancers", "loadbalancers"},
 		Args:                  util.Validate,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
