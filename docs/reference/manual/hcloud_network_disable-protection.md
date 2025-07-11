@@ -3,7 +3,7 @@
 Disable resource protection for a network
 
 ```
-hcloud network disable-protection <network> <protection-level>...
+hcloud network disable-protection <network> delete
 ```
 
 ### Options

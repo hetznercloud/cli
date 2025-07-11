@@ -10,6 +10,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -61,7 +62,8 @@ var EnableProtectionCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 
 		return &cobra.Command{
-			Use:   "enable-protection <image> <protection-level>...",
+			Use:   "enable-protection <image> delete",
+			Args:  util.ValidateLenient,
 			Short: "Enable resource protection for an Image",
 			ValidArgsFunction: cmpl.SuggestArgs(
 				cmpl.SuggestCandidatesF(client.Image().Names),

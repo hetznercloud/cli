@@ -15,7 +15,7 @@ import (
 var DisableProtectionCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:   "disable-protection <primary-ip> [<protection-level>...]", // optional because of backwards compatibility
+			Use:   "disable-protection <primary-ip> [delete]", // optional because of backwards compatibility
 			Args:  util.ValidateLenient,
 			Short: "Disable Protection for a Primary IP",
 			ValidArgsFunction: cmpl.SuggestArgs(

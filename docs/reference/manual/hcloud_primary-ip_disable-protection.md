@@ -3,7 +3,7 @@
 Disable Protection for a Primary IP
 
 ```
-hcloud primary-ip disable-protection <primary-ip> [<protection-level>...]
+hcloud primary-ip disable-protection <primary-ip> [delete]
 ```
 
 ### Options

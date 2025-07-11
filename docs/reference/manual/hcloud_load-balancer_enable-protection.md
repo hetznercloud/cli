@@ -3,7 +3,7 @@
 Enable resource protection for a Load Balancer
 
 ```
-hcloud load-balancer enable-protection <load-balancer> <protection-level>...
+hcloud load-balancer enable-protection <load-balancer> delete
 ```
 
 ### Options
