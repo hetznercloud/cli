@@ -10,6 +10,7 @@ import (
 func NewCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "image",
+		Aliases:               []string{"images"},
 		Short:                 "Manage Images",
 		Args:                  util.Validate,
 		TraverseChildren:      true,

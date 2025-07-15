@@ -10,6 +10,7 @@ import (
 func NewCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "location",
+		Aliases:               []string{"locations"},
 		Short:                 "View Locations",
 		Args:                  util.Validate,
 		TraverseChildren:      true,

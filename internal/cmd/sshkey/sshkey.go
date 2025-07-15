@@ -10,6 +10,7 @@ import (
 func NewCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "ssh-key",
+		Aliases:               []string{"ssh-keys"},
 		Short:                 "Manage SSH Keys",
 		Args:                  util.Validate,
 		TraverseChildren:      true,

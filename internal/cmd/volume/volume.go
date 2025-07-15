@@ -10,6 +10,7 @@ import (
 func NewCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "volume",
+		Aliases:               []string{"volumes"},
 		Short:                 "Manage Volumes",
 		Args:                  util.Validate,
 		TraverseChildren:      true,
