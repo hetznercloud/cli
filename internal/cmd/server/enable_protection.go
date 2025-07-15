@@ -61,7 +61,7 @@ func changeProtection(s state.State, cmd *cobra.Command,
 var EnableProtectionCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		return &cobra.Command{
-			Use:   "enable-protection <server> rebuild|delete...",
+			Use:   "enable-protection <server> (rebuild|delete)...",
 			Args:  util.ValidateLenient,
 			Short: "Enable resource protection for a server",
 			ValidArgsFunction: cmpl.SuggestArgs(

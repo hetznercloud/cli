@@ -15,7 +15,7 @@ import (
 var DisableProtectionCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		return &cobra.Command{
-			Use:   "disable-protection <server> rebuild|delete...",
+			Use:   "disable-protection <server> (rebuild|delete)...",
 			Args:  util.ValidateLenient,
 			Short: "Disable resource protection for a server",
 			ValidArgsFunction: cmpl.SuggestArgs(
