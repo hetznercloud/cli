@@ -12,6 +12,11 @@
 │ endpoint         │ Hetzner Cloud API    │ string      │ endpoint         │ HCLOUD_ENDPOINT         │ --endpoint      │
 │                  │ endpoint             │             │                  │                         │                 │
 ├──────────────────┼──────────────────────┼─────────────┼──────────────────┼─────────────────────────┼─────────────────┤
+│ experimental     │ If true,             │ boolean     │ experimental     │ HCLOUD_EXPERIMENTAL     │ --experimental  │
+│                  │ experimental         │             │                  │                         │                 │
+│                  │ warnings are not     │             │                  │                         │                 │
+│                  │ shown                │             │                  │                         │                 │
+├──────────────────┼──────────────────────┼─────────────┼──────────────────┼─────────────────────────┼─────────────────┤
 │ poll-interval    │ Interval at which to │ duration    │ poll_interval    │ HCLOUD_POLL_INTERVAL    │ --poll-interval │
 │                  │ poll information,    │             │                  │                         │                 │
 │                  │ for example action   │             │                  │                         │                 │
