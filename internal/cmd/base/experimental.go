@@ -16,7 +16,7 @@ func Experimental(s state.State, cmd *cobra.Command, slug string) *cobra.Command
 	cmd.Long += "\n\nExperimental: Breaking changes may occur at any time. See https://docs.hetzner.cloud/changelog#" + slug
 	cmd.Short = "[experimental] " + cmd.Short
 
-	cmd.PreRunE = util.ChainRunE(cmd.PreRunE, func(cmd *cobra.Command, args []string) error {
+	cmd.PreRunE = util.ChainRunE(cmd.PreRunE, func(cmd *cobra.Command, _ []string) error {
 		hideWarning, err := config.OptionExperimental.Get(s.Config())
 		if err != nil {
 			return err

@@ -21,7 +21,7 @@ func (fakeExperimentalCmd) CobraCommand(s state.State) *cobra.Command {
 		PreRunE: s.EnsureToken,
 	}
 
-	cmd.Run = func(cmd *cobra.Command, args []string) {
+	cmd.Run = func(cmd *cobra.Command, _ []string) {
 		cmd.Println("Hello world")
 	}
 
