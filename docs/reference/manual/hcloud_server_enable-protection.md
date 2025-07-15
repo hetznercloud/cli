@@ -3,7 +3,7 @@
 Enable resource protection for a server
 
 ```
-hcloud server enable-protection <server> <protection-level>...
+hcloud server enable-protection <server> (rebuild|delete)...
 ```
 
 ### Options

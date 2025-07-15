@@ -8,6 +8,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -58,7 +59,8 @@ func changeProtection(s state.State, cmd *cobra.Command,
 var EnableProtectionCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		return &cobra.Command{
-			Use:   "enable-protection <load-balancer> <protection-level>...",
+			Use:   "enable-protection <load-balancer> delete",
+			Args:  util.ValidateLenient,
 			Short: "Enable resource protection for a Load Balancer",
 			ValidArgsFunction: cmpl.SuggestArgs(
 				cmpl.SuggestCandidatesF(client.LoadBalancer().Names),

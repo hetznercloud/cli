@@ -3,7 +3,7 @@
 Disable resource protection for an Image
 
 ```
-hcloud image disable-protection <image> <protection-level>...
+hcloud image disable-protection <image> delete
 ```
 
 ### Options
