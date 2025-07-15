@@ -142,6 +142,15 @@ var (
 		nil,
 	)
 
+	OptionExperimental = newOpt(
+		"experimental",
+		"If true, experimental warnings are not shown",
+		false,
+		DefaultPreferenceFlags,
+		nil,
+		nil,
+	)
+
 	OptionPollInterval = newOpt(
 		"poll-interval",
 		"Interval at which to poll information, for example action progress",
