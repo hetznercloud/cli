@@ -1,5 +1,12 @@
 # Changelog
 
+## [v1.52.0](https://github.com/hetznercloud/cli/releases/tag/v1.52.0)
+
+### Features
+
+- improve error formatting (#1080)
+- add plural command aliases (#1087)
+
 ## [v1.51.0](https://github.com/hetznercloud/cli/releases/tag/v1.51.0)
 
 ### Features
