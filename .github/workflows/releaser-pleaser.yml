@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: releaser-pleaser
-        uses: apricote/releaser-pleaser@v0.6.0
+        uses: apricote/releaser-pleaser@v0.6.1
         with:
           token: ${{ secrets.HCLOUD_BOT_TOKEN }}
           extra-files: |
