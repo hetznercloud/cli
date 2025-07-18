@@ -13,7 +13,7 @@ func Experimental(s state.State, cmd *cobra.Command, slug string) *cobra.Command
 	if cmd.Long == "" {
 		cmd.Long = cmd.Short
 	}
-	cmd.Long += "\n\nExperimental: Breaking changes may occur at any time. See https://docs.hetzner.cloud/changelog#" + slug
+	cmd.Long += fmt.Sprintf("\n\nExperimental: %s is experimental, breaking changes may occur within minor releases. See %s for more details.", product, url)
 	cmd.Short = "[experimental] " + cmd.Short
 
 	cmd.PreRunE = util.ChainRunE(cmd.PreRunE, func(cmd *cobra.Command, _ []string) error {
