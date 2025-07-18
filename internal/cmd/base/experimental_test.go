@@ -25,7 +25,7 @@ func (fakeExperimentalCmd) CobraCommand(s state.State) *cobra.Command {
 		cmd.Println("Hello world")
 	}
 
-	return base.Experimental(s, cmd, "test-slug")
+	return base.Experimental(s, cmd, "Example Product", "https://example.com")
 }
 
 func TestExperimental(t *testing.T) {
@@ -48,5 +48,5 @@ func TestExperimental(t *testing.T) {
 	assert.Equal(t, "[experimental] My experimental command", cmd.Short)
 	assert.Equal(t, `This is an experimental command that may change in the future.
 
-Experimental: Breaking changes may occur at any time. See https://docs.hetzner.cloud/changelog#test-slug`, cmd.Long)
+Experimental: Example Product is experimental, breaking changes may occur within minor releases. See https://example.com for more details.`, cmd.Long)
 }
