@@ -1,6 +1,8 @@
 package base
 
 import (
+	"fmt"
+
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/util"
@@ -8,7 +10,7 @@ import (
 	"github.com/hetznercloud/cli/internal/state/config"
 )
 
-func Experimental(s state.State, cmd *cobra.Command, slug string) *cobra.Command {
+func Experimental(s state.State, cmd *cobra.Command, product, url string) *cobra.Command {
 
 	if cmd.Long == "" {
 		cmd.Long = cmd.Short
