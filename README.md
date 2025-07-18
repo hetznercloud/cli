@@ -17,6 +17,17 @@
 
 For additional information, see the [documentation](docs).
 
+## Experimental features
+
+Experimental features are published as part of our regular releases (e.g. a product
+public beta). During an experimental phase, breaking changes on those features may occur
+within minor releases.
+
+While experimental features will be announced in the release notes, you can also find
+whether a command is experimental in its help text. Using experimental commands will show a warning
+when running them. You can suppress this warning by enabling the `experimental` option.
+
 ## License
 
 MIT license
+
