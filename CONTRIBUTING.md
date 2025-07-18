@@ -172,3 +172,26 @@ more arguments than expected.
 Generated files (that are created by running `go generate`) should be prefixed with `zz_`. This is to group them
 together in the file list and to easily identify them as generated files. Also, it allows the CI to check if the
 generated files are up-to-date.
+
+### Experimental Features
+
+When adding an experimental feature, make sure to mark it as such by using the `base.Experimental` function.
+
+Example:
+
+```go
+cmd := &cobra.Command{
+    Use:     "experimental",
+    Short:   "My experimental command",
+    Long:    "This is an experimental command that may change in the future.",
+    PreRunE: s.EnsureToken,
+}
+
+cmd.Run = func(cmd *cobra.Command, _ []string) {
+    cmd.Println("Hello world")
+}
+
+return base.Experimental(s, cmd, "Example Product", "https://example.com")
+```
+
+It should contain the experimental product name and a link to the relevant changelog or documentation.
