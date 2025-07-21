@@ -175,23 +175,27 @@ generated files are up-to-date.
 
 ### Experimental Features
 
-When adding an experimental feature, make sure to mark it as such by using the `base.Experimental` function.
+When adding an experimental feature, make sure to mark it as such by using the `base.ExperimentalWrapper` function.
 
 Example:
 
 ```go
-cmd := &cobra.Command{
-    Use:     "experimental",
+var (
+  ExperimentalProduct = ExperimentalWrapper("Product name", "https://docs.hetzner.cloud/changelog#new-product")
+)
+
+func (c) CobraCommand(s state.State) *cobra.Command {
+  cmd := &cobra.Command{
+    Use:     "command",
     Short:   "My experimental command",
-    Long:    "This is an experimental command that may change in the future.",
+    Long:    "This is an experimental command.",
     PreRunE: s.EnsureToken,
-}
+  }
 
-cmd.Run = func(cmd *cobra.Command, _ []string) {
-    cmd.Println("Hello world")
-}
+  cmd.Run = func(cmd *cobra.Command, _ []string) {}
 
-return base.Experimental(s, cmd, "Example Product", "https://example.com")
+  return ExperimentalProduct(s, cmd)
+}
 ```
 
 It should contain the experimental product name and a link to the relevant changelog or documentation.
