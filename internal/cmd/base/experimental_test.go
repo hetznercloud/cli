@@ -11,6 +11,8 @@ import (
 	"github.com/hetznercloud/cli/internal/testutil"
 )
 
+var ExperimentalProduct = base.ExperimentalWrapper("Product name", "https://docs.hetzner.cloud/changelog#new-product")
+
 type fakeExperimentalCmd struct{}
 
 func (fakeExperimentalCmd) CobraCommand(s state.State) *cobra.Command {
@@ -25,7 +27,7 @@ func (fakeExperimentalCmd) CobraCommand(s state.State) *cobra.Command {
 		cmd.Println("Hello world")
 	}
 
-	return base.Experimental(s, cmd, "Example Product", "https://example.com")
+	return ExperimentalProduct(s, cmd)
 }
 
 func TestExperimental(t *testing.T) {
@@ -48,5 +50,7 @@ func TestExperimental(t *testing.T) {
 	assert.Equal(t, "[experimental] My experimental command", cmd.Short)
 	assert.Equal(t, `This is an experimental command that may change in the future.
 
-Experimental: Example Product is experimental, breaking changes may occur within minor releases. See https://example.com for more details.`, cmd.Long)
+Experimental: Product name is experimental, breaking changes may occur within minor releases.
+See https://docs.hetzner.cloud/changelog#new-product for more details.
+`, cmd.Long)
 }
