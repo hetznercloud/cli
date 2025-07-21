@@ -53,7 +53,7 @@ See %s for more details.
 				return err
 			}
 			if !hideWarning {
-				cmd.PrintErrln("Warning: This command is experimental and may change in the future. Use --experimental to suppress this warning.")
+				cmd.PrintErrln("Warning: This command is experimental and may change in the future. Use --no-experimental-warnings to suppress this warning.")
 			}
 			return nil
 		})

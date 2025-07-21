@@ -143,7 +143,7 @@ var (
 	)
 
 	OptionExperimental = newOpt(
-		"experimental",
+		"no-experimental-warnings",
 		"If true, experimental warnings are not shown",
 		false,
 		DefaultPreferenceFlags,
