@@ -186,7 +186,11 @@ func TestLabelsToString(t *testing.T) {
 }
 
 func TestPrefixLines(t *testing.T) {
+	assert.Equal(t, "  ", util.PrefixLines("", "  "))
+	assert.Equal(t, "  \n", util.PrefixLines("\n", "  "))
 	assert.Equal(t, "  foo\n  bar", util.PrefixLines("foo\nbar", "  "))
+	assert.Equal(t, "  foo\n  bar\n", util.PrefixLines("foo\nbar\n", "  "))
+	assert.Equal(t, "  foo\n  bar\n  \n", util.PrefixLines("foo\nbar\n\n", "  "))
 }
 
 func TestDescribeFormat(t *testing.T) {

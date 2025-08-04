@@ -163,13 +163,13 @@ func LabelsToString(labels map[string]string) string {
 
 // PrefixLines will prefix all individual lines in the text with the passed prefix.
 func PrefixLines(text, prefix string) string {
-	var lines []string
-
-	for _, line := range strings.Split(text, "\n") {
-		lines = append(lines, prefix+line)
+	var tail string
+	if len(text) > 0 && text[len(text)-1] == '\n' {
+		text = text[:len(text)-1]
+		tail = "\n"
 	}
 
-	return strings.Join(lines, "\n")
+	return prefix + strings.ReplaceAll(text, "\n", "\n"+prefix) + tail
 }
 
 func DescribeFormat(w io.Writer, object interface{}, format string) error {

@@ -91,7 +91,7 @@ Server Type:	cax11 (ID: 45)
   Memory:	4 GB
   Disk:		0 GB
   Storage Type:	local
-  Public Net:
+Public Net:
   IPv4:
     No Primary IPv4
   IPv6:
