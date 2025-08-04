@@ -39,7 +39,10 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Server]{
 		cmd.Printf("  Memory:\t%v GB\n", server.ServerType.Memory)
 		cmd.Printf("  Disk:\t\t%d GB\n", server.PrimaryDiskSize)
 		cmd.Printf("  Storage Type:\t%s\n", server.ServerType.StorageType)
-		cmd.Print(util.PrefixLines(util.DescribeDeprecation(server.ServerType), "  "))
+
+		if text := util.DescribeDeprecation(server.ServerType); text != "" {
+			cmd.Print(util.PrefixLines(text, "  "))
+		}
 
 		cmd.Printf("Public Net:\n")
 		cmd.Printf("  IPv4:\n")
