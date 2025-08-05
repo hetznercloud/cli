@@ -61,7 +61,7 @@ var EnableProtectionCmd = base.Cmd{
 			Args:  util.ValidateLenient,
 			Short: "Enable Protection for a Primary IP",
 			ValidArgsFunction: cmpl.SuggestArgs(
-				cmpl.SuggestCandidatesF(client.PrimaryIP().Names),
+				cmpl.SuggestCandidatesF(client.PrimaryIP().Names(false, false, nil)),
 				cmpl.SuggestCandidates("delete"),
 			),
 			TraverseChildren:      true,

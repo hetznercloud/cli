@@ -13,7 +13,7 @@ import (
 var UpdateCmd = base.UpdateCmd{
 	ResourceNameSingular: "Primary IP",
 	ShortDescription:     "Update a Primary IP",
-	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.PrimaryIP().Names },
+	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.PrimaryIP().Names(false, false, nil) },
 	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
 		return s.Client().PrimaryIP().Get(s, idOrName)
 	},

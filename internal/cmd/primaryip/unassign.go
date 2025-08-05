@@ -17,7 +17,7 @@ var UnAssignCmd = base.Cmd{
 			Use:   "unassign <primary-ip>",
 			Short: "Unassign a Primary IP from an assignee (usually a server)",
 			ValidArgsFunction: cmpl.SuggestArgs(
-				cmpl.SuggestCandidatesF(client.PrimaryIP().Names),
+				cmpl.SuggestCandidatesF(client.PrimaryIP().Names(false, true, nil)),
 			),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

@@ -214,34 +214,6 @@ func (mr *MockPrimaryIPClientMockRecorder) GetByName(ctx, name any) *gomock.Call
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetByName", reflect.TypeOf((*MockPrimaryIPClient)(nil).GetByName), ctx, name)
 }
 
-// IPv4Names mocks base method.
-func (m *MockPrimaryIPClient) IPv4Names() []string {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "IPv4Names")
-	ret0, _ := ret[0].([]string)
-	return ret0
-}
-
-// IPv4Names indicates an expected call of IPv4Names.
-func (mr *MockPrimaryIPClientMockRecorder) IPv4Names() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IPv4Names", reflect.TypeOf((*MockPrimaryIPClient)(nil).IPv4Names))
-}
-
-// IPv6Names mocks base method.
-func (m *MockPrimaryIPClient) IPv6Names() []string {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "IPv6Names")
-	ret0, _ := ret[0].([]string)
-	return ret0
-}
-
-// IPv6Names indicates an expected call of IPv6Names.
-func (mr *MockPrimaryIPClientMockRecorder) IPv6Names() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IPv6Names", reflect.TypeOf((*MockPrimaryIPClient)(nil).IPv6Names))
-}
-
 // LabelKeys mocks base method.
 func (m *MockPrimaryIPClient) LabelKeys(idOrName string) []string {
 	m.ctrl.T.Helper()
@@ -273,17 +245,17 @@ func (mr *MockPrimaryIPClientMockRecorder) List(ctx, opts any) *gomock.Call {
 }
 
 // Names mocks base method.
-func (m *MockPrimaryIPClient) Names() []string {
+func (m *MockPrimaryIPClient) Names(hideAssigned, hideUnassigned bool, ipType *hcloud.PrimaryIPType) func() []string {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Names")
-	ret0, _ := ret[0].([]string)
+	ret := m.ctrl.Call(m, "Names", hideAssigned, hideUnassigned, ipType)
+	ret0, _ := ret[0].(func() []string)
 	return ret0
 }
 
 // Names indicates an expected call of Names.
-func (mr *MockPrimaryIPClientMockRecorder) Names() *gomock.Call {
+func (mr *MockPrimaryIPClientMockRecorder) Names(hideAssigned, hideUnassigned, ipType any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockPrimaryIPClient)(nil).Names))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockPrimaryIPClient)(nil).Names), hideAssigned, hideUnassigned, ipType)
 }
 
 // Unassign mocks base method.
