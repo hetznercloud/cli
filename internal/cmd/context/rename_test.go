@@ -70,6 +70,13 @@ token = "super secret token"
 			err:    "context not found: non-existing-context",
 			expErr: "Error: context not found: non-existing-context\n",
 		},
+		{
+			name:   "rename to existing context",
+			args:   []string{"my-context", "my-other-context"},
+			config: testConfig,
+			err:    "context with name my-other-context already exists",
+			expErr: "Error: context with name my-other-context already exists\n",
+		},
 	}
 
 	for _, tt := range testCases {
