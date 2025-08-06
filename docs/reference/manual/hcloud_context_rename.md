@@ -1,11 +1,15 @@
-## hcloud context
+## hcloud context rename
 
-Manage contexts
+Rename a context
+
+```
+hcloud context rename <context> <name>
+```
 
 ### Options
 
 ```
-  -h, --help   help for context
+  -h, --help   help for rename
 ```
 
 ### Options inherited from parent commands
@@ -22,11 +26,4 @@ Manage contexts
 
 ### SEE ALSO
 
-* [hcloud](hcloud.md)	 - Hetzner Cloud CLI
-* [hcloud context active](hcloud_context_active.md)	 - Show active context
-* [hcloud context create](hcloud_context_create.md)	 - Create a new context
-* [hcloud context delete](hcloud_context_delete.md)	 - Delete a context
-* [hcloud context list](hcloud_context_list.md)	 - List contexts
-* [hcloud context rename](hcloud_context_rename.md)	 - Rename a context
-* [hcloud context unset](hcloud_context_unset.md)	 - Unset used context
-* [hcloud context use](hcloud_context_use.md)	 - Use a context
+* [hcloud context](hcloud_context.md)	 - Manage contexts

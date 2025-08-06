@@ -22,6 +22,7 @@ func NewCommand(s state.State) *cobra.Command {
 		NewUseCommand(s),
 		NewDeleteCommand(s),
 		NewListCommand(s),
+		NewRenameCommand(s),
 	)
 	return cmd
 }

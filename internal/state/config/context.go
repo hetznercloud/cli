@@ -63,3 +63,9 @@ func RemoveContext(cfg Config, context Context) {
 	}
 	cfg.SetContexts(filtered)
 }
+
+func RenameContext(ctx Context, newName string) {
+	if ctx, ok := (ctx).(*context); ok {
+		ctx.ContextName = newName
+	}
+}
