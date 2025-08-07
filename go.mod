@@ -23,7 +23,7 @@ require (
 	go.uber.org/mock v0.5.2
 	golang.org/x/crypto v0.40.0
 	golang.org/x/term v0.33.0
-	golang.org/x/text v0.27.0
+	golang.org/x/text v0.28.0
 )
 
 require (
