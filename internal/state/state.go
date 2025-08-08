@@ -77,6 +77,12 @@ func (c *state) newClient() (hcapi2.Client, error) {
 		return nil, err
 	}
 
+	if ep, err := config.OptionHetznerEndpoint.Get(c.config); err == nil && ep != "" {
+		opts = append(opts, hcloud.WithHetznerEndpoint(ep))
+	} else if err != nil {
+		return nil, err
+	}
+
 	debug, err := config.OptionDebug.Get(c.config)
 	if err != nil {
 		return nil, err
