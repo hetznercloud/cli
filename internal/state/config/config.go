@@ -90,6 +90,7 @@ func (cfg *config) reset() {
 	cfg.fs.Usage = func() {} // disable usage output
 	for _, o := range Options {
 		o.addToFlagSet(cfg.fs)
+		_ = cfg.v.BindEnv(o.GetName(), o.EnvVar())
 	}
 	if err := cfg.v.BindPFlags(cfg.fs); err != nil {
 		panic(err)
@@ -104,9 +105,6 @@ func (cfg *config) Read(f any) error {
 	if err != nil && !errors.Is(err, pflag.ErrHelp) {
 		return err
 	}
-
-	// load env already so we can determine the active context
-	cfg.v.AutomaticEnv()
 
 	cfg.path, err = OptionConfig.Get(cfg)
 	if err != nil {
