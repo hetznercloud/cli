@@ -41,5 +41,6 @@ A command-line interface for Hetzner Cloud
 * [hcloud server](hcloud_server.md)	 - Manage Servers
 * [hcloud server-type](hcloud_server-type.md)	 - View Server Types
 * [hcloud ssh-key](hcloud_ssh-key.md)	 - Manage SSH Keys
+* [hcloud storage-box-type](hcloud_storage-box-type.md)	 - View Storage Box Types
 * [hcloud version](hcloud_version.md)	 - Print version information
 * [hcloud volume](hcloud_volume.md)	 - Manage Volumes

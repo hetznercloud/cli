@@ -27,6 +27,7 @@ type Client interface {
 	RDNS() RDNSClient
 	PrimaryIP() PrimaryIPClient
 	Pricing() PricingClient
+	StorageBoxType() StorageBoxTypeClient
 	WithOpts(...hcloud.ClientOption)
 }
 
@@ -50,6 +51,7 @@ type clientCache struct {
 	rdnsClient             RDNSClient
 	primaryIPClient        PrimaryIPClient
 	pricingClient          PricingClient
+	storageBoxTypeClient   StorageBoxTypeClient
 }
 
 type client struct {
@@ -247,4 +249,13 @@ func (c *client) Pricing() PricingClient {
 	}
 	defer c.mu.Unlock()
 	return c.cache.pricingClient
+}
+
+func (c *client) StorageBoxType() StorageBoxTypeClient {
+	c.mu.Lock()
+	if c.cache.storageBoxTypeClient == nil {
+		c.cache.storageBoxTypeClient = NewStorageBoxTypeClient(&c.client.StorageBoxType)
+	}
+	defer c.mu.Unlock()
+	return c.cache.storageBoxTypeClient
 }
