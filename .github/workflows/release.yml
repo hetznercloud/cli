@@ -22,7 +22,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Set up tools
-        uses: jdx/mise-action@v2
+        uses: jdx/mise-action@v3
         with:
           version: v2025.5.9
 
