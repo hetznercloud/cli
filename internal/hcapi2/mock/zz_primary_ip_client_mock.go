@@ -33,9 +33,6 @@ type MockPrimaryIPClientMockRecorder struct {
 func NewMockPrimaryIPClient(ctrl *gomock.Controller) *MockPrimaryIPClient {
 	mock := &MockPrimaryIPClient{ctrl: ctrl}
 	mock.recorder = &MockPrimaryIPClientMockRecorder{mock}
-	// We call .Names() in command constructors to provide completions. Since we do not want to mock each
-	// completion function, we ignore the call to .Names() here.
-	mock.EXPECT().Names(gomock.Any(), gomock.Any(), gomock.Any()).AnyTimes()
 	return mock
 }
 
