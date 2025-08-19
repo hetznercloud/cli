@@ -18,6 +18,7 @@ func NewCommand(s state.State) *cobra.Command {
 	}
 	cmd.AddCommand(
 		ListCmd.CobraCommand(s),
+		DescribeCmd.CobraCommand(s),
 	)
 	return cmd
 }
