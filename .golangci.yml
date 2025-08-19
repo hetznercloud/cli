@@ -38,3 +38,8 @@ linters-settings:
   gosmopolitan:
     # We want to allow the use of time.Local()
     allow-time-local: true
+
+  # TODO: This is required for the storage-boxes branch, remove before merging to main!
+  gomoddirectives:
+    replace-allow-list:
+      - github.com/hetznercloud/hcloud-go/v2
