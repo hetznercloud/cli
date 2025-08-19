@@ -24,6 +24,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/server"
 	"github.com/hetznercloud/cli/internal/cmd/servertype"
 	"github.com/hetznercloud/cli/internal/cmd/sshkey"
+	storageboxtype "github.com/hetznercloud/cli/internal/cmd/storage_box_type"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/cmd/version"
 	"github.com/hetznercloud/cli/internal/cmd/volume"
@@ -52,6 +53,7 @@ func NewRootCommand(s state.State) *cobra.Command {
 		datacenter.NewCommand(s),
 		location.NewCommand(s),
 		iso.NewCommand(s),
+		storageboxtype.NewCommand(s),
 		volume.NewCommand(s),
 		network.NewCommand(s),
 		loadbalancer.NewCommand(s),

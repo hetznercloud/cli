@@ -18,6 +18,7 @@ type Client interface {
 	Server() ServerClient
 	ServerType() ServerTypeClient
 	SSHKey() SSHKeyClient
+	StorageBoxType() StorageBoxTypeClient
 	Volume() VolumeClient
 	Certificate() CertificateClient
 	LoadBalancer() LoadBalancerClient
@@ -45,6 +46,7 @@ type clientCache struct {
 	imageClient            ImageClient
 	isoClient              ISOClient
 	sshKeyClient           SSHKeyClient
+	storageBoxTypeClient   StorageBoxTypeClient
 	volumeClient           VolumeClient
 	placementGroupClient   PlacementGroupClient
 	rdnsClient             RDNSClient
@@ -220,6 +222,15 @@ func (c *client) RDNS() RDNSClient {
 	}
 	defer c.mu.Unlock()
 	return c.cache.rdnsClient
+}
+
+func (c *client) StorageBoxType() StorageBoxTypeClient {
+	c.mu.Lock()
+	if c.cache.storageBoxTypeClient == nil {
+		c.cache.storageBoxTypeClient = NewStorageBoxTypeClient(&c.client.StorageBoxType)
+	}
+	defer c.mu.Unlock()
+	return c.cache.storageBoxTypeClient
 }
 
 func (c *client) Volume() VolumeClient {

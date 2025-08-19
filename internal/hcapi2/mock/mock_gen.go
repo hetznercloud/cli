@@ -15,6 +15,7 @@ package mock
 //go:generate mockgen -package mock -destination zz_server_client_mock.go github.com/hetznercloud/cli/internal/hcapi2 ServerClient
 //go:generate mockgen -package mock -destination zz_server_type_client_mock.go github.com/hetznercloud/cli/internal/hcapi2 ServerTypeClient
 //go:generate mockgen -package mock -destination zz_ssh_key_client_mock.go github.com/hetznercloud/cli/internal/hcapi2 SSHKeyClient
+//go:generate mockgen -package mock -destination zz_storage_box_type_client_mock.go github.com/hetznercloud/cli/internal/hcapi2 StorageBoxTypeClient
 //go:generate mockgen -package mock -destination zz_volume_client_mock.go github.com/hetznercloud/cli/internal/hcapi2 VolumeClient
 //go:generate mockgen -package mock -destination zz_placement_group_client_mock.go github.com/hetznercloud/cli/internal/hcapi2 PlacementGroupClient
 //go:generate mockgen -package mock -destination zz_rdns_client_mock.go github.com/hetznercloud/cli/internal/hcapi2 RDNSClient
