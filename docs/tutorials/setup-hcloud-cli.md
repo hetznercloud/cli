@@ -28,7 +28,7 @@ rm hcloud-linux-amd64.tar.gz
 If you have Go installed, you can also install hcloud CLI from source using the following command:
 
 ```bash
-go install github.com/hetznercloud/cli@latest
+go install github.com/hetznercloud/cli/cmd/hcloud@latest
 ```
 
 > [!NOTE]
