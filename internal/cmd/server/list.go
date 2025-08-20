@@ -34,7 +34,7 @@ var serverStatusStrings = []string{
 	string(hcloud.ServerStatusUnknown),
 }
 
-var ListCmd = base.ListCmd{
+var ListCmd = &base.ListCmd[*hcloud.Server, schema.Server]{
 	ResourceNamePlural: "Servers",
 	JSONKeyGetByName:   "servers",
 	DefaultColumns:     []string{"id", "name", "status", "ipv4", "ipv6", "private_net", "datacenter", "age"},
@@ -45,7 +45,7 @@ var ListCmd = base.ListCmd{
 		_ = cmd.RegisterFlagCompletionFunc("status", cmpl.SuggestCandidates(serverStatusStrings...))
 	},
 
-	Fetch: func(s state.State, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
+	Fetch: func(s state.State, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.Server, error) {
 		statuses, _ := flags.GetStringSlice("status")
 
 		opts := hcloud.ServerListOpts{ListOpts: listOpts}
@@ -61,13 +61,7 @@ var ListCmd = base.ListCmd{
 				}
 			}
 		}
-		servers, err := s.Client().Server().AllWithOpts(s, opts)
-
-		var resources []interface{}
-		for _, r := range servers {
-			resources = append(resources, r)
-		}
-		return resources, err
+		return s.Client().Server().AllWithOpts(s, opts)
 	},
 
 	OutputTable: func(t *output.Table, client hcapi2.Client) {
@@ -160,12 +154,5 @@ var ListCmd = base.ListCmd{
 			}))
 	},
 
-	Schema: func(resources []interface{}) interface{} {
-		serversSchema := make([]schema.Server, 0, len(resources))
-		for _, resource := range resources {
-			server := resource.(*hcloud.Server)
-			serversSchema = append(serversSchema, hcloud.SchemaFromServer(server))
-		}
-		return serversSchema
-	},
+	Schema: hcloud.SchemaFromServer,
 }

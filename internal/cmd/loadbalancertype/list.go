@@ -11,24 +11,18 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
-var ListCmd = base.ListCmd{
+var ListCmd = base.ListCmd[*hcloud.LoadBalancerType, schema.LoadBalancerType]{
 	ResourceNamePlural: "Load Balancer Types",
 	JSONKeyGetByName:   "load_balancer_types",
 	DefaultColumns:     []string{"id", "name", "description", "max_services", "max_connections", "max_targets"},
 	SortOption:         nil, // Load Balancer Types do not support sorting
 
-	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
+	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.LoadBalancerType, error) {
 		opts := hcloud.LoadBalancerTypeListOpts{ListOpts: listOpts}
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		loadBalancerTypes, err := s.Client().LoadBalancerType().AllWithOpts(s, opts)
-
-		var resources []interface{}
-		for _, r := range loadBalancerTypes {
-			resources = append(resources, r)
-		}
-		return resources, err
+		return s.Client().LoadBalancerType().AllWithOpts(s, opts)
 	},
 
 	OutputTable: func(t *output.Table, _ hcapi2.Client) {
@@ -36,12 +30,5 @@ var ListCmd = base.ListCmd{
 			AddAllowedFields(hcloud.LoadBalancerType{})
 	},
 
-	Schema: func(resources []interface{}) interface{} {
-		loadBalancerTypeSchemas := make([]schema.LoadBalancerType, 0, len(resources))
-		for _, resource := range resources {
-			loadBalancerType := resource.(*hcloud.LoadBalancerType)
-			loadBalancerTypeSchemas = append(loadBalancerTypeSchemas, hcloud.SchemaFromLoadBalancerType(loadBalancerType))
-		}
-		return loadBalancerTypeSchemas
-	},
+	Schema: hcloud.SchemaFromLoadBalancerType,
 }

@@ -16,24 +16,18 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
-var ListCmd = base.ListCmd{
+var ListCmd = &base.ListCmd[*hcloud.LoadBalancer, schema.LoadBalancer]{
 	ResourceNamePlural: "Load Balancer",
 	JSONKeyGetByName:   "load_balancers",
 	DefaultColumns:     []string{"id", "name", "health", "ipv4", "ipv6", "type", "location", "network_zone", "age"},
 	SortOption:         config.OptionSortLoadBalancer,
 
-	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
+	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.LoadBalancer, error) {
 		opts := hcloud.LoadBalancerListOpts{ListOpts: listOpts}
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		loadBalancers, err := s.Client().LoadBalancer().AllWithOpts(s, opts)
-
-		var resources []interface{}
-		for _, r := range loadBalancers {
-			resources = append(resources, r)
-		}
-		return resources, err
+		return s.Client().LoadBalancer().AllWithOpts(s, opts)
 	},
 
 	OutputTable: func(t *output.Table, _ hcapi2.Client) {
@@ -85,14 +79,7 @@ var ListCmd = base.ListCmd{
 			}))
 	},
 
-	Schema: func(resources []interface{}) interface{} {
-		loadBalancerSchemas := make([]schema.LoadBalancer, 0, len(resources))
-		for _, resource := range resources {
-			loadBalancer := resource.(*hcloud.LoadBalancer)
-			loadBalancerSchemas = append(loadBalancerSchemas, hcloud.SchemaFromLoadBalancer(loadBalancer))
-		}
-		return loadBalancerSchemas
-	},
+	Schema: hcloud.SchemaFromLoadBalancer,
 }
 
 func Health(l *hcloud.LoadBalancer) string {

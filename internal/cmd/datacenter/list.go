@@ -12,23 +12,18 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
-var ListCmd = base.ListCmd{
+var ListCmd = &base.ListCmd[*hcloud.Datacenter, schema.Datacenter]{
 	ResourceNamePlural: "Datacenters",
 	JSONKeyGetByName:   "datacenters",
 	DefaultColumns:     []string{"id", "name", "description", "location"},
 	SortOption:         config.OptionSortDatacenter,
 
-	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
+	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.Datacenter, error) {
 		opts := hcloud.DatacenterListOpts{ListOpts: listOpts}
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		datacenters, err := s.Client().Datacenter().AllWithOpts(s, opts)
-		var resources []interface{}
-		for _, n := range datacenters {
-			resources = append(resources, n)
-		}
-		return resources, err
+		return s.Client().Datacenter().AllWithOpts(s, opts)
 	},
 
 	OutputTable: func(t *output.Table, _ hcapi2.Client) {
@@ -40,13 +35,5 @@ var ListCmd = base.ListCmd{
 			}))
 	},
 
-	Schema: func(resources []interface{}) interface{} {
-		dcSchemas := make([]schema.Datacenter, 0, len(resources))
-		for _, resource := range resources {
-			dc := resource.(*hcloud.Datacenter)
-			dcSchemas = append(dcSchemas, hcloud.SchemaFromDatacenter(dc))
-		}
-
-		return dcSchemas
-	},
+	Schema: hcloud.SchemaFromDatacenter,
 }

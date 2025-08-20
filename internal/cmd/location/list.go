@@ -12,24 +12,18 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
-var ListCmd = base.ListCmd{
+var ListCmd = base.ListCmd[*hcloud.Location, schema.Location]{
 	ResourceNamePlural: "Locations",
 	JSONKeyGetByName:   "locations",
 	DefaultColumns:     []string{"id", "name", "description", "network_zone", "country", "city"},
 	SortOption:         config.OptionSortLocation,
 
-	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
+	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.Location, error) {
 		opts := hcloud.LocationListOpts{ListOpts: listOpts}
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		locations, err := s.Client().Location().AllWithOpts(s, opts)
-
-		var resources []interface{}
-		for _, n := range locations {
-			resources = append(resources, n)
-		}
-		return resources, err
+		return s.Client().Location().AllWithOpts(s, opts)
 	},
 
 	OutputTable: func(t *output.Table, _ hcapi2.Client) {
@@ -37,12 +31,5 @@ var ListCmd = base.ListCmd{
 			AddAllowedFields(hcloud.Location{})
 	},
 
-	Schema: func(resources []interface{}) interface{} {
-		locationSchemas := make([]schema.Location, 0, len(resources))
-		for _, resource := range resources {
-			location := resource.(*hcloud.Location)
-			locationSchemas = append(locationSchemas, hcloud.SchemaFromLocation(location))
-		}
-		return locationSchemas
-	},
+	Schema: hcloud.SchemaFromLocation,
 }

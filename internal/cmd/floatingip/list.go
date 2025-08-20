@@ -17,24 +17,18 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
-var ListCmd = base.ListCmd{
+var ListCmd = &base.ListCmd[*hcloud.FloatingIP, schema.FloatingIP]{
 	ResourceNamePlural: "Floating IPs",
 	JSONKeyGetByName:   "floating_ips",
 	DefaultColumns:     []string{"id", "type", "name", "description", "ip", "home", "server", "dns", "age"},
 	SortOption:         config.OptionSortFloatingIP,
 
-	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
+	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.FloatingIP, error) {
 		opts := hcloud.FloatingIPListOpts{ListOpts: listOpts}
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		floatingIPs, err := s.Client().FloatingIP().AllWithOpts(s, opts)
-
-		var resources []interface{}
-		for _, n := range floatingIPs {
-			resources = append(resources, n)
-		}
-		return resources, err
+		return s.Client().FloatingIP().AllWithOpts(s, opts)
 	},
 
 	OutputTable: func(t *output.Table, client hcapi2.Client) {
@@ -95,12 +89,5 @@ var ListCmd = base.ListCmd{
 			}))
 	},
 
-	Schema: func(resources []interface{}) interface{} {
-		floatingIPSchemas := make([]schema.FloatingIP, 0, len(resources))
-		for _, resource := range resources {
-			floatingIP := resource.(*hcloud.FloatingIP)
-			floatingIPSchemas = append(floatingIPSchemas, hcloud.SchemaFromFloatingIP(floatingIP))
-		}
-		return floatingIPSchemas
-	},
+	Schema: hcloud.SchemaFromFloatingIP,
 }
