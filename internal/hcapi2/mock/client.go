@@ -28,6 +28,7 @@ type Client struct {
 	PlacementGroupClient   *MockPlacementGroupClient
 	RDNSClient             *MockRDNSClient
 	PricingClient          *MockPricingClient
+	StorageBoxTypeClient   *MockStorageBoxTypeClient
 	ZoneClient             *MockZoneClient
 }
 
@@ -58,6 +59,7 @@ func NewMockClient(ctrl *gomock.Controller) *Client {
 		PlacementGroupClient:   NewMockPlacementGroupClient(ctrl),
 		RDNSClient:             NewMockRDNSClient(ctrl),
 		PricingClient:          NewMockPricingClient(ctrl),
+		StorageBoxTypeClient:   NewMockStorageBoxTypeClient(ctrl),
 		ZoneClient:             NewMockZoneClient(ctrl),
 	}
 }
@@ -135,6 +137,10 @@ func (c *Client) PlacementGroup() hcapi2.PlacementGroupClient {
 
 func (c *Client) Pricing() hcapi2.PricingClient {
 	return c.PricingClient
+}
+
+func (c *Client) StorageBoxType() hcapi2.StorageBoxTypeClient {
+	return c.StorageBoxTypeClient
 }
 
 func (c *Client) Zone() hcapi2.ZoneClient {
