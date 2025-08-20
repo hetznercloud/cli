@@ -134,3 +134,17 @@ func (mr *MockStorageBoxTypeClientMockRecorder) List(ctx, opts any) *gomock.Call
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockStorageBoxTypeClient)(nil).List), ctx, opts)
 }
+
+// Names mocks base method.
+func (m *MockStorageBoxTypeClient) Names() []string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Names")
+	ret0, _ := ret[0].([]string)
+	return ret0
+}
+
+// Names indicates an expected call of Names.
+func (mr *MockStorageBoxTypeClientMockRecorder) Names() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockStorageBoxTypeClient)(nil).Names))
+}
