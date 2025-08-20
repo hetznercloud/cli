@@ -32,16 +32,40 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBoxType]{
 		cmd.Printf("Subaccounts Limit:\t\t%d\n", storageBoxType.SubaccountsLimit)
 		cmd.Print(util.DescribeDeprecation(storageBoxType))
 
-		// TODO: Skipping prices right now because we have no currency.
-		// cmd.Printf("Pricings per Location:\n")
-		// for _, price := range storageBoxType.Pricings {
-		// 	cmd.Printf("  - Location:\t\t%s\n", price.Location)
-		// 	cmd.Printf("    Hourly:\t\t%s\n", util.GrossPrice(price.PriceHourly))
-		// 	cmd.Printf("    Monthly:\t\t%s\n", util.GrossPrice(price.PriceMonthly))
-		// 	cmd.Printf("    Setup Fee:\t%s\n", util.GrossPrice(price.SetupFee))
-		// 	cmd.Printf("\n")
-		// }
+		err := loadCurrencyFromAPI(s, storageBoxType)
+		if err != nil {
+			cmd.PrintErrf("failed to get currency for Storage Box Type prices: %v", err)
+		}
+
+		cmd.Printf("Pricings per Location:\n")
+		for _, price := range storageBoxType.Pricings {
+			cmd.Printf("  - Location:\t%s\n", price.Location)
+			cmd.Printf("    Hourly:\t%s\n", util.GrossPrice(price.PriceHourly))
+			cmd.Printf("    Monthly:\t%s\n", util.GrossPrice(price.PriceMonthly))
+			cmd.Printf("    Setup Fee:\t%s\n", util.GrossPrice(price.SetupFee))
+			cmd.Printf("\n")
+		}
 
 		return nil
 	},
+}
+
+func loadCurrencyFromAPI(s state.State, storageBoxType *hcloud.StorageBoxType) error {
+	pricing, _, err := s.Client().Pricing().Get(s)
+	if err != nil {
+		return err
+	}
+
+	for i := range storageBoxType.Pricings {
+		storageBoxType.Pricings[i].PriceMonthly.Currency = pricing.Currency
+		storageBoxType.Pricings[i].PriceMonthly.VATRate = pricing.VATRate
+
+		storageBoxType.Pricings[i].PriceHourly.Currency = pricing.Currency
+		storageBoxType.Pricings[i].PriceHourly.VATRate = pricing.VATRate
+
+		storageBoxType.Pricings[i].SetupFee.Currency = pricing.Currency
+		storageBoxType.Pricings[i].SetupFee.VATRate = pricing.VATRate
+	}
+
+	return nil
 }
