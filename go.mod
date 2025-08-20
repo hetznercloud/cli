@@ -65,4 +65,4 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-replace github.com/hetznercloud/hcloud-go/v2 => ../hcloud-go
+replace github.com/hetznercloud/hcloud-go/v2 => github.com/hetznercloud/hcloud-go/v2 v2.22.1-0.20250820083549-f707a58dc9c7
