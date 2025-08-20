@@ -29,13 +29,67 @@ func TestDescribe(t *testing.T) {
 			AutomaticSnapshotLimit: 10,
 			SubaccountsLimit:       200,
 			Size:                   1073741824,
+			Pricings: []hcloud.StorageBoxTypeLocationPricing{
+				{
+					Location: "fsn1",
+					PriceHourly: hcloud.Price{
+						Gross: "0.0051",
+						Net:   "0.0051",
+					},
+					PriceMonthly: hcloud.Price{
+						Gross: "3.2000",
+						Net:   "3.2000",
+					},
+					SetupFee: hcloud.Price{
+						Gross: "0.0000",
+						Net:   "0.0000",
+					},
+				},
+				{
+					Location: "hel1",
+					PriceHourly: hcloud.Price{
+						Gross: "0.0051",
+						Net:   "0.0051",
+					},
+					PriceMonthly: hcloud.Price{
+						Gross: "3.2000",
+						Net:   "3.2000",
+					},
+					SetupFee: hcloud.Price{
+						Gross: "0.0000",
+						Net:   "0.0000",
+					},
+				},
+			},
+		}, nil, nil)
+
+	fx.Client.PricingClient.EXPECT().
+		Get(gomock.Any()).
+		Return(hcloud.Pricing{
+			Currency: "EUR",
+			VATRate:  "1.19",
 		}, nil, nil)
 
 	out, errOut, err := fx.Run(cmd, []string{"bx11"})
 
-	expOut := `ID:			42
-Name:			bx11
-Description:		BX11
+	expOut := `ID:				42
+Name:				bx11
+Description:			BX11
+Size:				1.0 GiB
+Snapshot Limit:			10
+Automatic Snapshot Limit:	10
+Subaccounts Limit:		200
+Pricings per Location:
+  - Location:	fsn1
+    Hourly:	€ 0.0051
+    Monthly:	€ 3.2000
+    Setup Fee:	€ 0.0000
+
+  - Location:	hel1
+    Hourly:	€ 0.0051
+    Monthly:	€ 3.2000
+    Setup Fee:	€ 0.0000
+
 `
 
 	require.NoError(t, err)
