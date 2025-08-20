@@ -207,6 +207,7 @@ func TestFloatingIP(t *testing.T) {
 
 		t.Run("delete-protected", func(t *testing.T) {
 			out, err := runCommand(t, "floating-ip", "delete", strconv.FormatInt(floatingIPId, 10))
+			require.Error(t, err)
 			assert.Regexp(t, `^Floating IP deletion is protected \(protected, [0-9a-f]+\)$`, err.Error())
 			assert.Empty(t, out)
 		})

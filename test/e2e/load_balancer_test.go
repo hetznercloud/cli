@@ -97,6 +97,7 @@ func TestLoadBalancer(t *testing.T) {
 
 		t.Run("non-existing-algorithm", func(t *testing.T) {
 			out, err := runCommand(t, "load-balancer", "change-algorithm", strconv.FormatInt(lbID, 10), "--algorithm-type", "non-existing-algorithm")
+			require.Error(t, err)
 			assert.Regexp(t, `^invalid input in field 'type' \(invalid_input, [0-9a-f]+\)$`, err.Error())
 			assert.Empty(t, out)
 		})
