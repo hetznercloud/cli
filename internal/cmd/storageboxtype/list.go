@@ -15,7 +15,7 @@ import (
 
 var ListCmd = base.ListCmd{
 	ResourceNamePlural: "Storage Box Types",
-	JSONKeyGetByName:   "server_types",
+	JSONKeyGetByName:   "storage_box_types",
 	DefaultColumns:     []string{"id", "name", "description", "size", "snapshot_limit", "automatic_snapshot_limit", "subaccounts_limit"},
 	SortOption:         nil, // Storage Box Types do not support sorting
 

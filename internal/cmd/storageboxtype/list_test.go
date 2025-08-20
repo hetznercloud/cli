@@ -8,7 +8,7 @@ import (
 	"github.com/stretchr/testify/require"
 	"go.uber.org/mock/gomock"
 
-	"github.com/hetznercloud/cli/internal/cmd/servertype"
+	"github.com/hetznercloud/cli/internal/cmd/storageboxtype"
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -19,34 +19,33 @@ func TestList(t *testing.T) {
 
 	time.Local = time.UTC
 
-	cmd := servertype.ListCmd.CobraCommand(fx.State())
+	cmd := storageboxtype.ListCmd.CobraCommand(fx.State())
 
 	fx.ExpectEnsureToken()
-	fx.Client.ServerTypeClient.EXPECT().
+	fx.Client.StorageBoxTypeClient.EXPECT().
 		AllWithOpts(
 			gomock.Any(),
-			hcloud.ServerTypeListOpts{
+			hcloud.StorageBoxTypeListOpts{
 				ListOpts: hcloud.ListOpts{PerPage: 50},
-				Sort:     nil, // Server Types do not support sorting
 			},
 		).
-		Return([]*hcloud.ServerType{
+		Return([]*hcloud.StorageBoxType{
 			{
-				ID:           123,
-				Name:         "test",
-				Cores:        2,
-				CPUType:      hcloud.CPUTypeShared,
-				Architecture: hcloud.ArchitectureARM,
-				Memory:       8.0,
-				Disk:         80,
-				StorageType:  hcloud.StorageTypeLocal,
+				ID:                     42,
+				Name:                   "bx11",
+				Description:            "BX11",
+				SnapshotLimit:          10,
+				AutomaticSnapshotLimit: 10,
+				SubaccountsLimit:       200,
+				Size:                   1073741824,
+				Pricings:               []hcloud.StorageBoxTypeLocationPricing{},
 			},
 		}, nil)
 
 	out, errOut, err := fx.Run(cmd, []string{})
 
-	expOut := `ID    NAME   CORES   CPU TYPE   ARCHITECTURE   MEMORY   DISK    STORAGE TYPE
-123   test   2       shared     arm            8.0 GB   80 GB   local       
+	expOut := `ID   NAME   DESCRIPTION   SIZE      SNAPSHOT LIMIT   AUTOMATIC SNAPSHOT LIMIT   SUBACCOUNTS LIMIT
+42   bx11   BX11          1.0 GiB   10               10                         200              
 `
 
 	require.NoError(t, err)
@@ -60,18 +59,17 @@ func TestListColumnDeprecated(t *testing.T) {
 
 	time.Local = time.UTC
 
-	cmd := servertype.ListCmd.CobraCommand(fx.State())
+	cmd := storageboxtype.ListCmd.CobraCommand(fx.State())
 
 	fx.ExpectEnsureToken()
-	fx.Client.ServerTypeClient.EXPECT().
+	fx.Client.StorageBoxTypeClient.EXPECT().
 		AllWithOpts(
 			gomock.Any(),
-			hcloud.ServerTypeListOpts{
+			hcloud.StorageBoxTypeListOpts{
 				ListOpts: hcloud.ListOpts{PerPage: 50},
-				Sort:     nil, // Server Types do not support sorting
 			},
 		).
-		Return([]*hcloud.ServerType{
+		Return([]*hcloud.StorageBoxType{
 			{
 				ID:   123,
 				Name: "deprecated",
