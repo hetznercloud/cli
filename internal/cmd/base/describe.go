@@ -44,6 +44,9 @@ type DescribeCmd[T any] struct {
 	// Can be set if the default [DescribeCmd.NameSuggestions] is not enough. This is usually the case when
 	// [DescribeCmd.FetchWithArgs] and [DescribeCmd.PositionalArgumentOverride] is being used.
 	ValidArgsFunction func(client hcapi2.Client) []cobra.CompletionFunc
+
+	// ExperimentalF is a function that will be used to mark the command as experimental.
+	ExperimentalF func(state.State, *cobra.Command) *cobra.Command
 }
 
 // CobraCommand creates a command that can be registered with cobra.
@@ -77,6 +80,10 @@ func (dc *DescribeCmd[T]) CobraCommand(s state.State) *cobra.Command {
 
 	if dc.AdditionalFlags != nil {
 		dc.AdditionalFlags(cmd)
+	}
+
+	if dc.ExperimentalF != nil {
+		cmd = dc.ExperimentalF(s, cmd)
 	}
 
 	return cmd
