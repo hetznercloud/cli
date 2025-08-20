@@ -85,6 +85,7 @@ func TestCombined(t *testing.T) {
 			t.Run("label-selector", func(t *testing.T) {
 				t.Run("public-ip", func(t *testing.T) {
 					out, err := runCommand(t, "load-balancer", "add-target", strconv.FormatInt(loadBalancerID, 10), "--label-selector", "foo=bar")
+					require.Error(t, err)
 					assert.Regexp(t, `^load balancer public interface is disabled, cannot add target using public IP \(load_balancer_public_interface_disabled, [0-9a-f]+\)$`, err.Error())
 					assert.Empty(t, out)
 				})
@@ -99,6 +100,7 @@ func TestCombined(t *testing.T) {
 			t.Run("server", func(t *testing.T) {
 				t.Run("public-ip", func(t *testing.T) {
 					out, err := runCommand(t, "load-balancer", "add-target", strconv.FormatInt(loadBalancerID, 10), "--server", strconv.FormatInt(serverID, 10))
+					require.Error(t, err)
 					assert.Regexp(t, `^load balancer public interface is disabled, cannot add target using public IP \(load_balancer_public_interface_disabled, [0-9a-f]+\)$`, err.Error())
 					assert.Empty(t, out)
 				})
@@ -159,6 +161,7 @@ func TestCombined(t *testing.T) {
 
 		t.Run("delete-in-use", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "delete", strconv.FormatInt(firewallID, 10))
+			require.Error(t, err)
 			assert.Regexp(t, `^firewall with ID [0-9]+ is still in use \(resource_in_use, [0-9a-f]+\)$`, err.Error())
 			assert.Empty(t, out)
 		})

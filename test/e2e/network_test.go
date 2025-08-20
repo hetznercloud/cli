@@ -119,6 +119,7 @@ func TestNetwork(t *testing.T) {
 	t.Run("delete-protected", func(t *testing.T) {
 		out, err := runCommand(t, "network", "delete", strconv.FormatInt(networkID, 10))
 		assert.Empty(t, out)
+		require.Error(t, err)
 		assert.Regexp(t, `^network is delete protected \(protected, [0-9a-f]+\)$`, err.Error())
 	})
 
@@ -132,6 +133,7 @@ func TestNetwork(t *testing.T) {
 		t.Run("non-existing-vswitch", func(t *testing.T) {
 			out, err := runCommand(t, "network", "add-subnet", "--type", "vswitch", "--vswitch-id", "42", "--network-zone", "eu-central", "--ip-range", "10.0.17.0/24", strconv.FormatInt(networkID, 10))
 			assert.Empty(t, out)
+			require.Error(t, err)
 			assert.Regexp(t, `^vswitch not found \(service_error, [0-9a-f]+\)$`, err.Error())
 		})
 
