@@ -21,6 +21,7 @@ func NewCommand(s state.State) *cobra.Command {
 		CreateCmd.CobraCommand(s),
 		FoldersCmd.CobraCommand(s),
 		DeleteCmd.CobraCommand(s),
+		DescribeCmd.CobraCommand(s),
 	)
 	return cmd
 }
