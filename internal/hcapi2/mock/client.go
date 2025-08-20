@@ -23,6 +23,7 @@ type Client struct {
 	ServerClient           *MockServerClient
 	ServerTypeClient       *MockServerTypeClient
 	SSHKeyClient           *MockSSHKeyClient
+	StorageBoxTypeClient   *MockStorageBoxTypeClient
 	VolumeClient           *MockVolumeClient
 	ISOClient              *MockISOClient
 	PlacementGroupClient   *MockPlacementGroupClient
@@ -46,6 +47,7 @@ func NewMockClient(ctrl *gomock.Controller) *Client {
 		ServerClient:           NewMockServerClient(ctrl),
 		ServerTypeClient:       NewMockServerTypeClient(ctrl),
 		SSHKeyClient:           NewMockSSHKeyClient(ctrl),
+		StorageBoxTypeClient:   NewMockStorageBoxTypeClient(ctrl),
 		VolumeClient:           NewMockVolumeClient(ctrl),
 		ISOClient:              NewMockISOClient(ctrl),
 		PlacementGroupClient:   NewMockPlacementGroupClient(ctrl),
@@ -112,6 +114,10 @@ func (c *Client) ServerType() hcapi2.ServerTypeClient {
 
 func (c *Client) SSHKey() hcapi2.SSHKeyClient {
 	return c.SSHKeyClient
+}
+
+func (c *Client) StorageBoxType() hcapi2.StorageBoxTypeClient {
+	return c.StorageBoxTypeClient
 }
 
 func (c *Client) Volume() hcapi2.VolumeClient {
