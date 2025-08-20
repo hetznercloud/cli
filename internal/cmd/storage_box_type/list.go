@@ -19,7 +19,7 @@ var ListCmd = base.ListCmd{
 	JSONKeyGetByName:   "storage_box_types",
 	DefaultColumns:     []string{"id", "name", "description", "snapshot_limit", "automatic_snapshot_limit", "subaccounts_limit", "size"},
 
-	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
+	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, _ []string) ([]interface{}, error) {
 		opts := hcloud.StorageBoxTypeListOpts{ListOpts: listOpts}
 		storageBoxTypes, err := s.Client().StorageBoxType().AllWithOpts(s, opts)
 

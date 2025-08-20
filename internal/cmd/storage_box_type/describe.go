@@ -22,7 +22,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBoxType]{
 		}
 		return st, hcloud.SchemaFromStorageBoxType(st), nil
 	},
-	PrintText: func(s state.State, cmd *cobra.Command, storageBoxType *hcloud.StorageBoxType) error {
+	PrintText: func(_ state.State, cmd *cobra.Command, storageBoxType *hcloud.StorageBoxType) error {
 		cmd.Printf("ID:\t\t\t\t%d\n", storageBoxType.ID)
 		cmd.Printf("Name:\t\t\t\t%s\n", storageBoxType.Name)
 		cmd.Printf("Description:\t\t\t%s\n", storageBoxType.Description)
