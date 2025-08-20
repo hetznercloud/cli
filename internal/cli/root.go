@@ -3,6 +3,7 @@ package cli
 import (
 	"io"
 
+	"github.com/hetznercloud/cli/internal/cmd/storagebox"
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/all"
@@ -61,6 +62,7 @@ func NewRootCommand(s state.State) *cobra.Command {
 		firewall.NewCommand(s),
 		placementgroup.NewCommand(s),
 		primaryip.NewCommand(s),
+		storagebox.NewCommand(s),
 		storageboxtype.NewCommand(s),
 	)
 
