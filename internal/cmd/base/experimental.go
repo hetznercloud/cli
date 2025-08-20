@@ -48,7 +48,7 @@ See %s for more details.
 `, product, url)
 
 		cmd.PreRunE = util.ChainRunE(cmd.PreRunE, func(cmd *cobra.Command, _ []string) error {
-			hideWarning, err := config.OptionExperimental.Get(s.Config())
+			hideWarning, err := config.OptionNoExperimentalWarning.Get(s.Config())
 			if err != nil {
 				return err
 			}

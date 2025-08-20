@@ -142,7 +142,7 @@ var (
 		nil,
 	)
 
-	OptionExperimental = newOpt(
+	OptionNoExperimentalWarning = newOpt(
 		"no-experimental-warnings",
 		"If true, experimental warnings are not shown",
 		false,
