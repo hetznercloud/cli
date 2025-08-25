@@ -108,7 +108,7 @@ func runCertificateTestSuite(t *testing.T, certName string, certID int64, certTy
 				SeparatedByWhitespace(
 					"ID", "NAME", "LABELS", "TYPE", "CREATED", "NOT VALID BEFORE", "NOT VALID AFTER",
 					"DOMAIN NAMES", "FINGERPRINT", "ISSUANCE STATUS", "RENEWAL STATUS", "AGE",
-				).Newline().
+				).OptionalWhitespace().Newline().
 				Lit(strconv.FormatInt(certID, 10)).Whitespace().
 				Lit(certName).Whitespace().
 				Lit(strings.Join(labels, ", ")).Whitespace().
