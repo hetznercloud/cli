@@ -1,6 +1,8 @@
 package storageboxtype
 
 import (
+	"strconv"
+
 	"github.com/dustin/go-humanize"
 	"github.com/spf13/pflag"
 
@@ -37,6 +39,20 @@ var ListCmd = base.ListCmd[*hcloud.StorageBoxType, schema.StorageBoxType]{
 					return "-"
 				}
 				return util.Datetime(storageBoxType.UnavailableAfter())
+			}).
+			AddFieldFn("snapshot_limit", func(obj interface{}) string {
+				storageBoxType := obj.(*hcloud.StorageBoxType)
+				if storageBoxType.SnapshotLimit == nil {
+					return "-"
+				}
+				return strconv.Itoa(*storageBoxType.SnapshotLimit)
+			}).
+			AddFieldFn("automatic_snapshot_limit", func(obj interface{}) string {
+				storageBoxType := obj.(*hcloud.StorageBoxType)
+				if storageBoxType.AutomaticSnapshotLimit == nil {
+					return "-"
+				}
+				return strconv.Itoa(*storageBoxType.AutomaticSnapshotLimit)
 			})
 	},
 

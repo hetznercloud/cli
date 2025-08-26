@@ -27,8 +27,12 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBoxType]{
 		cmd.Printf("Name:\t\t\t\t%s\n", storageBoxType.Name)
 		cmd.Printf("Description:\t\t\t%s\n", storageBoxType.Description)
 		cmd.Printf("Size:\t\t\t\t%s\n", humanize.IBytes(uint64(storageBoxType.Size)))
-		cmd.Printf("Snapshot Limit:\t\t\t%d\n", storageBoxType.SnapshotLimit)
-		cmd.Printf("Automatic Snapshot Limit:\t%d\n", storageBoxType.AutomaticSnapshotLimit)
+		if storageBoxType.SnapshotLimit != nil {
+			cmd.Printf("Snapshot Limit:\t\t\t%d\n", *storageBoxType.SnapshotLimit)
+		}
+		if storageBoxType.AutomaticSnapshotLimit != nil {
+			cmd.Printf("Automatic Snapshot Limit:\t%d\n", *storageBoxType.AutomaticSnapshotLimit)
+		}
 		cmd.Printf("Subaccounts Limit:\t\t%d\n", storageBoxType.SubaccountsLimit)
 		cmd.Print(util.DescribeDeprecation(storageBoxType))
 

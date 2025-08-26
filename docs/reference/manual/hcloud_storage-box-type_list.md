@@ -8,14 +8,16 @@ Displays a list of Storage Box Types.
 
 Output can be controlled with the -o flag. Use -o noheader to suppress the
 table header. Displayed columns and their order can be set with
--o columns=deprecated,description (see available columns below).
+-o columns=automatic_snapshot_limit,deprecated (see available columns below).
 
 Columns:
+ - automatic_snapshot_limit
  - deprecated
  - description
  - id
  - name
  - size
+ - snapshot_limit
  - subaccounts_limit
 
 ```
