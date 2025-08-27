@@ -11,6 +11,7 @@ import (
 type StorageBoxClient interface {
 	hcloud.IStorageBoxClient
 	Names() []string
+	LabelKeys(string) []string
 }
 
 func NewStorageBoxClient(client hcloud.IStorageBoxClient) StorageBoxClient {
@@ -42,4 +43,14 @@ func (c *storageBoxClient) Names() []string {
 		names[i] = name
 	}
 	return names
+}
+
+// LabelKeys returns a slice containing the keys of all labels assigned to
+// the Storage Box with the passed name or id.
+func (c *storageBoxClient) LabelKeys(nameOrID string) []string {
+	storageBox, _, err := c.Get(context.Background(), nameOrID)
+	if err != nil || storageBox == nil || len(storageBox.Labels) == 0 {
+		return nil
+	}
+	return labelKeys(storageBox.Labels)
 }
