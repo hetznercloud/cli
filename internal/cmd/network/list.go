@@ -16,24 +16,18 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
-var ListCmd = base.ListCmd{
+var ListCmd = &base.ListCmd[*hcloud.Network, schema.Network]{
 	ResourceNamePlural: "Networks",
 	JSONKeyGetByName:   "networks",
 	DefaultColumns:     []string{"id", "name", "ip_range", "servers", "age"},
 	SortOption:         nil, // Networks do not support sorting
 
-	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
+	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.Network, error) {
 		opts := hcloud.NetworkListOpts{ListOpts: listOpts}
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		networks, err := s.Client().Network().AllWithOpts(s, opts)
-
-		var resources []interface{}
-		for _, n := range networks {
-			resources = append(resources, n)
-		}
-		return resources, err
+		return s.Client().Network().AllWithOpts(s, opts)
 	},
 
 	OutputTable: func(t *output.Table, _ hcapi2.Client) {
@@ -72,12 +66,5 @@ var ListCmd = base.ListCmd{
 				return util.Age(network.Created, time.Now())
 			}))
 	},
-	Schema: func(resources []interface{}) interface{} {
-		networkSchemas := make([]schema.Network, 0, len(resources))
-		for _, resource := range resources {
-			network := resource.(*hcloud.Network)
-			networkSchemas = append(networkSchemas, hcloud.SchemaFromNetwork(network))
-		}
-		return networkSchemas
-	},
+	Schema: hcloud.SchemaFromNetwork,
 }

@@ -17,19 +17,33 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
+// Listable is an interface that defines the methods required for a resource to be listed.
+// It is needed because ListCmd is a generic type, and we don't always know the concrete type of the resource.
+// See [all.ListCmd]
+type Listable interface {
+	GetResourceNamePlural() string
+	GetJSONKeyGetByName() string
+	GetDefaultColumns() []string
+	UseOutputTable(*output.Table, hcapi2.Client)
+	FetchAny(state.State, *pflag.FlagSet, hcloud.ListOpts, []string) ([]any, error)
+	SchemaAny(any) any
+}
+
 // ListCmd allows defining commands for listing resources
-type ListCmd struct {
+// T is the type of the resource that is listed, e.g. *hcloud.Server
+// S is the type of the schema that is returned, e.g. schema.Server
+type ListCmd[T any, S any] struct {
 	SortOption         *config.Option[[]string]
 	ResourceNamePlural string // e.g. "Servers"
 	JSONKeyGetByName   string // e.g. "Servers"
 	DefaultColumns     []string
-	Fetch              func(state.State, *pflag.FlagSet, hcloud.ListOpts, []string) ([]interface{}, error)
+	Fetch              func(state.State, *pflag.FlagSet, hcloud.ListOpts, []string) ([]T, error)
 	// Can be set in case the resource has more than a single identifier that is used in the positional arguments.
 	// See [ListCmd.PositionalArgumentOverride].
-	FetchWithArgs   func(s state.State, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string, args []string) ([]interface{}, error)
+	FetchWithArgs   func(s state.State, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string, args []string) ([]T, error)
 	AdditionalFlags func(*cobra.Command)
 	OutputTable     func(t *output.Table, client hcapi2.Client)
-	Schema          func([]interface{}) interface{}
+	Schema          func(T) S
 
 	// In case the resource does not have a single identifier that matches [ListCmd.ResourceNamePlural], this field
 	// can be set to define the list of positional arguments.
@@ -44,7 +58,7 @@ type ListCmd struct {
 }
 
 // CobraCommand creates a command that can be registered with cobra.
-func (lc *ListCmd) CobraCommand(s state.State) *cobra.Command {
+func (lc *ListCmd[T, S]) CobraCommand(s state.State) *cobra.Command {
 	t := output.NewTable(io.Discard)
 	lc.OutputTable(t, s.Client())
 	outputColumns := t.Columns()
@@ -79,7 +93,7 @@ func (lc *ListCmd) CobraCommand(s state.State) *cobra.Command {
 }
 
 // Run executes a list command
-func (lc *ListCmd) Run(s state.State, cmd *cobra.Command, args []string) error {
+func (lc *ListCmd[T, S]) Run(s state.State, cmd *cobra.Command, args []string) error {
 	outOpts := output.FlagsForCommand(cmd)
 
 	quiet, err := config.OptionQuiet.Get(s.Config())
@@ -108,7 +122,7 @@ func (lc *ListCmd) Run(s state.State, cmd *cobra.Command, args []string) error {
 		PerPage:       50,
 	}
 
-	var resources []any
+	var resources []T
 	if lc.FetchWithArgs != nil {
 		resources, err = lc.FetchWithArgs(s, cmd.Flags(), listOpts, sorts, args)
 	} else {
@@ -126,7 +140,10 @@ func (lc *ListCmd) Run(s state.State, cmd *cobra.Command, args []string) error {
 
 	isSchema := outOpts.IsSet("json") || outOpts.IsSet("yaml")
 	if isSchema {
-		schema := lc.Schema(resources)
+		var schema []any
+		for _, resource := range resources {
+			schema = append(schema, lc.Schema(resource))
+		}
 		if outOpts.IsSet("json") {
 			return util.DescribeJSON(out, schema)
 		}
@@ -155,4 +172,32 @@ func listPositionalArguments(positionalArgumentOverride []string) string {
 	}
 
 	return " " + positionalArguments("", positionalArgumentOverride)
+}
+
+func (lc *ListCmd[T, S]) GetResourceNamePlural() string {
+	return lc.ResourceNamePlural
+}
+
+func (lc *ListCmd[T, S]) GetJSONKeyGetByName() string {
+	return lc.JSONKeyGetByName
+}
+
+func (lc *ListCmd[T, S]) GetDefaultColumns() []string {
+	return lc.DefaultColumns
+}
+
+func (lc *ListCmd[T, S]) FetchAny(s state.State, fs *pflag.FlagSet, opts hcloud.ListOpts, sorts []string) ([]any, error) {
+	resources, err := lc.Fetch(s, fs, opts, sorts)
+	return util.ToAnySlice(resources), err
+}
+
+func (lc *ListCmd[T, S]) SchemaAny(resource any) any {
+	if res, ok := resource.(T); ok {
+		return lc.Schema(res)
+	}
+	return nil
+}
+
+func (lc *ListCmd[T, S]) UseOutputTable(t *output.Table, client hcapi2.Client) {
+	lc.OutputTable(t, client)
 }

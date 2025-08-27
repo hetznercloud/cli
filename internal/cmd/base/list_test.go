@@ -10,7 +10,6 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/output"
-	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/cli/internal/state/config"
@@ -18,11 +17,11 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var fakeListCmd = &base.ListCmd{
+var fakeListCmd = &base.ListCmd[*fakeResource, *fakeResource]{
 	ResourceNamePlural: "Fake resources",
 
-	Schema: func(i []interface{}) interface{} {
-		return i
+	Schema: func(resource *fakeResource) *fakeResource {
+		return resource
 	},
 
 	OutputTable: func(t *output.Table, _ hcapi2.Client) {
@@ -40,7 +39,7 @@ var fakeListCmd = &base.ListCmd{
 
 	DefaultColumns: []string{"id", "name"},
 
-	Fetch: func(_ state.State, _ *pflag.FlagSet, _ hcloud.ListOpts, sort []string) ([]interface{}, error) {
+	Fetch: func(_ state.State, _ *pflag.FlagSet, _ hcloud.ListOpts, sort []string) ([]*fakeResource, error) {
 		resources := []*fakeResource{
 			{
 				ID:   456,
@@ -75,7 +74,7 @@ var fakeListCmd = &base.ListCmd{
 				})
 			}
 		}
-		return util.ToAnySlice(resources), nil
+		return resources, nil
 	},
 }
 

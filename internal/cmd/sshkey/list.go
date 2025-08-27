@@ -15,24 +15,18 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
-var ListCmd = base.ListCmd{
+var ListCmd = &base.ListCmd[*hcloud.SSHKey, schema.SSHKey]{
 	ResourceNamePlural: "SSH Keys",
 	JSONKeyGetByName:   "ssh_keys",
 	DefaultColumns:     []string{"id", "name", "fingerprint", "age"},
 	SortOption:         config.OptionSortSSHKey,
 
-	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
+	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.SSHKey, error) {
 		opts := hcloud.SSHKeyListOpts{ListOpts: listOpts}
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		sshKeys, err := s.Client().SSHKey().AllWithOpts(s, opts)
-
-		var resources []interface{}
-		for _, n := range sshKeys {
-			resources = append(resources, n)
-		}
-		return resources, err
+		return s.Client().SSHKey().AllWithOpts(s, opts)
 	},
 
 	OutputTable: func(t *output.Table, _ hcapi2.Client) {
@@ -52,12 +46,5 @@ var ListCmd = base.ListCmd{
 			}))
 	},
 
-	Schema: func(resources []interface{}) interface{} {
-		sshKeySchemas := make([]schema.SSHKey, 0, len(resources))
-		for _, resource := range resources {
-			sshKey := resource.(*hcloud.SSHKey)
-			sshKeySchemas = append(sshKeySchemas, hcloud.SchemaFromSSHKey(sshKey))
-		}
-		return sshKeySchemas
-	},
+	Schema: hcloud.SchemaFromSSHKey,
 }

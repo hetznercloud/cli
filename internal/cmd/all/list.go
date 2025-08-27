@@ -26,7 +26,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var allCmds = []base.ListCmd{
+var allCmds = []base.Listable{
 	server.ListCmd,
 	image.ListCmd,
 	placementgroup.ListCmd,
@@ -46,7 +46,7 @@ var ListCmd = base.Cmd{
 
 		var resources []string
 		for _, cmd := range allCmds {
-			resources = append(resources, " - "+cmd.ResourceNamePlural)
+			resources = append(resources, " - "+cmd.GetResourceNamePlural())
 		}
 
 		cmd := &cobra.Command{
@@ -73,30 +73,15 @@ Listed resources are:
 
 		outOpts := output.FlagsForCommand(cmd)
 
-		var cmds []base.ListCmd
+		cmds := allCmds
 		if paid {
-			cmds = []base.ListCmd{
+			cmds = []base.Listable{
 				server.ListCmd,
 				image.ListCmd,
 				primaryip.ListCmd,
 				volume.ListCmd,
 				loadbalancer.ListCmd,
 				floatingip.ListCmd,
-			}
-		} else {
-			cmds = []base.ListCmd{
-				server.ListCmd,
-				image.ListCmd,
-				placementgroup.ListCmd,
-				primaryip.ListCmd,
-				iso.ListCmd,
-				volume.ListCmd,
-				loadbalancer.ListCmd,
-				floatingip.ListCmd,
-				network.ListCmd,
-				firewall.ListCmd,
-				certificate.ListCmd,
-				sshkey.ListCmd,
 			}
 		}
 
@@ -119,9 +104,9 @@ Listed resources are:
 					LabelSelector: labelSelector,
 				}
 
-				flagSet := pflag.NewFlagSet(lc.JSONKeyGetByName, pflag.ExitOnError)
+				flagSet := pflag.NewFlagSet(lc.GetJSONKeyGetByName(), pflag.ExitOnError)
 
-				switch lc.JSONKeyGetByName {
+				switch lc.GetJSONKeyGetByName() {
 				case image.ListCmd.JSONKeyGetByName:
 					flagSet.StringSlice("type", []string{"backup", "snapshot"}, "")
 				case iso.ListCmd.JSONKeyGetByName:
@@ -132,7 +117,7 @@ Listed resources are:
 				// We pass an empty slice because we defined the flags earlier.
 				_ = flagSet.Parse([]string{})
 
-				result, err := lc.Fetch(s, flagSet, listOpts, []string{})
+				result, err := lc.FetchAny(s, flagSet, listOpts, []string{})
 				ch <- response{result, err}
 			}()
 		}
@@ -150,7 +135,11 @@ Listed resources are:
 		if outOpts.IsSet("json") || outOpts.IsSet("yaml") {
 			schema := make(map[string]any)
 			for i, lc := range cmds {
-				schema[lc.JSONKeyGetByName] = lc.Schema(resources[i])
+				subSchema := make([]any, 0, len(resources[i]))
+				for _, resource := range resources[i] {
+					subSchema = append(subSchema, lc.SchemaAny(resource))
+				}
+				schema[lc.GetJSONKeyGetByName()] = subSchema
 			}
 			if outOpts.IsSet("json") {
 				return util.DescribeJSON(cmd.OutOrStdout(), schema)
@@ -159,16 +148,16 @@ Listed resources are:
 		}
 
 		for i, lc := range cmds {
-			cols := lc.DefaultColumns
+			cols := lc.GetDefaultColumns()
 			table := output.NewTable(cmd.OutOrStdout())
-			lc.OutputTable(table, s.Client())
+			lc.UseOutputTable(table, s.Client())
 			table.WriteHeader(cols)
 
 			if len(resources[i]) == 0 {
 				continue
 			}
 
-			cmd.Print(strings.ToUpper(lc.ResourceNamePlural) + "\n---\n")
+			cmd.Print(strings.ToUpper(lc.GetResourceNamePlural()) + "\n---\n")
 			for _, resource := range resources[i] {
 				table.Write(cols, resource)
 			}

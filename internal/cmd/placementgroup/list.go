@@ -16,24 +16,18 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
-var ListCmd = base.ListCmd{
+var ListCmd = &base.ListCmd[*hcloud.PlacementGroup, schema.PlacementGroup]{
 	ResourceNamePlural: "Placement Groups",
 	JSONKeyGetByName:   "placement_groups",
 	DefaultColumns:     []string{"id", "name", "servers", "type", "age"},
 	SortOption:         config.OptionSortPlacementGroup,
 
-	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
+	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.PlacementGroup, error) {
 		opts := hcloud.PlacementGroupListOpts{ListOpts: listOpts}
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		placementGroups, err := s.Client().PlacementGroup().AllWithOpts(s, opts)
-
-		var resources []interface{}
-		for _, n := range placementGroups {
-			resources = append(resources, n)
-		}
-		return resources, err
+		return s.Client().PlacementGroup().AllWithOpts(s, opts)
 	},
 
 	OutputTable: func(t *output.Table, _ hcapi2.Client) {
@@ -57,12 +51,5 @@ var ListCmd = base.ListCmd{
 			}))
 	},
 
-	Schema: func(resources []interface{}) interface{} {
-		placementGroupSchemas := make([]schema.PlacementGroup, 0, len(resources))
-		for _, resource := range resources {
-			placementGroup := resource.(*hcloud.PlacementGroup)
-			placementGroupSchemas = append(placementGroupSchemas, hcloud.SchemaFromPlacementGroup(placementGroup))
-		}
-		return placementGroupSchemas
-	},
+	Schema: hcloud.SchemaFromPlacementGroup,
 }

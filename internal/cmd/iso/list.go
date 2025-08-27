@@ -2,7 +2,6 @@ package iso
 
 import (
 	"fmt"
-	"slices"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -17,7 +16,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
-var ListCmd = base.ListCmd{
+var ListCmd = &base.ListCmd[*hcloud.ISO, schema.ISO]{
 	ResourceNamePlural: "ISOs",
 	JSONKeyGetByName:   "isos",
 	DefaultColumns:     []string{"id", "name", "description", "type", "architecture"},
@@ -33,7 +32,7 @@ var ListCmd = base.ListCmd{
 		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("public", "private"))
 	},
 
-	Fetch: func(s state.State, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
+	Fetch: func(s state.State, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.ISO, error) {
 		opts := hcloud.ISOListOpts{ListOpts: listOpts}
 
 		types, _ := flags.GetStringSlice("type")
@@ -67,15 +66,7 @@ var ListCmd = base.ListCmd{
 			opts.Sort = sorts
 		}
 
-		isos, err := s.Client().ISO().AllWithOpts(s, opts)
-
-		var resources []interface{}
-		for _, iso := range isos {
-			if slices.Contains(types, string(iso.Type)) {
-				resources = append(resources, iso)
-			}
-		}
-		return resources, err
+		return s.Client().ISO().AllWithOpts(s, opts)
 	},
 
 	OutputTable: func(t *output.Table, _ hcapi2.Client) {
@@ -90,12 +81,5 @@ var ListCmd = base.ListCmd{
 			})
 	},
 
-	Schema: func(resources []interface{}) interface{} {
-		isoSchemas := make([]schema.ISO, 0, len(resources))
-		for _, resource := range resources {
-			iso := resource.(*hcloud.ISO)
-			isoSchemas = append(isoSchemas, hcloud.SchemaFromISO(iso))
-		}
-		return isoSchemas
-	},
+	Schema: hcloud.SchemaFromISO,
 }

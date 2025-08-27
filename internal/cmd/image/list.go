@@ -20,7 +20,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
-var ListCmd = base.ListCmd{
+var ListCmd = &base.ListCmd[*hcloud.Image, schema.Image]{
 	ResourceNamePlural: "Images",
 	JSONKeyGetByName:   "images",
 	DefaultColumns:     []string{"id", "type", "name", "description", "architecture", "image_size", "disk_size", "created", "deprecated"},
@@ -33,7 +33,7 @@ var ListCmd = base.ListCmd{
 		cmd.Flags().StringSliceP("architecture", "a", []string{}, "Only show Images of given architecture: x86|arm")
 		_ = cmd.RegisterFlagCompletionFunc("architecture", cmpl.SuggestCandidates(string(hcloud.ArchitectureX86), string(hcloud.ArchitectureARM)))
 	},
-	Fetch: func(s state.State, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
+	Fetch: func(s state.State, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.Image, error) {
 		opts := hcloud.ImageListOpts{ListOpts: listOpts, IncludeDeprecated: true}
 
 		types, _ := flags.GetStringSlice("type")
@@ -63,13 +63,7 @@ var ListCmd = base.ListCmd{
 			opts.Sort = sorts
 		}
 
-		images, err := s.Client().Image().AllWithOpts(s, opts)
-
-		var resources []interface{}
-		for _, n := range images {
-			resources = append(resources, n)
-		}
-		return resources, err
+		return s.Client().Image().AllWithOpts(s, opts)
 	},
 
 	OutputTable: func(t *output.Table, client hcapi2.Client) {
@@ -144,12 +138,5 @@ var ListCmd = base.ListCmd{
 			}))
 	},
 
-	Schema: func(resources []interface{}) interface{} {
-		imageSchemas := make([]schema.Image, 0, len(resources))
-		for _, resource := range resources {
-			image := resource.(*hcloud.Image)
-			imageSchemas = append(imageSchemas, hcloud.SchemaFromImage(image))
-		}
-		return imageSchemas
-	},
+	Schema: hcloud.SchemaFromImage,
 }

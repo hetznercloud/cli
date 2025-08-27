@@ -14,24 +14,18 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
-var ListCmd = base.ListCmd{
+var ListCmd = &base.ListCmd[*hcloud.Firewall, schema.Firewall]{
 	ResourceNamePlural: "Firewalls",
 	JSONKeyGetByName:   "firewalls",
 	DefaultColumns:     []string{"id", "name", "rules_count", "applied_to_count"},
 	SortOption:         config.OptionSortFirewall,
 
-	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
+	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.Firewall, error) {
 		opts := hcloud.FirewallListOpts{ListOpts: listOpts}
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		firewalls, err := s.Client().Firewall().AllWithOpts(s, opts)
-
-		var resources []interface{}
-		for _, n := range firewalls {
-			resources = append(resources, n)
-		}
-		return resources, err
+		return s.Client().Firewall().AllWithOpts(s, opts)
 	},
 
 	OutputTable: func(t *output.Table, _ hcapi2.Client) {
@@ -68,12 +62,5 @@ var ListCmd = base.ListCmd{
 			}))
 	},
 
-	Schema: func(resources []interface{}) interface{} {
-		firewallSchemas := make([]schema.Firewall, 0, len(resources))
-		for _, resource := range resources {
-			fw := resource.(*hcloud.Firewall)
-			firewallSchemas = append(firewallSchemas, hcloud.SchemaFromFirewall(fw))
-		}
-		return firewallSchemas
-	},
+	Schema: hcloud.SchemaFromFirewall,
 }

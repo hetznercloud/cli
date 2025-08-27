@@ -17,24 +17,18 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
-var ListCmd = base.ListCmd{
+var ListCmd = &base.ListCmd[*hcloud.Volume, schema.Volume]{
 	ResourceNamePlural: "Volumes",
 	JSONKeyGetByName:   "volumes",
 	DefaultColumns:     []string{"id", "name", "size", "server", "location", "age"},
 	SortOption:         config.OptionSortVolume,
 
-	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
+	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.Volume, error) {
 		opts := hcloud.VolumeListOpts{ListOpts: listOpts}
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		volumes, err := s.Client().Volume().AllWithOpts(s, opts)
-
-		var resources []interface{}
-		for _, n := range volumes {
-			resources = append(resources, n)
-		}
-		return resources, err
+		return s.Client().Volume().AllWithOpts(s, opts)
 	},
 
 	OutputTable: func(t *output.Table, client hcapi2.Client) {
@@ -78,12 +72,5 @@ var ListCmd = base.ListCmd{
 			}))
 	},
 
-	Schema: func(resources []interface{}) interface{} {
-		volumesSchema := make([]schema.Volume, 0, len(resources))
-		for _, resource := range resources {
-			volume := resource.(*hcloud.Volume)
-			volumesSchema = append(volumesSchema, hcloud.SchemaFromVolume(volume))
-		}
-		return volumesSchema
-	},
+	Schema: hcloud.SchemaFromVolume,
 }

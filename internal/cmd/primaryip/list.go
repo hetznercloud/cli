@@ -17,24 +17,18 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
-var ListCmd = base.ListCmd{
+var ListCmd = &base.ListCmd[*hcloud.PrimaryIP, schema.PrimaryIP]{
 	ResourceNamePlural: "Primary IPs",
 	JSONKeyGetByName:   "primary_ips",
 	DefaultColumns:     []string{"id", "type", "name", "ip", "assignee", "dns", "auto_delete", "age"},
 	SortOption:         config.OptionSortPrimaryIP,
 
-	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
+	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.PrimaryIP, error) {
 		opts := hcloud.PrimaryIPListOpts{ListOpts: listOpts}
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		primaryips, err := s.Client().PrimaryIP().AllWithOpts(s, opts)
-
-		var resources []interface{}
-		for _, n := range primaryips {
-			resources = append(resources, n)
-		}
-		return resources, err
+		return s.Client().PrimaryIP().AllWithOpts(s, opts)
 	},
 
 	OutputTable: func(t *output.Table, client hcapi2.Client) {
@@ -98,12 +92,5 @@ var ListCmd = base.ListCmd{
 			}))
 	},
 
-	Schema: func(resources []interface{}) interface{} {
-		primaryIPsSchema := make([]schema.PrimaryIP, 0, len(resources))
-		for _, resource := range resources {
-			primaryIP := resource.(*hcloud.PrimaryIP)
-			primaryIPsSchema = append(primaryIPsSchema, hcloud.SchemaFromPrimaryIP(primaryIP))
-		}
-		return primaryIPsSchema
-	},
+	Schema: hcloud.SchemaFromPrimaryIP,
 }

@@ -16,24 +16,18 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
-var ListCmd = base.ListCmd{
+var ListCmd = &base.ListCmd[*hcloud.Certificate, schema.Certificate]{
 	ResourceNamePlural: "Certificates",
 	JSONKeyGetByName:   "certificates",
 	DefaultColumns:     []string{"id", "name", "type", "domain_names", "not_valid_after", "age"},
 	SortOption:         config.OptionSortCertificate,
 
-	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]interface{}, error) {
+	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.Certificate, error) {
 		opts := hcloud.CertificateListOpts{ListOpts: listOpts}
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		certificates, err := s.Client().Certificate().AllWithOpts(s, opts)
-
-		var resources []interface{}
-		for _, n := range certificates {
-			resources = append(resources, n)
-		}
-		return resources, err
+		return s.Client().Certificate().AllWithOpts(s, opts)
 	},
 
 	OutputTable: func(t *output.Table, _ hcapi2.Client) {
@@ -81,13 +75,5 @@ var ListCmd = base.ListCmd{
 			}))
 	},
 
-	Schema: func(resources []interface{}) interface{} {
-		certSchemas := make([]schema.Certificate, 0, len(resources))
-		for _, resource := range resources {
-			cert := resource.(*hcloud.Certificate)
-			certSchemas = append(certSchemas, hcloud.SchemaFromCertificate(cert))
-		}
-
-		return certSchemas
-	},
+	Schema: hcloud.SchemaFromCertificate,
 }
