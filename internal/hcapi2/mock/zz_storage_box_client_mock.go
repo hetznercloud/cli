@@ -71,6 +71,38 @@ func (mr *MockStorageBoxClientMockRecorder) AllWithOpts(ctx, opts any) *gomock.C
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AllWithOpts", reflect.TypeOf((*MockStorageBoxClient)(nil).AllWithOpts), ctx, opts)
 }
 
+// ChangeProtection mocks base method.
+func (m *MockStorageBoxClient) ChangeProtection(ctx context.Context, storageBox *hcloud.StorageBox, opts hcloud.StorageBoxChangeProtectionOpts) (*hcloud.Action, *hcloud.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ChangeProtection", ctx, storageBox, opts)
+	ret0, _ := ret[0].(*hcloud.Action)
+	ret1, _ := ret[1].(*hcloud.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// ChangeProtection indicates an expected call of ChangeProtection.
+func (mr *MockStorageBoxClientMockRecorder) ChangeProtection(ctx, storageBox, opts any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ChangeProtection", reflect.TypeOf((*MockStorageBoxClient)(nil).ChangeProtection), ctx, storageBox, opts)
+}
+
+// ChangeType mocks base method.
+func (m *MockStorageBoxClient) ChangeType(ctx context.Context, storageBox *hcloud.StorageBox, opts hcloud.StorageBoxChangeTypeOpts) (*hcloud.Action, *hcloud.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ChangeType", ctx, storageBox, opts)
+	ret0, _ := ret[0].(*hcloud.Action)
+	ret1, _ := ret[1].(*hcloud.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// ChangeType indicates an expected call of ChangeType.
+func (mr *MockStorageBoxClientMockRecorder) ChangeType(ctx, storageBox, opts any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ChangeType", reflect.TypeOf((*MockStorageBoxClient)(nil).ChangeType), ctx, storageBox, opts)
+}
+
 // Create mocks base method.
 func (m *MockStorageBoxClient) Create(ctx context.Context, opts hcloud.StorageBoxCreateOpts) (hcloud.StorageBoxCreateResult, *hcloud.Response, error) {
 	m.ctrl.T.Helper()
@@ -101,6 +133,38 @@ func (m *MockStorageBoxClient) Delete(ctx context.Context, storageBox *hcloud.St
 func (mr *MockStorageBoxClientMockRecorder) Delete(ctx, storageBox any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Delete", reflect.TypeOf((*MockStorageBoxClient)(nil).Delete), ctx, storageBox)
+}
+
+// DisableSnapshotPlan mocks base method.
+func (m *MockStorageBoxClient) DisableSnapshotPlan(ctx context.Context, storageBox *hcloud.StorageBox) (*hcloud.Action, *hcloud.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DisableSnapshotPlan", ctx, storageBox)
+	ret0, _ := ret[0].(*hcloud.Action)
+	ret1, _ := ret[1].(*hcloud.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// DisableSnapshotPlan indicates an expected call of DisableSnapshotPlan.
+func (mr *MockStorageBoxClientMockRecorder) DisableSnapshotPlan(ctx, storageBox any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DisableSnapshotPlan", reflect.TypeOf((*MockStorageBoxClient)(nil).DisableSnapshotPlan), ctx, storageBox)
+}
+
+// EnableSnapshotPlan mocks base method.
+func (m *MockStorageBoxClient) EnableSnapshotPlan(ctx context.Context, storageBox *hcloud.StorageBox, opts hcloud.StorageBoxEnableSnapshotPlanOpts) (*hcloud.Action, *hcloud.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "EnableSnapshotPlan", ctx, storageBox, opts)
+	ret0, _ := ret[0].(*hcloud.Action)
+	ret1, _ := ret[1].(*hcloud.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// EnableSnapshotPlan indicates an expected call of EnableSnapshotPlan.
+func (mr *MockStorageBoxClientMockRecorder) EnableSnapshotPlan(ctx, storageBox, opts any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "EnableSnapshotPlan", reflect.TypeOf((*MockStorageBoxClient)(nil).EnableSnapshotPlan), ctx, storageBox, opts)
 }
 
 // Folders mocks base method.
@@ -211,6 +275,38 @@ func (mr *MockStorageBoxClientMockRecorder) Names() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockStorageBoxClient)(nil).Names))
 }
 
+// ResetPassword mocks base method.
+func (m *MockStorageBoxClient) ResetPassword(ctx context.Context, storageBox *hcloud.StorageBox, opts hcloud.StorageBoxResetPasswordOpts) (*hcloud.Action, *hcloud.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ResetPassword", ctx, storageBox, opts)
+	ret0, _ := ret[0].(*hcloud.Action)
+	ret1, _ := ret[1].(*hcloud.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// ResetPassword indicates an expected call of ResetPassword.
+func (mr *MockStorageBoxClientMockRecorder) ResetPassword(ctx, storageBox, opts any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ResetPassword", reflect.TypeOf((*MockStorageBoxClient)(nil).ResetPassword), ctx, storageBox, opts)
+}
+
+// RollbackSnapshot mocks base method.
+func (m *MockStorageBoxClient) RollbackSnapshot(ctx context.Context, storageBox *hcloud.StorageBox, opts hcloud.StorageBoxRollbackSnapshotOpts) (*hcloud.Action, *hcloud.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "RollbackSnapshot", ctx, storageBox, opts)
+	ret0, _ := ret[0].(*hcloud.Action)
+	ret1, _ := ret[1].(*hcloud.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// RollbackSnapshot indicates an expected call of RollbackSnapshot.
+func (mr *MockStorageBoxClientMockRecorder) RollbackSnapshot(ctx, storageBox, opts any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RollbackSnapshot", reflect.TypeOf((*MockStorageBoxClient)(nil).RollbackSnapshot), ctx, storageBox, opts)
+}
+
 // Update mocks base method.
 func (m *MockStorageBoxClient) Update(ctx context.Context, storageBox *hcloud.StorageBox, opts hcloud.StorageBoxUpdateOpts) (*hcloud.StorageBox, *hcloud.Response, error) {
 	m.ctrl.T.Helper()
@@ -225,4 +321,20 @@ func (m *MockStorageBoxClient) Update(ctx context.Context, storageBox *hcloud.St
 func (mr *MockStorageBoxClientMockRecorder) Update(ctx, storageBox, opts any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Update", reflect.TypeOf((*MockStorageBoxClient)(nil).Update), ctx, storageBox, opts)
+}
+
+// UpdateAccessSettings mocks base method.
+func (m *MockStorageBoxClient) UpdateAccessSettings(ctx context.Context, storageBox *hcloud.StorageBox, opts hcloud.StorageBoxUpdateAccessSettingsOpts) (*hcloud.Action, *hcloud.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateAccessSettings", ctx, storageBox, opts)
+	ret0, _ := ret[0].(*hcloud.Action)
+	ret1, _ := ret[1].(*hcloud.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// UpdateAccessSettings indicates an expected call of UpdateAccessSettings.
+func (mr *MockStorageBoxClientMockRecorder) UpdateAccessSettings(ctx, storageBox, opts any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateAccessSettings", reflect.TypeOf((*MockStorageBoxClient)(nil).UpdateAccessSettings), ctx, storageBox, opts)
 }
