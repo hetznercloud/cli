@@ -46,8 +46,8 @@ type LabelCmds[T any] struct {
 	// provided as part of the [LabelCmds.ValidArgsFunction].
 	ValidArgsFunction func(client hcapi2.Client) []cobra.CompletionFunc
 
-	// ExperimentalF is a function that will be used to mark the command as experimental.
-	ExperimentalF func(state.State, *cobra.Command) *cobra.Command
+	// Experimental is a function that will be used to mark the command as experimental.
+	Experimental func(state.State, *cobra.Command) *cobra.Command
 }
 
 // AddCobraCommand creates a command that can be registered with cobra.
@@ -79,8 +79,8 @@ func (lc *LabelCmds[T]) AddCobraCommand(s state.State) *cobra.Command {
 
 	cmd.Flags().BoolP("overwrite", "o", false, "Overwrite label if it exists already (true, false)")
 
-	if lc.ExperimentalF != nil {
-		cmd = lc.ExperimentalF(s, cmd)
+	if lc.Experimental != nil {
+		cmd = lc.Experimental(s, cmd)
 	}
 
 	return cmd

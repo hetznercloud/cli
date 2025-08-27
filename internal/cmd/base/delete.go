@@ -25,8 +25,8 @@ type DeleteCmd struct {
 	Fetch                func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error)
 	Delete               func(s state.State, cmd *cobra.Command, resource interface{}) (*hcloud.Action, error)
 
-	// ExperimentalF is a function that will be used to mark the command as experimental.
-	ExperimentalF func(state.State, *cobra.Command) *cobra.Command
+	// Experimental is a function that will be used to mark the command as experimental.
+	Experimental func(state.State, *cobra.Command) *cobra.Command
 }
 
 // CobraCommand creates a command that can be registered with cobra.
@@ -51,8 +51,8 @@ func (dc *DeleteCmd) CobraCommand(s state.State) *cobra.Command {
 	if dc.AdditionalFlags != nil {
 		dc.AdditionalFlags(cmd)
 	}
-	if dc.ExperimentalF != nil {
-		cmd = dc.ExperimentalF(s, cmd)
+	if dc.Experimental != nil {
+		cmd = dc.Experimental(s, cmd)
 	}
 	return cmd
 }

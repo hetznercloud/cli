@@ -22,8 +22,8 @@ type SetRdnsCmd struct {
 	Fetch                func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error)
 	GetDefaultIP         func(resource interface{}) net.IP
 
-	// ExperimentalF is a function that will be used to mark the command as experimental.
-	ExperimentalF func(state.State, *cobra.Command) *cobra.Command
+	// Experimental is a function that will be used to mark the command as experimental.
+	Experimental func(state.State, *cobra.Command) *cobra.Command
 }
 
 // CobraCommand creates a command that can be registered with cobra.
@@ -45,8 +45,8 @@ func (rc *SetRdnsCmd) CobraCommand(s state.State) *cobra.Command {
 
 	cmd.Flags().IPP("ip", "i", net.IP{}, "IP address for which the reverse DNS entry should be set")
 
-	if rc.ExperimentalF != nil {
-		cmd = rc.ExperimentalF(s, cmd)
+	if rc.Experimental != nil {
+		cmd = rc.Experimental(s, cmd)
 	}
 	return cmd
 }

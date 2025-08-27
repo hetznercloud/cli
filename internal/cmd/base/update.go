@@ -23,8 +23,8 @@ type UpdateCmd struct {
 	Fetch                func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error)
 	Update               func(s state.State, cmd *cobra.Command, resource interface{}, flags map[string]pflag.Value) error
 
-	// ExperimentalF is a function that will be used to mark the command as experimental.
-	ExperimentalF func(state.State, *cobra.Command) *cobra.Command
+	// Experimental is a function that will be used to mark the command as experimental.
+	Experimental func(state.State, *cobra.Command) *cobra.Command
 }
 
 // CobraCommand creates a command that can be registered with cobra.
@@ -42,8 +42,8 @@ func (uc *UpdateCmd) CobraCommand(s state.State) *cobra.Command {
 		},
 	}
 	uc.DefineFlags(cmd)
-	if uc.ExperimentalF != nil {
-		cmd = uc.ExperimentalF(s, cmd)
+	if uc.Experimental != nil {
+		cmd = uc.Experimental(s, cmd)
 	}
 	return cmd
 }
