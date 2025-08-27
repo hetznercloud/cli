@@ -34,9 +34,9 @@ var CreateCmd = base.CreateCmd{
 
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 
-		// TODO: Can OpenSSH Public Keys have comma in them? If yes we should use StringArray instead
 		// TODO: How to handle SSH Keys? --public-key-from-file?
-		cmd.Flags().StringSlice("ssh-keys", []string{}, "SSH public keys in OpenSSH format which should be injected into the Storage Box")
+		// TODO: Fetch SSH Keys from the project
+		cmd.Flags().StringArray("ssh-key", []string{}, "SSH public keys in OpenSSH format which should be injected into the Storage Box")
 
 		// TODO: Are we fine with dropping the nested object key ("access_settings") from the flag names?
 		cmd.Flags().Bool("enable-samba", false, "Whether the Samba subsystem should be enabled")
@@ -55,6 +55,7 @@ var CreateCmd = base.CreateCmd{
 		sbType, _ := cmd.Flags().GetString("type")
 		location, _ := cmd.Flags().GetString("location")
 		password, _ := cmd.Flags().GetString("password")
+		sshKeys, _ := cmd.Flags().GetStringArray("ssh-key")
 		labels, _ := cmd.Flags().GetStringToString("label")
 
 		enableSamba, _ := cmd.Flags().GetBool("enable-samba")
@@ -69,7 +70,7 @@ var CreateCmd = base.CreateCmd{
 			Location:       &hcloud.Location{Name: location},
 			Labels:         labels,
 			Password:       password,
-			SSHKeys:        nil,
+			SSHKeys:        sshKeys,
 			AccessSettings: &hcloud.StorageBoxCreateOptsAccessSettings{
 				ReachableExternally: &reachableExternally,
 				SambaEnabled:        &enableSamba,
