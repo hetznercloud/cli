@@ -43,6 +43,22 @@ func TestDescribe(t *testing.T) {
 					ID: 321,
 				},
 			},
+			{
+				Type: hcloud.FirewallResourceTypeLabelSelector,
+				LabelSelector: &hcloud.FirewallResourceLabelSelector{
+					Selector: "foobar",
+				},
+				AppliedToResources: []hcloud.FirewallResource{
+					{
+						Type:   hcloud.FirewallResourceTypeServer,
+						Server: &hcloud.FirewallResourceServer{ID: 123},
+					},
+					{
+						Type:   hcloud.FirewallResourceTypeServer,
+						Server: &hcloud.FirewallResourceServer{ID: 456},
+					},
+				},
+			},
 		},
 		Labels: map[string]string{
 			"key": "value",
@@ -53,6 +69,12 @@ func TestDescribe(t *testing.T) {
 	fx.Client.FirewallClient.EXPECT().
 		Get(gomock.Any(), "test").
 		Return(fw, nil, nil)
+	fx.Client.ServerClient.EXPECT().
+		ServerName(int64(123)).
+		Return("appliedServer1")
+	fx.Client.ServerClient.EXPECT().
+		ServerName(int64(456)).
+		Return("appliedServer2")
 	fx.Client.ServerClient.EXPECT().
 		ServerName(int64(321)).
 		Return("myServer")
@@ -74,6 +96,15 @@ Applied To:
   - Type:		server
     Server ID:		321
     Server Name:	myServer
+  - Type:		label_selector
+    Label Selector:	foobar
+    Applied to resources:
+    - Type:		server
+      Server ID:		123
+      Server Name:	appliedServer1
+    - Type:		server
+      Server ID:		456
+      Server Name:	appliedServer2
 `, util.Datetime(fw.Created), humanize.Time(fw.Created))
 
 	require.NoError(t, err)
