@@ -12,6 +12,9 @@ import (
 type Cmd struct {
 	BaseCobraCommand func(hcapi2.Client) *cobra.Command
 	Run              func(state.State, *cobra.Command, []string) error
+
+	// Experimental is a function that will be used to mark the command as experimental.
+	Experimental func(state.State, *cobra.Command) *cobra.Command
 }
 
 // CobraCommand creates a command that can be registered with cobra.
@@ -35,5 +38,8 @@ func (gc *Cmd) CobraCommand(s state.State) *cobra.Command {
 		return gc.Run(s, cmd, args)
 	}
 
+	if gc.Experimental != nil {
+		cmd = gc.Experimental(s, cmd)
+	}
 	return cmd
 }
