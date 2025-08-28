@@ -20,7 +20,7 @@ var AssignCmd = base.Cmd{
 			Use:   "assign --server <server> <primary-ip>",
 			Short: "Assign a Primary IP to an assignee (usually a Server)",
 			ValidArgsFunction: cmpl.SuggestArgs(
-				cmpl.SuggestCandidatesF(client.PrimaryIP().Names),
+				cmpl.SuggestCandidatesF(client.PrimaryIP().Names(true, false, nil)),
 			),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,

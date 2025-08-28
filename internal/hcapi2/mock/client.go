@@ -31,13 +31,19 @@ type Client struct {
 }
 
 func NewMockClient(ctrl *gomock.Controller) *Client {
+
+	primaryIPClient := NewMockPrimaryIPClient(ctrl)
+	// We call .Names() in command constructors to provide completions. Since we do not want to mock each
+	// completion function, we ignore the call to .Names() here.
+	primaryIPClient.EXPECT().Names(gomock.Any(), gomock.Any(), gomock.Any()).AnyTimes()
+
 	return &Client{
 		ActionClient:           NewMockActionClient(ctrl),
 		CertificateClient:      NewMockCertificateClient(ctrl),
 		DatacenterClient:       NewMockDatacenterClient(ctrl),
 		FirewallClient:         NewMockFirewallClient(ctrl),
 		FloatingIPClient:       NewMockFloatingIPClient(ctrl),
-		PrimaryIPClient:        NewMockPrimaryIPClient(ctrl),
+		PrimaryIPClient:        primaryIPClient,
 		ImageClient:            NewMockImageClient(ctrl),
 		LocationClient:         NewMockLocationClient(ctrl),
 		LoadBalancerClient:     NewMockLoadBalancerClient(ctrl),
