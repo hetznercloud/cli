@@ -177,6 +177,10 @@ func (lc *LabelCmds[T]) RemoveCobraCommand(s state.State) *cobra.Command {
 
 	cmd.Flags().BoolP("all", "a", false, "Remove all labels")
 
+	if lc.Experimental != nil {
+		cmd = lc.Experimental(s, cmd)
+	}
+
 	return cmd
 }
 
