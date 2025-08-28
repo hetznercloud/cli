@@ -70,6 +70,12 @@ func TestDescribe(t *testing.T) {
 		Get(gomock.Any(), "test").
 		Return(fw, nil, nil)
 	fx.Client.ServerClient.EXPECT().
+		ServerName(int64(123)).
+		Return("appliedServer1")
+	fx.Client.ServerClient.EXPECT().
+		ServerName(int64(456)).
+		Return("appliedServer2")
+	fx.Client.ServerClient.EXPECT().
 		ServerName(int64(321)).
 		Return("myServer")
 
@@ -93,8 +99,12 @@ Applied To:
   - Type:		label_selector
     Label Selector:	foobar
     Applied to resources:
-      Server 123
-      Server 456
+    - Type:		server
+      Server ID:		123
+      Server Name:	appliedServer1
+    - Type:		server
+      Server ID:		456
+      Server Name:	appliedServer2
 `, util.Datetime(fw.Created), humanize.Time(fw.Created))
 
 	require.NoError(t, err)
