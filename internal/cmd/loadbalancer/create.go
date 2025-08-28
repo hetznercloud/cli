@@ -103,6 +103,9 @@ var CreateCmd = base.CreateCmd{
 		if err != nil {
 			return nil, nil, err
 		}
+		if loadBalancer == nil {
+			return nil, nil, fmt.Errorf("Load Balancer not found: %d", result.LoadBalancer.ID)
+		}
 		cmd.Printf("Load Balancer %d created\n", loadBalancer.ID)
 
 		if err := changeProtection(s, cmd, loadBalancer, true, protectionOpts); err != nil {

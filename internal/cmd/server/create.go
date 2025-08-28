@@ -118,6 +118,9 @@ var CreateCmd = base.CreateCmd{
 		if err != nil {
 			return nil, nil, err
 		}
+		if server == nil {
+			return nil, nil, fmt.Errorf("server not found: %d", result.Server.ID)
+		}
 
 		cmd.Printf("Server %d created\n", result.Server.ID)
 
