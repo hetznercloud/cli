@@ -1,5 +1,22 @@
 # Changelog
 
+## [v1.52.0](https://github.com/hetznercloud/cli/releases/tag/v1.52.0)
+
+### Features
+
+- improve error formatting (#1080)
+- add plural command aliases (#1087)
+- **context**: allow renaming contexts (#1115)
+- **firewall**: display applied to resources when using label selector (#1082)
+- highlight experimental commands (#1103)
+
+### Bug Fixes
+
+- do not indent last empty line (#1112)
+- **iso**: describe command suggests location names (#1113)
+- segmentation fault possible when creating servers or load balancers (#1137)
+- **primary-ip**: only suggest applicable primary IPs (#1114)
+
 ## [v1.51.0](https://github.com/hetznercloud/cli/releases/tag/v1.51.0)
 
 ### Features
