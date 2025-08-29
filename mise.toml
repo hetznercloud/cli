@@ -1,5 +1,5 @@
 [tools]
-go = "1.24.6"
+go = "1.25.0"
 "go:go.uber.org/mock/mockgen" = "v0.6.0"  # renovate: datasource=github-releases depName=uber-go/mock
 golangci-lint = "v1.64.8"
 goreleaser = "v2.9.0"
