@@ -40,16 +40,16 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBox]{
 		} else {
 			cmd.Printf("  Max Snapshots:\t\t\t%d\n", snapshotPlan.MaxSnapshots)
 			if snapshotPlan.Minute != nil {
-				cmd.Printf("  Minute:\t\t\t%d\n", *snapshotPlan.Minute)
+				cmd.Printf("  Minute:\t\t\t\t\t%d\n", *snapshotPlan.Minute)
 			}
 			if snapshotPlan.Hour != nil {
-				cmd.Printf("  Hour:\t\t\t\t%d\n", *snapshotPlan.Hour)
+				cmd.Printf("  Hour:\t\t\t\t\t\t%d\n", *snapshotPlan.Hour)
 			}
 			if snapshotPlan.DayOfWeek != nil {
-				cmd.Printf("  Day of Week:\t\t\t%d\n", *snapshotPlan.DayOfWeek)
+				cmd.Printf("  Day of Week:\t\t\t\t%d\n", *snapshotPlan.DayOfWeek)
 			}
 			if snapshotPlan.DayOfMonth != nil {
-				cmd.Printf("  Day of Month:\t\t\t%d\n", *snapshotPlan.DayOfMonth)
+				cmd.Printf("  Day of Month:\t\t\t\t%d\n", *snapshotPlan.DayOfMonth)
 			}
 		}
 

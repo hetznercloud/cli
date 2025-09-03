@@ -1,9 +1,11 @@
 package storagebox_test
 
 import (
+	"fmt"
 	"testing"
 	"time"
 
+	"github.com/dustin/go-humanize"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/mock/gomock"
@@ -92,11 +94,11 @@ func TestDescribe(t *testing.T) {
 			Delete: false,
 		},
 		SnapshotPlan: &hcloud.StorageBoxSnapshotPlan{
-			MaxSnapshots: 0,
-			Minute:       nil,
-			Hour:         nil,
-			DayOfWeek:    nil,
-			DayOfMonth:   nil,
+			MaxSnapshots: 10,
+			Minute:       hcloud.Ptr(1),
+			Hour:         hcloud.Ptr(2),
+			DayOfWeek:    hcloud.Ptr(3),
+			DayOfMonth:   hcloud.Ptr(4),
 		},
 		Created: time.Date(2016, 1, 30, 23, 55, 0, 0, time.UTC),
 	}
@@ -107,15 +109,19 @@ func TestDescribe(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"test"})
 
-	expOut := `ID:							123
+	expOut := fmt.Sprintf(`ID:							123
 Name:						test
-Created:					Sat Jan 30 23:55:00 UTC 2016 (9 years ago)
+Created:					Sat Jan 30 23:55:00 UTC 2016 (%s)
 Status:						active
 Username:					u12345
 Server:						u1337.your-storagebox.de
 System:						FSN1-BX355
 Snapshot Plan:
-  Max Snapshots:			0
+  Max Snapshots:			10
+  Minute:					1
+  Hour:						2
+  Day of Week:				3
+  Day of Month:				4
 Protection:
   Delete:					false
 Stats:
@@ -149,7 +155,7 @@ Location:
   City:						Falkenstein
   Latitude:					50.476120
   Longitude:				12.370071
-`
+`, humanize.Time(storageBox.Created))
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
