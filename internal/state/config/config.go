@@ -98,7 +98,7 @@ func (cfg *config) reset() {
 
 func (cfg *config) Read(f any) error {
 	// we ignore unknown flags since we are only interested in config option flags
-	cfg.fs.ParseErrorsWhitelist.UnknownFlags = true
+	cfg.fs.ParseErrorsAllowlist.UnknownFlags = true
 
 	err := cfg.fs.Parse(os.Args[1:])
 	if err != nil && !errors.Is(err, pflag.ErrHelp) {
