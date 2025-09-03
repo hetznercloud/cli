@@ -25,6 +25,8 @@ func NewCommand(s state.State) *cobra.Command {
 		LabelCmds.AddCobraCommand(s),
 		LabelCmds.RemoveCobraCommand(s),
 		UpdateCmd.CobraCommand(s),
+		EnableProtectionCmd.CobraCommand(s),
+		DisableProtectionCmd.CobraCommand(s),
 	)
 	return cmd
 }

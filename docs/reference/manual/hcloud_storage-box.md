@@ -29,6 +29,8 @@ Manage Storage Boxes
 * [hcloud storage-box create](hcloud_storage-box_create.md)	 - Create a new Storage Box
 * [hcloud storage-box delete](hcloud_storage-box_delete.md)	 - Delete a Storage Box
 * [hcloud storage-box describe](hcloud_storage-box_describe.md)	 - Describe a Storage Box
+* [hcloud storage-box disable-protection](hcloud_storage-box_disable-protection.md)	 - Disable resource protection for a Storage Box
+* [hcloud storage-box enable-protection](hcloud_storage-box_enable-protection.md)	 - Enable resource protection for a Storage Box
 * [hcloud storage-box folders](hcloud_storage-box_folders.md)	 - List folders of a Storage Box
 * [hcloud storage-box list](hcloud_storage-box_list.md)	 - List Storage Boxes
 * [hcloud storage-box remove-label](hcloud_storage-box_remove-label.md)	 - Remove a label from a Storage Box
