@@ -28,8 +28,6 @@ var LabelCmds = base.LabelCmds[*hcloud.StorageBox]{
 	SetLabels: func(s state.State, storageBox *hcloud.StorageBox, labels map[string]string) error {
 		opts := hcloud.StorageBoxUpdateOpts{
 			Labels: labels,
-			// TODO: why do we need to re-set the name?
-			Name: storageBox.Name,
 		}
 		_, _, err := s.Client().StorageBox().Update(s, storageBox, opts)
 		return err

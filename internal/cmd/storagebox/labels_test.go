@@ -29,7 +29,6 @@ func TestLabelAdd(t *testing.T) {
 		Return(sb, nil, nil)
 	fx.Client.StorageBoxClient.EXPECT().
 		Update(gomock.Any(), sb, hcloud.StorageBoxUpdateOpts{
-			Name: "test",
 			Labels: map[string]string{
 				"key": "value",
 			},
@@ -64,7 +63,6 @@ func TestLabelRemove(t *testing.T) {
 		Return(sb, nil, nil)
 	fx.Client.StorageBoxClient.EXPECT().
 		Update(gomock.Any(), sb, hcloud.StorageBoxUpdateOpts{
-			Name:   "test",
 			Labels: make(map[string]string),
 		})
 
