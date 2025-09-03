@@ -10,7 +10,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var CreateCmd = base.CreateCmd{
+var CreateCmd = base.CreateCmd[*hcloud.PlacementGroup]{
 	BaseCobraCommand: func(hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:   "create [options] --name <name> --type <type>",
@@ -25,7 +25,7 @@ var CreateCmd = base.CreateCmd{
 		_ = cmd.MarkFlagRequired("type")
 		return cmd
 	},
-	Run: func(s state.State, cmd *cobra.Command, _ []string) (any, any, error) {
+	Run: func(s state.State, cmd *cobra.Command, _ []string) (*hcloud.PlacementGroup, any, error) {
 		name, _ := cmd.Flags().GetString("name")
 		labels, _ := cmd.Flags().GetStringToString("label")
 		placementGroupType, _ := cmd.Flags().GetString("type")

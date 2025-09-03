@@ -11,7 +11,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var CreateCmd = base.CreateCmd{
+var CreateCmd = base.CreateCmd[*hcloud.PrimaryIP]{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:                   "create [options] --type <ipv4|ipv6> --name <name>",
@@ -40,7 +40,7 @@ var CreateCmd = base.CreateCmd{
 
 		return cmd
 	},
-	Run: func(s state.State, cmd *cobra.Command, _ []string) (any, any, error) {
+	Run: func(s state.State, cmd *cobra.Command, _ []string) (*hcloud.PrimaryIP, any, error) {
 		typ, _ := cmd.Flags().GetString("type")
 		name, _ := cmd.Flags().GetString("name")
 		assigneeID, _ := cmd.Flags().GetInt64("assignee-id")
@@ -89,8 +89,7 @@ var CreateCmd = base.CreateCmd{
 
 		return result.PrimaryIP, util.Wrap("primary_ip", hcloud.SchemaFromPrimaryIP(result.PrimaryIP)), nil
 	},
-	PrintResource: func(_ state.State, cmd *cobra.Command, resource any) {
-		primaryIP := resource.(*hcloud.PrimaryIP)
+	PrintResource: func(_ state.State, cmd *cobra.Command, primaryIP *hcloud.PrimaryIP) {
 		cmd.Printf("IP%s: %s\n", primaryIP.Type[2:], primaryIP.IP)
 	},
 }

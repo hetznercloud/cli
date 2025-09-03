@@ -13,18 +13,18 @@ import (
 )
 
 // CreateCmd allows defining commands for resource creation
-type CreateCmd struct {
+type CreateCmd[T any] struct {
 	BaseCobraCommand func(hcapi2.Client) *cobra.Command
 	// Run is the function that will be called when the command is executed.
 	// It should return the created resource, the schema of the resource and an error.
-	Run           func(state.State, *cobra.Command, []string) (any, any, error)
-	PrintResource func(state.State, *cobra.Command, any)
+	Run           func(state.State, *cobra.Command, []string) (T, any, error)
+	PrintResource func(state.State, *cobra.Command, T)
 	// Experimental is a function that will be used to mark the command as experimental.
 	Experimental func(state.State, *cobra.Command) *cobra.Command
 }
 
 // CobraCommand creates a command that can be registered with cobra.
-func (cc *CreateCmd) CobraCommand(s state.State) *cobra.Command {
+func (cc *CreateCmd[T]) CobraCommand(s state.State) *cobra.Command {
 	cmd := cc.BaseCobraCommand(s.Client())
 
 	output.AddFlag(cmd, output.OptionJSON(), output.OptionYAML())
@@ -72,7 +72,7 @@ func (cc *CreateCmd) CobraCommand(s state.State) *cobra.Command {
 				return util.DescribeJSON(schemaOut, schema)
 			}
 			return util.DescribeYAML(schemaOut, schema)
-		} else if cc.PrintResource != nil && resource != nil {
+		} else if cc.PrintResource != nil && !util.IsNil(resource) {
 			cc.PrintResource(s, cmd, resource)
 		}
 		return nil

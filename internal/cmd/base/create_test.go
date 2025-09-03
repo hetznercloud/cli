@@ -17,13 +17,13 @@ type fakeResource struct {
 	Name string `json:"name"`
 }
 
-var fakeCreateCmd = &base.CreateCmd{
+var fakeCreateCmd = &base.CreateCmd[*fakeResource]{
 	BaseCobraCommand: func(hcapi2.Client) *cobra.Command {
 		return &cobra.Command{
 			Use: "create",
 		}
 	},
-	Run: func(_ state.State, cmd *cobra.Command, _ []string) (any, any, error) {
+	Run: func(_ state.State, cmd *cobra.Command, _ []string) (*fakeResource, any, error) {
 		cmd.Println("Creating fake resource")
 
 		resource := &fakeResource{
