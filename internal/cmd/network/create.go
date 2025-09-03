@@ -13,7 +13,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var CreateCmd = base.CreateCmd{
+var CreateCmd = base.CreateCmd[*hcloud.Network]{
 	BaseCobraCommand: func(hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:   "create [options] --name <name> --ip-range <ip-range>",
@@ -34,7 +34,7 @@ var CreateCmd = base.CreateCmd{
 		_ = cmd.RegisterFlagCompletionFunc("enable-protection", cmpl.SuggestCandidates("delete"))
 		return cmd
 	},
-	Run: func(s state.State, cmd *cobra.Command, _ []string) (any, any, error) {
+	Run: func(s state.State, cmd *cobra.Command, _ []string) (*hcloud.Network, any, error) {
 		name, _ := cmd.Flags().GetString("name")
 		ipRange, _ := cmd.Flags().GetIPNet("ip-range")
 		labels, _ := cmd.Flags().GetStringToString("label")

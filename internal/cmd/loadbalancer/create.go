@@ -13,7 +13,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var CreateCmd = base.CreateCmd{
+var CreateCmd = base.CreateCmd[*hcloud.LoadBalancer]{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:                   "create [options] --name <name> --type <type>",
@@ -50,7 +50,7 @@ var CreateCmd = base.CreateCmd{
 
 		return cmd
 	},
-	Run: func(s state.State, cmd *cobra.Command, _ []string) (any, any, error) {
+	Run: func(s state.State, cmd *cobra.Command, _ []string) (*hcloud.LoadBalancer, any, error) {
 		name, _ := cmd.Flags().GetString("name")
 		serverType, _ := cmd.Flags().GetString("type")
 		algorithmType, _ := cmd.Flags().GetString("algorithm-type")
@@ -115,8 +115,7 @@ var CreateCmd = base.CreateCmd{
 		return loadBalancer, util.Wrap("load_balancer", hcloud.SchemaFromLoadBalancer(loadBalancer)), nil
 	},
 
-	PrintResource: func(_ state.State, cmd *cobra.Command, resource any) {
-		loadBalancer := resource.(*hcloud.LoadBalancer)
+	PrintResource: func(_ state.State, cmd *cobra.Command, loadBalancer *hcloud.LoadBalancer) {
 		cmd.Printf("IPv4: %s\n", loadBalancer.PublicNet.IPv4.IP.String())
 		cmd.Printf("IPv6: %s\n", loadBalancer.PublicNet.IPv6.IP.String())
 	},

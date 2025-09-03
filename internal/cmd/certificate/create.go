@@ -14,7 +14,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var CreateCmd = base.CreateCmd{
+var CreateCmd = base.CreateCmd[*hcloud.Certificate]{
 	BaseCobraCommand: func(hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:   "create [options] --name <name> (--type managed --domain <domain> | --type uploaded --cert-file <file> --key-file <file>)",
@@ -41,7 +41,7 @@ var CreateCmd = base.CreateCmd{
 
 		return cmd
 	},
-	Run: func(s state.State, cmd *cobra.Command, _ []string) (any, any, error) {
+	Run: func(s state.State, cmd *cobra.Command, _ []string) (*hcloud.Certificate, any, error) {
 		certType, err := cmd.Flags().GetString("type")
 		if err != nil {
 			return nil, nil, err

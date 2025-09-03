@@ -36,7 +36,7 @@ type createResultSchema struct {
 }
 
 // CreateCmd defines a command for creating a server.
-var CreateCmd = base.CreateCmd{
+var CreateCmd = base.CreateCmd[*createResult]{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:   "create [options] --name <name> --type <server-type> --image <image>",
@@ -99,7 +99,7 @@ var CreateCmd = base.CreateCmd{
 		return cmd
 	},
 
-	Run: func(s state.State, cmd *cobra.Command, _ []string) (any, any, error) {
+	Run: func(s state.State, cmd *cobra.Command, _ []string) (*createResult, any, error) {
 		createOpts, protectionOpts, err := createOptsFromFlags(s, cmd)
 		if err != nil {
 			return nil, nil, err
@@ -142,12 +142,11 @@ var CreateCmd = base.CreateCmd{
 			cmd.Printf("Backups enabled for Server %d\n", server.ID)
 		}
 
-		return createResult{Server: server, RootPassword: result.RootPassword},
+		return &createResult{Server: server, RootPassword: result.RootPassword},
 			createResultSchema{Server: hcloud.SchemaFromServer(server), RootPassword: result.RootPassword}, nil
 	},
 
-	PrintResource: func(s state.State, cmd *cobra.Command, resource any) {
-		result := resource.(createResult)
+	PrintResource: func(s state.State, cmd *cobra.Command, result *createResult) {
 		server := result.Server
 
 		if !server.PublicNet.IPv4.IsUnspecified() {

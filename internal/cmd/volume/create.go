@@ -15,7 +15,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/exp/actionutil"
 )
 
-var CreateCmd = base.CreateCmd{
+var CreateCmd = base.CreateCmd[*hcloud.Volume]{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:                   "create [options] --name <name> --size <size>",
@@ -47,7 +47,7 @@ var CreateCmd = base.CreateCmd{
 
 		return cmd
 	},
-	Run: func(s state.State, cmd *cobra.Command, _ []string) (any, any, error) {
+	Run: func(s state.State, cmd *cobra.Command, _ []string) (*hcloud.Volume, any, error) {
 		name, _ := cmd.Flags().GetString("name")
 		serverIDOrName, _ := cmd.Flags().GetString("server")
 		size, _ := cmd.Flags().GetInt("size")
