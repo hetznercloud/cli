@@ -91,11 +91,11 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBox]{
 		cmd.Printf("  Description:\t\t\t\t%s\n", storageBoxType.Description)
 		cmd.Printf("  Size:\t\t\t\t\t\t%s\n", humanize.IBytes(uint64(storageBoxType.Size)))
 
-		snapshotLimit := "unlimited"
+		snapshotLimit := "-"
 		if storageBox.StorageBoxType.SnapshotLimit != nil {
 			snapshotLimit = strconv.Itoa(*storageBox.StorageBoxType.SnapshotLimit)
 		}
-		automaticSnapshotLimit := "unlimited"
+		automaticSnapshotLimit := "-"
 		if storageBox.StorageBoxType.AutomaticSnapshotLimit != nil {
 			automaticSnapshotLimit = strconv.Itoa(*storageBox.StorageBoxType.AutomaticSnapshotLimit)
 		}
