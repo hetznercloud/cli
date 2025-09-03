@@ -24,6 +24,7 @@ func NewCommand(s state.State) *cobra.Command {
 		DescribeCmd.CobraCommand(s),
 		LabelCmds.AddCobraCommand(s),
 		LabelCmds.RemoveCobraCommand(s),
+		UpdateCmd.CobraCommand(s),
 	)
 	return cmd
 }

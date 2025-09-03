@@ -32,3 +32,4 @@ Manage Storage Boxes
 * [hcloud storage-box folders](hcloud_storage-box_folders.md)	 - List folders of a Storage Box
 * [hcloud storage-box list](hcloud_storage-box_list.md)	 - List Storage Boxes
 * [hcloud storage-box remove-label](hcloud_storage-box_remove-label.md)	 - Remove a label from a Storage Box
+* [hcloud storage-box update](hcloud_storage-box_update.md)	 - Update a Storage Box

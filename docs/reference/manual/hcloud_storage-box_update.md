@@ -1,17 +1,16 @@
-## hcloud storage-box folders
+## hcloud storage-box update
 
-List folders of a Storage Box
+Update a Storage Box
 
 ```
-hcloud storage-box folders <storage-box>
+hcloud storage-box update [options] <storage-box>
 ```
 
 ### Options
 
 ```
-  -h, --help                 help for folders
-  -o, --output stringArray   output options: json|yaml
-      --path string          Relative path for which the listing is to be made
+  -h, --help          help for update
+      --name string   Storage Box name
 ```
 
 ### Options inherited from parent commands
