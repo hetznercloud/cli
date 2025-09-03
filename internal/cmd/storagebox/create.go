@@ -11,7 +11,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var CreateCmd = base.CreateCmd{
+var CreateCmd = base.CreateCmd[*hcloud.StorageBox]{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:   "create [options] --name <name> --type <type> --location <location> --password <password>",
@@ -50,7 +50,7 @@ var CreateCmd = base.CreateCmd{
 
 		return cmd
 	},
-	Run: func(s state.State, cmd *cobra.Command, strings []string) (any, any, error) {
+	Run: func(s state.State, cmd *cobra.Command, strings []string) (*hcloud.StorageBox, any, error) {
 		name, _ := cmd.Flags().GetString("name")
 		sbType, _ := cmd.Flags().GetString("type")
 		location, _ := cmd.Flags().GetString("location")
@@ -93,9 +93,7 @@ var CreateCmd = base.CreateCmd{
 
 		return result.StorageBox, util.Wrap("storage_box", hcloud.SchemaFromStorageBox(result.StorageBox)), nil
 	},
-	PrintResource: func(s state.State, command *cobra.Command, resource any) {
-		// storageBox := resource.(*hcloud.StorageBox)
-
+	PrintResource: func(s state.State, command *cobra.Command, storageBox *hcloud.StorageBox) {
 		// TODO should we wait until the storage box is done initializing to display username/server?
 	},
 }

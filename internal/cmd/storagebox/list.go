@@ -12,21 +12,16 @@ import (
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
-var ListCmd = base.ListCmd{
+var ListCmd = base.ListCmd[*hcloud.StorageBox, schema.StorageBox]{
 	ResourceNamePlural: "Storage Boxes",
 	JSONKeyGetByName:   "storage_boxes",
 	DefaultColumns:     []string{"id", "name", "username", "server", "type", "size", "location", "age"},
-	Fetch: func(s state.State, set *pflag.FlagSet, opts hcloud.ListOpts, strings []string) ([]interface{}, error) {
+	Fetch: func(s state.State, set *pflag.FlagSet, opts hcloud.ListOpts, strings []string) ([]*hcloud.StorageBox, error) {
 		listOpts := hcloud.StorageBoxListOpts{ListOpts: opts}
-		storageBoxes, err := s.Client().StorageBox().AllWithOpts(s, listOpts)
-
-		var resources []interface{}
-		for _, r := range storageBoxes {
-			resources = append(resources, r)
-		}
-		return resources, err
+		return s.Client().StorageBox().AllWithOpts(s, listOpts)
 	},
 	OutputTable: func(t *output.Table, client hcapi2.Client) {
 		t.
@@ -80,4 +75,5 @@ var ListCmd = base.ListCmd{
 				return util.Age(storageBox.Created, time.Now())
 			})
 	},
+	Schema: hcloud.SchemaFromStorageBox,
 }
