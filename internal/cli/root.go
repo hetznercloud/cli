@@ -3,7 +3,6 @@ package cli
 import (
 	"io"
 
-	"github.com/hetznercloud/cli/internal/cmd/storagebox"
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/all"
@@ -25,6 +24,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/server"
 	"github.com/hetznercloud/cli/internal/cmd/servertype"
 	"github.com/hetznercloud/cli/internal/cmd/sshkey"
+	"github.com/hetznercloud/cli/internal/cmd/storagebox"
 	"github.com/hetznercloud/cli/internal/cmd/storageboxtype"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/cmd/version"
