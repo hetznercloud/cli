@@ -26,7 +26,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.LoadBalancer]{
 	AdditionalFlags: func(cmd *cobra.Command) {
 		cmd.Flags().Bool("expand-targets", false, "Expand all label_selector targets (true, false)")
 	},
-	PrintText: func(s state.State, cmd *cobra.Command, loadBalancer *hcloud.LoadBalancer) error {
+	PrintText: func(s state.State, cmd *cobra.Command, loadBalancer *hcloud.LoadBalancer, _ base.DescribeWriter) error {
 		withLabelSelectorTargets, _ := cmd.Flags().GetBool("expand-targets")
 		cmd.Printf("ID:\t\t\t\t%d\n", loadBalancer.ID)
 		cmd.Printf("Name:\t\t\t\t%s\n", loadBalancer.Name)

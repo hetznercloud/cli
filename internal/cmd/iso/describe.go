@@ -22,7 +22,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.ISO]{
 		}
 		return iso, hcloud.SchemaFromISO(iso), nil
 	},
-	PrintText: func(_ state.State, cmd *cobra.Command, iso *hcloud.ISO) error {
+	PrintText: func(_ state.State, cmd *cobra.Command, iso *hcloud.ISO, _ base.DescribeWriter) error {
 		cmd.Printf("ID:\t\t%d\n", iso.ID)
 		cmd.Printf("Name:\t\t%s\n", iso.Name)
 		cmd.Printf("Description:\t%s\n", iso.Description)

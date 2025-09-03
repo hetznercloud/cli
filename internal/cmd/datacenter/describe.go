@@ -23,7 +23,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Datacenter]{
 		}
 		return dc, hcloud.SchemaFromDatacenter(dc), nil
 	},
-	PrintText: func(s state.State, cmd *cobra.Command, datacenter *hcloud.Datacenter) error {
+	PrintText: func(s state.State, cmd *cobra.Command, datacenter *hcloud.Datacenter, _ base.DescribeWriter) error {
 		cmd.Printf("ID:\t\t%d\n", datacenter.ID)
 		cmd.Printf("Name:\t\t%s\n", datacenter.Name)
 		cmd.Printf("Description:\t%s\n", datacenter.Description)

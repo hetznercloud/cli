@@ -21,7 +21,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Location]{
 		}
 		return l, hcloud.SchemaFromLocation(l), nil
 	},
-	PrintText: func(_ state.State, cmd *cobra.Command, location *hcloud.Location) error {
+	PrintText: func(_ state.State, cmd *cobra.Command, location *hcloud.Location, _ base.DescribeWriter) error {
 		cmd.Printf("ID:\t\t%d\n", location.ID)
 		cmd.Printf("Name:\t\t%s\n", location.Name)
 		cmd.Printf("Description:\t%s\n", location.Description)

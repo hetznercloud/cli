@@ -22,7 +22,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.FloatingIP]{
 		}
 		return ip, hcloud.SchemaFromFloatingIP(ip), nil
 	},
-	PrintText: func(s state.State, cmd *cobra.Command, floatingIP *hcloud.FloatingIP) error {
+	PrintText: func(s state.State, cmd *cobra.Command, floatingIP *hcloud.FloatingIP, _ base.DescribeWriter) error {
 		cmd.Printf("ID:\t\t%d\n", floatingIP.ID)
 		cmd.Printf("Type:\t\t%s\n", floatingIP.Type)
 		cmd.Printf("Name:\t\t%s\n", floatingIP.Name)

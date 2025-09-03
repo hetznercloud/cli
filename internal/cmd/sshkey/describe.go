@@ -24,7 +24,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.SSHKey]{
 		}
 		return key, hcloud.SchemaFromSSHKey(key), nil
 	},
-	PrintText: func(_ state.State, cmd *cobra.Command, sshKey *hcloud.SSHKey) error {
+	PrintText: func(_ state.State, cmd *cobra.Command, sshKey *hcloud.SSHKey, _ base.DescribeWriter) error {
 		cmd.Printf("ID:\t\t%d\n", sshKey.ID)
 		cmd.Printf("Name:\t\t%s\n", sshKey.Name)
 		cmd.Printf("Created:\t%s (%s)\n", util.Datetime(sshKey.Created), humanize.Time(sshKey.Created))

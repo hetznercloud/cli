@@ -1,6 +1,8 @@
 package servertype
 
 import (
+	"strconv"
+
 	"github.com/dustin/go-humanize"
 	"github.com/spf13/cobra"
 
@@ -22,7 +24,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.ServerType]{
 		}
 		return st, hcloud.SchemaFromServerType(st), nil
 	},
-	PrintText: func(s state.State, cmd *cobra.Command, serverType *hcloud.ServerType) error {
+	PrintText: func(s state.State, cmd *cobra.Command, serverType *hcloud.ServerType, _ base.DescribeWriter) error {
 		cmd.Printf("ID:\t\t\t%d\n", serverType.ID)
 		cmd.Printf("Name:\t\t\t%s\n", serverType.Name)
 		cmd.Printf("Description:\t\t%s\n", serverType.Description)
@@ -53,6 +55,18 @@ var DescribeCmd = base.DescribeCmd[*hcloud.ServerType]{
 
 		return nil
 	},
+}
+
+func DescribeServerType(serverType *hcloud.ServerType, w base.DescribeWriter) {
+	w.WriteLine("ID:", strconv.FormatInt(serverType.ID, 10))
+	w.WriteLine("Name:", serverType.Name)
+	w.WriteLine("Description:", serverType.Description)
+	w.WriteLine("Cores:", strconv.Itoa(serverType.Cores))
+	w.WriteLine("CPU Type:", string(serverType.CPUType))
+	w.WriteLine("Architecture:", string(serverType.Architecture))
+	w.WriteLine("Memory:", strconv.FormatFloat(float64(serverType.Memory), 'f', 1, 64)+" GB")
+	w.WriteLine("Disk:", strconv.Itoa(serverType.Disk)+" GB")
+	w.WriteLine("Storage Type:", string(serverType.StorageType))
 }
 
 func fullPricingInfo(s state.State, serverType *hcloud.ServerType) ([]hcloud.ServerTypeLocationPricing, error) {

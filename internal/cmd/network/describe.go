@@ -23,7 +23,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Network]{
 		}
 		return n, hcloud.SchemaFromNetwork(n), nil
 	},
-	PrintText: func(_ state.State, cmd *cobra.Command, network *hcloud.Network) error {
+	PrintText: func(_ state.State, cmd *cobra.Command, network *hcloud.Network, _ base.DescribeWriter) error {
 		cmd.Printf("ID:\t\t%d\n", network.ID)
 		cmd.Printf("Name:\t\t%s\n", network.Name)
 		cmd.Printf("Created:\t%s (%s)\n", util.Datetime(network.Created), humanize.Time(network.Created))

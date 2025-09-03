@@ -22,7 +22,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Volume]{
 		}
 		return v, hcloud.SchemaFromVolume(v), nil
 	},
-	PrintText: func(s state.State, cmd *cobra.Command, volume *hcloud.Volume) error {
+	PrintText: func(s state.State, cmd *cobra.Command, volume *hcloud.Volume, _ base.DescribeWriter) error {
 		cmd.Printf("ID:\t\t%d\n", volume.ID)
 		cmd.Printf("Name:\t\t%s\n", volume.Name)
 		cmd.Printf("Created:\t%s (%s)\n", util.Datetime(volume.Created), humanize.Time(volume.Created))

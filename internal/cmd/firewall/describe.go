@@ -26,7 +26,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Firewall]{
 		}
 		return fw, hcloud.SchemaFromFirewall(fw), nil
 	},
-	PrintText: func(s state.State, cmd *cobra.Command, firewall *hcloud.Firewall) error {
+	PrintText: func(s state.State, cmd *cobra.Command, firewall *hcloud.Firewall, _ base.DescribeWriter) error {
 		cmd.Printf("ID:\t\t%d\n", firewall.ID)
 		cmd.Printf("Name:\t\t%s\n", firewall.Name)
 		cmd.Printf("Created:\t%s (%s)\n", util.Datetime(firewall.Created), humanize.Time(firewall.Created))

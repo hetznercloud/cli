@@ -22,7 +22,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Certificate]{
 		}
 		return cert, hcloud.SchemaFromCertificate(cert), nil
 	},
-	PrintText: func(s state.State, cmd *cobra.Command, cert *hcloud.Certificate) error {
+	PrintText: func(s state.State, cmd *cobra.Command, cert *hcloud.Certificate, _ base.DescribeWriter) error {
 		cmd.Printf("ID:\t\t\t%d\n", cert.ID)
 		cmd.Printf("Name:\t\t\t%s\n", cert.Name)
 		cmd.Printf("Type:\t\t\t%s\n", cert.Type)

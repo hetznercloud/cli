@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/spf13/cobra"
+	"github.com/stretchr/testify/assert"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/util"
@@ -73,4 +74,19 @@ Name: test
 			ExpOutType: testutil.DataTypeYAML,
 		},
 	})
+}
+
+func TestDescribeWriter(t *testing.T) {
+	dw := base.NewDescribeWriter()
+
+	dw.WriteLine("line1")
+	dw.WriteLine("a", "b", "c")
+	dw.WriteLine("looong column", "d")
+	dw.WriteLine("short", "e", "f", "g")
+
+	assert.Equal(t, `line1
+a              b  c
+looong column  d
+short          e  f  g
+`, dw.String())
 }

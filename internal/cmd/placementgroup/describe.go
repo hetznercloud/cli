@@ -22,7 +22,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.PlacementGroup]{
 		}
 		return pg, hcloud.SchemaFromPlacementGroup(pg), nil
 	},
-	PrintText: func(s state.State, cmd *cobra.Command, placementGroup *hcloud.PlacementGroup) error {
+	PrintText: func(s state.State, cmd *cobra.Command, placementGroup *hcloud.PlacementGroup, _ base.DescribeWriter) error {
 		cmd.Printf("ID:\t\t%d\n", placementGroup.ID)
 		cmd.Printf("Name:\t\t%s\n", placementGroup.Name)
 		cmd.Printf("Created:\t%s (%s)\n", util.Datetime(placementGroup.Created), humanize.Time(placementGroup.Created))

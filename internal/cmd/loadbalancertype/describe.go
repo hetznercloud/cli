@@ -22,7 +22,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.LoadBalancerType]{
 		}
 		return lbt, hcloud.SchemaFromLoadBalancerType(lbt), nil
 	},
-	PrintText: func(s state.State, cmd *cobra.Command, loadBalancerType *hcloud.LoadBalancerType) error {
+	PrintText: func(s state.State, cmd *cobra.Command, loadBalancerType *hcloud.LoadBalancerType, _ base.DescribeWriter) error {
 		cmd.Printf("ID:\t\t\t\t%d\n", loadBalancerType.ID)
 		cmd.Printf("Name:\t\t\t\t%s\n", loadBalancerType.Name)
 		cmd.Printf("Description:\t\t\t%s\n", loadBalancerType.Description)

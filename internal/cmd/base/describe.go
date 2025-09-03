@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"reflect"
+	"slices"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -30,7 +31,7 @@ type DescribeCmd[T any] struct {
 	// See [DescribeCmd.PositionalArgumentOverride].
 	FetchWithArgs func(s state.State, cmd *cobra.Command, args []string) (T, any, error)
 
-	PrintText   func(s state.State, cmd *cobra.Command, resource T) error
+	PrintText   func(s state.State, cmd *cobra.Command, resource T, w DescribeWriter) error
 	GetIDOrName func(resource T) string
 
 	// In case the resource does not have a single identifier that matches [DescribeCmd.ResourceNameSingular], this field
@@ -135,6 +136,72 @@ func (dc *DescribeCmd[T]) Run(s state.State, cmd *cobra.Command, args []string) 
 	case outputFlags.IsSet("format"):
 		return util.DescribeFormat(schemaOut, resource, outputFlags["format"][0])
 	default:
-		return dc.PrintText(s, cmd, resource)
+		w := &describeWriter{}
+		err = dc.PrintText(s, cmd, resource, w)
+		if err != nil {
+			return err
+		}
+		cmd.Print(w.String())
+		return nil
 	}
+}
+
+type DescribeWriter interface {
+	WriteLine(cols ...string)
+	NewSubWriter(prefix string) DescribeWriter
+	String() string
+}
+
+type describeWriter struct {
+	parent DescribeWriter
+	prefix string
+	lines  [][]string
+}
+
+func (w *describeWriter) WriteLine(cols ...string) {
+	if w.parent != nil {
+		dup := slices.Clone(cols)
+		dup[0] = w.prefix + dup[0]
+		w.parent.WriteLine(dup...)
+		return
+	}
+	w.lines = append(w.lines, cols)
+}
+
+func (w *describeWriter) NewSubWriter(prefix string) DescribeWriter {
+	return &describeWriter{
+		parent: w,
+		prefix: prefix,
+	}
+}
+
+func (w *describeWriter) String() string {
+	var sb strings.Builder
+	cols := 0
+	for _, line := range w.lines {
+		if len(line) > cols {
+			cols = len(line)
+		}
+	}
+	minLen := make([]int, cols)
+	for _, line := range w.lines {
+		for i, col := range line {
+			if len(col) > minLen[i] {
+				minLen[i] = len(col)
+			}
+		}
+	}
+	for _, line := range w.lines {
+		for i, col := range line {
+			if i == len(line)-1 {
+				// last column does not need padding
+				sb.WriteString(col)
+			} else {
+				// pad column to align it
+				sb.WriteString(fmt.Sprintf("%-*s  ", minLen[i], col))
+			}
+		}
+		sb.WriteByte('\n')
+	}
+	return sb.String()
 }
