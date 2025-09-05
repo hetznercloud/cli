@@ -26,6 +26,7 @@ Manage Storage Boxes
 
 * [hcloud](hcloud.md)	 - Hetzner Cloud CLI
 * [hcloud storage-box add-label](hcloud_storage-box_add-label.md)	 - Add a label to a Storage Box
+* [hcloud storage-box change-type](hcloud_storage-box_change-type.md)	 - Change type of a Storage Box
 * [hcloud storage-box create](hcloud_storage-box_create.md)	 - Create a new Storage Box
 * [hcloud storage-box delete](hcloud_storage-box_delete.md)	 - Delete a Storage Box
 * [hcloud storage-box describe](hcloud_storage-box_describe.md)	 - Describe a Storage Box
