@@ -203,6 +203,66 @@ func TestCreateJSON(t *testing.T) {
 	assert.JSONEq(t, createResponseJSON, jsonOut)
 }
 
-func TestCreateProtection(_ *testing.T) {
-	// TODO implement once change-protection is implemented
+func TestCreateProtection(t *testing.T) {
+	fx := testutil.NewFixture(t)
+	defer fx.Finish()
+
+	cmd := storagebox.CreateCmd.CobraCommand(fx.State())
+	fx.ExpectEnsureToken()
+
+	sb := &hcloud.StorageBox{
+		ID:       123,
+		Name:     "my-storage-box",
+		Server:   hcloud.Ptr("u12345.your-storagebox.de"),
+		Username: hcloud.Ptr("u12345"),
+	}
+
+	fx.Client.StorageBoxClient.EXPECT().
+		Create(gomock.Any(), hcloud.StorageBoxCreateOpts{
+			Name:           "my-storage-box",
+			StorageBoxType: &hcloud.StorageBoxType{Name: "bx11"},
+			Location:       &hcloud.Location{Name: "fsn1"},
+			Password:       "my-password",
+			AccessSettings: &hcloud.StorageBoxCreateOptsAccessSettings{
+				SambaEnabled:        hcloud.Ptr(true),
+				SSHEnabled:          hcloud.Ptr(true),
+				ZFSEnabled:          hcloud.Ptr(true),
+				ReachableExternally: hcloud.Ptr(false),
+				WebDAVEnabled:       hcloud.Ptr(false),
+			},
+			Labels:  make(map[string]string),
+			SSHKeys: []string{pubKey1},
+		}).
+		Return(hcloud.StorageBoxCreateResult{
+			StorageBox: sb,
+			Action:     &hcloud.Action{ID: 456},
+		}, nil, nil)
+	fx.Client.StorageBoxClient.EXPECT().
+		ChangeProtection(gomock.Any(), sb, hcloud.StorageBoxChangeProtectionOpts{
+			Delete: true,
+		}).
+		Return(&hcloud.Action{ID: 789}, nil, nil)
+	fx.ActionWaiter.EXPECT().
+		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 789}).
+		Return(nil)
+	fx.Client.StorageBoxClient.EXPECT().
+		GetByID(gomock.Any(), sb.ID).
+		Return(sb, nil, nil)
+	fx.ActionWaiter.EXPECT().
+		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 456}).
+		Return(nil)
+
+	out, errOut, err := fx.Run(cmd, []string{"--name", "my-storage-box", "--type", "bx11", "--location", "fsn1",
+		"--password", "my-password", "--enable-samba", "--enable-ssh", "--enable-zfs",
+		"--ssh-key", pubKey1, "--enable-protection", "delete"})
+
+	expOut := `Storage Box 123 created
+Resource protection enabled for Storage Box 123
+Server: u12345.your-storagebox.de
+Username: u12345
+`
+
+	require.NoError(t, err)
+	assert.Empty(t, errOut)
+	assert.Equal(t, expOut, out)
 }
