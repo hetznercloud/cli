@@ -32,24 +32,15 @@ var ListCmd = base.ListCmd[*hcloud.StorageBox, schema.StorageBox]{
 			}).
 			AddFieldFn("username", func(obj any) string {
 				storageBox := obj.(*hcloud.StorageBox)
-				if storageBox.Username == nil {
-					return "-"
-				}
-				return *storageBox.Username
+				return util.OptionalString(storageBox.Username, "-")
 			}).
 			AddFieldFn("server", func(obj any) string {
 				storageBox := obj.(*hcloud.StorageBox)
-				if storageBox.Server == nil {
-					return "-"
-				}
-				return *storageBox.Server
+				return util.OptionalString(storageBox.Server, "-")
 			}).
 			AddFieldFn("system", func(obj any) string {
 				storageBox := obj.(*hcloud.StorageBox)
-				if storageBox.System == nil {
-					return "-"
-				}
-				return *storageBox.System
+				return util.OptionalString(storageBox.System, "-")
 			}).
 			AddFieldFn("location", func(obj any) string {
 				storageBox := obj.(*hcloud.StorageBox)
