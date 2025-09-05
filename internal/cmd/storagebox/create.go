@@ -52,7 +52,7 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBox]{
 
 		return cmd
 	},
-	Run: func(s state.State, cmd *cobra.Command, strings []string) (*hcloud.StorageBox, any, error) {
+	Run: func(s state.State, cmd *cobra.Command, _ []string) (*hcloud.StorageBox, any, error) {
 		name, _ := cmd.Flags().GetString("name")
 		sbType, _ := cmd.Flags().GetString("type")
 		location, _ := cmd.Flags().GetString("location")
@@ -103,7 +103,7 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBox]{
 
 		return storageBox, util.Wrap("storage_box", hcloud.SchemaFromStorageBox(result.StorageBox)), nil
 	},
-	PrintResource: func(s state.State, cmd *cobra.Command, storageBox *hcloud.StorageBox) {
+	PrintResource: func(_ state.State, cmd *cobra.Command, storageBox *hcloud.StorageBox) {
 		cmd.Printf("Server: %s\n", *storageBox.Server)
 		cmd.Printf("Username: %s\n", *storageBox.Username)
 	},

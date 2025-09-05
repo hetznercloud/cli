@@ -19,11 +19,11 @@ var ListCmd = base.ListCmd[*hcloud.StorageBox, schema.StorageBox]{
 	ResourceNamePlural: "Storage Boxes",
 	JSONKeyGetByName:   "storage_boxes",
 	DefaultColumns:     []string{"id", "name", "username", "server", "type", "size", "location", "age"},
-	Fetch: func(s state.State, set *pflag.FlagSet, opts hcloud.ListOpts, strings []string) ([]*hcloud.StorageBox, error) {
+	Fetch: func(s state.State, _ *pflag.FlagSet, opts hcloud.ListOpts, _ []string) ([]*hcloud.StorageBox, error) {
 		listOpts := hcloud.StorageBoxListOpts{ListOpts: opts}
 		return s.Client().StorageBox().AllWithOpts(s, listOpts)
 	},
-	OutputTable: func(t *output.Table, client hcapi2.Client) {
+	OutputTable: func(t *output.Table, _ hcapi2.Client) {
 		t.
 			AddAllowedFields(hcloud.StorageBox{}).
 			AddFieldFn("type", func(obj any) string {

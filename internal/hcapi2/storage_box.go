@@ -3,7 +3,6 @@ package hcapi2
 import (
 	"context"
 	"strconv"
-	"sync"
 
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -22,9 +21,6 @@ func NewStorageBoxClient(client hcloud.IStorageBoxClient) StorageBoxClient {
 
 type storageBoxClient struct {
 	hcloud.IStorageBoxClient
-
-	once sync.Once
-	err  error
 }
 
 // Names obtains a list of available Storage Boxes. It returns nil if Storage Box
