@@ -513,3 +513,57 @@ func TestFormatHcloudError(t *testing.T) {
 - foo: Invalid value
 - bar: Must be a number, Must be greater than 0`, util.FormatHcloudError(invalidInputError))
 }
+
+func TestWeekdayFromString(t *testing.T) {
+	weekday, err := util.WeekdayFromString("Sunday")
+	require.NoError(t, err)
+	assert.Equal(t, time.Sunday, weekday)
+
+	weekday, err = util.WeekdayFromString("Sun")
+	require.NoError(t, err)
+	assert.Equal(t, time.Sunday, weekday)
+
+	weekday, err = util.WeekdayFromString("Monday")
+	require.NoError(t, err)
+	assert.Equal(t, time.Monday, weekday)
+
+	weekday, err = util.WeekdayFromString("Mon")
+	require.NoError(t, err)
+	assert.Equal(t, time.Monday, weekday)
+
+	weekday, err = util.WeekdayFromString("Tuesday")
+	require.NoError(t, err)
+	assert.Equal(t, time.Tuesday, weekday)
+
+	weekday, err = util.WeekdayFromString("Tue")
+	require.NoError(t, err)
+	assert.Equal(t, time.Tuesday, weekday)
+
+	weekday, err = util.WeekdayFromString("0")
+	require.NoError(t, err)
+	assert.Equal(t, time.Sunday, weekday)
+
+	weekday, err = util.WeekdayFromString("6")
+	require.NoError(t, err)
+	assert.Equal(t, time.Saturday, weekday)
+
+	_, err = util.WeekdayFromString("Invalid")
+	require.Error(t, err)
+	require.EqualError(t, err, "invalid weekday: Invalid")
+
+	_, err = util.WeekdayFromString("")
+	require.Error(t, err)
+	require.EqualError(t, err, "invalid weekday: ")
+
+	_, err = util.WeekdayFromString("123")
+	require.Error(t, err)
+	require.EqualError(t, err, "invalid weekday: 123")
+
+	weekday, err = util.WeekdayFromString("7")
+	require.NoError(t, err)
+	assert.Equal(t, time.Sunday, weekday)
+
+	_, err = util.WeekdayFromString("8")
+	require.Error(t, err)
+	require.EqualError(t, err, "invalid weekday: 8")
+}
