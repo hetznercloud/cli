@@ -39,7 +39,6 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBox]{
 
 		cmd.Flags().StringArray("ssh-key", []string{}, "SSH public keys in OpenSSH format which should be injected into the Storage Box")
 
-		// TODO: Are we fine with dropping the nested object key ("access_settings") from the flag names?
 		cmd.Flags().Bool("enable-samba", false, "Whether the Samba subsystem should be enabled")
 		cmd.Flags().Bool("enable-ssh", false, "Whether the SSH subsystem should be enabled")
 		cmd.Flags().Bool("enable-webdav", false, "Whether the WebDAV subsystem should be enabled")
