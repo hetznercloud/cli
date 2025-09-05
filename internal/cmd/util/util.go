@@ -10,6 +10,7 @@ import (
 	"maps"
 	"reflect"
 	"slices"
+	"strconv"
 	"strings"
 	"text/template"
 	"time"
@@ -405,4 +406,31 @@ func OptionalString(s *string, defaultValue string) string {
 		return defaultValue
 	}
 	return *s
+}
+
+// WeekdayFromString converts a string representation of a weekday to a time.Weekday.
+// It accepts full names (e.g., "Monday") and abbreviations (e.g., "Mon"). It is case-insensitive.
+// It also accepts numbers (0-6) where 0 is Sunday, 1 is Monday, ..., and 6 is Saturday.
+// For API compatibility reasons 7 is also accepted as Sunday.
+func WeekdayFromString(s string) (time.Weekday, error) {
+	switch strings.ToLower(s) {
+	case "sunday", "sun":
+		return time.Sunday, nil
+	case "monday", "mon":
+		return time.Monday, nil
+	case "tuesday", "tue":
+		return time.Tuesday, nil
+	case "wednesday", "wed":
+		return time.Wednesday, nil
+	case "thursday", "thu":
+		return time.Thursday, nil
+	case "friday", "fri":
+		return time.Friday, nil
+	case "saturday", "sat":
+		return time.Saturday, nil
+	}
+	if num, err := strconv.ParseInt(s, 10, 8); err == nil && num >= 0 && num <= 7 {
+		return time.Weekday(num % 7), nil
+	}
+	return 0, fmt.Errorf("invalid weekday: %s", s)
 }
