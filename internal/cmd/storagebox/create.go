@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+	"golang.org/x/crypto/ssh"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
@@ -36,8 +37,6 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBox]{
 
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 
-		// TODO: How to handle SSH Keys? --public-key-from-file?
-		// TODO: Fetch SSH Keys from the project
 		cmd.Flags().StringArray("ssh-key", []string{}, "SSH public keys in OpenSSH format which should be injected into the Storage Box")
 
 		// TODO: Are we fine with dropping the nested object key ("access_settings") from the flag names?
@@ -65,6 +64,14 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBox]{
 		enableWebDAV, _ := cmd.Flags().GetBool("enable-webdav")
 		enableZFS, _ := cmd.Flags().GetBool("enable-zfs")
 		reachableExternally, _ := cmd.Flags().GetBool("reachable-externally")
+
+		var err error
+		for i, sshKey := range sshKeys {
+			sshKeys[i], err = resolveSSHKey(s, sshKey)
+			if err != nil {
+				return nil, nil, err
+			}
+		}
 
 		opts := hcloud.StorageBoxCreateOpts{
 			Name:           name,
@@ -107,4 +114,26 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBox]{
 		cmd.Printf("Server: %s\n", *storageBox.Server)
 		cmd.Printf("Username: %s\n", *storageBox.Username)
 	},
+}
+
+// resolveSSHKey resolves the given pubKey by doing the following:
+// - If pubKey is a valid public key in OpenSSH format, it is returned as is.
+// - Otherwise, it is treated as an ID or name of an existing SSH key in the project.
+// - If an SSH key with the given ID or name exists, its public key is returned.
+// - Otherwise, pubKey is returned as is.
+func resolveSSHKey(s state.State, pubKey string) (string, error) {
+	_, _, _, _, err := ssh.ParseAuthorizedKey([]byte(pubKey))
+	if err == nil {
+		return pubKey, nil
+	}
+
+	sshKey, _, err := s.Client().SSHKey().Get(s, pubKey)
+	if err != nil {
+		return "", err
+	}
+	if sshKey != nil {
+		return sshKey.PublicKey, nil
+	}
+
+	return pubKey, nil
 }
