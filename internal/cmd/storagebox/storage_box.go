@@ -27,6 +27,7 @@ func NewCommand(s state.State) *cobra.Command {
 		UpdateCmd.CobraCommand(s),
 		EnableProtectionCmd.CobraCommand(s),
 		DisableProtectionCmd.CobraCommand(s),
+		ChangeTypeCmd.CobraCommand(s),
 	)
 	return cmd
 }
