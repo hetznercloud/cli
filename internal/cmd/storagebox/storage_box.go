@@ -30,6 +30,7 @@ func NewCommand(s state.State) *cobra.Command {
 		ChangeTypeCmd.CobraCommand(s),
 		ResetPasswordCmd.CobraCommand(s),
 		UpdateAccessSettingsCmd.CobraCommand(s),
+		RollbackSnapshotCmd.CobraCommand(s),
 	)
 	return cmd
 }
