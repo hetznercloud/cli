@@ -17,6 +17,11 @@ import (
 //go:embed testdata/create_response.json
 var createResponseJSON string
 
+const (
+	pubKey1 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKeCe3ZqukV9WoJdMYlDwpjTvbsWOxiI6V1eWH32gs6F"
+	pubKey2 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEx+8JoS7aSSixcqc/muYEeC+6yYeCGO2ip1U33EbDm6"
+)
+
 func TestCreate(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
@@ -31,6 +36,9 @@ func TestCreate(t *testing.T) {
 		Username: hcloud.Ptr("u12345"),
 	}
 
+	fx.Client.SSHKeyClient.EXPECT().
+		Get(gomock.Any(), "mykey").
+		Return(&hcloud.SSHKey{PublicKey: pubKey1}, nil, nil)
 	fx.Client.StorageBoxClient.EXPECT().
 		Create(gomock.Any(), hcloud.StorageBoxCreateOpts{
 			Name:           "my-storage-box",
@@ -45,7 +53,7 @@ func TestCreate(t *testing.T) {
 				WebDAVEnabled:       hcloud.Ptr(false),
 			},
 			Labels:  make(map[string]string),
-			SSHKeys: []string{"mykey"},
+			SSHKeys: []string{pubKey1, pubKey2},
 		}).
 		Return(hcloud.StorageBoxCreateResult{
 			StorageBox: sb,
@@ -59,7 +67,8 @@ func TestCreate(t *testing.T) {
 		Return(nil)
 
 	out, errOut, err := fx.Run(cmd, []string{"--name", "my-storage-box", "--type", "bx11", "--location", "fsn1",
-		"--password", "my-password", "--enable-samba", "--enable-ssh", "--enable-zfs", "--ssh-key", "mykey"})
+		"--password", "my-password", "--enable-samba", "--enable-ssh", "--enable-zfs",
+		"--ssh-key", "mykey", "--ssh-key", pubKey2})
 
 	expOut := `Storage Box 123 created
 Server: u12345.your-storagebox.de
@@ -171,7 +180,7 @@ func TestCreateJSON(t *testing.T) {
 				WebDAVEnabled:       hcloud.Ptr(false),
 			},
 			Labels:  make(map[string]string),
-			SSHKeys: []string{"mykey"},
+			SSHKeys: []string{pubKey1},
 		}).
 		Return(hcloud.StorageBoxCreateResult{
 			StorageBox: sb,
@@ -185,7 +194,7 @@ func TestCreateJSON(t *testing.T) {
 		Return(nil)
 
 	jsonOut, out, err := fx.Run(cmd, []string{"-o=json", "--name", "my-storage-box", "--type", "bx11", "--location", "fsn1",
-		"--password", "my-password", "--enable-samba", "--enable-ssh", "--enable-zfs", "--ssh-key", "mykey"})
+		"--password", "my-password", "--enable-samba", "--enable-ssh", "--enable-zfs", "--ssh-key", pubKey1})
 
 	expOut := "Storage Box 42 created\n"
 
