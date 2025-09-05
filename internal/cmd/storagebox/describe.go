@@ -2,6 +2,7 @@ package storagebox
 
 import (
 	"strconv"
+	"time"
 
 	"github.com/dustin/go-humanize"
 	"github.com/spf13/cobra"
@@ -46,7 +47,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBox]{
 				cmd.Printf("  Hour:\t\t\t\t\t\t%d\n", *snapshotPlan.Hour)
 			}
 			if snapshotPlan.DayOfWeek != nil {
-				cmd.Printf("  Day of Week:\t\t\t\t%d\n", *snapshotPlan.DayOfWeek)
+				cmd.Printf("  Day of Week:\t\t\t\t%s\n", time.Weekday(*snapshotPlan.DayOfWeek%7))
 			}
 			if snapshotPlan.DayOfMonth != nil {
 				cmd.Printf("  Day of Month:\t\t\t\t%d\n", *snapshotPlan.DayOfMonth)

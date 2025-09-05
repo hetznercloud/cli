@@ -120,7 +120,7 @@ Snapshot Plan:
   Max Snapshots:			10
   Minute:					1
   Hour:						2
-  Day of Week:				3
+  Day of Week:				Wednesday
   Day of Month:				4
 Protection:
   Delete:					false
