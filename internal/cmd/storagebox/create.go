@@ -1,6 +1,8 @@
 package storagebox
 
 import (
+	"fmt"
+
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
@@ -89,11 +91,20 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBox]{
 		}
 		cmd.Printf("Storage Box %d created\n", result.StorageBox.ID)
 
+		storageBox, _, err := s.Client().StorageBox().GetByID(s, result.StorageBox.ID)
+		if err != nil {
+			return nil, nil, err
+		}
+		if storageBox == nil {
+			return nil, nil, fmt.Errorf("Storage Box not found: %d", result.StorageBox.ID)
+		}
+
 		// TODO change protection here once change-protection is implemented
 
-		return result.StorageBox, util.Wrap("storage_box", hcloud.SchemaFromStorageBox(result.StorageBox)), nil
+		return storageBox, util.Wrap("storage_box", hcloud.SchemaFromStorageBox(result.StorageBox)), nil
 	},
-	PrintResource: func(s state.State, command *cobra.Command, storageBox *hcloud.StorageBox) {
-		// TODO should we wait until the storage box is done initializing to display username/server?
+	PrintResource: func(s state.State, cmd *cobra.Command, storageBox *hcloud.StorageBox) {
+		cmd.Printf("Server: %s\n", *storageBox.Server)
+		cmd.Printf("Username: %s\n", *storageBox.Username)
 	},
 }
