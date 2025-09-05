@@ -19,4 +19,5 @@ package mock
 //go:generate mockgen -package mock -destination zz_placement_group_client_mock.go github.com/hetznercloud/cli/internal/hcapi2 PlacementGroupClient
 //go:generate mockgen -package mock -destination zz_rdns_client_mock.go github.com/hetznercloud/cli/internal/hcapi2 RDNSClient
 //go:generate mockgen -package mock -destination zz_pricing_client_mock.go github.com/hetznercloud/cli/internal/hcapi2 PricingClient
+//go:generate mockgen -package mock -destination zz_storage_box_client_mock.go github.com/hetznercloud/cli/internal/hcapi2 StorageBoxClient
 //go:generate mockgen -package mock -destination zz_storage_box_type_client_mock.go github.com/hetznercloud/cli/internal/hcapi2 StorageBoxTypeClient
