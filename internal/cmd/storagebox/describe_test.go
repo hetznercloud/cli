@@ -97,7 +97,7 @@ func TestDescribe(t *testing.T) {
 			MaxSnapshots: 10,
 			Minute:       hcloud.Ptr(1),
 			Hour:         hcloud.Ptr(2),
-			DayOfWeek:    hcloud.Ptr(3),
+			DayOfWeek:    hcloud.Ptr(time.Sunday),
 			DayOfMonth:   hcloud.Ptr(4),
 		},
 		Created: time.Date(2016, 1, 30, 23, 55, 0, 0, time.UTC),
@@ -120,7 +120,7 @@ Snapshot Plan:
   Max Snapshots:		10
   Minute:			1
   Hour:				2
-  Day of Week:			Wednesday
+  Day of Week:			Sunday
   Day of Month:			4
 Protection:
   Delete:			false
