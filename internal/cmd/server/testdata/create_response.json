@@ -87,6 +87,7 @@
     "rescue_enabled": true,
     "server_type": {
       "architecture": "x86",
+      "category": "",
       "cores": 1,
       "cpu_type": "shared",
       "deprecated": false,
