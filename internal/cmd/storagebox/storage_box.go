@@ -10,7 +10,7 @@ import (
 func NewCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "storage-box",
-		Aliases:               []string{"storage-box"},
+		Aliases:               []string{"storage-boxes"},
 		Short:                 "Manage Storage Boxes",
 		Args:                  util.Validate,
 		TraverseChildren:      true,
