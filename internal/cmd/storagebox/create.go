@@ -37,7 +37,7 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBox]{
 
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 
-		cmd.Flags().StringArray("ssh-key", []string{}, "SSH public keys in OpenSSH format or as the ID or name of an existing SSH key which are injected into the Storage Box")
+		cmd.Flags().StringArray("ssh-key", []string{}, "SSH public keys in OpenSSH format or as the ID or name of an existing SSH key")
 
 		cmd.Flags().Bool("enable-samba", false, "Whether the Samba subsystem should be enabled")
 		cmd.Flags().Bool("enable-ssh", false, "Whether the SSH subsystem should be enabled")

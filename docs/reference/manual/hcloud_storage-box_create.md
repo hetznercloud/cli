@@ -21,7 +21,7 @@ hcloud storage-box create [options] --name <name> --type <type> --location <loca
   -o, --output stringArray          output options: json|yaml
       --password string             The password that will be set for this Storage Box (required)
       --reachable-externally        Whether the Storage Box should be accessible from outside the Hetzner network
-      --ssh-key stringArray         SSH public keys in OpenSSH format or as the ID or name of an existing SSH key which are injected into the Storage Box
+      --ssh-key stringArray         SSH public keys in OpenSSH format or as the ID or name of an existing SSH key
       --type string                 Storage Box Type (ID or name) (required)
 ```
 
