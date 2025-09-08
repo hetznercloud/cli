@@ -109,52 +109,52 @@ func TestDescribe(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"test"})
 
-	expOut := fmt.Sprintf(`ID:							123
-Name:						test
-Created:					Sat Jan 30 23:55:00 UTC 2016 (%s)
-Status:						active
-Username:					u12345
-Server:						u1337.your-storagebox.de
-System:						FSN1-BX355
+	expOut := fmt.Sprintf(`ID:				123
+Name:				test
+Created:			Sat Jan 30 23:55:00 UTC 2016 (%s)
+Status:				active
+Username:			u12345
+Server:				u1337.your-storagebox.de
+System:				FSN1-BX355
 Snapshot Plan:
-  Max Snapshots:			10
-  Minute:					1
-  Hour:						2
-  Day of Week:				Wednesday
-  Day of Month:				4
+  Max Snapshots:		10
+  Minute:			1
+  Hour:				2
+  Day of Week:			Wednesday
+  Day of Month:			4
 Protection:
-  Delete:					false
+  Delete:			false
 Stats:
-  Size:						0 B
-  Size Data:				0 B
-  Size Snapshots:			0 B
+  Size:				0 B
+  Size Data:			0 B
+  Size Snapshots:		0 B
 Labels:
   environment: prod
   example.com/my: label
   just-a-key: 
 Access Settings:
   Reachable Externally:		false
-  Samba Enabled:			false
-  SSH Enabled:				false
-  WebDAV Enabled:			false
-  ZFS Enabled:				false
+  Samba Enabled:		false
+  SSH Enabled:			false
+  WebDAV Enabled:		false
+  ZFS Enabled:			false
 Storage Box Type:
-  ID:						42
-  Name:						bx11
-  Description:				BX11
-  Size:						1.0 GiB
-  Snapshot Limit:			10
+  ID:				42
+  Name:				bx11
+  Description:			BX11
+  Size:				1.0 GiB
+  Snapshot Limit:		10
   Automatic Snapshot Limit:	10
   Subaccounts Limit:		200
 Location:
-  ID:						42
-  Name:						fsn1
-  Description:				Falkenstein DC Park 1
-  Network Zone:				eu-central
-  Country:					DE
-  City:						Falkenstein
-  Latitude:					50.476120
-  Longitude:				12.370071
+  ID:				42
+  Name:				fsn1
+  Description:			Falkenstein DC Park 1
+  Network Zone:			eu-central
+  Country:			DE
+  City:				Falkenstein
+  Latitude:			50.476120
+  Longitude:			12.370071
 `, humanize.Time(storageBox.Created))
 
 	require.NoError(t, err)
