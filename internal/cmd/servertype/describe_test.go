@@ -25,6 +25,7 @@ func TestDescribe(t *testing.T) {
 			ID:          45,
 			Name:        "cax11",
 			Description: "CAX11",
+			Category:    "Shared vCPU",
 			Cores:       2,
 			CPUType:     hcloud.CPUTypeShared,
 			Memory:      4.0,
@@ -87,6 +88,7 @@ func TestDescribe(t *testing.T) {
 	expOut := `ID:			45
 Name:			cax11
 Description:		CAX11
+Category:		Shared vCPU
 Cores:			2
 CPU Type:		shared
 Architecture:		

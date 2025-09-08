@@ -26,6 +26,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.ServerType]{
 		cmd.Printf("ID:\t\t\t%d\n", serverType.ID)
 		cmd.Printf("Name:\t\t\t%s\n", serverType.Name)
 		cmd.Printf("Description:\t\t%s\n", serverType.Description)
+		cmd.Printf("Category:\t\t%s\n", serverType.Category)
 		cmd.Printf("Cores:\t\t\t%d\n", serverType.Cores)
 		cmd.Printf("CPU Type:\t\t%s\n", serverType.CPUType)
 		cmd.Printf("Architecture:\t\t%s\n", serverType.Architecture)
