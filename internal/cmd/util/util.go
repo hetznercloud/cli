@@ -399,3 +399,10 @@ func FormatHcloudError(err error) string {
 		return err.Error()
 	}
 }
+
+func OptionalString(s *string, defaultValue string) string {
+	if s == nil || *s == "" {
+		return defaultValue
+	}
+	return *s
+}
