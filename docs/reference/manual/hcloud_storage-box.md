@@ -39,5 +39,6 @@ Manage Storage Boxes
 * [hcloud storage-box remove-label](hcloud_storage-box_remove-label.md)	 - Remove a label from a Storage Box
 * [hcloud storage-box reset-password](hcloud_storage-box_reset-password.md)	 - Reset the password of a Storage Box
 * [hcloud storage-box rollback-snapshot](hcloud_storage-box_rollback-snapshot.md)	 - Rolls back the Storage Box to the given Snapshot
+* [hcloud storage-box snapshot](hcloud_storage-box_snapshot.md)	 - Manage Storage Box Snapshots
 * [hcloud storage-box update](hcloud_storage-box_update.md)	 - Update a Storage Box
 * [hcloud storage-box update-access-settings](hcloud_storage-box_update-access-settings.md)	 - Update access settings of the primary Storage Box account

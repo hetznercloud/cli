@@ -543,6 +543,20 @@ func (mr *MockStorageBoxClientMockRecorder) RollbackSnapshot(ctx, storageBox, op
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RollbackSnapshot", reflect.TypeOf((*MockStorageBoxClient)(nil).RollbackSnapshot), ctx, storageBox, opts)
 }
 
+// SnapshotLabelKeys mocks base method.
+func (m *MockStorageBoxClient) SnapshotLabelKeys(arg0, arg1 string) []string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SnapshotLabelKeys", arg0, arg1)
+	ret0, _ := ret[0].([]string)
+	return ret0
+}
+
+// SnapshotLabelKeys indicates an expected call of SnapshotLabelKeys.
+func (mr *MockStorageBoxClientMockRecorder) SnapshotLabelKeys(arg0, arg1 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SnapshotLabelKeys", reflect.TypeOf((*MockStorageBoxClient)(nil).SnapshotLabelKeys), arg0, arg1)
+}
+
 // Update mocks base method.
 func (m *MockStorageBoxClient) Update(ctx context.Context, storageBox *hcloud.StorageBox, opts hcloud.StorageBoxUpdateOpts) (*hcloud.StorageBox, *hcloud.Response, error) {
 	m.ctrl.T.Helper()
