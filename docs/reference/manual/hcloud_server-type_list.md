@@ -8,10 +8,11 @@ Displays a list of Server Types.
 
 Output can be controlled with the -o flag. Use -o noheader to suppress the
 table header. Displayed columns and their order can be set with
--o columns=architecture,cores (see available columns below).
+-o columns=architecture,category (see available columns below).
 
 Columns:
  - architecture
+ - category
  - cores
  - cpu_type
  - deprecated
