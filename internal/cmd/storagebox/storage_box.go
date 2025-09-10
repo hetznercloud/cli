@@ -16,7 +16,8 @@ func NewCommand(s state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 	}
-	cmd.AddCommand(
+
+	util.AddGroup(cmd, "general", "General",
 		ListCmd.CobraCommand(s),
 		CreateCmd.CobraCommand(s),
 		FoldersCmd.CobraCommand(s),
@@ -25,14 +26,23 @@ func NewCommand(s state.State) *cobra.Command {
 		LabelCmds.AddCobraCommand(s),
 		LabelCmds.RemoveCobraCommand(s),
 		UpdateCmd.CobraCommand(s),
+		ChangeTypeCmd.CobraCommand(s),
+	)
+
+	util.AddGroup(cmd, "protection", "Protection",
 		EnableProtectionCmd.CobraCommand(s),
 		DisableProtectionCmd.CobraCommand(s),
-		ChangeTypeCmd.CobraCommand(s),
-		ResetPasswordCmd.CobraCommand(s),
-		UpdateAccessSettingsCmd.CobraCommand(s),
-		RollbackSnapshotCmd.CobraCommand(s),
+	)
+
+	util.AddGroup(cmd, "snapshots", "Snapshots",
 		EnableSnapshotPlanCmd.CobraCommand(s),
 		DisableSnapshotPlanCmd.CobraCommand(s),
+		RollbackSnapshotCmd.CobraCommand(s),
+	)
+
+	util.AddGroup(cmd, "account", "Account",
+		ResetPasswordCmd.CobraCommand(s),
+		UpdateAccessSettingsCmd.CobraCommand(s),
 	)
 	return cmd
 }
