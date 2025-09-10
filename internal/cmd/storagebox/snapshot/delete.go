@@ -7,54 +7,39 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
-	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-// TODO: modify base delete command to support multiple positional arguments? -> delete multiple snapshots at once
-var DeleteCmd = base.Cmd{
-	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
-		cmd := &cobra.Command{
-			Use:   "delete <storage-box> <snapshot>",
-			Short: "Delete a Storage Box Snapshot",
-			Args:  util.Validate,
-			ValidArgsFunction: cmpl.SuggestArgs(
-				cmpl.SuggestCandidatesF(client.StorageBox().Names),
-				SuggestSnapshots(client),
-			),
-			TraverseChildren:      true,
-			DisableFlagsInUseLine: true,
+var DeleteCmd = base.DeleteCmd{
+	ResourceNameSingular:       "Storage Box Snapshot",
+	ResourceNamePlural:         "Storage Box Snapshots",
+	ShortDescription:           "Delete a Storage Box Snapshot",
+	PositionalArgumentOverride: []string{"storage-box", "snapshot"},
+	ValidArgsFunction: func(client hcapi2.Client) []cobra.CompletionFunc {
+		return []cobra.CompletionFunc{
+			cmpl.SuggestCandidatesF(client.StorageBox().Names),
+			SuggestSnapshots(client),
 		}
-		return cmd
 	},
-	Run: func(s state.State, cmd *cobra.Command, args []string) error {
-		storageBoxIDOrName := args[0]
 
-		storageBox, _, err := s.Client().StorageBox().Get(s, storageBoxIDOrName)
+	FetchFunc: func(s state.State, _ *cobra.Command, args []string) (base.FetchFunc, error) {
+		storageBox, _, err := s.Client().StorageBox().Get(s, args[0])
 		if err != nil {
-			return err
+			return nil, err
 		}
 		if storageBox == nil {
-			return fmt.Errorf("Storage Box not found: %s", storageBoxIDOrName)
+			return nil, fmt.Errorf("Storage Box not found: %s", args[0])
 		}
+		return func(s state.State, _ *cobra.Command, idOrName string) (any, *hcloud.Response, error) {
+			return s.Client().StorageBox().GetSnapshot(s, storageBox, idOrName)
+		}, nil
+	},
 
-		snapshot, _, err := s.Client().StorageBox().GetSnapshot(s, storageBox, args[1])
-		if err != nil {
-			return err
-		}
-
+	Delete: func(s state.State, _ *cobra.Command, resource any) (*hcloud.Action, error) {
+		snapshot := resource.(*hcloud.StorageBoxSnapshot)
 		action, _, err := s.Client().StorageBox().DeleteSnapshot(s, snapshot)
-		if err != nil {
-			return err
-		}
-
-		err = s.WaitForActions(s, cmd, action)
-		if err != nil {
-			return err
-		}
-
-		cmd.Printf("Storage Box Snapshot %d deleted\n", snapshot.ID)
-		return nil
+		return action, err
 	},
 }

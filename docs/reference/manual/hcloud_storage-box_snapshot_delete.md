@@ -3,7 +3,7 @@
 Delete a Storage Box Snapshot
 
 ```
-hcloud storage-box snapshot delete <storage-box> <snapshot>
+hcloud storage-box snapshot delete <storage-box> <snapshot>...
 ```
 
 ### Options
