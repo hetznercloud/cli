@@ -9,12 +9,12 @@ hcloud storage-box update-access-settings [options] <storage-box>
 ### Options
 
 ```
+      --enable-samba           Whether the Samba subsystem should be enabled (true, false)
+      --enable-ssh             Whether the SSH subsystem should be enabled (true, false)
+      --enable-webdav          Whether the WebDAV subsystem should be enabled (true, false)
+      --enable-zfs             Whether the ZFS Snapshot folder should be visible (true, false)
   -h, --help                   help for update-access-settings
       --reachable-externally   Whether the Storage Box should be accessible from outside the Hetzner network (true, false)
-      --samba-enabled          Whether the Samba subsystem should be enabled (true, false)
-      --ssh-enabled            Whether the SSH subsystem should be enabled (true, false)
-      --webdav-enabled         Whether the WebDAV subsystem should be enabled (true, false)
-      --zfs-enabled            Whether the ZFS Snapshot folder should be visible (true, false)
 ```
 
 ### Options inherited from parent commands

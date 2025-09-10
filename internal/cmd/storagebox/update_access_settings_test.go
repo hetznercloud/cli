@@ -37,7 +37,7 @@ func TestUpdateAccessSettings(t *testing.T) {
 		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 456}).
 		Return(nil)
 
-	args := []string{"my-storage-box", "--ssh-enabled", "--webdav-enabled=false", "--zfs-enabled=true"}
+	args := []string{"my-storage-box", "--enable-ssh", "--enable-webdav=false", "--enable-zfs=true"}
 	out, errOut, err := fx.Run(cmd, args)
 
 	require.NoError(t, err)

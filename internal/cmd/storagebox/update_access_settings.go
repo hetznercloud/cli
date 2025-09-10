@@ -23,21 +23,22 @@ var UpdateAccessSettingsCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 
-		cmd.Flags().Bool("samba-enabled", false, "Whether the Samba subsystem should be enabled (true, false)")
-		cmd.Flags().Bool("ssh-enabled", false, "Whether the SSH subsystem should be enabled (true, false)")
-		cmd.Flags().Bool("webdav-enabled", false, "Whether the WebDAV subsystem should be enabled (true, false)")
-		cmd.Flags().Bool("zfs-enabled", false, "Whether the ZFS Snapshot folder should be visible (true, false)")
+		cmd.Flags().Bool("enable-samba", false, "Whether the Samba subsystem should be enabled (true, false)")
+		cmd.Flags().Bool("enable-ssh", false, "Whether the SSH subsystem should be enabled (true, false)")
+		cmd.Flags().Bool("enable-webdav", false, "Whether the WebDAV subsystem should be enabled (true, false)")
+		cmd.Flags().Bool("enable-zfs", false, "Whether the ZFS Snapshot folder should be visible (true, false)")
 		cmd.Flags().Bool("reachable-externally", false, "Whether the Storage Box should be accessible from outside the Hetzner network (true, false)")
-		cmd.MarkFlagsOneRequired("samba-enabled", "ssh-enabled", "webdav-enabled", "zfs-enabled", "reachable-externally")
+
+		cmd.MarkFlagsOneRequired("enable-samba", "enable-ssh", "enable-webdav", "enable-zfs", "reachable-externally")
 
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		enableSamba, _ := cmd.Flags().GetBool("samba-enabled")
-		enableSSH, _ := cmd.Flags().GetBool("ssh-enabled")
-		enableWebDAV, _ := cmd.Flags().GetBool("webdav-enabled")
-		enableZFS, _ := cmd.Flags().GetBool("zfs-enabled")
+		enableSamba, _ := cmd.Flags().GetBool("enable-samba")
+		enableSSH, _ := cmd.Flags().GetBool("enable-ssh")
+		enableWebDAV, _ := cmd.Flags().GetBool("enable-webdav")
+		enableZFS, _ := cmd.Flags().GetBool("enable-zfs")
 		reachableExternally, _ := cmd.Flags().GetBool("reachable-externally")
 
 		storageBox, _, err := s.Client().StorageBox().Get(s, idOrName)
@@ -49,16 +50,16 @@ var UpdateAccessSettingsCmd = base.Cmd{
 		}
 
 		var opts hcloud.StorageBoxUpdateAccessSettingsOpts
-		if cmd.Flags().Changed("samba-enabled") {
+		if cmd.Flags().Changed("enable-samba") {
 			opts.SambaEnabled = &enableSamba
 		}
-		if cmd.Flags().Changed("ssh-enabled") {
+		if cmd.Flags().Changed("enable-ssh") {
 			opts.SSHEnabled = &enableSSH
 		}
-		if cmd.Flags().Changed("webdav-enabled") {
+		if cmd.Flags().Changed("enable-webdav") {
 			opts.WebDAVEnabled = &enableWebDAV
 		}
-		if cmd.Flags().Changed("zfs-enabled") {
+		if cmd.Flags().Changed("enable-zfs") {
 			opts.ZFSEnabled = &enableZFS
 		}
 		if cmd.Flags().Changed("reachable-externally") {
