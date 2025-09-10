@@ -18,6 +18,16 @@ var EnableSnapshotPlanCmd = base.Cmd{
 		cmd := &cobra.Command{
 			Use:   "enable-snapshot-plan [options] <storage-box>",
 			Short: "Enable automatic snapshots for a Storage Box",
+			Long: `Enable automatic snapshots for a Storage Box
+
+Allowed values for --day-of-week are:
+- Sunday, Sun, 0, 7
+- Monday, Mon, 1
+- Tuesday, Tue, 2
+- Wednesday, Wed, 3
+- Thursday, Thu, 4
+- Friday, Fri, 5
+- Saturday, Sat, 6`,
 			ValidArgsFunction: cmpl.SuggestArgs(
 				cmpl.SuggestCandidatesF(client.StorageBox().Names),
 			),

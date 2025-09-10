@@ -2,6 +2,19 @@
 
 Enable automatic snapshots for a Storage Box
 
+### Synopsis
+
+Enable automatic snapshots for a Storage Box
+
+Allowed values for --day-of-week are:
+- Sunday, Sun, 0, 7
+- Monday, Mon, 1
+- Tuesday, Tue, 2
+- Wednesday, Wed, 3
+- Thursday, Thu, 4
+- Friday, Fri, 5
+- Saturday, Sat, 6
+
 ```
 hcloud storage-box enable-snapshot-plan [options] <storage-box>
 ```
