@@ -2,6 +2,7 @@ package storagebox_test
 
 import (
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -29,7 +30,7 @@ func TestEnableSnapshotPlan(t *testing.T) {
 			MaxSnapshots: 10,
 			Minute:       hcloud.Ptr(0),
 			Hour:         hcloud.Ptr(2),
-			DayOfWeek:    hcloud.Ptr(2),
+			DayOfWeek:    hcloud.Ptr(time.Tuesday),
 			DayOfMonth:   nil,
 		}).
 		Return(&hcloud.Action{ID: 456}, nil, nil)

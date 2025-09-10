@@ -70,11 +70,7 @@ var EnableSnapshotPlanCmd = base.Cmd{
 			if err != nil {
 				return err
 			}
-			if weekday == 0 {
-				// The API expects 7 for Sunday
-				weekday = 7
-			}
-			opts.DayOfWeek = hcloud.Ptr(int(weekday))
+			opts.DayOfWeek = &weekday
 		}
 		if cmd.Flags().Changed("day-of-month") {
 			opts.DayOfMonth = &dayOfMonth
