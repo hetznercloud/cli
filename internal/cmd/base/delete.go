@@ -3,6 +3,7 @@ package base
 import (
 	"errors"
 	"fmt"
+	"log"
 	"slices"
 	"strings"
 
@@ -22,25 +23,57 @@ type DeleteCmd struct {
 	ShortDescription     string
 	NameSuggestions      func(client hcapi2.Client) func() []string
 	AdditionalFlags      func(*cobra.Command)
-	Fetch                func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error)
+	Fetch                FetchFunc
 	Delete               func(s state.State, cmd *cobra.Command, resource interface{}) (*hcloud.Action, error)
+
+	// FetchFunc is a factory function that produces [DeleteCmd.Fetch]. Should be set in case the resource has
+	// more than a single identifier that is used in the positional arguments.
+	// See [DeleteCmd.PositionalArgumentOverride].
+	FetchFunc func(s state.State, cmd *cobra.Command, args []string) (FetchFunc, error)
+
+	// In case the resource does not have a single identifier that matches [DeleteCmd.ResourceNameSingular], this field
+	// can be set to define the list of positional arguments.
+	// For example, passing:
+	//     []string{"a", "b", "c"}
+	// Would result in the usage string:
+	//     <a> <b> <c>...
+	// Where c is are resources to be deleted.
+	PositionalArgumentOverride []string
+
+	// Can be set if the default [DeleteCmd.NameSuggestions] is not enough. This is usually the case when
+	// [DeleteCmd.FetchWithArgs] and [DeleteCmd.PositionalArgumentOverride] is being used.
+	ValidArgsFunction func(client hcapi2.Client) []cobra.CompletionFunc
 
 	// Experimental is a function that will be used to mark the command as experimental.
 	Experimental func(state.State, *cobra.Command) *cobra.Command
 }
 
+type FetchFunc func(s state.State, cmd *cobra.Command, idOrName string) (any, *hcloud.Response, error)
+
 // CobraCommand creates a command that can be registered with cobra.
 func (dc *DeleteCmd) CobraCommand(s state.State) *cobra.Command {
+	var suggestArgs []cobra.CompletionFunc
+	switch {
+	case dc.NameSuggestions != nil:
+		suggestArgs = append(suggestArgs,
+			cmpl.SuggestCandidatesF(dc.NameSuggestions(s.Client())),
+		)
+	case dc.ValidArgsFunction != nil:
+		suggestArgs = append(suggestArgs, dc.ValidArgsFunction(s.Client())...)
+	default:
+		log.Fatalf("delete command %s is missing ValidArgsFunction or NameSuggestions", dc.ResourceNameSingular)
+	}
+
 	opts := ""
 	if dc.AdditionalFlags != nil {
 		opts = "[options] "
 	}
 
 	cmd := &cobra.Command{
-		Use:                   fmt.Sprintf("delete %s<%s>...", opts, util.ToKebabCase(dc.ResourceNameSingular)),
+		Use:                   fmt.Sprintf("delete %s%s...", opts, positionalArguments(dc.ResourceNameSingular, dc.PositionalArgumentOverride)),
 		Short:                 dc.ShortDescription,
 		Args:                  util.Validate,
-		ValidArgsFunction:     cmpl.SuggestCandidatesF(dc.NameSuggestions(s.Client())),
+		ValidArgsFunction:     cmpl.SuggestArgs(suggestArgs...),
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 		PreRunE:               util.ChainRunE(s.EnsureToken),
@@ -62,17 +95,32 @@ const deleteBatchSize = 10
 
 // Run executes a delete command.
 func (dc *DeleteCmd) Run(s state.State, cmd *cobra.Command, args []string) error {
-	errs := make([]error, 0, len(args))
-	deleted := make([]string, 0, len(args))
+	toDelete := args[max(0, len(dc.PositionalArgumentOverride)-1):]
 
-	for batch := range slices.Chunk(args, deleteBatchSize) {
+	errs := make([]error, 0, len(toDelete))
+	deleted := make([]string, 0, len(toDelete))
+
+	var (
+		fetch FetchFunc
+		err   error
+	)
+	if dc.FetchFunc != nil {
+		fetch, err = dc.FetchFunc(s, cmd, args)
+		if err != nil {
+			return err
+		}
+	} else {
+		fetch = dc.Fetch
+	}
+
+	for batch := range slices.Chunk(toDelete, deleteBatchSize) {
 		results := make([]util.ResourceState, len(batch))
 		actions := make([]*hcloud.Action, 0, len(batch))
 
 		for i, idOrName := range batch {
 			results[i] = util.ResourceState{IDOrName: idOrName}
 
-			resource, _, err := dc.Fetch(s, cmd, idOrName)
+			resource, _, err := fetch(s, cmd, idOrName)
 			if err != nil {
 				results[i].Error = err
 				continue
