@@ -39,11 +39,11 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBox]{
 
 		cmd.Flags().StringArray("ssh-key", []string{}, "SSH public keys in OpenSSH format or as the ID or name of an existing SSH key")
 
-		cmd.Flags().Bool("enable-samba", false, "Whether the Samba subsystem should be enabled")
-		cmd.Flags().Bool("enable-ssh", false, "Whether the SSH subsystem should be enabled")
-		cmd.Flags().Bool("enable-webdav", false, "Whether the WebDAV subsystem should be enabled")
-		cmd.Flags().Bool("enable-zfs", false, "Whether the ZFS Snapshot folder should be visible")
-		cmd.Flags().Bool("reachable-externally", false, "Whether the Storage Box should be accessible from outside the Hetzner network")
+		cmd.Flags().Bool("enable-samba", false, "Whether the Samba subsystem should be enabled (true, false)")
+		cmd.Flags().Bool("enable-ssh", false, "Whether the SSH subsystem should be enabled (true, false)")
+		cmd.Flags().Bool("enable-webdav", false, "Whether the WebDAV subsystem should be enabled (true, false)")
+		cmd.Flags().Bool("enable-zfs", false, "Whether the ZFS Snapshot folder should be visible (true, false)")
+		cmd.Flags().Bool("reachable-externally", false, "Whether the Storage Box should be accessible from outside the Hetzner network (true, false)")
 
 		cmd.Flags().StringSlice("enable-protection", []string{}, "Enable protection (delete) (default: none)")
 		_ = cmd.RegisterFlagCompletionFunc("enable-protection", cmpl.SuggestCandidates("delete"))
@@ -57,6 +57,12 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBox]{
 		password, _ := cmd.Flags().GetString("password")
 		sshKeys, _ := cmd.Flags().GetStringArray("ssh-key")
 		labels, _ := cmd.Flags().GetStringToString("label")
+		protection, _ := cmd.Flags().GetStringSlice("enable-protection")
+
+		protectionOpts, err := getChangeProtectionOpts(true, protection)
+		if err != nil {
+			return nil, nil, err
+		}
 
 		enableSamba, _ := cmd.Flags().GetBool("enable-samba")
 		enableSSH, _ := cmd.Flags().GetBool("enable-ssh")
@@ -64,7 +70,6 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBox]{
 		enableZFS, _ := cmd.Flags().GetBool("enable-zfs")
 		reachableExternally, _ := cmd.Flags().GetBool("reachable-externally")
 
-		var err error
 		for i, sshKey := range sshKeys {
 			sshKeys[i], err = resolveSSHKey(s, sshKey)
 			if err != nil {
@@ -105,7 +110,12 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBox]{
 			return nil, nil, fmt.Errorf("Storage Box not found: %d", result.StorageBox.ID)
 		}
 
-		// TODO change protection here once change-protection is implemented
+		if len(protection) > 0 {
+			// TODO this check can be removed once delete protection is made nullable
+			if err := changeProtection(s, cmd, storageBox, true, protectionOpts); err != nil {
+				return nil, nil, err
+			}
+		}
 
 		return storageBox, util.Wrap("storage_box", hcloud.SchemaFromStorageBox(result.StorageBox)), nil
 	},
