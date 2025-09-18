@@ -10,17 +10,17 @@ hcloud storage-box create [options] --name <name> --type <type> --location <loca
 
 ```
       --enable-protection strings   Enable protection (delete) (default: none)
-      --enable-samba                Whether the Samba subsystem should be enabled
-      --enable-ssh                  Whether the SSH subsystem should be enabled
-      --enable-webdav               Whether the WebDAV subsystem should be enabled
-      --enable-zfs                  Whether the ZFS Snapshot folder should be visible
+      --enable-samba                Whether the Samba subsystem should be enabled (true, false)
+      --enable-ssh                  Whether the SSH subsystem should be enabled (true, false)
+      --enable-webdav               Whether the WebDAV subsystem should be enabled (true, false)
+      --enable-zfs                  Whether the ZFS Snapshot folder should be visible (true, false)
   -h, --help                        help for create
       --label stringToString        User-defined labels ('key=value') (can be specified multiple times) (default [])
       --location string             Location (ID or name) (required)
       --name string                 Storage Box name (required)
   -o, --output stringArray          output options: json|yaml
       --password string             The password that will be set for this Storage Box (required)
-      --reachable-externally        Whether the Storage Box should be accessible from outside the Hetzner network
+      --reachable-externally        Whether the Storage Box should be accessible from outside the Hetzner network (true, false)
       --ssh-key stringArray         SSH public keys in OpenSSH format or as the ID or name of an existing SSH key
       --type string                 Storage Box Type (ID or name) (required)
 ```
