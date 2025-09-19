@@ -20,6 +20,7 @@ func NewCommand(s state.State) *cobra.Command {
 		ListCmd.CobraCommand(s),
 		CreateCmd.CobraCommand(s),
 		DeleteCmd.CobraCommand(s),
+		UpdateCmd.CobraCommand(s),
 		DescribeCmd.CobraCommand(s),
 		ResetPasswordCmd.CobraCommand(s),
 		UpdateAccessSettingsCmd.CobraCommand(s),
