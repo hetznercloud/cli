@@ -31,3 +31,4 @@ Manage Storage Box Snapshots
 * [hcloud storage-box snapshot describe](hcloud_storage-box_snapshot_describe.md)	 - Describe a Storage Box Snapshot
 * [hcloud storage-box snapshot list](hcloud_storage-box_snapshot_list.md)	 - List Storage Box Snapshots
 * [hcloud storage-box snapshot remove-label](hcloud_storage-box_snapshot_remove-label.md)	 - Remove a label from a Storage Box Snapshot
+* [hcloud storage-box snapshot update](hcloud_storage-box_snapshot_update.md)	 - Update a Storage Box Snapshot
