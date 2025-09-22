@@ -29,7 +29,7 @@ func TestAttachToNetwork(t *testing.T) {
 	fx.Client.LoadBalancerClient.EXPECT().
 		AttachToNetwork(gomock.Any(), &hcloud.LoadBalancer{ID: 123}, hcloud.LoadBalancerAttachToNetworkOpts{
 			Network: &hcloud.Network{ID: 321},
-			IP:      net.IP{10, 0, 1, 1},
+			IP:      net.ParseIP("10.0.1.1"),
 			IPRange: &net.IPNet{
 				IP:   net.IP{10, 0, 0, 0},
 				Mask: net.IPMask{255, 255, 0, 0},
