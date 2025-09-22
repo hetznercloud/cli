@@ -11,6 +11,7 @@ type StorageBoxClient interface {
 	hcloud.IStorageBoxClient
 	Names() []string
 	LabelKeys(string) []string
+	SnapshotLabelKeys(string, string) []string
 }
 
 func NewStorageBoxClient(client hcloud.IStorageBoxClient) StorageBoxClient {
@@ -49,4 +50,18 @@ func (c *storageBoxClient) LabelKeys(nameOrID string) []string {
 		return nil
 	}
 	return labelKeys(storageBox.Labels)
+}
+
+// SnapshotLabelKeys returns a slice containing the keys of all labels assigned to
+// the Storage Box Snapshot with the passed name or id.
+func (c *storageBoxClient) SnapshotLabelKeys(storageBoxNameOrID, snapshotNameOrID string) []string {
+	storageBox, _, err := c.Get(context.Background(), storageBoxNameOrID)
+	if err != nil || storageBox == nil {
+		return nil
+	}
+	storageBoxSnapshot, _, err := c.GetSnapshot(context.Background(), storageBox, snapshotNameOrID)
+	if err != nil || storageBoxSnapshot == nil || len(storageBoxSnapshot.Labels) == 0 {
+		return nil
+	}
+	return labelKeys(storageBoxSnapshot.Labels)
 }

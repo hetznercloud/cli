@@ -1,0 +1,19 @@
+{
+  "snapshot": {
+    "id": 456,
+    "name": "snapshot-1",
+    "description": "some-description",
+    "stats": {
+      "size": 53687091200,
+      "size_filesystem": 42949672960
+    },
+    "is_automatic": false,
+    "labels": {
+      "environment": "prod",
+      "example.com/my": "label",
+      "just-a-key": ""
+    },
+    "created": "2024-01-02T15:04:05Z",
+    "storage_box": 1337
+  }
+}
