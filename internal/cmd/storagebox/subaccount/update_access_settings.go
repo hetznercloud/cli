@@ -27,6 +27,7 @@ var UpdateAccessSettingsCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 
+		cmd.Flags().String("home-directory", "", "Home directory of the Subaccount. Will be created if it doesn't exist yet")
 		cmd.Flags().Bool("enable-samba", false, "Whether the Samba subsystem should be enabled (true, false)")
 		cmd.Flags().Bool("enable-ssh", false, "Whether the SSH subsystem should be enabled (true, false)")
 		cmd.Flags().Bool("enable-webdav", false, "Whether the WebDAV subsystem should be enabled (true, false)")
@@ -39,6 +40,7 @@ var UpdateAccessSettingsCmd = base.Cmd{
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
+		homeDirectory, _ := cmd.Flags().GetString("home-directory")
 		enableSamba, _ := cmd.Flags().GetBool("enable-samba")
 		enableSSH, _ := cmd.Flags().GetBool("enable-ssh")
 		enableWebDAV, _ := cmd.Flags().GetBool("enable-webdav")
@@ -66,6 +68,9 @@ var UpdateAccessSettingsCmd = base.Cmd{
 		}
 
 		var opts hcloud.StorageBoxSubaccountAccessSettingsUpdateOpts
+		if cmd.Flags().Changed("home-directory") {
+			opts.HomeDirectory = &homeDirectory
+		}
 		if cmd.Flags().Changed("enable-samba") {
 			opts.SambaEnabled = &enableSamba
 		}

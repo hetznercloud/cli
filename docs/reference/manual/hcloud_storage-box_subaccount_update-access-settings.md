@@ -9,12 +9,13 @@ hcloud storage-box subaccount update-access-settings [options] <storage-box> <su
 ### Options
 
 ```
-      --enable-samba           Whether the Samba subsystem should be enabled (true, false)
-      --enable-ssh             Whether the SSH subsystem should be enabled (true, false)
-      --enable-webdav          Whether the WebDAV subsystem should be enabled (true, false)
-  -h, --help                   help for update-access-settings
-      --reachable-externally   Whether the Storage Box should be accessible from outside the Hetzner network (true, false)
-      --readonly               Whether the Subaccount should be read-only (true, false)
+      --enable-samba            Whether the Samba subsystem should be enabled (true, false)
+      --enable-ssh              Whether the SSH subsystem should be enabled (true, false)
+      --enable-webdav           Whether the WebDAV subsystem should be enabled (true, false)
+  -h, --help                    help for update-access-settings
+      --home-directory string   Home directory of the Subaccount. Will be created if it doesn't exist yet
+      --reachable-externally    Whether the Storage Box should be accessible from outside the Hetzner network (true, false)
+      --readonly                Whether the Subaccount should be read-only (true, false)
 ```
 
 ### Options inherited from parent commands

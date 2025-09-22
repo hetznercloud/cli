@@ -30,6 +30,7 @@ func TestUpdateAccessSettings(t *testing.T) {
 		Return(sbs, nil, nil)
 	fx.Client.StorageBoxClient.EXPECT().
 		UpdateSubaccountAccessSettings(gomock.Any(), sbs, hcloud.StorageBoxSubaccountAccessSettingsUpdateOpts{
+			HomeDirectory:       hcloud.Ptr("/new/home"),
 			SambaEnabled:        nil,
 			SSHEnabled:          hcloud.Ptr(true),
 			WebDAVEnabled:       hcloud.Ptr(false),
@@ -41,7 +42,7 @@ func TestUpdateAccessSettings(t *testing.T) {
 		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 456}).
 		Return(nil)
 
-	args := []string{"my-storage-box", "456", "--enable-ssh", "--enable-webdav=false", "--readonly=true"}
+	args := []string{"my-storage-box", "456", "--enable-ssh", "--enable-webdav=false", "--readonly=true", "--home-directory", "/new/home"}
 	out, errOut, err := fx.Run(cmd, args)
 
 	require.NoError(t, err)
