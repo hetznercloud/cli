@@ -4,6 +4,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/storagebox/snapshot"
+	"github.com/hetznercloud/cli/internal/cmd/storagebox/subaccount"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
 )
@@ -43,6 +44,7 @@ func NewCommand(s state.State) *cobra.Command {
 	)
 
 	util.AddGroup(cmd, "account", "Account",
+		subaccount.NewCommand(s),
 		ResetPasswordCmd.CobraCommand(s),
 		UpdateAccessSettingsCmd.CobraCommand(s),
 	)
