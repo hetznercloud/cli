@@ -1,13 +1,13 @@
 package storagebox
 
 import (
-	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/storagebox/snapshot"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -26,28 +26,7 @@ var RollbackSnapshotCmd = base.Cmd{
 
 		cmd.Flags().String("snapshot", "", "The name or ID of the snapshot to roll back to")
 		_ = cmd.MarkFlagRequired("snapshot")
-
-		_ = cmd.RegisterFlagCompletionFunc("snapshot", cmpl.SuggestCandidatesCtx(func(cmd *cobra.Command, args []string) []string {
-			if len(args) == 0 {
-				return nil
-			}
-
-			storageBox, _, err := client.StorageBox().Get(cmd.Context(), args[0])
-			if err != nil || storageBox == nil {
-				return nil
-			}
-
-			snapshots, err := client.StorageBox().AllSnapshots(context.Background(), storageBox)
-			if err != nil {
-				return nil
-			}
-
-			snapshotNames := make([]string, 0, len(snapshots))
-			for _, snapshot := range snapshots {
-				snapshotNames = append(snapshotNames, snapshot.Name)
-			}
-			return snapshotNames
-		}))
+		_ = cmd.RegisterFlagCompletionFunc("snapshot", snapshot.SuggestSnapshots(client))
 
 		return cmd
 	},
