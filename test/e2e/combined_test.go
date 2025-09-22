@@ -64,7 +64,7 @@ func TestCombined(t *testing.T) {
 		})
 
 		t.Run("attach-to-network", func(t *testing.T) {
-			out, err := runCommand(t, "load-balancer", "attach-to-network", strconv.FormatInt(loadBalancerID, 10), "--network", strconv.FormatInt(networkID, 10))
+			out, err := runCommand(t, "load-balancer", "attach-to-network", strconv.FormatInt(loadBalancerID, 10), "--network", strconv.FormatInt(networkID, 10), "--ip-range", "10.0.1.0/24")
 			require.NoError(t, err)
 			assert.Equal(t, fmt.Sprintf("Load Balancer %d attached to Network %d\n", loadBalancerID, networkID), out)
 		})
