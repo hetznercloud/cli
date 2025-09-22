@@ -61,6 +61,9 @@ var UpdateAccessSettingsCmd = base.Cmd{
 		if err != nil {
 			return err
 		}
+		if subaccount == nil {
+			return fmt.Errorf("Storage Box Subaccount not found: %d", id)
+		}
 
 		var opts hcloud.StorageBoxSubaccountAccessSettingsUpdateOpts
 		if cmd.Flags().Changed("enable-samba") {

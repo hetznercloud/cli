@@ -51,6 +51,9 @@ var ResetPasswordCmd = base.Cmd{
 		if err != nil {
 			return err
 		}
+		if subaccount == nil {
+			return fmt.Errorf("Storage Box Subaccount not found: %d", id)
+		}
 
 		opts := hcloud.StorageBoxSubaccountResetPasswordOpts{
 			Password: password,
