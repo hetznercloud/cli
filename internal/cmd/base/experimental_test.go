@@ -19,7 +19,7 @@ func (fakeExperimentalCmd) CobraCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:     "experimental",
 		Short:   "My experimental command",
-		Long:    "This is an experimental command that may change in the future.",
+		Long:    "This is an experimental command",
 		PreRunE: s.EnsureToken,
 	}
 
@@ -35,7 +35,7 @@ func TestExperimental(t *testing.T) {
 		"default": {
 			Args:      []string{"experimental"},
 			ExpOut:    "Hello world\n",
-			ExpErrOut: "Warning: Product name is experimental and may change in the future. Use --no-experimental-warnings to suppress this warning.\n",
+			ExpErrOut: "Warning: Product name is experimental. Use --no-experimental-warnings to suppress this warning.\n",
 		},
 		"experimental": {
 			Args:   []string{"experimental", "--no-experimental-warnings"},
@@ -48,7 +48,7 @@ func TestExperimental(t *testing.T) {
 
 	cmd := fakeExperimentalCmd{}.CobraCommand(fx.State())
 	assert.Equal(t, "[experimental] My experimental command", cmd.Short)
-	assert.Equal(t, `This is an experimental command that may change in the future.
+	assert.Equal(t, `This is an experimental command
 
 Experimental: Product name is experimental, breaking changes may occur within minor releases.
 See https://docs.hetzner.cloud/changelog#new-product for more details.
