@@ -11,8 +11,6 @@ import (
 	"github.com/hetznercloud/cli/internal/state/config"
 )
 
-const ExperimentalStderrWarning = "Warning: This command is experimental and may change in the future. Use --no-experimental-warnings to suppress this warning.\n"
-
 // ExperimentalWrapper create a command wrapper that appends a notice to the command
 // descriptions and logs a warning when it is used.
 //
@@ -55,7 +53,7 @@ See %s for more details.
 				return err
 			}
 			if !hideWarning {
-				cmd.PrintErr(ExperimentalStderrWarning)
+				cmd.PrintErrf("Warning: This command is %s and may change in the future. Use --no-experimental-warnings to suppress this warning.\n", maturity)
 			}
 			return nil
 		})
