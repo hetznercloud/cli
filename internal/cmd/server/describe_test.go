@@ -25,6 +25,11 @@ func TestDescribe(t *testing.T) {
 	cmd := server.DescribeCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
+	serverTypeDeprecation := hcloud.DeprecatableResource{Deprecation: &hcloud.DeprecationInfo{
+		Announced:        time.Date(2036, 1, 1, 0, 0, 0, 0, time.UTC),
+		UnavailableAfter: time.Date(2036, 4, 1, 0, 0, 0, 0, time.UTC),
+	}}
+
 	srv := &hcloud.Server{
 		ID:   123,
 		Name: "test",
@@ -37,6 +42,15 @@ func TestDescribe(t *testing.T) {
 			Memory:      4.0,
 			Disk:        40,
 			StorageType: hcloud.StorageTypeLocal,
+			Locations: []hcloud.ServerTypeLocation{
+				{
+					Location: &hcloud.Location{Name: "fsn1"},
+				},
+				{
+					Location:             &hcloud.Location{Name: "hel1"},
+					DeprecatableResource: serverTypeDeprecation,
+				},
+			},
 		},
 		Image: &hcloud.Image{
 			ID:           123,
@@ -91,6 +105,9 @@ Server Type:	cax11 (ID: 45)
   Memory:	4 GB
   Disk:		0 GB
   Storage Type:	local
+  Deprecation:
+    Announced:		%s (%s)
+    Unavailable After:	%s (%s)
 Public Net:
   IPv4:
     No Primary IPv4
@@ -142,7 +159,10 @@ Placement Group:
   No Placement Group set
 `,
 		util.Datetime(srv.Created), humanize.Time(srv.Created),
-		util.Datetime(srv.Image.Created), humanize.Time(srv.Image.Created))
+		util.Datetime(serverTypeDeprecation.DeprecationAnnounced()), humanize.Time(serverTypeDeprecation.DeprecationAnnounced()),
+		util.Datetime(serverTypeDeprecation.UnavailableAfter()), humanize.Time(serverTypeDeprecation.UnavailableAfter()),
+		util.Datetime(srv.Image.Created), humanize.Time(srv.Image.Created),
+	)
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)

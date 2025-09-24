@@ -2,6 +2,7 @@ package server
 
 import (
 	"fmt"
+	"slices"
 
 	humanize "github.com/dustin/go-humanize"
 	"github.com/spf13/cobra"
@@ -40,8 +41,15 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Server]{
 		cmd.Printf("  Disk:\t\t%d GB\n", server.PrimaryDiskSize)
 		cmd.Printf("  Storage Type:\t%s\n", server.ServerType.StorageType)
 
-		if text := util.DescribeDeprecation(server.ServerType); text != "" {
-			cmd.Print(util.PrefixLines(text, "  "))
+		// As we already know the location the server is in, we can show the deprecation info
+		// of that server type in that specific location.
+		locationInfoIndex := slices.IndexFunc(server.ServerType.Locations, func(locInfo hcloud.ServerTypeLocation) bool {
+			return locInfo.Location.Name == server.Datacenter.Location.Name
+		})
+		if locationInfoIndex >= 0 {
+			if text := util.DescribeDeprecation(server.ServerType.Locations[locationInfoIndex]); text != "" {
+				cmd.Print(util.PrefixLines(text, "  "))
+			}
 		}
 
 		cmd.Printf("Public Net:\n")

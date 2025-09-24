@@ -19,8 +19,8 @@ func TestChangeType(t *testing.T) {
 	cmd := server.ChangeTypeCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	srv := &hcloud.Server{ID: 123, Name: "my-server"}
-	st := &hcloud.ServerType{ID: 456, Name: "cax21"}
+	srv := &hcloud.Server{ID: 123, Name: "my-server", Datacenter: &hcloud.Datacenter{Location: &hcloud.Location{Name: "fsn1"}}}
+	st := &hcloud.ServerType{ID: 456, Name: "cax21", Locations: []hcloud.ServerTypeLocation{{Location: &hcloud.Location{Name: "fsn1"}}}}
 
 	fx.Client.ServerClient.EXPECT().
 		Get(gomock.Any(), "my-server").
@@ -53,8 +53,8 @@ func TestChangeTypeKeepDisk(t *testing.T) {
 	cmd := server.ChangeTypeCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
-	srv := &hcloud.Server{ID: 123, Name: "my-server"}
-	st := &hcloud.ServerType{ID: 456, Name: "cax21"}
+	srv := &hcloud.Server{ID: 123, Name: "my-server", Datacenter: &hcloud.Datacenter{Location: &hcloud.Location{Name: "fsn1"}}}
+	st := &hcloud.ServerType{ID: 456, Name: "cax21", Locations: []hcloud.ServerTypeLocation{{Location: &hcloud.Location{Name: "fsn1"}}}}
 
 	fx.Client.ServerClient.EXPECT().
 		Get(gomock.Any(), "my-server").
