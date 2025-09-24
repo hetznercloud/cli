@@ -181,7 +181,7 @@ Example:
 
 ```go
 var (
-  ExperimentalProduct = ExperimentalWrapper("Product name", "https://docs.hetzner.cloud/changelog#new-product")
+  ExperimentalProduct = ExperimentalWrapper("Product name", "beta", "https://docs.hetzner.cloud/changelog#new-product")
 )
 
 func (c) CobraCommand(s state.State) *cobra.Command {
@@ -198,4 +198,4 @@ func (c) CobraCommand(s state.State) *cobra.Command {
 }
 ```
 
-It should contain the experimental product name and a link to the relevant changelog or documentation.
+It should contain the experimental product name, the maturity level and a link to the relevant changelog or documentation.

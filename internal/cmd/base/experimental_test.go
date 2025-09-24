@@ -11,7 +11,7 @@ import (
 	"github.com/hetznercloud/cli/internal/testutil"
 )
 
-var ExperimentalProduct = base.ExperimentalWrapper("Product name", "https://docs.hetzner.cloud/changelog#new-product")
+var ExperimentalProduct = base.ExperimentalWrapper("Product name", "experimental", "https://docs.hetzner.cloud/changelog#new-product")
 
 type fakeExperimentalCmd struct{}
 
