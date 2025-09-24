@@ -35,7 +35,7 @@ func TestExperimental(t *testing.T) {
 		"default": {
 			Args:      []string{"experimental"},
 			ExpOut:    "Hello world\n",
-			ExpErrOut: "Warning: This command is experimental and may change in the future. Use --no-experimental-warnings to suppress this warning.\n",
+			ExpErrOut: "Warning: Product name is experimental and may change in the future. Use --no-experimental-warnings to suppress this warning.\n",
 		},
 		"experimental": {
 			Args:   []string{"experimental", "--no-experimental-warnings"},

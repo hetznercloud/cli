@@ -53,7 +53,7 @@ See %s for more details.
 				return err
 			}
 			if !hideWarning {
-				cmd.PrintErrf("Warning: This command is %s and may change in the future. Use --no-experimental-warnings to suppress this warning.\n", maturity)
+				cmd.PrintErrf("Warning: %s is %s and may change in the future. Use --no-experimental-warnings to suppress this warning.\n", product, maturity)
 			}
 			return nil
 		})
