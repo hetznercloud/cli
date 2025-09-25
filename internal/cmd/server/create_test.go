@@ -151,6 +151,20 @@ func TestCreateJSON(t *testing.T) {
 			Disk:         20,
 			StorageType:  "local",
 			Architecture: hcloud.ArchitectureX86,
+			Locations: []hcloud.ServerTypeLocation{
+				{
+					Location: &hcloud.Location{
+						ID:   1,
+						Name: "fsn1",
+					},
+				},
+				{
+					Location: &hcloud.Location{
+						ID:   2,
+						Name: "nbg1",
+					},
+				},
+			},
 		},
 		Image: &hcloud.Image{
 			ID:          1,
