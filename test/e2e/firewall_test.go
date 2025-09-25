@@ -181,6 +181,12 @@ func TestFirewall(t *testing.T) {
 				Lit("    Source IPs:").Newline().
 				Whitespace().Lit("0.0.0.0/0").Newline().
 				Whitespace().Lit("::/0").Newline().
+				Lit("  - Direction:").Whitespace().Lit("in").Newline().
+				Lit("    Description:").Whitespace().Lit("Some random description").Newline().
+				Lit("    Protocol:").Whitespace().Lit("tcp").Newline().
+				Lit("    Port:").Whitespace().Lit("9100").Newline().
+				Lit("    Source IPs:").Newline().
+				Whitespace().Lit("10.0.0.0/24").Newline().
 				Lit("  - Direction:").Whitespace().Lit("out").Newline().
 				Lit("    Protocol:").Whitespace().Lit("tcp").Newline().
 				Lit("    Port:").Whitespace().Lit("80").Newline().
@@ -188,12 +194,6 @@ func TestFirewall(t *testing.T) {
 				Whitespace().Lit("28.239.13.1/32").Newline().
 				Whitespace().Lit("28.239.14.0/24").Newline().
 				Whitespace().Lit("ff21:1eac:9a3b:ee58:5ca:990c:8bc9:c03b/128").Newline().
-				Lit("  - Direction:").Whitespace().Lit("in").Newline().
-				Lit("    Description:").Whitespace().Lit("Some random description").Newline().
-				Lit("    Protocol:").Whitespace().Lit("tcp").Newline().
-				Lit("    Port:").Whitespace().Lit("9100").Newline().
-				Lit("    Source IPs:").Newline().
-				Whitespace().Lit("10.0.0.0/24").Newline().
 				Lit("  - Direction:").Whitespace().Lit("out").Newline().
 				Lit("    Protocol:").Whitespace().Lit("icmp").Newline().
 				Lit("    Destination IPs:").Newline().
