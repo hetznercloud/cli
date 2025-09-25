@@ -1,5 +1,20 @@
 # Changelog
 
+## [v1.53.0](https://github.com/hetznercloud/cli/releases/tag/v1.53.0)
+
+[Server Types](https://docs.hetzner.cloud/reference/cloud#server-types) now depend on [Locations](https://docs.hetzner.cloud/reference/cloud#locations).
+
+- We added a new `locations` property to the [Server Types](https://docs.hetzner.cloud/reference/cloud#server-types) resource. The new property defines a list of supported [Locations](https://docs.hetzner.cloud/reference/cloud#locations) and additional per [Locations](https://docs.hetzner.cloud/reference/cloud#locations) details such as deprecations information.
+
+- We deprecated the `deprecation` property from the [Server Types](https://docs.hetzner.cloud/reference/cloud#server-types) resource. The property will gradually be phased out as per [Locations](https://docs.hetzner.cloud/reference/cloud#locations) deprecations are being announced. Please use the new per [Locations](https://docs.hetzner.cloud/reference/cloud#locations) deprecation information instead.
+
+See our [changelog](https://docs.hetzner.cloud/changelog#2025-09-24-per-location-server-types) for more details.
+
+### Features
+
+- add category property to server type (#1150)
+- per location server types (#1166)
+
 ## [v1.52.0](https://github.com/hetznercloud/cli/releases/tag/v1.52.0)
 
 ### Features
