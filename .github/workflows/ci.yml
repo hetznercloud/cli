@@ -70,7 +70,7 @@ jobs:
       - uses: hetznercloud/tps-action@main
 
       - name: Run tests
-        run: go test -tags e2e -coverpkg=./internal/... -coverprofile=coverage.txt -v -race ./test/e2e
+        run: go test -tags e2e -timeout=30m -coverpkg=./internal/... -coverprofile=coverage.txt -v -race ./test/e2e
         env:
           # Domain must be available in the account running the tests. This domain is
           # available in the account running the public integration tests.
