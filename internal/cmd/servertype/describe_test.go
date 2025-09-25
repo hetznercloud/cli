@@ -1,13 +1,17 @@
 package servertype_test
 
 import (
+	"fmt"
 	"testing"
+	"time"
 
+	"github.com/dustin/go-humanize"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/servertype"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -18,6 +22,11 @@ func TestDescribe(t *testing.T) {
 
 	cmd := servertype.DescribeCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
+
+	deprecation := hcloud.DeprecatableResource{Deprecation: &hcloud.DeprecationInfo{
+		Announced:        time.Date(2025, 1, 1, 0, 0, 0, 0, time.UTC),
+		UnavailableAfter: time.Date(2025, 4, 1, 0, 0, 0, 0, time.UTC),
+	}}
 
 	fx.Client.ServerTypeClient.EXPECT().
 		Get(gomock.Any(), "cax11").
@@ -31,6 +40,12 @@ func TestDescribe(t *testing.T) {
 			Memory:      4.0,
 			Disk:        40,
 			StorageType: hcloud.StorageTypeLocal,
+			Locations: []hcloud.ServerTypeLocation{
+				{
+					Location:             &hcloud.Location{Name: "fsn1"},
+					DeprecatableResource: deprecation,
+				},
+			},
 		}, nil, nil)
 
 	fx.Client.PricingClient.EXPECT().
@@ -42,7 +57,7 @@ func TestDescribe(t *testing.T) {
 					ServerType: &hcloud.ServerType{ID: 1},
 					Pricings: []hcloud.ServerTypeLocationPricing{{
 						Location: &hcloud.Location{
-							Name: "Nuremberg",
+							Name: "nbg1",
 						},
 						Hourly: hcloud.Price{
 							Gross:    "4.0000",
@@ -63,7 +78,7 @@ func TestDescribe(t *testing.T) {
 					ServerType: &hcloud.ServerType{ID: 45},
 					Pricings: []hcloud.ServerTypeLocationPricing{{
 						Location: &hcloud.Location{
-							Name: "Falkenstein",
+							Name: "fsn1",
 						},
 						Hourly: hcloud.Price{
 							Gross:    "1.0000",
@@ -85,7 +100,7 @@ func TestDescribe(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"cax11"})
 
-	expOut := `ID:			45
+	expOut := fmt.Sprintf(`ID:			45
 Name:			cax11
 Description:		CAX11
 Category:		Shared vCPU
@@ -95,14 +110,20 @@ Architecture:
 Memory:			4.0 GB
 Disk:			40 GB
 Storage Type:		local
-Pricings per Location:
-  - Location:		Falkenstein
-    Hourly:		€ 1.0000
-    Monthly:		€ 2.0000
-    Included Traffic:	639 KiB
-    Additional Traffic:	€ 3.0000 per TB
+Locations:
+  - Location:		fsn1
+    Deprecation:
+      Announced:		%s (%s)
+      Unavailable After:	%s (%s)
+    Pricing:
+      Hourly:		€ 1.0000
+      Monthly:		€ 2.0000
+      Included Traffic:	639 KiB
+      Additional Traffic:	€ 3.0000 per TB
 
-`
+`,
+		util.Datetime(deprecation.DeprecationAnnounced()), humanize.Time(deprecation.DeprecationAnnounced()),
+		util.Datetime(deprecation.UnavailableAfter()), humanize.Time(deprecation.UnavailableAfter()))
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)

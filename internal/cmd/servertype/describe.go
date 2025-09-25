@@ -33,23 +33,28 @@ var DescribeCmd = base.DescribeCmd[*hcloud.ServerType]{
 		cmd.Printf("Memory:\t\t\t%.1f GB\n", serverType.Memory)
 		cmd.Printf("Disk:\t\t\t%d GB\n", serverType.Disk)
 		cmd.Printf("Storage Type:\t\t%s\n", serverType.StorageType)
-		cmd.Print(util.DescribeDeprecation(serverType))
 
 		pricings, err := fullPricingInfo(s, serverType)
 		if err != nil {
 			cmd.PrintErrf("failed to get prices for Server Type: %v", err)
 		}
 
-		if pricings != nil {
-			cmd.Printf("Pricings per Location:\n")
-			for _, price := range pricings {
-				cmd.Printf("  - Location:\t\t%s\n", price.Location.Name)
-				cmd.Printf("    Hourly:\t\t%s\n", util.GrossPrice(price.Hourly))
-				cmd.Printf("    Monthly:\t\t%s\n", util.GrossPrice(price.Monthly))
-				cmd.Printf("    Included Traffic:\t%s\n", humanize.IBytes(price.IncludedTraffic))
-				cmd.Printf("    Additional Traffic:\t%s per TB\n", util.GrossPrice(price.PerTBTraffic))
-				cmd.Printf("\n")
+		locations := joinLocationInfo(serverType, pricings)
+		cmd.Printf("Locations:\n")
+		for _, info := range locations {
+
+			cmd.Printf("  - Location:\t\t%s\n", info.Location.Name)
+
+			if deprecationText := util.DescribeDeprecation(info); deprecationText != "" {
+				cmd.Print(util.PrefixLines(deprecationText, "    "))
 			}
+
+			cmd.Printf("    Pricing:\n")
+			cmd.Printf("      Hourly:\t\t%s\n", util.GrossPrice(info.Pricing.Hourly))
+			cmd.Printf("      Monthly:\t\t%s\n", util.GrossPrice(info.Pricing.Monthly))
+			cmd.Printf("      Included Traffic:\t%s\n", humanize.IBytes(info.Pricing.IncludedTraffic))
+			cmd.Printf("      Additional Traffic:\t%s per TB\n", util.GrossPrice(info.Pricing.PerTBTraffic))
+			cmd.Printf("\n")
 		}
 
 		return nil
@@ -69,4 +74,30 @@ func fullPricingInfo(s state.State, serverType *hcloud.ServerType) ([]hcloud.Ser
 	}
 
 	return nil, nil
+}
+
+type locationInfo struct {
+	Location *hcloud.Location
+	hcloud.DeprecatableResource
+	Pricing hcloud.ServerTypeLocationPricing
+}
+
+func joinLocationInfo(serverType *hcloud.ServerType, pricings []hcloud.ServerTypeLocationPricing) []locationInfo {
+	locations := make([]locationInfo, 0, len(serverType.Locations))
+
+	for _, location := range serverType.Locations {
+		info := locationInfo{Location: location.Location, DeprecatableResource: location.DeprecatableResource}
+
+		for _, pricing := range pricings {
+			// Pricing endpoint only sets the location name
+			if pricing.Location.Name == info.Location.Name {
+				info.Pricing = pricing
+				break
+			}
+		}
+
+		locations = append(locations, info)
+	}
+
+	return locations
 }

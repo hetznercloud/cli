@@ -30,7 +30,7 @@ func TestCreate(t *testing.T) {
 
 	fx.Client.ServerTypeClient.EXPECT().
 		Get(gomock.Any(), "cx22").
-		Return(&hcloud.ServerType{Architecture: hcloud.ArchitectureX86}, nil, nil)
+		Return(&hcloud.ServerType{Architecture: hcloud.ArchitectureX86, Locations: []hcloud.ServerTypeLocation{{Location: &hcloud.Location{Name: "fsn1"}}}}, nil, nil)
 	fx.Client.ImageClient.EXPECT().
 		GetForArchitecture(gomock.Any(), "ubuntu-20.04", hcloud.ArchitectureX86).
 		Return(&hcloud.Image{}, nil, nil)
@@ -193,7 +193,7 @@ func TestCreateJSON(t *testing.T) {
 
 	fx.Client.ServerTypeClient.EXPECT().
 		Get(gomock.Any(), "cx22").
-		Return(&hcloud.ServerType{Architecture: hcloud.ArchitectureX86}, nil, nil)
+		Return(&hcloud.ServerType{Architecture: hcloud.ArchitectureX86, Locations: []hcloud.ServerTypeLocation{{Location: &hcloud.Location{Name: "fsn1"}}}}, nil, nil)
 	fx.Client.ImageClient.EXPECT().
 		GetForArchitecture(gomock.Any(), "ubuntu-20.04", hcloud.ArchitectureX86).
 		Return(&hcloud.Image{}, nil, nil)
@@ -236,7 +236,7 @@ func TestCreateProtectionBackup(t *testing.T) {
 
 	fx.Client.ServerTypeClient.EXPECT().
 		Get(gomock.Any(), "cx22").
-		Return(&hcloud.ServerType{Architecture: hcloud.ArchitectureX86}, nil, nil)
+		Return(&hcloud.ServerType{Architecture: hcloud.ArchitectureX86, Locations: []hcloud.ServerTypeLocation{{Location: &hcloud.Location{Name: "fsn1"}}}}, nil, nil)
 	fx.Client.ImageClient.EXPECT().
 		GetForArchitecture(gomock.Any(), "ubuntu-20.04", hcloud.ArchitectureX86).
 		Return(&hcloud.Image{}, nil, nil)

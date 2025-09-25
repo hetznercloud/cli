@@ -2,12 +2,13 @@ package servertype
 
 import (
 	"fmt"
+	"strings"
+	"time"
 
 	"github.com/spf13/pflag"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/output"
-	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -47,10 +48,21 @@ var ListCmd = &base.ListCmd[*hcloud.ServerType, schema.ServerType]{
 			}).
 			AddFieldFn("deprecated", func(obj interface{}) string {
 				serverType := obj.(*hcloud.ServerType)
-				if !serverType.IsDeprecated() {
-					return "-"
+
+				deprecatedInfos := make([]string, 0, len(serverType.Locations))
+				for _, loc := range serverType.Locations {
+					if loc.IsDeprecated() {
+						deprecatedInfos = append(
+							deprecatedInfos,
+							fmt.Sprintf("%s=%s", loc.Location.Name, loc.UnavailableAfter().Local().Format(time.DateOnly)),
+						)
+					}
 				}
-				return util.Datetime(serverType.UnavailableAfter())
+
+				if len(deprecatedInfos) > 0 {
+					return strings.Join(deprecatedInfos, ",")
+				}
+				return "-"
 			})
 	},
 

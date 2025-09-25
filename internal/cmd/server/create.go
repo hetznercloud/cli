@@ -105,6 +105,16 @@ var CreateCmd = base.CreateCmd[*createResult]{
 			return nil, nil, err
 		}
 
+		// Check if intended server type is deprecated in the requested location
+		var locName string
+		if createOpts.Location != nil {
+			locName = createOpts.Location.Name
+		} else if createOpts.Datacenter != nil {
+			locName = createOpts.Datacenter.Location.Name
+		}
+
+		cmd.Print(deprecatedServerTypeWarning(createOpts.ServerType, locName))
+
 		result, _, err := s.Client().Server().Create(s, createOpts)
 		if err != nil {
 			return nil, nil, err
@@ -244,8 +254,8 @@ func createOptsFromFlags(
 	name, _ := flags.GetString("name")
 	serverTypeName, _ := flags.GetString("type")
 	imageIDorName, _ := flags.GetString("image")
-	location, _ := flags.GetString("location")
-	datacenter, _ := flags.GetString("datacenter")
+	locationIDOrName, _ := flags.GetString("location")
+	datacenterIDOrName, _ := flags.GetString("datacenter")
 	userDataFiles, _ := flags.GetStringArray("user-data-from-file")
 	startAfterCreate, _ := flags.GetBool("start-after-create")
 	sshKeys, _ := flags.GetStringSlice("ssh-key")
@@ -269,10 +279,6 @@ func createOptsFromFlags(
 	if serverType == nil {
 		err = fmt.Errorf("Server Type not found: %s", serverTypeName)
 		return
-	}
-
-	if serverType.IsDeprecated() {
-		cmd.Print(warningDeprecatedServerType(serverType))
 	}
 
 	// Select correct image based on Server Type architecture
@@ -424,12 +430,31 @@ func createOptsFromFlags(
 		createOpts.Firewalls = append(createOpts.Firewalls, &hcloud.ServerCreateFirewall{Firewall: *firewall})
 	}
 
-	if datacenter != "" {
-		createOpts.Datacenter = &hcloud.Datacenter{Name: datacenter}
+	if datacenterIDOrName != "" {
+		var datacenter *hcloud.Datacenter
+		datacenter, _, err = s.Client().Datacenter().Get(s, datacenterIDOrName)
+		if err != nil {
+			return
+		}
+		if datacenter == nil {
+			err = fmt.Errorf("Datacenter not found: %s", datacenterIDOrName)
+			return
+		}
+		createOpts.Datacenter = datacenter
 	}
-	if location != "" {
-		createOpts.Location = &hcloud.Location{Name: location}
+	if locationIDOrName != "" {
+		var location *hcloud.Location
+		location, _, err = s.Client().Location().Get(s, locationIDOrName)
+		if err != nil {
+			return
+		}
+		if location == nil {
+			err = fmt.Errorf("Location not found: %s", locationIDOrName)
+			return
+		}
+		createOpts.Location = location
 	}
+
 	if placementGroupIDorName != "" {
 		var placementGroup *hcloud.PlacementGroup
 		placementGroup, _, err = s.Client().PlacementGroup().Get(s, placementGroupIDorName)

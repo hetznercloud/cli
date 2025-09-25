@@ -75,10 +75,20 @@ func TestListColumnDeprecated(t *testing.T) {
 			{
 				ID:   123,
 				Name: "deprecated",
-				DeprecatableResource: hcloud.DeprecatableResource{
-					Deprecation: &hcloud.DeprecationInfo{
-						Announced:        time.Date(2036, 8, 20, 12, 0, 0, 0, time.UTC),
-						UnavailableAfter: time.Date(2037, 8, 20, 12, 0, 0, 0, time.UTC),
+				Locations: []hcloud.ServerTypeLocation{
+					{
+						Location: &hcloud.Location{Name: "fsn1"},
+						DeprecatableResource: hcloud.DeprecatableResource{Deprecation: &hcloud.DeprecationInfo{
+							Announced:        time.Date(2025, 1, 1, 0, 0, 0, 0, time.UTC),
+							UnavailableAfter: time.Date(2025, 4, 1, 0, 0, 0, 0, time.UTC),
+						}},
+					},
+					{
+						Location: &hcloud.Location{Name: "nbg1"},
+						DeprecatableResource: hcloud.DeprecatableResource{Deprecation: &hcloud.DeprecationInfo{
+							Announced:        time.Date(2025, 2, 1, 0, 0, 0, 0, time.UTC),
+							UnavailableAfter: time.Date(2025, 5, 1, 0, 0, 0, 0, time.UTC),
+						}},
 					},
 				},
 			},
@@ -90,9 +100,9 @@ func TestListColumnDeprecated(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"-o=columns=id,name,deprecated"})
 
-	expOut := `ID    NAME         DEPRECATED                  
-123   deprecated   Thu Aug 20 12:00:00 UTC 2037
-124   current      -                           
+	expOut := `ID    NAME         DEPRECATED                     
+123   deprecated   fsn1=2025-04-01,nbg1=2025-05-01
+124   current      -                              
 `
 
 	require.NoError(t, err)
