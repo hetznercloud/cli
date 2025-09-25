@@ -17,7 +17,7 @@ import (
 // Usage:
 //
 //	var (
-//		ExperimentalProduct = ExperimentalWrapper("Product name", "beta", "https://docs.hetzner.cloud/changelog#new-product")
+//		ExperimentalProduct = ExperimentalWrapper("Product", "in beta", "https://docs.hetzner.cloud/changelog#new-product")
 //	)
 //
 //	func (c) CobraCommand(s state.State) *cobra.Command {
