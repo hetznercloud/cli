@@ -99,7 +99,11 @@
       "memory": 2,
       "name": "cx22",
       "prices": null,
-      "storage_type": "local"
+      "storage_type": "local",
+      "locations": [
+        { "id": 1, "name": "fsn1", "deprecation": null },
+        { "id": 2, "name": "nbg1", "deprecation": null }
+      ]
     },
     "status": "running",
     "volumes": null
