@@ -13,10 +13,10 @@ const ChangeDeprecatedServerTypeMessage = (`Existing servers of that plan will `
 	`the "hcloud server change-type" command.`)
 
 func deprecatedServerTypeWarning(serverType *hcloud.ServerType, locationName string) string {
-	warnText, _ := deprecationutil.ServerTypeWarning(serverType, locationName)
-	if warnText == "" {
+	message, _ := deprecationutil.ServerTypeMessage(serverType, locationName)
+	if message == "" {
 		return ""
 	}
 
-	return fmt.Sprintf("Attention: %s %s\n\n", warnText, ChangeDeprecatedServerTypeMessage)
+	return fmt.Sprintf("Attention: %s %s\n\n", message, ChangeDeprecatedServerTypeMessage)
 }
