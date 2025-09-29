@@ -11,15 +11,13 @@ import (
 	"github.com/hetznercloud/cli/internal/state/config"
 )
 
-const ExperimentalStderrWarning = "Warning: This command is experimental and may change in the future. Use --no-experimental-warnings to suppress this warning.\n"
-
 // ExperimentalWrapper create a command wrapper that appends a notice to the command
 // descriptions and logs a warning when it is used.
 //
 // Usage:
 //
 //	var (
-//		ExperimentalProduct = ExperimentalWrapper("Product name", "https://docs.hetzner.cloud/changelog#new-product")
+//		ExperimentalProduct = ExperimentalWrapper("Product", "in beta", "https://docs.hetzner.cloud/changelog#new-product")
 //	)
 //
 //	func (c) CobraCommand(s state.State) *cobra.Command {
@@ -34,7 +32,7 @@ const ExperimentalStderrWarning = "Warning: This command is experimental and may
 //
 //		return ExperimentalProduct(s, cmd)
 //	}
-func ExperimentalWrapper(product, url string) func(state.State, *cobra.Command) *cobra.Command {
+func ExperimentalWrapper(product, maturity, url string) func(state.State, *cobra.Command) *cobra.Command {
 	return func(s state.State, cmd *cobra.Command) *cobra.Command {
 		cmd.Long = strings.TrimLeft(cmd.Long, "\n")
 
@@ -45,9 +43,9 @@ func ExperimentalWrapper(product, url string) func(state.State, *cobra.Command) 
 		cmd.Short = "[experimental] " + cmd.Short
 		cmd.Long += fmt.Sprintf(`
 
-Experimental: %s is experimental, breaking changes may occur within minor releases.
+Experimental: %s is %s, breaking changes may occur within minor releases.
 See %s for more details.
-`, product, url)
+`, product, maturity, url)
 
 		cmd.PreRunE = util.ChainRunE(cmd.PreRunE, func(cmd *cobra.Command, _ []string) error {
 			hideWarning, err := config.OptionNoExperimentalWarning.Get(s.Config())
@@ -55,7 +53,7 @@ See %s for more details.
 				return err
 			}
 			if !hideWarning {
-				cmd.PrintErr(ExperimentalStderrWarning)
+				cmd.PrintErrf("Warning: %s is %s. Use --no-experimental-warnings to suppress this warning.\n", product, maturity)
 			}
 			return nil
 		})
