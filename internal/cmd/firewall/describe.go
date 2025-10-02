@@ -93,7 +93,7 @@ func describeResources(s state.State, resources []hcloud.FirewallResource) strin
 		case hcloud.FirewallResourceTypeLabelSelector:
 			sb.WriteString(fmt.Sprintf("    Label Selector:\t%s\n", resource.LabelSelector.Selector))
 			if len(resource.AppliedToResources) > 0 {
-				sb.WriteString(fmt.Sprintf("    Applied to resources:\n"))
+				sb.WriteString("    Applied to resources:\n")
 				substr := describeResources(s, resource.AppliedToResources)
 				sb.WriteString(util.PrefixLines(substr, "  "))
 			}

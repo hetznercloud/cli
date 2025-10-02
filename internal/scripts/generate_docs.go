@@ -27,7 +27,7 @@ func run() error {
 	}
 
 	// Create directory again
-	if err := os.MkdirAll(dir, 0755); err != nil {
+	if err := os.MkdirAll(dir, 0755); err != nil { //nolint:gosec
 		return fmt.Errorf("error creating docs directory: %w", err)
 	}
 

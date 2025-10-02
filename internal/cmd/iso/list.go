@@ -41,7 +41,6 @@ var ListCmd = &base.ListCmd[*hcloud.ISO, schema.ISO]{
 		for _, t := range types {
 			switch t {
 			case string(hcloud.ISOTypePublic), string(hcloud.ISOTypePrivate):
-				break
 			default:
 				unknown = append(unknown, t)
 			}
