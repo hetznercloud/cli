@@ -28,8 +28,6 @@ jobs:
         with:
           # golangci-lint was already installed in a previous step.
           install-mode: none
-          # In general linting is quite fast with warm caches, but a fresh run might take some time.
-          args: --timeout 5m
 
   test:
     runs-on: ubuntu-latest

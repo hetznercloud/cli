@@ -1,40 +1,80 @@
+version: "2"
+
+run:
+  timeout: 5m
+
 linters:
-  presets:
-    - bugs
-    - error
-    - import
-    - metalinter
-    - module
-    - unused
-
   enable:
+    - asasalint
+    - asciicheck
+    - bidichk
+    - bodyclose
+    - contextcheck
+    - durationcheck
+    - errchkjson
+    - errorlint
+    - exhaustive
+    - gocheckcompilerdirectives
+    - gochecksumtype
+    - gocritic
+    - gomoddirectives
+    - gomodguard
+    - gosec
+    - gosmopolitan
+    - loggercheck
+    - makezero
+    - musttag
+    - nilerr
+    - nilnesserr
+    - noctx
+    - protogetter
+    - reassign
+    - recvcheck
+    - revive
+    - rowserrcheck
+    - spancheck
+    - sqlclosecheck
     - testifylint
+    - unparam
+    - zerologlint
 
-  disable:
-    # preset error
-    - err113 # Very annoying to define static errors everywhere
-    - wrapcheck # Very annoying to wrap errors everywhere
-    # preset import
-    - depguard
+  settings:
+    exhaustive:
+      default-signifies-exhaustive: true
 
-linters-settings:
-  gci:
-    sections:
-      - standard
-      - default
-      - prefix(github.com/hetznercloud)
+    staticcheck:
+      checks: ["all", "-ST1005"]
 
-  gosec:
-    excludes:
-      # As of golangci-lint v1.60.3, this rule is still enabled by default, which causes problems.
-      # We disable it manually for now until a new golangci-lint version is released which fixes this.
-      # See https://github.com/securego/gosec/issues/1185
-      - G115
+    gosec:
+      excludes:
+        - G115
 
-  exhaustive:
-    # Switch cases with a default case should be exhaustive.
-    default-signifies-exhaustive: true
+    gosmopolitan:
+      allow-time-local: true
 
-  gosmopolitan:
-    # We want to allow the use of time.Local()
-    allow-time-local: true
+  exclusions:
+    generated: lax
+    presets:
+      - comments
+      - common-false-positives
+      - std-error-handling
+    rules:
+      - linters:
+          - revive
+        path: internal/cmd/util/.+\.go
+        text: var-naming
+
+formatters:
+  enable:
+    - gci
+    - goimports
+
+  settings:
+    gci:
+      sections:
+        - standard
+        - default
+        - prefix(github.com/hetznercloud)
+
+  exclusions:
+    generated: lax
