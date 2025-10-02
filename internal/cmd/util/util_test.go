@@ -168,10 +168,10 @@ func TestSplitLabelVars(t *testing.T) {
 	assert.Equal(t, "bar", b)
 	a, b = util.SplitLabelVars("foo")
 	assert.Equal(t, "foo", a)
-	assert.Equal(t, "", b)
+	assert.Empty(t, b)
 	a, b = util.SplitLabelVars("")
-	assert.Equal(t, "", a)
-	assert.Equal(t, "", b)
+	assert.Empty(t, a)
+	assert.Empty(t, b)
 }
 
 func TestLabelsToString(t *testing.T) {
@@ -182,7 +182,7 @@ func TestLabelsToString(t *testing.T) {
 	assert.Equal(t, "foo=bar", util.LabelsToString(map[string]string{
 		"foo": "bar",
 	}))
-	assert.Equal(t, "", util.LabelsToString(map[string]string{}))
+	assert.Empty(t, util.LabelsToString(map[string]string{}))
 }
 
 func TestPrefixLines(t *testing.T) {

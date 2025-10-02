@@ -24,12 +24,10 @@ jobs:
         run: diff -u <(echo -n) <(gofmt -d -s .)
 
       - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v6
+        uses: golangci/golangci-lint-action@v8
         with:
           # golangci-lint was already installed in a previous step.
           install-mode: none
-          # In general linting is quite fast with warm caches, but a fresh run might take some time.
-          args: --timeout 5m
 
   test:
     runs-on: ubuntu-latest

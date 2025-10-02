@@ -92,7 +92,7 @@ func (c *state) newClient() (hcapi2.Client, error) {
 		if filePath == "" {
 			debugWriter = os.Stderr
 		} else {
-			f, err := os.OpenFile(filePath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
+			f, err := os.OpenFile(filePath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644) //nolint:gosec
 			if err != nil {
 				return nil, err
 			}

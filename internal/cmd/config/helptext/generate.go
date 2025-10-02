@@ -29,7 +29,7 @@ func main() {
 }
 
 func generateTable(outFile string, mask, filter config.OptionFlag, extraRows ...table.Row) {
-	f, err := os.OpenFile(outFile, os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644)
+	f, err := os.OpenFile(outFile, os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644) //nolint:gosec
 	if err != nil {
 		panic(err)
 	}

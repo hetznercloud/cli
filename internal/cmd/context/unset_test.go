@@ -52,6 +52,6 @@ func TestUnset(t *testing.T) {
 	out, errOut, err := fx.Run(cmd, []string{})
 
 	require.NoError(t, err)
-	assert.Equal(t, "", errOut)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
