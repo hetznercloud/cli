@@ -27,6 +27,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/cmd/version"
 	"github.com/hetznercloud/cli/internal/cmd/volume"
+	"github.com/hetznercloud/cli/internal/cmd/zone"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/cli/internal/state/config"
 )
@@ -60,6 +61,7 @@ func NewRootCommand(s state.State) *cobra.Command {
 		firewall.NewCommand(s),
 		placementgroup.NewCommand(s),
 		primaryip.NewCommand(s),
+		zone.NewCommand(s),
 	)
 
 	cmd.AddCommand(

@@ -379,6 +379,15 @@ func IterateInOrder[M ~map[K]V, K cmp.Ordered, V any](m M) iter.Seq2[K, V] {
 	}
 }
 
+// OrZero returns the zero value of T if ptr is nil, otherwise it returns the dereferenced value.
+func OrZero[T any](ptr *T) T {
+	var t T
+	if ptr != nil {
+		t = *ptr
+	}
+	return t
+}
+
 func FormatHcloudError(err error) string {
 	var hcloudErr hcloud.Error
 	if !errors.As(err, &hcloudErr) {

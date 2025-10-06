@@ -285,6 +285,24 @@ var (
 		nil,
 		nil,
 	)
+
+	OptionSortZone = newOpt(
+		"sort.zone",
+		"Default sorting for Zone resource",
+		[]string{"id:asc"},
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
+		nil,
+		nil,
+	)
+
+	OptionSortZoneRRSet = newOpt(
+		"sort.zone.rrset",
+		"Default sorting for Zone RRSet resource",
+		[]string{"id:asc"},
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
+		nil,
+		nil,
+	)
 )
 
 type Option[T any] struct {

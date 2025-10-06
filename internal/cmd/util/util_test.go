@@ -484,6 +484,14 @@ func TestSortLabels(t *testing.T) {
 	}
 }
 
+func TestOrZero(t *testing.T) {
+	assert.Empty(t, util.OrZero[string](nil))
+	assert.Equal(t, 0, util.OrZero[int](nil))
+	assert.False(t, util.OrZero[bool](nil))
+	assert.Equal(t, 42, util.OrZero(hcloud.Ptr(42)))
+	assert.Equal(t, "abc", util.OrZero(hcloud.Ptr("abc")))
+}
+
 func TestFormatHcloudError(t *testing.T) {
 	normalErr := errors.New("normal error")
 	assert.Equal(t, "normal error", util.FormatHcloudError(normalErr))
