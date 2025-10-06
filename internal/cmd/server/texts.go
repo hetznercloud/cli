@@ -18,5 +18,5 @@ func deprecatedServerTypeWarning(serverType *hcloud.ServerType, locationName str
 		return ""
 	}
 
-	return fmt.Sprintf("Attention: %s %s\n\n", message, ChangeDeprecatedServerTypeMessage)
+	return fmt.Sprintf("Attention: %s. %s\n\n", message, ChangeDeprecatedServerTypeMessage)
 }
