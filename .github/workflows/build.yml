@@ -18,7 +18,7 @@ jobs:
       - name: Set up tools
         uses: jdx/mise-action@v3
         with:
-          version: v2025.5.9
+          version: 2025.5.9
 
       - name: Run GoReleaser
         run: goreleaser release --clean --snapshot --skip=sign
