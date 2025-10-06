@@ -24,7 +24,7 @@ jobs:
       - name: Set up tools
         uses: jdx/mise-action@v3
         with:
-          version: v2025.5.9
+          version: 2025.5.9
 
       - name: Import GPG key
         id: import_gpg
