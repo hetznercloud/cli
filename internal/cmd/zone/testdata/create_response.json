@@ -1,0 +1,25 @@
+{
+  "zone": {
+    "id": 123,
+    "name": "example.com",
+    "mode": "primary",
+    "ttl": 600,
+    "labels": {
+      "foo": "bar"
+    },
+    "primary_nameservers": null,
+    "created": "2016-01-30T23:50:00Z",
+    "protection": {
+      "delete": false
+    },
+    "status": "ok",
+    "authoritative_nameservers": {
+      "assigned": null,
+      "delegated": null,
+      "delegation_last_check": "1970-01-01T00:00:00Z",
+      "delegation_status": "unknown"
+    },
+    "record_count": 0,
+    "registrar": "unknown"
+  }
+}

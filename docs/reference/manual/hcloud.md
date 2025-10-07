@@ -43,3 +43,4 @@ A command-line interface for Hetzner Cloud
 * [hcloud ssh-key](hcloud_ssh-key.md)	 - Manage SSH Keys
 * [hcloud version](hcloud_version.md)	 - Print version information
 * [hcloud volume](hcloud_volume.md)	 - Manage Volumes
+* [hcloud zone](hcloud_zone.md)	 - [experimental] Manage DNS Zones and Zone RRSets (records)

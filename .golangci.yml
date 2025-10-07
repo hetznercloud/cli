@@ -43,7 +43,7 @@ linters:
       default-signifies-exhaustive: true
 
     staticcheck:
-      checks: ["all", "-ST1005"]
+      checks: ["all", "-ST1005", "-S1016"]
 
     gosec:
       excludes:

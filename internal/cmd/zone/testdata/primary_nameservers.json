@@ -1,0 +1,15 @@
+[
+  {
+    "address": "198.51.100.1",
+    "port": 53
+  },
+  {
+    "address": "203.0.113.1"
+  },
+  {
+    "address": "203.0.113.1",
+    "port": 53,
+    "tsig_algorithm": "hmac-sha256",
+    "tsig_key": "example-key"
+  }
+]

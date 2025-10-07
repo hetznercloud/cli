@@ -21,6 +21,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/sshkey"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/cmd/volume"
+	"github.com/hetznercloud/cli/internal/cmd/zone"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -39,6 +40,7 @@ var allCmds = []base.Listable{
 	firewall.ListCmd,
 	certificate.ListCmd,
 	sshkey.ListCmd,
+	zone.ListCmd,
 }
 
 var ListCmd = base.Cmd{

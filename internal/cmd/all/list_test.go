@@ -173,6 +173,28 @@ func TestListAll(t *testing.T) {
 				Created: time.Now().Add(-2 * time.Hour),
 			},
 		}, nil)
+	fx.Client.ZoneClient.EXPECT().
+		AllWithOpts(gomock.Any(), hcloud.ZoneListOpts{}).
+		Return([]*hcloud.Zone{
+			{
+				ID:      42,
+				Name:    "example.com",
+				Mode:    hcloud.ZoneModePrimary,
+				Created: time.Now().Add(-1337 * time.Hour),
+				Labels: map[string]string{
+					"environment":    "prod",
+					"example.com/my": "label",
+					"just-a-key":     "",
+				},
+				Protection: hcloud.ZoneProtection{
+					Delete: false,
+				},
+				RecordCount: 4,
+				Registrar:   hcloud.ZoneRegistrarHetzner,
+				Status:      hcloud.ZoneStatusOk,
+				TTL:         10800,
+			},
+		}, nil)
 
 	out, errOut, err := fx.Run(cmd, []string{})
 
@@ -235,6 +257,11 @@ SSH KEYS
 ---
 ID    NAME   FINGERPRINT   AGE
 123   test   -             2h 
+
+ZONES
+---
+ID   NAME          STATUS   MODE      RECORD COUNT   AGE
+42   example.com   ok       primary   4              55d
 
 `
 

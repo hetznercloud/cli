@@ -27,6 +27,7 @@ type Client interface {
 	RDNS() RDNSClient
 	PrimaryIP() PrimaryIPClient
 	Pricing() PricingClient
+	Zone() ZoneClient
 	WithOpts(...hcloud.ClientOption)
 }
 
@@ -50,6 +51,7 @@ type clientCache struct {
 	rdnsClient             RDNSClient
 	primaryIPClient        PrimaryIPClient
 	pricingClient          PricingClient
+	zoneClient             ZoneClient
 }
 
 type client struct {
@@ -247,4 +249,13 @@ func (c *client) Pricing() PricingClient {
 	}
 	defer c.mu.Unlock()
 	return c.cache.pricingClient
+}
+
+func (c *client) Zone() ZoneClient {
+	c.mu.Lock()
+	if c.cache.zoneClient == nil {
+		c.cache.zoneClient = NewZoneClient(&c.client.Zone)
+	}
+	defer c.mu.Unlock()
+	return c.cache.zoneClient
 }
