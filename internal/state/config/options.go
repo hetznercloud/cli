@@ -286,6 +286,15 @@ var (
 		nil,
 	)
 
+	OptionSortStorageBox = newOpt(
+		"sort.storage-box",
+		"Default sorting for Storage Box resource",
+		[]string{"id:asc"},
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
+		nil,
+		nil,
+	)
+
 	OptionSortVolume = newOpt(
 		"sort.volume",
 		"Default sorting for Volume resource",
