@@ -40,7 +40,7 @@ func TestCreate(t *testing.T) {
 		CreateSubaccount(gomock.Any(), sb, hcloud.StorageBoxSubaccountCreateOpts{
 			Password:      "my-password",
 			HomeDirectory: hcloud.Ptr("/home/directory"),
-			AccessSettings: &hcloud.StorageBoxSubaccountAccessSettingsOpts{
+			AccessSettings: &hcloud.StorageBoxSubaccountCreateOptsAccessSettings{
 				ReachableExternally: hcloud.Ptr(false),
 				Readonly:            hcloud.Ptr(true),
 				SambaEnabled:        hcloud.Ptr(false),
@@ -112,7 +112,7 @@ func TestCreateJSON(t *testing.T) {
 		CreateSubaccount(gomock.Any(), sb, hcloud.StorageBoxSubaccountCreateOpts{
 			Password:      "my-password",
 			HomeDirectory: hcloud.Ptr("/home/directory"),
-			AccessSettings: &hcloud.StorageBoxSubaccountAccessSettingsOpts{
+			AccessSettings: &hcloud.StorageBoxSubaccountCreateOptsAccessSettings{
 				ReachableExternally: hcloud.Ptr(false),
 				Readonly:            hcloud.Ptr(true),
 				SambaEnabled:        hcloud.Ptr(false),

@@ -65,7 +65,7 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBoxSubaccount]{
 		opts := hcloud.StorageBoxSubaccountCreateOpts{
 			Password:      password,
 			HomeDirectory: &homeDirectory,
-			AccessSettings: &hcloud.StorageBoxSubaccountAccessSettingsOpts{
+			AccessSettings: &hcloud.StorageBoxSubaccountCreateOptsAccessSettings{
 				ReachableExternally: &reachableExternally,
 				SambaEnabled:        &enableSamba,
 				SSHEnabled:          &enableSSH,
