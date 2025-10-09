@@ -24,7 +24,7 @@ func TestUpdateName(t *testing.T) {
 		Return(&hcloud.StorageBox{ID: 123}, nil, nil)
 	fx.Client.StorageBoxClient.EXPECT().
 		Update(gomock.Any(), &hcloud.StorageBox{ID: 123}, hcloud.StorageBoxUpdateOpts{
-			Name: "new-name",
+			Name: hcloud.Ptr("new-name"),
 		})
 
 	out, errOut, err := fx.Run(cmd, []string{"123", "--name", "new-name"})
