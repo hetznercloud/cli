@@ -2,7 +2,6 @@ package subaccount
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -26,18 +25,15 @@ var UpdateCmd = base.UpdateCmd{
 	},
 	PositionalArgumentOverride: []string{"storage-box", "subaccount"},
 	FetchWithArgs: func(s state.State, _ *cobra.Command, args []string) (any, *hcloud.Response, error) {
-		storageBox, _, err := s.Client().StorageBox().Get(s, args[0])
+		storageBoxIDOrName, subaccountIDOrName := args[0], args[1]
+		storageBox, _, err := s.Client().StorageBox().Get(s, storageBoxIDOrName)
 		if err != nil {
 			return nil, nil, err
 		}
 		if storageBox == nil {
-			return nil, nil, fmt.Errorf("Storage Box not found: %s", args[0])
+			return nil, nil, fmt.Errorf("Storage Box not found: %s", storageBoxIDOrName)
 		}
-		id, err := strconv.ParseInt(args[1], 10, 64)
-		if err != nil {
-			return nil, nil, fmt.Errorf("invalid Storage Box Subaccount ID: %s", args[1])
-		}
-		return s.Client().StorageBox().GetSubaccountByID(s, storageBox, id)
+		return s.Client().StorageBox().GetSubaccount(s, storageBox, subaccountIDOrName)
 	},
 	DefineFlags: func(cmd *cobra.Command) {
 		cmd.Flags().String("description", "", "Description of the Storage Box Snapshot")
