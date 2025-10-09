@@ -55,9 +55,6 @@ var ListCmd = base.ListCmd[*hcloud.StorageBox, schema.StorageBox]{
 			}).
 			AddFieldFn("size", func(obj any) string {
 				storageBox := obj.(*hcloud.StorageBox)
-				if storageBox.Stats == nil {
-					return "-"
-				}
 				return humanize.IBytes(storageBox.Stats.Size)
 			}).
 			AddFieldFn("labels", func(obj any) string {
