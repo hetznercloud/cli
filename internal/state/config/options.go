@@ -295,6 +295,15 @@ var (
 		nil,
 	)
 
+	OptionSortStorageBoxSubaccount = newOpt(
+		"sort.storage-box.subaccount",
+		"Default sorting for Storage Box Subaccount resource",
+		[]string{"id:asc"},
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
+		nil,
+		nil,
+	)
+
 	OptionSortVolume = newOpt(
 		"sort.volume",
 		"Default sorting for Volume resource",
