@@ -52,7 +52,7 @@ var ChangeHomeDirectoryCmd = base.Cmd{
 		}
 
 		action, _, err := s.Client().StorageBox().ChangeSubaccountHomeDirectory(s, subaccount, hcloud.StorageBoxSubaccountChangeHomeDirectoryOpts{
-			HomeDirectory: &homeDirectory,
+			HomeDirectory: homeDirectory,
 		})
 		if err != nil {
 			return err

@@ -30,7 +30,7 @@ func TestChangeHomeDirectory(t *testing.T) {
 		Return(sbs, nil, nil)
 	fx.Client.StorageBoxClient.EXPECT().
 		ChangeSubaccountHomeDirectory(gomock.Any(), sbs, hcloud.StorageBoxSubaccountChangeHomeDirectoryOpts{
-			HomeDirectory: hcloud.Ptr("/new/home"),
+			HomeDirectory: "/new/home",
 		}).
 		Return(&hcloud.Action{ID: 456}, nil, nil)
 	fx.ActionWaiter.EXPECT().
