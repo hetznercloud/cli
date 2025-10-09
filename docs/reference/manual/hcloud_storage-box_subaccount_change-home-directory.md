@@ -1,20 +1,16 @@
-## hcloud storage-box subaccount update-access-settings
+## hcloud storage-box subaccount change-home-directory
 
 Update access settings of the Storage Box Subaccount
 
 ```
-hcloud storage-box subaccount update-access-settings [options] <storage-box> <subaccount>
+hcloud storage-box subaccount change-home-directory --home-directory <home-directory> <storage-box> <subaccount>
 ```
 
 ### Options
 
 ```
-      --enable-samba           Whether the Samba subsystem should be enabled (true, false)
-      --enable-ssh             Whether the SSH subsystem should be enabled (true, false)
-      --enable-webdav          Whether the WebDAV subsystem should be enabled (true, false)
-  -h, --help                   help for update-access-settings
-      --reachable-externally   Whether the Storage Box should be accessible from outside the Hetzner network (true, false)
-      --readonly               Whether the Subaccount should be read-only (true, false)
+  -h, --help                    help for change-home-directory
+      --home-directory string   Home directory of the Subaccount. Will be created if it doesn't exist yet
 ```
 
 ### Options inherited from parent commands
