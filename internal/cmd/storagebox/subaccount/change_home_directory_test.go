@@ -12,11 +12,11 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-func TestUpdateAccessSettings(t *testing.T) {
+func TestChangeHomeDirectory(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := subaccount.UpdateAccessSettingsCmd.CobraCommand(fx.State())
+	cmd := subaccount.ChangeHomeDirectoryCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	sb := &hcloud.StorageBox{ID: 123, Name: "my-storage-box"}
@@ -29,22 +29,18 @@ func TestUpdateAccessSettings(t *testing.T) {
 		GetSubaccountByID(gomock.Any(), sb, int64(456)).
 		Return(sbs, nil, nil)
 	fx.Client.StorageBoxClient.EXPECT().
-		UpdateSubaccountAccessSettings(gomock.Any(), sbs, hcloud.StorageBoxSubaccountAccessSettingsUpdateOpts{
-			SambaEnabled:        nil,
-			SSHEnabled:          hcloud.Ptr(true),
-			WebDAVEnabled:       hcloud.Ptr(false),
-			ReachableExternally: nil,
-			Readonly:            hcloud.Ptr(true),
+		ChangeSubaccountHomeDirectory(gomock.Any(), sbs, hcloud.StorageBoxSubaccountChangeHomeDirectoryOpts{
+			HomeDirectory: hcloud.Ptr("/new/home"),
 		}).
 		Return(&hcloud.Action{ID: 456}, nil, nil)
 	fx.ActionWaiter.EXPECT().
 		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 456}).
 		Return(nil)
 
-	args := []string{"my-storage-box", "456", "--enable-ssh", "--enable-webdav=false", "--readonly=true", "--home-directory", "/new/home"}
+	args := []string{"my-storage-box", "456", "--home-directory", "/new/home"}
 	out, errOut, err := fx.Run(cmd, args)
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
-	assert.Equal(t, "Access settings updated for Storage Box Subaccount 456\n", out)
+	assert.Equal(t, "Home directory updated for Storage Box Subaccount 456\n", out)
 }

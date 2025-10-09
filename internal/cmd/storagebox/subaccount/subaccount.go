@@ -24,6 +24,7 @@ func NewCommand(s state.State) *cobra.Command {
 		DescribeCmd.CobraCommand(s),
 		ResetPasswordCmd.CobraCommand(s),
 		UpdateAccessSettingsCmd.CobraCommand(s),
+		ChangeHomeDirectoryCmd.CobraCommand(s),
 	)
 	return cmd
 }
