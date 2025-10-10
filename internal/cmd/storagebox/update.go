@@ -23,7 +23,7 @@ var UpdateCmd = base.UpdateCmd{
 	Update: func(s state.State, _ *cobra.Command, resource interface{}, flags map[string]pflag.Value) error {
 		storageBox := resource.(*hcloud.StorageBox)
 		opts := hcloud.StorageBoxUpdateOpts{
-			Name: hcloud.Ptr(flags["name"].String()),
+			Name: flags["name"].String(),
 		}
 		_, _, err := s.Client().StorageBox().Update(s, storageBox, opts)
 		if err != nil {
