@@ -234,30 +234,6 @@ func TestCreateProtectionBackup(t *testing.T) {
 
 	fx.ExpectEnsureToken()
 
-	fx.Client.ServerTypeClient.EXPECT().
-		Get(gomock.Any(), "cx22").
-		Return(&hcloud.ServerType{Architecture: hcloud.ArchitectureX86, Locations: []hcloud.ServerTypeLocation{{Location: &hcloud.Location{Name: "fsn1"}}}}, nil, nil)
-	fx.Client.ImageClient.EXPECT().
-		GetForArchitecture(gomock.Any(), "ubuntu-20.04", hcloud.ArchitectureX86).
-		Return(&hcloud.Image{}, nil, nil)
-	fx.Client.ServerClient.EXPECT().
-		Create(gomock.Any(), gomock.Any()).
-		Do(func(_ context.Context, opts hcloud.ServerCreateOpts) {
-			assert.Equal(t, "cli-test", opts.Name)
-		}).
-		Return(hcloud.ServerCreateResult{
-			Server: &hcloud.Server{
-				ID: 1234,
-				PublicNet: hcloud.ServerPublicNet{
-					IPv4: hcloud.ServerPublicNetIPv4{
-						IP: net.ParseIP("192.0.2.1"),
-					},
-				},
-			},
-			Action:      &hcloud.Action{ID: 123},
-			NextActions: []*hcloud.Action{{ID: 234}},
-		}, nil, nil)
-
 	srv := &hcloud.Server{
 		ID: 1234,
 		PublicNet: hcloud.ServerPublicNet{
@@ -270,6 +246,23 @@ func TestCreateProtectionBackup(t *testing.T) {
 			Rebuild: true,
 		},
 	}
+
+	fx.Client.ServerTypeClient.EXPECT().
+		Get(gomock.Any(), "cx22").
+		Return(&hcloud.ServerType{Architecture: hcloud.ArchitectureX86, Locations: []hcloud.ServerTypeLocation{{Location: &hcloud.Location{Name: "fsn1"}}}}, nil, nil)
+	fx.Client.ImageClient.EXPECT().
+		GetForArchitecture(gomock.Any(), "ubuntu-20.04", hcloud.ArchitectureX86).
+		Return(&hcloud.Image{}, nil, nil)
+	fx.Client.ServerClient.EXPECT().
+		Create(gomock.Any(), gomock.Any()).
+		Do(func(_ context.Context, opts hcloud.ServerCreateOpts) {
+			assert.Equal(t, "cli-test", opts.Name)
+		}).
+		Return(hcloud.ServerCreateResult{
+			Server:      srv,
+			Action:      &hcloud.Action{ID: 123},
+			NextActions: []*hcloud.Action{{ID: 234}},
+		}, nil, nil)
 
 	fx.Client.ServerClient.EXPECT().
 		GetByID(gomock.Any(), int64(1234)).

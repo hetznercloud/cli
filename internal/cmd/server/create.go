@@ -124,23 +124,15 @@ var CreateCmd = base.CreateCmd[*createResult]{
 			return nil, nil, err
 		}
 
-		server, _, err := s.Client().Server().GetByID(s, result.Server.ID)
-		if err != nil {
-			return nil, nil, err
-		}
-		if server == nil {
-			return nil, nil, fmt.Errorf("server not found: %d", result.Server.ID)
-		}
-
 		cmd.Printf("Server %d created\n", result.Server.ID)
 
-		if err := changeProtection(s, cmd, server, true, protectionOpts); err != nil {
+		if err := changeProtection(s, cmd, result.Server, true, protectionOpts); err != nil {
 			return nil, nil, err
 		}
 
 		enableBackup, _ := cmd.Flags().GetBool("enable-backup")
 		if enableBackup {
-			action, _, err := s.Client().Server().EnableBackup(s, server, "")
+			action, _, err := s.Client().Server().EnableBackup(s, result.Server, "")
 			if err != nil {
 				return nil, nil, err
 			}
@@ -149,7 +141,15 @@ var CreateCmd = base.CreateCmd[*createResult]{
 				return nil, nil, err
 			}
 
-			cmd.Printf("Backups enabled for Server %d\n", server.ID)
+			cmd.Printf("Backups enabled for Server %d\n", result.Server.ID)
+		}
+
+		server, _, err := s.Client().Server().GetByID(s, result.Server.ID)
+		if err != nil {
+			return nil, nil, err
+		}
+		if server == nil {
+			return nil, nil, fmt.Errorf("Server not found: %d", result.Server.ID)
 		}
 
 		return &createResult{Server: server, RootPassword: result.RootPassword},
