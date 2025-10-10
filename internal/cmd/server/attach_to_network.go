@@ -28,7 +28,7 @@ var AttachToNetworkCmd = base.Cmd{
 		_ = cmd.MarkFlagRequired("network")
 
 		cmd.Flags().IP("ip", nil, "IP address to assign to the Server (auto-assigned if omitted)")
-		cmd.Flags().IPNet("ip-range", net.IPNet{}, "IP range in CIDR block notation of the subnet to attach to")
+		cmd.Flags().IPNet("ip-range", net.IPNet{}, "IP range in CIDR block notation of the subnet to attach to (auto-assigned if omitted)")
 		cmd.Flags().IPSlice("alias-ips", []net.IP{}, "Additional IP addresses to be assigned to the Server")
 
 		return cmd
