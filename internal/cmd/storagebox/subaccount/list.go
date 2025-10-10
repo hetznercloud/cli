@@ -13,6 +13,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
+	"github.com/hetznercloud/cli/internal/state/config"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
@@ -28,8 +29,9 @@ var ListCmd = base.ListCmd[*hcloud.StorageBoxSubaccount, schema.StorageBoxSubacc
 	},
 
 	PositionalArgumentOverride: []string{"storage-box"},
+	SortOption:                 config.OptionSortStorageBoxSubaccount,
 
-	FetchWithArgs: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, _ []string, args []string) ([]*hcloud.StorageBoxSubaccount, error) {
+	FetchWithArgs: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string, args []string) ([]*hcloud.StorageBoxSubaccount, error) {
 		storageBoxIDOrName := args[0]
 
 		storageBox, _, err := s.Client().StorageBox().Get(s, storageBoxIDOrName)
@@ -41,6 +43,9 @@ var ListCmd = base.ListCmd[*hcloud.StorageBoxSubaccount, schema.StorageBoxSubacc
 		}
 
 		opts := hcloud.StorageBoxSubaccountListOpts{LabelSelector: listOpts.LabelSelector}
+		if len(sorts) > 0 {
+			opts.Sort = sorts
+		}
 		return s.Client().StorageBox().AllSubaccountsWithOpts(s, storageBox, opts)
 	},
 

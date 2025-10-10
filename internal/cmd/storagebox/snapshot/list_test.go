@@ -53,7 +53,7 @@ func TestList(t *testing.T) {
 		AllSnapshotsWithOpts(
 			gomock.Any(),
 			sb,
-			hcloud.StorageBoxSnapshotListOpts{},
+			hcloud.StorageBoxSnapshotListOpts{Sort: []string{"id:asc"}},
 		).
 		Return([]*hcloud.StorageBoxSnapshot{
 			sbs,

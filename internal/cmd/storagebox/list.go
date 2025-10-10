@@ -11,6 +11,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
+	"github.com/hetznercloud/cli/internal/state/config"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
@@ -19,10 +20,16 @@ var ListCmd = base.ListCmd[*hcloud.StorageBox, schema.StorageBox]{
 	ResourceNamePlural: "Storage Boxes",
 	JSONKeyGetByName:   "storage_boxes",
 	DefaultColumns:     []string{"id", "name", "username", "server", "type", "size", "location", "age"},
-	Fetch: func(s state.State, _ *pflag.FlagSet, opts hcloud.ListOpts, _ []string) ([]*hcloud.StorageBox, error) {
-		listOpts := hcloud.StorageBoxListOpts{ListOpts: opts}
-		return s.Client().StorageBox().AllWithOpts(s, listOpts)
+	SortOption:         config.OptionSortStorageBox,
+
+	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.StorageBox, error) {
+		opts := hcloud.StorageBoxListOpts{ListOpts: listOpts}
+		if len(sorts) > 0 {
+			opts.Sort = sorts
+		}
+		return s.Client().StorageBox().AllWithOpts(s, opts)
 	},
+
 	OutputTable: func(t *output.Table, _ hcapi2.Client) {
 		t.
 			AddAllowedFields(hcloud.StorageBox{}).
@@ -48,9 +55,6 @@ var ListCmd = base.ListCmd[*hcloud.StorageBox, schema.StorageBox]{
 			}).
 			AddFieldFn("size", func(obj any) string {
 				storageBox := obj.(*hcloud.StorageBox)
-				if storageBox.Stats == nil {
-					return "-"
-				}
 				return humanize.IBytes(storageBox.Stats.Size)
 			}).
 			AddFieldFn("labels", func(obj any) string {

@@ -28,6 +28,7 @@ hcloud storage-box snapshot list [options] <storage-box>
 ### Options
 
 ```
+      --automatic            Only show automatic snapshots (true, false)
   -h, --help                 help for list
   -o, --output stringArray   output options: noheader|columns=...|json|yaml
   -l, --selector string      Selector to filter by labels

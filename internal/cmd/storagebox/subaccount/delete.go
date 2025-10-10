@@ -2,7 +2,6 @@ package subaccount
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/spf13/cobra"
 
@@ -33,12 +32,8 @@ var DeleteCmd = base.DeleteCmd{
 		if storageBox == nil {
 			return nil, fmt.Errorf("Storage Box not found: %s", args[0])
 		}
-		return func(s state.State, _ *cobra.Command, idStr string) (any, *hcloud.Response, error) {
-			id, err := strconv.ParseInt(idStr, 10, 64)
-			if err != nil {
-				return nil, nil, fmt.Errorf("invalid Storage Box Subaccount ID: %s", idStr)
-			}
-			return s.Client().StorageBox().GetSubaccountByID(s, storageBox, id)
+		return func(s state.State, _ *cobra.Command, idOrName string) (any, *hcloud.Response, error) {
+			return s.Client().StorageBox().GetSubaccount(s, storageBox, idOrName)
 		}, nil
 	},
 

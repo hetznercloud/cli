@@ -32,7 +32,7 @@ func TestUpdate(t *testing.T) {
 		Get(gomock.Any(), "my-storage-box").
 		Return(sb, nil, nil)
 	fx.Client.StorageBoxClient.EXPECT().
-		GetSubaccountByID(gomock.Any(), sb, int64(456)).
+		GetSubaccount(gomock.Any(), sb, "456").
 		Return(sbs, nil, nil)
 	fx.Client.StorageBoxClient.EXPECT().
 		UpdateSubaccount(gomock.Any(), sbs, hcloud.StorageBoxSubaccountUpdateOpts{

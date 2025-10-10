@@ -33,7 +33,7 @@ func TestList(t *testing.T) {
 		StorageBoxType: &hcloud.StorageBoxType{
 			Name: "bx11",
 		},
-		Stats: &hcloud.StorageBoxStats{
+		Stats: hcloud.StorageBoxStats{
 			Size: 42 * util.Gibibyte,
 		},
 		Labels: map[string]string{
@@ -59,6 +59,7 @@ func TestList(t *testing.T) {
 		AllWithOpts(
 			gomock.Any(),
 			hcloud.StorageBoxListOpts{
+				Sort:     []string{"id:asc"},
 				ListOpts: hcloud.ListOpts{PerPage: 50},
 			},
 		).

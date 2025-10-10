@@ -12,11 +12,11 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-func TestResetPassword(t *testing.T) {
+func TestChangeHomeDirectory(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := subaccount.ResetPasswordCmd.CobraCommand(fx.State())
+	cmd := subaccount.ChangeHomeDirectoryCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	sb := &hcloud.StorageBox{ID: 123, Name: "my-storage-box"}
@@ -29,16 +29,18 @@ func TestResetPassword(t *testing.T) {
 		GetSubaccount(gomock.Any(), sb, "456").
 		Return(sbs, nil, nil)
 	fx.Client.StorageBoxClient.EXPECT().
-		ResetSubaccountPassword(gomock.Any(), sbs, hcloud.StorageBoxSubaccountResetPasswordOpts{Password: "new-password"}).
-		Return(&hcloud.Action{ID: 789}, nil, nil)
+		ChangeSubaccountHomeDirectory(gomock.Any(), sbs, hcloud.StorageBoxSubaccountChangeHomeDirectoryOpts{
+			HomeDirectory: "/new/home",
+		}).
+		Return(&hcloud.Action{ID: 456}, nil, nil)
 	fx.ActionWaiter.EXPECT().
-		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 789}).
+		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 456}).
 		Return(nil)
 
-	args := []string{"my-storage-box", "456", "--password", "new-password"}
+	args := []string{"my-storage-box", "456", "--home-directory", "/new/home"}
 	out, errOut, err := fx.Run(cmd, args)
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
-	assert.Equal(t, "Password of Storage Box Subaccount 456 reset\n", out)
+	assert.Equal(t, "Home directory updated for Storage Box Subaccount 456\n", out)
 }

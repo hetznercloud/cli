@@ -54,7 +54,7 @@ func TestDescribe(t *testing.T) {
 		Get(gomock.Any(), "my-storage-box").
 		Return(sb, nil, nil)
 	fx.Client.StorageBoxClient.EXPECT().
-		GetSubaccountByID(gomock.Any(), sb, int64(42)).
+		GetSubaccount(gomock.Any(), sb, "42").
 		Return(sbs, nil, nil)
 
 	out, errOut, err := fx.Run(cmd, []string{"my-storage-box", "42"})

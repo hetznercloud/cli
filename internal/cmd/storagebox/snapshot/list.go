@@ -14,6 +14,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
+	"github.com/hetznercloud/cli/internal/state/config"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
@@ -29,9 +30,15 @@ var ListCmd = base.ListCmd[*hcloud.StorageBoxSnapshot, schema.StorageBoxSnapshot
 	},
 
 	PositionalArgumentOverride: []string{"storage-box"},
+	SortOption:                 config.OptionSortStorageBoxSnapshot,
 
-	FetchWithArgs: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, _ []string, args []string) ([]*hcloud.StorageBoxSnapshot, error) {
+	AdditionalFlags: func(cmd *cobra.Command) {
+		cmd.Flags().Bool("automatic", false, "Only show automatic snapshots (true, false)")
+	},
+
+	FetchWithArgs: func(s state.State, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string, args []string) ([]*hcloud.StorageBoxSnapshot, error) {
 		storageBoxIDOrName := args[0]
+		isAutomatic, _ := flags.GetBool("automatic")
 
 		storageBox, _, err := s.Client().StorageBox().Get(s, storageBoxIDOrName)
 		if err != nil {
@@ -42,6 +49,12 @@ var ListCmd = base.ListCmd[*hcloud.StorageBoxSnapshot, schema.StorageBoxSnapshot
 		}
 
 		opts := hcloud.StorageBoxSnapshotListOpts{LabelSelector: listOpts.LabelSelector}
+		if len(sorts) > 0 {
+			opts.Sort = sorts
+		}
+		if flags.Changed("automatic") {
+			opts.IsAutomatic = &isAutomatic
+		}
 		return s.Client().StorageBox().AllSnapshotsWithOpts(s, storageBox, opts)
 	},
 

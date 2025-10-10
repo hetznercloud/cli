@@ -80,7 +80,7 @@ func TestDescribe(t *testing.T) {
 		},
 		Server: hcloud.Ptr("u1337.your-storagebox.de"),
 		System: hcloud.Ptr("FSN1-BX355"),
-		Stats: &hcloud.StorageBoxStats{
+		Stats: hcloud.StorageBoxStats{
 			Size:          0,
 			SizeData:      0,
 			SizeSnapshots: 0,

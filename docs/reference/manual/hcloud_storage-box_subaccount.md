@@ -25,6 +25,7 @@ Manage Storage Box Subaccounts
 ### SEE ALSO
 
 * [hcloud storage-box](hcloud_storage-box.md)	 - Manage Storage Boxes
+* [hcloud storage-box subaccount change-home-directory](hcloud_storage-box_subaccount_change-home-directory.md)	 - Update access settings of the Storage Box Subaccount
 * [hcloud storage-box subaccount create](hcloud_storage-box_subaccount_create.md)	 - Create a Storage Box Subaccount
 * [hcloud storage-box subaccount delete](hcloud_storage-box_subaccount_delete.md)	 - Delete a Storage Box Subaccount
 * [hcloud storage-box subaccount describe](hcloud_storage-box_subaccount_describe.md)	 - Describe a Storage Box Subaccount
