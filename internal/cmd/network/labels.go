@@ -3,11 +3,13 @@ package network
 import (
 	"fmt"
 	"strconv"
+	"sync"
+
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
-	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 var LabelCmds = base.LabelCmds[*hcloud.Network]{
@@ -38,5 +40,53 @@ var LabelCmds = base.LabelCmds[*hcloud.Network]{
 	},
 	GetIDOrName: func(network *hcloud.Network) string {
 		return strconv.FormatInt(network.ID, 10)
+	},
+	FetchBatch: func(s state.State, idOrNames []string) ([]*hcloud.Network, []error) {
+		networks := make([]*hcloud.Network, len(idOrNames))
+		errors := make([]error, len(idOrNames))
+
+		var wg sync.WaitGroup
+		for i, idOrName := range idOrNames {
+			wg.Add(1)
+			go func(idx int, id string) {
+				defer wg.Done()
+				network, _, err := s.Client().Network().Get(s, id)
+				if err != nil {
+					errors[idx] = err
+					return
+				}
+				if network == nil {
+					errors[idx] = fmt.Errorf("Network not found: %s", id)
+					return
+				}
+				networks[idx] = network
+			}(i, idOrName)
+		}
+		wg.Wait()
+
+		return networks, errors
+	},
+	SetLabelsBatch: func(s state.State, networks []*hcloud.Network, labels map[string]string) []error {
+		errors := make([]error, len(networks))
+
+		var wg sync.WaitGroup
+		for i, network := range networks {
+			if network == nil {
+				continue
+			}
+
+			wg.Add(1)
+			go func(idx int, net *hcloud.Network) {
+				defer wg.Done()
+				opts := hcloud.NetworkUpdateOpts{
+					Labels: labels,
+				}
+				_, _, err := s.Client().Network().Update(s, net, opts)
+				errors[idx] = err
+			}(i, network)
+		}
+		wg.Wait()
+
+		return errors
 	},
 }
