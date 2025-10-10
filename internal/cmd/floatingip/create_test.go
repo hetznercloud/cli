@@ -24,6 +24,13 @@ func TestCreate(t *testing.T) {
 	cmd := floatingip.CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
+	floatingIP := &hcloud.FloatingIP{
+		ID:   123,
+		Name: "myFloatingIP",
+		IP:   net.ParseIP("192.168.2.1"),
+		Type: hcloud.FloatingIPTypeIPv4,
+	}
+
 	fx.Client.FloatingIPClient.EXPECT().
 		Create(gomock.Any(), hcloud.FloatingIPCreateOpts{
 			Name:         hcloud.Ptr("myFloatingIP"),
@@ -33,14 +40,12 @@ func TestCreate(t *testing.T) {
 			Description:  hcloud.Ptr(""),
 		}).
 		Return(hcloud.FloatingIPCreateResult{
-			FloatingIP: &hcloud.FloatingIP{
-				ID:   123,
-				Name: "myFloatingIP",
-				IP:   net.ParseIP("192.168.2.1"),
-				Type: hcloud.FloatingIPTypeIPv4,
-			},
-			Action: nil,
+			FloatingIP: floatingIP,
+			Action:     nil,
 		}, nil, nil)
+	fx.Client.FloatingIPClient.EXPECT().
+		GetByID(gomock.Any(), floatingIP.ID).
+		Return(floatingIP, nil, nil)
 
 	out, errOut, err := fx.Run(cmd, []string{"--name", "myFloatingIP", "--type", "ipv4", "--home-location", "fsn1"})
 
@@ -60,6 +65,15 @@ func TestCreateJSON(t *testing.T) {
 	cmd := floatingip.CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
+	floatingIP := &hcloud.FloatingIP{
+		ID:     123,
+		Name:   "myFloatingIP",
+		IP:     net.ParseIP("127.0.0.1"),
+		Type:   hcloud.FloatingIPTypeIPv4,
+		Labels: map[string]string{},
+		Server: &hcloud.Server{ID: 1},
+	}
+
 	fx.Client.FloatingIPClient.EXPECT().
 		Create(gomock.Any(), hcloud.FloatingIPCreateOpts{
 			Name:         hcloud.Ptr("myFloatingIP"),
@@ -69,16 +83,12 @@ func TestCreateJSON(t *testing.T) {
 			Description:  hcloud.Ptr(""),
 		}).
 		Return(hcloud.FloatingIPCreateResult{
-			FloatingIP: &hcloud.FloatingIP{
-				ID:     123,
-				Name:   "myFloatingIP",
-				IP:     net.ParseIP("127.0.0.1"),
-				Type:   hcloud.FloatingIPTypeIPv4,
-				Labels: map[string]string{},
-				Server: &hcloud.Server{ID: 1},
-			},
-			Action: nil,
+			FloatingIP: floatingIP,
+			Action:     nil,
 		}, nil, nil)
+	fx.Client.FloatingIPClient.EXPECT().
+		GetByID(gomock.Any(), floatingIP.ID).
+		Return(floatingIP, nil, nil)
 
 	jsonOut, out, err := fx.Run(cmd, []string{"-o=json", "--name", "myFloatingIP", "--type", "ipv4", "--home-location", "fsn1"})
 
@@ -125,6 +135,9 @@ func TestCreateProtection(t *testing.T) {
 		}).
 		Return(&hcloud.Action{ID: 333}, nil, nil)
 	fx.ActionWaiter.EXPECT().WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 333}).Return(nil)
+	fx.Client.FloatingIPClient.EXPECT().
+		GetByID(gomock.Any(), floatingIP.ID).
+		Return(floatingIP, nil, nil)
 
 	out, errOut, err := fx.Run(cmd, []string{"--name", "myFloatingIP", "--type", "ipv4", "--home-location", "fsn1", "--enable-protection", "delete"})
 

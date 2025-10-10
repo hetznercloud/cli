@@ -140,7 +140,7 @@ func TestCreateProtection(t *testing.T) {
 			Labels:           make(map[string]string),
 		}).
 		Return(hcloud.LoadBalancerCreateResult{
-			LoadBalancer: &hcloud.LoadBalancer{ID: 123},
+			LoadBalancer: loadBalancer,
 			Action:       &hcloud.Action{ID: 321},
 		}, nil, nil)
 	fx.ActionWaiter.EXPECT().WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321}).Return(nil)

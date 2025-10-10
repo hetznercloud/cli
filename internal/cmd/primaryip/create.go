@@ -1,6 +1,8 @@
 package primaryip
 
 import (
+	"fmt"
+
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
@@ -87,7 +89,15 @@ var CreateCmd = base.CreateCmd[*hcloud.PrimaryIP]{
 			}
 		}
 
-		return result.PrimaryIP, util.Wrap("primary_ip", hcloud.SchemaFromPrimaryIP(result.PrimaryIP)), nil
+		primaryIP, _, err := s.Client().PrimaryIP().GetByID(s, result.PrimaryIP.ID)
+		if err != nil {
+			return nil, nil, err
+		}
+		if primaryIP == nil {
+			return nil, nil, fmt.Errorf("Primary IP not found: %d", result.PrimaryIP.ID)
+		}
+
+		return primaryIP, util.Wrap("primary_ip", hcloud.SchemaFromPrimaryIP(primaryIP)), nil
 	},
 	PrintResource: func(_ state.State, cmd *cobra.Command, primaryIP *hcloud.PrimaryIP) {
 		cmd.Printf("IP%s: %s\n", primaryIP.Type[2:], primaryIP.IP)

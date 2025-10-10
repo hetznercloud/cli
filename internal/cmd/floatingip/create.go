@@ -105,7 +105,15 @@ var CreateCmd = base.CreateCmd[*hcloud.FloatingIP]{
 			return nil, nil, err
 		}
 
-		return result.FloatingIP, util.Wrap("floating_ip", hcloud.SchemaFromFloatingIP(result.FloatingIP)), nil
+		floatingIP, _, err := s.Client().FloatingIP().GetByID(s, result.FloatingIP.ID)
+		if err != nil {
+			return nil, nil, err
+		}
+		if floatingIP == nil {
+			return nil, nil, fmt.Errorf("Floating IP not found: %d", result.FloatingIP.ID)
+		}
+
+		return floatingIP, util.Wrap("floating_ip", hcloud.SchemaFromFloatingIP(floatingIP)), nil
 	},
 
 	PrintResource: func(_ state.State, cmd *cobra.Command, floatingIP *hcloud.FloatingIP) {

@@ -26,17 +26,22 @@ func TestCreate(t *testing.T) {
 	fx.ExpectEnsureToken()
 
 	_, ipRange, _ := net.ParseCIDR("10.0.0.0/24")
+	n := &hcloud.Network{
+		ID:      123,
+		Name:    "myNetwork",
+		IPRange: ipRange,
+	}
+
 	fx.Client.NetworkClient.EXPECT().
 		Create(gomock.Any(), hcloud.NetworkCreateOpts{
 			Name:    "myNetwork",
 			IPRange: ipRange,
 			Labels:  make(map[string]string),
 		}).
-		Return(&hcloud.Network{
-			ID:      123,
-			Name:    "myNetwork",
-			IPRange: ipRange,
-		}, nil, nil)
+		Return(n, nil, nil)
+	fx.Client.NetworkClient.EXPECT().
+		GetByID(gomock.Any(), int64(123)).
+		Return(n, nil, nil)
 
 	out, errOut, err := fx.Run(cmd, []string{"--name", "myNetwork", "--ip-range", "10.0.0.0/24"})
 
@@ -57,23 +62,28 @@ func TestCreateJSON(t *testing.T) {
 	fx.ExpectEnsureToken()
 
 	_, ipRange, _ := net.ParseCIDR("10.0.0.0/24")
+	n := &hcloud.Network{
+		ID:            123,
+		Name:          "myNetwork",
+		IPRange:       ipRange,
+		Created:       time.Date(2016, 1, 30, 23, 50, 0, 0, time.UTC),
+		Labels:        make(map[string]string),
+		Servers:       []*hcloud.Server{{ID: 1}, {ID: 2}, {ID: 3}},
+		LoadBalancers: []*hcloud.LoadBalancer{{ID: 4}, {ID: 5}, {ID: 6}},
+		Routes:        []hcloud.NetworkRoute{},
+		Subnets:       []hcloud.NetworkSubnet{},
+	}
+
 	fx.Client.NetworkClient.EXPECT().
 		Create(gomock.Any(), hcloud.NetworkCreateOpts{
 			Name:    "myNetwork",
 			IPRange: ipRange,
 			Labels:  make(map[string]string),
 		}).
-		Return(&hcloud.Network{
-			ID:            123,
-			Name:          "myNetwork",
-			IPRange:       ipRange,
-			Created:       time.Date(2016, 1, 30, 23, 50, 0, 0, time.UTC),
-			Labels:        make(map[string]string),
-			Servers:       []*hcloud.Server{{ID: 1}, {ID: 2}, {ID: 3}},
-			LoadBalancers: []*hcloud.LoadBalancer{{ID: 4}, {ID: 5}, {ID: 6}},
-			Routes:        []hcloud.NetworkRoute{},
-			Subnets:       []hcloud.NetworkSubnet{},
-		}, nil, nil)
+		Return(n, nil, nil)
+	fx.Client.NetworkClient.EXPECT().
+		GetByID(gomock.Any(), n.ID).
+		Return(n, nil, nil)
 
 	jsonOut, out, err := fx.Run(cmd, []string{"-o=json", "--name", "myNetwork", "--ip-range", "10.0.0.0/24"})
 
@@ -111,6 +121,9 @@ func TestCreateProtection(t *testing.T) {
 		}).
 		Return(&hcloud.Action{ID: 123}, nil, nil)
 	fx.ActionWaiter.EXPECT().WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).Return(nil)
+	fx.Client.NetworkClient.EXPECT().
+		GetByID(gomock.Any(), n.ID).
+		Return(n, nil, nil)
 
 	out, errOut, err := fx.Run(cmd, []string{"--name", "myNetwork", "--ip-range", "10.0.0.0/24", "--enable-protection", "delete"})
 

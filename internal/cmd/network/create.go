@@ -1,6 +1,7 @@
 package network
 
 import (
+	"fmt"
 	"net"
 
 	"github.com/spf13/cobra"
@@ -62,6 +63,14 @@ var CreateCmd = base.CreateCmd[*hcloud.Network]{
 
 		if err := changeProtection(s, cmd, network, true, protectionOpts); err != nil {
 			return nil, nil, err
+		}
+
+		network, _, err = s.Client().Network().GetByID(s, network.ID)
+		if err != nil {
+			return nil, nil, err
+		}
+		if network == nil {
+			return nil, nil, fmt.Errorf("Network not found: %d", network.ID)
 		}
 
 		return network, util.Wrap("network", hcloud.SchemaFromNetwork(network)), nil

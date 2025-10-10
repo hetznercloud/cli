@@ -99,17 +99,18 @@ var CreateCmd = base.CreateCmd[*hcloud.LoadBalancer]{
 		if err := s.WaitForActions(s, cmd, result.Action); err != nil {
 			return nil, nil, err
 		}
+		cmd.Printf("Load Balancer %d created\n", result.LoadBalancer.ID)
+
+		if err := changeProtection(s, cmd, result.LoadBalancer, true, protectionOpts); err != nil {
+			return nil, nil, err
+		}
+
 		loadBalancer, _, err := s.Client().LoadBalancer().GetByID(s, result.LoadBalancer.ID)
 		if err != nil {
 			return nil, nil, err
 		}
 		if loadBalancer == nil {
 			return nil, nil, fmt.Errorf("Load Balancer not found: %d", result.LoadBalancer.ID)
-		}
-		cmd.Printf("Load Balancer %d created\n", loadBalancer.ID)
-
-		if err := changeProtection(s, cmd, loadBalancer, true, protectionOpts); err != nil {
-			return nil, nil, err
 		}
 
 		return loadBalancer, util.Wrap("load_balancer", hcloud.SchemaFromLoadBalancer(loadBalancer)), nil
