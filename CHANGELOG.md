@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.54.1](https://github.com/hetznercloud/cli/releases/tag/v1.54.1)
+
+### Bug Fixes
+
+- list commands print `null` instead of `[]` in JSON mode (#1191)
+
 ## [v1.54.0](https://github.com/hetznercloud/cli/releases/tag/v1.54.0)
 
 ### DNS API Beta
