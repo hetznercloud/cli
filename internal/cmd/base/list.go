@@ -146,7 +146,7 @@ func (lc *ListCmd[T, S]) Run(s state.State, cmd *cobra.Command, args []string) e
 
 	isSchema := outOpts.IsSet("json") || outOpts.IsSet("yaml")
 	if isSchema {
-		var schema []any
+		schema := make([]S, 0, len(resources))
 		for _, resource := range resources {
 			schema = append(schema, lc.Schema(resource))
 		}
