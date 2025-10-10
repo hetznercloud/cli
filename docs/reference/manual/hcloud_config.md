@@ -60,6 +60,8 @@ Following options are preferences and can be used with set/unset/add/remove:
 │ endpoint                 │ Hetzner Cloud API    │ string      │ endpoint                 │ HCLOUD_ENDPOINT                 │ --endpoint                 │
 │                          │ endpoint             │             │                          │                                 │                            │
 ├──────────────────────────┼──────────────────────┼─────────────┼──────────────────────────┼─────────────────────────────────┼────────────────────────────┤
+│ hetzner-endpoint         │ Hetzner API endpoint │ string      │ hetzner_endpoint         │ HETZNER_ENDPOINT                │ --hetzner-endpoint         │
+├──────────────────────────┼──────────────────────┼─────────────┼──────────────────────────┼─────────────────────────────────┼────────────────────────────┤
 │ no-experimental-warnings │ If true,             │ boolean     │ no_experimental_warnings │ HCLOUD_NO_EXPERIMENTAL_WARNINGS │ --no-experimental-warnings │
 │                          │ experimental         │             │                          │                                 │                            │
 │                          │ warnings are not     │             │                          │                                 │                            │
@@ -96,6 +98,7 @@ on disk, run 'hcloud config get config'.
       --debug                      Enable debug output
       --debug-file string          File to write debug output to
       --endpoint string            Hetzner Cloud API endpoint (default "https://api.hetzner.cloud/v1")
+      --hetzner-endpoint string    Hetzner API endpoint (default "https://api.hetzner.com/v1")
       --no-experimental-warnings   If true, experimental warnings are not shown
       --poll-interval duration     Interval at which to poll information, for example action progress (default 500ms)
       --quiet                      If true, only print error messages

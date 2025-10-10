@@ -124,6 +124,15 @@ var (
 		nil,
 	)
 
+	OptionHetznerEndpoint = newOpt(
+		"hetzner-endpoint",
+		"Hetzner API endpoint",
+		hcloud.HetznerEndpoint,
+		DefaultPreferenceFlags,
+		nil,
+		&overrides{envVar: "HETZNER_ENDPOINT"},
+	)
+
 	OptionDebug = newOpt(
 		"debug",
 		"Enable debug output",
