@@ -1,6 +1,7 @@
 package loadbalancer_test
 
 import (
+	"net"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -28,13 +29,18 @@ func TestAttachToNetwork(t *testing.T) {
 	fx.Client.LoadBalancerClient.EXPECT().
 		AttachToNetwork(gomock.Any(), &hcloud.LoadBalancer{ID: 123}, hcloud.LoadBalancerAttachToNetworkOpts{
 			Network: &hcloud.Network{ID: 321},
+			IP:      net.ParseIP("10.0.1.1"),
+			IPRange: &net.IPNet{
+				IP:   net.IP{10, 0, 0, 0},
+				Mask: net.IPMask{255, 255, 0, 0},
+			},
 		}).
 		Return(&hcloud.Action{ID: 123}, nil, nil)
 	fx.ActionWaiter.EXPECT().
 		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).
 		Return(nil)
 
-	out, errOut, err := fx.Run(cmd, []string{"123", "--network", "my-network"})
+	out, errOut, err := fx.Run(cmd, []string{"123", "--network", "my-network", "--ip", "10.0.1.1", "--ip-range", "10.0.0.0/16"})
 
 	expOut := "Load Balancer 123 attached to Network 321\n"
 

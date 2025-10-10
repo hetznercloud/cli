@@ -11,6 +11,7 @@ hcloud load-balancer attach-to-network [--ip <ip>] --network <network> <load-bal
 ```
   -h, --help             help for attach-to-network
       --ip ip            IP address to assign to the Load Balancer (auto-assigned if omitted)
+      --ip-range ipNet   IP range in CIDR block notation of the subnet to attach to
   -n, --network string   Network (ID or name) (required)
 ```
 

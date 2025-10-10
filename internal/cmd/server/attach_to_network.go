@@ -28,6 +28,7 @@ var AttachToNetworkCmd = base.Cmd{
 		_ = cmd.MarkFlagRequired("network")
 
 		cmd.Flags().IP("ip", nil, "IP address to assign to the Server (auto-assigned if omitted)")
+		cmd.Flags().IPNet("ip-range", net.IPNet{}, "IP range in CIDR block notation of the subnet to attach to (auto-assigned if omitted)")
 		cmd.Flags().IPSlice("alias-ips", []net.IP{}, "Additional IP addresses to be assigned to the Server")
 
 		return cmd
@@ -52,6 +53,7 @@ var AttachToNetworkCmd = base.Cmd{
 		}
 
 		ip, _ := cmd.Flags().GetIP("ip")
+		ipRange, _ := cmd.Flags().GetIPNet("ip-range")
 		aliasIPs, _ := cmd.Flags().GetIPSlice("alias-ips")
 
 		opts := hcloud.ServerAttachToNetworkOpts{
@@ -59,6 +61,9 @@ var AttachToNetworkCmd = base.Cmd{
 			IP:      ip,
 		}
 		opts.AliasIPs = append(opts.AliasIPs, aliasIPs...)
+		if cmd.Flags().Changed("ip-range") {
+			opts.IPRange = &ipRange
+		}
 		action, _, err := s.Client().Server().AttachToNetwork(s, server, opts)
 
 		if err != nil {

@@ -2,6 +2,7 @@ package loadbalancer
 
 import (
 	"fmt"
+	"net"
 
 	"github.com/spf13/cobra"
 
@@ -27,6 +28,7 @@ var AttachToNetworkCmd = base.Cmd{
 		_ = cmd.MarkFlagRequired("network")
 
 		cmd.Flags().IP("ip", nil, "IP address to assign to the Load Balancer (auto-assigned if omitted)")
+		cmd.Flags().IPNet("ip-range", net.IPNet{}, "IP range in CIDR block notation of the subnet to attach to (auto-assigned if omitted)")
 
 		return cmd
 	},
@@ -50,10 +52,14 @@ var AttachToNetworkCmd = base.Cmd{
 		}
 
 		ip, _ := cmd.Flags().GetIP("ip")
+		ipRange, _ := cmd.Flags().GetIPNet("ip-range")
 
 		opts := hcloud.LoadBalancerAttachToNetworkOpts{
 			Network: network,
 			IP:      ip,
+		}
+		if cmd.Flags().Changed("ip-range") {
+			opts.IPRange = &ipRange
 		}
 		action, _, err := s.Client().LoadBalancer().AttachToNetwork(s, loadBalancer, opts)
 
