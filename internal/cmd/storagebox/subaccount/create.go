@@ -62,17 +62,28 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBoxSubaccount]{
 			return nil, nil, fmt.Errorf("Storage Box not found: %s", storageBoxIDOrName)
 		}
 
+		var accessSettings hcloud.StorageBoxSubaccountCreateOptsAccessSettings
+		if cmd.Flags().Changed("enable-samba") {
+			accessSettings.SambaEnabled = &enableSamba
+		}
+		if cmd.Flags().Changed("enable-ssh") {
+			accessSettings.SSHEnabled = &enableSSH
+		}
+		if cmd.Flags().Changed("enable-webdav") {
+			accessSettings.WebDAVEnabled = &enableWebDAV
+		}
+		if cmd.Flags().Changed("reachable-externally") {
+			accessSettings.ReachableExternally = &reachableExternally
+		}
+		if cmd.Flags().Changed("readonly") {
+			accessSettings.Readonly = &readonly
+		}
+
 		opts := hcloud.StorageBoxSubaccountCreateOpts{
-			Password:      password,
-			HomeDirectory: &homeDirectory,
-			AccessSettings: &hcloud.StorageBoxSubaccountCreateOptsAccessSettings{
-				ReachableExternally: &reachableExternally,
-				SambaEnabled:        &enableSamba,
-				SSHEnabled:          &enableSSH,
-				WebDAVEnabled:       &enableWebDAV,
-				Readonly:            &readonly,
-			},
-			Labels: labels,
+			Password:       password,
+			HomeDirectory:  &homeDirectory,
+			AccessSettings: &accessSettings,
+			Labels:         labels,
 		}
 
 		if cmd.Flags().Changed("description") {
