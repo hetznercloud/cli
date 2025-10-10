@@ -25,12 +25,14 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBoxSnapshot]{
 		}
 
 		cmd.Flags().String("description", "", "Description of the Storage Box Snapshot")
+		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) (*hcloud.StorageBoxSnapshot, any, error) {
 		storageBoxIDOrName := args[0]
 		description, _ := cmd.Flags().GetString("description")
+		labels, _ := cmd.Flags().GetStringToString("label")
 
 		storageBox, _, err := s.Client().StorageBox().Get(s, storageBoxIDOrName)
 		if err != nil {
@@ -40,7 +42,9 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBoxSnapshot]{
 			return nil, nil, fmt.Errorf("Storage Box not found: %s", storageBoxIDOrName)
 		}
 
-		var opts hcloud.StorageBoxSnapshotCreateOpts
+		opts := hcloud.StorageBoxSnapshotCreateOpts{
+			Labels: labels,
+		}
 		if cmd.Flags().Changed("description") {
 			opts.Description = &description
 		}
