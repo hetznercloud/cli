@@ -105,6 +105,7 @@ func TestCreateJSON(t *testing.T) {
 	fx.Client.StorageBoxClient.EXPECT().
 		CreateSnapshot(gomock.Any(), sb, hcloud.StorageBoxSnapshotCreateOpts{
 			Description: hcloud.Ptr("some-description"),
+			Labels:      map[string]string{},
 		}).
 		Return(hcloud.StorageBoxSnapshotCreateResult{
 			Snapshot: sbs,
