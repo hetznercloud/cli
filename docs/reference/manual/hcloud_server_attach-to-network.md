@@ -12,7 +12,7 @@ hcloud server attach-to-network [options] --network <network> <server>
       --alias-ips ipSlice   Additional IP addresses to be assigned to the Server (default [])
   -h, --help                help for attach-to-network
       --ip ip               IP address to assign to the Server (auto-assigned if omitted)
-      --ip-range ipNet      IP range in CIDR block notation of the subnet to attach to
+      --ip-range ipNet      IP range in CIDR block notation of the subnet to attach to (auto-assigned if omitted)
   -n, --network string      Network (ID or name) (required)
 ```
 
