@@ -107,6 +107,14 @@ var CreateCmd = base.CreateCmd[*hcloud.Volume]{
 			return nil, nil, err
 		}
 
-		return result.Volume, util.Wrap("volume", hcloud.SchemaFromVolume(result.Volume)), nil
+		volume, _, err := s.Client().Volume().GetByID(s, result.Volume.ID)
+		if err != nil {
+			return nil, nil, err
+		}
+		if volume == nil {
+			return nil, nil, fmt.Errorf("Volume not found: %d", result.Volume.ID)
+		}
+
+		return volume, util.Wrap("volume", hcloud.SchemaFromVolume(volume)), nil
 	},
 }

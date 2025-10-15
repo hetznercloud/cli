@@ -24,6 +24,13 @@ func TestCreate(t *testing.T) {
 	cmd := volume.CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
+	vol := &hcloud.Volume{
+		ID:       123,
+		Name:     "test",
+		Size:     20,
+		Location: &hcloud.Location{Name: "fsn1"},
+	}
+
 	fx.Client.VolumeClient.EXPECT().
 		Create(gomock.Any(), hcloud.VolumeCreateOpts{
 			Name:     "test",
@@ -32,17 +39,15 @@ func TestCreate(t *testing.T) {
 			Labels:   make(map[string]string),
 		}).
 		Return(hcloud.VolumeCreateResult{
-			Volume: &hcloud.Volume{
-				ID:       123,
-				Name:     "test",
-				Size:     20,
-				Location: &hcloud.Location{Name: "fsn1"},
-			},
+			Volume:      vol,
 			Action:      &hcloud.Action{ID: 321},
 			NextActions: []*hcloud.Action{{ID: 1}, {ID: 2}, {ID: 3}},
 		}, nil, nil)
 	fx.ActionWaiter.EXPECT().
 		WaitForActions(gomock.Any(), gomock.Any(), []*hcloud.Action{{ID: 321}, {ID: 1}, {ID: 2}, {ID: 3}})
+	fx.Client.VolumeClient.EXPECT().
+		GetByID(gomock.Any(), vol.ID).
+		Return(vol, nil, nil)
 
 	out, errOut, err := fx.Run(cmd, []string{"--name", "test", "--size", "20", "--location", "fsn1"})
 
@@ -62,6 +67,20 @@ func TestCreateJSON(t *testing.T) {
 	cmd := volume.CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
+	vol := &hcloud.Volume{
+		ID:       123,
+		Name:     "test",
+		Size:     20,
+		Location: &hcloud.Location{Name: "fsn1"},
+		Labels:   make(map[string]string),
+		Created:  time.Date(2016, 1, 30, 23, 50, 0, 0, time.UTC),
+		Status:   hcloud.VolumeStatusAvailable,
+		Protection: hcloud.VolumeProtection{
+			Delete: true,
+		},
+		Server: &hcloud.Server{ID: 123},
+	}
+
 	fx.Client.VolumeClient.EXPECT().
 		Create(gomock.Any(), hcloud.VolumeCreateOpts{
 			Name:     "test",
@@ -70,24 +89,15 @@ func TestCreateJSON(t *testing.T) {
 			Labels:   make(map[string]string),
 		}).
 		Return(hcloud.VolumeCreateResult{
-			Volume: &hcloud.Volume{
-				ID:       123,
-				Name:     "test",
-				Size:     20,
-				Location: &hcloud.Location{Name: "fsn1"},
-				Labels:   make(map[string]string),
-				Created:  time.Date(2016, 1, 30, 23, 50, 0, 0, time.UTC),
-				Status:   hcloud.VolumeStatusAvailable,
-				Protection: hcloud.VolumeProtection{
-					Delete: true,
-				},
-				Server: &hcloud.Server{ID: 123},
-			},
+			Volume:      vol,
 			Action:      &hcloud.Action{ID: 321},
 			NextActions: []*hcloud.Action{{ID: 1}, {ID: 2}, {ID: 3}},
 		}, nil, nil)
 	fx.ActionWaiter.EXPECT().
 		WaitForActions(gomock.Any(), gomock.Any(), []*hcloud.Action{{ID: 321}, {ID: 1}, {ID: 2}, {ID: 3}})
+	fx.Client.VolumeClient.EXPECT().
+		GetByID(gomock.Any(), vol.ID).
+		Return(vol, nil, nil)
 
 	jsonOut, out, err := fx.Run(cmd, []string{"-o=json", "--name", "test", "--size", "20", "--location", "fsn1"})
 
@@ -133,6 +143,9 @@ func TestCreateProtection(t *testing.T) {
 		Return(&hcloud.Action{ID: 123}, nil, nil)
 	fx.ActionWaiter.EXPECT().
 		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123})
+	fx.Client.VolumeClient.EXPECT().
+		GetByID(gomock.Any(), v.ID).
+		Return(v, nil, nil)
 
 	out, errOut, err := fx.Run(cmd, []string{"--name", "test", "--size", "20", "--location", "fsn1", "--enable-protection", "delete"})
 
