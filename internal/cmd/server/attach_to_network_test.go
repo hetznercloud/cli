@@ -33,6 +33,10 @@ func TestAttachToNetwork(t *testing.T) {
 		AttachToNetwork(gomock.Any(), srv, hcloud.ServerAttachToNetworkOpts{
 			Network: n,
 			IP:      net.ParseIP("192.168.0.1"),
+			IPRange: &net.IPNet{
+				IP:   net.IP{192, 168, 0, 0},
+				Mask: net.IPMask{255, 255, 255, 0},
+			},
 			AliasIPs: []net.IP{
 				net.ParseIP("10.0.1.2"),
 				net.ParseIP("10.0.1.3"),
@@ -43,7 +47,7 @@ func TestAttachToNetwork(t *testing.T) {
 		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 789}).
 		Return(nil)
 
-	args := []string{"my-server", "--network", "my-network", "--ip", "192.168.0.1", "--alias-ips", "10.0.1.2,10.0.1.3"}
+	args := []string{"my-server", "--network", "my-network", "--ip", "192.168.0.1", "--ip-range", "192.168.0.0/24", "--alias-ips", "10.0.1.2,10.0.1.3"}
 	out, errOut, err := fx.Run(cmd, args)
 
 	require.NoError(t, err)
