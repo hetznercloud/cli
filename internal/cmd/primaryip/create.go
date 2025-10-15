@@ -28,9 +28,9 @@ var CreateCmd = base.CreateCmd[*hcloud.PrimaryIP]{
 		cmd.Flags().String("name", "", "Name (required)")
 		_ = cmd.MarkFlagRequired("name")
 
-		cmd.Flags().Int64("assignee-id", 0, "Assignee (usually a Server) to assign Primary IP to")
+		cmd.Flags().Int64("assignee-id", 0, "Assignee (usually a Server) to assign Primary IP to (required if 'datacenter' is not specified)")
 
-		cmd.Flags().String("datacenter", "", "Datacenter (ID or name)")
+		cmd.Flags().String("datacenter", "", "Datacenter (ID or name) (required if 'assignee-id' is not specified)")
 		_ = cmd.RegisterFlagCompletionFunc("datacenter", cmpl.SuggestCandidatesF(client.Datacenter().Names))
 
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
@@ -40,6 +40,8 @@ var CreateCmd = base.CreateCmd[*hcloud.PrimaryIP]{
 
 		cmd.Flags().Bool("auto-delete", false, "Delete Primary IP if assigned resource is deleted (true, false)")
 
+		cmd.MarkFlagsOneRequired("assignee-id", "datacenter")
+		cmd.MarkFlagsMutuallyExclusive("assignee-id", "datacenter")
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, _ []string) (*hcloud.PrimaryIP, any, error) {
