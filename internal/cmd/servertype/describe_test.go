@@ -111,14 +111,14 @@ Memory:			4.0 GB
 Disk:			40 GB
 Storage Type:		local
 Locations:
-  - Location:		fsn1
+  - Location:			fsn1
     Deprecation:
       Announced:		%s (%s)
       Unavailable After:	%s (%s)
     Pricing:
-      Hourly:		€ 1.0000
-      Monthly:		€ 2.0000
-      Included Traffic:	639 KiB
+      Hourly:			€ 1.0000
+      Monthly:			€ 2.0000
+      Included Traffic:		639 KiB
       Additional Traffic:	€ 3.0000 per TB
 
 `,
