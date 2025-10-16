@@ -43,16 +43,16 @@ var DescribeCmd = base.DescribeCmd[*hcloud.ServerType]{
 		cmd.Printf("Locations:\n")
 		for _, info := range locations {
 
-			cmd.Printf("  - Location:\t\t%s\n", info.Location.Name)
+			cmd.Printf("  - Location:\t\t\t%s\n", info.Location.Name)
 
 			if deprecationText := util.DescribeDeprecation(info); deprecationText != "" {
 				cmd.Print(util.PrefixLines(deprecationText, "    "))
 			}
 
 			cmd.Printf("    Pricing:\n")
-			cmd.Printf("      Hourly:\t\t%s\n", util.GrossPrice(info.Pricing.Hourly))
-			cmd.Printf("      Monthly:\t\t%s\n", util.GrossPrice(info.Pricing.Monthly))
-			cmd.Printf("      Included Traffic:\t%s\n", humanize.IBytes(info.Pricing.IncludedTraffic))
+			cmd.Printf("      Hourly:\t\t\t%s\n", util.GrossPrice(info.Pricing.Hourly))
+			cmd.Printf("      Monthly:\t\t\t%s\n", util.GrossPrice(info.Pricing.Monthly))
+			cmd.Printf("      Included Traffic:\t\t%s\n", humanize.IBytes(info.Pricing.IncludedTraffic))
 			cmd.Printf("      Additional Traffic:\t%s per TB\n", util.GrossPrice(info.Pricing.PerTBTraffic))
 			cmd.Printf("\n")
 		}
