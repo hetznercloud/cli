@@ -1,5 +1,17 @@
 # Changelog
 
+## [v1.55.0](https://github.com/hetznercloud/cli/releases/tag/v1.55.0)
+
+### Features
+
+- **server,load-balancer**: add --ip-range argument to attach-to-network commands (#1164)
+
+### Bug Fixes
+
+- list commands print `null` instead of `[]` in JSON mode (#1191)
+- outdated JSON output after creating resources (#1194)
+- formatting of server-type describe output (#1196)
+
 ## [v1.54.0](https://github.com/hetznercloud/cli/releases/tag/v1.54.0)
 
 ### DNS API Beta
