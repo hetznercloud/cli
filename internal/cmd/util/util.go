@@ -37,7 +37,7 @@ func NA(s string) string {
 }
 
 func Datetime(t time.Time) string {
-	return t.Local().Format(time.UnixDate)
+	return t.Local().Format("2006-01-02 15:04:05 MST")
 }
 
 func Age(t, currentTime time.Time) string {
