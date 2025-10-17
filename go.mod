@@ -65,3 +65,5 @@ require (
 	google.golang.org/protobuf v1.36.8 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
+
+replace github.com/hetznercloud/hcloud-go/v2 => github.com/hetznercloud/hcloud-go/v2 v2.27.1-0.20251010105254-9694b911d397
