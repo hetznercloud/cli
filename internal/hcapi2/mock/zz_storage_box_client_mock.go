@@ -147,6 +147,22 @@ func (mr *MockStorageBoxClientMockRecorder) ChangeProtection(ctx, storageBox, op
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ChangeProtection", reflect.TypeOf((*MockStorageBoxClient)(nil).ChangeProtection), ctx, storageBox, opts)
 }
 
+// ChangeSubaccountHomeDirectory mocks base method.
+func (m *MockStorageBoxClient) ChangeSubaccountHomeDirectory(ctx context.Context, subaccount *hcloud.StorageBoxSubaccount, opts hcloud.StorageBoxSubaccountChangeHomeDirectoryOpts) (*hcloud.Action, *hcloud.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ChangeSubaccountHomeDirectory", ctx, subaccount, opts)
+	ret0, _ := ret[0].(*hcloud.Action)
+	ret1, _ := ret[1].(*hcloud.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// ChangeSubaccountHomeDirectory indicates an expected call of ChangeSubaccountHomeDirectory.
+func (mr *MockStorageBoxClientMockRecorder) ChangeSubaccountHomeDirectory(ctx, subaccount, opts any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ChangeSubaccountHomeDirectory", reflect.TypeOf((*MockStorageBoxClient)(nil).ChangeSubaccountHomeDirectory), ctx, subaccount, opts)
+}
+
 // ChangeType mocks base method.
 func (m *MockStorageBoxClient) ChangeType(ctx context.Context, storageBox *hcloud.StorageBox, opts hcloud.StorageBoxChangeTypeOpts) (*hcloud.Action, *hcloud.Response, error) {
 	m.ctrl.T.Helper()
@@ -403,6 +419,22 @@ func (mr *MockStorageBoxClientMockRecorder) GetSnapshotByName(ctx, storageBox, n
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSnapshotByName", reflect.TypeOf((*MockStorageBoxClient)(nil).GetSnapshotByName), ctx, storageBox, name)
 }
 
+// GetSubaccount mocks base method.
+func (m *MockStorageBoxClient) GetSubaccount(ctx context.Context, storageBox *hcloud.StorageBox, idOrUsername string) (*hcloud.StorageBoxSubaccount, *hcloud.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetSubaccount", ctx, storageBox, idOrUsername)
+	ret0, _ := ret[0].(*hcloud.StorageBoxSubaccount)
+	ret1, _ := ret[1].(*hcloud.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// GetSubaccount indicates an expected call of GetSubaccount.
+func (mr *MockStorageBoxClientMockRecorder) GetSubaccount(ctx, storageBox, idOrUsername any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSubaccount", reflect.TypeOf((*MockStorageBoxClient)(nil).GetSubaccount), ctx, storageBox, idOrUsername)
+}
+
 // GetSubaccountByID mocks base method.
 func (m *MockStorageBoxClient) GetSubaccountByID(ctx context.Context, storageBox *hcloud.StorageBox, id int64) (*hcloud.StorageBoxSubaccount, *hcloud.Response, error) {
 	m.ctrl.T.Helper()
@@ -417,6 +449,22 @@ func (m *MockStorageBoxClient) GetSubaccountByID(ctx context.Context, storageBox
 func (mr *MockStorageBoxClientMockRecorder) GetSubaccountByID(ctx, storageBox, id any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSubaccountByID", reflect.TypeOf((*MockStorageBoxClient)(nil).GetSubaccountByID), ctx, storageBox, id)
+}
+
+// GetSubaccountByUsername mocks base method.
+func (m *MockStorageBoxClient) GetSubaccountByUsername(ctx context.Context, storageBox *hcloud.StorageBox, username string) (*hcloud.StorageBoxSubaccount, *hcloud.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "GetSubaccountByUsername", ctx, storageBox, username)
+	ret0, _ := ret[0].(*hcloud.StorageBoxSubaccount)
+	ret1, _ := ret[1].(*hcloud.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// GetSubaccountByUsername indicates an expected call of GetSubaccountByUsername.
+func (mr *MockStorageBoxClientMockRecorder) GetSubaccountByUsername(ctx, storageBox, username any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetSubaccountByUsername", reflect.TypeOf((*MockStorageBoxClient)(nil).GetSubaccountByUsername), ctx, storageBox, username)
 }
 
 // LabelKeys mocks base method.

@@ -9,9 +9,10 @@ hcloud storage-box snapshot create [--description <description>] <storage-box>
 ### Options
 
 ```
-      --description string   Description of the Storage Box Snapshot
-  -h, --help                 help for create
-  -o, --output stringArray   output options: json|yaml
+      --description string     Description of the Storage Box Snapshot
+  -h, --help                   help for create
+      --label stringToString   User-defined labels ('key=value') (can be specified multiple times) (default [])
+  -o, --output stringArray     output options: json|yaml
 ```
 
 ### Options inherited from parent commands
