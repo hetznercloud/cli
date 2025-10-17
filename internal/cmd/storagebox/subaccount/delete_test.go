@@ -33,7 +33,7 @@ func TestDelete(t *testing.T) {
 		Get(gomock.Any(), "my-storage-box").
 		Return(sb, nil, nil)
 	fx.Client.StorageBoxClient.EXPECT().
-		GetSubaccountByID(gomock.Any(), sb, int64(456)).
+		GetSubaccount(gomock.Any(), sb, "456").
 		Return(sbs, nil, nil)
 	fx.Client.StorageBoxClient.EXPECT().
 		DeleteSubaccount(gomock.Any(), sbs).
@@ -63,7 +63,7 @@ func TestDeleteMultiple(t *testing.T) {
 		Name: "my-storage-box",
 	}
 
-	snapshots := []*hcloud.StorageBoxSubaccount{
+	subaccounts := []*hcloud.StorageBoxSubaccount{
 		{
 			ID:         123,
 			StorageBox: sb,
@@ -83,10 +83,11 @@ func TestDeleteMultiple(t *testing.T) {
 		Return(sb, nil, nil)
 
 	var ids []string
-	for _, sbs := range snapshots {
-		ids = append(ids, strconv.FormatInt(sbs.ID, 10))
+	for _, sbs := range subaccounts {
+		idStr := strconv.FormatInt(sbs.ID, 10)
+		ids = append(ids, idStr)
 		fx.Client.StorageBoxClient.EXPECT().
-			GetSubaccountByID(gomock.Any(), sb, sbs.ID).
+			GetSubaccount(gomock.Any(), sb, idStr).
 			Return(sbs, nil, nil)
 		fx.Client.StorageBoxClient.EXPECT().
 			DeleteSubaccount(gomock.Any(), sbs).

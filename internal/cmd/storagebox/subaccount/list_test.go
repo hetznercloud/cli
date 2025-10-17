@@ -57,7 +57,7 @@ func TestList(t *testing.T) {
 		AllSubaccountsWithOpts(
 			gomock.Any(),
 			sb,
-			hcloud.StorageBoxSubaccountListOpts{},
+			hcloud.StorageBoxSubaccountListOpts{Sort: []string{"id:asc"}},
 		).
 		Return([]*hcloud.StorageBoxSubaccount{
 			sbs,

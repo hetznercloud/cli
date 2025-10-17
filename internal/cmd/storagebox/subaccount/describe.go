@@ -2,7 +2,6 @@ package subaccount
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/dustin/go-humanize"
 	"github.com/spf13/cobra"
@@ -26,7 +25,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBoxSubaccount]{
 		}
 	},
 	FetchWithArgs: func(s state.State, _ *cobra.Command, args []string) (*hcloud.StorageBoxSubaccount, any, error) {
-		storageBoxIDOrName := args[0]
+		storageBoxIDOrName, subaccountIDOrName := args[0], args[1]
 
 		storageBox, _, err := s.Client().StorageBox().Get(s, storageBoxIDOrName)
 		if err != nil {
@@ -36,12 +35,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBoxSubaccount]{
 			return nil, nil, fmt.Errorf("Storage Box not found: %s", storageBoxIDOrName)
 		}
 
-		id, err := strconv.ParseInt(args[1], 10, 64)
-		if err != nil {
-			return nil, nil, fmt.Errorf("invalid Storage Box Subaccount ID: %s", args[1])
-		}
-
-		subaccount, _, err := s.Client().StorageBox().GetSubaccountByID(s, storageBox, id)
+		subaccount, _, err := s.Client().StorageBox().GetSubaccount(s, storageBox, subaccountIDOrName)
 		if err != nil {
 			return nil, nil, err
 		}

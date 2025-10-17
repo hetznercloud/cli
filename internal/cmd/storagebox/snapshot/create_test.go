@@ -43,6 +43,7 @@ func TestCreate(t *testing.T) {
 	fx.Client.StorageBoxClient.EXPECT().
 		CreateSnapshot(gomock.Any(), sb, hcloud.StorageBoxSnapshotCreateOpts{
 			Description: hcloud.Ptr("some-description"),
+			Labels:      map[string]string{"foo": "bar"},
 		}).
 		Return(hcloud.StorageBoxSnapshotCreateResult{
 			Snapshot: sbs,
@@ -55,7 +56,7 @@ func TestCreate(t *testing.T) {
 		GetSnapshotByID(gomock.Any(), sb, sbs.ID).
 		Return(sbs, nil, nil)
 
-	out, errOut, err := fx.Run(cmd, []string{"--description", "some-description", "my-storage-box"})
+	out, errOut, err := fx.Run(cmd, []string{"--description", "some-description", "--label", "foo=bar", "my-storage-box"})
 
 	expOut := `Storage Box Snapshot 456 created
 Name: snapshot-1
@@ -104,6 +105,7 @@ func TestCreateJSON(t *testing.T) {
 	fx.Client.StorageBoxClient.EXPECT().
 		CreateSnapshot(gomock.Any(), sb, hcloud.StorageBoxSnapshotCreateOpts{
 			Description: hcloud.Ptr("some-description"),
+			Labels:      map[string]string{},
 		}).
 		Return(hcloud.StorageBoxSnapshotCreateResult{
 			Snapshot: sbs,

@@ -59,13 +59,9 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBox]{
 
 		stats := storageBox.Stats
 		cmd.Println("Stats:")
-		if stats == nil {
-			cmd.Println("  No stats available")
-		} else {
-			cmd.Printf("  Size:\t\t\t\t%s\n", humanize.IBytes(stats.Size))
-			cmd.Printf("  Size Data:\t\t\t%s\n", humanize.IBytes(stats.SizeData))
-			cmd.Printf("  Size Snapshots:\t\t%s\n", humanize.IBytes(stats.SizeSnapshots))
-		}
+		cmd.Printf("  Size:\t\t\t\t%s\n", humanize.IBytes(stats.Size))
+		cmd.Printf("  Size Data:\t\t\t%s\n", humanize.IBytes(stats.SizeData))
+		cmd.Printf("  Size Snapshots:\t\t%s\n", humanize.IBytes(stats.SizeSnapshots))
 
 		cmd.Print("Labels:\n")
 		if len(storageBox.Labels) == 0 {
