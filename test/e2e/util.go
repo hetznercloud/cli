@@ -63,9 +63,9 @@ func (r RegexBuilder) SeparatedByWhitespace(lits ...string) RegexBuilder {
 	return r
 }
 
-func (r RegexBuilder) UnixDate() RegexBuilder {
-	// "Mon Jan _2 15:04:05 MST 2006"
-	return r.Raw(`(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun) (?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec) [0-9 ][0-9] [0-9]{2}:[0-9]{2}:[0-9]{2} [A-Z]+ [0-9]{4}`)
+func (r RegexBuilder) Datetime() RegexBuilder {
+	// 2006-01-02 15:04:05 MST
+	return r.Raw(`[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2} [A-Z]+ `)
 }
 
 func (r RegexBuilder) FileSize() RegexBuilder {

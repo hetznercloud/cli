@@ -206,7 +206,7 @@ func TestCombined(t *testing.T) {
 					Lit("Type:").Whitespace().Lit("ipv4").Newline().
 					Lit("Name:").Whitespace().Raw(`test-floating-ip-[0-9a-f]{8}`).Newline().
 					Lit("Description:").Whitespace().Lit("-").Newline().
-					Lit("Created:").Whitespace().UnixDate().Lit(" (").HumanizeTime().Lit(")").Newline().
+					Lit("Created:").Whitespace().Datetime().Lit(" (").HumanizeTime().Lit(")").Newline().
 					Lit("IP:").Whitespace().IPv4().Newline().
 					Lit("Blocked:").Whitespace().Lit("no").Newline().
 					Lit("Home Location:").Whitespace().LocationName().Newline().
@@ -289,7 +289,7 @@ func TestCombined(t *testing.T) {
 					Lit("Type:").Whitespace().Lit("snapshot").Newline().
 					Lit("Status:").Whitespace().Lit("available").Newline().
 					Lit("Name:").Whitespace().Lit("-").Newline().
-					Lit("Created:").Whitespace().UnixDate().Lit(" (").HumanizeTime().Lit(")").Newline().
+					Lit("Created:").Whitespace().Datetime().Lit(" (").HumanizeTime().Lit(")").Newline().
 					Lit("Description:").Whitespace().Lit("This is a test image").Newline().
 					Lit("Image size:").Whitespace().FileSize().Newline().
 					Lit("Disk size:").Whitespace().FileSize().Newline().

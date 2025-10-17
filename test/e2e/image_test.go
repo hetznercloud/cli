@@ -30,8 +30,8 @@ func TestImage(t *testing.T) {
 							OneOfLit("x86", "arm").Whitespace().
 							OneOf("-", NewRegex().FileSize()).Whitespace().
 							FileSize().Whitespace().
-							UnixDate().Whitespace().
-							OneOf("-", NewRegex().UnixDate()).
+							Datetime().Whitespace().
+							OneOf("-", NewRegex().Datetime()).
 							OptionalWhitespace().Newline(),
 					).
 					End(),
@@ -63,7 +63,7 @@ func TestImage(t *testing.T) {
 					Lit("Type:").Whitespace().OneOfLit("system", "app", "snapshot", "backup").Newline().
 					Lit("Status:").Whitespace().OneOfLit("available", "creating", "unavailable").Newline().
 					Lit("Name:").Whitespace().Identifier().Newline().
-					Lit("Created:").Whitespace().UnixDate().Lit(" (").HumanizeTime().Lit(")").Newline().
+					Lit("Created:").Whitespace().Datetime().Lit(" (").HumanizeTime().Lit(")").Newline().
 					Lit("Description:").Whitespace().AnyString().Newline().
 					Lit("Image size:").Whitespace().OneOf("-", NewRegex().FileSize()).Newline().
 					Lit("Disk size:").Whitespace().FileSize().Newline().

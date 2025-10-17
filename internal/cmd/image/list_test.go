@@ -45,8 +45,8 @@ func TestList(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{})
 
-	expOut := `ID    TYPE     NAME   DESCRIPTION   ARCHITECTURE   IMAGE SIZE   DISK SIZE   CREATED                        DEPRECATED
-123   system   test   -             x86            20.00 GB     15 GB       Wed Aug 20 12:00:00 UTC 2036   -         
+	expOut := `ID    TYPE     NAME   DESCRIPTION   ARCHITECTURE   IMAGE SIZE   DISK SIZE   CREATED                   DEPRECATED
+123   system   test   -             x86            20.00 GB     15 GB       2036-08-20 12:00:00 UTC   -         
 `
 
 	require.NoError(t, err)

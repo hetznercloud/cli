@@ -205,8 +205,8 @@ ID    NAME        STATUS    IPV4        IPV6   PRIVATE NET   DATACENTER   AGE
 
 IMAGES
 ---
-ID   TYPE     NAME   DESCRIPTION   ARCHITECTURE   IMAGE SIZE   DISK SIZE   CREATED                        DEPRECATED
-1    backup   test   -             arm            -            20 GB       Wed Aug 20 12:00:00 UTC 2036   -         
+ID   TYPE     NAME   DESCRIPTION   ARCHITECTURE   IMAGE SIZE   DISK SIZE   CREATED                   DEPRECATED
+1    backup   test   -             arm            -            20 GB       2036-08-20 12:00:00 UTC   -         
 
 PLACEMENT GROUPS
 ---
@@ -250,8 +250,8 @@ ID    NAME   RULES COUNT   APPLIED TO COUNT
 
 CERTIFICATES
 ---
-ID    NAME   TYPE      DOMAIN NAMES   NOT VALID AFTER                AGE
-123   test   managed   example.com    Wed Aug 20 12:00:00 UTC 2036   10h
+ID    NAME   TYPE      DOMAIN NAMES   NOT VALID AFTER           AGE
+123   test   managed   example.com    2036-08-20 12:00:00 UTC   10h
 
 SSH KEYS
 ---

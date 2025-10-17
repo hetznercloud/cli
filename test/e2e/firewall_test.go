@@ -162,7 +162,7 @@ func TestFirewall(t *testing.T) {
 			NewRegex().Start().
 				Lit("ID:").Whitespace().Int().Newline().
 				Lit("Name:").Whitespace().Raw(`new-test-firewall-[0-9a-f]{8}`).Newline().
-				Lit("Created:").Whitespace().UnixDate().Lit(" (").HumanizeTime().Lit(")").Newline().
+				Lit("Created:").Whitespace().Datetime().Lit(" (").HumanizeTime().Lit(")").Newline().
 				Lit("Labels:").Newline().
 				Lit("  foo: bar").Newline().
 				Lit("Rules:").Newline().
