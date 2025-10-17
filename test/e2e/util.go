@@ -65,7 +65,7 @@ func (r RegexBuilder) SeparatedByWhitespace(lits ...string) RegexBuilder {
 
 func (r RegexBuilder) Datetime() RegexBuilder {
 	// 2006-01-02 15:04:05 MST
-	return r.Raw(`[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2} [A-Z]+ `)
+	return r.Raw(`[0-9]{4}-[0-9]{2}-[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2} [A-Z]+`)
 }
 
 func (r RegexBuilder) FileSize() RegexBuilder {
