@@ -216,7 +216,7 @@ func TestZone(t *testing.T) {
 			NewRegex().Start().
 				Lit("ID:").Whitespace().Int().Newline().
 				Lit("Name:").Whitespace().Lit(zoneName).Newline().
-				Lit("Created:").Whitespace().UnixDate().Lit(" (").HumanizeTime().Lit(")").Newline().
+				Lit("Created:").Whitespace().Datetime().Lit(" (").HumanizeTime().Lit(")").Newline().
 				Lit("Mode:").Whitespace().Lit("primary").Newline().
 				Lit("Status:").Whitespace().Lit("ok").Newline().
 				Lit("TTL:").Whitespace().Lit("600").Newline().
@@ -233,7 +233,7 @@ func TestZone(t *testing.T) {
 				).
 				Lit("  Delegated:").Newline().
 				Lit("    No delegated nameservers").Newline().
-				Lit("  Delegation last check:").Whitespace().UnixDate().Lit(" (").HumanizeTime().Lit(")").Newline().
+				Lit("  Delegation last check:").Whitespace().Datetime().Lit(" (").HumanizeTime().Lit(")").Newline().
 				Lit("  Delegation status:").Whitespace().OneOfLit("invalid", "unknown", "unregistered").Newline().
 				End(),
 			out,

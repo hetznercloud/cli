@@ -75,7 +75,7 @@ func TestDescribe(t *testing.T) {
 
 	expOut := fmt.Sprintf(`ID:		42
 Name:		example.com
-Created:	Sat Jan 30 23:55:00 UTC 2016 (%s)
+Created:	2016-01-30 23:55:00 UTC (%s)
 Mode:		primary
 Status:		ok
 TTL:		10800
@@ -96,7 +96,7 @@ Authoritative Nameservers:
     - hydrogen.ns.hetzner.com.
     - oxygen.ns.hetzner.com.
     - helium.ns.hetzner.de.
-  Delegation last check:	Sat Jan 30 23:55:00 UTC 2016 (%s)
+  Delegation last check:	2016-01-30 23:55:00 UTC (%s)
   Delegation status:		valid
 `, humanize.Time(z.Created), humanize.Time(z.AuthoritativeNameservers.DelegationLastCheck))
 

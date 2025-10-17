@@ -113,9 +113,9 @@ func runCertificateTestSuite(t *testing.T, certName string, certID int64, certTy
 				Lit(certName).Whitespace().
 				Lit(strings.Join(labels, ", ")).Whitespace().
 				Lit(string(certType)).Whitespace().
-				UnixDate().Whitespace().
-				UnixDate().Whitespace().
-				UnixDate().Whitespace().
+				Datetime().Whitespace().
+				Datetime().Whitespace().
+				Datetime().Whitespace().
 				Lit(domainName).Whitespace().
 				Raw(fingerprintRegex).Whitespace().
 				OneOf("completed", "n/a").Whitespace().
@@ -135,9 +135,9 @@ func runCertificateTestSuite(t *testing.T, certName string, certID int64, certTy
 			Lit("Name:").Whitespace().Lit(certName).Newline().
 			Lit("Type:").Whitespace().Lit(string(certType)).Newline().
 			Lit("Fingerprint:").Whitespace().Raw(fingerprintRegex).Newline().
-			Lit("Created:").Whitespace().UnixDate().Lit(" (").HumanizeTime().Lit(")").Newline().
-			Lit("Not valid before:").Whitespace().UnixDate().Lit(" (").HumanizeTime().Lit(")").Newline().
-			Lit("Not valid after:").Whitespace().UnixDate().Lit(" (").HumanizeTime().Lit(")").Newline()
+			Lit("Created:").Whitespace().Datetime().Lit(" (").HumanizeTime().Lit(")").Newline().
+			Lit("Not valid before:").Whitespace().Datetime().Lit(" (").HumanizeTime().Lit(")").Newline().
+			Lit("Not valid after:").Whitespace().Datetime().Lit(" (").HumanizeTime().Lit(")").Newline()
 
 		if certType == hcloud.CertificateTypeManaged {
 			regex = regex.
