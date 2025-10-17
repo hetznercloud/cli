@@ -77,6 +77,23 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBox]{
 			}
 		}
 
+		var accessSettings hcloud.StorageBoxCreateOptsAccessSettings
+		if cmd.Flags().Changed("enable-samba") {
+			accessSettings.SambaEnabled = &enableSamba
+		}
+		if cmd.Flags().Changed("enable-ssh") {
+			accessSettings.SSHEnabled = &enableSSH
+		}
+		if cmd.Flags().Changed("enable-webdav") {
+			accessSettings.WebDAVEnabled = &enableWebDAV
+		}
+		if cmd.Flags().Changed("enable-zfs") {
+			accessSettings.ZFSEnabled = &enableZFS
+		}
+		if cmd.Flags().Changed("reachable-externally") {
+			accessSettings.ReachableExternally = &reachableExternally
+		}
+
 		opts := hcloud.StorageBoxCreateOpts{
 			Name:           name,
 			StorageBoxType: &hcloud.StorageBoxType{Name: sbType},
@@ -84,13 +101,7 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBox]{
 			Labels:         labels,
 			Password:       password,
 			SSHKeys:        sshKeys,
-			AccessSettings: &hcloud.StorageBoxCreateOptsAccessSettings{
-				ReachableExternally: &reachableExternally,
-				SambaEnabled:        &enableSamba,
-				SSHEnabled:          &enableSSH,
-				WebDAVEnabled:       &enableWebDAV,
-				ZFSEnabled:          &enableZFS,
-			},
+			AccessSettings: &accessSettings,
 		}
 		result, _, err := s.Client().StorageBox().Create(s, opts)
 		if err != nil {

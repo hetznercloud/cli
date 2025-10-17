@@ -2,7 +2,6 @@ package subaccount
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/spf13/cobra"
 
@@ -27,7 +26,6 @@ var UpdateAccessSettingsCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 
-		cmd.Flags().String("home-directory", "", "Home directory of the Subaccount. Will be created if it doesn't exist yet")
 		cmd.Flags().Bool("enable-samba", false, "Whether the Samba subsystem should be enabled (true, false)")
 		cmd.Flags().Bool("enable-ssh", false, "Whether the SSH subsystem should be enabled (true, false)")
 		cmd.Flags().Bool("enable-webdav", false, "Whether the WebDAV subsystem should be enabled (true, false)")
@@ -39,38 +37,30 @@ var UpdateAccessSettingsCmd = base.Cmd{
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
-		idOrName := args[0]
-		homeDirectory, _ := cmd.Flags().GetString("home-directory")
+		storageBoxIDOrName, subaccountIDOrName := args[0], args[1]
 		enableSamba, _ := cmd.Flags().GetBool("enable-samba")
 		enableSSH, _ := cmd.Flags().GetBool("enable-ssh")
 		enableWebDAV, _ := cmd.Flags().GetBool("enable-webdav")
 		reachableExternally, _ := cmd.Flags().GetBool("reachable-externally")
 		readonly, _ := cmd.Flags().GetBool("readonly")
 
-		storageBox, _, err := s.Client().StorageBox().Get(s, idOrName)
+		storageBox, _, err := s.Client().StorageBox().Get(s, storageBoxIDOrName)
 		if err != nil {
 			return err
 		}
 		if storageBox == nil {
-			return fmt.Errorf("Storage Box not found: %s", idOrName)
+			return fmt.Errorf("Storage Box not found: %s", storageBoxIDOrName)
 		}
 
-		id, err := strconv.ParseInt(args[1], 10, 64)
-		if err != nil {
-			return fmt.Errorf("invalid Storage Box Subaccount ID: %s", args[1])
-		}
-		subaccount, _, err := s.Client().StorageBox().GetSubaccountByID(s, storageBox, id)
+		subaccount, _, err := s.Client().StorageBox().GetSubaccount(s, storageBox, subaccountIDOrName)
 		if err != nil {
 			return err
 		}
 		if subaccount == nil {
-			return fmt.Errorf("Storage Box Subaccount not found: %d", id)
+			return fmt.Errorf("Storage Box Subaccount not found: %s", subaccountIDOrName)
 		}
 
 		var opts hcloud.StorageBoxSubaccountAccessSettingsUpdateOpts
-		if cmd.Flags().Changed("home-directory") {
-			opts.HomeDirectory = &homeDirectory
-		}
 		if cmd.Flags().Changed("enable-samba") {
 			opts.SambaEnabled = &enableSamba
 		}

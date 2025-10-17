@@ -1,25 +1,16 @@
-## hcloud zone import-zonefile
+## hcloud storage-box subaccount change-home-directory
 
-[experimental] Imports a zone file, replacing all Zone RRSets
-
-### Synopsis
-
-Imports a zone file, replacing all Zone RRSets
-
-Experimental: DNS API is in beta, breaking changes may occur within minor releases.
-See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
-
+Update access settings of the Storage Box Subaccount
 
 ```
-hcloud zone import-zonefile --zonefile <file> <zone>
+hcloud storage-box subaccount change-home-directory --home-directory <home-directory> <storage-box> <subaccount>
 ```
 
 ### Options
 
 ```
-  -h, --help                 help for import-zonefile
-  -o, --output stringArray   output options: json|yaml
-      --zonefile string      Zone file in BIND (RFC 1034/1035) format (use - to read from stdin)
+  -h, --help                    help for change-home-directory
+      --home-directory string   Home directory of the Subaccount. Will be created if it doesn't exist yet
 ```
 
 ### Options inherited from parent commands
@@ -38,4 +29,4 @@ hcloud zone import-zonefile --zonefile <file> <zone>
 
 ### SEE ALSO
 
-* [hcloud zone](hcloud_zone.md)	 - [experimental] Manage DNS Zones and Zone RRSets (records)
+* [hcloud storage-box subaccount](hcloud_storage-box_subaccount.md)	 - Manage Storage Box Subaccounts

@@ -2,7 +2,6 @@ package subaccount
 
 import (
 	"context"
-	"strconv"
 
 	"github.com/spf13/cobra"
 
@@ -26,10 +25,10 @@ func SuggestSubaccounts(client hcapi2.Client) cobra.CompletionFunc {
 			return nil
 		}
 
-		subaccountIDs := make([]string, 0, len(subaccounts))
+		subaccountUsernames := make([]string, 0, len(subaccounts))
 		for _, subaccount := range subaccounts {
-			subaccountIDs = append(subaccountIDs, strconv.FormatInt(subaccount.ID, 10))
+			subaccountUsernames = append(subaccountUsernames, subaccount.Username)
 		}
-		return subaccountIDs
+		return subaccountUsernames
 	})
 }
