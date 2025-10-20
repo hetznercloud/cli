@@ -28,8 +28,8 @@ func TestEnableSnapshotPlan(t *testing.T) {
 	fx.Client.StorageBoxClient.EXPECT().
 		EnableSnapshotPlan(gomock.Any(), sb, hcloud.StorageBoxEnableSnapshotPlanOpts{
 			MaxSnapshots: 10,
-			Minute:       hcloud.Ptr(0),
-			Hour:         hcloud.Ptr(2),
+			Minute:       0,
+			Hour:         2,
 			DayOfWeek:    hcloud.Ptr(time.Tuesday),
 			DayOfMonth:   nil,
 		}).

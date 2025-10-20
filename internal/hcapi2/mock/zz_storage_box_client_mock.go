@@ -228,10 +228,10 @@ func (mr *MockStorageBoxClientMockRecorder) CreateSubaccount(ctx, storageBox, op
 }
 
 // Delete mocks base method.
-func (m *MockStorageBoxClient) Delete(ctx context.Context, storageBox *hcloud.StorageBox) (*hcloud.Action, *hcloud.Response, error) {
+func (m *MockStorageBoxClient) Delete(ctx context.Context, storageBox *hcloud.StorageBox) (hcloud.StorageBoxDeleteResult, *hcloud.Response, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Delete", ctx, storageBox)
-	ret0, _ := ret[0].(*hcloud.Action)
+	ret0, _ := ret[0].(hcloud.StorageBoxDeleteResult)
 	ret1, _ := ret[1].(*hcloud.Response)
 	ret2, _ := ret[2].(error)
 	return ret0, ret1, ret2
@@ -244,10 +244,10 @@ func (mr *MockStorageBoxClientMockRecorder) Delete(ctx, storageBox any) *gomock.
 }
 
 // DeleteSnapshot mocks base method.
-func (m *MockStorageBoxClient) DeleteSnapshot(ctx context.Context, snapshot *hcloud.StorageBoxSnapshot) (*hcloud.Action, *hcloud.Response, error) {
+func (m *MockStorageBoxClient) DeleteSnapshot(ctx context.Context, snapshot *hcloud.StorageBoxSnapshot) (hcloud.StorageBoxSnapshotDeleteResult, *hcloud.Response, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteSnapshot", ctx, snapshot)
-	ret0, _ := ret[0].(*hcloud.Action)
+	ret0, _ := ret[0].(hcloud.StorageBoxSnapshotDeleteResult)
 	ret1, _ := ret[1].(*hcloud.Response)
 	ret2, _ := ret[2].(error)
 	return ret0, ret1, ret2
@@ -260,10 +260,10 @@ func (mr *MockStorageBoxClientMockRecorder) DeleteSnapshot(ctx, snapshot any) *g
 }
 
 // DeleteSubaccount mocks base method.
-func (m *MockStorageBoxClient) DeleteSubaccount(ctx context.Context, subaccount *hcloud.StorageBoxSubaccount) (*hcloud.Action, *hcloud.Response, error) {
+func (m *MockStorageBoxClient) DeleteSubaccount(ctx context.Context, subaccount *hcloud.StorageBoxSubaccount) (hcloud.StorageBoxSubaccountDeleteResult, *hcloud.Response, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteSubaccount", ctx, subaccount)
-	ret0, _ := ret[0].(*hcloud.Action)
+	ret0, _ := ret[0].(hcloud.StorageBoxSubaccountDeleteResult)
 	ret1, _ := ret[1].(*hcloud.Response)
 	ret2, _ := ret[2].(error)
 	return ret0, ret1, ret2
@@ -670,7 +670,7 @@ func (mr *MockStorageBoxClientMockRecorder) UpdateSubaccount(ctx, subaccount, op
 }
 
 // UpdateSubaccountAccessSettings mocks base method.
-func (m *MockStorageBoxClient) UpdateSubaccountAccessSettings(ctx context.Context, subaccount *hcloud.StorageBoxSubaccount, opts hcloud.StorageBoxSubaccountAccessSettingsUpdateOpts) (*hcloud.Action, *hcloud.Response, error) {
+func (m *MockStorageBoxClient) UpdateSubaccountAccessSettings(ctx context.Context, subaccount *hcloud.StorageBoxSubaccount, opts hcloud.StorageBoxSubaccountUpdateAccessSettingsOpts) (*hcloud.Action, *hcloud.Response, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateSubaccountAccessSettings", ctx, subaccount, opts)
 	ret0, _ := ret[0].(*hcloud.Action)

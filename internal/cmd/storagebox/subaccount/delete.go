@@ -39,7 +39,7 @@ var DeleteCmd = base.DeleteCmd{
 
 	Delete: func(s state.State, _ *cobra.Command, resource any) (*hcloud.Action, error) {
 		subaccount := resource.(*hcloud.StorageBoxSubaccount)
-		action, _, err := s.Client().StorageBox().DeleteSubaccount(s, subaccount)
-		return action, err
+		result, _, err := s.Client().StorageBox().DeleteSubaccount(s, subaccount)
+		return result.Action, err
 	},
 }

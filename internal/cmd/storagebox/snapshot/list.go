@@ -61,22 +61,12 @@ var ListCmd = base.ListCmd[*hcloud.StorageBoxSnapshot, schema.StorageBoxSnapshot
 	OutputTable: func(t *output.Table, _ hcapi2.Client) {
 		t.
 			AddAllowedFields(hcloud.StorageBoxSnapshot{}).
-			AddFieldFn("description", func(obj any) string {
-				snapshot := obj.(*hcloud.StorageBoxSnapshot)
-				return util.OptionalString(snapshot.Description, "-")
-			}).
 			AddFieldFn("size", func(obj any) string {
 				snapshot := obj.(*hcloud.StorageBoxSnapshot)
-				if snapshot.Stats == nil {
-					return "-"
-				}
 				return humanize.IBytes(snapshot.Stats.Size)
 			}).
 			AddFieldFn("size_filesystem", func(obj any) string {
 				snapshot := obj.(*hcloud.StorageBoxSnapshot)
-				if snapshot.Stats == nil {
-					return "-"
-				}
 				return humanize.IBytes(snapshot.Stats.SizeFilesystem)
 			}).
 			AddFieldFn("labels", func(obj any) string {
