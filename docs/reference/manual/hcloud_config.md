@@ -55,7 +55,8 @@ Following options are preferences and can be used with set/unset/add/remove:
 │                          │ output to            │             │                          │                                 │                            │
 ├──────────────────────────┼──────────────────────┼─────────────┼──────────────────────────┼─────────────────────────────────┼────────────────────────────┤
 │ default-ssh-keys         │ Default SSH Keys for │ string list │ default_ssh_keys         │ HCLOUD_DEFAULT_SSH_KEYS         │                            │
-│                          │ new Servers          │             │                          │                                 │                            │
+│                          │ new Servers and      │             │                          │                                 │                            │
+│                          │ Storage Boxes        │             │                          │                                 │                            │
 ├──────────────────────────┼──────────────────────┼─────────────┼──────────────────────────┼─────────────────────────────────┼────────────────────────────┤
 │ endpoint                 │ Hetzner Cloud API    │ string      │ endpoint                 │ HCLOUD_ENDPOINT                 │ --endpoint                 │
 │                          │ endpoint             │             │                          │                                 │                            │

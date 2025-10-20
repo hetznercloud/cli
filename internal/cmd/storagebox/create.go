@@ -11,6 +11,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
+	"github.com/hetznercloud/cli/internal/state/config"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
@@ -38,6 +39,7 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBox]{
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 
 		cmd.Flags().StringArray("ssh-key", []string{}, "SSH public keys in OpenSSH format or as the ID or name of an existing SSH key")
+		_ = cmd.RegisterFlagCompletionFunc("ssh-key", cmpl.SuggestCandidatesF(client.SSHKey().Names))
 
 		cmd.Flags().Bool("enable-samba", false, "Whether the Samba subsystem should be enabled (true, false)")
 		cmd.Flags().Bool("enable-ssh", false, "Whether the SSH subsystem should be enabled (true, false)")
@@ -70,8 +72,16 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBox]{
 		enableZFS, _ := cmd.Flags().GetBool("enable-zfs")
 		reachableExternally, _ := cmd.Flags().GetBool("reachable-externally")
 
+		if !cmd.Flags().Changed("ssh-key") && config.OptionDefaultSSHKeys.Changed(s.Config()) {
+			sshKeys, err = config.OptionDefaultSSHKeys.Get(s.Config())
+			if err != nil {
+				return nil, nil, err
+			}
+		}
+
+		resolvedSSHKeys := make([]*hcloud.SSHKey, len(sshKeys))
 		for i, sshKey := range sshKeys {
-			sshKeys[i], err = resolveSSHKey(s, sshKey)
+			resolvedSSHKeys[i], err = resolveSSHKey(s, sshKey)
 			if err != nil {
 				return nil, nil, err
 			}
@@ -100,7 +110,7 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBox]{
 			Location:       &hcloud.Location{Name: location},
 			Labels:         labels,
 			Password:       password,
-			SSHKeys:        sshKeys,
+			SSHKeys:        resolvedSSHKeys,
 			AccessSettings: &accessSettings,
 		}
 		result, _, err := s.Client().StorageBox().Create(s, opts)
@@ -137,23 +147,23 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBox]{
 }
 
 // resolveSSHKey resolves the given pubKey by doing the following:
-// - If pubKey is a valid public key in OpenSSH format, it is returned as is.
+// - If pubKey is a valid public key in OpenSSH format, it is wrapped in a [hcloud.SSHKey].
 // - Otherwise, it is treated as an ID or name of an existing SSH key in the project.
-// - If an SSH key with the given ID or name exists, its public key is returned.
-// - Otherwise, pubKey is returned as is.
-func resolveSSHKey(s state.State, pubKey string) (string, error) {
+// - If an SSH key with the given ID or name exists, it is returned.
+// - Otherwise, pubKey is returned wrapped in a [hcloud.SSHKey].
+func resolveSSHKey(s state.State, pubKey string) (*hcloud.SSHKey, error) {
 	_, _, _, _, err := ssh.ParseAuthorizedKey([]byte(pubKey))
 	if err == nil {
-		return pubKey, nil
+		return &hcloud.SSHKey{PublicKey: pubKey}, nil
 	}
 
 	sshKey, _, err := s.Client().SSHKey().Get(s, pubKey)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	if sshKey != nil {
-		return sshKey.PublicKey, nil
+		return sshKey, nil
 	}
 
-	return pubKey, nil
+	return &hcloud.SSHKey{PublicKey: pubKey}, nil
 }
