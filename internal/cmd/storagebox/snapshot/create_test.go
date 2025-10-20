@@ -32,7 +32,7 @@ func TestCreate(t *testing.T) {
 	sbs := &hcloud.StorageBoxSnapshot{
 		ID:   456,
 		Name: "snapshot-1",
-		Stats: &hcloud.StorageBoxSnapshotStats{
+		Stats: hcloud.StorageBoxSnapshotStats{
 			Size: 50 * util.Gibibyte,
 		},
 	}
@@ -83,7 +83,7 @@ func TestCreateJSON(t *testing.T) {
 		ID:          456,
 		Name:        "snapshot-1",
 		Description: "some-description",
-		Stats: &hcloud.StorageBoxSnapshotStats{
+		Stats: hcloud.StorageBoxSnapshotStats{
 			Size:           50 * util.Gibibyte,
 			SizeFilesystem: 40 * util.Gibibyte,
 		},

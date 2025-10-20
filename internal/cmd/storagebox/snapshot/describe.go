@@ -49,12 +49,8 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBoxSnapshot]{
 		cmd.Printf("Is automatic:\t\t%s\n", util.YesNo(snapshot.IsAutomatic))
 
 		cmd.Println("Stats:")
-		if snapshot.Stats == nil {
-			cmd.Println("  No stats available")
-		} else {
-			cmd.Printf("  Size:\t\t\t%s\n", humanize.IBytes(snapshot.Stats.Size))
-			cmd.Printf("  Filesystem Size:\t%s\n", humanize.IBytes(snapshot.Stats.SizeFilesystem))
-		}
+		cmd.Printf("  Size:\t\t\t%s\n", humanize.IBytes(snapshot.Stats.Size))
+		cmd.Printf("  Filesystem Size:\t%s\n", humanize.IBytes(snapshot.Stats.SizeFilesystem))
 
 		cmd.Println("Labels:")
 		if len(snapshot.Labels) == 0 {

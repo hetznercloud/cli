@@ -31,7 +31,7 @@ func TestList(t *testing.T) {
 		ID:          456,
 		Name:        "snapshot-1",
 		Description: "some-description",
-		Stats: &hcloud.StorageBoxSnapshotStats{
+		Stats: hcloud.StorageBoxSnapshotStats{
 			Size:           50 * util.Gibibyte,
 			SizeFilesystem: 40 * util.Gibibyte,
 		},
