@@ -131,8 +131,8 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBox]{
 		return storageBox, util.Wrap("storage_box", hcloud.SchemaFromStorageBox(result.StorageBox)), nil
 	},
 	PrintResource: func(_ state.State, cmd *cobra.Command, storageBox *hcloud.StorageBox) {
-		cmd.Printf("Server: %s\n", *storageBox.Server)
-		cmd.Printf("Username: %s\n", *storageBox.Username)
+		cmd.Printf("Server: %s\n", storageBox.Server)
+		cmd.Printf("Username: %s\n", storageBox.Username)
 	},
 }
 

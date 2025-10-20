@@ -32,8 +32,8 @@ func TestCreate(t *testing.T) {
 	sb := &hcloud.StorageBox{
 		ID:       123,
 		Name:     "my-storage-box",
-		Server:   hcloud.Ptr("u12345.your-storagebox.de"),
-		Username: hcloud.Ptr("u12345"),
+		Server:   "u12345.your-storagebox.de",
+		Username: "u12345",
 	}
 
 	fx.Client.SSHKeyClient.EXPECT().
@@ -87,7 +87,7 @@ func TestCreateJSON(t *testing.T) {
 
 	sb := &hcloud.StorageBox{
 		ID:       42,
-		Username: hcloud.Ptr("u12345"),
+		Username: "u12345",
 		Status:   hcloud.StorageBoxStatusActive,
 		Name:     "string",
 		StorageBoxType: &hcloud.StorageBoxType{
@@ -139,8 +139,8 @@ func TestCreateJSON(t *testing.T) {
 			WebDAVEnabled:       false,
 			ZFSEnabled:          false,
 		},
-		Server: hcloud.Ptr("u1337.your-storagebox.de"),
-		System: hcloud.Ptr("FSN1-BX355"),
+		Server: "u1337.your-storagebox.de",
+		System: "FSN1-BX355",
 		Stats: hcloud.StorageBoxStats{
 			Size:          0,
 			SizeData:      0,
@@ -209,8 +209,8 @@ func TestCreateProtection(t *testing.T) {
 	sb := &hcloud.StorageBox{
 		ID:       123,
 		Name:     "my-storage-box",
-		Server:   hcloud.Ptr("u12345.your-storagebox.de"),
-		Username: hcloud.Ptr("u12345"),
+		Server:   "u12345.your-storagebox.de",
+		Username: "u12345",
 	}
 
 	fx.Client.StorageBoxClient.EXPECT().

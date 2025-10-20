@@ -29,9 +29,9 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBox]{
 		cmd.Printf("Name:\t\t\t\t%s\n", storageBox.Name)
 		cmd.Printf("Created:\t\t\t%s (%s)\n", util.Datetime(storageBox.Created), humanize.Time(storageBox.Created))
 		cmd.Printf("Status:\t\t\t\t%s\n", storageBox.Status)
-		cmd.Printf("Username:\t\t\t%s\n", util.OptionalString(storageBox.Username, "-"))
-		cmd.Printf("Server:\t\t\t\t%s\n", util.OptionalString(storageBox.Server, "-"))
-		cmd.Printf("System:\t\t\t\t%s\n", util.OptionalString(storageBox.System, "-"))
+		cmd.Printf("Username:\t\t\t%s\n", storageBox.Username)
+		cmd.Printf("Server:\t\t\t\t%s\n", storageBox.Server)
+		cmd.Printf("System:\t\t\t\t%s\n", storageBox.System)
 
 		snapshotPlan := storageBox.SnapshotPlan
 		cmd.Println("Snapshot Plan:")
