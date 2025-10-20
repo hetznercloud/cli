@@ -95,8 +95,8 @@ func TestDescribe(t *testing.T) {
 		},
 		SnapshotPlan: &hcloud.StorageBoxSnapshotPlan{
 			MaxSnapshots: 10,
-			Minute:       hcloud.Ptr(1),
-			Hour:         hcloud.Ptr(2),
+			Minute:       1,
+			Hour:         2,
 			DayOfWeek:    hcloud.Ptr(time.Sunday),
 			DayOfMonth:   hcloud.Ptr(4),
 		},

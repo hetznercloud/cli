@@ -156,8 +156,8 @@ func TestCreateJSON(t *testing.T) {
 		},
 		SnapshotPlan: &hcloud.StorageBoxSnapshotPlan{
 			MaxSnapshots: 0,
-			Minute:       nil,
-			Hour:         nil,
+			Minute:       0,
+			Hour:         0,
 			DayOfWeek:    nil,
 			DayOfMonth:   nil,
 		},
