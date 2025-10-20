@@ -44,7 +44,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBoxSnapshot]{
 	PrintText: func(_ state.State, cmd *cobra.Command, snapshot *hcloud.StorageBoxSnapshot) error {
 		cmd.Printf("ID:\t\t\t%d\n", snapshot.ID)
 		cmd.Printf("Name:\t\t\t%s\n", snapshot.Name)
-		cmd.Printf("Description:\t\t%s\n", util.OptionalString(snapshot.Description, "-"))
+		cmd.Printf("Description:\t\t%s\n", snapshot.Description)
 		cmd.Printf("Created:\t\t%s (%s)\n", util.Datetime(snapshot.Created), humanize.Time(snapshot.Created))
 		cmd.Printf("Is automatic:\t\t%s\n", util.YesNo(snapshot.IsAutomatic))
 

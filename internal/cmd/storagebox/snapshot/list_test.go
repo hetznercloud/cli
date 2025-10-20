@@ -30,7 +30,7 @@ func TestList(t *testing.T) {
 	sbs := &hcloud.StorageBoxSnapshot{
 		ID:          456,
 		Name:        "snapshot-1",
-		Description: hcloud.Ptr("some-description"),
+		Description: "some-description",
 		Stats: &hcloud.StorageBoxSnapshotStats{
 			Size:           50 * util.Gibibyte,
 			SizeFilesystem: 40 * util.Gibibyte,

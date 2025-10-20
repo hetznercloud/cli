@@ -43,10 +43,8 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBoxSnapshot]{
 		}
 
 		opts := hcloud.StorageBoxSnapshotCreateOpts{
-			Labels: labels,
-		}
-		if cmd.Flags().Changed("description") {
-			opts.Description = &description
+			Labels:      labels,
+			Description: description,
 		}
 
 		result, _, err := s.Client().StorageBox().CreateSnapshot(s, storageBox, opts)
