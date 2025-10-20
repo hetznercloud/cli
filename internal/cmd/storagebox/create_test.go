@@ -17,9 +17,9 @@ import (
 //go:embed testdata/create_response.json
 var createResponseJSON string
 
-const (
-	pubKey1 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKeCe3ZqukV9WoJdMYlDwpjTvbsWOxiI6V1eWH32gs6F"
-	pubKey2 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEx+8JoS7aSSixcqc/muYEeC+6yYeCGO2ip1U33EbDm6"
+var (
+	sshKey1 = &hcloud.SSHKey{PublicKey: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIKeCe3ZqukV9WoJdMYlDwpjTvbsWOxiI6V1eWH32gs6F"}
+	sshKey2 = &hcloud.SSHKey{PublicKey: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEx+8JoS7aSSixcqc/muYEeC+6yYeCGO2ip1U33EbDm6"}
 )
 
 func TestCreate(t *testing.T) {
@@ -32,13 +32,13 @@ func TestCreate(t *testing.T) {
 	sb := &hcloud.StorageBox{
 		ID:       123,
 		Name:     "my-storage-box",
-		Server:   hcloud.Ptr("u12345.your-storagebox.de"),
-		Username: hcloud.Ptr("u12345"),
+		Server:   "u12345.your-storagebox.de",
+		Username: "u12345",
 	}
 
 	fx.Client.SSHKeyClient.EXPECT().
 		Get(gomock.Any(), "mykey").
-		Return(&hcloud.SSHKey{PublicKey: pubKey1}, nil, nil)
+		Return(sshKey1, nil, nil)
 	fx.Client.StorageBoxClient.EXPECT().
 		Create(gomock.Any(), hcloud.StorageBoxCreateOpts{
 			Name:           "my-storage-box",
@@ -51,7 +51,7 @@ func TestCreate(t *testing.T) {
 				ZFSEnabled:   hcloud.Ptr(true),
 			},
 			Labels:  make(map[string]string),
-			SSHKeys: []string{pubKey1, pubKey2},
+			SSHKeys: []*hcloud.SSHKey{sshKey1, sshKey2},
 		}).
 		Return(hcloud.StorageBoxCreateResult{
 			StorageBox: sb,
@@ -66,7 +66,7 @@ func TestCreate(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"--name", "my-storage-box", "--type", "bx11", "--location", "fsn1",
 		"--password", "my-password", "--enable-samba", "--enable-ssh", "--enable-zfs",
-		"--ssh-key", "mykey", "--ssh-key", pubKey2})
+		"--ssh-key", "mykey", "--ssh-key", sshKey2.PublicKey})
 
 	expOut := `Storage Box 123 created
 Server: u12345.your-storagebox.de
@@ -87,7 +87,7 @@ func TestCreateJSON(t *testing.T) {
 
 	sb := &hcloud.StorageBox{
 		ID:       42,
-		Username: hcloud.Ptr("u12345"),
+		Username: "u12345",
 		Status:   hcloud.StorageBoxStatusActive,
 		Name:     "string",
 		StorageBoxType: &hcloud.StorageBoxType{
@@ -139,8 +139,8 @@ func TestCreateJSON(t *testing.T) {
 			WebDAVEnabled:       false,
 			ZFSEnabled:          false,
 		},
-		Server: hcloud.Ptr("u1337.your-storagebox.de"),
-		System: hcloud.Ptr("FSN1-BX355"),
+		Server: "u1337.your-storagebox.de",
+		System: "FSN1-BX355",
 		Stats: hcloud.StorageBoxStats{
 			Size:          0,
 			SizeData:      0,
@@ -156,8 +156,8 @@ func TestCreateJSON(t *testing.T) {
 		},
 		SnapshotPlan: &hcloud.StorageBoxSnapshotPlan{
 			MaxSnapshots: 0,
-			Minute:       nil,
-			Hour:         nil,
+			Minute:       0,
+			Hour:         0,
 			DayOfWeek:    nil,
 			DayOfMonth:   nil,
 		},
@@ -176,7 +176,7 @@ func TestCreateJSON(t *testing.T) {
 				ZFSEnabled:   hcloud.Ptr(true),
 			},
 			Labels:  make(map[string]string),
-			SSHKeys: []string{pubKey1},
+			SSHKeys: []*hcloud.SSHKey{sshKey1},
 		}).
 		Return(hcloud.StorageBoxCreateResult{
 			StorageBox: sb,
@@ -190,7 +190,7 @@ func TestCreateJSON(t *testing.T) {
 		Return(nil)
 
 	jsonOut, out, err := fx.Run(cmd, []string{"-o=json", "--name", "my-storage-box", "--type", "bx11", "--location", "fsn1",
-		"--password", "my-password", "--enable-samba", "--enable-ssh", "--enable-zfs", "--ssh-key", pubKey1})
+		"--password", "my-password", "--enable-samba", "--enable-ssh", "--enable-zfs", "--ssh-key", sshKey1.PublicKey})
 
 	expOut := "Storage Box 42 created\n"
 
@@ -209,8 +209,8 @@ func TestCreateProtection(t *testing.T) {
 	sb := &hcloud.StorageBox{
 		ID:       123,
 		Name:     "my-storage-box",
-		Server:   hcloud.Ptr("u12345.your-storagebox.de"),
-		Username: hcloud.Ptr("u12345"),
+		Server:   "u12345.your-storagebox.de",
+		Username: "u12345",
 	}
 
 	fx.Client.StorageBoxClient.EXPECT().
@@ -225,7 +225,7 @@ func TestCreateProtection(t *testing.T) {
 				ZFSEnabled:   hcloud.Ptr(true),
 			},
 			Labels:  make(map[string]string),
-			SSHKeys: []string{pubKey1},
+			SSHKeys: []*hcloud.SSHKey{sshKey1},
 		}).
 		Return(hcloud.StorageBoxCreateResult{
 			StorageBox: sb,
@@ -233,7 +233,7 @@ func TestCreateProtection(t *testing.T) {
 		}, nil, nil)
 	fx.Client.StorageBoxClient.EXPECT().
 		ChangeProtection(gomock.Any(), sb, hcloud.StorageBoxChangeProtectionOpts{
-			Delete: true,
+			Delete: hcloud.Ptr(true),
 		}).
 		Return(&hcloud.Action{ID: 789}, nil, nil)
 	fx.ActionWaiter.EXPECT().
@@ -248,7 +248,7 @@ func TestCreateProtection(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"--name", "my-storage-box", "--type", "bx11", "--location", "fsn1",
 		"--password", "my-password", "--enable-samba", "--enable-ssh", "--enable-zfs",
-		"--ssh-key", pubKey1, "--enable-protection", "delete"})
+		"--ssh-key", sshKey1.PublicKey, "--enable-protection", "delete"})
 
 	expOut := `Storage Box 123 created
 Resource protection enabled for Storage Box 123

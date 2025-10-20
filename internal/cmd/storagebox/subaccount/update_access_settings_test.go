@@ -29,7 +29,7 @@ func TestUpdateAccessSettings(t *testing.T) {
 		GetSubaccount(gomock.Any(), sb, "456").
 		Return(sbs, nil, nil)
 	fx.Client.StorageBoxClient.EXPECT().
-		UpdateSubaccountAccessSettings(gomock.Any(), sbs, hcloud.StorageBoxSubaccountAccessSettingsUpdateOpts{
+		UpdateSubaccountAccessSettings(gomock.Any(), sbs, hcloud.StorageBoxSubaccountUpdateAccessSettingsOpts{
 			SambaEnabled:        nil,
 			SSHEnabled:          hcloud.Ptr(true),
 			WebDAVEnabled:       hcloud.Ptr(false),

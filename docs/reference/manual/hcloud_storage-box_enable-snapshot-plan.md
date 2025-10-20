@@ -25,9 +25,9 @@ hcloud storage-box enable-snapshot-plan [options] <storage-box>
       --day-of-month int     Day of the month the Snapshot Plan should be executed on. Not specified means every day
       --day-of-week string   Day of the week the Snapshot Plan should be executed on. Not specified means every day
   -h, --help                 help for enable-snapshot-plan
-      --hour int             Hour the Snapshot Plan should be executed on (UTC). Not specified means every hour
+      --hour int             Hour the Snapshot Plan should be executed on (UTC)
       --max-snapshots int    Maximum amount of Snapshots that should be created by this Snapshot Plan
-      --minute int           Minute the Snapshot Plan should be executed on (UTC). Not specified means every minute
+      --minute int           Minute the Snapshot Plan should be executed on (UTC)
 ```
 
 ### Options inherited from parent commands

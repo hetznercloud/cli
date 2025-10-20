@@ -24,12 +24,12 @@ func TestList(t *testing.T) {
 
 	storageBox := &hcloud.StorageBox{
 		ID:       123,
-		Username: hcloud.Ptr("u12345"),
+		Username: "u12345",
 		Status:   hcloud.StorageBoxStatusActive,
 		Name:     "test",
 		Location: &hcloud.Location{Name: "fsn1"},
-		Server:   hcloud.Ptr("u1337.your-storagebox.de"),
-		System:   hcloud.Ptr("FSN1-BX355"),
+		Server:   "u1337.your-storagebox.de",
+		System:   "FSN1-BX355",
 		StorageBoxType: &hcloud.StorageBoxType{
 			Name: "bx11",
 		},
@@ -46,8 +46,8 @@ func TestList(t *testing.T) {
 		},
 		SnapshotPlan: &hcloud.StorageBoxSnapshotPlan{
 			MaxSnapshots: 10,
-			Minute:       hcloud.Ptr(1),
-			Hour:         hcloud.Ptr(2),
+			Minute:       1,
+			Hour:         2,
 			DayOfWeek:    hcloud.Ptr(time.Sunday),
 			DayOfMonth:   hcloud.Ptr(4),
 		},
