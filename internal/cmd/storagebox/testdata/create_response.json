@@ -67,7 +67,11 @@
       "delete": false
     },
     "snapshot_plan": {
-      "max_snapshots": 0
+      "max_snapshots": 0,
+      "minute": 0,
+      "hour": 0,
+      "day_of_week": null,
+      "day_of_month": null
     },
     "created": "2016-01-30T23:55:00Z"
   }

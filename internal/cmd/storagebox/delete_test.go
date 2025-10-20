@@ -29,7 +29,7 @@ func TestDelete(t *testing.T) {
 		Return(sb, nil, nil)
 	fx.Client.StorageBoxClient.EXPECT().
 		Delete(gomock.Any(), sb).
-		Return(&hcloud.Action{ID: 456}, nil, nil)
+		Return(hcloud.StorageBoxDeleteResult{Action: &hcloud.Action{ID: 456}}, nil, nil)
 	fx.ActionWaiter.EXPECT().
 		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 456}).
 		Return(nil)
@@ -73,7 +73,7 @@ func TestDeleteMultiple(t *testing.T) {
 			Return(sb, nil, nil)
 		fx.Client.StorageBoxClient.EXPECT().
 			Delete(gomock.Any(), sb).
-			Return(&hcloud.Action{ID: sb.ID + 1000}, nil, nil)
+			Return(hcloud.StorageBoxDeleteResult{Action: &hcloud.Action{ID: sb.ID + 1000}}, nil, nil)
 	}
 
 	fx.ActionWaiter.EXPECT().

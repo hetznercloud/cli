@@ -38,14 +38,15 @@ Allowed values for --day-of-week are:
 		cmd.Flags().Int("max-snapshots", 0, "Maximum amount of Snapshots that should be created by this Snapshot Plan")
 		_ = cmd.MarkFlagRequired("max-snapshots")
 
-		cmd.Flags().Int("minute", 0, "Minute the Snapshot Plan should be executed on (UTC). Not specified means every minute")
-		cmd.Flags().Int("hour", 0, "Hour the Snapshot Plan should be executed on (UTC). Not specified means every hour")
+		cmd.Flags().Int("minute", 0, "Minute the Snapshot Plan should be executed on (UTC)")
+		_ = cmd.MarkFlagRequired("minute")
+		cmd.Flags().Int("hour", 0, "Hour the Snapshot Plan should be executed on (UTC)")
+		_ = cmd.MarkFlagRequired("hour")
+
 		cmd.Flags().String("day-of-week", "", "Day of the week the Snapshot Plan should be executed on. Not specified means every day")
 		cmd.Flags().Int("day-of-month", 0, "Day of the month the Snapshot Plan should be executed on. Not specified means every day")
 
 		_ = cmd.RegisterFlagCompletionFunc("day-of-week", cmpl.SuggestCandidates("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"))
-
-		// TODO: should we add some validation here to avoid footguns? (e.g. backing up every minute)
 
 		return cmd
 	},
@@ -67,14 +68,10 @@ Allowed values for --day-of-week are:
 
 		opts := hcloud.StorageBoxEnableSnapshotPlanOpts{
 			MaxSnapshots: maxSnapshots,
+			Minute:       minute,
+			Hour:         hour,
 		}
 
-		if cmd.Flags().Changed("minute") {
-			opts.Minute = &minute
-		}
-		if cmd.Flags().Changed("hour") {
-			opts.Hour = &hour
-		}
 		if cmd.Flags().Changed("day-of-week") {
 			weekday, err := util.WeekdayFromString(dayOfWeek)
 			if err != nil {

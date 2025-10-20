@@ -32,7 +32,7 @@ func TestCreate(t *testing.T) {
 	sbs := &hcloud.StorageBoxSnapshot{
 		ID:   456,
 		Name: "snapshot-1",
-		Stats: &hcloud.StorageBoxSnapshotStats{
+		Stats: hcloud.StorageBoxSnapshotStats{
 			Size: 50 * util.Gibibyte,
 		},
 	}
@@ -42,7 +42,7 @@ func TestCreate(t *testing.T) {
 		Return(sb, nil, nil)
 	fx.Client.StorageBoxClient.EXPECT().
 		CreateSnapshot(gomock.Any(), sb, hcloud.StorageBoxSnapshotCreateOpts{
-			Description: hcloud.Ptr("some-description"),
+			Description: "some-description",
 			Labels:      map[string]string{"foo": "bar"},
 		}).
 		Return(hcloud.StorageBoxSnapshotCreateResult{
@@ -82,8 +82,8 @@ func TestCreateJSON(t *testing.T) {
 	sbs := &hcloud.StorageBoxSnapshot{
 		ID:          456,
 		Name:        "snapshot-1",
-		Description: hcloud.Ptr("some-description"),
-		Stats: &hcloud.StorageBoxSnapshotStats{
+		Description: "some-description",
+		Stats: hcloud.StorageBoxSnapshotStats{
 			Size:           50 * util.Gibibyte,
 			SizeFilesystem: 40 * util.Gibibyte,
 		},
@@ -104,7 +104,7 @@ func TestCreateJSON(t *testing.T) {
 		Return(sb, nil, nil)
 	fx.Client.StorageBoxClient.EXPECT().
 		CreateSnapshot(gomock.Any(), sb, hcloud.StorageBoxSnapshotCreateOpts{
-			Description: hcloud.Ptr("some-description"),
+			Description: "some-description",
 			Labels:      map[string]string{},
 		}).
 		Return(hcloud.StorageBoxSnapshotCreateResult{

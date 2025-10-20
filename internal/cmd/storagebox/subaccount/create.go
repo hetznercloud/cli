@@ -80,14 +80,11 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBoxSubaccount]{
 		}
 
 		opts := hcloud.StorageBoxSubaccountCreateOpts{
+			HomeDirectory:  homeDirectory,
 			Password:       password,
-			HomeDirectory:  &homeDirectory,
+			Description:    description,
 			AccessSettings: &accessSettings,
 			Labels:         labels,
-		}
-
-		if cmd.Flags().Changed("description") {
-			opts.Description = &description
 		}
 
 		result, _, err := s.Client().StorageBox().CreateSubaccount(s, storageBox, opts)

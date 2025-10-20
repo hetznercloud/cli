@@ -38,14 +38,13 @@ func TestCreate(t *testing.T) {
 		Return(sb, nil, nil)
 	fx.Client.StorageBoxClient.EXPECT().
 		CreateSubaccount(gomock.Any(), sb, hcloud.StorageBoxSubaccountCreateOpts{
+			HomeDirectory: "/home/directory",
 			Password:      "my-password",
-			HomeDirectory: hcloud.Ptr("/home/directory"),
 			AccessSettings: &hcloud.StorageBoxSubaccountCreateOptsAccessSettings{
 				Readonly:   hcloud.Ptr(true),
 				SSHEnabled: hcloud.Ptr(true),
 			},
-			Description: nil,
-			Labels:      make(map[string]string),
+			Labels: make(map[string]string),
 		}).
 		Return(hcloud.StorageBoxSubaccountCreateResult{
 			Subaccount: sbs,
@@ -107,14 +106,13 @@ func TestCreateJSON(t *testing.T) {
 		Return(sb, nil, nil)
 	fx.Client.StorageBoxClient.EXPECT().
 		CreateSubaccount(gomock.Any(), sb, hcloud.StorageBoxSubaccountCreateOpts{
+			HomeDirectory: "/home/directory",
 			Password:      "my-password",
-			HomeDirectory: hcloud.Ptr("/home/directory"),
 			AccessSettings: &hcloud.StorageBoxSubaccountCreateOptsAccessSettings{
 				Readonly:   hcloud.Ptr(true),
 				SSHEnabled: hcloud.Ptr(true),
 			},
-			Description: nil,
-			Labels:      make(map[string]string),
+			Labels: make(map[string]string),
 		}).
 		Return(hcloud.StorageBoxSubaccountCreateResult{
 			Subaccount: sbs,

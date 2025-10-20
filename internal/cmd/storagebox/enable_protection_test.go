@@ -24,7 +24,7 @@ func TestEnableProtection(t *testing.T) {
 		Return(&hcloud.StorageBox{ID: 123}, nil, nil)
 	fx.Client.StorageBoxClient.EXPECT().
 		ChangeProtection(gomock.Any(), &hcloud.StorageBox{ID: 123}, hcloud.StorageBoxChangeProtectionOpts{
-			Delete: true,
+			Delete: hcloud.Ptr(true),
 		}).
 		Return(&hcloud.Action{ID: 123}, nil, nil)
 	fx.ActionWaiter.EXPECT().

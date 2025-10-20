@@ -148,31 +148,3 @@ func (mr *MockStorageBoxTypeClientMockRecorder) Names() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockStorageBoxTypeClient)(nil).Names))
 }
-
-// StorageBoxTypeDescription mocks base method.
-func (m *MockStorageBoxTypeClient) StorageBoxTypeDescription(id int64) string {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "StorageBoxTypeDescription", id)
-	ret0, _ := ret[0].(string)
-	return ret0
-}
-
-// StorageBoxTypeDescription indicates an expected call of StorageBoxTypeDescription.
-func (mr *MockStorageBoxTypeClientMockRecorder) StorageBoxTypeDescription(id any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StorageBoxTypeDescription", reflect.TypeOf((*MockStorageBoxTypeClient)(nil).StorageBoxTypeDescription), id)
-}
-
-// StorageBoxTypeName mocks base method.
-func (m *MockStorageBoxTypeClient) StorageBoxTypeName(id int64) string {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "StorageBoxTypeName", id)
-	ret0, _ := ret[0].(string)
-	return ret0
-}
-
-// StorageBoxTypeName indicates an expected call of StorageBoxTypeName.
-func (mr *MockStorageBoxTypeClientMockRecorder) StorageBoxTypeName(id any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "StorageBoxTypeName", reflect.TypeOf((*MockStorageBoxTypeClient)(nil).StorageBoxTypeName), id)
-}
