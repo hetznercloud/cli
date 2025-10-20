@@ -21,7 +21,7 @@ func getChangeProtectionOpts(enable bool, flags []string) (hcloud.StorageBoxChan
 	for _, arg := range flags {
 		switch strings.ToLower(arg) {
 		case "delete":
-			opts.Delete = enable
+			opts.Delete = &enable
 		default:
 			unknown = append(unknown, arg)
 		}

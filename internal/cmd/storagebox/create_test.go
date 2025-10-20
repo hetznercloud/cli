@@ -233,7 +233,7 @@ func TestCreateProtection(t *testing.T) {
 		}, nil, nil)
 	fx.Client.StorageBoxClient.EXPECT().
 		ChangeProtection(gomock.Any(), sb, hcloud.StorageBoxChangeProtectionOpts{
-			Delete: true,
+			Delete: hcloud.Ptr(true),
 		}).
 		Return(&hcloud.Action{ID: 789}, nil, nil)
 	fx.ActionWaiter.EXPECT().
