@@ -1,5 +1,43 @@
 # Changelog
 
+## [v1.55.0](https://github.com/hetznercloud/cli/releases/tag/v1.55.0)
+
+### Storage Box API Experimental
+
+This release adds support for the [Storage Box API](https://docs.hetzner.cloud/reference/hetzner#storage-boxes).
+
+The Storage Box integration will be introduced as an **experimental** feature. This experimental phase is expected to last until **21 November 2025**. During this period, upcoming minor releases of the project may include breaking changes to features related to the Storage Box API. You can find out the current state of this in [#1202](https://github.com/hetznercloud/cli/issues/1202).
+
+This release includes all changes from the recent [Storage Box API changelog](https://docs.hetzner.cloud/changelog#2025-10-21-storage-box-api-update) entry.
+
+#### Examples
+
+```shell
+hcloud storage-box create \
+    --name backups \
+    --type bx11 \
+    --location fsn1 \
+    --password "$PASSWORD" \
+    --enable-ssh \
+    --reachable-externally
+
+hcloud storage-box enable-snapshot-plan backups \
+    --max-snapshots 10 \
+    --minute 0 \
+    --hour 2
+```
+
+### Features
+
+- **server,load-balancer**: add --ip-range argument to attach-to-network commands (#1164)
+- add support for Storage Boxes (#1118)
+
+### Bug Fixes
+
+- list commands print `null` instead of `[]` in JSON mode (#1191)
+- outdated JSON output after creating resources (#1194)
+- formatting of server-type describe output (#1196)
+
 ## [v1.54.0](https://github.com/hetznercloud/cli/releases/tag/v1.54.0)
 
 ### DNS API Beta
