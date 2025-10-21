@@ -15,6 +15,7 @@ A command-line interface for Hetzner Cloud
       --debug-file string          File to write debug output to
       --endpoint string            Hetzner Cloud API endpoint (default "https://api.hetzner.cloud/v1")
   -h, --help                       help for hcloud
+      --hetzner-endpoint string    Hetzner API endpoint (default "https://api.hetzner.com/v1")
       --no-experimental-warnings   If true, experimental warnings are not shown
       --poll-interval duration     Interval at which to poll information, for example action progress (default 500ms)
       --quiet                      If true, only print error messages
@@ -41,6 +42,8 @@ A command-line interface for Hetzner Cloud
 * [hcloud server](hcloud_server.md)	 - Manage Servers
 * [hcloud server-type](hcloud_server-type.md)	 - View Server Types
 * [hcloud ssh-key](hcloud_ssh-key.md)	 - Manage SSH Keys
+* [hcloud storage-box](hcloud_storage-box.md)	 - [experimental] Manage Storage Boxes
+* [hcloud storage-box-type](hcloud_storage-box-type.md)	 - [experimental] View Storage Box Types
 * [hcloud version](hcloud_version.md)	 - Print version information
 * [hcloud volume](hcloud_volume.md)	 - Manage Volumes
 * [hcloud zone](hcloud_zone.md)	 - [experimental] Manage DNS Zones and Zone RRSets (records)

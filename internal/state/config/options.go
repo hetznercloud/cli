@@ -124,6 +124,15 @@ var (
 		nil,
 	)
 
+	OptionHetznerEndpoint = newOpt(
+		"hetzner-endpoint",
+		"Hetzner API endpoint",
+		hcloud.HetznerEndpoint,
+		DefaultPreferenceFlags,
+		nil,
+		&overrides{envVar: "HETZNER_ENDPOINT"},
+	)
+
 	OptionDebug = newOpt(
 		"debug",
 		"Enable debug output",
@@ -171,7 +180,7 @@ var (
 
 	OptionDefaultSSHKeys = newOpt(
 		"default-ssh-keys",
-		"Default SSH Keys for new Servers",
+		"Default SSH Keys for new Servers and Storage Boxes",
 		[]string{},
 		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice,
 		nil,
@@ -271,6 +280,33 @@ var (
 	OptionSortSSHKey = newOpt(
 		"sort.ssh-key",
 		"Default sorting for SSH Key resource",
+		[]string{"id:asc"},
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
+		nil,
+		nil,
+	)
+
+	OptionSortStorageBox = newOpt(
+		"sort.storage-box",
+		"Default sorting for Storage Box resource",
+		[]string{"id:asc"},
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
+		nil,
+		nil,
+	)
+
+	OptionSortStorageBoxSnapshot = newOpt(
+		"sort.storage-box.snapshot",
+		"Default sorting for Storage Box Snapshot resource",
+		[]string{"id:asc"},
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
+		nil,
+		nil,
+	)
+
+	OptionSortStorageBoxSubaccount = newOpt(
+		"sort.storage-box.subaccount",
+		"Default sorting for Storage Box Subaccount resource",
 		[]string{"id:asc"},
 		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
 		nil,
