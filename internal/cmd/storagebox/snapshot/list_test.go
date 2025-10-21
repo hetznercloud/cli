@@ -66,6 +66,6 @@ func TestList(t *testing.T) {
 `, util.Age(sbs.Created, time.Now()))
 
 	require.NoError(t, err)
-	assert.Empty(t, errOut)
+	assert.Equal(t, ExperimentalWarning, errOut)
 	assert.Equal(t, expOut, out)
 }

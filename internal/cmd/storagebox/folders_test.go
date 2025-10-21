@@ -32,7 +32,7 @@ func TestFolders(t *testing.T) {
 	out, errOut, err := fx.Run(cmd, args)
 
 	require.NoError(t, err)
-	assert.Empty(t, errOut)
+	assert.Equal(t, ExperimentalWarning, errOut)
 	assert.Equal(t, `Folders:
 - folder1
 - folder2
@@ -59,7 +59,7 @@ func TestFoldersJSON(t *testing.T) {
 	jsonOut, out, err := fx.Run(cmd, args)
 
 	require.NoError(t, err)
-	assert.Empty(t, out)
+	assert.Equal(t, ExperimentalWarning, out)
 	assert.JSONEq(t, `{"folders": ["folder1", "folder2"]}`, jsonOut)
 }
 
@@ -83,7 +83,7 @@ func TestFoldersYAML(t *testing.T) {
 	yamlOut, out, err := fx.Run(cmd, args)
 
 	require.NoError(t, err)
-	assert.Empty(t, out)
+	assert.Equal(t, ExperimentalWarning, out)
 	assert.YAMLEq(t, `folders:
 - folder1
 - folder2

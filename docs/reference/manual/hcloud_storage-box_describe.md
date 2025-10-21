@@ -1,6 +1,14 @@
 ## hcloud storage-box describe
 
+[experimental] Describe a Storage Box
+
+### Synopsis
+
 Describe a Storage Box
+
+Experimental: Storage Box support is experimental, breaking changes may occur within minor releases.
+See https://github.com/hetznercloud/cli/issues/1202 for more details.
+
 
 ```
 hcloud storage-box describe [options] <storage-box>
@@ -29,4 +37,4 @@ hcloud storage-box describe [options] <storage-box>
 
 ### SEE ALSO
 
-* [hcloud storage-box](hcloud_storage-box.md)	 - Manage Storage Boxes
+* [hcloud storage-box](hcloud_storage-box.md)	 - [experimental] Manage Storage Boxes

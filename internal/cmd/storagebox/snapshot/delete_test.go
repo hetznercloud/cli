@@ -47,7 +47,7 @@ func TestDelete(t *testing.T) {
 	expOut := "Storage Box Snapshot my-snapshot deleted\n"
 
 	require.NoError(t, err)
-	assert.Empty(t, errOut)
+	assert.Equal(t, ExperimentalWarning, errOut)
 	assert.Equal(t, expOut, out)
 }
 
@@ -104,6 +104,6 @@ func TestDeleteMultiple(t *testing.T) {
 	out, errOut, err := fx.Run(cmd, append([]string{"my-storage-box"}, names...))
 
 	require.NoError(t, err)
-	assert.Empty(t, errOut)
+	assert.Equal(t, ExperimentalWarning, errOut)
 	assert.Equal(t, "Storage Box Snapshots test1, test2, test3 deleted\n", out)
 }

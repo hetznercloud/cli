@@ -7,6 +7,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/experimental"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -42,4 +43,5 @@ var DeleteCmd = base.DeleteCmd{
 		result, _, err := s.Client().StorageBox().DeleteSubaccount(s, subaccount)
 		return result.Action, err
 	},
+	Experimental: experimental.StorageBoxes,
 }

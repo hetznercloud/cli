@@ -1,6 +1,14 @@
 ## hcloud storage-box disable-snapshot-plan
 
+[experimental] Disable automatic snapshots for a Storage Box
+
+### Synopsis
+
 Disable automatic snapshots for a Storage Box
+
+Experimental: Storage Box support is experimental, breaking changes may occur within minor releases.
+See https://github.com/hetznercloud/cli/issues/1202 for more details.
+
 
 ```
 hcloud storage-box disable-snapshot-plan <storage-box>
@@ -28,4 +36,4 @@ hcloud storage-box disable-snapshot-plan <storage-box>
 
 ### SEE ALSO
 
-* [hcloud storage-box](hcloud_storage-box.md)	 - Manage Storage Boxes
+* [hcloud storage-box](hcloud_storage-box.md)	 - [experimental] Manage Storage Boxes

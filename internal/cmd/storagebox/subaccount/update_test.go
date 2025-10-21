@@ -44,6 +44,6 @@ func TestUpdate(t *testing.T) {
 	expOut := "Storage Box Subaccount 456 updated\n"
 
 	require.NoError(t, err)
-	assert.Empty(t, errOut)
+	assert.Equal(t, ExperimentalWarning, errOut)
 	assert.Equal(t, expOut, out)
 }

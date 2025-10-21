@@ -1,6 +1,6 @@
 ## hcloud storage-box snapshot list
 
-List Storage Box Snapshots
+[experimental] List Storage Box Snapshots
 
 ### Synopsis
 
@@ -20,6 +20,10 @@ Columns:
  - name
  - size
  - size_filesystem
+
+Experimental: Storage Box support is experimental, breaking changes may occur within minor releases.
+See https://github.com/hetznercloud/cli/issues/1202 for more details.
+
 
 ```
 hcloud storage-box snapshot list [options] <storage-box>
@@ -51,4 +55,4 @@ hcloud storage-box snapshot list [options] <storage-box>
 
 ### SEE ALSO
 
-* [hcloud storage-box snapshot](hcloud_storage-box_snapshot.md)	 - Manage Storage Box Snapshots
+* [hcloud storage-box snapshot](hcloud_storage-box_snapshot.md)	 - [experimental] Manage Storage Box Snapshots

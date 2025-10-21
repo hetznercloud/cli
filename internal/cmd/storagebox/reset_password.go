@@ -7,6 +7,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/experimental"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -55,4 +56,5 @@ var ResetPasswordCmd = base.Cmd{
 		cmd.Printf("Password of Storage Box %d reset\n", storageBox.ID)
 		return nil
 	},
+	Experimental: experimental.StorageBoxes,
 }

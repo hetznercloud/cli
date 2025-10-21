@@ -47,7 +47,7 @@ func TestLabelAdd(t *testing.T) {
 	expOut := "Label(s) key added to Storage Box Snapshot my-snapshot\n"
 
 	require.NoError(t, err)
-	assert.Empty(t, errOut)
+	assert.Equal(t, ExperimentalWarning, errOut)
 	assert.Equal(t, expOut, out)
 }
 
@@ -87,6 +87,6 @@ func TestLabelRemove(t *testing.T) {
 	expOut := "Label(s) key removed from Storage Box Snapshot my-snapshot\n"
 
 	require.NoError(t, err)
-	assert.Empty(t, errOut)
+	assert.Equal(t, ExperimentalWarning, errOut)
 	assert.Equal(t, expOut, out)
 }

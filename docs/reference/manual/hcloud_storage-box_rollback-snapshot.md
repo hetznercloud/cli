@@ -1,6 +1,14 @@
 ## hcloud storage-box rollback-snapshot
 
+[experimental] Rolls back the Storage Box to the given Snapshot
+
+### Synopsis
+
 Rolls back the Storage Box to the given Snapshot
+
+Experimental: Storage Box support is experimental, breaking changes may occur within minor releases.
+See https://github.com/hetznercloud/cli/issues/1202 for more details.
+
 
 ```
 hcloud storage-box rollback-snapshot --snapshot <snapshot> <storage-box>
@@ -29,4 +37,4 @@ hcloud storage-box rollback-snapshot --snapshot <snapshot> <storage-box>
 
 ### SEE ALSO
 
-* [hcloud storage-box](hcloud_storage-box.md)	 - Manage Storage Boxes
+* [hcloud storage-box](hcloud_storage-box.md)	 - [experimental] Manage Storage Boxes

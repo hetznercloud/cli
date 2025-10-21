@@ -1,6 +1,14 @@
 ## hcloud storage-box snapshot delete
 
+[experimental] Delete a Storage Box Snapshot
+
+### Synopsis
+
 Delete a Storage Box Snapshot
+
+Experimental: Storage Box support is experimental, breaking changes may occur within minor releases.
+See https://github.com/hetznercloud/cli/issues/1202 for more details.
+
 
 ```
 hcloud storage-box snapshot delete <storage-box> <snapshot>...
@@ -28,4 +36,4 @@ hcloud storage-box snapshot delete <storage-box> <snapshot>...
 
 ### SEE ALSO
 
-* [hcloud storage-box snapshot](hcloud_storage-box_snapshot.md)	 - Manage Storage Box Snapshots
+* [hcloud storage-box snapshot](hcloud_storage-box_snapshot.md)	 - [experimental] Manage Storage Box Snapshots

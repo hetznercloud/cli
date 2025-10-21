@@ -9,6 +9,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/experimental"
 	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
@@ -70,5 +71,6 @@ var ListCmd = base.ListCmd[*hcloud.StorageBoxSubaccount, schema.StorageBoxSubacc
 			})
 	},
 
-	Schema: hcloud.SchemaFromStorageBoxSubaccount,
+	Schema:       hcloud.SchemaFromStorageBoxSubaccount,
+	Experimental: experimental.StorageBoxes,
 }
