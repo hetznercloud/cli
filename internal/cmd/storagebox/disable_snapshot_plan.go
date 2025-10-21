@@ -7,6 +7,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/experimental"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 )
@@ -47,4 +48,5 @@ var DisableSnapshotPlanCmd = base.Cmd{
 		cmd.Printf("Snapshot Plan disabled for Storage Box %d\n", storageBox.ID)
 		return nil
 	},
+	Experimental: experimental.StorageBoxes,
 }

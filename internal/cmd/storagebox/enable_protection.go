@@ -8,6 +8,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/experimental"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
@@ -88,4 +89,5 @@ var EnableProtectionCmd = base.Cmd{
 
 		return changeProtection(s, cmd, storageBox, true, opts)
 	},
+	Experimental: experimental.StorageBoxes,
 }

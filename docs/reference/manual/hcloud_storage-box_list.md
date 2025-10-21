@@ -1,6 +1,6 @@
 ## hcloud storage-box list
 
-List Storage Boxes
+[experimental] List Storage Boxes
 
 ### Synopsis
 
@@ -23,6 +23,10 @@ Columns:
  - system
  - type
  - username
+
+Experimental: Storage Box support is experimental, breaking changes may occur within minor releases.
+See https://github.com/hetznercloud/cli/issues/1202 for more details.
+
 
 ```
 hcloud storage-box list [options]
@@ -53,4 +57,4 @@ hcloud storage-box list [options]
 
 ### SEE ALSO
 
-* [hcloud storage-box](hcloud_storage-box.md)	 - Manage Storage Boxes
+* [hcloud storage-box](hcloud_storage-box.md)	 - [experimental] Manage Storage Boxes

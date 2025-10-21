@@ -1,6 +1,14 @@
 ## hcloud storage-box subaccount update-access-settings
 
+[experimental] Update access settings of the Storage Box Subaccount
+
+### Synopsis
+
 Update access settings of the Storage Box Subaccount
+
+Experimental: Storage Box support is experimental, breaking changes may occur within minor releases.
+See https://github.com/hetznercloud/cli/issues/1202 for more details.
+
 
 ```
 hcloud storage-box subaccount update-access-settings [options] <storage-box> <subaccount>
@@ -33,4 +41,4 @@ hcloud storage-box subaccount update-access-settings [options] <storage-box> <su
 
 ### SEE ALSO
 
-* [hcloud storage-box subaccount](hcloud_storage-box_subaccount.md)	 - Manage Storage Box Subaccounts
+* [hcloud storage-box subaccount](hcloud_storage-box_subaccount.md)	 - [experimental] Manage Storage Box Subaccounts
