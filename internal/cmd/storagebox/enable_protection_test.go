@@ -36,6 +36,6 @@ func TestEnableProtection(t *testing.T) {
 	expOut := "Resource protection enabled for Storage Box 123\n"
 
 	require.NoError(t, err)
-	assert.Empty(t, errOut)
+	assert.Equal(t, ExperimentalWarning, errOut)
 	assert.Equal(t, expOut, out)
 }

@@ -64,7 +64,7 @@ Size: 50 GiB
 `
 
 	require.NoError(t, err)
-	assert.Empty(t, errOut)
+	assert.Equal(t, ExperimentalWarning, errOut)
 	assert.Equal(t, expOut, out)
 }
 
@@ -123,6 +123,6 @@ func TestCreateJSON(t *testing.T) {
 	expOut := "Storage Box Snapshot 456 created\n"
 
 	require.NoError(t, err)
-	assert.Equal(t, expOut, out)
+	assert.Equal(t, ExperimentalWarning+expOut, out)
 	assert.JSONEq(t, createResponseJSON, jsonOut)
 }

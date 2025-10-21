@@ -7,6 +7,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/experimental"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -66,4 +67,5 @@ Please note that it is not possible to downgrade to a Storage Box Type that offe
 		cmd.Printf("Storage Box %d upgraded to type %s\n", storageBox.ID, storageBoxType.Name)
 		return nil
 	},
+	Experimental: experimental.StorageBoxes,
 }

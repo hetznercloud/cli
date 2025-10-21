@@ -41,6 +41,6 @@ func TestChangeHomeDirectory(t *testing.T) {
 	out, errOut, err := fx.Run(cmd, args)
 
 	require.NoError(t, err)
-	assert.Empty(t, errOut)
+	assert.Equal(t, ExperimentalWarning, errOut)
 	assert.Equal(t, "Home directory updated for Storage Box Subaccount 456\n", out)
 }

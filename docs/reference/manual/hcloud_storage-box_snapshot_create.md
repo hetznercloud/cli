@@ -1,6 +1,14 @@
 ## hcloud storage-box snapshot create
 
+[experimental] Create a Storage Box Snapshot
+
+### Synopsis
+
 Create a Storage Box Snapshot
+
+Experimental: Storage Box support is experimental, breaking changes may occur within minor releases.
+See https://github.com/hetznercloud/cli/issues/1202 for more details.
+
 
 ```
 hcloud storage-box snapshot create [--description <description>] <storage-box>
@@ -31,4 +39,4 @@ hcloud storage-box snapshot create [--description <description>] <storage-box>
 
 ### SEE ALSO
 
-* [hcloud storage-box snapshot](hcloud_storage-box_snapshot.md)	 - Manage Storage Box Snapshots
+* [hcloud storage-box snapshot](hcloud_storage-box_snapshot.md)	 - [experimental] Manage Storage Box Snapshots

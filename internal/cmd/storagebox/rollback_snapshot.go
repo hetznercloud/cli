@@ -7,6 +7,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/experimental"
 	"github.com/hetznercloud/cli/internal/cmd/storagebox/snapshot"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
@@ -64,4 +65,5 @@ var RollbackSnapshotCmd = base.Cmd{
 		cmd.Printf("Rolled back Storage Box %d to Snapshot %d\n", storageBox.ID, snapshot.ID)
 		return nil
 	},
+	Experimental: experimental.StorageBoxes,
 }

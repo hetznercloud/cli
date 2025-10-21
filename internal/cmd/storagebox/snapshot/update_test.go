@@ -45,6 +45,6 @@ func TestUpdate(t *testing.T) {
 	expOut := "Storage Box Snapshot my-snapshot updated\n"
 
 	require.NoError(t, err)
-	assert.Empty(t, errOut)
+	assert.Equal(t, ExperimentalWarning, errOut)
 	assert.Equal(t, expOut, out)
 }

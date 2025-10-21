@@ -1,6 +1,14 @@
 ## hcloud storage-box subaccount delete
 
+[experimental] Delete a Storage Box Subaccount
+
+### Synopsis
+
 Delete a Storage Box Subaccount
+
+Experimental: Storage Box support is experimental, breaking changes may occur within minor releases.
+See https://github.com/hetznercloud/cli/issues/1202 for more details.
+
 
 ```
 hcloud storage-box subaccount delete <storage-box> <subaccount>...
@@ -28,4 +36,4 @@ hcloud storage-box subaccount delete <storage-box> <subaccount>...
 
 ### SEE ALSO
 
-* [hcloud storage-box subaccount](hcloud_storage-box_subaccount.md)	 - Manage Storage Box Subaccounts
+* [hcloud storage-box subaccount](hcloud_storage-box_subaccount.md)	 - [experimental] Manage Storage Box Subaccounts
