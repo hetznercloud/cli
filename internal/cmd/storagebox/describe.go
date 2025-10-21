@@ -53,7 +53,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBox]{
 
 		protection := storageBox.Protection
 		cmd.Println("Protection:")
-		cmd.Printf("  Delete:\t\t\t%t\n", protection.Delete)
+		cmd.Printf("  Delete:\t\t\t%s\n", util.YesNo(protection.Delete))
 
 		stats := storageBox.Stats
 		cmd.Println("Stats:")
@@ -72,11 +72,11 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBox]{
 
 		accessSettings := storageBox.AccessSettings
 		cmd.Println("Access Settings:")
-		cmd.Printf("  Reachable Externally:\t\t%t\n", accessSettings.ReachableExternally)
-		cmd.Printf("  Samba Enabled:\t\t%t\n", accessSettings.SambaEnabled)
-		cmd.Printf("  SSH Enabled:\t\t\t%t\n", accessSettings.SSHEnabled)
-		cmd.Printf("  WebDAV Enabled:\t\t%t\n", accessSettings.WebDAVEnabled)
-		cmd.Printf("  ZFS Enabled:\t\t\t%t\n", accessSettings.ZFSEnabled)
+		cmd.Printf("  Reachable Externally:\t\t%s\n", util.YesNo(accessSettings.ReachableExternally))
+		cmd.Printf("  Samba Enabled:\t\t%s\n", util.YesNo(accessSettings.SambaEnabled))
+		cmd.Printf("  SSH Enabled:\t\t\t%s\n", util.YesNo(accessSettings.SSHEnabled))
+		cmd.Printf("  WebDAV Enabled:\t\t%s\n", util.YesNo(accessSettings.WebDAVEnabled))
+		cmd.Printf("  ZFS Enabled:\t\t\t%s\n", util.YesNo(accessSettings.ZFSEnabled))
 
 		storageBoxType := storageBox.StorageBoxType
 		cmd.Println("Storage Box Type:")

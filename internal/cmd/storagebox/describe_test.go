@@ -123,7 +123,7 @@ Snapshot Plan:
   Day of Week:			Sunday
   Day of Month:			4
 Protection:
-  Delete:			false
+  Delete:			no
 Stats:
   Size:				0 B
   Size Data:			0 B
@@ -133,11 +133,11 @@ Labels:
   example.com/my: label
   just-a-key: 
 Access Settings:
-  Reachable Externally:		false
-  Samba Enabled:		false
-  SSH Enabled:			false
-  WebDAV Enabled:		false
-  ZFS Enabled:			false
+  Reachable Externally:		no
+  Samba Enabled:		no
+  SSH Enabled:			no
+  WebDAV Enabled:		no
+  ZFS Enabled:			no
 Storage Box Type:
   ID:				42
   Name:				bx11

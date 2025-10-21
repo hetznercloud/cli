@@ -53,11 +53,11 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBoxSubaccount]{
 
 		accessSettings := subaccount.AccessSettings
 		cmd.Println("Access Settings:")
-		cmd.Printf("  Reachable Externally:\t%t\n", accessSettings.ReachableExternally)
-		cmd.Printf("  Samba Enabled:\t%t\n", accessSettings.SambaEnabled)
-		cmd.Printf("  SSH Enabled:\t\t%t\n", accessSettings.SSHEnabled)
-		cmd.Printf("  WebDAV Enabled:\t%t\n", accessSettings.WebDAVEnabled)
-		cmd.Printf("  Readonly:\t\t%t\n", accessSettings.Readonly)
+		cmd.Printf("  Reachable Externally:\t%s\n", util.YesNo(accessSettings.ReachableExternally))
+		cmd.Printf("  Samba Enabled:\t%s\n", util.YesNo(accessSettings.SambaEnabled))
+		cmd.Printf("  SSH Enabled:\t\t%s\n", util.YesNo(accessSettings.SSHEnabled))
+		cmd.Printf("  WebDAV Enabled:\t%s\n", util.YesNo(accessSettings.WebDAVEnabled))
+		cmd.Printf("  Readonly:\t\t%s\n", util.YesNo(accessSettings.Readonly))
 
 		cmd.Println("Labels:")
 		if len(subaccount.Labels) == 0 {

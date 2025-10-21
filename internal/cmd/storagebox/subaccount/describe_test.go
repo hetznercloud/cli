@@ -66,11 +66,11 @@ Username:		u1337-sub1
 Home Directory:		my_backups/host01.my.company
 Server:			u1337-sub1.your-storagebox.de
 Access Settings:
-  Reachable Externally:	false
-  Samba Enabled:	false
-  SSH Enabled:		false
-  WebDAV Enabled:	false
-  Readonly:		false
+  Reachable Externally:	no
+  Samba Enabled:	no
+  SSH Enabled:		no
+  WebDAV Enabled:	no
+  Readonly:		no
 Labels:
   environment: prod
   example.com/my: label
