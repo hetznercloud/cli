@@ -36,12 +36,9 @@ func getChangeProtectionOpts(enable bool, flags []string) (hcloud.StorageBoxChan
 func changeProtection(s state.State, cmd *cobra.Command,
 	storageBox *hcloud.StorageBox, enable bool, opts hcloud.StorageBoxChangeProtectionOpts) error {
 
-	/*
-		// TODO this needs to be fixed in the hcloud-go library first
-		if opts.Delete == nil {
-			return nil
-		}
-	*/
+	if opts.Delete == nil {
+		return nil
+	}
 
 	action, _, err := s.Client().StorageBox().ChangeProtection(s, storageBox, opts)
 	if err != nil {

@@ -131,11 +131,8 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBox]{
 			return nil, nil, fmt.Errorf("Storage Box not found: %d", result.StorageBox.ID)
 		}
 
-		if len(protection) > 0 {
-			// TODO this check can be removed once delete protection is made nullable
-			if err := changeProtection(s, cmd, storageBox, true, protectionOpts); err != nil {
-				return nil, nil, err
-			}
+		if err := changeProtection(s, cmd, storageBox, true, protectionOpts); err != nil {
+			return nil, nil, err
 		}
 
 		return storageBox, util.Wrap("storage_box", hcloud.SchemaFromStorageBox(result.StorageBox)), nil
