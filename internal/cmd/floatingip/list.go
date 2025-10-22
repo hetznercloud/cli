@@ -31,11 +31,10 @@ var ListCmd = &base.ListCmd[*hcloud.FloatingIP, schema.FloatingIP]{
 		return s.Client().FloatingIP().AllWithOpts(s, opts)
 	},
 
-	OutputTable: func(t *output.Table, client hcapi2.Client) {
+	OutputTable: func(t *output.Table[*hcloud.FloatingIP], client hcapi2.Client) {
 		t.
 			AddAllowedFields(hcloud.FloatingIP{}).
-			AddFieldFn("dns", output.FieldFn(func(obj interface{}) string {
-				floatingIP := obj.(*hcloud.FloatingIP)
+			AddFieldFn("dns", func(floatingIP *hcloud.FloatingIP) string {
 				var dns string
 				if len(floatingIP.DNSPtr) == 1 {
 					for _, v := range floatingIP.DNSPtr {
@@ -46,47 +45,40 @@ var ListCmd = &base.ListCmd[*hcloud.FloatingIP, schema.FloatingIP]{
 					dns = fmt.Sprintf("%d entries", len(floatingIP.DNSPtr))
 				}
 				return util.NA(dns)
-			})).
-			AddFieldFn("server", output.FieldFn(func(obj interface{}) string {
-				floatingIP := obj.(*hcloud.FloatingIP)
+			}).
+			AddFieldFn("server", func(floatingIP *hcloud.FloatingIP) string {
 				var server string
 				if floatingIP.Server != nil {
 					return client.Server().ServerName(floatingIP.Server.ID)
 				}
 				return util.NA(server)
-			})).
-			AddFieldFn("home", output.FieldFn(func(obj interface{}) string {
-				floatingIP := obj.(*hcloud.FloatingIP)
+			}).
+			AddFieldFn("home", func(floatingIP *hcloud.FloatingIP) string {
 				return floatingIP.HomeLocation.Name
-			})).
-			AddFieldFn("ip", output.FieldFn(func(obj interface{}) string {
-				floatingIP := obj.(*hcloud.FloatingIP)
+			}).
+			AddFieldFn("ip", func(floatingIP *hcloud.FloatingIP) string {
 				// Format IPv6 correctly
 				if floatingIP.Network != nil {
 					return floatingIP.Network.String()
 				}
 				return floatingIP.IP.String()
-			})).
-			AddFieldFn("protection", output.FieldFn(func(obj interface{}) string {
-				floatingIP := obj.(*hcloud.FloatingIP)
+			}).
+			AddFieldFn("protection", func(floatingIP *hcloud.FloatingIP) string {
 				var protection []string
 				if floatingIP.Protection.Delete {
 					protection = append(protection, "delete")
 				}
 				return strings.Join(protection, ", ")
-			})).
-			AddFieldFn("labels", output.FieldFn(func(obj interface{}) string {
-				floatingIP := obj.(*hcloud.FloatingIP)
+			}).
+			AddFieldFn("labels", func(floatingIP *hcloud.FloatingIP) string {
 				return util.LabelsToString(floatingIP.Labels)
-			})).
-			AddFieldFn("created", output.FieldFn(func(obj interface{}) string {
-				floatingIP := obj.(*hcloud.FloatingIP)
+			}).
+			AddFieldFn("created", func(floatingIP *hcloud.FloatingIP) string {
 				return util.Datetime(floatingIP.Created)
-			})).
-			AddFieldFn("age", output.FieldFn(func(obj interface{}) string {
-				floatingIP := obj.(*hcloud.FloatingIP)
+			}).
+			AddFieldFn("age", func(floatingIP *hcloud.FloatingIP) string {
 				return util.Age(floatingIP.Created, time.Now())
-			}))
+			})
 	},
 
 	Schema: hcloud.SchemaFromFloatingIP,

@@ -30,41 +30,35 @@ var ListCmd = &base.ListCmd[*hcloud.Network, schema.Network]{
 		return s.Client().Network().AllWithOpts(s, opts)
 	},
 
-	OutputTable: func(t *output.Table, _ hcapi2.Client) {
+	OutputTable: func(t *output.Table[*hcloud.Network], _ hcapi2.Client) {
 		t.
 			AddAllowedFields(hcloud.Network{}).
-			AddFieldFn("servers", output.FieldFn(func(obj interface{}) string {
-				network := obj.(*hcloud.Network)
+			AddFieldFn("servers", func(network *hcloud.Network) string {
 				serverCount := len(network.Servers)
 				if serverCount == 1 {
 					return fmt.Sprintf("%v server", serverCount)
 				}
 				return fmt.Sprintf("%v servers", serverCount)
-			})).
-			AddFieldFn("ip_range", output.FieldFn(func(obj interface{}) string {
-				network := obj.(*hcloud.Network)
+			}).
+			AddFieldFn("ip_range", func(network *hcloud.Network) string {
 				return network.IPRange.String()
-			})).
-			AddFieldFn("labels", output.FieldFn(func(obj interface{}) string {
-				network := obj.(*hcloud.Network)
+			}).
+			AddFieldFn("labels", func(network *hcloud.Network) string {
 				return util.LabelsToString(network.Labels)
-			})).
-			AddFieldFn("protection", output.FieldFn(func(obj interface{}) string {
-				network := obj.(*hcloud.Network)
+			}).
+			AddFieldFn("protection", func(network *hcloud.Network) string {
 				var protection []string
 				if network.Protection.Delete {
 					protection = append(protection, "delete")
 				}
 				return strings.Join(protection, ", ")
-			})).
-			AddFieldFn("created", output.FieldFn(func(obj interface{}) string {
-				network := obj.(*hcloud.Network)
+			}).
+			AddFieldFn("created", func(network *hcloud.Network) string {
 				return util.Datetime(network.Created)
-			})).
-			AddFieldFn("age", output.FieldFn(func(obj interface{}) string {
-				network := obj.(*hcloud.Network)
+			}).
+			AddFieldFn("age", func(network *hcloud.Network) string {
 				return util.Age(network.Created, time.Now())
-			}))
+			})
 	},
 	Schema: hcloud.SchemaFromNetwork,
 }

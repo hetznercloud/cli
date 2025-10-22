@@ -148,7 +148,7 @@ func parseOutputFlags(in []string) Opts {
 }
 
 // NewTable creates a new Table.
-func NewTable(out io.Writer) *Table {
+func NewTable[T any](out io.Writer) *Table[T] {
 	style := table.Style{
 		Name:    "minimal",
 		Box:     table.StyleBoxLight,
@@ -167,30 +167,30 @@ func NewTable(out io.Writer) *Table {
 	w := table.NewWriter()
 	w.SetStyle(style)
 
-	return &Table{
+	return &Table[T]{
 		out:           out,
 		w:             w,
 		columns:       map[string]bool{},
-		fieldMapping:  map[string]FieldFn{},
+		fieldMapping:  map[string]FieldFn[T]{},
 		fieldAlias:    map[string]string{},
 		allowedFields: map[string]bool{},
 	}
 }
 
-type FieldFn func(obj interface{}) string
+type FieldFn[T any] func(obj T) string
 
 // Table is a generic way to format object as a table.
-type Table struct {
+type Table[T any] struct {
 	out           io.Writer
 	w             table.Writer
 	columns       map[string]bool
-	fieldMapping  map[string]FieldFn
+	fieldMapping  map[string]FieldFn[T]
 	fieldAlias    map[string]string
 	allowedFields map[string]bool
 }
 
 // Columns returns a list of known output columns.
-func (o *Table) Columns() (cols []string) {
+func (o *Table[T]) Columns() (cols []string) {
 	for c := range o.columns {
 		cols = append(cols, c)
 	}
@@ -199,13 +199,13 @@ func (o *Table) Columns() (cols []string) {
 }
 
 // AddFieldAlias overrides the field name to allow custom column headers.
-func (o *Table) AddFieldAlias(field, alias string) *Table {
+func (o *Table[T]) AddFieldAlias(field, alias string) *Table[T] {
 	o.fieldAlias[field] = alias
 	return o
 }
 
 // AddFieldFn adds a function which handles the output of the specified field.
-func (o *Table) AddFieldFn(field string, fn FieldFn) *Table {
+func (o *Table[T]) AddFieldFn(field string, fn FieldFn[T]) *Table[T] {
 	o.fieldMapping[field] = fn
 	o.allowedFields[field] = true
 	o.columns[field] = true
@@ -213,7 +213,7 @@ func (o *Table) AddFieldFn(field string, fn FieldFn) *Table {
 }
 
 // AddAllowedFields reads all first level fieldnames of the struct and allows them to be used.
-func (o *Table) AddAllowedFields(obj interface{}) *Table {
+func (o *Table[T]) AddAllowedFields(obj interface{}) *Table[T] {
 	v := reflect.ValueOf(obj)
 	if v.Kind() != reflect.Struct {
 		panic("AddAllowedFields input must be a struct")
@@ -239,7 +239,7 @@ func (o *Table) AddAllowedFields(obj interface{}) *Table {
 }
 
 // RemoveAllowedField removes fields from the allowed list.
-func (o *Table) RemoveAllowedField(fields ...string) *Table {
+func (o *Table[T]) RemoveAllowedField(fields ...string) *Table[T] {
 	for _, field := range fields {
 		delete(o.allowedFields, field)
 		delete(o.columns, field)
@@ -248,7 +248,7 @@ func (o *Table) RemoveAllowedField(fields ...string) *Table {
 }
 
 // ValidateColumns returns an error if invalid columns are specified.
-func (o *Table) ValidateColumns(cols []string) error {
+func (o *Table[T]) ValidateColumns(cols []string) error {
 	var invalidCols []string
 	for _, col := range cols {
 		if _, ok := o.allowedFields[strings.ToLower(col)]; !ok {
@@ -262,7 +262,7 @@ func (o *Table) ValidateColumns(cols []string) error {
 }
 
 // WriteHeader writes the table header.
-func (o *Table) WriteHeader(columns []string) {
+func (o *Table[T]) WriteHeader(columns []string) {
 	header := table.Row{}
 	for _, col := range columns {
 		if alias, ok := o.fieldAlias[col]; ok {
@@ -274,14 +274,14 @@ func (o *Table) WriteHeader(columns []string) {
 	o.w.AppendHeader(header)
 }
 
-func (o *Table) Flush() error {
+func (o *Table[T]) Flush() error {
 	_, _ = o.out.Write([]byte(o.w.Render()))
 	_, _ = o.out.Write([]byte("\n"))
 	return nil
 }
 
 // Write writes a table line.
-func (o *Table) Write(columns []string, obj interface{}) {
+func (o *Table[T]) Write(columns []string, obj T) {
 	data := structs.Map(obj)
 	dataL := map[string]interface{}{}
 	for key, value := range data {
@@ -318,6 +318,26 @@ func (o *Table) Write(columns []string, obj interface{}) {
 		}
 	}
 	o.w.AppendRow(out)
+}
+
+func (o *Table[T]) ToAny() *Table[any] {
+	fieldMapping := make(map[string]FieldFn[any])
+	for k, v := range o.fieldMapping {
+		fieldMapping[k] = func(obj any) string {
+			if castedObj, ok := obj.(T); ok {
+				return v(castedObj)
+			}
+			return ""
+		}
+	}
+	return &Table[any]{
+		out:           o.out,
+		w:             o.w,
+		columns:       o.columns,
+		fieldMapping:  fieldMapping,
+		fieldAlias:    o.fieldAlias,
+		allowedFields: o.allowedFields,
+	}
 }
 
 func fieldName(name string) string {

@@ -66,7 +66,7 @@ var ListCmd = &base.ListCmd[*hcloud.Image, schema.Image]{
 		return s.Client().Image().AllWithOpts(s, opts)
 	},
 
-	OutputTable: func(t *output.Table, client hcapi2.Client) {
+	OutputTable: func(t *output.Table[*hcloud.Image], client hcapi2.Client) {
 		t.
 			AddAllowedFields(hcloud.Image{}).
 			AddFieldAlias("imagesize", "image size").
@@ -76,66 +76,55 @@ var ListCmd = &base.ListCmd[*hcloud.Image, schema.Image]{
 			AddFieldAlias("rapiddeploy", "rapid deploy").
 			AddFieldAlias("createdfrom", "created from").
 			AddFieldAlias("boundto", "bound to").
-			AddFieldFn("name", output.FieldFn(func(obj interface{}) string {
-				image := obj.(*hcloud.Image)
+			AddFieldFn("name", func(image *hcloud.Image) string {
 				return util.NA(image.Name)
-			})).
-			AddFieldFn("image_size", output.FieldFn(func(obj interface{}) string {
-				image := obj.(*hcloud.Image)
+			}).
+			AddFieldFn("image_size", func(image *hcloud.Image) string {
 				if image.ImageSize == 0 {
 					return util.NA("")
 				}
 				return fmt.Sprintf("%.2f GB", image.ImageSize)
-			})).
-			AddFieldFn("disk_size", output.FieldFn(func(obj interface{}) string {
-				image := obj.(*hcloud.Image)
+			}).
+			AddFieldFn("disk_size", func(image *hcloud.Image) string {
 				return fmt.Sprintf("%.0f GB", image.DiskSize)
-			})).
-			AddFieldFn("created", output.FieldFn(func(obj interface{}) string {
-				image := obj.(*hcloud.Image)
+			}).
+			AddFieldFn("created", func(image *hcloud.Image) string {
 				return humanize.Time(image.Created)
-			})).
-			AddFieldFn("bound_to", output.FieldFn(func(obj interface{}) string {
-				image := obj.(*hcloud.Image)
+			}).
+			AddFieldFn("bound_to", func(image *hcloud.Image) string {
 				if image.BoundTo != nil {
 					return client.Server().ServerName(image.BoundTo.ID)
 				}
 				return util.NA("")
-			})).
-			AddFieldFn("created_from", output.FieldFn(func(obj interface{}) string {
-				image := obj.(*hcloud.Image)
+			}).
+			AddFieldFn("created_from", func(image *hcloud.Image) string {
 				if image.CreatedFrom != nil {
 					return client.Server().ServerName(image.CreatedFrom.ID)
 				}
 				return util.NA("")
-			})).
-			AddFieldFn("protection", output.FieldFn(func(obj interface{}) string {
-				image := obj.(*hcloud.Image)
+			}).
+			AddFieldFn("protection", func(image *hcloud.Image) string {
 				var protection []string
 				if image.Protection.Delete {
 					protection = append(protection, "delete")
 				}
 				return strings.Join(protection, ", ")
-			})).
-			AddFieldFn("labels", output.FieldFn(func(obj interface{}) string {
-				image := obj.(*hcloud.Image)
+			}).
+			AddFieldFn("labels", func(image *hcloud.Image) string {
 				return util.LabelsToString(image.Labels)
-			})).
-			AddFieldFn("created", output.FieldFn(func(obj interface{}) string {
-				image := obj.(*hcloud.Image)
+			}).
+			AddFieldFn("created", func(image *hcloud.Image) string {
 				return util.Datetime(image.Created)
-			})).
-			AddFieldFn("age", output.FieldFn(func(obj interface{}) string {
-				image := obj.(*hcloud.Image)
+			}).
+			AddFieldFn("age", func(image *hcloud.Image) string {
 				return util.Age(image.Created, time.Now())
-			})).
-			AddFieldFn("deprecated", output.FieldFn(func(obj interface{}) string {
-				image := obj.(*hcloud.Image)
+			}).
+			AddFieldFn("deprecated", func(image *hcloud.Image) string {
 				if image.Deprecated.IsZero() {
 					return "-"
 				}
 				return util.Datetime(image.Deprecated)
-			}))
+			})
 	},
 
 	Schema: hcloud.SchemaFromImage,

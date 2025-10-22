@@ -64,70 +64,58 @@ var ListCmd = &base.ListCmd[*hcloud.Server, schema.Server]{
 		return s.Client().Server().AllWithOpts(s, opts)
 	},
 
-	OutputTable: func(t *output.Table, client hcapi2.Client) {
+	OutputTable: func(t *output.Table[*hcloud.Server], client hcapi2.Client) {
 		t.
 			AddAllowedFields(hcloud.Server{}).
-			AddFieldFn("ipv4", output.FieldFn(func(obj interface{}) string {
-				server := obj.(*hcloud.Server)
+			AddFieldFn("ipv4", func(server *hcloud.Server) string {
 				if server.PublicNet.IPv4.IsUnspecified() {
 					return "-"
 				}
 				return server.PublicNet.IPv4.IP.String()
-			})).
-			AddFieldFn("ipv6", output.FieldFn(func(obj interface{}) string {
-				server := obj.(*hcloud.Server)
+			}).
+			AddFieldFn("ipv6", func(server *hcloud.Server) string {
 				if server.PublicNet.IPv6.IsUnspecified() {
 					return "-"
 				}
 				return server.PublicNet.IPv6.Network.String()
-			})).
-			AddFieldFn("included_traffic", output.FieldFn(func(obj interface{}) string {
-				server := obj.(*hcloud.Server)
+			}).
+			AddFieldFn("included_traffic", func(server *hcloud.Server) string {
 				return humanize.IBytes(server.IncludedTraffic)
-			})).
-			AddFieldFn("ingoing_traffic", output.FieldFn(func(obj interface{}) string {
-				server := obj.(*hcloud.Server)
+			}).
+			AddFieldFn("ingoing_traffic", func(server *hcloud.Server) string {
 				return humanize.IBytes(server.IngoingTraffic)
-			})).
-			AddFieldFn("outgoing_traffic", output.FieldFn(func(obj interface{}) string {
-				server := obj.(*hcloud.Server)
+			}).
+			AddFieldFn("outgoing_traffic", func(server *hcloud.Server) string {
 				return humanize.IBytes(server.OutgoingTraffic)
-			})).
-			AddFieldFn("datacenter", output.FieldFn(func(obj interface{}) string {
-				server := obj.(*hcloud.Server)
+			}).
+			AddFieldFn("datacenter", func(server *hcloud.Server) string {
 				return server.Datacenter.Name
-			})).
-			AddFieldFn("location", output.FieldFn(func(obj interface{}) string {
-				server := obj.(*hcloud.Server)
+			}).
+			AddFieldFn("location", func(server *hcloud.Server) string {
 				return server.Datacenter.Location.Name
-			})).
-			AddFieldFn("labels", output.FieldFn(func(obj interface{}) string {
-				server := obj.(*hcloud.Server)
+			}).
+			AddFieldFn("labels", func(server *hcloud.Server) string {
 				return util.LabelsToString(server.Labels)
-			})).
-			AddFieldFn("type", output.FieldFn(func(obj interface{}) string {
-				server := obj.(*hcloud.Server)
+			}).
+			AddFieldFn("type", func(server *hcloud.Server) string {
 				return server.ServerType.Name
-			})).
-			AddFieldFn("volumes", output.FieldFn(func(obj interface{}) string {
-				server := obj.(*hcloud.Server)
+			}).
+			AddFieldFn("volumes", func(server *hcloud.Server) string {
 				var volumes []string
 				for _, volume := range server.Volumes {
 					volumeID := strconv.FormatInt(volume.ID, 10)
 					volumes = append(volumes, volumeID)
 				}
 				return strings.Join(volumes, ", ")
-			})).
-			AddFieldFn("private_net", output.FieldFn(func(obj interface{}) string {
-				server := obj.(*hcloud.Server)
+			}).
+			AddFieldFn("private_net", func(server *hcloud.Server) string {
 				var networks []string
 				for _, network := range server.PrivateNet {
 					networks = append(networks, fmt.Sprintf("%s (%s)", network.IP.String(), client.Network().Name(network.Network.ID)))
 				}
 				return util.NA(strings.Join(networks, ", "))
-			})).
-			AddFieldFn("protection", output.FieldFn(func(obj interface{}) string {
-				server := obj.(*hcloud.Server)
+			}).
+			AddFieldFn("protection", func(server *hcloud.Server) string {
 				var protection []string
 				if server.Protection.Delete {
 					protection = append(protection, "delete")
@@ -136,22 +124,19 @@ var ListCmd = &base.ListCmd[*hcloud.Server, schema.Server]{
 					protection = append(protection, "rebuild")
 				}
 				return strings.Join(protection, ", ")
-			})).
-			AddFieldFn("created", output.FieldFn(func(obj interface{}) string {
-				server := obj.(*hcloud.Server)
+			}).
+			AddFieldFn("created", func(server *hcloud.Server) string {
 				return util.Datetime(server.Created)
-			})).
-			AddFieldFn("age", output.FieldFn(func(obj interface{}) string {
-				server := obj.(*hcloud.Server)
+			}).
+			AddFieldFn("age", func(server *hcloud.Server) string {
 				return util.Age(server.Created, time.Now())
-			})).
-			AddFieldFn("placement_group", output.FieldFn(func(obj interface{}) string {
-				server := obj.(*hcloud.Server)
+			}).
+			AddFieldFn("placement_group", func(server *hcloud.Server) string {
 				if server.PlacementGroup == nil {
 					return "-"
 				}
 				return server.PlacementGroup.Name
-			}))
+			})
 	},
 
 	Schema: hcloud.SchemaFromServer,

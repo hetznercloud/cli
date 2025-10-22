@@ -59,27 +59,22 @@ var ListCmd = base.ListCmd[*hcloud.StorageBoxSnapshot, schema.StorageBoxSnapshot
 		return s.Client().StorageBox().AllSnapshotsWithOpts(s, storageBox, opts)
 	},
 
-	OutputTable: func(t *output.Table, _ hcapi2.Client) {
+	OutputTable: func(t *output.Table[*hcloud.StorageBoxSnapshot], _ hcapi2.Client) {
 		t.
 			AddAllowedFields(hcloud.StorageBoxSnapshot{}).
-			AddFieldFn("size", func(obj any) string {
-				snapshot := obj.(*hcloud.StorageBoxSnapshot)
+			AddFieldFn("size", func(snapshot *hcloud.StorageBoxSnapshot) string {
 				return humanize.IBytes(snapshot.Stats.Size)
 			}).
-			AddFieldFn("size_filesystem", func(obj any) string {
-				snapshot := obj.(*hcloud.StorageBoxSnapshot)
+			AddFieldFn("size_filesystem", func(snapshot *hcloud.StorageBoxSnapshot) string {
 				return humanize.IBytes(snapshot.Stats.SizeFilesystem)
 			}).
-			AddFieldFn("labels", func(obj any) string {
-				snapshot := obj.(*hcloud.StorageBoxSnapshot)
+			AddFieldFn("labels", func(snapshot *hcloud.StorageBoxSnapshot) string {
 				return util.LabelsToString(snapshot.Labels)
 			}).
-			AddFieldFn("created", func(obj any) string {
-				snapshot := obj.(*hcloud.StorageBoxSnapshot)
+			AddFieldFn("created", func(snapshot *hcloud.StorageBoxSnapshot) string {
 				return util.Datetime(snapshot.Created)
 			}).
-			AddFieldFn("age", func(obj any) string {
-				snapshot := obj.(*hcloud.StorageBoxSnapshot)
+			AddFieldFn("age", func(snapshot *hcloud.StorageBoxSnapshot) string {
 				return util.Age(snapshot.Created, time.Now())
 			})
 	},

@@ -28,19 +28,17 @@ var ListCmd = &base.ListCmd[*hcloud.Firewall, schema.Firewall]{
 		return s.Client().Firewall().AllWithOpts(s, opts)
 	},
 
-	OutputTable: func(t *output.Table, _ hcapi2.Client) {
+	OutputTable: func(t *output.Table[*hcloud.Firewall], _ hcapi2.Client) {
 		t.
 			AddAllowedFields(hcloud.Firewall{}).
-			AddFieldFn("rules_count", output.FieldFn(func(obj interface{}) string {
-				firewall := obj.(*hcloud.Firewall)
+			AddFieldFn("rules_count", func(firewall *hcloud.Firewall) string {
 				count := len(firewall.Rules)
 				if count == 1 {
 					return fmt.Sprintf("%d Rule", count)
 				}
 				return fmt.Sprintf("%d Rules", count)
-			})).
-			AddFieldFn("applied_to_count", output.FieldFn(func(obj interface{}) string {
-				firewall := obj.(*hcloud.Firewall)
+			}).
+			AddFieldFn("applied_to_count", func(firewall *hcloud.Firewall) string {
 				servers := 0
 				labelSelectors := 0
 				for _, r := range firewall.AppliedTo {
@@ -59,7 +57,7 @@ var ListCmd = &base.ListCmd[*hcloud.Firewall, schema.Firewall]{
 					labelSelectorsText = "Label Selector"
 				}
 				return fmt.Sprintf("%d %s | %d %s", servers, serversText, labelSelectors, labelSelectorsText)
-			}))
+			})
 	},
 
 	Schema: hcloud.SchemaFromFirewall,

@@ -31,31 +31,25 @@ var ListCmd = base.ListCmd[*hcloud.StorageBox, schema.StorageBox]{
 		return s.Client().StorageBox().AllWithOpts(s, opts)
 	},
 
-	OutputTable: func(t *output.Table, _ hcapi2.Client) {
+	OutputTable: func(t *output.Table[*hcloud.StorageBox], _ hcapi2.Client) {
 		t.
 			AddAllowedFields(hcloud.StorageBox{}).
-			AddFieldFn("type", func(obj any) string {
-				storageBox := obj.(*hcloud.StorageBox)
+			AddFieldFn("type", func(storageBox *hcloud.StorageBox) string {
 				return storageBox.StorageBoxType.Name
 			}).
-			AddFieldFn("location", func(obj any) string {
-				storageBox := obj.(*hcloud.StorageBox)
+			AddFieldFn("location", func(storageBox *hcloud.StorageBox) string {
 				return storageBox.Location.Name
 			}).
-			AddFieldFn("size", func(obj any) string {
-				storageBox := obj.(*hcloud.StorageBox)
+			AddFieldFn("size", func(storageBox *hcloud.StorageBox) string {
 				return humanize.IBytes(storageBox.Stats.Size)
 			}).
-			AddFieldFn("labels", func(obj any) string {
-				storageBox := obj.(*hcloud.StorageBox)
+			AddFieldFn("labels", func(storageBox *hcloud.StorageBox) string {
 				return util.LabelsToString(storageBox.Labels)
 			}).
-			AddFieldFn("created", func(obj any) string {
-				storageBox := obj.(*hcloud.StorageBox)
+			AddFieldFn("created", func(storageBox *hcloud.StorageBox) string {
 				return util.Datetime(storageBox.Created)
 			}).
-			AddFieldFn("age", func(obj any) string {
-				storageBox := obj.(*hcloud.StorageBox)
+			AddFieldFn("age", func(storageBox *hcloud.StorageBox) string {
 				return util.Age(storageBox.Created, time.Now())
 			})
 	},

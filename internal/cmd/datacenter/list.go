@@ -26,13 +26,12 @@ var ListCmd = &base.ListCmd[*hcloud.Datacenter, schema.Datacenter]{
 		return s.Client().Datacenter().AllWithOpts(s, opts)
 	},
 
-	OutputTable: func(t *output.Table, _ hcapi2.Client) {
+	OutputTable: func(t *output.Table[*hcloud.Datacenter], _ hcapi2.Client) {
 		t.
 			AddAllowedFields(hcloud.Datacenter{}).
-			AddFieldFn("location", output.FieldFn(func(obj interface{}) string {
-				datacenter := obj.(*hcloud.Datacenter)
+			AddFieldFn("location", func(datacenter *hcloud.Datacenter) string {
 				return datacenter.Location.Name
-			}))
+			})
 	},
 
 	Schema: hcloud.SchemaFromDatacenter,

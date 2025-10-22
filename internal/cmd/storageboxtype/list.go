@@ -27,29 +27,25 @@ var ListCmd = base.ListCmd[*hcloud.StorageBoxType, schema.StorageBoxType]{
 		return s.Client().StorageBoxType().AllWithOpts(s, opts)
 	},
 
-	OutputTable: func(t *output.Table, _ hcapi2.Client) {
+	OutputTable: func(t *output.Table[*hcloud.StorageBoxType], _ hcapi2.Client) {
 		t.
 			AddAllowedFields(hcloud.StorageBoxType{}).
-			AddFieldFn("size", func(obj interface{}) string {
-				storageBoxType := obj.(*hcloud.StorageBoxType)
+			AddFieldFn("size", func(storageBoxType *hcloud.StorageBoxType) string {
 				return humanize.IBytes(uint64(storageBoxType.Size))
 			}).
-			AddFieldFn("deprecated", func(obj interface{}) string {
-				storageBoxType := obj.(*hcloud.StorageBoxType)
+			AddFieldFn("deprecated", func(storageBoxType *hcloud.StorageBoxType) string {
 				if !storageBoxType.IsDeprecated() {
 					return "-"
 				}
 				return util.Datetime(storageBoxType.UnavailableAfter())
 			}).
-			AddFieldFn("snapshot_limit", func(obj interface{}) string {
-				storageBoxType := obj.(*hcloud.StorageBoxType)
+			AddFieldFn("snapshot_limit", func(storageBoxType *hcloud.StorageBoxType) string {
 				if storageBoxType.SnapshotLimit == nil {
 					return "-"
 				}
 				return strconv.Itoa(*storageBoxType.SnapshotLimit)
 			}).
-			AddFieldFn("automatic_snapshot_limit", func(obj interface{}) string {
-				storageBoxType := obj.(*hcloud.StorageBoxType)
+			AddFieldFn("automatic_snapshot_limit", func(storageBoxType *hcloud.StorageBoxType) string {
 				if storageBoxType.AutomaticSnapshotLimit == nil {
 					return "-"
 				}

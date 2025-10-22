@@ -151,8 +151,7 @@ Listed resources are:
 
 		for i, lc := range cmds {
 			cols := lc.GetDefaultColumns()
-			table := output.NewTable(cmd.OutOrStdout())
-			lc.UseOutputTable(table, s.Client())
+			table := lc.NewOutputTable(cmd.OutOrStdout(), s.Client())
 			table.WriteHeader(cols)
 
 			if len(resources[i]) == 0 {

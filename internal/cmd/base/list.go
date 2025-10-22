@@ -24,7 +24,7 @@ type Listable interface {
 	GetResourceNamePlural() string
 	GetJSONKeyGetByName() string
 	GetDefaultColumns() []string
-	UseOutputTable(*output.Table, hcapi2.Client)
+	NewOutputTable(io.Writer, hcapi2.Client) *output.Table[any]
 	FetchAny(state.State, *pflag.FlagSet, hcloud.ListOpts, []string) ([]any, error)
 	SchemaAny(any) any
 }
@@ -42,7 +42,7 @@ type ListCmd[T any, S any] struct {
 	// See [ListCmd.PositionalArgumentOverride].
 	FetchWithArgs   func(s state.State, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string, args []string) ([]T, error)
 	AdditionalFlags func(*cobra.Command)
-	OutputTable     func(t *output.Table, client hcapi2.Client)
+	OutputTable     func(t *output.Table[T], client hcapi2.Client)
 	Schema          func(T) S
 
 	// In case the resource does not have a single identifier that matches [ListCmd.ResourceNamePlural], this field
@@ -62,7 +62,7 @@ type ListCmd[T any, S any] struct {
 
 // CobraCommand creates a command that can be registered with cobra.
 func (lc *ListCmd[T, S]) CobraCommand(s state.State) *cobra.Command {
-	t := output.NewTable(io.Discard)
+	t := output.NewTable[T](io.Discard)
 	lc.OutputTable(t, s.Client())
 	outputColumns := t.Columns()
 
@@ -161,7 +161,7 @@ func (lc *ListCmd[T, S]) Run(s state.State, cmd *cobra.Command, args []string) e
 		cols = outOpts["columns"]
 	}
 
-	t := output.NewTable(out)
+	t := output.NewTable[T](out)
 	lc.OutputTable(t, s.Client())
 	if !outOpts.IsSet("noheader") {
 		t.WriteHeader(cols)
@@ -204,6 +204,8 @@ func (lc *ListCmd[T, S]) SchemaAny(resource any) any {
 	return nil
 }
 
-func (lc *ListCmd[T, S]) UseOutputTable(t *output.Table, client hcapi2.Client) {
+func (lc *ListCmd[T, S]) NewOutputTable(out io.Writer, client hcapi2.Client) *output.Table[any] {
+	t := output.NewTable[T](out)
 	lc.OutputTable(t, client)
+	return t.ToAny()
 }
