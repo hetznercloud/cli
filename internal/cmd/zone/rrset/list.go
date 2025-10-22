@@ -91,6 +91,12 @@ var ListCmd = &base.ListCmd[*hcloud.ZoneRRSet, schema.ZoneRRSet]{
 			}).
 			AddFieldFn("records", func(obj interface{}) string {
 				rrSet := obj.(*hcloud.ZoneRRSet)
+
+				// TXT: Convert values back to the user provided values
+				if rrSet.Type == hcloud.ZoneRRSetTypeTXT {
+					ParseTXTRecordValues(rrSet.Records)
+				}
+
 				var records []string
 				for _, record := range rrSet.Records {
 					records = append(records, record.Value)

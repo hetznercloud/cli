@@ -62,6 +62,11 @@ var DescribeCmd = base.DescribeCmd[*hcloud.ZoneRRSet]{
 			}
 		}
 
+		// TXT: Convert values back to the user provided values
+		if rrset.Type == hcloud.ZoneRRSetTypeTXT {
+			ParseTXTRecordValues(rrset.Records)
+		}
+
 		cmd.Printf("Records:\n")
 		if len(rrset.Records) == 0 {
 			cmd.Print("  No Records\n")
