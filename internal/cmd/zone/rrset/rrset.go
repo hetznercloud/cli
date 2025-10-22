@@ -12,6 +12,7 @@ import (
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud/exp/dnsutil"
 )
 
 func NewCommand(s state.State) *cobra.Command {
@@ -138,5 +139,17 @@ func rrsetArgumentsCompletionFuncs(client hcapi2.Client) []cobra.CompletionFunc 
 
 			return maps.Keys(uniqueRRSetTypes)
 		}),
+	}
+}
+
+func FormatTXTRecordValues(records []hcloud.ZoneRRSetRecord) {
+	for i := range records {
+		records[i].Value = dnsutil.FormatTXTValue(records[i].Value)
+	}
+}
+
+func ParseTXTRecordValues(records []hcloud.ZoneRRSetRecord) {
+	for i := range records {
+		records[i].Value = dnsutil.ParseTXTValue(records[i].Value)
 	}
 }
