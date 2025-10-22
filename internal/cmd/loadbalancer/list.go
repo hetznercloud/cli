@@ -64,9 +64,7 @@ var ListCmd = &base.ListCmd[*hcloud.LoadBalancer, schema.LoadBalancer]{
 			AddFieldFn("age", func(loadBalancer *hcloud.LoadBalancer) string {
 				return util.Age(loadBalancer.Created, time.Now())
 			}).
-			AddFieldFn("health", func(loadBalancer *hcloud.LoadBalancer) string {
-				return Health(loadBalancer)
-			})
+			AddFieldFn("health", Health)
 	},
 
 	Schema: hcloud.SchemaFromLoadBalancer,
