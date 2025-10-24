@@ -44,11 +44,11 @@ Before creating a server, you need to choose a server type. You can list all ava
 hcloud server-type list
 ```
 
-For this example we will use the `cpx11` server type.
+For this example we will use the `cpx22` server type.
 You can view the details of this server type using the following command:
 
 ```bash
-hcloud server-type describe cpx11
+hcloud server-type describe cpx22
 ```
 
 ### 2.2 Pick an Image
@@ -77,7 +77,7 @@ If you don't specify a location, one will be chosen for you. This is what we wil
 Now you can create the server using the following command:
 
 ```bash
-hcloud server create --name my-server --type cpx11 --image ubuntu-24.04 --ssh-key my-ssh-key
+hcloud server create --name my-server --type cpx22 --image ubuntu-24.04 --ssh-key my-ssh-key
 ```
 
 If you set the SSH key as the default SSH key for your context, you can omit the `--ssh-key` flag.

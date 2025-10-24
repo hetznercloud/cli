@@ -59,23 +59,23 @@ func TestDescribeWithTypes(t *testing.T) {
 	serverTypes := []*hcloud.ServerType{
 		{
 			ID:          3,
-			Name:        "cx22",
-			Description: "CX22",
+			Name:        "cpx22",
+			Description: "CPX22",
 		},
 		{
 			ID:          5,
-			Name:        "cx32",
-			Description: "CX32",
+			Name:        "cpx32",
+			Description: "CPX32",
 		},
 		{
 			ID:          7,
-			Name:        "cx42",
-			Description: "CX42",
+			Name:        "cpx42",
+			Description: "CPX42",
 		},
 		{
 			ID:          9,
-			Name:        "cx52",
-			Description: "CX52",
+			Name:        "cpx52",
+			Description: "CPX52",
 		},
 	}
 
@@ -111,10 +111,10 @@ Location:
   Latitude:	0.000000
   Longitude:	0.000000
 Server Types:
-  - ID: 3        Name: cx22     Supported: true     Available: true
-  - ID: 5        Name: cx32     Supported: true     Available: true
-  - ID: 7        Name: cx42     Supported: true     Available: false
-  - ID: 9        Name: cx52     Supported: true     Available: false
+  - ID: 3        Name: cpx22    Supported: true     Available: true
+  - ID: 5        Name: cpx32    Supported: true     Available: true
+  - ID: 7        Name: cpx42    Supported: true     Available: false
+  - ID: 9        Name: cpx52    Supported: true     Available: false
 `
 
 	require.NoError(t, err)

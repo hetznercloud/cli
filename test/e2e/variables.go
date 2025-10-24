@@ -16,10 +16,10 @@ var (
 	TestImageID = getEnv("TEST_IMAGE_ID", "161547269")
 
 	// TestServerType is the default server type used in end-to-end tests.
-	TestServerType = getEnv("TEST_SERVER_TYPE", "cpx11")
+	TestServerType = getEnv("TEST_SERVER_TYPE", "cpx22")
 
 	// TestServerTypeUpgrade is the upgrade server type used in end-to-end tests.
-	TestServerTypeUpgrade = getEnv("TEST_SERVER_TYPE_UPGRADE", "cpx21")
+	TestServerTypeUpgrade = getEnv("TEST_SERVER_TYPE_UPGRADE", "cpx32")
 
 	// TestArchitecture is the default architecture used in end-to-end tests, should match the architecture of the TestServerType.
 	TestArchitecture = getEnv("TEST_ARCHITECTURE", string(hcloud.ArchitectureX86))
