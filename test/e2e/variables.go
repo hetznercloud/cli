@@ -28,13 +28,13 @@ var (
 	TestLoadBalancerTypeName = getEnv("TEST_LOAD_BALANCER_TYPE_NAME", "lb11")
 
 	// TestDatacenterName is the default datacenter name where we execute our end-to-end tests.
-	TestDatacenterName = getEnv("TEST_DATACENTER_NAME", "nbg1-dc3")
+	TestDatacenterName = getEnv("TEST_DATACENTER_NAME", "hel1-dc2")
 
 	// TestDatacenterID is the default datacenter ID where we execute our end-to-end tests (Must be the ID of TestDatacenterName)
-	TestDatacenterID = getEnv("TEST_DATACENTER_ID", "2")
+	TestDatacenterID = getEnv("TEST_DATACENTER_ID", "3")
 
 	// TestLocationName is the default location where we execute our end-to-end tests.
-	TestLocationName = getEnv("TEST_LOCATION", "nbg1")
+	TestLocationName = getEnv("TEST_LOCATION", "hel1")
 
 	// TestISOName is the default ISO used for testing
 	TestISOName = getEnv("TEST_ISO_NAME", "SW_DVD9_Win_Server_STD_CORE_2022__64Bit_German_DC_STD_MLF_X22-74292.iso")
