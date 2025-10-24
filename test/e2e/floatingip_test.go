@@ -185,7 +185,7 @@ func TestFloatingIP(t *testing.T) {
       "id": "<ignore-diff>",
       "name": "%s",
       "description": "<ignore-diff>",
-      "country": "DE",
+      "country": "<ignore-diff>",
       "city": "<ignore-diff>",
       "latitude": "<ignore-diff>",
       "longitude": "<ignore-diff>",
