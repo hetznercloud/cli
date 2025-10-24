@@ -54,7 +54,7 @@ func TestDescribeDeprecation(t *testing.T) {
 		"deprecated": {
 			deprecatable: dep,
 			expected: fmt.Sprintf(
-				"Deprecation:\n  Announced:\t\tFri Jan  1 00:00:00 UTC 2021 (%s)\n  Unavailable After:\tFri Dec 31 23:59:59 UTC 2021 (%s)\n",
+				"Deprecation:\n  Announced:\t\t2021-01-01 00:00:00 UTC (%s)\n  Unavailable After:\t2021-12-31 23:59:59 UTC (%s)\n",
 				humanize.Time(dep.DeprecationAnnounced()), humanize.Time(dep.UnavailableAfter()),
 			),
 		},

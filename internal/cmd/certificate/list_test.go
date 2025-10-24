@@ -43,8 +43,8 @@ func TestList(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{})
 
-	expOut := `ID    NAME   TYPE      DOMAIN NAMES   NOT VALID AFTER                AGE
-123   test   managed   example.com    Wed Aug 20 12:00:00 UTC 2036   20m
+	expOut := `ID    NAME   TYPE      DOMAIN NAMES   NOT VALID AFTER           AGE
+123   test   managed   example.com    2036-08-20 12:00:00 UTC   20m
 `
 
 	require.NoError(t, err)

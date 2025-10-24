@@ -59,7 +59,7 @@ func TestNetwork(t *testing.T) {
 				Lit("0 servers").Whitespace().
 				Lit("10.0.0.0/24").Whitespace().
 				Lit("delete").Whitespace().
-				UnixDate().Whitespace().
+				Datetime().Whitespace().
 				Age().OptionalWhitespace().Newline().End(),
 			out,
 		)
@@ -179,7 +179,7 @@ func TestNetwork(t *testing.T) {
 		assert.Regexp(t, NewRegex().Start().
 			Lit("ID:").Whitespace().Int().Newline().
 			Lit("Name:").Whitespace().Raw(`new-test-network-[0-9a-f]{8}`).Newline().
-			Lit("Created:").Whitespace().UnixDate().Lit(" (").HumanizeTime().Lit(")").Newline().
+			Lit("Created:").Whitespace().Datetime().Lit(" (").HumanizeTime().Lit(")").Newline().
 			Lit("IP Range:").Whitespace().Lit("10.0.0.0/16").Newline().
 			Lit("Expose Routes to vSwitch:").Whitespace().Lit("yes").Newline().
 			Lit("Subnets:").Newline().
@@ -297,7 +297,7 @@ func TestNetwork(t *testing.T) {
 		assert.Regexp(t, NewRegex().Start().
 			Lit("ID:").Whitespace().Int().Newline().
 			Lit("Name:").Whitespace().Raw(`new-test-network-[0-9a-f]{8}`).Newline().
-			Lit("Created:").Whitespace().UnixDate().Lit(" (").HumanizeTime().Lit(")").Newline().
+			Lit("Created:").Whitespace().Datetime().Lit(" (").HumanizeTime().Lit(")").Newline().
 			Lit("IP Range:").Whitespace().Lit("10.0.0.0/16").Newline().
 			Lit("Expose Routes to vSwitch:").Whitespace().Lit("no").Newline().
 			Lit("Subnets:").Newline().
