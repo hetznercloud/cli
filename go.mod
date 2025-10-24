@@ -22,7 +22,7 @@ require (
 	github.com/swaggest/assertjson v1.9.0
 	go.uber.org/mock v0.6.0
 	golang.org/x/crypto v0.43.0
-	golang.org/x/exp v0.0.0-20251017212417-90e834f514db
+	golang.org/x/exp v0.0.0-20251023183803-a4bb9ffd2546
 	golang.org/x/net v0.46.0
 	golang.org/x/term v0.36.0
 	golang.org/x/text v0.30.0
