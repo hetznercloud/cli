@@ -24,7 +24,7 @@ var fakeListCmd = &base.ListCmd[*fakeResource, *fakeResource]{
 	},
 
 	OutputTable: func(t *output.Table[*fakeResource], _ hcapi2.Client) {
-		t.AddAllowedFields(fakeResource{})
+		t.AddAllowedFields(&fakeResource{})
 	},
 
 	DefaultColumns: []string{"id", "name"},
