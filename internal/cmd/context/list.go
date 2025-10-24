@@ -66,8 +66,8 @@ func runList(s state.State, cmd *cobra.Command, _ []string) error {
 	return tw.Flush()
 }
 
-func newListOutputTable(w io.Writer) *output.Table {
-	return output.NewTable(w).
+func newListOutputTable(w io.Writer) *output.Table[presentation] {
+	return output.NewTable[presentation](w).
 		AddAllowedFields(presentation{}).
 		RemoveAllowedField("token")
 }

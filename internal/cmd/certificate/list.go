@@ -30,49 +30,41 @@ var ListCmd = &base.ListCmd[*hcloud.Certificate, schema.Certificate]{
 		return s.Client().Certificate().AllWithOpts(s, opts)
 	},
 
-	OutputTable: func(t *output.Table, _ hcapi2.Client) {
+	OutputTable: func(t *output.Table[*hcloud.Certificate], _ hcapi2.Client) {
 		t.
-			AddAllowedFields(hcloud.Certificate{}).
+			AddAllowedFields(&hcloud.Certificate{}).
 			RemoveAllowedField("certificate", "chain").
-			AddFieldFn("labels", output.FieldFn(func(obj interface{}) string {
-				cert := obj.(*hcloud.Certificate)
+			AddFieldFn("labels", func(cert *hcloud.Certificate) string {
 				return util.LabelsToString(cert.Labels)
-			})).
-			AddFieldFn("not_valid_before", func(obj interface{}) string {
-				cert := obj.(*hcloud.Certificate)
+			}).
+			AddFieldFn("not_valid_before", func(cert *hcloud.Certificate) string {
 				return util.Datetime(cert.NotValidBefore)
 			}).
-			AddFieldFn("not_valid_after", func(obj interface{}) string {
-				cert := obj.(*hcloud.Certificate)
+			AddFieldFn("not_valid_after", func(cert *hcloud.Certificate) string {
 				return util.Datetime(cert.NotValidAfter)
 			}).
-			AddFieldFn("issuance_status", func(obj interface{}) string {
-				cert := obj.(*hcloud.Certificate)
+			AddFieldFn("issuance_status", func(cert *hcloud.Certificate) string {
 				if cert.Type != hcloud.CertificateTypeManaged {
 					return "n/a"
 				}
 				return string(cert.Status.Issuance)
 			}).
-			AddFieldFn("renewal_status", func(obj interface{}) string {
-				cert := obj.(*hcloud.Certificate)
+			AddFieldFn("renewal_status", func(cert *hcloud.Certificate) string {
 				if cert.Type != hcloud.CertificateTypeManaged ||
 					cert.Status.Renewal == hcloud.CertificateStatusTypeUnavailable {
 					return "n/a"
 				}
 				return string(cert.Status.Renewal)
 			}).
-			AddFieldFn("domain_names", func(obj interface{}) string {
-				cert := obj.(*hcloud.Certificate)
+			AddFieldFn("domain_names", func(cert *hcloud.Certificate) string {
 				return strings.Join(cert.DomainNames, ", ")
 			}).
-			AddFieldFn("created", output.FieldFn(func(obj interface{}) string {
-				cert := obj.(*hcloud.Certificate)
+			AddFieldFn("created", func(cert *hcloud.Certificate) string {
 				return util.Datetime(cert.Created)
-			})).
-			AddFieldFn("age", output.FieldFn(func(obj interface{}) string {
-				cert := obj.(*hcloud.Certificate)
+			}).
+			AddFieldFn("age", func(cert *hcloud.Certificate) string {
 				return util.Age(cert.Created, time.Now())
-			}))
+			})
 	},
 
 	Schema: hcloud.SchemaFromCertificate,

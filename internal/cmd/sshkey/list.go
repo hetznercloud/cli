@@ -29,21 +29,18 @@ var ListCmd = &base.ListCmd[*hcloud.SSHKey, schema.SSHKey]{
 		return s.Client().SSHKey().AllWithOpts(s, opts)
 	},
 
-	OutputTable: func(t *output.Table, _ hcapi2.Client) {
+	OutputTable: func(t *output.Table[*hcloud.SSHKey], _ hcapi2.Client) {
 		t.
-			AddAllowedFields(hcloud.SSHKey{}).
-			AddFieldFn("labels", output.FieldFn(func(obj interface{}) string {
-				sshKey := obj.(*hcloud.SSHKey)
+			AddAllowedFields(&hcloud.SSHKey{}).
+			AddFieldFn("labels", func(sshKey *hcloud.SSHKey) string {
 				return util.LabelsToString(sshKey.Labels)
-			})).
-			AddFieldFn("created", output.FieldFn(func(obj interface{}) string {
-				sshKey := obj.(*hcloud.SSHKey)
+			}).
+			AddFieldFn("created", func(sshKey *hcloud.SSHKey) string {
 				return util.Datetime(sshKey.Created)
-			})).
-			AddFieldFn("age", output.FieldFn(func(obj interface{}) string {
-				sshKey := obj.(*hcloud.SSHKey)
+			}).
+			AddFieldFn("age", func(sshKey *hcloud.SSHKey) string {
 				return util.Age(sshKey.Created, time.Now())
-			}))
+			})
 	},
 
 	Schema: hcloud.SchemaFromSSHKey,

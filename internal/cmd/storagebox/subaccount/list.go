@@ -50,23 +50,19 @@ var ListCmd = base.ListCmd[*hcloud.StorageBoxSubaccount, schema.StorageBoxSubacc
 		return s.Client().StorageBox().AllSubaccountsWithOpts(s, storageBox, opts)
 	},
 
-	OutputTable: func(t *output.Table, _ hcapi2.Client) {
+	OutputTable: func(t *output.Table[*hcloud.StorageBoxSubaccount], _ hcapi2.Client) {
 		t.
-			AddAllowedFields(hcloud.StorageBoxSubaccount{}).
-			AddFieldFn("description", func(obj any) string {
-				subaccount := obj.(*hcloud.StorageBoxSubaccount)
+			AddAllowedFields(&hcloud.StorageBoxSubaccount{}).
+			AddFieldFn("description", func(subaccount *hcloud.StorageBoxSubaccount) string {
 				return util.NA(subaccount.Description)
 			}).
-			AddFieldFn("labels", func(obj any) string {
-				subaccount := obj.(*hcloud.StorageBoxSubaccount)
+			AddFieldFn("labels", func(subaccount *hcloud.StorageBoxSubaccount) string {
 				return util.LabelsToString(subaccount.Labels)
 			}).
-			AddFieldFn("created", func(obj any) string {
-				subaccount := obj.(*hcloud.StorageBoxSubaccount)
+			AddFieldFn("created", func(subaccount *hcloud.StorageBoxSubaccount) string {
 				return util.Datetime(subaccount.Created)
 			}).
-			AddFieldFn("age", func(obj any) string {
-				subaccount := obj.(*hcloud.StorageBoxSubaccount)
+			AddFieldFn("age", func(subaccount *hcloud.StorageBoxSubaccount) string {
 				return util.Age(subaccount.Created, time.Now())
 			})
 	},

@@ -31,19 +31,17 @@ var ListCmd = &base.ListCmd[*hcloud.PrimaryIP, schema.PrimaryIP]{
 		return s.Client().PrimaryIP().AllWithOpts(s, opts)
 	},
 
-	OutputTable: func(t *output.Table, client hcapi2.Client) {
+	OutputTable: func(t *output.Table[*hcloud.PrimaryIP], client hcapi2.Client) {
 		t.
-			AddAllowedFields(hcloud.PrimaryIP{}).
-			AddFieldFn("ip", output.FieldFn(func(obj interface{}) string {
-				primaryIP := obj.(*hcloud.PrimaryIP)
+			AddAllowedFields(&hcloud.PrimaryIP{}).
+			AddFieldFn("ip", func(primaryIP *hcloud.PrimaryIP) string {
 				// Format IPv6 correctly
 				if primaryIP.Network != nil {
 					return primaryIP.Network.String()
 				}
 				return primaryIP.IP.String()
-			})).
-			AddFieldFn("dns", output.FieldFn(func(obj interface{}) string {
-				primaryIP := obj.(*hcloud.PrimaryIP)
+			}).
+			AddFieldFn("dns", func(primaryIP *hcloud.PrimaryIP) string {
 				var dns string
 				if len(primaryIP.DNSPtr) == 1 {
 					for _, v := range primaryIP.DNSPtr {
@@ -54,9 +52,8 @@ var ListCmd = &base.ListCmd[*hcloud.PrimaryIP, schema.PrimaryIP]{
 					dns = fmt.Sprintf("%d entries", len(primaryIP.DNSPtr))
 				}
 				return util.NA(dns)
-			})).
-			AddFieldFn("assignee", output.FieldFn(func(obj interface{}) string {
-				primaryIP := obj.(*hcloud.PrimaryIP)
+			}).
+			AddFieldFn("assignee", func(primaryIP *hcloud.PrimaryIP) string {
 				assignee := ""
 				if primaryIP.AssigneeID != 0 {
 					switch primaryIP.AssigneeType {
@@ -65,31 +62,26 @@ var ListCmd = &base.ListCmd[*hcloud.PrimaryIP, schema.PrimaryIP]{
 					}
 				}
 				return util.NA(assignee)
-			})).
-			AddFieldFn("protection", output.FieldFn(func(obj interface{}) string {
-				primaryIP := obj.(*hcloud.PrimaryIP)
+			}).
+			AddFieldFn("protection", func(primaryIP *hcloud.PrimaryIP) string {
 				var protection []string
 				if primaryIP.Protection.Delete {
 					protection = append(protection, "delete")
 				}
 				return strings.Join(protection, ", ")
-			})).
-			AddFieldFn("auto_delete", output.FieldFn(func(obj interface{}) string {
-				primaryIP := obj.(*hcloud.PrimaryIP)
+			}).
+			AddFieldFn("auto_delete", func(primaryIP *hcloud.PrimaryIP) string {
 				return util.YesNo(primaryIP.AutoDelete)
-			})).
-			AddFieldFn("labels", output.FieldFn(func(obj interface{}) string {
-				primaryIP := obj.(*hcloud.PrimaryIP)
+			}).
+			AddFieldFn("labels", func(primaryIP *hcloud.PrimaryIP) string {
 				return util.LabelsToString(primaryIP.Labels)
-			})).
-			AddFieldFn("created", output.FieldFn(func(obj interface{}) string {
-				primaryIP := obj.(*hcloud.PrimaryIP)
+			}).
+			AddFieldFn("created", func(primaryIP *hcloud.PrimaryIP) string {
 				return util.Datetime(primaryIP.Created)
-			})).
-			AddFieldFn("age", output.FieldFn(func(obj interface{}) string {
-				primaryIP := obj.(*hcloud.PrimaryIP)
+			}).
+			AddFieldFn("age", func(primaryIP *hcloud.PrimaryIP) string {
 				return util.Age(primaryIP.Created, time.Now())
-			}))
+			})
 	},
 
 	Schema: hcloud.SchemaFromPrimaryIP,

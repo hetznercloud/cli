@@ -25,9 +25,9 @@ var ListCmd = base.ListCmd[*hcloud.LoadBalancerType, schema.LoadBalancerType]{
 		return s.Client().LoadBalancerType().AllWithOpts(s, opts)
 	},
 
-	OutputTable: func(t *output.Table, _ hcapi2.Client) {
+	OutputTable: func(t *output.Table[*hcloud.LoadBalancerType], _ hcapi2.Client) {
 		t.
-			AddAllowedFields(hcloud.LoadBalancerType{})
+			AddAllowedFields(&hcloud.LoadBalancerType{})
 	},
 
 	Schema: hcloud.SchemaFromLoadBalancerType,

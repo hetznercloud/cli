@@ -29,26 +29,22 @@ var ListCmd = &base.ListCmd[*hcloud.ServerType, schema.ServerType]{
 		return s.Client().ServerType().AllWithOpts(s, opts)
 	},
 
-	OutputTable: func(t *output.Table, _ hcapi2.Client) {
+	OutputTable: func(t *output.Table[*hcloud.ServerType], _ hcapi2.Client) {
 		t.
-			AddAllowedFields(hcloud.ServerType{}).
+			AddAllowedFields(&hcloud.ServerType{}).
 			AddFieldAlias("storagetype", "storage type").
-			AddFieldFn("memory", output.FieldFn(func(obj interface{}) string {
-				serverType := obj.(*hcloud.ServerType)
+			AddFieldFn("memory", func(serverType *hcloud.ServerType) string {
 				return fmt.Sprintf("%.1f GB", serverType.Memory)
-			})).
-			AddFieldFn("disk", output.FieldFn(func(obj interface{}) string {
-				serverType := obj.(*hcloud.ServerType)
+			}).
+			AddFieldFn("disk", func(serverType *hcloud.ServerType) string {
 				return fmt.Sprintf("%d GB", serverType.Disk)
-			})).
-			AddFieldFn("traffic", func(interface{}) string {
+			}).
+			AddFieldFn("traffic", func(*hcloud.ServerType) string {
 				// Was deprecated and traffic is now set per location, only available through describe.
 				// Field was kept to avoid returning errors if people explicitly request the column.
 				return "-"
 			}).
-			AddFieldFn("deprecated", func(obj interface{}) string {
-				serverType := obj.(*hcloud.ServerType)
-
+			AddFieldFn("deprecated", func(serverType *hcloud.ServerType) string {
 				deprecatedInfos := make([]string, 0, len(serverType.Locations))
 				for _, loc := range serverType.Locations {
 					if loc.IsDeprecated() {

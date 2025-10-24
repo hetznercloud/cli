@@ -30,25 +30,22 @@ var ListCmd = &base.ListCmd[*hcloud.PlacementGroup, schema.PlacementGroup]{
 		return s.Client().PlacementGroup().AllWithOpts(s, opts)
 	},
 
-	OutputTable: func(t *output.Table, _ hcapi2.Client) {
+	OutputTable: func(t *output.Table[*hcloud.PlacementGroup], _ hcapi2.Client) {
 		t.
-			AddAllowedFields(hcloud.PlacementGroup{}).
-			AddFieldFn("servers", output.FieldFn(func(obj interface{}) string {
-				placementGroup := obj.(*hcloud.PlacementGroup)
+			AddAllowedFields(&hcloud.PlacementGroup{}).
+			AddFieldFn("servers", func(placementGroup *hcloud.PlacementGroup) string {
 				count := len(placementGroup.Servers)
 				if count == 1 {
 					return fmt.Sprintf("%d server", count)
 				}
 				return fmt.Sprintf("%d servers", count)
-			})).
-			AddFieldFn("created", output.FieldFn(func(obj interface{}) string {
-				placementGroup := obj.(*hcloud.PlacementGroup)
+			}).
+			AddFieldFn("created", func(placementGroup *hcloud.PlacementGroup) string {
 				return util.Datetime(placementGroup.Created)
-			})).
-			AddFieldFn("age", output.FieldFn(func(obj interface{}) string {
-				placementGroup := obj.(*hcloud.PlacementGroup)
+			}).
+			AddFieldFn("age", func(placementGroup *hcloud.PlacementGroup) string {
 				return util.Age(placementGroup.Created, time.Now())
-			}))
+			})
 	},
 
 	Schema: hcloud.SchemaFromPlacementGroup,

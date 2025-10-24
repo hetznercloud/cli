@@ -2,7 +2,6 @@ package base_test
 
 import (
 	"cmp"
-	"fmt"
 	"slices"
 	"testing"
 
@@ -24,17 +23,8 @@ var fakeListCmd = &base.ListCmd[*fakeResource, *fakeResource]{
 		return resource
 	},
 
-	OutputTable: func(t *output.Table, _ hcapi2.Client) {
-		t.
-			AddAllowedFields(hcloud.Firewall{}).
-			AddFieldFn("id", func(obj interface{}) string {
-				rsc := obj.(*fakeResource)
-				return fmt.Sprintf("%d", rsc.ID)
-			}).
-			AddFieldFn("name", func(obj interface{}) string {
-				rsc := obj.(*fakeResource)
-				return rsc.Name
-			})
+	OutputTable: func(t *output.Table[*fakeResource], _ hcapi2.Client) {
+		t.AddAllowedFields(&fakeResource{})
 	},
 
 	DefaultColumns: []string{"id", "name"},

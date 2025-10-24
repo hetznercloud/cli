@@ -52,22 +52,16 @@ var ListCmd = &base.ListCmd[*hcloud.Zone, schema.Zone]{
 		return s.Client().Zone().AllWithOpts(s, opts)
 	},
 
-	OutputTable: func(t *output.Table, _ hcapi2.Client) {
+	OutputTable: func(t *output.Table[*hcloud.Zone], _ hcapi2.Client) {
 		t.
-			AddAllowedFields(hcloud.Zone{}).
-			AddFieldFn("name", func(obj interface{}) string {
-				zone := obj.(*hcloud.Zone)
-
+			AddAllowedFields(&hcloud.Zone{}).
+			AddFieldFn("name", func(zone *hcloud.Zone) string {
 				return util.DisplayZoneName(zone.Name)
 			}).
-			AddFieldFn("name_idna", func(obj interface{}) string {
-				zone := obj.(*hcloud.Zone)
-
+			AddFieldFn("name_idna", func(zone *hcloud.Zone) string {
 				return zone.Name
 			}).
-			AddFieldFn("primary_nameservers", func(obj interface{}) string {
-				zone := obj.(*hcloud.Zone)
-
+			AddFieldFn("primary_nameservers", func(zone *hcloud.Zone) string {
 				addressAndPorts := make([]string, 0, len(zone.PrimaryNameservers))
 				for _, ns := range zone.PrimaryNameservers {
 
@@ -76,29 +70,23 @@ var ListCmd = &base.ListCmd[*hcloud.Zone, schema.Zone]{
 
 				return strings.Join(addressAndPorts, ", ")
 			}).
-			AddFieldFn("authoritative_nameservers", func(obj interface{}) string {
-				zone := obj.(*hcloud.Zone)
-
+			AddFieldFn("authoritative_nameservers", func(zone *hcloud.Zone) string {
 				return strings.Join(zone.AuthoritativeNameservers.Assigned, ", ")
 			}).
-			AddFieldFn("protection", func(obj interface{}) string {
-				zone := obj.(*hcloud.Zone)
+			AddFieldFn("protection", func(zone *hcloud.Zone) string {
 				var protection []string
 				if zone.Protection.Delete {
 					protection = append(protection, "delete")
 				}
 				return strings.Join(protection, ", ")
 			}).
-			AddFieldFn("labels", func(obj interface{}) string {
-				zone := obj.(*hcloud.Zone)
+			AddFieldFn("labels", func(zone *hcloud.Zone) string {
 				return util.LabelsToString(zone.Labels)
 			}).
-			AddFieldFn("created", func(obj interface{}) string {
-				zone := obj.(*hcloud.Zone)
+			AddFieldFn("created", func(zone *hcloud.Zone) string {
 				return util.Datetime(zone.Created)
 			}).
-			AddFieldFn("age", func(obj interface{}) string {
-				zone := obj.(*hcloud.Zone)
+			AddFieldFn("age", func(zone *hcloud.Zone) string {
 				return util.Age(zone.Created, time.Now())
 			})
 	},

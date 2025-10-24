@@ -31,45 +31,38 @@ var ListCmd = &base.ListCmd[*hcloud.Volume, schema.Volume]{
 		return s.Client().Volume().AllWithOpts(s, opts)
 	},
 
-	OutputTable: func(t *output.Table, client hcapi2.Client) {
+	OutputTable: func(t *output.Table[*hcloud.Volume], client hcapi2.Client) {
 		t.
-			AddAllowedFields(hcloud.Volume{}).
-			AddFieldFn("server", output.FieldFn(func(obj interface{}) string {
-				volume := obj.(*hcloud.Volume)
+			AddAllowedFields(&hcloud.Volume{}).
+			AddFieldFn("server", func(volume *hcloud.Volume) string {
 				var server string
 				if volume.Server != nil {
 					return client.Server().ServerName(volume.Server.ID)
 				}
 				return util.NA(server)
-			})).
-			AddFieldFn("size", output.FieldFn(func(obj interface{}) string {
-				volume := obj.(*hcloud.Volume)
+			}).
+			AddFieldFn("size", func(volume *hcloud.Volume) string {
 				return humanize.Bytes(uint64(volume.Size) * humanize.GByte)
-			})).
-			AddFieldFn("location", output.FieldFn(func(obj interface{}) string {
-				volume := obj.(*hcloud.Volume)
+			}).
+			AddFieldFn("location", func(volume *hcloud.Volume) string {
 				return volume.Location.Name
-			})).
-			AddFieldFn("protection", output.FieldFn(func(obj interface{}) string {
-				volume := obj.(*hcloud.Volume)
+			}).
+			AddFieldFn("protection", func(volume *hcloud.Volume) string {
 				var protection []string
 				if volume.Protection.Delete {
 					protection = append(protection, "delete")
 				}
 				return strings.Join(protection, ", ")
-			})).
-			AddFieldFn("labels", output.FieldFn(func(obj interface{}) string {
-				volume := obj.(*hcloud.Volume)
+			}).
+			AddFieldFn("labels", func(volume *hcloud.Volume) string {
 				return util.LabelsToString(volume.Labels)
-			})).
-			AddFieldFn("created", output.FieldFn(func(obj interface{}) string {
-				volume := obj.(*hcloud.Volume)
+			}).
+			AddFieldFn("created", func(volume *hcloud.Volume) string {
 				return util.Datetime(volume.Created)
-			})).
-			AddFieldFn("age", output.FieldFn(func(obj interface{}) string {
-				volume := obj.(*hcloud.Volume)
+			}).
+			AddFieldFn("age", func(volume *hcloud.Volume) string {
 				return util.Age(volume.Created, time.Now())
-			}))
+			})
 	},
 
 	Schema: hcloud.SchemaFromVolume,

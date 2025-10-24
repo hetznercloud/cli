@@ -13,7 +13,7 @@ type writerStub struct {
 	bytes.Buffer
 }
 
-func reset(to *Table, ws *writerStub) {
+func reset(to *Table[any], ws *writerStub) {
 	to.w.ResetHeaders()
 	to.w.ResetRows()
 	to.w.ResetFooters()
@@ -27,7 +27,7 @@ type testFieldsStruct struct {
 
 func TestTableOutput(t *testing.T) {
 	var ws writerStub
-	to := NewTable(io.Discard)
+	to := NewTable[any](io.Discard)
 	to.out = &ws
 
 	t.Run("AddAllowedFields", func(t *testing.T) {

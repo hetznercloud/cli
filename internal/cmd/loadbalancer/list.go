@@ -30,53 +30,41 @@ var ListCmd = &base.ListCmd[*hcloud.LoadBalancer, schema.LoadBalancer]{
 		return s.Client().LoadBalancer().AllWithOpts(s, opts)
 	},
 
-	OutputTable: func(t *output.Table, _ hcapi2.Client) {
+	OutputTable: func(t *output.Table[*hcloud.LoadBalancer], _ hcapi2.Client) {
 		t.
-			AddAllowedFields(hcloud.LoadBalancer{}).
-			AddFieldFn("ipv4", output.FieldFn(func(obj interface{}) string {
-				loadbalancer := obj.(*hcloud.LoadBalancer)
-				return loadbalancer.PublicNet.IPv4.IP.String()
-			})).
-			AddFieldFn("ipv6", output.FieldFn(func(obj interface{}) string {
-				loadbalancer := obj.(*hcloud.LoadBalancer)
-				return loadbalancer.PublicNet.IPv6.IP.String()
-			})).
-			AddFieldFn("type", output.FieldFn(func(obj interface{}) string {
-				loadbalancer := obj.(*hcloud.LoadBalancer)
-				return loadbalancer.LoadBalancerType.Name
-			})).
-			AddFieldFn("location", output.FieldFn(func(obj interface{}) string {
-				loadbalancer := obj.(*hcloud.LoadBalancer)
-				return loadbalancer.Location.Name
-			})).
-			AddFieldFn("network_zone", output.FieldFn(func(obj interface{}) string {
-				loadbalancer := obj.(*hcloud.LoadBalancer)
-				return string(loadbalancer.Location.NetworkZone)
-			})).
-			AddFieldFn("labels", output.FieldFn(func(obj interface{}) string {
-				loadBalancer := obj.(*hcloud.LoadBalancer)
+			AddAllowedFields(&hcloud.LoadBalancer{}).
+			AddFieldFn("ipv4", func(loadBalancer *hcloud.LoadBalancer) string {
+				return loadBalancer.PublicNet.IPv4.IP.String()
+			}).
+			AddFieldFn("ipv6", func(loadBalancer *hcloud.LoadBalancer) string {
+				return loadBalancer.PublicNet.IPv6.IP.String()
+			}).
+			AddFieldFn("type", func(loadBalancer *hcloud.LoadBalancer) string {
+				return loadBalancer.LoadBalancerType.Name
+			}).
+			AddFieldFn("location", func(loadBalancer *hcloud.LoadBalancer) string {
+				return loadBalancer.Location.Name
+			}).
+			AddFieldFn("network_zone", func(loadBalancer *hcloud.LoadBalancer) string {
+				return string(loadBalancer.Location.NetworkZone)
+			}).
+			AddFieldFn("labels", func(loadBalancer *hcloud.LoadBalancer) string {
 				return util.LabelsToString(loadBalancer.Labels)
-			})).
-			AddFieldFn("protection", output.FieldFn(func(obj interface{}) string {
-				loadBalancer := obj.(*hcloud.LoadBalancer)
+			}).
+			AddFieldFn("protection", func(loadBalancer *hcloud.LoadBalancer) string {
 				var protection []string
 				if loadBalancer.Protection.Delete {
 					protection = append(protection, "delete")
 				}
 				return strings.Join(protection, ", ")
-			})).
-			AddFieldFn("created", output.FieldFn(func(obj interface{}) string {
-				loadBalancer := obj.(*hcloud.LoadBalancer)
+			}).
+			AddFieldFn("created", func(loadBalancer *hcloud.LoadBalancer) string {
 				return util.Datetime(loadBalancer.Created)
-			})).
-			AddFieldFn("age", output.FieldFn(func(obj interface{}) string {
-				loadBalancer := obj.(*hcloud.LoadBalancer)
+			}).
+			AddFieldFn("age", func(loadBalancer *hcloud.LoadBalancer) string {
 				return util.Age(loadBalancer.Created, time.Now())
-			})).
-			AddFieldFn("health", output.FieldFn(func(obj interface{}) string {
-				loadBalancer := obj.(*hcloud.LoadBalancer)
-				return Health(loadBalancer)
-			}))
+			}).
+			AddFieldFn("health", Health)
 	},
 
 	Schema: hcloud.SchemaFromLoadBalancer,

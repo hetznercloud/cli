@@ -73,32 +73,28 @@ var ListCmd = &base.ListCmd[*hcloud.ZoneRRSet, schema.ZoneRRSet]{
 		return s.Client().Zone().AllRRSetsWithOpts(s, zone, opts)
 	},
 
-	OutputTable: func(t *output.Table, _ hcapi2.Client) {
+	OutputTable: func(t *output.Table[*hcloud.ZoneRRSet], _ hcapi2.Client) {
 		t.
-			AddAllowedFields(hcloud.ZoneRRSet{}).
+			AddAllowedFields(&hcloud.ZoneRRSet{}).
 			RemoveAllowedField("zone").
-			AddFieldFn("protection", func(obj interface{}) string {
-				rrSet := obj.(*hcloud.ZoneRRSet)
+			AddFieldFn("protection", func(rrSet *hcloud.ZoneRRSet) string {
 				var protection []string
 				if rrSet.Protection.Change {
 					protection = append(protection, "change")
 				}
 				return strings.Join(protection, ", ")
 			}).
-			AddFieldFn("labels", func(obj interface{}) string {
-				rrSet := obj.(*hcloud.ZoneRRSet)
+			AddFieldFn("labels", func(rrSet *hcloud.ZoneRRSet) string {
 				return util.LabelsToString(rrSet.Labels)
 			}).
-			AddFieldFn("records", func(obj interface{}) string {
-				rrSet := obj.(*hcloud.ZoneRRSet)
+			AddFieldFn("records", func(rrSet *hcloud.ZoneRRSet) string {
 				var records []string
 				for _, record := range rrSet.Records {
 					records = append(records, record.Value)
 				}
 				return strings.Join(records, "\n")
 			}).
-			AddFieldFn("ttl", func(obj interface{}) string {
-				rrSet := obj.(*hcloud.ZoneRRSet)
+			AddFieldFn("ttl", func(rrSet *hcloud.ZoneRRSet) string {
 				if rrSet.TTL == nil {
 					return "-"
 				}
