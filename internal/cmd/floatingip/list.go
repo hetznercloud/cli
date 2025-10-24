@@ -33,7 +33,7 @@ var ListCmd = &base.ListCmd[*hcloud.FloatingIP, schema.FloatingIP]{
 
 	OutputTable: func(t *output.Table[*hcloud.FloatingIP], client hcapi2.Client) {
 		t.
-			AddAllowedFields(hcloud.FloatingIP{}).
+			AddAllowedFields(&hcloud.FloatingIP{}).
 			AddFieldFn("dns", func(floatingIP *hcloud.FloatingIP) string {
 				var dns string
 				if len(floatingIP.DNSPtr) == 1 {

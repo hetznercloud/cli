@@ -54,7 +54,7 @@ var ListCmd = &base.ListCmd[*hcloud.Zone, schema.Zone]{
 
 	OutputTable: func(t *output.Table[*hcloud.Zone], _ hcapi2.Client) {
 		t.
-			AddAllowedFields(hcloud.Zone{}).
+			AddAllowedFields(&hcloud.Zone{}).
 			AddFieldFn("name", func(zone *hcloud.Zone) string {
 				return util.DisplayZoneName(zone.Name)
 			}).

@@ -28,7 +28,7 @@ var ListCmd = base.ListCmd[*hcloud.Location, schema.Location]{
 
 	OutputTable: func(t *output.Table[*hcloud.Location], _ hcapi2.Client) {
 		t.
-			AddAllowedFields(hcloud.Location{})
+			AddAllowedFields(&hcloud.Location{})
 	},
 
 	Schema: hcloud.SchemaFromLocation,

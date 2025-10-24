@@ -31,7 +31,7 @@ var ListCmd = &base.ListCmd[*hcloud.SSHKey, schema.SSHKey]{
 
 	OutputTable: func(t *output.Table[*hcloud.SSHKey], _ hcapi2.Client) {
 		t.
-			AddAllowedFields(hcloud.SSHKey{}).
+			AddAllowedFields(&hcloud.SSHKey{}).
 			AddFieldFn("labels", func(sshKey *hcloud.SSHKey) string {
 				return util.LabelsToString(sshKey.Labels)
 			}).

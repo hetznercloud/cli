@@ -32,7 +32,7 @@ var ListCmd = &base.ListCmd[*hcloud.Network, schema.Network]{
 
 	OutputTable: func(t *output.Table[*hcloud.Network], _ hcapi2.Client) {
 		t.
-			AddAllowedFields(hcloud.Network{}).
+			AddAllowedFields(&hcloud.Network{}).
 			AddFieldFn("servers", func(network *hcloud.Network) string {
 				serverCount := len(network.Servers)
 				if serverCount == 1 {

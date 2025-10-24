@@ -32,7 +32,7 @@ var ListCmd = &base.ListCmd[*hcloud.Certificate, schema.Certificate]{
 
 	OutputTable: func(t *output.Table[*hcloud.Certificate], _ hcapi2.Client) {
 		t.
-			AddAllowedFields(hcloud.Certificate{}).
+			AddAllowedFields(&hcloud.Certificate{}).
 			RemoveAllowedField("certificate", "chain").
 			AddFieldFn("labels", func(cert *hcloud.Certificate) string {
 				return util.LabelsToString(cert.Labels)

@@ -213,10 +213,13 @@ func (o *Table[T]) AddFieldFn(field string, fn FieldFn[T]) *Table[T] {
 }
 
 // AddAllowedFields reads all first level fieldnames of the struct and allows them to be used.
-func (o *Table[T]) AddAllowedFields(obj interface{}) *Table[T] {
+func (o *Table[T]) AddAllowedFields(obj T) *Table[T] {
 	v := reflect.ValueOf(obj)
+	if v.Kind() == reflect.Ptr {
+		v = v.Elem()
+	}
 	if v.Kind() != reflect.Struct {
-		panic("AddAllowedFields input must be a struct")
+		panic("AddAllowedFields input must be a struct or a pointer to a struct")
 	}
 	t := v.Type()
 	for i := 0; i < v.NumField(); i++ {
@@ -283,7 +286,7 @@ func (o *Table[T]) Flush() error {
 // Write writes a table line.
 func (o *Table[T]) Write(columns []string, obj T) {
 	data := structs.Map(obj)
-	dataL := map[string]interface{}{}
+	dataL := map[string]any{}
 	for key, value := range data {
 		dataL[strings.ToLower(key)] = value
 	}

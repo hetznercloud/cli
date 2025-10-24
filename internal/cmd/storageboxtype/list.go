@@ -29,7 +29,7 @@ var ListCmd = base.ListCmd[*hcloud.StorageBoxType, schema.StorageBoxType]{
 
 	OutputTable: func(t *output.Table[*hcloud.StorageBoxType], _ hcapi2.Client) {
 		t.
-			AddAllowedFields(hcloud.StorageBoxType{}).
+			AddAllowedFields(&hcloud.StorageBoxType{}).
 			AddFieldFn("size", func(storageBoxType *hcloud.StorageBoxType) string {
 				return humanize.IBytes(uint64(storageBoxType.Size))
 			}).

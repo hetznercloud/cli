@@ -75,7 +75,7 @@ var ListCmd = &base.ListCmd[*hcloud.ZoneRRSet, schema.ZoneRRSet]{
 
 	OutputTable: func(t *output.Table[*hcloud.ZoneRRSet], _ hcapi2.Client) {
 		t.
-			AddAllowedFields(hcloud.ZoneRRSet{}).
+			AddAllowedFields(&hcloud.ZoneRRSet{}).
 			RemoveAllowedField("zone").
 			AddFieldFn("protection", func(rrSet *hcloud.ZoneRRSet) string {
 				var protection []string

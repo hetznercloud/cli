@@ -33,7 +33,7 @@ var ListCmd = &base.ListCmd[*hcloud.PrimaryIP, schema.PrimaryIP]{
 
 	OutputTable: func(t *output.Table[*hcloud.PrimaryIP], client hcapi2.Client) {
 		t.
-			AddAllowedFields(hcloud.PrimaryIP{}).
+			AddAllowedFields(&hcloud.PrimaryIP{}).
 			AddFieldFn("ip", func(primaryIP *hcloud.PrimaryIP) string {
 				// Format IPv6 correctly
 				if primaryIP.Network != nil {

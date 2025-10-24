@@ -52,7 +52,7 @@ var ListCmd = base.ListCmd[*hcloud.StorageBoxSubaccount, schema.StorageBoxSubacc
 
 	OutputTable: func(t *output.Table[*hcloud.StorageBoxSubaccount], _ hcapi2.Client) {
 		t.
-			AddAllowedFields(hcloud.StorageBoxSubaccount{}).
+			AddAllowedFields(&hcloud.StorageBoxSubaccount{}).
 			AddFieldFn("description", func(subaccount *hcloud.StorageBoxSubaccount) string {
 				return util.NA(subaccount.Description)
 			}).

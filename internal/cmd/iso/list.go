@@ -70,7 +70,7 @@ var ListCmd = &base.ListCmd[*hcloud.ISO, schema.ISO]{
 
 	OutputTable: func(t *output.Table[*hcloud.ISO], _ hcapi2.Client) {
 		t.
-			AddAllowedFields(hcloud.ISO{}).
+			AddAllowedFields(&hcloud.ISO{}).
 			AddFieldFn("architecture", func(iso *hcloud.ISO) string {
 				if iso.Architecture == nil {
 					return "-"

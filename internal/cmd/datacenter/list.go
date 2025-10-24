@@ -28,7 +28,7 @@ var ListCmd = &base.ListCmd[*hcloud.Datacenter, schema.Datacenter]{
 
 	OutputTable: func(t *output.Table[*hcloud.Datacenter], _ hcapi2.Client) {
 		t.
-			AddAllowedFields(hcloud.Datacenter{}).
+			AddAllowedFields(&hcloud.Datacenter{}).
 			AddFieldFn("location", func(datacenter *hcloud.Datacenter) string {
 				return datacenter.Location.Name
 			})

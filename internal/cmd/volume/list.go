@@ -33,7 +33,7 @@ var ListCmd = &base.ListCmd[*hcloud.Volume, schema.Volume]{
 
 	OutputTable: func(t *output.Table[*hcloud.Volume], client hcapi2.Client) {
 		t.
-			AddAllowedFields(hcloud.Volume{}).
+			AddAllowedFields(&hcloud.Volume{}).
 			AddFieldFn("server", func(volume *hcloud.Volume) string {
 				var server string
 				if volume.Server != nil {

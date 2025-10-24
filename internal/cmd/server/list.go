@@ -66,7 +66,7 @@ var ListCmd = &base.ListCmd[*hcloud.Server, schema.Server]{
 
 	OutputTable: func(t *output.Table[*hcloud.Server], client hcapi2.Client) {
 		t.
-			AddAllowedFields(hcloud.Server{}).
+			AddAllowedFields(&hcloud.Server{}).
 			AddFieldFn("ipv4", func(server *hcloud.Server) string {
 				if server.PublicNet.IPv4.IsUnspecified() {
 					return "-"

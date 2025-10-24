@@ -32,7 +32,7 @@ var ListCmd = &base.ListCmd[*hcloud.LoadBalancer, schema.LoadBalancer]{
 
 	OutputTable: func(t *output.Table[*hcloud.LoadBalancer], _ hcapi2.Client) {
 		t.
-			AddAllowedFields(hcloud.LoadBalancer{}).
+			AddAllowedFields(&hcloud.LoadBalancer{}).
 			AddFieldFn("ipv4", func(loadBalancer *hcloud.LoadBalancer) string {
 				return loadBalancer.PublicNet.IPv4.IP.String()
 			}).

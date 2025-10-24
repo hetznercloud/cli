@@ -68,7 +68,7 @@ var ListCmd = &base.ListCmd[*hcloud.Image, schema.Image]{
 
 	OutputTable: func(t *output.Table[*hcloud.Image], client hcapi2.Client) {
 		t.
-			AddAllowedFields(hcloud.Image{}).
+			AddAllowedFields(&hcloud.Image{}).
 			AddFieldAlias("imagesize", "image size").
 			AddFieldAlias("disksize", "disk size").
 			AddFieldAlias("osflavor", "os flavor").

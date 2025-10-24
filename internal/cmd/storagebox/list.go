@@ -33,7 +33,7 @@ var ListCmd = base.ListCmd[*hcloud.StorageBox, schema.StorageBox]{
 
 	OutputTable: func(t *output.Table[*hcloud.StorageBox], _ hcapi2.Client) {
 		t.
-			AddAllowedFields(hcloud.StorageBox{}).
+			AddAllowedFields(&hcloud.StorageBox{}).
 			AddFieldFn("type", func(storageBox *hcloud.StorageBox) string {
 				return storageBox.StorageBoxType.Name
 			}).

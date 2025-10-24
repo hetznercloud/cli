@@ -30,7 +30,7 @@ var ListCmd = &base.ListCmd[*hcloud.Firewall, schema.Firewall]{
 
 	OutputTable: func(t *output.Table[*hcloud.Firewall], _ hcapi2.Client) {
 		t.
-			AddAllowedFields(hcloud.Firewall{}).
+			AddAllowedFields(&hcloud.Firewall{}).
 			AddFieldFn("rules_count", func(firewall *hcloud.Firewall) string {
 				count := len(firewall.Rules)
 				if count == 1 {

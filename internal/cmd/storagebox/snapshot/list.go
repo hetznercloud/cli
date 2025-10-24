@@ -61,7 +61,7 @@ var ListCmd = base.ListCmd[*hcloud.StorageBoxSnapshot, schema.StorageBoxSnapshot
 
 	OutputTable: func(t *output.Table[*hcloud.StorageBoxSnapshot], _ hcapi2.Client) {
 		t.
-			AddAllowedFields(hcloud.StorageBoxSnapshot{}).
+			AddAllowedFields(&hcloud.StorageBoxSnapshot{}).
 			AddFieldFn("size", func(snapshot *hcloud.StorageBoxSnapshot) string {
 				return humanize.IBytes(snapshot.Stats.Size)
 			}).

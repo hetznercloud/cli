@@ -32,7 +32,7 @@ var ListCmd = &base.ListCmd[*hcloud.PlacementGroup, schema.PlacementGroup]{
 
 	OutputTable: func(t *output.Table[*hcloud.PlacementGroup], _ hcapi2.Client) {
 		t.
-			AddAllowedFields(hcloud.PlacementGroup{}).
+			AddAllowedFields(&hcloud.PlacementGroup{}).
 			AddFieldFn("servers", func(placementGroup *hcloud.PlacementGroup) string {
 				count := len(placementGroup.Servers)
 				if count == 1 {

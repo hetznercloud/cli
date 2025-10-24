@@ -31,7 +31,7 @@ var ListCmd = &base.ListCmd[*hcloud.ServerType, schema.ServerType]{
 
 	OutputTable: func(t *output.Table[*hcloud.ServerType], _ hcapi2.Client) {
 		t.
-			AddAllowedFields(hcloud.ServerType{}).
+			AddAllowedFields(&hcloud.ServerType{}).
 			AddFieldAlias("storagetype", "storage type").
 			AddFieldFn("memory", func(serverType *hcloud.ServerType) string {
 				return fmt.Sprintf("%.1f GB", serverType.Memory)
