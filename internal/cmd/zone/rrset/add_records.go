@@ -66,6 +66,11 @@ If the Zone RRSet doesn't exist, it will automatically be created.
 			return err
 		}
 
+		// TXT: Format record values to simplify its usage
+		if rrset.Type == hcloud.ZoneRRSetTypeTXT {
+			FormatTXTRecords(cmd, opts.Records)
+		}
+
 		if ttl, _ := cmd.Flags().GetInt("ttl"); ttl != 0 {
 			opts.TTL = &ttl
 		}

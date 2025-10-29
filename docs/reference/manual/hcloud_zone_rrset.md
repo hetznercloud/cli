@@ -4,7 +4,11 @@
 
 ### Synopsis
 
-For more details, see the documentation for Zones https://docs.hetzner.cloud/reference/cloud#zones or Zone RRSets https://docs.hetzner.cloud/reference/cloud#zone-rrsets.
+For more details, see the documentation for Zones https://docs.hetzner.cloud/reference/cloud#zones
+or Zone RRSets https://docs.hetzner.cloud/reference/cloud#zone-rrsets.
+
+TXT records format must consist of one or many quoted strings of 255 characters. If the
+user provider TXT records are not quoted, they will be formatted for you.
 
 Experimental: DNS API is in beta, breaking changes may occur within minor releases.
 See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.

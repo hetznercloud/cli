@@ -12,14 +12,20 @@ import (
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud/exp/zoneutil"
 )
 
 func NewCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   "rrset",
-		Aliases:               []string{"record", "records"},
-		Short:                 "Manage Zone RRSets (records)",
-		Long:                  "For more details, see the documentation for Zones https://docs.hetzner.cloud/reference/cloud#zones or Zone RRSets https://docs.hetzner.cloud/reference/cloud#zone-rrsets.",
+		Use:     "rrset",
+		Aliases: []string{"record", "records"},
+		Short:   "Manage Zone RRSets (records)",
+		Long: `
+For more details, see the documentation for Zones https://docs.hetzner.cloud/reference/cloud#zones
+or Zone RRSets https://docs.hetzner.cloud/reference/cloud#zone-rrsets.
+
+TXT records format must consist of one or many quoted strings of 255 characters. If the
+user provider TXT records are not quoted, they will be formatted for you.`,
 		Args:                  util.Validate,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
@@ -138,5 +144,19 @@ func rrsetArgumentsCompletionFuncs(client hcapi2.Client) []cobra.CompletionFunc 
 
 			return maps.Keys(uniqueRRSetTypes)
 		}),
+	}
+}
+
+func FormatTXTRecords(cmd *cobra.Command, records []hcloud.ZoneRRSetRecord) {
+	changed := false
+	for i := range records {
+		if !zoneutil.IsTXTRecordQuoted(records[i].Value) {
+			records[i].Value = zoneutil.FormatTXTRecord(records[i].Value)
+			cmd.Printf("Warning: Changed TXT record to: %s\n", records[i].Value)
+			changed = true
+		}
+	}
+	if changed {
+		cmd.Printf("Warning: Learn more why in 'hcloud zone rrset --help'\n")
 	}
 }

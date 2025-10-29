@@ -62,6 +62,11 @@ var SetRecordsCmd = base.Cmd{
 			return err
 		}
 
+		// TXT: Format record values to simplify its usage
+		if hcloud.ZoneRRSetType(rrsetType) == hcloud.ZoneRRSetTypeTXT {
+			FormatTXTRecords(cmd, records)
+		}
+
 		zoneIDOrName, err = util.ParseZoneIDOrName(zoneIDOrName)
 		if err != nil {
 			return fmt.Errorf("failed to convert Zone name to ascii: %w", err)
