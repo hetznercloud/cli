@@ -58,7 +58,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.PrimaryIP]{
 		util.DescribeLabels(out, primaryIP.Labels, "")
 
 		_, _ = fmt.Fprintf(out, "Datacenter:\t\n")
-		_, _ = fmt.Fprintf(out, util.PrefixLines(datacenter.DescribeDatacenter(s.Client(), primaryIP.Datacenter, true), "  "))
+		_, _ = fmt.Fprintf(out, "%s", util.PrefixLines(datacenter.DescribeDatacenter(s.Client(), primaryIP.Datacenter, true), "  "))
 		return nil
 	},
 }

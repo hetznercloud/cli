@@ -45,7 +45,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Image]{
 		}
 		return img, hcloud.SchemaFromImage(img), nil
 	},
-	PrintText: func(_ state.State, cmd *cobra.Command, out io.Writer, image *hcloud.Image) error {
+	PrintText: func(_ state.State, _ *cobra.Command, out io.Writer, image *hcloud.Image) error {
 		_, _ = fmt.Fprint(out, DescribeImage(image))
 		return nil
 	},

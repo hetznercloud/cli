@@ -27,7 +27,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.PlacementGroup]{
 		return pg, hcloud.SchemaFromPlacementGroup(pg), nil
 	},
 	PrintText: func(s state.State, _ *cobra.Command, out io.Writer, placementGroup *hcloud.PlacementGroup) error {
-		_, _ = fmt.Fprintf(out, DescribePlacementGroup(s.Client(), placementGroup))
+		_, _ = fmt.Fprintf(out, "%s", DescribePlacementGroup(s.Client(), placementGroup))
 		return nil
 	},
 }

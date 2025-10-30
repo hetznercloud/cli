@@ -39,7 +39,7 @@ func DescribeISO(iso *hcloud.ISO) string {
 	_, _ = fmt.Fprintf(&sb, "Name:\t%s\n", iso.Name)
 	_, _ = fmt.Fprintf(&sb, "Description:\t%s\n", iso.Description)
 	_, _ = fmt.Fprintf(&sb, "Type:\t%s\n", iso.Type)
-	_, _ = fmt.Fprintf(&sb, util.DescribeDeprecation(iso))
+	_, _ = fmt.Fprintf(&sb, "%s", util.DescribeDeprecation(iso))
 
 	architecture := "-"
 	if iso.Architecture != nil {

@@ -52,7 +52,7 @@ func DescribeStorageBoxType(s state.State, storageBoxType *hcloud.StorageBoxType
 		_, _ = fmt.Fprintf(&sb, "Automatic Snapshot Limit:\t%d\n", *storageBoxType.AutomaticSnapshotLimit)
 	}
 	_, _ = fmt.Fprintf(&sb, "Subaccounts Limit:\t%d\n", storageBoxType.SubaccountsLimit)
-	_, _ = fmt.Fprintf(&sb, util.DescribeDeprecation(storageBoxType))
+	_, _ = fmt.Fprintf(&sb, "%s", util.DescribeDeprecation(storageBoxType))
 
 	if short {
 		return sb.String(), nil
@@ -60,7 +60,7 @@ func DescribeStorageBoxType(s state.State, storageBoxType *hcloud.StorageBoxType
 
 	err := loadCurrencyFromAPI(s, storageBoxType)
 	if err != nil {
-		return "", fmt.Errorf("failed to get currency for Storage Box Type prices: %v", err)
+		return "", fmt.Errorf("failed to get currency for Storage Box Type prices: %w", err)
 	}
 
 	_, _ = fmt.Fprintf(&sb, "Pricings per Location:\n")

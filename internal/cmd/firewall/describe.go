@@ -70,7 +70,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Firewall]{
 			_, _ = fmt.Fprintf(out, "Applied To:\nNot applied\n")
 		} else {
 			_, _ = fmt.Fprintf(out, "Applied To:\t\n")
-			_, _ = fmt.Fprintf(out, describeResources(s.Client(), firewall.AppliedTo))
+			_, _ = fmt.Fprintf(out, "%s", describeResources(s.Client(), firewall.AppliedTo))
 		}
 
 		return nil

@@ -56,7 +56,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.LoadBalancer]{
 		_, _ = fmt.Fprintf(out, "Algorithm:\t%s\n", loadBalancer.Algorithm.Type)
 
 		_, _ = fmt.Fprintf(out, "Load Balancer Type:\t\n")
-		_, _ = fmt.Fprintf(out, util.PrefixLines(loadbalancertype.DescribeLoadBalancerType(s, loadBalancer.LoadBalancerType, true), "  "))
+		_, _ = fmt.Fprintf(out, "%s", util.PrefixLines(loadbalancertype.DescribeLoadBalancerType(s, loadBalancer.LoadBalancerType, true), "  "))
 
 		if len(loadBalancer.Services) == 0 {
 			_, _ = fmt.Fprintf(out, "Services:\tNo services\n")
