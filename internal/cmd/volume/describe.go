@@ -35,7 +35,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Volume]{
 		_, _ = fmt.Fprintf(out, "Linux Device:\t%s\n", volume.LinuxDevice)
 
 		_, _ = fmt.Fprintf(out, "Location:\t\n")
-		_, _ = fmt.Fprintf(out, util.PrefixLines(location.DescribeLocation(volume.Location), "  "))
+		_, _ = fmt.Fprintf(out, "%s", util.PrefixLines(location.DescribeLocation(volume.Location), "  "))
 
 		if volume.Server != nil {
 			_, _ = fmt.Fprintf(out, "Server:\t\n")

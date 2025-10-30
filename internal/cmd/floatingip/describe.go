@@ -25,7 +25,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.FloatingIP]{
 		}
 		return ip, hcloud.SchemaFromFloatingIP(ip), nil
 	},
-	PrintText: func(s state.State, _ *cobra.Command, out io.Writer, floatingIP *hcloud.FloatingIP) error {
+	PrintText: func(_ state.State, _ *cobra.Command, out io.Writer, floatingIP *hcloud.FloatingIP) error {
 		_, _ = fmt.Fprintf(out, "ID:\t%d\n", floatingIP.ID)
 		_, _ = fmt.Fprintf(out, "Type:\t%s\n", floatingIP.Type)
 		_, _ = fmt.Fprintf(out, "Name:\t%s\n", floatingIP.Name)

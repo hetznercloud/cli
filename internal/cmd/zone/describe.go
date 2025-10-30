@@ -32,7 +32,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Zone]{
 
 		return zone, hcloud.SchemaFromZone(zone), nil
 	},
-	PrintText: func(_ state.State, cmd *cobra.Command, out io.Writer, zone *hcloud.Zone) error {
+	PrintText: func(_ state.State, _ *cobra.Command, out io.Writer, zone *hcloud.Zone) error {
 
 		name := util.DisplayZoneName(zone.Name)
 		if name != zone.Name {

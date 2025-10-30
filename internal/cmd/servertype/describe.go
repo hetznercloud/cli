@@ -56,7 +56,7 @@ func DescribeServerType(s state.State, serverType *hcloud.ServerType, short bool
 
 	pricings, err := fullPricingInfo(s, serverType)
 	if err != nil {
-		return "", fmt.Errorf("failed to get prices for Server Type: %v", err)
+		return "", fmt.Errorf("failed to get prices for Server Type: %w", err)
 	}
 
 	locations := joinLocationInfo(serverType, pricings)
@@ -66,7 +66,7 @@ func DescribeServerType(s state.State, serverType *hcloud.ServerType, short bool
 		_, _ = fmt.Fprintf(&sb, "  - Location:\t\t\t%s\n", info.Location.Name)
 
 		if deprecationText := util.DescribeDeprecation(info); deprecationText != "" {
-			_, _ = fmt.Fprintf(&sb, util.PrefixLines(deprecationText, "    "))
+			_, _ = fmt.Fprintf(&sb, "%s", util.PrefixLines(deprecationText, "    "))
 		}
 
 		_, _ = fmt.Fprintf(&sb, "    Pricing:\n")

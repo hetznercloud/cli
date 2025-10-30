@@ -39,7 +39,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Server]{
 
 		serverTypeDescription, _ := servertype.DescribeServerType(s, server.ServerType, true)
 		_, _ = fmt.Fprintf(out, "Server Type:\t\n")
-		_, _ = fmt.Fprintf(out, util.PrefixLines(serverTypeDescription, "  "))
+		_, _ = fmt.Fprintf(out, "%s", util.PrefixLines(serverTypeDescription, "  "))
 
 		// As we already know the location the server is in, we can show the deprecation info
 		// of that server type in that specific location.
@@ -48,7 +48,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Server]{
 		})
 		if locationInfoIndex >= 0 {
 			if text := util.DescribeDeprecation(server.ServerType.Locations[locationInfoIndex]); text != "" {
-				_, _ = fmt.Fprintf(out, util.PrefixLines(text, "  "))
+				_, _ = fmt.Fprintf(out, "%s", util.PrefixLines(text, "  "))
 			}
 		}
 
@@ -128,13 +128,13 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Server]{
 
 		if server.Image != nil {
 			_, _ = fmt.Fprintf(out, "Image:\t\n")
-			_, _ = fmt.Fprintf(out, util.PrefixLines(image.DescribeImage(server.Image), "  "))
+			_, _ = fmt.Fprintf(out, "%s", util.PrefixLines(image.DescribeImage(server.Image), "  "))
 		} else {
 			_, _ = fmt.Fprintf(out, "Image:\tNo Image\n")
 		}
 
 		_, _ = fmt.Fprintf(out, "Datacenter:\t\n")
-		_, _ = fmt.Fprintf(out, util.PrefixLines(datacenter.DescribeDatacenter(s.Client(), server.Datacenter, true), "  "))
+		_, _ = fmt.Fprintf(out, "%s", util.PrefixLines(datacenter.DescribeDatacenter(s.Client(), server.Datacenter, true), "  "))
 
 		_, _ = fmt.Fprintf(out, "Traffic:\t\n")
 		_, _ = fmt.Fprintf(out, "  Outgoing:\t%v\n", humanize.IBytes(server.OutgoingTraffic))
@@ -155,7 +155,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Server]{
 
 		if server.ISO != nil {
 			_, _ = fmt.Fprintf(out, "ISO:\t\n")
-			_, _ = fmt.Fprintf(out, util.PrefixLines(iso.DescribeISO(server.ISO), "  "))
+			_, _ = fmt.Fprintf(out, "%s", util.PrefixLines(iso.DescribeISO(server.ISO), "  "))
 		} else {
 			_, _ = fmt.Fprintf(out, "ISO:\tNo ISO attached\n")
 		}
@@ -168,7 +168,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Server]{
 
 		if server.PlacementGroup != nil {
 			_, _ = fmt.Fprintf(out, "Placement Group:\t\n")
-			_, _ = fmt.Fprintf(out, util.PrefixLines(placementgroup.DescribePlacementGroup(s.Client(), server.PlacementGroup), "  "))
+			_, _ = fmt.Fprintf(out, "%s", util.PrefixLines(placementgroup.DescribePlacementGroup(s.Client(), server.PlacementGroup), "  "))
 		} else {
 			_, _ = fmt.Fprintf(out, "Placement Group:\tNo Placement Group set\n")
 		}
