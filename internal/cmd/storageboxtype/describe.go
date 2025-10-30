@@ -28,7 +28,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBoxType]{
 		return st, hcloud.SchemaFromStorageBoxType(st), nil
 	},
 	PrintText: func(s state.State, _ *cobra.Command, out io.Writer, storageBoxType *hcloud.StorageBoxType) error {
-		description, err := DescribeStorageBoxType(s, storageBoxType)
+		description, err := DescribeStorageBoxType(s, storageBoxType, false)
 		if err != nil {
 			return err
 		}
@@ -38,7 +38,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBoxType]{
 	Experimental: experimental.StorageBoxes,
 }
 
-func DescribeStorageBoxType(s state.State, storageBoxType *hcloud.StorageBoxType) (string, error) {
+func DescribeStorageBoxType(s state.State, storageBoxType *hcloud.StorageBoxType, short bool) (string, error) {
 	var sb strings.Builder
 
 	_, _ = fmt.Fprintf(&sb, "ID:\t%d\n", storageBoxType.ID)
@@ -53,6 +53,10 @@ func DescribeStorageBoxType(s state.State, storageBoxType *hcloud.StorageBoxType
 	}
 	_, _ = fmt.Fprintf(&sb, "Subaccounts Limit:\t%d\n", storageBoxType.SubaccountsLimit)
 	_, _ = fmt.Fprintf(&sb, util.DescribeDeprecation(storageBoxType))
+
+	if short {
+		return sb.String(), nil
+	}
 
 	err := loadCurrencyFromAPI(s, storageBoxType)
 	if err != nil {
