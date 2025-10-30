@@ -27,39 +27,39 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Network]{
 		return n, hcloud.SchemaFromNetwork(n), nil
 	},
 	PrintText: func(_ state.State, _ *cobra.Command, out io.Writer, network *hcloud.Network) error {
-		_, _ = fmt.Fprintf(out, "ID:\t%d\n", network.ID)
-		_, _ = fmt.Fprintf(out, "Name:\t%s\n", network.Name)
-		_, _ = fmt.Fprintf(out, "Created:\t%s (%s)\n", util.Datetime(network.Created), humanize.Time(network.Created))
-		_, _ = fmt.Fprintf(out, "IP Range:\t%s\n", network.IPRange.String())
-		_, _ = fmt.Fprintf(out, "Expose Routes to vSwitch:\t%s\n", util.YesNo(network.ExposeRoutesToVSwitch))
+		fmt.Fprintf(out, "ID:\t%d\n", network.ID)
+		fmt.Fprintf(out, "Name:\t%s\n", network.Name)
+		fmt.Fprintf(out, "Created:\t%s (%s)\n", util.Datetime(network.Created), humanize.Time(network.Created))
+		fmt.Fprintf(out, "IP Range:\t%s\n", network.IPRange.String())
+		fmt.Fprintf(out, "Expose Routes to vSwitch:\t%s\n", util.YesNo(network.ExposeRoutesToVSwitch))
 
 		if len(network.Subnets) == 0 {
-			_, _ = fmt.Fprintf(out, "Subnets:\tNo subnets\n")
+			fmt.Fprintf(out, "Subnets:\tNo subnets\n")
 		} else {
-			_, _ = fmt.Fprintf(out, "Subnets:\t\n")
+			fmt.Fprintf(out, "Subnets:\t\n")
 			for _, subnet := range network.Subnets {
-				_, _ = fmt.Fprintf(out, "  - Type:\t%s\n", subnet.Type)
-				_, _ = fmt.Fprintf(out, "    Network Zone:\t%s\n", subnet.NetworkZone)
-				_, _ = fmt.Fprintf(out, "    IP Range:\t%s\n", subnet.IPRange.String())
-				_, _ = fmt.Fprintf(out, "    Gateway:\t%s\n", subnet.Gateway.String())
+				fmt.Fprintf(out, "  - Type:\t%s\n", subnet.Type)
+				fmt.Fprintf(out, "    Network Zone:\t%s\n", subnet.NetworkZone)
+				fmt.Fprintf(out, "    IP Range:\t%s\n", subnet.IPRange.String())
+				fmt.Fprintf(out, "    Gateway:\t%s\n", subnet.Gateway.String())
 				if subnet.Type == hcloud.NetworkSubnetTypeVSwitch {
-					_, _ = fmt.Fprintf(out, "    vSwitch ID:\t%d\n", subnet.VSwitchID)
+					fmt.Fprintf(out, "    vSwitch ID:\t%d\n", subnet.VSwitchID)
 				}
 			}
 		}
 
 		if len(network.Routes) == 0 {
-			_, _ = fmt.Fprintf(out, "Routes:\tNo routes\n")
+			fmt.Fprintf(out, "Routes:\tNo routes\n")
 		} else {
-			_, _ = fmt.Fprintf(out, "Routes:\t\n")
+			fmt.Fprintf(out, "Routes:\t\n")
 			for _, route := range network.Routes {
-				_, _ = fmt.Fprintf(out, "  - Destination:\t%s\n", route.Destination.String())
-				_, _ = fmt.Fprintf(out, "    Gateway:\t%s\n", route.Gateway.String())
+				fmt.Fprintf(out, "  - Destination:\t%s\n", route.Destination.String())
+				fmt.Fprintf(out, "    Gateway:\t%s\n", route.Gateway.String())
 			}
 		}
 
-		_, _ = fmt.Fprintf(out, "Protection:\t\n")
-		_, _ = fmt.Fprintf(out, "  Delete:\t%s\n", util.YesNo(network.Protection.Delete))
+		fmt.Fprintf(out, "Protection:\t\n")
+		fmt.Fprintf(out, "  Delete:\t%s\n", util.YesNo(network.Protection.Delete))
 
 		util.DescribeLabels(out, network.Labels, "")
 		return nil

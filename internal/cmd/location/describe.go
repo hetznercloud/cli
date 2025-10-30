@@ -26,20 +26,20 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Location]{
 		return l, hcloud.SchemaFromLocation(l), nil
 	},
 	PrintText: func(_ state.State, _ *cobra.Command, out io.Writer, location *hcloud.Location) error {
-		_, _ = fmt.Fprint(out, DescribeLocation(location))
+		fmt.Fprint(out, DescribeLocation(location))
 		return nil
 	},
 }
 
 func DescribeLocation(location *hcloud.Location) string {
 	var sb strings.Builder
-	_, _ = fmt.Fprintf(&sb, "Location ID:\t%d\n", location.ID)
-	_, _ = fmt.Fprintf(&sb, "Name:\t%s\n", location.Name)
-	_, _ = fmt.Fprintf(&sb, "Description:\t%s\n", location.Description)
-	_, _ = fmt.Fprintf(&sb, "Network Zone:\t%s\n", location.NetworkZone)
-	_, _ = fmt.Fprintf(&sb, "Country:\t%s\n", location.Country)
-	_, _ = fmt.Fprintf(&sb, "City:\t%s\n", location.City)
-	_, _ = fmt.Fprintf(&sb, "Latitude:\t%f\n", location.Latitude)
-	_, _ = fmt.Fprintf(&sb, "Longitude:\t%f\n", location.Longitude)
+	fmt.Fprintf(&sb, "Location ID:\t%d\n", location.ID)
+	fmt.Fprintf(&sb, "Name:\t%s\n", location.Name)
+	fmt.Fprintf(&sb, "Description:\t%s\n", location.Description)
+	fmt.Fprintf(&sb, "Network Zone:\t%s\n", location.NetworkZone)
+	fmt.Fprintf(&sb, "Country:\t%s\n", location.Country)
+	fmt.Fprintf(&sb, "City:\t%s\n", location.City)
+	fmt.Fprintf(&sb, "Latitude:\t%f\n", location.Latitude)
+	fmt.Fprintf(&sb, "Longitude:\t%f\n", location.Longitude)
 	return sb.String()
 }

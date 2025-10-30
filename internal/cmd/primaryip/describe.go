@@ -27,38 +27,38 @@ var DescribeCmd = base.DescribeCmd[*hcloud.PrimaryIP]{
 		return ip, hcloud.SchemaFromPrimaryIP(ip), nil
 	},
 	PrintText: func(s state.State, _ *cobra.Command, out io.Writer, primaryIP *hcloud.PrimaryIP) error {
-		_, _ = fmt.Fprintf(out, "ID:\t%d\n", primaryIP.ID)
-		_, _ = fmt.Fprintf(out, "Name:\t%s\n", primaryIP.Name)
-		_, _ = fmt.Fprintf(out, "Created:\t%s (%s)\n", util.Datetime(primaryIP.Created), humanize.Time(primaryIP.Created))
-		_, _ = fmt.Fprintf(out, "Type:\t%s\n", primaryIP.Type)
-		_, _ = fmt.Fprintf(out, "IP:\t%s\n", primaryIP.IP.String())
-		_, _ = fmt.Fprintf(out, "Blocked:\t%s\n", util.YesNo(primaryIP.Blocked))
-		_, _ = fmt.Fprintf(out, "Auto delete:\t%s\n", util.YesNo(primaryIP.AutoDelete))
+		fmt.Fprintf(out, "ID:\t%d\n", primaryIP.ID)
+		fmt.Fprintf(out, "Name:\t%s\n", primaryIP.Name)
+		fmt.Fprintf(out, "Created:\t%s (%s)\n", util.Datetime(primaryIP.Created), humanize.Time(primaryIP.Created))
+		fmt.Fprintf(out, "Type:\t%s\n", primaryIP.Type)
+		fmt.Fprintf(out, "IP:\t%s\n", primaryIP.IP.String())
+		fmt.Fprintf(out, "Blocked:\t%s\n", util.YesNo(primaryIP.Blocked))
+		fmt.Fprintf(out, "Auto delete:\t%s\n", util.YesNo(primaryIP.AutoDelete))
 
 		if primaryIP.AssigneeID != 0 {
-			_, _ = fmt.Fprintf(out, "Assignee:\t\n")
-			_, _ = fmt.Fprintf(out, "  ID:\t%d\n", primaryIP.AssigneeID)
-			_, _ = fmt.Fprintf(out, "  Type:\t%s\n", primaryIP.AssigneeType)
+			fmt.Fprintf(out, "Assignee:\t\n")
+			fmt.Fprintf(out, "  ID:\t%d\n", primaryIP.AssigneeID)
+			fmt.Fprintf(out, "  Type:\t%s\n", primaryIP.AssigneeType)
 		} else {
-			_, _ = fmt.Fprintf(out, "Assignee:\tNot assigned\n")
+			fmt.Fprintf(out, "Assignee:\tNot assigned\n")
 		}
 
 		if len(primaryIP.DNSPtr) == 0 {
-			_, _ = fmt.Fprintf(out, "DNS:\tNo reverse DNS entries\n")
+			fmt.Fprintf(out, "DNS:\tNo reverse DNS entries\n")
 		} else {
-			_, _ = fmt.Fprintf(out, "DNS:\t\n")
+			fmt.Fprintf(out, "DNS:\t\n")
 			for ip, dns := range primaryIP.DNSPtr {
-				_, _ = fmt.Fprintf(out, "  %s:\t%s\n", ip, dns)
+				fmt.Fprintf(out, "  %s:\t%s\n", ip, dns)
 			}
 		}
 
-		_, _ = fmt.Fprintf(out, "Protection:\t\n")
-		_, _ = fmt.Fprintf(out, "  Delete:\t%s\n", util.YesNo(primaryIP.Protection.Delete))
+		fmt.Fprintf(out, "Protection:\t\n")
+		fmt.Fprintf(out, "  Delete:\t%s\n", util.YesNo(primaryIP.Protection.Delete))
 
 		util.DescribeLabels(out, primaryIP.Labels, "")
 
-		_, _ = fmt.Fprintf(out, "Datacenter:\t\n")
-		_, _ = fmt.Fprintf(out, "%s", util.PrefixLines(datacenter.DescribeDatacenter(s.Client(), primaryIP.Datacenter, true), "  "))
+		fmt.Fprintf(out, "Datacenter:\t\n")
+		fmt.Fprintf(out, "%s", util.PrefixLines(datacenter.DescribeDatacenter(s.Client(), primaryIP.Datacenter, true), "  "))
 		return nil
 	},
 }

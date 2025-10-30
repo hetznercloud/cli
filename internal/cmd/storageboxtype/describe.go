@@ -32,7 +32,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBoxType]{
 		if err != nil {
 			return err
 		}
-		_, _ = fmt.Fprint(out, description)
+		fmt.Fprint(out, description)
 		return nil
 	},
 	Experimental: experimental.StorageBoxes,
@@ -41,18 +41,18 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBoxType]{
 func DescribeStorageBoxType(s state.State, storageBoxType *hcloud.StorageBoxType, short bool) (string, error) {
 	var sb strings.Builder
 
-	_, _ = fmt.Fprintf(&sb, "ID:\t%d\n", storageBoxType.ID)
-	_, _ = fmt.Fprintf(&sb, "Name:\t%s\n", storageBoxType.Name)
-	_, _ = fmt.Fprintf(&sb, "Description:\t%s\n", storageBoxType.Description)
-	_, _ = fmt.Fprintf(&sb, "Size:\t%s\n", humanize.IBytes(uint64(storageBoxType.Size)))
+	fmt.Fprintf(&sb, "ID:\t%d\n", storageBoxType.ID)
+	fmt.Fprintf(&sb, "Name:\t%s\n", storageBoxType.Name)
+	fmt.Fprintf(&sb, "Description:\t%s\n", storageBoxType.Description)
+	fmt.Fprintf(&sb, "Size:\t%s\n", humanize.IBytes(uint64(storageBoxType.Size)))
 	if storageBoxType.SnapshotLimit != nil {
-		_, _ = fmt.Fprintf(&sb, "Snapshot Limit:\t%d\n", *storageBoxType.SnapshotLimit)
+		fmt.Fprintf(&sb, "Snapshot Limit:\t%d\n", *storageBoxType.SnapshotLimit)
 	}
 	if storageBoxType.AutomaticSnapshotLimit != nil {
-		_, _ = fmt.Fprintf(&sb, "Automatic Snapshot Limit:\t%d\n", *storageBoxType.AutomaticSnapshotLimit)
+		fmt.Fprintf(&sb, "Automatic Snapshot Limit:\t%d\n", *storageBoxType.AutomaticSnapshotLimit)
 	}
-	_, _ = fmt.Fprintf(&sb, "Subaccounts Limit:\t%d\n", storageBoxType.SubaccountsLimit)
-	_, _ = fmt.Fprintf(&sb, "%s", util.DescribeDeprecation(storageBoxType))
+	fmt.Fprintf(&sb, "Subaccounts Limit:\t%d\n", storageBoxType.SubaccountsLimit)
+	fmt.Fprintf(&sb, "%s", util.DescribeDeprecation(storageBoxType))
 
 	if short {
 		return sb.String(), nil
@@ -63,13 +63,13 @@ func DescribeStorageBoxType(s state.State, storageBoxType *hcloud.StorageBoxType
 		return "", fmt.Errorf("failed to get currency for Storage Box Type prices: %w", err)
 	}
 
-	_, _ = fmt.Fprintf(&sb, "Pricings per Location:\n")
+	fmt.Fprintf(&sb, "Pricings per Location:\n")
 	for _, price := range storageBoxType.Pricings {
-		_, _ = fmt.Fprintf(&sb, "  - Location:\t%s\n", price.Location)
-		_, _ = fmt.Fprintf(&sb, "    Hourly:\t%s\n", util.GrossPrice(price.PriceHourly))
-		_, _ = fmt.Fprintf(&sb, "    Monthly:\t%s\n", util.GrossPrice(price.PriceMonthly))
-		_, _ = fmt.Fprintf(&sb, "    Setup Fee:\t%s\n", util.GrossPrice(price.SetupFee))
-		_, _ = fmt.Fprintf(&sb, "\n")
+		fmt.Fprintf(&sb, "  - Location:\t%s\n", price.Location)
+		fmt.Fprintf(&sb, "    Hourly:\t%s\n", util.GrossPrice(price.PriceHourly))
+		fmt.Fprintf(&sb, "    Monthly:\t%s\n", util.GrossPrice(price.PriceMonthly))
+		fmt.Fprintf(&sb, "    Setup Fee:\t%s\n", util.GrossPrice(price.SetupFee))
+		fmt.Fprintf(&sb, "\n")
 	}
 
 	return sb.String(), nil

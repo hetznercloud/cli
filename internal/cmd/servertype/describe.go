@@ -31,7 +31,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.ServerType]{
 		if err != nil {
 			return err
 		}
-		_, _ = fmt.Fprint(out, description)
+		fmt.Fprint(out, description)
 		return nil
 	},
 }
@@ -39,16 +39,16 @@ var DescribeCmd = base.DescribeCmd[*hcloud.ServerType]{
 func DescribeServerType(s state.State, serverType *hcloud.ServerType, short bool) (string, error) {
 	var sb strings.Builder
 
-	_, _ = fmt.Fprintf(&sb, "ID:\t%d\n", serverType.ID)
-	_, _ = fmt.Fprintf(&sb, "Name:\t%s\n", serverType.Name)
-	_, _ = fmt.Fprintf(&sb, "Description:\t%s\n", serverType.Description)
-	_, _ = fmt.Fprintf(&sb, "Category:\t%s\n", serverType.Category)
-	_, _ = fmt.Fprintf(&sb, "Cores:\t%d\n", serverType.Cores)
-	_, _ = fmt.Fprintf(&sb, "CPU Type:\t%s\n", serverType.CPUType)
-	_, _ = fmt.Fprintf(&sb, "Architecture:\t%s\n", serverType.Architecture)
-	_, _ = fmt.Fprintf(&sb, "Memory:\t%.1f GB\n", serverType.Memory)
-	_, _ = fmt.Fprintf(&sb, "Disk:\t%d GB\n", serverType.Disk)
-	_, _ = fmt.Fprintf(&sb, "Storage Type:\t%s\n", serverType.StorageType)
+	fmt.Fprintf(&sb, "ID:\t%d\n", serverType.ID)
+	fmt.Fprintf(&sb, "Name:\t%s\n", serverType.Name)
+	fmt.Fprintf(&sb, "Description:\t%s\n", serverType.Description)
+	fmt.Fprintf(&sb, "Category:\t%s\n", serverType.Category)
+	fmt.Fprintf(&sb, "Cores:\t%d\n", serverType.Cores)
+	fmt.Fprintf(&sb, "CPU Type:\t%s\n", serverType.CPUType)
+	fmt.Fprintf(&sb, "Architecture:\t%s\n", serverType.Architecture)
+	fmt.Fprintf(&sb, "Memory:\t%.1f GB\n", serverType.Memory)
+	fmt.Fprintf(&sb, "Disk:\t%d GB\n", serverType.Disk)
+	fmt.Fprintf(&sb, "Storage Type:\t%s\n", serverType.StorageType)
 
 	if short {
 		return sb.String(), nil
@@ -60,21 +60,21 @@ func DescribeServerType(s state.State, serverType *hcloud.ServerType, short bool
 	}
 
 	locations := joinLocationInfo(serverType, pricings)
-	_, _ = fmt.Fprintf(&sb, "Locations:\n")
+	fmt.Fprintf(&sb, "Locations:\n")
 	for _, info := range locations {
 
-		_, _ = fmt.Fprintf(&sb, "  - Location:\t\t\t%s\n", info.Location.Name)
+		fmt.Fprintf(&sb, "  - Location:\t\t\t%s\n", info.Location.Name)
 
 		if deprecationText := util.DescribeDeprecation(info); deprecationText != "" {
-			_, _ = fmt.Fprintf(&sb, "%s", util.PrefixLines(deprecationText, "    "))
+			fmt.Fprintf(&sb, "%s", util.PrefixLines(deprecationText, "    "))
 		}
 
-		_, _ = fmt.Fprintf(&sb, "    Pricing:\n")
-		_, _ = fmt.Fprintf(&sb, "      Hourly:\t%s\n", util.GrossPrice(info.Pricing.Hourly))
-		_, _ = fmt.Fprintf(&sb, "      Monthly:\t%s\n", util.GrossPrice(info.Pricing.Monthly))
-		_, _ = fmt.Fprintf(&sb, "      Included Traffic:\t%s\n", humanize.IBytes(info.Pricing.IncludedTraffic))
-		_, _ = fmt.Fprintf(&sb, "      Additional Traffic:\t%s per TB\n", util.GrossPrice(info.Pricing.PerTBTraffic))
-		_, _ = fmt.Fprintf(&sb, "\n")
+		fmt.Fprintf(&sb, "    Pricing:\n")
+		fmt.Fprintf(&sb, "      Hourly:\t%s\n", util.GrossPrice(info.Pricing.Hourly))
+		fmt.Fprintf(&sb, "      Monthly:\t%s\n", util.GrossPrice(info.Pricing.Monthly))
+		fmt.Fprintf(&sb, "      Included Traffic:\t%s\n", humanize.IBytes(info.Pricing.IncludedTraffic))
+		fmt.Fprintf(&sb, "      Additional Traffic:\t%s per TB\n", util.GrossPrice(info.Pricing.PerTBTraffic))
+		fmt.Fprintf(&sb, "\n")
 	}
 
 	return sb.String(), nil

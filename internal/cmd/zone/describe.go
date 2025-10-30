@@ -39,54 +39,54 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Zone]{
 			name = fmt.Sprintf("%s (IDNA: %s)", name, zone.Name)
 		}
 
-		_, _ = fmt.Fprintf(out, "ID:\t%d\n", zone.ID)
-		_, _ = fmt.Fprintf(out, "Name:\t%s\n", name)
-		_, _ = fmt.Fprintf(out, "Created:\t%s (%s)\n", util.Datetime(zone.Created), humanize.Time(zone.Created))
-		_, _ = fmt.Fprintf(out, "Mode:\t%s\n", zone.Mode)
-		_, _ = fmt.Fprintf(out, "Status:\t%s\n", zone.Status)
-		_, _ = fmt.Fprintf(out, "TTL:\t%d\n", zone.TTL)
-		_, _ = fmt.Fprintf(out, "Registrar:\t%s\n", zone.Registrar)
-		_, _ = fmt.Fprintf(out, "Record Count:\t%d\n", zone.RecordCount)
-		_, _ = fmt.Fprintf(out, "Protection:\t\n")
-		_, _ = fmt.Fprintf(out, "  Delete:\t%s\n", util.YesNo(zone.Protection.Delete))
+		fmt.Fprintf(out, "ID:\t%d\n", zone.ID)
+		fmt.Fprintf(out, "Name:\t%s\n", name)
+		fmt.Fprintf(out, "Created:\t%s (%s)\n", util.Datetime(zone.Created), humanize.Time(zone.Created))
+		fmt.Fprintf(out, "Mode:\t%s\n", zone.Mode)
+		fmt.Fprintf(out, "Status:\t%s\n", zone.Status)
+		fmt.Fprintf(out, "TTL:\t%d\n", zone.TTL)
+		fmt.Fprintf(out, "Registrar:\t%s\n", zone.Registrar)
+		fmt.Fprintf(out, "Record Count:\t%d\n", zone.RecordCount)
+		fmt.Fprintf(out, "Protection:\t\n")
+		fmt.Fprintf(out, "  Delete:\t%s\n", util.YesNo(zone.Protection.Delete))
 
 		util.DescribeLabels(out, zone.Labels, "")
 
-		_, _ = fmt.Fprintf(out, "\n")
+		fmt.Fprintf(out, "\n")
 
-		_, _ = fmt.Fprintf(out, "Authoritative Nameservers:\n")
-		_, _ = fmt.Fprintf(out, "  Assigned:\n")
+		fmt.Fprintf(out, "Authoritative Nameservers:\n")
+		fmt.Fprintf(out, "  Assigned:\n")
 		if len(zone.AuthoritativeNameservers.Assigned) > 0 {
 			for _, srv := range zone.AuthoritativeNameservers.Assigned {
-				_, _ = fmt.Fprintf(out, "    - %s\n", srv)
+				fmt.Fprintf(out, "    - %s\n", srv)
 			}
 		} else {
-			_, _ = fmt.Fprintf(out, "    No assigned nameservers\n")
+			fmt.Fprintf(out, "    No assigned nameservers\n")
 		}
 
-		_, _ = fmt.Fprintf(out, "  Delegated:\n")
+		fmt.Fprintf(out, "  Delegated:\n")
 		if len(zone.AuthoritativeNameservers.Delegated) > 0 {
 			for _, srv := range zone.AuthoritativeNameservers.Delegated {
-				_, _ = fmt.Fprintf(out, "    - %s\n", srv)
+				fmt.Fprintf(out, "    - %s\n", srv)
 			}
 		} else {
-			_, _ = fmt.Fprintf(out, "    No delegated nameservers\n")
+			fmt.Fprintf(out, "    No delegated nameservers\n")
 		}
-		_, _ = fmt.Fprintf(out, "  Delegation last check:\t%s (%s)\n",
+		fmt.Fprintf(out, "  Delegation last check:\t%s (%s)\n",
 			util.Datetime(zone.AuthoritativeNameservers.DelegationLastCheck),
 			humanize.Time(zone.AuthoritativeNameservers.DelegationLastCheck))
-		_, _ = fmt.Fprintf(out, "  Delegation status:\t%s\n", zone.AuthoritativeNameservers.DelegationStatus)
+		fmt.Fprintf(out, "  Delegation status:\t%s\n", zone.AuthoritativeNameservers.DelegationStatus)
 
 		if zone.Mode == hcloud.ZoneModeSecondary {
-			_, _ = fmt.Fprintf(out, "Primary nameservers:\t\n")
+			fmt.Fprintf(out, "Primary nameservers:\t\n")
 			for _, ns := range zone.PrimaryNameservers {
-				_, _ = fmt.Fprintf(out, "  - Address:\t%s\n", ns.Address)
-				_, _ = fmt.Fprintf(out, "    Port:\t%d\n", ns.Port)
+				fmt.Fprintf(out, "  - Address:\t%s\n", ns.Address)
+				fmt.Fprintf(out, "    Port:\t%d\n", ns.Port)
 				if ns.TSIGAlgorithm != "" {
-					_, _ = fmt.Fprintf(out, "    TSIG Algorithm:\t%s\n", ns.TSIGAlgorithm)
+					fmt.Fprintf(out, "    TSIG Algorithm:\t%s\n", ns.TSIGAlgorithm)
 				}
 				if ns.TSIGKey != "" {
-					_, _ = fmt.Fprintf(out, "    TSIG Key:\t%s\n", ns.TSIGKey)
+					fmt.Fprintf(out, "    TSIG Key:\t%s\n", ns.TSIGKey)
 				}
 			}
 		}

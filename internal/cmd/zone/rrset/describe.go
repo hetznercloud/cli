@@ -47,23 +47,23 @@ var DescribeCmd = base.DescribeCmd[*hcloud.ZoneRRSet]{
 			ttl = strconv.Itoa(*rrset.TTL)
 		}
 
-		_, _ = fmt.Fprintf(out, "ID:\t%s\n", rrset.ID)
-		_, _ = fmt.Fprintf(out, "Type:\t%s\n", rrset.Type)
-		_, _ = fmt.Fprintf(out, "Name:\t%s\n", rrset.Name)
-		_, _ = fmt.Fprintf(out, "TTL:\t%s\n", ttl)
-		_, _ = fmt.Fprintf(out, "Protection:\t\n")
-		_, _ = fmt.Fprintf(out, "  Change:\t%s\n", util.YesNo(rrset.Protection.Change))
+		fmt.Fprintf(out, "ID:\t%s\n", rrset.ID)
+		fmt.Fprintf(out, "Type:\t%s\n", rrset.Type)
+		fmt.Fprintf(out, "Name:\t%s\n", rrset.Name)
+		fmt.Fprintf(out, "TTL:\t%s\n", ttl)
+		fmt.Fprintf(out, "Protection:\t\n")
+		fmt.Fprintf(out, "  Change:\t%s\n", util.YesNo(rrset.Protection.Change))
 
 		util.DescribeLabels(out, rrset.Labels, "")
 
 		if len(rrset.Records) == 0 {
-			_, _ = fmt.Fprintf(out, "Records:\tNo Records\n")
+			fmt.Fprintf(out, "Records:\tNo Records\n")
 		} else {
-			_, _ = fmt.Fprintf(out, "Records:\t\n")
+			fmt.Fprintf(out, "Records:\t\n")
 			for _, record := range rrset.Records {
-				_, _ = fmt.Fprintf(out, "  - Value:\t%s\n", record.Value)
+				fmt.Fprintf(out, "  - Value:\t%s\n", record.Value)
 				if record.Comment != "" {
-					_, _ = fmt.Fprintf(out, "    Comment:\t%s\n", record.Comment)
+					fmt.Fprintf(out, "    Comment:\t%s\n", record.Comment)
 				}
 			}
 		}

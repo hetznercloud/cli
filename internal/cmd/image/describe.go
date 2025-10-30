@@ -36,7 +36,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Image]{
 		}
 
 		if !isID && !cmd.Flags().Changed("architecture") {
-			_, _ = fmt.Fprintln(os.Stderr, "INFO: This command only returns x86 images by default. Explicitly set the --architecture=x86|arm flag to hide this message.")
+			fmt.Fprintln(os.Stderr, "INFO: This command only returns x86 images by default. Explicitly set the --architecture=x86|arm flag to hide this message.")
 		}
 
 		img, _, err := s.Client().Image().GetForArchitecture(s, idOrName, hcloud.Architecture(arch))
@@ -46,7 +46,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Image]{
 		return img, hcloud.SchemaFromImage(img), nil
 	},
 	PrintText: func(_ state.State, _ *cobra.Command, out io.Writer, image *hcloud.Image) error {
-		_, _ = fmt.Fprint(out, DescribeImage(image))
+		fmt.Fprint(out, DescribeImage(image))
 		return nil
 	},
 }
@@ -54,32 +54,32 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Image]{
 func DescribeImage(image *hcloud.Image) string {
 	var sb strings.Builder
 
-	_, _ = fmt.Fprintf(&sb, "ID:\t%d\n", image.ID)
-	_, _ = fmt.Fprintf(&sb, "Type:\t%s\n", image.Type)
-	_, _ = fmt.Fprintf(&sb, "Status:\t%s\n", image.Status)
-	_, _ = fmt.Fprintf(&sb, "Name:\t%s\n", util.NA(image.Name))
-	_, _ = fmt.Fprintf(&sb, "Created:\t%s (%s)\n", util.Datetime(image.Created), humanize.Time(image.Created))
+	fmt.Fprintf(&sb, "ID:\t%d\n", image.ID)
+	fmt.Fprintf(&sb, "Type:\t%s\n", image.Type)
+	fmt.Fprintf(&sb, "Status:\t%s\n", image.Status)
+	fmt.Fprintf(&sb, "Name:\t%s\n", util.NA(image.Name))
+	fmt.Fprintf(&sb, "Created:\t%s (%s)\n", util.Datetime(image.Created), humanize.Time(image.Created))
 	if !image.Deprecated.IsZero() {
-		_, _ = fmt.Fprintf(&sb, "Deprecated:\t%s (%s)\n", util.Datetime(image.Deprecated), humanize.Time(image.Deprecated))
+		fmt.Fprintf(&sb, "Deprecated:\t%s (%s)\n", util.Datetime(image.Deprecated), humanize.Time(image.Deprecated))
 	}
-	_, _ = fmt.Fprintf(&sb, "Description:\t%s\n", image.Description)
+	fmt.Fprintf(&sb, "Description:\t%s\n", image.Description)
 	if image.ImageSize != 0 {
-		_, _ = fmt.Fprintf(&sb, "Image size:\t%.2f GB\n", image.ImageSize)
+		fmt.Fprintf(&sb, "Image size:\t%.2f GB\n", image.ImageSize)
 	} else {
-		_, _ = fmt.Fprintf(&sb, "Image size:\t%s\n", util.NA(""))
+		fmt.Fprintf(&sb, "Image size:\t%s\n", util.NA(""))
 	}
-	_, _ = fmt.Fprintf(&sb, "Disk size:\t%.0f GB\n", image.DiskSize)
-	_, _ = fmt.Fprintf(&sb, "OS flavor:\t%s\n", image.OSFlavor)
-	_, _ = fmt.Fprintf(&sb, "OS version:\t%s\n", util.NA(image.OSVersion))
-	_, _ = fmt.Fprintf(&sb, "Architecture:\t%s\n", image.Architecture)
-	_, _ = fmt.Fprintf(&sb, "Rapid deploy:\t%s\n", util.YesNo(image.RapidDeploy))
-	_, _ = fmt.Fprintf(&sb, "Protection:\t\n")
-	_, _ = fmt.Fprintf(&sb, "  Delete:\t%s\n", util.YesNo(image.Protection.Delete))
+	fmt.Fprintf(&sb, "Disk size:\t%.0f GB\n", image.DiskSize)
+	fmt.Fprintf(&sb, "OS flavor:\t%s\n", image.OSFlavor)
+	fmt.Fprintf(&sb, "OS version:\t%s\n", util.NA(image.OSVersion))
+	fmt.Fprintf(&sb, "Architecture:\t%s\n", image.Architecture)
+	fmt.Fprintf(&sb, "Rapid deploy:\t%s\n", util.YesNo(image.RapidDeploy))
+	fmt.Fprintf(&sb, "Protection:\t\n")
+	fmt.Fprintf(&sb, "  Delete:\t%s\n", util.YesNo(image.Protection.Delete))
 
 	util.DescribeLabels(&sb, image.Labels, "")
 
 	if !image.Deprecated.IsZero() {
-		_, _ = fmt.Fprintf(&sb, "\nAttention: This Image is deprecated and will be removed in the future.\n")
+		fmt.Fprintf(&sb, "\nAttention: This Image is deprecated and will be removed in the future.\n")
 	}
 	return sb.String()
 }

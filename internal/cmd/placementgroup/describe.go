@@ -27,7 +27,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.PlacementGroup]{
 		return pg, hcloud.SchemaFromPlacementGroup(pg), nil
 	},
 	PrintText: func(s state.State, _ *cobra.Command, out io.Writer, placementGroup *hcloud.PlacementGroup) error {
-		_, _ = fmt.Fprintf(out, "%s", DescribePlacementGroup(s.Client(), placementGroup))
+		fmt.Fprintf(out, "%s", DescribePlacementGroup(s.Client(), placementGroup))
 		return nil
 	},
 }
@@ -35,20 +35,20 @@ var DescribeCmd = base.DescribeCmd[*hcloud.PlacementGroup]{
 func DescribePlacementGroup(client hcapi2.Client, placementGroup *hcloud.PlacementGroup) string {
 	var sb strings.Builder
 
-	_, _ = fmt.Fprintf(&sb, "ID:\t%d\n", placementGroup.ID)
-	_, _ = fmt.Fprintf(&sb, "Name:\t%s\n", placementGroup.Name)
-	_, _ = fmt.Fprintf(&sb, "Created:\t%s (%s)\n", util.Datetime(placementGroup.Created), humanize.Time(placementGroup.Created))
-	_, _ = fmt.Fprintf(&sb, "Type:\t%s\n", placementGroup.Type)
+	fmt.Fprintf(&sb, "ID:\t%d\n", placementGroup.ID)
+	fmt.Fprintf(&sb, "Name:\t%s\n", placementGroup.Name)
+	fmt.Fprintf(&sb, "Created:\t%s (%s)\n", util.Datetime(placementGroup.Created), humanize.Time(placementGroup.Created))
+	fmt.Fprintf(&sb, "Type:\t%s\n", placementGroup.Type)
 
 	util.DescribeLabels(&sb, placementGroup.Labels, "")
 
 	if len(placementGroup.Servers) == 0 {
-		_, _ = fmt.Fprintf(&sb, "Servers:\tNo servers\n")
+		fmt.Fprintf(&sb, "Servers:\tNo servers\n")
 	} else {
-		_, _ = fmt.Fprintf(&sb, "Servers:\t\n")
+		fmt.Fprintf(&sb, "Servers:\t\n")
 		for _, serverID := range placementGroup.Servers {
-			_, _ = fmt.Fprintf(&sb, "  - Server ID:\t%d\n", serverID)
-			_, _ = fmt.Fprintf(&sb, "    Server Name:\t%s\n", client.Server().ServerName(serverID))
+			fmt.Fprintf(&sb, "  - Server ID:\t%d\n", serverID)
+			fmt.Fprintf(&sb, "    Server Name:\t%s\n", client.Server().ServerName(serverID))
 		}
 	}
 

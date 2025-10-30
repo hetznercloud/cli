@@ -45,7 +45,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBoxSnapshot]{
 		return snapshot, hcloud.SchemaFromStorageBoxSnapshot(snapshot), nil
 	},
 	PrintText: func(_ state.State, _ *cobra.Command, out io.Writer, snapshot *hcloud.StorageBoxSnapshot) error {
-		_, _ = fmt.Fprint(out, DescribeSnapshot(snapshot))
+		fmt.Fprint(out, DescribeSnapshot(snapshot))
 		return nil
 	},
 	Experimental: experimental.StorageBoxes,
@@ -54,19 +54,19 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBoxSnapshot]{
 func DescribeSnapshot(snapshot *hcloud.StorageBoxSnapshot) string {
 	var sb strings.Builder
 
-	_, _ = fmt.Fprintf(&sb, "ID:\t%d\n", snapshot.ID)
-	_, _ = fmt.Fprintf(&sb, "Name:\t%s\n", snapshot.Name)
-	_, _ = fmt.Fprintf(&sb, "Description:\t%s\n", snapshot.Description)
-	_, _ = fmt.Fprintf(&sb, "Created:\t%s (%s)\n", util.Datetime(snapshot.Created), humanize.Time(snapshot.Created))
-	_, _ = fmt.Fprintf(&sb, "Is automatic:\t%s\n", util.YesNo(snapshot.IsAutomatic))
+	fmt.Fprintf(&sb, "ID:\t%d\n", snapshot.ID)
+	fmt.Fprintf(&sb, "Name:\t%s\n", snapshot.Name)
+	fmt.Fprintf(&sb, "Description:\t%s\n", snapshot.Description)
+	fmt.Fprintf(&sb, "Created:\t%s (%s)\n", util.Datetime(snapshot.Created), humanize.Time(snapshot.Created))
+	fmt.Fprintf(&sb, "Is automatic:\t%s\n", util.YesNo(snapshot.IsAutomatic))
 
-	_, _ = fmt.Fprintf(&sb, "Stats:\n")
-	_, _ = fmt.Fprintf(&sb, "  Size:\t%s\n", humanize.IBytes(snapshot.Stats.Size))
-	_, _ = fmt.Fprintf(&sb, "  Filesystem Size:\t%s\n", humanize.IBytes(snapshot.Stats.SizeFilesystem))
+	fmt.Fprintf(&sb, "Stats:\n")
+	fmt.Fprintf(&sb, "  Size:\t%s\n", humanize.IBytes(snapshot.Stats.Size))
+	fmt.Fprintf(&sb, "  Filesystem Size:\t%s\n", humanize.IBytes(snapshot.Stats.SizeFilesystem))
 
 	util.DescribeLabels(&sb, snapshot.Labels, "")
 
-	_, _ = fmt.Fprintf(&sb, "Storage Box:\n")
-	_, _ = fmt.Fprintf(&sb, "  ID:\t%d\n", snapshot.StorageBox.ID)
+	fmt.Fprintf(&sb, "Storage Box:\n")
+	fmt.Fprintf(&sb, "  ID:\t%d\n", snapshot.StorageBox.ID)
 	return sb.String()
 }

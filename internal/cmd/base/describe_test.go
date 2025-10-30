@@ -29,8 +29,8 @@ var fakeDescribeCmd = &base.DescribeCmd[*fakeResource]{
 	},
 
 	PrintText: func(_ state.State, _ *cobra.Command, out io.Writer, rsc *fakeResource) error {
-		_, _ = fmt.Fprintf(out, "ID:\t%d\n", rsc.ID)
-		_, _ = fmt.Fprintf(out, "Name:\t%s\n", rsc.Name)
+		fmt.Fprintf(out, "ID:\t%d\n", rsc.ID)
+		fmt.Fprintf(out, "Name:\t%s\n", rsc.Name)
 		return nil
 	},
 

@@ -27,11 +27,11 @@ var DescribeCmd = base.DescribeCmd[*hcloud.SSHKey]{
 		return key, hcloud.SchemaFromSSHKey(key), nil
 	},
 	PrintText: func(_ state.State, _ *cobra.Command, out io.Writer, sshKey *hcloud.SSHKey) error {
-		_, _ = fmt.Fprintf(out, "ID:\t%d\n", sshKey.ID)
-		_, _ = fmt.Fprintf(out, "Name:\t%s\n", sshKey.Name)
-		_, _ = fmt.Fprintf(out, "Created:\t%s (%s)\n", util.Datetime(sshKey.Created), humanize.Time(sshKey.Created))
-		_, _ = fmt.Fprintf(out, "Fingerprint:\t%s\n", sshKey.Fingerprint)
-		_, _ = fmt.Fprintf(out, "Public Key:\n%s\n", strings.TrimSpace(sshKey.PublicKey))
+		fmt.Fprintf(out, "ID:\t%d\n", sshKey.ID)
+		fmt.Fprintf(out, "Name:\t%s\n", sshKey.Name)
+		fmt.Fprintf(out, "Created:\t%s (%s)\n", util.Datetime(sshKey.Created), humanize.Time(sshKey.Created))
+		fmt.Fprintf(out, "Fingerprint:\t%s\n", sshKey.Fingerprint)
+		fmt.Fprintf(out, "Public Key:\n%s\n", strings.TrimSpace(sshKey.PublicKey))
 
 		util.DescribeLabels(out, sshKey.Labels, "")
 

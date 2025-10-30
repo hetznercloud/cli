@@ -27,7 +27,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Datacenter]{
 		return dc, hcloud.SchemaFromDatacenter(dc), nil
 	},
 	PrintText: func(s state.State, _ *cobra.Command, out io.Writer, datacenter *hcloud.Datacenter) error {
-		_, _ = fmt.Fprint(out, DescribeDatacenter(s.Client(), datacenter, false))
+		fmt.Fprint(out, DescribeDatacenter(s.Client(), datacenter, false))
 		return nil
 	},
 }
@@ -35,16 +35,16 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Datacenter]{
 func DescribeDatacenter(client hcapi2.Client, datacenter *hcloud.Datacenter, short bool) string {
 	var sb strings.Builder
 
-	_, _ = fmt.Fprintf(&sb, "ID:\t%d\n", datacenter.ID)
-	_, _ = fmt.Fprintf(&sb, "Name:\t%s\n", datacenter.Name)
-	_, _ = fmt.Fprintf(&sb, "Description:\t%s\n", datacenter.Description)
-	_, _ = fmt.Fprintf(&sb, "Location:\t\n")
-	_, _ = fmt.Fprintf(&sb, "  Name:\t%s\n", datacenter.Location.Name)
-	_, _ = fmt.Fprintf(&sb, "  Description:\t%s\n", datacenter.Location.Description)
-	_, _ = fmt.Fprintf(&sb, "  Country:\t%s\n", datacenter.Location.Country)
-	_, _ = fmt.Fprintf(&sb, "  City:\t%s\n", datacenter.Location.City)
-	_, _ = fmt.Fprintf(&sb, "  Latitude:\t%f\n", datacenter.Location.Latitude)
-	_, _ = fmt.Fprintf(&sb, "  Longitude:\t%f\n", datacenter.Location.Longitude)
+	fmt.Fprintf(&sb, "ID:\t%d\n", datacenter.ID)
+	fmt.Fprintf(&sb, "Name:\t%s\n", datacenter.Name)
+	fmt.Fprintf(&sb, "Description:\t%s\n", datacenter.Description)
+	fmt.Fprintf(&sb, "Location:\t\n")
+	fmt.Fprintf(&sb, "  Name:\t%s\n", datacenter.Location.Name)
+	fmt.Fprintf(&sb, "  Description:\t%s\n", datacenter.Location.Description)
+	fmt.Fprintf(&sb, "  Country:\t%s\n", datacenter.Location.Country)
+	fmt.Fprintf(&sb, "  City:\t%s\n", datacenter.Location.City)
+	fmt.Fprintf(&sb, "  Latitude:\t%f\n", datacenter.Location.Latitude)
+	fmt.Fprintf(&sb, "  Longitude:\t%f\n", datacenter.Location.Longitude)
 
 	if short {
 		return sb.String()
@@ -73,9 +73,9 @@ func DescribeDatacenter(client hcapi2.Client, datacenter *hcloud.Datacenter, sho
 	slices.SortFunc(allServerTypeStatus, func(a, b ServerTypeStatus) int { return int(a.ID - b.ID) })
 
 	if len(allServerTypeStatus) > 0 {
-		_, _ = fmt.Fprintf(&sb, "Server Types:\n")
+		fmt.Fprintf(&sb, "Server Types:\n")
 		for _, t := range allServerTypeStatus {
-			_, _ = fmt.Fprintf(&sb, "  - ID: %d\tName: %s\tSupported: %s\tAvailable: %s\n",
+			fmt.Fprintf(&sb, "  - ID: %d\tName: %s\tSupported: %s\tAvailable: %s\n",
 				t.ID,
 				client.ServerType().ServerTypeName(t.ID),
 				strconv.FormatBool(t.Supported),
@@ -83,7 +83,7 @@ func DescribeDatacenter(client hcapi2.Client, datacenter *hcloud.Datacenter, sho
 			)
 		}
 	} else {
-		_, _ = fmt.Fprintf(&sb, "Server Types:\tNo Server Types\n")
+		fmt.Fprintf(&sb, "Server Types:\tNo Server Types\n")
 	}
 
 	return sb.String()

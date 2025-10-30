@@ -30,57 +30,57 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBox]{
 	},
 	PrintText: func(s state.State, _ *cobra.Command, out io.Writer, storageBox *hcloud.StorageBox) error {
 
-		_, _ = fmt.Fprintf(out, "ID:\t%d\n", storageBox.ID)
-		_, _ = fmt.Fprintf(out, "Name:\t%s\n", storageBox.Name)
-		_, _ = fmt.Fprintf(out, "Created:\t%s (%s)\n", util.Datetime(storageBox.Created), humanize.Time(storageBox.Created))
-		_, _ = fmt.Fprintf(out, "Status:\t%s\n", storageBox.Status)
-		_, _ = fmt.Fprintf(out, "Username:\t%s\n", storageBox.Username)
-		_, _ = fmt.Fprintf(out, "Server:\t%s\n", storageBox.Server)
-		_, _ = fmt.Fprintf(out, "System:\t%s\n", storageBox.System)
+		fmt.Fprintf(out, "ID:\t%d\n", storageBox.ID)
+		fmt.Fprintf(out, "Name:\t%s\n", storageBox.Name)
+		fmt.Fprintf(out, "Created:\t%s (%s)\n", util.Datetime(storageBox.Created), humanize.Time(storageBox.Created))
+		fmt.Fprintf(out, "Status:\t%s\n", storageBox.Status)
+		fmt.Fprintf(out, "Username:\t%s\n", storageBox.Username)
+		fmt.Fprintf(out, "Server:\t%s\n", storageBox.Server)
+		fmt.Fprintf(out, "System:\t%s\n", storageBox.System)
 
 		snapshotPlan := storageBox.SnapshotPlan
 		if snapshotPlan == nil {
-			_, _ = fmt.Fprintf(out, "Snapshot Plan:\tNo snapshot plan active\n")
+			fmt.Fprintf(out, "Snapshot Plan:\tNo snapshot plan active\n")
 		} else {
-			_, _ = fmt.Fprintf(out, "Snapshot Plan:\t\n")
-			_, _ = fmt.Fprintf(out, "  Max Snapshots:\t%d\n", snapshotPlan.MaxSnapshots)
-			_, _ = fmt.Fprintf(out, "  Minute:\t%d\n", snapshotPlan.Minute)
-			_, _ = fmt.Fprintf(out, "  Hour:\t%d\n", snapshotPlan.Hour)
+			fmt.Fprintf(out, "Snapshot Plan:\t\n")
+			fmt.Fprintf(out, "  Max Snapshots:\t%d\n", snapshotPlan.MaxSnapshots)
+			fmt.Fprintf(out, "  Minute:\t%d\n", snapshotPlan.Minute)
+			fmt.Fprintf(out, "  Hour:\t%d\n", snapshotPlan.Hour)
 
 			if snapshotPlan.DayOfWeek != nil {
-				_, _ = fmt.Fprintf(out, "  Day of Week:\t%s\n", *snapshotPlan.DayOfWeek)
+				fmt.Fprintf(out, "  Day of Week:\t%s\n", *snapshotPlan.DayOfWeek)
 			}
 			if snapshotPlan.DayOfMonth != nil {
-				_, _ = fmt.Fprintf(out, "  Day of Month:\t%d\n", *snapshotPlan.DayOfMonth)
+				fmt.Fprintf(out, "  Day of Month:\t%d\n", *snapshotPlan.DayOfMonth)
 			}
 		}
 
 		protection := storageBox.Protection
-		_, _ = fmt.Fprintf(out, "Protection:\t\n")
-		_, _ = fmt.Fprintf(out, "  Delete:\t%t\n", protection.Delete)
+		fmt.Fprintf(out, "Protection:\t\n")
+		fmt.Fprintf(out, "  Delete:\t%t\n", protection.Delete)
 
 		stats := storageBox.Stats
-		_, _ = fmt.Fprintf(out, "Stats:\t\n")
-		_, _ = fmt.Fprintf(out, "  Size:\t%s\n", humanize.IBytes(stats.Size))
-		_, _ = fmt.Fprintf(out, "  Size Data:\t%s\n", humanize.IBytes(stats.SizeData))
-		_, _ = fmt.Fprintf(out, "  Size Snapshots:\t%s\n", humanize.IBytes(stats.SizeSnapshots))
+		fmt.Fprintf(out, "Stats:\t\n")
+		fmt.Fprintf(out, "  Size:\t%s\n", humanize.IBytes(stats.Size))
+		fmt.Fprintf(out, "  Size Data:\t%s\n", humanize.IBytes(stats.SizeData))
+		fmt.Fprintf(out, "  Size Snapshots:\t%s\n", humanize.IBytes(stats.SizeSnapshots))
 
 		util.DescribeLabels(out, storageBox.Labels, "")
 
 		accessSettings := storageBox.AccessSettings
-		_, _ = fmt.Fprintf(out, "Access Settings:\t\n")
-		_, _ = fmt.Fprintf(out, "  Reachable Externally:\t%t\n", accessSettings.ReachableExternally)
-		_, _ = fmt.Fprintf(out, "  Samba Enabled:\t%t\n", accessSettings.SambaEnabled)
-		_, _ = fmt.Fprintf(out, "  SSH Enabled:\t%t\n", accessSettings.SSHEnabled)
-		_, _ = fmt.Fprintf(out, "  WebDAV Enabled:\t%t\n", accessSettings.WebDAVEnabled)
-		_, _ = fmt.Fprintf(out, "  ZFS Enabled:\t%t\n", accessSettings.ZFSEnabled)
+		fmt.Fprintf(out, "Access Settings:\t\n")
+		fmt.Fprintf(out, "  Reachable Externally:\t%t\n", accessSettings.ReachableExternally)
+		fmt.Fprintf(out, "  Samba Enabled:\t%t\n", accessSettings.SambaEnabled)
+		fmt.Fprintf(out, "  SSH Enabled:\t%t\n", accessSettings.SSHEnabled)
+		fmt.Fprintf(out, "  WebDAV Enabled:\t%t\n", accessSettings.WebDAVEnabled)
+		fmt.Fprintf(out, "  ZFS Enabled:\t%t\n", accessSettings.ZFSEnabled)
 
 		typeDescription, _ := storageboxtype.DescribeStorageBoxType(s, storageBox.StorageBoxType, true)
-		_, _ = fmt.Fprintf(out, "Storage Box Type:\t\n")
-		_, _ = fmt.Fprintf(out, "%s", util.PrefixLines(typeDescription, "  "))
+		fmt.Fprintf(out, "Storage Box Type:\t\n")
+		fmt.Fprintf(out, "%s", util.PrefixLines(typeDescription, "  "))
 
-		_, _ = fmt.Fprintf(out, "Location:\t\n")
-		_, _ = fmt.Fprintf(out, "%s", util.PrefixLines(location.DescribeLocation(storageBox.Location), "  "))
+		fmt.Fprintf(out, "Location:\t\n")
+		fmt.Fprintf(out, "%s", util.PrefixLines(location.DescribeLocation(storageBox.Location), "  "))
 
 		return nil
 	},
