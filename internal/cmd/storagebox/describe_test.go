@@ -111,7 +111,7 @@ func TestDescribe(t *testing.T) {
 
 	expOut := fmt.Sprintf(`ID:				123
 Name:				test
-Created:			Sat Jan 30 23:55:00 UTC 2016 (%s)
+Created:			2016-01-30 23:55:00 UTC (%s)
 Status:				active
 Username:			u12345
 Server:				u1337.your-storagebox.de

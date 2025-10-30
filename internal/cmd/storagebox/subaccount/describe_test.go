@@ -61,7 +61,7 @@ func TestDescribe(t *testing.T) {
 
 	expOut := fmt.Sprintf(`ID:			42
 Description:		host01 backup
-Created:		Sat Jan 30 23:55:00 UTC 2016 (%s)
+Created:		2016-01-30 23:55:00 UTC (%s)
 Username:		u1337-sub1
 Home Directory:		my_backups/host01.my.company
 Server:			u1337-sub1.your-storagebox.de
