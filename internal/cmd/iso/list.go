@@ -58,7 +58,7 @@ var ListCmd = &base.ListCmd[*hcloud.ISO, schema.ISO]{
 
 		includeArchitectureWildcard, _ := flags.GetBool("include-architecture-wildcard")
 		if includeArchitectureWildcard {
-			opts.IncludeWildcardArchitecture = includeArchitectureWildcard
+			opts.IncludeArchitectureWildcard = includeArchitectureWildcard
 		}
 
 		if len(sorts) > 0 {
