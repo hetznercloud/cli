@@ -88,9 +88,9 @@ func TestListColumnDeprecated(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"-o=columns=id,name,deprecated"})
 
-	expOut := `ID    NAME         DEPRECATED                  
-123   deprecated   Thu Aug 20 12:00:00 UTC 2037
-124   current      -                           
+	expOut := `ID    NAME         DEPRECATED             
+123   deprecated   2037-08-20 12:00:00 UTC
+124   current      -                      
 `
 
 	require.NoError(t, err)

@@ -59,7 +59,7 @@ func TestDescribe(t *testing.T) {
 	expOut := fmt.Sprintf(`ID:			456
 Name:			snapshot-1
 Description:		some-description
-Created:		Tue Jan  2 15:04:05 UTC 2024 (%s)
+Created:		2024-01-02 15:04:05 UTC (%s)
 Is automatic:		no
 Stats:
   Size:			50 GiB
