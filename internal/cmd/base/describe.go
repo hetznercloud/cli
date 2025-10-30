@@ -2,10 +2,12 @@ package base
 
 import (
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"reflect"
 	"strings"
+	"text/tabwriter"
 
 	"github.com/spf13/cobra"
 
@@ -30,7 +32,7 @@ type DescribeCmd[T any] struct {
 	// See [DescribeCmd.PositionalArgumentOverride].
 	FetchWithArgs func(s state.State, cmd *cobra.Command, args []string) (T, any, error)
 
-	PrintText   func(s state.State, cmd *cobra.Command, resource T) error
+	PrintText   func(s state.State, cmd *cobra.Command, out io.Writer, resource T) error
 	GetIDOrName func(resource T) string
 
 	// In case the resource does not have a single identifier that matches [DescribeCmd.ResourceNameSingular], this field
@@ -135,6 +137,11 @@ func (dc *DescribeCmd[T]) Run(s state.State, cmd *cobra.Command, args []string) 
 	case outputFlags.IsSet("format"):
 		return util.DescribeFormat(schemaOut, resource, outputFlags["format"][0])
 	default:
-		return dc.PrintText(s, cmd, resource)
+		tw := tabwriter.NewWriter(cmd.OutOrStdout(), 0, 8, 2, ' ', tabwriter.DiscardEmptyColumns)
+		err = dc.PrintText(s, cmd, tw, resource)
+		if err != nil {
+			return err
+		}
+		return tw.Flush()
 	}
 }

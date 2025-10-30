@@ -1,6 +1,10 @@
 package storageboxtype
 
 import (
+	"fmt"
+	"io"
+	"strings"
+
 	"github.com/dustin/go-humanize"
 	"github.com/spf13/cobra"
 
@@ -23,37 +27,48 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBoxType]{
 		}
 		return st, hcloud.SchemaFromStorageBoxType(st), nil
 	},
-	PrintText: func(s state.State, cmd *cobra.Command, storageBoxType *hcloud.StorageBoxType) error {
-		cmd.Printf("ID:\t\t\t\t%d\n", storageBoxType.ID)
-		cmd.Printf("Name:\t\t\t\t%s\n", storageBoxType.Name)
-		cmd.Printf("Description:\t\t\t%s\n", storageBoxType.Description)
-		cmd.Printf("Size:\t\t\t\t%s\n", humanize.IBytes(uint64(storageBoxType.Size)))
-		if storageBoxType.SnapshotLimit != nil {
-			cmd.Printf("Snapshot Limit:\t\t\t%d\n", *storageBoxType.SnapshotLimit)
-		}
-		if storageBoxType.AutomaticSnapshotLimit != nil {
-			cmd.Printf("Automatic Snapshot Limit:\t%d\n", *storageBoxType.AutomaticSnapshotLimit)
-		}
-		cmd.Printf("Subaccounts Limit:\t\t%d\n", storageBoxType.SubaccountsLimit)
-		cmd.Print(util.DescribeDeprecation(storageBoxType))
-
-		err := loadCurrencyFromAPI(s, storageBoxType)
+	PrintText: func(s state.State, _ *cobra.Command, out io.Writer, storageBoxType *hcloud.StorageBoxType) error {
+		description, err := DescribeStorageBoxType(s, storageBoxType)
 		if err != nil {
-			cmd.PrintErrf("failed to get currency for Storage Box Type prices: %v", err)
+			return err
 		}
-
-		cmd.Printf("Pricings per Location:\n")
-		for _, price := range storageBoxType.Pricings {
-			cmd.Printf("  - Location:\t%s\n", price.Location)
-			cmd.Printf("    Hourly:\t%s\n", util.GrossPrice(price.PriceHourly))
-			cmd.Printf("    Monthly:\t%s\n", util.GrossPrice(price.PriceMonthly))
-			cmd.Printf("    Setup Fee:\t%s\n", util.GrossPrice(price.SetupFee))
-			cmd.Printf("\n")
-		}
-
+		_, _ = fmt.Fprint(out, description)
 		return nil
 	},
 	Experimental: experimental.StorageBoxes,
+}
+
+func DescribeStorageBoxType(s state.State, storageBoxType *hcloud.StorageBoxType) (string, error) {
+	var sb strings.Builder
+
+	_, _ = fmt.Fprintf(&sb, "ID:\t%d\n", storageBoxType.ID)
+	_, _ = fmt.Fprintf(&sb, "Name:\t%s\n", storageBoxType.Name)
+	_, _ = fmt.Fprintf(&sb, "Description:\t%s\n", storageBoxType.Description)
+	_, _ = fmt.Fprintf(&sb, "Size:\t%s\n", humanize.IBytes(uint64(storageBoxType.Size)))
+	if storageBoxType.SnapshotLimit != nil {
+		_, _ = fmt.Fprintf(&sb, "Snapshot Limit:\t%d\n", *storageBoxType.SnapshotLimit)
+	}
+	if storageBoxType.AutomaticSnapshotLimit != nil {
+		_, _ = fmt.Fprintf(&sb, "Automatic Snapshot Limit:\t%d\n", *storageBoxType.AutomaticSnapshotLimit)
+	}
+	_, _ = fmt.Fprintf(&sb, "Subaccounts Limit:\t%d\n", storageBoxType.SubaccountsLimit)
+	_, _ = fmt.Fprintf(&sb, util.DescribeDeprecation(storageBoxType))
+
+	err := loadCurrencyFromAPI(s, storageBoxType)
+	if err != nil {
+		return "", fmt.Errorf("failed to get currency for Storage Box Type prices: %v", err)
+	}
+
+	_, _ = fmt.Fprintf(&sb, "Pricings per Location:\n")
+	for _, price := range storageBoxType.Pricings {
+		_, _ = fmt.Fprintf(&sb, "  - Location:\t%s\n", price.Location)
+		_, _ = fmt.Fprintf(&sb, "    Hourly:\t%s\n", util.GrossPrice(price.PriceHourly))
+		_, _ = fmt.Fprintf(&sb, "    Monthly:\t%s\n", util.GrossPrice(price.PriceMonthly))
+		_, _ = fmt.Fprintf(&sb, "    Setup Fee:\t%s\n", util.GrossPrice(price.SetupFee))
+		_, _ = fmt.Fprintf(&sb, "\n")
+	}
+
+	return sb.String(), nil
 }
 
 func loadCurrencyFromAPI(s state.State, storageBoxType *hcloud.StorageBoxType) error {

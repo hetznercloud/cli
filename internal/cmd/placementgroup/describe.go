@@ -1,6 +1,10 @@
 package placementgroup
 
 import (
+	"fmt"
+	"io"
+	"strings"
+
 	"github.com/dustin/go-humanize"
 	"github.com/spf13/cobra"
 
@@ -22,27 +26,31 @@ var DescribeCmd = base.DescribeCmd[*hcloud.PlacementGroup]{
 		}
 		return pg, hcloud.SchemaFromPlacementGroup(pg), nil
 	},
-	PrintText: func(s state.State, cmd *cobra.Command, placementGroup *hcloud.PlacementGroup) error {
-		cmd.Printf("ID:\t\t%d\n", placementGroup.ID)
-		cmd.Printf("Name:\t\t%s\n", placementGroup.Name)
-		cmd.Printf("Created:\t%s (%s)\n", util.Datetime(placementGroup.Created), humanize.Time(placementGroup.Created))
-
-		cmd.Print("Labels:\n")
-		if len(placementGroup.Labels) == 0 {
-			cmd.Print("  No labels\n")
-		} else {
-			for key, value := range util.IterateInOrder(placementGroup.Labels) {
-				cmd.Printf("  %s: %s\n", key, value)
-			}
-		}
-
-		cmd.Print("Servers:\n")
-		for _, serverID := range placementGroup.Servers {
-			cmd.Printf("  - Server ID:\t\t%d\n", serverID)
-			cmd.Printf("    Server Name:\t%s\n", s.Client().Server().ServerName(serverID))
-		}
-
-		cmd.Printf("Type:\t\t%s\n", placementGroup.Type)
+	PrintText: func(s state.State, _ *cobra.Command, out io.Writer, placementGroup *hcloud.PlacementGroup) error {
+		_, _ = fmt.Fprintf(out, DescribePlacementGroup(s.Client(), placementGroup))
 		return nil
 	},
+}
+
+func DescribePlacementGroup(client hcapi2.Client, placementGroup *hcloud.PlacementGroup) string {
+	var sb strings.Builder
+
+	_, _ = fmt.Fprintf(&sb, "ID:\t%d\n", placementGroup.ID)
+	_, _ = fmt.Fprintf(&sb, "Name:\t%s\n", placementGroup.Name)
+	_, _ = fmt.Fprintf(&sb, "Created:\t%s (%s)\n", util.Datetime(placementGroup.Created), humanize.Time(placementGroup.Created))
+	_, _ = fmt.Fprintf(&sb, "Type:\t%s\n", placementGroup.Type)
+
+	util.DescribeLabels(&sb, placementGroup.Labels, "")
+
+	if len(placementGroup.Servers) == 0 {
+		_, _ = fmt.Fprintf(&sb, "Servers:\tNo servers\n")
+	} else {
+		_, _ = fmt.Fprintf(&sb, "Servers:\t\n")
+		for _, serverID := range placementGroup.Servers {
+			_, _ = fmt.Fprintf(&sb, "  - Server ID:\t%d\n", serverID)
+			_, _ = fmt.Fprintf(&sb, "    Server Name:\t%s\n", client.Server().ServerName(serverID))
+		}
+	}
+
+	return sb.String()
 }
