@@ -129,7 +129,7 @@ func TestLoadBalancer(t *testing.T) {
 		assert.Regexp(t, NewRegex().Start().
 			Lit("ID:").Whitespace().Int().Newline().
 			Lit("Name:").Whitespace().Lit(lbName).Newline().
-			Lit("Created:").Whitespace().UnixDate().Lit(" (").HumanizeTime().Lit(")").Newline().
+			Lit("Created:").Whitespace().Datetime().Lit(" (").HumanizeTime().Lit(")").Newline().
 			Lit("Public Net:").Newline().
 			Lit("  Enabled:").Whitespace().Lit("yes").Newline().
 			Lit("  IPv4:").Whitespace().IPv4().Newline().

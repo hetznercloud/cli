@@ -29,7 +29,7 @@ func TestNA(t *testing.T) {
 func TestDatetime(t *testing.T) {
 	time.Local = time.UTC
 	tm := time.Date(2022, 11, 17, 15, 22, 12, 11, time.UTC)
-	assert.Equal(t, "Thu Nov 17 15:22:12 UTC 2022", util.Datetime(tm))
+	assert.Equal(t, "2022-11-17 15:22:12 UTC", util.Datetime(tm))
 }
 
 func TestChainRunE(t *testing.T) {

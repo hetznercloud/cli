@@ -59,7 +59,7 @@ func TestSSHKey(t *testing.T) {
 					Lit(fingerprint).Whitespace().
 					Lit(pubKey).Whitespace().
 					Lit("baz=qux, foo=bar").Whitespace().
-					UnixDate().Whitespace().
+					Datetime().Whitespace().
 					Age().OptionalWhitespace().Newline().
 					End(),
 				out,
@@ -105,7 +105,7 @@ func TestSSHKey(t *testing.T) {
 		assert.Regexp(t, NewRegex().Start().
 			Lit("ID:").Whitespace().Lit(strconv.FormatInt(sshKeyID, 10)).Newline().
 			Lit("Name:").Whitespace().Lit(sshKeyName).Newline().
-			Lit("Created:").Whitespace().UnixDate().Lit(" (").HumanizeTime().Lit(")").Newline().
+			Lit("Created:").Whitespace().Datetime().Lit(" (").HumanizeTime().Lit(")").Newline().
 			Lit("Fingerprint:").Whitespace().Lit(fingerprint).Newline().
 			Lit("Public Key:").Newline().Lit(pubKey).Newline().
 			Lit("Labels:").Newline().

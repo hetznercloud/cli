@@ -67,7 +67,7 @@ func TestPlacementGroup(t *testing.T) {
 					Raw(`new-test-placement-group-[0-9a-f]{8}`).Whitespace().
 					Lit("0 servers").Whitespace().
 					Lit("spread").Whitespace().
-					UnixDate().Whitespace().
+					Datetime().Whitespace().
 					Age().OptionalWhitespace().Newline().End(),
 				out,
 			)
@@ -101,7 +101,7 @@ func TestPlacementGroup(t *testing.T) {
 			NewRegex().Start().
 				Lit("ID:").Whitespace().Int().Newline().
 				Lit("Name:").Whitespace().Raw(`new-test-placement-group-[0-9a-f]{8}`).Newline().
-				Lit("Created:").Whitespace().UnixDate().Lit(" (").HumanizeTime().Lit(")").Newline().
+				Lit("Created:").Whitespace().Datetime().Lit(" (").HumanizeTime().Lit(")").Newline().
 				Lit("Labels:").Newline().
 				Lit("  ").OneOfLit("baz: qux", "foo: bar").Newline().
 				Lit("  ").OneOfLit("baz: qux", "foo: bar").Newline().
