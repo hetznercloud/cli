@@ -27,7 +27,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.ISO]{
 		return iso, hcloud.SchemaFromISO(iso), nil
 	},
 	PrintText: func(_ state.State, _ *cobra.Command, out io.Writer, iso *hcloud.ISO) error {
-		_, _ = fmt.Fprint(out, DescribeISO(iso))
+		fmt.Fprint(out, DescribeISO(iso))
 		return nil
 	},
 }
@@ -35,17 +35,17 @@ var DescribeCmd = base.DescribeCmd[*hcloud.ISO]{
 func DescribeISO(iso *hcloud.ISO) string {
 	var sb strings.Builder
 
-	_, _ = fmt.Fprintf(&sb, "ID:\t%d\n", iso.ID)
-	_, _ = fmt.Fprintf(&sb, "Name:\t%s\n", iso.Name)
-	_, _ = fmt.Fprintf(&sb, "Description:\t%s\n", iso.Description)
-	_, _ = fmt.Fprintf(&sb, "Type:\t%s\n", iso.Type)
-	_, _ = fmt.Fprintf(&sb, "%s", util.DescribeDeprecation(iso))
+	fmt.Fprintf(&sb, "ID:\t%d\n", iso.ID)
+	fmt.Fprintf(&sb, "Name:\t%s\n", iso.Name)
+	fmt.Fprintf(&sb, "Description:\t%s\n", iso.Description)
+	fmt.Fprintf(&sb, "Type:\t%s\n", iso.Type)
+	fmt.Fprintf(&sb, "%s", util.DescribeDeprecation(iso))
 
 	architecture := "-"
 	if iso.Architecture != nil {
 		architecture = string(*iso.Architecture)
 	}
-	_, _ = fmt.Fprintf(&sb, "Architecture:\t%s\n", architecture)
+	fmt.Fprintf(&sb, "Architecture:\t%s\n", architecture)
 
 	return sb.String()
 }

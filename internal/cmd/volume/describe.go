@@ -28,25 +28,25 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Volume]{
 	},
 	PrintText: func(s state.State, _ *cobra.Command, out io.Writer, volume *hcloud.Volume) error {
 
-		_, _ = fmt.Fprintf(out, "ID:\t%d\n", volume.ID)
-		_, _ = fmt.Fprintf(out, "Name:\t%s\n", volume.Name)
-		_, _ = fmt.Fprintf(out, "Created:\t%s (%s)\n", util.Datetime(volume.Created), humanize.Time(volume.Created))
-		_, _ = fmt.Fprintf(out, "Size:\t%s\n", humanize.Bytes(uint64(volume.Size)*humanize.GByte))
-		_, _ = fmt.Fprintf(out, "Linux Device:\t%s\n", volume.LinuxDevice)
+		fmt.Fprintf(out, "ID:\t%d\n", volume.ID)
+		fmt.Fprintf(out, "Name:\t%s\n", volume.Name)
+		fmt.Fprintf(out, "Created:\t%s (%s)\n", util.Datetime(volume.Created), humanize.Time(volume.Created))
+		fmt.Fprintf(out, "Size:\t%s\n", humanize.Bytes(uint64(volume.Size)*humanize.GByte))
+		fmt.Fprintf(out, "Linux Device:\t%s\n", volume.LinuxDevice)
 
-		_, _ = fmt.Fprintf(out, "Location:\t\n")
-		_, _ = fmt.Fprintf(out, "%s", util.PrefixLines(location.DescribeLocation(volume.Location), "  "))
+		fmt.Fprintf(out, "Location:\t\n")
+		fmt.Fprintf(out, "%s", util.PrefixLines(location.DescribeLocation(volume.Location), "  "))
 
 		if volume.Server != nil {
-			_, _ = fmt.Fprintf(out, "Server:\t\n")
-			_, _ = fmt.Fprintf(out, "  ID:\t%d\n", volume.Server.ID)
-			_, _ = fmt.Fprintf(out, "  Name:\t%s\n", s.Client().Server().ServerName(volume.Server.ID))
+			fmt.Fprintf(out, "Server:\t\n")
+			fmt.Fprintf(out, "  ID:\t%d\n", volume.Server.ID)
+			fmt.Fprintf(out, "  Name:\t%s\n", s.Client().Server().ServerName(volume.Server.ID))
 		} else {
-			_, _ = fmt.Fprintf(out, "Server:\tNot attached\n")
+			fmt.Fprintf(out, "Server:\tNot attached\n")
 		}
 
-		_, _ = fmt.Fprintf(out, "Protection:\t\n")
-		_, _ = fmt.Fprintf(out, "  Delete:\t%s\n", util.YesNo(volume.Protection.Delete))
+		fmt.Fprintf(out, "Protection:\t\n")
+		fmt.Fprintf(out, "  Delete:\t%s\n", util.YesNo(volume.Protection.Delete))
 
 		util.DescribeLabels(out, volume.Labels, "")
 

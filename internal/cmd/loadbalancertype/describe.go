@@ -27,7 +27,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.LoadBalancerType]{
 		return lbt, hcloud.SchemaFromLoadBalancerType(lbt), nil
 	},
 	PrintText: func(s state.State, _ *cobra.Command, out io.Writer, loadBalancerType *hcloud.LoadBalancerType) error {
-		_, _ = fmt.Fprint(out, DescribeLoadBalancerType(s, loadBalancerType, false))
+		fmt.Fprint(out, DescribeLoadBalancerType(s, loadBalancerType, false))
 		return nil
 	},
 }
@@ -35,13 +35,13 @@ var DescribeCmd = base.DescribeCmd[*hcloud.LoadBalancerType]{
 func DescribeLoadBalancerType(s state.State, loadBalancerType *hcloud.LoadBalancerType, short bool) string {
 	var sb strings.Builder
 
-	_, _ = fmt.Fprintf(&sb, "ID:\t%d\n", loadBalancerType.ID)
-	_, _ = fmt.Fprintf(&sb, "Name:\t%s\n", loadBalancerType.Name)
-	_, _ = fmt.Fprintf(&sb, "Description:\t%s\n", loadBalancerType.Description)
-	_, _ = fmt.Fprintf(&sb, "Max Services:\t%d\n", loadBalancerType.MaxServices)
-	_, _ = fmt.Fprintf(&sb, "Max Connections:\t%d\n", loadBalancerType.MaxConnections)
-	_, _ = fmt.Fprintf(&sb, "Max Targets:\t%d\n", loadBalancerType.MaxTargets)
-	_, _ = fmt.Fprintf(&sb, "Max assigned Certificates:\t%d\n", loadBalancerType.MaxAssignedCertificates)
+	fmt.Fprintf(&sb, "ID:\t%d\n", loadBalancerType.ID)
+	fmt.Fprintf(&sb, "Name:\t%s\n", loadBalancerType.Name)
+	fmt.Fprintf(&sb, "Description:\t%s\n", loadBalancerType.Description)
+	fmt.Fprintf(&sb, "Max Services:\t%d\n", loadBalancerType.MaxServices)
+	fmt.Fprintf(&sb, "Max Connections:\t%d\n", loadBalancerType.MaxConnections)
+	fmt.Fprintf(&sb, "Max Targets:\t%d\n", loadBalancerType.MaxTargets)
+	fmt.Fprintf(&sb, "Max assigned Certificates:\t%d\n", loadBalancerType.MaxAssignedCertificates)
 
 	if short {
 		return sb.String()
@@ -49,18 +49,18 @@ func DescribeLoadBalancerType(s state.State, loadBalancerType *hcloud.LoadBalanc
 
 	pricings, err := fullPricingInfo(s, loadBalancerType)
 	if err != nil {
-		_, _ = fmt.Fprintf(&sb, "failed to get prices for Load Balancer Type: %v", err)
+		fmt.Fprintf(&sb, "failed to get prices for Load Balancer Type: %v", err)
 	}
 
 	if pricings != nil {
-		_, _ = fmt.Fprintf(&sb, "Pricings per Location:\t\n")
+		fmt.Fprintf(&sb, "Pricings per Location:\t\n")
 		for _, price := range pricings {
-			_, _ = fmt.Fprintf(&sb, "  - Location:\t%s\n", price.Location.Name)
-			_, _ = fmt.Fprintf(&sb, "    Hourly:\t%s\n", util.GrossPrice(price.Hourly))
-			_, _ = fmt.Fprintf(&sb, "    Monthly:\t%s\n", util.GrossPrice(price.Monthly))
-			_, _ = fmt.Fprintf(&sb, "    Included Traffic:\t%s\n", humanize.IBytes(price.IncludedTraffic))
-			_, _ = fmt.Fprintf(&sb, "    Additional Traffic:\t%s per TB\n", util.GrossPrice(price.PerTBTraffic))
-			_, _ = fmt.Fprintf(&sb, "\t\n")
+			fmt.Fprintf(&sb, "  - Location:\t%s\n", price.Location.Name)
+			fmt.Fprintf(&sb, "    Hourly:\t%s\n", util.GrossPrice(price.Hourly))
+			fmt.Fprintf(&sb, "    Monthly:\t%s\n", util.GrossPrice(price.Monthly))
+			fmt.Fprintf(&sb, "    Included Traffic:\t%s\n", humanize.IBytes(price.IncludedTraffic))
+			fmt.Fprintf(&sb, "    Additional Traffic:\t%s per TB\n", util.GrossPrice(price.PerTBTraffic))
+			fmt.Fprintf(&sb, "\t\n")
 		}
 	}
 

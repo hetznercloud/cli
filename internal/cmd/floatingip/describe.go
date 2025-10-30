@@ -26,40 +26,40 @@ var DescribeCmd = base.DescribeCmd[*hcloud.FloatingIP]{
 		return ip, hcloud.SchemaFromFloatingIP(ip), nil
 	},
 	PrintText: func(_ state.State, _ *cobra.Command, out io.Writer, floatingIP *hcloud.FloatingIP) error {
-		_, _ = fmt.Fprintf(out, "ID:\t%d\n", floatingIP.ID)
-		_, _ = fmt.Fprintf(out, "Type:\t%s\n", floatingIP.Type)
-		_, _ = fmt.Fprintf(out, "Name:\t%s\n", floatingIP.Name)
-		_, _ = fmt.Fprintf(out, "Description:\t%s\n", util.NA(floatingIP.Description))
-		_, _ = fmt.Fprintf(out, "Created:\t%s (%s)\n", util.Datetime(floatingIP.Created), humanize.Time(floatingIP.Created))
+		fmt.Fprintf(out, "ID:\t%d\n", floatingIP.ID)
+		fmt.Fprintf(out, "Type:\t%s\n", floatingIP.Type)
+		fmt.Fprintf(out, "Name:\t%s\n", floatingIP.Name)
+		fmt.Fprintf(out, "Description:\t%s\n", util.NA(floatingIP.Description))
+		fmt.Fprintf(out, "Created:\t%s (%s)\n", util.Datetime(floatingIP.Created), humanize.Time(floatingIP.Created))
 
 		if floatingIP.Network != nil {
-			_, _ = fmt.Fprintf(out, "IP:\t%s\n", floatingIP.Network.String())
+			fmt.Fprintf(out, "IP:\t%s\n", floatingIP.Network.String())
 		} else {
-			_, _ = fmt.Fprintf(out, "IP:\t%s\n", floatingIP.IP.String())
+			fmt.Fprintf(out, "IP:\t%s\n", floatingIP.IP.String())
 		}
 
-		_, _ = fmt.Fprintf(out, "Blocked:\t%s\n", util.YesNo(floatingIP.Blocked))
-		_, _ = fmt.Fprintf(out, "Home Location:\t%s\n", floatingIP.HomeLocation.Name)
+		fmt.Fprintf(out, "Blocked:\t%s\n", util.YesNo(floatingIP.Blocked))
+		fmt.Fprintf(out, "Home Location:\t%s\n", floatingIP.HomeLocation.Name)
 
 		if floatingIP.Server != nil {
-			_, _ = fmt.Fprintf(out, "Server:\t")
-			_, _ = fmt.Fprintf(out, "  ID:\t%d\n", floatingIP.Server.ID)
-			_, _ = fmt.Fprintf(out, "  Name:\t%s\n", floatingIP.Server.Name)
+			fmt.Fprintf(out, "Server:\t")
+			fmt.Fprintf(out, "  ID:\t%d\n", floatingIP.Server.ID)
+			fmt.Fprintf(out, "  Name:\t%s\n", floatingIP.Server.Name)
 		} else {
-			_, _ = fmt.Fprintf(out, "Server:\tNot assigned\n")
+			fmt.Fprintf(out, "Server:\tNot assigned\n")
 		}
 
 		if len(floatingIP.DNSPtr) == 0 {
-			_, _ = fmt.Fprintf(out, "DNS:\tNo reverse DNS entries\n")
+			fmt.Fprintf(out, "DNS:\tNo reverse DNS entries\n")
 		} else {
-			_, _ = fmt.Fprintf(out, "DNS:\t\n")
+			fmt.Fprintf(out, "DNS:\t\n")
 			for ip, dns := range floatingIP.DNSPtr {
-				_, _ = fmt.Fprintf(out, "  %s:\t%s\n", ip, dns)
+				fmt.Fprintf(out, "  %s:\t%s\n", ip, dns)
 			}
 		}
 
-		_, _ = fmt.Fprintf(out, "Protection:\t\n")
-		_, _ = fmt.Fprintf(out, "  Delete:\t%s\n", util.YesNo(floatingIP.Protection.Delete))
+		fmt.Fprintf(out, "Protection:\t\n")
+		fmt.Fprintf(out, "  Delete:\t%s\n", util.YesNo(floatingIP.Protection.Delete))
 
 		util.DescribeLabels(out, floatingIP.Labels, "")
 		return nil

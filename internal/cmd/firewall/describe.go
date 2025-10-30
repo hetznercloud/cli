@@ -28,49 +28,49 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Firewall]{
 		return fw, hcloud.SchemaFromFirewall(fw), nil
 	},
 	PrintText: func(s state.State, _ *cobra.Command, out io.Writer, firewall *hcloud.Firewall) error {
-		_, _ = fmt.Fprintf(out, "ID:\t%d\n", firewall.ID)
-		_, _ = fmt.Fprintf(out, "Name:\t%s\n", firewall.Name)
-		_, _ = fmt.Fprintf(out, "Created:\t%s (%s)\n", util.Datetime(firewall.Created), humanize.Time(firewall.Created))
+		fmt.Fprintf(out, "ID:\t%d\n", firewall.ID)
+		fmt.Fprintf(out, "Name:\t%s\n", firewall.Name)
+		fmt.Fprintf(out, "Created:\t%s (%s)\n", util.Datetime(firewall.Created), humanize.Time(firewall.Created))
 
 		util.DescribeLabels(out, firewall.Labels, "")
 
 		if len(firewall.Rules) == 0 {
-			_, _ = fmt.Fprintf(out, "Rules:\tNo rules\n")
+			fmt.Fprintf(out, "Rules:\tNo rules\n")
 		} else {
-			_, _ = fmt.Fprintf(out, "Rules:\t\n")
+			fmt.Fprintf(out, "Rules:\t\n")
 			for _, rule := range firewall.Rules {
-				_, _ = fmt.Fprintf(out, "  - Direction:\t%s\n", rule.Direction)
+				fmt.Fprintf(out, "  - Direction:\t%s\n", rule.Direction)
 				if rule.Description != nil {
-					_, _ = fmt.Fprintf(out, "    Description:\t%s\n", *rule.Description)
+					fmt.Fprintf(out, "    Description:\t%s\n", *rule.Description)
 				}
-				_, _ = fmt.Fprintf(out, "    Protocol:\t%s\n", rule.Protocol)
+				fmt.Fprintf(out, "    Protocol:\t%s\n", rule.Protocol)
 				if rule.Port != nil {
-					_, _ = fmt.Fprintf(out, "    Port:\t%s\n", *rule.Port)
+					fmt.Fprintf(out, "    Port:\t%s\n", *rule.Port)
 				}
 
 				var ips []net.IPNet
 				switch rule.Direction {
 				case hcloud.FirewallRuleDirectionIn:
-					_, _ = fmt.Fprintf(out, "    Source IPs:\t\n")
+					fmt.Fprintf(out, "    Source IPs:\t\n")
 					ips = rule.SourceIPs
 				case hcloud.FirewallRuleDirectionOut:
-					_, _ = fmt.Fprintf(out, "    Destination IPs:\t\n")
+					fmt.Fprintf(out, "    Destination IPs:\t\n")
 					ips = rule.DestinationIPs
 				}
 
 				for _, cidr := range ips {
-					_, _ = fmt.Fprintf(out, "\t%s\n", cidr.String())
+					fmt.Fprintf(out, "\t%s\n", cidr.String())
 				}
 			}
 		}
 
-		_, _ = fmt.Fprintf(out, "\n")
+		fmt.Fprintf(out, "\n")
 
 		if len(firewall.AppliedTo) == 0 {
-			_, _ = fmt.Fprintf(out, "Applied To:\nNot applied\n")
+			fmt.Fprintf(out, "Applied To:\nNot applied\n")
 		} else {
-			_, _ = fmt.Fprintf(out, "Applied To:\t\n")
-			_, _ = fmt.Fprintf(out, "%s", describeResources(s.Client(), firewall.AppliedTo))
+			fmt.Fprintf(out, "Applied To:\t\n")
+			fmt.Fprintf(out, "%s", describeResources(s.Client(), firewall.AppliedTo))
 		}
 
 		return nil
