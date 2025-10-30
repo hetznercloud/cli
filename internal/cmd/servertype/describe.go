@@ -60,16 +60,17 @@ func DescribeServerType(s state.State, serverType *hcloud.ServerType, short bool
 	}
 
 	locations := joinLocationInfo(serverType, pricings)
+	fmt.Fprintln(&sb)
 	fmt.Fprintf(&sb, "Locations:\n")
 	for _, info := range locations {
 
-		fmt.Fprintf(&sb, "  - Location:\t\t\t%s\n", info.Location.Name)
+		fmt.Fprintf(&sb, "  - Location:\t%s\n", info.Location.Name)
 
 		if deprecationText := util.DescribeDeprecation(info); deprecationText != "" {
-			fmt.Fprintf(&sb, "%s", util.PrefixLines(deprecationText, "    "))
+			fmt.Fprint(&sb, util.PrefixLines(deprecationText, "    "))
 		}
 
-		fmt.Fprintf(&sb, "    Pricing:\n")
+		fmt.Fprintf(&sb, "    Pricing:\t\n")
 		fmt.Fprintf(&sb, "      Hourly:\t%s\n", util.GrossPrice(info.Pricing.Hourly))
 		fmt.Fprintf(&sb, "      Monthly:\t%s\n", util.GrossPrice(info.Pricing.Monthly))
 		fmt.Fprintf(&sb, "      Included Traffic:\t%s\n", humanize.IBytes(info.Pricing.IncludedTraffic))

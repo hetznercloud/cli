@@ -33,7 +33,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Location]{
 
 func DescribeLocation(location *hcloud.Location) string {
 	var sb strings.Builder
-	fmt.Fprintf(&sb, "Location ID:\t%d\n", location.ID)
+	fmt.Fprintf(&sb, "ID:\t%d\n", location.ID)
 	fmt.Fprintf(&sb, "Name:\t%s\n", location.Name)
 	fmt.Fprintf(&sb, "Description:\t%s\n", location.Description)
 	fmt.Fprintf(&sb, "Network Zone:\t%s\n", location.NetworkZone)

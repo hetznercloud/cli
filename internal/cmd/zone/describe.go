@@ -47,13 +47,15 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Zone]{
 		fmt.Fprintf(out, "TTL:\t%d\n", zone.TTL)
 		fmt.Fprintf(out, "Registrar:\t%s\n", zone.Registrar)
 		fmt.Fprintf(out, "Record Count:\t%d\n", zone.RecordCount)
+
+		fmt.Fprintln(out)
 		fmt.Fprintf(out, "Protection:\t\n")
 		fmt.Fprintf(out, "  Delete:\t%s\n", util.YesNo(zone.Protection.Delete))
 
+		fmt.Fprintln(out)
 		util.DescribeLabels(out, zone.Labels, "")
 
-		fmt.Fprintf(out, "\n")
-
+		fmt.Fprintln(out)
 		fmt.Fprintf(out, "Authoritative Nameservers:\n")
 		fmt.Fprintf(out, "  Assigned:\n")
 		if len(zone.AuthoritativeNameservers.Assigned) > 0 {

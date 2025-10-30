@@ -10,6 +10,8 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
+	"github.com/hetznercloud/cli/internal/cmd/location"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -38,13 +40,10 @@ func DescribeDatacenter(client hcapi2.Client, datacenter *hcloud.Datacenter, sho
 	fmt.Fprintf(&sb, "ID:\t%d\n", datacenter.ID)
 	fmt.Fprintf(&sb, "Name:\t%s\n", datacenter.Name)
 	fmt.Fprintf(&sb, "Description:\t%s\n", datacenter.Description)
-	fmt.Fprintf(&sb, "Location:\t\n")
-	fmt.Fprintf(&sb, "  Name:\t%s\n", datacenter.Location.Name)
-	fmt.Fprintf(&sb, "  Description:\t%s\n", datacenter.Location.Description)
-	fmt.Fprintf(&sb, "  Country:\t%s\n", datacenter.Location.Country)
-	fmt.Fprintf(&sb, "  City:\t%s\n", datacenter.Location.City)
-	fmt.Fprintf(&sb, "  Latitude:\t%f\n", datacenter.Location.Latitude)
-	fmt.Fprintf(&sb, "  Longitude:\t%f\n", datacenter.Location.Longitude)
+
+	fmt.Fprintln(&sb)
+	fmt.Fprintf(&sb, "Location:\n")
+	fmt.Fprint(&sb, util.PrefixLines(location.DescribeLocation(datacenter.Location), "  "))
 
 	if short {
 		return sb.String()
@@ -72,8 +71,9 @@ func DescribeDatacenter(client hcapi2.Client, datacenter *hcloud.Datacenter, sho
 
 	slices.SortFunc(allServerTypeStatus, func(a, b ServerTypeStatus) int { return int(a.ID - b.ID) })
 
+	fmt.Fprintln(&sb)
+	fmt.Fprintf(&sb, "Server Types:\n")
 	if len(allServerTypeStatus) > 0 {
-		fmt.Fprintf(&sb, "Server Types:\n")
 		for _, t := range allServerTypeStatus {
 			fmt.Fprintf(&sb, "  - ID: %d\tName: %s\tSupported: %s\tAvailable: %s\n",
 				t.ID,
@@ -83,7 +83,7 @@ func DescribeDatacenter(client hcapi2.Client, datacenter *hcloud.Datacenter, sho
 			)
 		}
 	} else {
-		fmt.Fprintf(&sb, "Server Types:\tNo Server Types\n")
+		fmt.Fprintf(&sb, "  No Server Types\n")
 	}
 
 	return sb.String()

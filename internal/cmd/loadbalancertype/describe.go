@@ -53,14 +53,17 @@ func DescribeLoadBalancerType(s state.State, loadBalancerType *hcloud.LoadBalanc
 	}
 
 	if pricings != nil {
-		fmt.Fprintf(&sb, "Pricings per Location:\t\n")
-		for _, price := range pricings {
+		fmt.Fprintln(&sb)
+		fmt.Fprintf(&sb, "Pricings per Location:\n")
+		for i, price := range pricings {
+			if i > 0 {
+				fmt.Fprintln(&sb)
+			}
 			fmt.Fprintf(&sb, "  - Location:\t%s\n", price.Location.Name)
 			fmt.Fprintf(&sb, "    Hourly:\t%s\n", util.GrossPrice(price.Hourly))
 			fmt.Fprintf(&sb, "    Monthly:\t%s\n", util.GrossPrice(price.Monthly))
 			fmt.Fprintf(&sb, "    Included Traffic:\t%s\n", humanize.IBytes(price.IncludedTraffic))
 			fmt.Fprintf(&sb, "    Additional Traffic:\t%s per TB\n", util.GrossPrice(price.PerTBTraffic))
-			fmt.Fprintf(&sb, "\t\n")
 		}
 	}
 

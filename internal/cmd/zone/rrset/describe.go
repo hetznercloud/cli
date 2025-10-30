@@ -51,15 +51,19 @@ var DescribeCmd = base.DescribeCmd[*hcloud.ZoneRRSet]{
 		fmt.Fprintf(out, "Type:\t%s\n", rrset.Type)
 		fmt.Fprintf(out, "Name:\t%s\n", rrset.Name)
 		fmt.Fprintf(out, "TTL:\t%s\n", ttl)
+
+		fmt.Fprintln(out)
 		fmt.Fprintf(out, "Protection:\t\n")
 		fmt.Fprintf(out, "  Change:\t%s\n", util.YesNo(rrset.Protection.Change))
 
+		fmt.Fprintln(out)
 		util.DescribeLabels(out, rrset.Labels, "")
 
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Records:\n")
 		if len(rrset.Records) == 0 {
-			fmt.Fprintf(out, "Records:\tNo Records\n")
+			fmt.Fprintf(out, "  No Records\n")
 		} else {
-			fmt.Fprintf(out, "Records:\t\n")
 			for _, record := range rrset.Records {
 				fmt.Fprintf(out, "  - Value:\t%s\n", record.Value)
 				if record.Comment != "" {

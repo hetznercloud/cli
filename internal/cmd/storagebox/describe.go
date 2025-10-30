@@ -39,10 +39,11 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBox]{
 		fmt.Fprintf(out, "System:\t%s\n", storageBox.System)
 
 		snapshotPlan := storageBox.SnapshotPlan
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Snapshot Plan:\n")
 		if snapshotPlan == nil {
-			fmt.Fprintf(out, "Snapshot Plan:\tNo snapshot plan active\n")
+			fmt.Fprintf(out, "  No snapshot plan active\n")
 		} else {
-			fmt.Fprintf(out, "Snapshot Plan:\t\n")
 			fmt.Fprintf(out, "  Max Snapshots:\t%d\n", snapshotPlan.MaxSnapshots)
 			fmt.Fprintf(out, "  Minute:\t%d\n", snapshotPlan.Minute)
 			fmt.Fprintf(out, "  Hour:\t%d\n", snapshotPlan.Hour)
@@ -56,19 +57,23 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBox]{
 		}
 
 		protection := storageBox.Protection
-		fmt.Fprintf(out, "Protection:\t\n")
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Protection:\n")
 		fmt.Fprintf(out, "  Delete:\t%t\n", protection.Delete)
 
 		stats := storageBox.Stats
-		fmt.Fprintf(out, "Stats:\t\n")
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Stats:\n")
 		fmt.Fprintf(out, "  Size:\t%s\n", humanize.IBytes(stats.Size))
 		fmt.Fprintf(out, "  Size Data:\t%s\n", humanize.IBytes(stats.SizeData))
 		fmt.Fprintf(out, "  Size Snapshots:\t%s\n", humanize.IBytes(stats.SizeSnapshots))
 
+		fmt.Fprintln(out)
 		util.DescribeLabels(out, storageBox.Labels, "")
 
 		accessSettings := storageBox.AccessSettings
-		fmt.Fprintf(out, "Access Settings:\t\n")
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Access Settings:\n")
 		fmt.Fprintf(out, "  Reachable Externally:\t%t\n", accessSettings.ReachableExternally)
 		fmt.Fprintf(out, "  Samba Enabled:\t%t\n", accessSettings.SambaEnabled)
 		fmt.Fprintf(out, "  SSH Enabled:\t%t\n", accessSettings.SSHEnabled)
@@ -76,9 +81,11 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBox]{
 		fmt.Fprintf(out, "  ZFS Enabled:\t%t\n", accessSettings.ZFSEnabled)
 
 		typeDescription, _ := storageboxtype.DescribeStorageBoxType(s, storageBox.StorageBoxType, true)
-		fmt.Fprintf(out, "Storage Box Type:\t\n")
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Storage Box Type:\n")
 		fmt.Fprintf(out, "%s", util.PrefixLines(typeDescription, "  "))
 
+		fmt.Fprintln(out)
 		fmt.Fprintf(out, "Location:\t\n")
 		fmt.Fprintf(out, "%s", util.PrefixLines(location.DescribeLocation(storageBox.Location), "  "))
 

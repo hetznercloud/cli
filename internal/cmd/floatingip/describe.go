@@ -41,26 +41,30 @@ var DescribeCmd = base.DescribeCmd[*hcloud.FloatingIP]{
 		fmt.Fprintf(out, "Blocked:\t%s\n", util.YesNo(floatingIP.Blocked))
 		fmt.Fprintf(out, "Home Location:\t%s\n", floatingIP.HomeLocation.Name)
 
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Server:\n")
 		if floatingIP.Server != nil {
-			fmt.Fprintf(out, "Server:\t")
 			fmt.Fprintf(out, "  ID:\t%d\n", floatingIP.Server.ID)
 			fmt.Fprintf(out, "  Name:\t%s\n", floatingIP.Server.Name)
 		} else {
-			fmt.Fprintf(out, "Server:\tNot assigned\n")
+			fmt.Fprintf(out, "  Not assigned\n")
 		}
 
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "DNS:\n")
 		if len(floatingIP.DNSPtr) == 0 {
-			fmt.Fprintf(out, "DNS:\tNo reverse DNS entries\n")
+			fmt.Fprintf(out, "  No reverse DNS entries\n")
 		} else {
-			fmt.Fprintf(out, "DNS:\t\n")
 			for ip, dns := range floatingIP.DNSPtr {
 				fmt.Fprintf(out, "  %s:\t%s\n", ip, dns)
 			}
 		}
 
-		fmt.Fprintf(out, "Protection:\t\n")
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Protection:\n")
 		fmt.Fprintf(out, "  Delete:\t%s\n", util.YesNo(floatingIP.Protection.Delete))
 
+		fmt.Fprintln(out)
 		util.DescribeLabels(out, floatingIP.Labels, "")
 		return nil
 	},

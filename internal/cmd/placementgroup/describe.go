@@ -40,12 +40,14 @@ func DescribePlacementGroup(client hcapi2.Client, placementGroup *hcloud.Placeme
 	fmt.Fprintf(&sb, "Created:\t%s (%s)\n", util.Datetime(placementGroup.Created), humanize.Time(placementGroup.Created))
 	fmt.Fprintf(&sb, "Type:\t%s\n", placementGroup.Type)
 
+	fmt.Fprintln(&sb)
 	util.DescribeLabels(&sb, placementGroup.Labels, "")
 
+	fmt.Fprintln(&sb)
+	fmt.Fprintf(&sb, "Servers:\n")
 	if len(placementGroup.Servers) == 0 {
-		fmt.Fprintf(&sb, "Servers:\tNo servers\n")
+		fmt.Fprintf(&sb, "  No servers\n")
 	} else {
-		fmt.Fprintf(&sb, "Servers:\t\n")
 		for _, serverID := range placementGroup.Servers {
 			fmt.Fprintf(&sb, "  - Server ID:\t%d\n", serverID)
 			fmt.Fprintf(&sb, "    Server Name:\t%s\n", client.Server().ServerName(serverID))

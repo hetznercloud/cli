@@ -34,20 +34,24 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Volume]{
 		fmt.Fprintf(out, "Size:\t%s\n", humanize.Bytes(uint64(volume.Size)*humanize.GByte))
 		fmt.Fprintf(out, "Linux Device:\t%s\n", volume.LinuxDevice)
 
+		fmt.Fprintln(out)
 		fmt.Fprintf(out, "Location:\t\n")
 		fmt.Fprintf(out, "%s", util.PrefixLines(location.DescribeLocation(volume.Location), "  "))
 
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Server:\n")
 		if volume.Server != nil {
-			fmt.Fprintf(out, "Server:\t\n")
 			fmt.Fprintf(out, "  ID:\t%d\n", volume.Server.ID)
 			fmt.Fprintf(out, "  Name:\t%s\n", s.Client().Server().ServerName(volume.Server.ID))
 		} else {
-			fmt.Fprintf(out, "Server:\tNot attached\n")
+			fmt.Fprintf(out, "  Not attached\n")
 		}
 
-		fmt.Fprintf(out, "Protection:\t\n")
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Protection:\n")
 		fmt.Fprintf(out, "  Delete:\t%s\n", util.YesNo(volume.Protection.Delete))
 
+		fmt.Fprintln(out)
 		util.DescribeLabels(out, volume.Labels, "")
 
 		return nil
