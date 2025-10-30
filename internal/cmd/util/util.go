@@ -443,3 +443,14 @@ func WeekdayFromString(s string) (time.Weekday, error) {
 	}
 	return 0, fmt.Errorf("invalid weekday: %s", s)
 }
+
+func DescribeLabels(out io.Writer, labels map[string]string, prefix string) {
+	if len(labels) == 0 {
+		_, _ = fmt.Fprintf(out, "%sLabels:\tNo labels\n", prefix)
+	} else {
+		_, _ = fmt.Fprintf(out, "%sLabels:\t\n", prefix)
+		for key, value := range IterateInOrder(labels) {
+			_, _ = fmt.Fprintf(out, "%s  %s:\t%s\n", prefix, key, value)
+		}
+	}
+}

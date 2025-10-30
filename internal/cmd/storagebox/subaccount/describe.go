@@ -2,6 +2,8 @@ package subaccount
 
 import (
 	"fmt"
+	"io"
+	"strings"
 
 	"github.com/dustin/go-humanize"
 	"github.com/spf13/cobra"
@@ -42,35 +44,34 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBoxSubaccount]{
 		}
 		return subaccount, hcloud.SchemaFromStorageBoxSubaccount(subaccount), nil
 	},
-	PrintText: func(_ state.State, cmd *cobra.Command, subaccount *hcloud.StorageBoxSubaccount) error {
-
-		cmd.Printf("ID:\t\t\t%d\n", subaccount.ID)
-		cmd.Printf("Description:\t\t%s\n", util.NA(subaccount.Description))
-		cmd.Printf("Created:\t\t%s (%s)\n", util.Datetime(subaccount.Created), humanize.Time(subaccount.Created))
-		cmd.Printf("Username:\t\t%s\n", subaccount.Username)
-		cmd.Printf("Home Directory:\t\t%s\n", subaccount.HomeDirectory)
-		cmd.Printf("Server:\t\t\t%s\n", subaccount.Server)
-
-		accessSettings := subaccount.AccessSettings
-		cmd.Println("Access Settings:")
-		cmd.Printf("  Reachable Externally:\t%t\n", accessSettings.ReachableExternally)
-		cmd.Printf("  Samba Enabled:\t%t\n", accessSettings.SambaEnabled)
-		cmd.Printf("  SSH Enabled:\t\t%t\n", accessSettings.SSHEnabled)
-		cmd.Printf("  WebDAV Enabled:\t%t\n", accessSettings.WebDAVEnabled)
-		cmd.Printf("  Readonly:\t\t%t\n", accessSettings.Readonly)
-
-		cmd.Println("Labels:")
-		if len(subaccount.Labels) == 0 {
-			cmd.Println("  No labels")
-		} else {
-			for key, value := range util.IterateInOrder(subaccount.Labels) {
-				cmd.Printf("  %s: %s\n", key, value)
-			}
-		}
-
-		cmd.Println("Storage Box:")
-		cmd.Printf("  ID:\t\t\t%d\n", subaccount.StorageBox.ID)
+	PrintText: func(_ state.State, _ *cobra.Command, out io.Writer, subaccount *hcloud.StorageBoxSubaccount) error {
+		_, _ = fmt.Fprint(out, DescribeSubaccount(subaccount))
 		return nil
 	},
 	Experimental: experimental.StorageBoxes,
+}
+
+func DescribeSubaccount(subaccount *hcloud.StorageBoxSubaccount) string {
+	var sb strings.Builder
+
+	_, _ = fmt.Fprintf(&sb, "ID:\t%d\n", subaccount.ID)
+	_, _ = fmt.Fprintf(&sb, "Description:\t%s\n", util.NA(subaccount.Description))
+	_, _ = fmt.Fprintf(&sb, "Created:\t%s (%s)\n", util.Datetime(subaccount.Created), humanize.Time(subaccount.Created))
+	_, _ = fmt.Fprintf(&sb, "Username:\t%s\n", subaccount.Username)
+	_, _ = fmt.Fprintf(&sb, "Home Directory:\t%s\n", subaccount.HomeDirectory)
+	_, _ = fmt.Fprintf(&sb, "Server:\t%s\n", subaccount.Server)
+
+	accessSettings := subaccount.AccessSettings
+	_, _ = fmt.Fprintf(&sb, "Access Settings:\n")
+	_, _ = fmt.Fprintf(&sb, "  Reachable Externally:\t%t\n", accessSettings.ReachableExternally)
+	_, _ = fmt.Fprintf(&sb, "  Samba Enabled:\t%t\n", accessSettings.SambaEnabled)
+	_, _ = fmt.Fprintf(&sb, "  SSH Enabled:\t%t\n", accessSettings.SSHEnabled)
+	_, _ = fmt.Fprintf(&sb, "  WebDAV Enabled:\t%t\n", accessSettings.WebDAVEnabled)
+	_, _ = fmt.Fprintf(&sb, "  Readonly:\t%t\n", accessSettings.Readonly)
+
+	util.DescribeLabels(&sb, subaccount.Labels, "")
+
+	_, _ = fmt.Fprintf(&sb, "Storage Box:\n")
+	_, _ = fmt.Fprintf(&sb, "  ID:\t%d\n", subaccount.StorageBox.ID)
+	return sb.String()
 }

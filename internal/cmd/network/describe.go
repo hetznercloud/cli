@@ -1,7 +1,10 @@
 package network
 
 import (
-	humanize "github.com/dustin/go-humanize"
+	"fmt"
+	"io"
+
+	"github.com/dustin/go-humanize"
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
@@ -23,50 +26,42 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Network]{
 		}
 		return n, hcloud.SchemaFromNetwork(n), nil
 	},
-	PrintText: func(_ state.State, cmd *cobra.Command, network *hcloud.Network) error {
-		cmd.Printf("ID:\t\t%d\n", network.ID)
-		cmd.Printf("Name:\t\t%s\n", network.Name)
-		cmd.Printf("Created:\t%s (%s)\n", util.Datetime(network.Created), humanize.Time(network.Created))
-		cmd.Printf("IP Range:\t%s\n", network.IPRange.String())
-		cmd.Printf("Expose Routes to vSwitch: %s\n", util.YesNo(network.ExposeRoutesToVSwitch))
+	PrintText: func(_ state.State, _ *cobra.Command, out io.Writer, network *hcloud.Network) error {
+		_, _ = fmt.Fprintf(out, "ID:\t%d\n", network.ID)
+		_, _ = fmt.Fprintf(out, "Name:\t%s\n", network.Name)
+		_, _ = fmt.Fprintf(out, "Created:\t%s (%s)\n", util.Datetime(network.Created), humanize.Time(network.Created))
+		_, _ = fmt.Fprintf(out, "IP Range:\t%s\n", network.IPRange.String())
+		_, _ = fmt.Fprintf(out, "Expose Routes to vSwitch:\t%s\n", util.YesNo(network.ExposeRoutesToVSwitch))
 
-		cmd.Printf("Subnets:\n")
 		if len(network.Subnets) == 0 {
-			cmd.Print("  No subnets\n")
+			_, _ = fmt.Fprintf(out, "Subnets:\tNo subnets\n")
 		} else {
+			_, _ = fmt.Fprintf(out, "Subnets:\t\n")
 			for _, subnet := range network.Subnets {
-				cmd.Printf("  - Type:\t\t%s\n", subnet.Type)
-				cmd.Printf("    Network Zone:\t%s\n", subnet.NetworkZone)
-				cmd.Printf("    IP Range:\t\t%s\n", subnet.IPRange.String())
-				cmd.Printf("    Gateway:\t\t%s\n", subnet.Gateway.String())
+				_, _ = fmt.Fprintf(out, "  - Type:\t%s\n", subnet.Type)
+				_, _ = fmt.Fprintf(out, "    Network Zone:\t%s\n", subnet.NetworkZone)
+				_, _ = fmt.Fprintf(out, "    IP Range:\t%s\n", subnet.IPRange.String())
+				_, _ = fmt.Fprintf(out, "    Gateway:\t%s\n", subnet.Gateway.String())
 				if subnet.Type == hcloud.NetworkSubnetTypeVSwitch {
-					cmd.Printf("    vSwitch ID:\t\t%d\n", subnet.VSwitchID)
+					_, _ = fmt.Fprintf(out, "    vSwitch ID:\t%d\n", subnet.VSwitchID)
 				}
 			}
 		}
 
-		cmd.Printf("Routes:\n")
 		if len(network.Routes) == 0 {
-			cmd.Print("  No routes\n")
+			_, _ = fmt.Fprintf(out, "Routes:\tNo routes\n")
 		} else {
+			_, _ = fmt.Fprintf(out, "Routes:\t\n")
 			for _, route := range network.Routes {
-				cmd.Printf("  - Destination:\t%s\n", route.Destination.String())
-				cmd.Printf("    Gateway:\t\t%s\n", route.Gateway.String())
+				_, _ = fmt.Fprintf(out, "  - Destination:\t%s\n", route.Destination.String())
+				_, _ = fmt.Fprintf(out, "    Gateway:\t%s\n", route.Gateway.String())
 			}
 		}
 
-		cmd.Printf("Protection:\n")
-		cmd.Printf("  Delete:\t%s\n", util.YesNo(network.Protection.Delete))
+		_, _ = fmt.Fprintf(out, "Protection:\t\n")
+		_, _ = fmt.Fprintf(out, "  Delete:\t%s\n", util.YesNo(network.Protection.Delete))
 
-		cmd.Print("Labels:\n")
-		if len(network.Labels) == 0 {
-			cmd.Print("  No labels\n")
-		} else {
-			for key, value := range util.IterateInOrder(network.Labels) {
-				cmd.Printf("  %s: %s\n", key, value)
-			}
-		}
-
+		util.DescribeLabels(out, network.Labels, "")
 		return nil
 	},
 }

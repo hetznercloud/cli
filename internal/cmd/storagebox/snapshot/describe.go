@@ -2,6 +2,8 @@ package snapshot
 
 import (
 	"fmt"
+	"io"
+	"strings"
 
 	"github.com/dustin/go-humanize"
 	"github.com/spf13/cobra"
@@ -42,29 +44,29 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBoxSnapshot]{
 		}
 		return snapshot, hcloud.SchemaFromStorageBoxSnapshot(snapshot), nil
 	},
-	PrintText: func(_ state.State, cmd *cobra.Command, snapshot *hcloud.StorageBoxSnapshot) error {
-		cmd.Printf("ID:\t\t\t%d\n", snapshot.ID)
-		cmd.Printf("Name:\t\t\t%s\n", snapshot.Name)
-		cmd.Printf("Description:\t\t%s\n", snapshot.Description)
-		cmd.Printf("Created:\t\t%s (%s)\n", util.Datetime(snapshot.Created), humanize.Time(snapshot.Created))
-		cmd.Printf("Is automatic:\t\t%s\n", util.YesNo(snapshot.IsAutomatic))
-
-		cmd.Println("Stats:")
-		cmd.Printf("  Size:\t\t\t%s\n", humanize.IBytes(snapshot.Stats.Size))
-		cmd.Printf("  Filesystem Size:\t%s\n", humanize.IBytes(snapshot.Stats.SizeFilesystem))
-
-		cmd.Println("Labels:")
-		if len(snapshot.Labels) == 0 {
-			cmd.Println("  No labels")
-		} else {
-			for key, value := range util.IterateInOrder(snapshot.Labels) {
-				cmd.Printf("  %s: %s\n", key, value)
-			}
-		}
-
-		cmd.Println("Storage Box:")
-		cmd.Printf("  ID:\t\t\t%d\n", snapshot.StorageBox.ID)
+	PrintText: func(_ state.State, _ *cobra.Command, out io.Writer, snapshot *hcloud.StorageBoxSnapshot) error {
+		_, _ = fmt.Fprint(out, DescribeSnapshot(snapshot))
 		return nil
 	},
 	Experimental: experimental.StorageBoxes,
+}
+
+func DescribeSnapshot(snapshot *hcloud.StorageBoxSnapshot) string {
+	var sb strings.Builder
+
+	_, _ = fmt.Fprintf(&sb, "ID:\t%d\n", snapshot.ID)
+	_, _ = fmt.Fprintf(&sb, "Name:\t%s\n", snapshot.Name)
+	_, _ = fmt.Fprintf(&sb, "Description:\t%s\n", snapshot.Description)
+	_, _ = fmt.Fprintf(&sb, "Created:\t%s (%s)\n", util.Datetime(snapshot.Created), humanize.Time(snapshot.Created))
+	_, _ = fmt.Fprintf(&sb, "Is automatic:\t%s\n", util.YesNo(snapshot.IsAutomatic))
+
+	_, _ = fmt.Fprintf(&sb, "Stats:\n")
+	_, _ = fmt.Fprintf(&sb, "  Size:\t%s\n", humanize.IBytes(snapshot.Stats.Size))
+	_, _ = fmt.Fprintf(&sb, "  Filesystem Size:\t%s\n", humanize.IBytes(snapshot.Stats.SizeFilesystem))
+
+	util.DescribeLabels(&sb, snapshot.Labels, "")
+
+	_, _ = fmt.Fprintf(&sb, "Storage Box:\n")
+	_, _ = fmt.Fprintf(&sb, "  ID:\t%d\n", snapshot.StorageBox.ID)
+	return sb.String()
 }
