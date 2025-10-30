@@ -33,8 +33,10 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Certificate]{
 		fmt.Fprintf(out, "Created:\t%s (%s)\n", util.Datetime(cert.Created), humanize.Time(cert.Created))
 		fmt.Fprintf(out, "Not valid before:\t%s (%s)\n", util.Datetime(cert.NotValidBefore), humanize.Time(cert.NotValidBefore))
 		fmt.Fprintf(out, "Not valid after:\t%s (%s)\n", util.Datetime(cert.NotValidAfter), humanize.Time(cert.NotValidAfter))
+
 		if cert.Status != nil {
-			fmt.Fprintf(out, "Status:\t\n")
+			fmt.Fprintln(out)
+			fmt.Fprintf(out, "Status:\n")
 			fmt.Fprintf(out, "  Issuance:\t%s\n", cert.Status.Issuance)
 			fmt.Fprintf(out, "  Renewal:\t%s\n", cert.Status.Renewal)
 			if cert.Status.IsFailed() {
@@ -42,22 +44,25 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Certificate]{
 			}
 		}
 
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Domain names:\n")
 		if len(cert.DomainNames) == 0 {
-			fmt.Fprintf(out, "Domain names:\tNo Domain names\n")
+			fmt.Fprintf(out, "  No Domain names\n")
 		} else {
-			fmt.Fprintf(out, "Domain names:\t\n")
 			for _, domainName := range cert.DomainNames {
-				fmt.Fprintf(out, "\t- %s\n", domainName)
+				fmt.Fprintf(out, "  - %s\n", domainName)
 			}
 
 		}
 
+		fmt.Fprintln(out)
 		util.DescribeLabels(out, cert.Labels, "")
 
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Used By:\n")
 		if len(cert.UsedBy) == 0 {
-			fmt.Fprintf(out, "Used By:\tCertificate unused\n")
+			fmt.Fprintf(out, "  Certificate unused\n")
 		} else {
-			fmt.Fprintf(out, "Used By:\t\n")
 			for _, ub := range cert.UsedBy {
 				fmt.Fprintf(out, "  - Type:\t%s\n", ub.Type)
 				// Currently certificates can be only attached to load balancers.

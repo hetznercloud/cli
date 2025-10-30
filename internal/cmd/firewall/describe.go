@@ -32,13 +32,19 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Firewall]{
 		fmt.Fprintf(out, "Name:\t%s\n", firewall.Name)
 		fmt.Fprintf(out, "Created:\t%s (%s)\n", util.Datetime(firewall.Created), humanize.Time(firewall.Created))
 
+		fmt.Fprintln(out)
 		util.DescribeLabels(out, firewall.Labels, "")
 
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Rules:\n")
 		if len(firewall.Rules) == 0 {
-			fmt.Fprintf(out, "Rules:\tNo rules\n")
+			fmt.Fprintf(out, "  No rules\n")
 		} else {
-			fmt.Fprintf(out, "Rules:\t\n")
-			for _, rule := range firewall.Rules {
+			for i, rule := range firewall.Rules {
+				if i > 0 {
+					fmt.Fprintln(out)
+				}
+
 				fmt.Fprintf(out, "  - Direction:\t%s\n", rule.Direction)
 				if rule.Description != nil {
 					fmt.Fprintf(out, "    Description:\t%s\n", *rule.Description)
@@ -59,17 +65,16 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Firewall]{
 				}
 
 				for _, cidr := range ips {
-					fmt.Fprintf(out, "\t%s\n", cidr.String())
+					fmt.Fprintf(out, "      %s\n", cidr.String())
 				}
 			}
 		}
 
-		fmt.Fprintf(out, "\n")
-
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Applied To:\n")
 		if len(firewall.AppliedTo) == 0 {
-			fmt.Fprintf(out, "Applied To:\nNot applied\n")
+			fmt.Fprintf(out, "  Not applied\n")
 		} else {
-			fmt.Fprintf(out, "Applied To:\t\n")
 			fmt.Fprintf(out, "%s", describeResources(s.Client(), firewall.AppliedTo))
 		}
 
@@ -81,19 +86,20 @@ func describeResources(client hcapi2.Client, resources []hcloud.FirewallResource
 	var sb strings.Builder
 
 	for _, resource := range resources {
-		sb.WriteString(fmt.Sprintf("  - Type:\t%s\n", resource.Type))
+		fmt.Fprintf(&sb, "  - Type:\t%s\n", resource.Type)
 
 		switch resource.Type {
 		case hcloud.FirewallResourceTypeServer:
-			sb.WriteString(fmt.Sprintf("    Server ID:\t%d\n", resource.Server.ID))
-			sb.WriteString(fmt.Sprintf("    Server Name:\t%s\n", client.Server().ServerName(resource.Server.ID)))
+			fmt.Fprintf(&sb, "    Server ID:\t%d\n", resource.Server.ID)
+			fmt.Fprintf(&sb, "    Server Name:\t%s\n", client.Server().ServerName(resource.Server.ID))
 
 		case hcloud.FirewallResourceTypeLabelSelector:
-			sb.WriteString(fmt.Sprintf("    Label Selector:\t%s\n", resource.LabelSelector.Selector))
+			fmt.Fprintf(&sb, "    Label Selector:\t%s\n", resource.LabelSelector.Selector)
+
 			if len(resource.AppliedToResources) > 0 {
-				sb.WriteString("    Applied to resources:\t\n")
+				fmt.Fprintf(&sb, "    Applied to resources:\n")
 				substr := describeResources(client, resource.AppliedToResources)
-				sb.WriteString(util.PrefixLines(substr, "  "))
+				fmt.Fprint(&sb, util.PrefixLines(substr, "  "))
 			}
 		}
 	}

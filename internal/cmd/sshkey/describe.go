@@ -31,8 +31,11 @@ var DescribeCmd = base.DescribeCmd[*hcloud.SSHKey]{
 		fmt.Fprintf(out, "Name:\t%s\n", sshKey.Name)
 		fmt.Fprintf(out, "Created:\t%s (%s)\n", util.Datetime(sshKey.Created), humanize.Time(sshKey.Created))
 		fmt.Fprintf(out, "Fingerprint:\t%s\n", sshKey.Fingerprint)
+
+		fmt.Fprintln(out)
 		fmt.Fprintf(out, "Public Key:\n%s\n", strings.TrimSpace(sshKey.PublicKey))
 
+		fmt.Fprintln(out)
 		util.DescribeLabels(out, sshKey.Labels, "")
 
 		return nil

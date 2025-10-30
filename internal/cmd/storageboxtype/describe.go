@@ -52,7 +52,11 @@ func DescribeStorageBoxType(s state.State, storageBoxType *hcloud.StorageBoxType
 		fmt.Fprintf(&sb, "Automatic Snapshot Limit:\t%d\n", *storageBoxType.AutomaticSnapshotLimit)
 	}
 	fmt.Fprintf(&sb, "Subaccounts Limit:\t%d\n", storageBoxType.SubaccountsLimit)
-	fmt.Fprintf(&sb, "%s", util.DescribeDeprecation(storageBoxType))
+
+	if storageBoxType.IsDeprecated() {
+		fmt.Fprintln(&sb)
+		fmt.Fprint(&sb, util.DescribeDeprecation(storageBoxType))
+	}
 
 	if short {
 		return sb.String(), nil
@@ -63,13 +67,16 @@ func DescribeStorageBoxType(s state.State, storageBoxType *hcloud.StorageBoxType
 		return "", fmt.Errorf("failed to get currency for Storage Box Type prices: %w", err)
 	}
 
+	fmt.Fprintln(&sb)
 	fmt.Fprintf(&sb, "Pricings per Location:\n")
-	for _, price := range storageBoxType.Pricings {
+	for i, price := range storageBoxType.Pricings {
+		if i > 0 {
+			fmt.Fprintln(&sb)
+		}
 		fmt.Fprintf(&sb, "  - Location:\t%s\n", price.Location)
 		fmt.Fprintf(&sb, "    Hourly:\t%s\n", util.GrossPrice(price.PriceHourly))
 		fmt.Fprintf(&sb, "    Monthly:\t%s\n", util.GrossPrice(price.PriceMonthly))
 		fmt.Fprintf(&sb, "    Setup Fee:\t%s\n", util.GrossPrice(price.SetupFee))
-		fmt.Fprintf(&sb, "\n")
 	}
 
 	return sb.String(), nil

@@ -36,33 +36,41 @@ var DescribeCmd = base.DescribeCmd[*hcloud.LoadBalancer]{
 		fmt.Fprintf(out, "ID:\t%d\n", loadBalancer.ID)
 		fmt.Fprintf(out, "Name:\t%s\n", loadBalancer.Name)
 		fmt.Fprintf(out, "Created:\t%s (%s)\n", util.Datetime(loadBalancer.Created), humanize.Time(loadBalancer.Created))
-		fmt.Fprintf(out, "Public Net:\t\n")
+		fmt.Fprintf(out, "Algorithm:\t%s\n", loadBalancer.Algorithm.Type)
+
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Public Net:\n")
 		fmt.Fprintf(out, "  Enabled:\t%s\n", util.YesNo(loadBalancer.PublicNet.Enabled))
 		fmt.Fprintf(out, "  IPv4:\t%s\n", loadBalancer.PublicNet.IPv4.IP.String())
 		fmt.Fprintf(out, "  IPv4 DNS PTR:\t%s\n", loadBalancer.PublicNet.IPv4.DNSPtr)
 		fmt.Fprintf(out, "  IPv6:\t%s\n", loadBalancer.PublicNet.IPv6.IP.String())
 		fmt.Fprintf(out, "  IPv6 DNS PTR:\t%s\n", loadBalancer.PublicNet.IPv6.DNSPtr)
 
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Private Net:\n")
 		if len(loadBalancer.PrivateNet) > 0 {
-			fmt.Fprintf(out, "Private Net:\t\n")
 			for _, n := range loadBalancer.PrivateNet {
 				fmt.Fprintf(out, "  - ID:\t%d\n", n.Network.ID)
 				fmt.Fprintf(out, "    Name:\t%s\n", s.Client().Network().Name(n.Network.ID))
 				fmt.Fprintf(out, "    IP:\t%s\n", n.IP.String())
 			}
 		} else {
-			fmt.Fprintf(out, "Private Net:\tNo Private Network\n")
+			fmt.Fprintf(out, "  No Private Network\n")
 		}
-		fmt.Fprintf(out, "Algorithm:\t%s\n", loadBalancer.Algorithm.Type)
 
-		fmt.Fprintf(out, "Load Balancer Type:\t\n")
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Load Balancer Type:\n")
 		fmt.Fprintf(out, "%s", util.PrefixLines(loadbalancertype.DescribeLoadBalancerType(s, loadBalancer.LoadBalancerType, true), "  "))
 
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Services:\n")
 		if len(loadBalancer.Services) == 0 {
-			fmt.Fprintf(out, "Services:\tNo services\n")
+			fmt.Fprintf(out, "  No services\n")
 		} else {
-			fmt.Fprintf(out, "Services:\t\n")
-			for _, service := range loadBalancer.Services {
+			for i, service := range loadBalancer.Services {
+				if i > 0 {
+					fmt.Fprintln(out)
+				}
 				fmt.Fprintf(out, "  - Protocol:\t%s\n", service.Protocol)
 				fmt.Fprintf(out, "    Listen Port:\t%d\n", service.ListenPort)
 				fmt.Fprintf(out, "    Destination Port:\t%d\n", service.DestinationPort)
@@ -96,11 +104,15 @@ var DescribeCmd = base.DescribeCmd[*hcloud.LoadBalancer]{
 			}
 		}
 
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Targets:\n")
 		if len(loadBalancer.Targets) == 0 {
-			fmt.Fprintf(out, "Targets:\tNo targets\n")
+			fmt.Fprintf(out, "  No targets\n")
 		} else {
-			fmt.Fprintf(out, "Targets:\t\n")
-			for _, target := range loadBalancer.Targets {
+			for i, target := range loadBalancer.Targets {
+				if i > 0 {
+					fmt.Fprintln(out)
+				}
 				fmt.Fprintf(out, "  - Type:\t%s\n", target.Type)
 				switch target.Type {
 				case hcloud.LoadBalancerTargetTypeServer:
@@ -142,14 +154,17 @@ var DescribeCmd = base.DescribeCmd[*hcloud.LoadBalancer]{
 			}
 		}
 
-		fmt.Fprintf(out, "Traffic:\t\n")
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Traffic:\n")
 		fmt.Fprintf(out, "  Outgoing:\t%v\n", humanize.IBytes(loadBalancer.OutgoingTraffic))
 		fmt.Fprintf(out, "  Ingoing:\t%v\n", humanize.IBytes(loadBalancer.IngoingTraffic))
 		fmt.Fprintf(out, "  Included:\t%v\n", humanize.IBytes(loadBalancer.IncludedTraffic))
 
-		fmt.Fprintf(out, "Protection:\t\n")
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Protection:\n")
 		fmt.Fprintf(out, "  Delete:\t%s\n", util.YesNo(loadBalancer.Protection.Delete))
 
+		fmt.Fprintln(out)
 		util.DescribeLabels(out, loadBalancer.Labels, "")
 
 		return nil

@@ -73,12 +73,16 @@ func DescribeImage(image *hcloud.Image) string {
 	fmt.Fprintf(&sb, "OS version:\t%s\n", util.NA(image.OSVersion))
 	fmt.Fprintf(&sb, "Architecture:\t%s\n", image.Architecture)
 	fmt.Fprintf(&sb, "Rapid deploy:\t%s\n", util.YesNo(image.RapidDeploy))
-	fmt.Fprintf(&sb, "Protection:\t\n")
+
+	fmt.Fprintln(&sb)
+	fmt.Fprintf(&sb, "Protection:\n")
 	fmt.Fprintf(&sb, "  Delete:\t%s\n", util.YesNo(image.Protection.Delete))
 
+	fmt.Fprintln(&sb)
 	util.DescribeLabels(&sb, image.Labels, "")
 
 	if !image.Deprecated.IsZero() {
+		fmt.Fprintln(&sb)
 		fmt.Fprintf(&sb, "\nAttention: This Image is deprecated and will be removed in the future.\n")
 	}
 	return sb.String()

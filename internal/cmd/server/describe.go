@@ -38,7 +38,8 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Server]{
 		fmt.Fprintf(out, "Created:\t%s (%s)\n", util.Datetime(server.Created), humanize.Time(server.Created))
 
 		serverTypeDescription, _ := servertype.DescribeServerType(s, server.ServerType, true)
-		fmt.Fprintf(out, "Server Type:\t\n")
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Server Type:\n")
 		fmt.Fprintf(out, "%s", util.PrefixLines(serverTypeDescription, "  "))
 
 		// As we already know the location the server is in, we can show the deprecation info
@@ -48,32 +49,36 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Server]{
 		})
 		if locationInfoIndex >= 0 {
 			if text := util.DescribeDeprecation(server.ServerType.Locations[locationInfoIndex]); text != "" {
-				fmt.Fprintf(out, "%s", util.PrefixLines(text, "  "))
+				fmt.Fprintln(out)
+				fmt.Fprint(out, util.PrefixLines(text, "  "))
 			}
 		}
 
+		fmt.Fprintln(out)
 		fmt.Fprintf(out, "Public Net:\t\n")
+		fmt.Fprintf(out, "  IPv4:\n")
 		if server.PublicNet.IPv4.IsUnspecified() {
-			fmt.Fprintf(out, "  IPv4:\tNo Primary IPv4\n")
+			fmt.Fprintf(out, "    No Primary IPv4\n")
 		} else {
-			fmt.Fprintf(out, "  IPv4:\t\n")
 			fmt.Fprintf(out, "    ID:\t%d\n", server.PublicNet.IPv4.ID)
 			fmt.Fprintf(out, "    IP:\t%s\n", server.PublicNet.IPv4.IP)
 			fmt.Fprintf(out, "    Blocked:\t%s\n", util.YesNo(server.PublicNet.IPv4.Blocked))
 			fmt.Fprintf(out, "    DNS:\t%s\n", server.PublicNet.IPv4.DNSPtr)
 		}
 
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "  IPv6:\n")
 		if server.PublicNet.IPv6.IsUnspecified() {
-			fmt.Fprintf(out, "  IPv6:\tNo Primary IPv6\n")
+			fmt.Fprintf(out, "    No Primary IPv6\n")
 		} else {
-			fmt.Fprintf(out, "  IPv6:\t\n")
 			fmt.Fprintf(out, "    ID:\t%d\n", server.PublicNet.IPv6.ID)
 			fmt.Fprintf(out, "    IP:\t%s\n", server.PublicNet.IPv6.Network.String())
 			fmt.Fprintf(out, "    Blocked:\t%s\n", util.YesNo(server.PublicNet.IPv6.Blocked))
 		}
 
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "  Floating IPs:\n")
 		if len(server.PublicNet.FloatingIPs) > 0 {
-			fmt.Fprintf(out, "  Floating IPs:\t\n")
 			for _, f := range server.PublicNet.FloatingIPs {
 				floatingIP, _, err := s.Client().FloatingIP().GetByID(s, f.ID)
 				if err != nil {
@@ -84,12 +89,16 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Server]{
 				fmt.Fprintf(out, "    IP:\t%s\n", floatingIP.IP)
 			}
 		} else {
-			fmt.Fprintf(out, "  Floating IPs:\tNo Floating IPs\n")
+			fmt.Fprintf(out, "    No Floating IPs\n")
 		}
 
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "  Private Net:\n")
 		if len(server.PrivateNet) > 0 {
-			fmt.Fprintf(out, "Private Net:\t\n")
-			for _, n := range server.PrivateNet {
+			for i, n := range server.PrivateNet {
+				if i > 0 {
+					fmt.Fprintln(out)
+				}
 				network, _, err := s.Client().Network().GetByID(s, n.Network.ID)
 				if err != nil {
 					return fmt.Errorf("error fetching Network: %w", err)
@@ -108,11 +117,12 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Server]{
 				}
 			}
 		} else {
-			fmt.Fprintf(out, "Private Net:\tNo Private Networks\n")
+			fmt.Fprintf(out, "  No Private Networks\n")
 		}
 
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Volumes:\n")
 		if len(server.Volumes) > 0 {
-			fmt.Fprintf(out, "Volumes:\t\n")
 			for _, v := range server.Volumes {
 				volume, _, err := s.Client().Volume().GetByID(s, v.ID)
 				if err != nil {
@@ -123,54 +133,63 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Server]{
 				fmt.Fprintf(out, "    Size:\t%s\n", humanize.Bytes(uint64(volume.Size)*humanize.GByte))
 			}
 		} else {
-			fmt.Fprintf(out, "Volumes:\tNo Volumes\n")
+			fmt.Fprintf(out, "  No Volumes\n")
 		}
 
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Image:\n")
 		if server.Image != nil {
-			fmt.Fprintf(out, "Image:\t\n")
-			fmt.Fprintf(out, "%s", util.PrefixLines(image.DescribeImage(server.Image), "  "))
+			fmt.Fprint(out, util.PrefixLines(image.DescribeImage(server.Image), "  "))
 		} else {
-			fmt.Fprintf(out, "Image:\tNo Image\n")
+			fmt.Fprintf(out, "  No Image\n")
 		}
 
+		fmt.Fprintln(out)
 		fmt.Fprintf(out, "Datacenter:\t\n")
-		fmt.Fprintf(out, "%s", util.PrefixLines(datacenter.DescribeDatacenter(s.Client(), server.Datacenter, true), "  "))
+		fmt.Fprint(out, util.PrefixLines(datacenter.DescribeDatacenter(s.Client(), server.Datacenter, true), "  "))
 
-		fmt.Fprintf(out, "Traffic:\t\n")
-		fmt.Fprintf(out, "  Outgoing:\t%v\n", humanize.IBytes(server.OutgoingTraffic))
-		fmt.Fprintf(out, "  Ingoing:\t%v\n", humanize.IBytes(server.IngoingTraffic))
-		fmt.Fprintf(out, "  Included:\t%v\n", humanize.IBytes(server.IncludedTraffic))
-
+		fmt.Fprintln(out)
 		if server.BackupWindow != "" {
 			fmt.Fprintf(out, "Backup Window:\t%s\n", server.BackupWindow)
 		} else {
 			fmt.Fprintf(out, "Backup Window:\tBackups disabled\n")
 		}
 
+		fmt.Fprintln(out)
 		if server.RescueEnabled {
 			fmt.Fprintf(out, "Rescue System:\tenabled\n")
 		} else {
 			fmt.Fprintf(out, "Rescue System:\tdisabled\n")
 		}
 
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Traffic:\t\n")
+		fmt.Fprintf(out, "  Outgoing:\t%v\n", humanize.IBytes(server.OutgoingTraffic))
+		fmt.Fprintf(out, "  Ingoing:\t%v\n", humanize.IBytes(server.IngoingTraffic))
+		fmt.Fprintf(out, "  Included:\t%v\n", humanize.IBytes(server.IncludedTraffic))
+
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "ISO:\n")
 		if server.ISO != nil {
-			fmt.Fprintf(out, "ISO:\t\n")
-			fmt.Fprintf(out, "%s", util.PrefixLines(iso.DescribeISO(server.ISO), "  "))
+			fmt.Fprint(out, util.PrefixLines(iso.DescribeISO(server.ISO), "  "))
 		} else {
-			fmt.Fprintf(out, "ISO:\tNo ISO attached\n")
+			fmt.Fprintf(out, "  No ISO attached\n")
 		}
 
+		fmt.Fprintln(out)
 		fmt.Fprintf(out, "Protection:\t\n")
 		fmt.Fprintf(out, "  Delete:\t%s\n", util.YesNo(server.Protection.Delete))
 		fmt.Fprintf(out, "  Rebuild:\t%s\n", util.YesNo(server.Protection.Rebuild))
 
+		fmt.Fprintln(out)
 		util.DescribeLabels(out, server.Labels, "")
 
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Placement Group\n")
 		if server.PlacementGroup != nil {
-			fmt.Fprintf(out, "Placement Group:\t\n")
-			fmt.Fprintf(out, "%s", util.PrefixLines(placementgroup.DescribePlacementGroup(s.Client(), server.PlacementGroup), "  "))
+			fmt.Fprint(out, util.PrefixLines(placementgroup.DescribePlacementGroup(s.Client(), server.PlacementGroup), "  "))
 		} else {
-			fmt.Fprintf(out, "Placement Group:\tNo Placement Group set\n")
+			fmt.Fprintf(out, "  No Placement Group set\n")
 		}
 
 		return nil

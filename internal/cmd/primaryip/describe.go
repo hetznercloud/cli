@@ -35,28 +35,33 @@ var DescribeCmd = base.DescribeCmd[*hcloud.PrimaryIP]{
 		fmt.Fprintf(out, "Blocked:\t%s\n", util.YesNo(primaryIP.Blocked))
 		fmt.Fprintf(out, "Auto delete:\t%s\n", util.YesNo(primaryIP.AutoDelete))
 
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Assignee:\n")
 		if primaryIP.AssigneeID != 0 {
-			fmt.Fprintf(out, "Assignee:\t\n")
 			fmt.Fprintf(out, "  ID:\t%d\n", primaryIP.AssigneeID)
 			fmt.Fprintf(out, "  Type:\t%s\n", primaryIP.AssigneeType)
 		} else {
-			fmt.Fprintf(out, "Assignee:\tNot assigned\n")
+			fmt.Fprintf(out, "  Not assigned\n")
 		}
 
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "DNS:\n")
 		if len(primaryIP.DNSPtr) == 0 {
-			fmt.Fprintf(out, "DNS:\tNo reverse DNS entries\n")
+			fmt.Fprintf(out, "  No reverse DNS entries\n")
 		} else {
-			fmt.Fprintf(out, "DNS:\t\n")
 			for ip, dns := range primaryIP.DNSPtr {
 				fmt.Fprintf(out, "  %s:\t%s\n", ip, dns)
 			}
 		}
 
-		fmt.Fprintf(out, "Protection:\t\n")
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Protection:\n")
 		fmt.Fprintf(out, "  Delete:\t%s\n", util.YesNo(primaryIP.Protection.Delete))
 
+		fmt.Fprintln(out)
 		util.DescribeLabels(out, primaryIP.Labels, "")
 
+		fmt.Fprintln(out)
 		fmt.Fprintf(out, "Datacenter:\t\n")
 		fmt.Fprintf(out, "%s", util.PrefixLines(datacenter.DescribeDatacenter(s.Client(), primaryIP.Datacenter, true), "  "))
 		return nil
