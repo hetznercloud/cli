@@ -17,7 +17,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
-var ListCmd = base.ListCmd[*hcloud.StorageBox, schema.StorageBox]{
+var ListCmd = &base.ListCmd[*hcloud.StorageBox, schema.StorageBox]{
 	ResourceNamePlural: "Storage Boxes",
 	JSONKeyGetByName:   "storage_boxes",
 	DefaultColumns:     []string{"id", "name", "username", "server", "type", "size", "location", "age"},

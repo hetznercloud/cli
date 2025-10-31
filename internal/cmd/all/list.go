@@ -19,6 +19,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/primaryip"
 	"github.com/hetznercloud/cli/internal/cmd/server"
 	"github.com/hetznercloud/cli/internal/cmd/sshkey"
+	"github.com/hetznercloud/cli/internal/cmd/storagebox"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/cmd/volume"
 	"github.com/hetznercloud/cli/internal/cmd/zone"
@@ -40,6 +41,7 @@ var allCmds = []base.Listable{
 	firewall.ListCmd,
 	certificate.ListCmd,
 	sshkey.ListCmd,
+	storagebox.ListCmd,
 	zone.ListCmd,
 }
 
@@ -84,6 +86,7 @@ Listed resources are:
 				volume.ListCmd,
 				loadbalancer.ListCmd,
 				floatingip.ListCmd,
+				storagebox.ListCmd,
 			}
 		}
 
