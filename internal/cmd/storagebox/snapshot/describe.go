@@ -3,7 +3,6 @@ package snapshot
 import (
 	"fmt"
 	"io"
-	"strings"
 
 	"github.com/dustin/go-humanize"
 	"github.com/spf13/cobra"
@@ -45,28 +44,25 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBoxSnapshot]{
 		return snapshot, hcloud.SchemaFromStorageBoxSnapshot(snapshot), nil
 	},
 	PrintText: func(_ state.State, _ *cobra.Command, out io.Writer, snapshot *hcloud.StorageBoxSnapshot) error {
-		fmt.Fprint(out, DescribeSnapshot(snapshot))
+		fmt.Fprintf(out, "ID:\t%d\n", snapshot.ID)
+		fmt.Fprintf(out, "Name:\t%s\n", snapshot.Name)
+		fmt.Fprintf(out, "Description:\t%s\n", snapshot.Description)
+		fmt.Fprintf(out, "Created:\t%s (%s)\n", util.Datetime(snapshot.Created), humanize.Time(snapshot.Created))
+		fmt.Fprintf(out, "Is automatic:\t%s\n", util.YesNo(snapshot.IsAutomatic))
+
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Stats:\n")
+		fmt.Fprintf(out, "  Size:\t%s\n", humanize.IBytes(snapshot.Stats.Size))
+		fmt.Fprintf(out, "  Filesystem Size:\t%s\n", humanize.IBytes(snapshot.Stats.SizeFilesystem))
+
+		fmt.Fprintln(out)
+		util.DescribeLabels(out, snapshot.Labels, "")
+
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Storage Box:\n")
+		fmt.Fprintf(out, "  ID:\t%d\n", snapshot.StorageBox.ID)
+
 		return nil
 	},
 	Experimental: experimental.StorageBoxes,
-}
-
-func DescribeSnapshot(snapshot *hcloud.StorageBoxSnapshot) string {
-	var sb strings.Builder
-
-	fmt.Fprintf(&sb, "ID:\t%d\n", snapshot.ID)
-	fmt.Fprintf(&sb, "Name:\t%s\n", snapshot.Name)
-	fmt.Fprintf(&sb, "Description:\t%s\n", snapshot.Description)
-	fmt.Fprintf(&sb, "Created:\t%s (%s)\n", util.Datetime(snapshot.Created), humanize.Time(snapshot.Created))
-	fmt.Fprintf(&sb, "Is automatic:\t%s\n", util.YesNo(snapshot.IsAutomatic))
-
-	fmt.Fprintf(&sb, "Stats:\n")
-	fmt.Fprintf(&sb, "  Size:\t%s\n", humanize.IBytes(snapshot.Stats.Size))
-	fmt.Fprintf(&sb, "  Filesystem Size:\t%s\n", humanize.IBytes(snapshot.Stats.SizeFilesystem))
-
-	util.DescribeLabels(&sb, snapshot.Labels, "")
-
-	fmt.Fprintf(&sb, "Storage Box:\n")
-	fmt.Fprintf(&sb, "  ID:\t%d\n", snapshot.StorageBox.ID)
-	return sb.String()
 }

@@ -3,7 +3,6 @@ package subaccount
 import (
 	"fmt"
 	"io"
-	"strings"
 
 	"github.com/dustin/go-humanize"
 	"github.com/spf13/cobra"
@@ -45,33 +44,30 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBoxSubaccount]{
 		return subaccount, hcloud.SchemaFromStorageBoxSubaccount(subaccount), nil
 	},
 	PrintText: func(_ state.State, _ *cobra.Command, out io.Writer, subaccount *hcloud.StorageBoxSubaccount) error {
-		fmt.Fprint(out, DescribeSubaccount(subaccount))
+		fmt.Fprintf(out, "ID:\t%d\n", subaccount.ID)
+		fmt.Fprintf(out, "Description:\t%s\n", util.NA(subaccount.Description))
+		fmt.Fprintf(out, "Created:\t%s (%s)\n", util.Datetime(subaccount.Created), humanize.Time(subaccount.Created))
+		fmt.Fprintf(out, "Username:\t%s\n", subaccount.Username)
+		fmt.Fprintf(out, "Home Directory:\t%s\n", subaccount.HomeDirectory)
+		fmt.Fprintf(out, "Server:\t%s\n", subaccount.Server)
+
+		accessSettings := subaccount.AccessSettings
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Access Settings:\n")
+		fmt.Fprintf(out, "  Reachable Externally:\t%t\n", accessSettings.ReachableExternally)
+		fmt.Fprintf(out, "  Samba Enabled:\t%t\n", accessSettings.SambaEnabled)
+		fmt.Fprintf(out, "  SSH Enabled:\t%t\n", accessSettings.SSHEnabled)
+		fmt.Fprintf(out, "  WebDAV Enabled:\t%t\n", accessSettings.WebDAVEnabled)
+		fmt.Fprintf(out, "  Readonly:\t%t\n", accessSettings.Readonly)
+
+		fmt.Fprintln(out)
+		util.DescribeLabels(out, subaccount.Labels, "")
+
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Storage Box:\n")
+		fmt.Fprintf(out, "  ID:\t%d\n", subaccount.StorageBox.ID)
+
 		return nil
 	},
 	Experimental: experimental.StorageBoxes,
-}
-
-func DescribeSubaccount(subaccount *hcloud.StorageBoxSubaccount) string {
-	var sb strings.Builder
-
-	fmt.Fprintf(&sb, "ID:\t%d\n", subaccount.ID)
-	fmt.Fprintf(&sb, "Description:\t%s\n", util.NA(subaccount.Description))
-	fmt.Fprintf(&sb, "Created:\t%s (%s)\n", util.Datetime(subaccount.Created), humanize.Time(subaccount.Created))
-	fmt.Fprintf(&sb, "Username:\t%s\n", subaccount.Username)
-	fmt.Fprintf(&sb, "Home Directory:\t%s\n", subaccount.HomeDirectory)
-	fmt.Fprintf(&sb, "Server:\t%s\n", subaccount.Server)
-
-	accessSettings := subaccount.AccessSettings
-	fmt.Fprintf(&sb, "Access Settings:\n")
-	fmt.Fprintf(&sb, "  Reachable Externally:\t%t\n", accessSettings.ReachableExternally)
-	fmt.Fprintf(&sb, "  Samba Enabled:\t%t\n", accessSettings.SambaEnabled)
-	fmt.Fprintf(&sb, "  SSH Enabled:\t%t\n", accessSettings.SSHEnabled)
-	fmt.Fprintf(&sb, "  WebDAV Enabled:\t%t\n", accessSettings.WebDAVEnabled)
-	fmt.Fprintf(&sb, "  Readonly:\t%t\n", accessSettings.Readonly)
-
-	util.DescribeLabels(&sb, subaccount.Labels, "")
-
-	fmt.Fprintf(&sb, "Storage Box:\n")
-	fmt.Fprintf(&sb, "  ID:\t%d\n", subaccount.StorageBox.ID)
-	return sb.String()
 }
