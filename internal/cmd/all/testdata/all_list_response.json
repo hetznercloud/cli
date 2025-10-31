@@ -27,5 +27,64 @@
   "load_balancers": [],
   "primary_ips": [],
   "servers": [],
+  "storage_boxes": [
+    {
+      "id": 123,
+      "username": "u12345",
+      "status": "active",
+      "name": "test",
+      "storage_box_type": {
+        "id": 0,
+        "name": "bx11",
+        "description": "",
+        "snapshot_limit": null,
+        "automatic_snapshot_limit": null,
+        "subaccounts_limit": 0,
+        "size": 0,
+        "prices": null,
+        "deprecation": null
+      },
+      "location": {
+        "id": 0,
+        "name": "fsn1",
+        "description": "",
+        "country": "",
+        "city": "",
+        "latitude": 0,
+        "longitude": 0,
+        "network_zone": ""
+      },
+      "access_settings": {
+        "reachable_externally": false,
+        "samba_enabled": false,
+        "ssh_enabled": false,
+        "webdav_enabled": false,
+        "zfs_enabled": false
+      },
+      "server": "u1337.your-storagebox.de",
+      "system": "FSN1-BX355",
+      "stats": {
+        "size": 45097156608,
+        "size_data": 0,
+        "size_snapshots": 0
+      },
+      "labels": {
+        "environment": "prod",
+        "example.com/my": "label",
+        "just-a-key": ""
+      },
+      "protection": {
+        "delete": false
+      },
+      "snapshot_plan": {
+        "max_snapshots": 10,
+        "minute": 1,
+        "hour": 2,
+        "day_of_week": 0,
+        "day_of_month": 4
+      },
+      "created": "2024-04-02T10:00:00Z"
+    }
+  ],
   "volumes": []
 }

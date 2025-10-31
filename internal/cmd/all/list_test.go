@@ -2,6 +2,7 @@ package all_test
 
 import (
 	_ "embed"
+	"fmt"
 	"net"
 	"testing"
 	"time"
@@ -11,6 +12,7 @@ import (
 	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/all"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -173,6 +175,41 @@ func TestListAll(t *testing.T) {
 				Created: time.Now().Add(-2 * time.Hour),
 			},
 		}, nil)
+	fx.Client.StorageBoxClient.EXPECT().
+		AllWithOpts(gomock.Any(), hcloud.StorageBoxListOpts{}).
+		Return([]*hcloud.StorageBox{
+			{
+				ID:       123,
+				Username: "u12345",
+				Status:   hcloud.StorageBoxStatusActive,
+				Name:     "test",
+				Location: &hcloud.Location{Name: "fsn1"},
+				Server:   "u1337.your-storagebox.de",
+				System:   "FSN1-BX355",
+				StorageBoxType: &hcloud.StorageBoxType{
+					Name: "bx11",
+				},
+				Stats: hcloud.StorageBoxStats{
+					Size: 42 * util.Gibibyte,
+				},
+				Labels: map[string]string{
+					"environment":    "prod",
+					"example.com/my": "label",
+					"just-a-key":     "",
+				},
+				Protection: hcloud.StorageBoxProtection{
+					Delete: false,
+				},
+				SnapshotPlan: &hcloud.StorageBoxSnapshotPlan{
+					MaxSnapshots: 10,
+					Minute:       1,
+					Hour:         2,
+					DayOfWeek:    hcloud.Ptr(time.Sunday),
+					DayOfMonth:   hcloud.Ptr(4),
+				},
+				Created: time.Now().Add(-3 * time.Hour),
+			},
+		}, nil)
 	fx.Client.ZoneClient.EXPECT().
 		AllWithOpts(gomock.Any(), hcloud.ZoneListOpts{}).
 		Return([]*hcloud.Zone{
@@ -258,6 +295,11 @@ SSH KEYS
 ID    NAME   FINGERPRINT   AGE
 123   test   -             2h 
 
+STORAGE BOXES
+---
+ID    NAME   USERNAME   SERVER                     TYPE   SIZE     LOCATION   AGE
+123   test   u12345     u1337.your-storagebox.de   bx11   42 GiB   fsn1       3h 
+
 ZONES
 ---
 ID   NAME          STATUS   MODE      RECORD COUNT   AGE
@@ -311,8 +353,45 @@ func TestListAllPaidJSON(t *testing.T) {
 	fx.Client.VolumeClient.EXPECT().
 		AllWithOpts(gomock.Any(), hcloud.VolumeListOpts{}).
 		Return([]*hcloud.Volume{}, nil)
+	fx.Client.StorageBoxClient.EXPECT().
+		AllWithOpts(gomock.Any(), hcloud.StorageBoxListOpts{}).
+		Return([]*hcloud.StorageBox{
+			{
+				ID:       123,
+				Username: "u12345",
+				Status:   hcloud.StorageBoxStatusActive,
+				Name:     "test",
+				Location: &hcloud.Location{Name: "fsn1"},
+				Server:   "u1337.your-storagebox.de",
+				System:   "FSN1-BX355",
+				StorageBoxType: &hcloud.StorageBoxType{
+					Name: "bx11",
+				},
+				Stats: hcloud.StorageBoxStats{
+					Size: 42 * util.Gibibyte,
+				},
+				Labels: map[string]string{
+					"environment":    "prod",
+					"example.com/my": "label",
+					"just-a-key":     "",
+				},
+				Protection: hcloud.StorageBoxProtection{
+					Delete: false,
+				},
+				SnapshotPlan: &hcloud.StorageBoxSnapshotPlan{
+					MaxSnapshots: 10,
+					Minute:       1,
+					Hour:         2,
+					DayOfWeek:    hcloud.Ptr(time.Sunday),
+					DayOfMonth:   hcloud.Ptr(4),
+				},
+				Created: time.Date(2024, 4, 2, 10, 0, 0, 0, time.UTC),
+			},
+		}, nil)
 
 	jsonOut, errOut, err := fx.Run(cmd, []string{"--paid", "-o=json"})
+
+	fmt.Println(jsonOut)
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
