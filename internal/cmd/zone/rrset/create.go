@@ -83,6 +83,11 @@ var CreateCmd = base.CreateCmd[*hcloud.ZoneRRSet]{
 			return nil, nil, err
 		}
 
+		// TXT: Format record values to simplify its usage
+		if createOpts.Type == hcloud.ZoneRRSetTypeTXT {
+			FormatTXTRecords(cmd, createOpts.Records)
+		}
+
 		if cmd.Flags().Changed("ttl") {
 			ttl, _ := cmd.Flags().GetInt("ttl")
 			createOpts.TTL = &ttl

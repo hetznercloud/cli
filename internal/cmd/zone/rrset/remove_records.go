@@ -58,6 +58,11 @@ If the Zone RRSet doesn't contain any records, it will automatically be deleted.
 			return err
 		}
 
+		// TXT: Format record values to simplify its usage
+		if rrset.Type == hcloud.ZoneRRSetTypeTXT {
+			FormatTXTRecords(cmd, opts.Records)
+		}
+
 		action, _, err := s.Client().Zone().RemoveRRSetRecords(s, rrset, opts)
 		if err != nil {
 			return err
