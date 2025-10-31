@@ -2,6 +2,7 @@ package iso
 
 import (
 	"fmt"
+	"slices"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -65,7 +66,18 @@ var ListCmd = &base.ListCmd[*hcloud.ISO, schema.ISO]{
 			opts.Sort = sorts
 		}
 
-		return s.Client().ISO().AllWithOpts(s, opts)
+		isos, err := s.Client().ISO().AllWithOpts(s, opts)
+		if err != nil {
+			return nil, err
+		}
+
+		var filtered []*hcloud.ISO
+		for _, iso := range isos {
+			if slices.Contains(types, string(iso.Type)) {
+				filtered = append(filtered, iso)
+			}
+		}
+		return filtered, nil
 	},
 
 	OutputTable: func(t *output.Table[*hcloud.ISO], _ hcapi2.Client) {
