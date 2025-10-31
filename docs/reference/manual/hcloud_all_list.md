@@ -19,6 +19,7 @@ Listed resources are:
  - Firewalls
  - Certificates
  - SSH Keys
+ - Storage Boxes
  - Zones
 
 ```
