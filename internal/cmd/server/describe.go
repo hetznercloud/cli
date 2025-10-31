@@ -93,7 +93,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Server]{
 		}
 
 		fmt.Fprintln(out)
-		fmt.Fprintf(out, "  Private Net:\n")
+		fmt.Fprintf(out, "Private Net:\n")
 		if len(server.PrivateNet) > 0 {
 			for i, n := range server.PrivateNet {
 				if i > 0 {
