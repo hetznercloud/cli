@@ -1,6 +1,10 @@
 package servertype
 
 import (
+	"fmt"
+	"io"
+	"strings"
+
 	"github.com/dustin/go-humanize"
 	"github.com/spf13/cobra"
 
@@ -22,43 +26,59 @@ var DescribeCmd = base.DescribeCmd[*hcloud.ServerType]{
 		}
 		return st, hcloud.SchemaFromServerType(st), nil
 	},
-	PrintText: func(s state.State, cmd *cobra.Command, serverType *hcloud.ServerType) error {
-		cmd.Printf("ID:\t\t\t%d\n", serverType.ID)
-		cmd.Printf("Name:\t\t\t%s\n", serverType.Name)
-		cmd.Printf("Description:\t\t%s\n", serverType.Description)
-		cmd.Printf("Category:\t\t%s\n", serverType.Category)
-		cmd.Printf("Cores:\t\t\t%d\n", serverType.Cores)
-		cmd.Printf("CPU Type:\t\t%s\n", serverType.CPUType)
-		cmd.Printf("Architecture:\t\t%s\n", serverType.Architecture)
-		cmd.Printf("Memory:\t\t\t%.1f GB\n", serverType.Memory)
-		cmd.Printf("Disk:\t\t\t%d GB\n", serverType.Disk)
-		cmd.Printf("Storage Type:\t\t%s\n", serverType.StorageType)
-
-		pricings, err := fullPricingInfo(s, serverType)
+	PrintText: func(s state.State, _ *cobra.Command, out io.Writer, serverType *hcloud.ServerType) error {
+		description, err := DescribeServerType(s, serverType, false)
 		if err != nil {
-			cmd.PrintErrf("failed to get prices for Server Type: %v", err)
+			return err
 		}
-
-		locations := joinLocationInfo(serverType, pricings)
-		cmd.Printf("Locations:\n")
-		for _, info := range locations {
-
-			cmd.Printf("  - Location:\t\t\t%s\n", info.Location.Name)
-
-			if deprecationText := util.DescribeDeprecation(info); deprecationText != "" {
-				cmd.Print(util.PrefixLines(deprecationText, "    "))
-			}
-
-			cmd.Printf("    Pricing:\n")
-			cmd.Printf("      Hourly:\t\t\t%s\n", util.GrossPrice(info.Pricing.Hourly))
-			cmd.Printf("      Monthly:\t\t\t%s\n", util.GrossPrice(info.Pricing.Monthly))
-			cmd.Printf("      Included Traffic:\t\t%s\n", humanize.IBytes(info.Pricing.IncludedTraffic))
-			cmd.Printf("      Additional Traffic:\t%s per TB\n", util.GrossPrice(info.Pricing.PerTBTraffic))
-			cmd.Printf("\n")
-		}
-
+		fmt.Fprint(out, description)
 		return nil
 	},
+}
+
+func DescribeServerType(s state.State, serverType *hcloud.ServerType, short bool) (string, error) {
+	var sb strings.Builder
+
+	fmt.Fprintf(&sb, "ID:\t%d\n", serverType.ID)
+	fmt.Fprintf(&sb, "Name:\t%s\n", serverType.Name)
+	fmt.Fprintf(&sb, "Description:\t%s\n", serverType.Description)
+	fmt.Fprintf(&sb, "Category:\t%s\n", serverType.Category)
+	fmt.Fprintf(&sb, "Cores:\t%d\n", serverType.Cores)
+	fmt.Fprintf(&sb, "CPU Type:\t%s\n", serverType.CPUType)
+	fmt.Fprintf(&sb, "Architecture:\t%s\n", serverType.Architecture)
+	fmt.Fprintf(&sb, "Memory:\t%.1f GB\n", serverType.Memory)
+	fmt.Fprintf(&sb, "Disk:\t%d GB\n", serverType.Disk)
+	fmt.Fprintf(&sb, "Storage Type:\t%s\n", serverType.StorageType)
+
+	if short {
+		return sb.String(), nil
+	}
+
+	pricings, err := fullPricingInfo(s, serverType)
+	if err != nil {
+		return "", fmt.Errorf("failed to get prices for Server Type: %w", err)
+	}
+
+	locations := joinLocationInfo(serverType, pricings)
+	fmt.Fprintln(&sb)
+	fmt.Fprintf(&sb, "Locations:\n")
+	for _, info := range locations {
+
+		fmt.Fprintf(&sb, "  - Location:\t%s\n", info.Location.Name)
+
+		if deprecationText := util.DescribeDeprecation(info); deprecationText != "" {
+			fmt.Fprint(&sb, util.PrefixLines(deprecationText, "    "))
+		}
+
+		fmt.Fprintf(&sb, "    Pricing:\t\n")
+		fmt.Fprintf(&sb, "      Hourly:\t%s\n", util.GrossPrice(info.Pricing.Hourly))
+		fmt.Fprintf(&sb, "      Monthly:\t%s\n", util.GrossPrice(info.Pricing.Monthly))
+		fmt.Fprintf(&sb, "      Included Traffic:\t%s\n", humanize.IBytes(info.Pricing.IncludedTraffic))
+		fmt.Fprintf(&sb, "      Additional Traffic:\t%s per TB\n", util.GrossPrice(info.Pricing.PerTBTraffic))
+		fmt.Fprintf(&sb, "\n")
+	}
+
+	return sb.String(), nil
 }
 
 func fullPricingInfo(s state.State, serverType *hcloud.ServerType) ([]hcloud.ServerTypeLocationPricing, error) {

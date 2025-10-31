@@ -1,6 +1,8 @@
 package base_test
 
 import (
+	"fmt"
+	"io"
 	"testing"
 
 	"github.com/spf13/cobra"
@@ -26,9 +28,9 @@ var fakeDescribeCmd = &base.DescribeCmd[*fakeResource]{
 		return resource, util.Wrap("resource", resource), nil
 	},
 
-	PrintText: func(_ state.State, cmd *cobra.Command, rsc *fakeResource) error {
-		cmd.Printf("ID: %d\n", rsc.ID)
-		cmd.Printf("Name: %s\n", rsc.Name)
+	PrintText: func(_ state.State, _ *cobra.Command, out io.Writer, rsc *fakeResource) error {
+		fmt.Fprintf(out, "ID:\t%d\n", rsc.ID)
+		fmt.Fprintf(out, "Name:\t%s\n", rsc.Name)
 		return nil
 	},
 
@@ -43,8 +45,8 @@ func TestDescribe(t *testing.T) {
 		"no flags": {
 			Args: []string{"describe", "123"},
 			ExpOut: `Fetching fake resource
-ID: 123
-Name: test
+ID:    123
+Name:  test
 `,
 		},
 		"json": {
