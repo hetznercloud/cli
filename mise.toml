@@ -1,7 +1,7 @@
 [tools]
 go = "1.25.3"
 "go:go.uber.org/mock/mockgen" = "v0.6.0"  # renovate: datasource=github-releases depName=uber-go/mock
-golangci-lint = "2.6.0"
+golangci-lint = "2.6.1"
 goreleaser = "v2.9.0"
 "ubi:anchore/quill" = "v0.5.1"            # renovate: datasource=github-releases depName=anchore/quill
 "ubi:jstemmer/go-junit-report" = "v2.1.0" # renovate: datasource=github-releases depName=jstemmer/go-junit-report
