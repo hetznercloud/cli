@@ -46,17 +46,19 @@ func TestDescribe(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{placementGroup.Name})
 
-	expOut := fmt.Sprintf(`ID:		897
-Name:		my Placement Group
-Created:	%s (%s)
+	expOut := fmt.Sprintf(`ID:       897
+Name:     my Placement Group
+Created:  %s (%s)
+Type:     spread
+
 Labels:
-  key: value
+  key:  value
+
 Servers:
-  - Server ID:		4711
-    Server Name:	server1
-  - Server ID:		4712
-    Server Name:	server2
-Type:		spread
+  - Server ID:    4711
+    Server Name:  server1
+  - Server ID:    4712
+    Server Name:  server2
 `, util.Datetime(placementGroup.Created), humanize.Time(placementGroup.Created))
 
 	require.NoError(t, err)

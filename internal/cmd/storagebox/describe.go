@@ -86,7 +86,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBox]{
 		fmt.Fprintf(out, "%s", util.PrefixLines(typeDescription, "  "))
 
 		fmt.Fprintln(out)
-		fmt.Fprintf(out, "Location:\t\n")
+		fmt.Fprintf(out, "Location:\n")
 		fmt.Fprintf(out, "%s", util.PrefixLines(location.DescribeLocation(storageBox.Location), "  "))
 
 		return nil

@@ -53,7 +53,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.ZoneRRSet]{
 		fmt.Fprintf(out, "TTL:\t%s\n", ttl)
 
 		fmt.Fprintln(out)
-		fmt.Fprintf(out, "Protection:\t\n")
+		fmt.Fprintf(out, "Protection:\n")
 		fmt.Fprintf(out, "  Change:\t%s\n", util.YesNo(rrset.Protection.Change))
 
 		fmt.Fprintln(out)

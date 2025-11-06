@@ -39,12 +39,14 @@ func TestDescribe(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"test"})
 
-	expOut := fmt.Sprintf(`ID:		123
-Name:		test
-Created:	%s (%s)
-Fingerprint:	fingerprint
+	expOut := fmt.Sprintf(`ID:           123
+Name:         test
+Created:      %s (%s)
+Fingerprint:  fingerprint
+
 Public Key:
 public key
+
 Labels:
   No labels
 `, util.Datetime(key.Created), humanize.Time(key.Created))

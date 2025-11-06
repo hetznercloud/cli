@@ -49,7 +49,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Zone]{
 		fmt.Fprintf(out, "Record Count:\t%d\n", zone.RecordCount)
 
 		fmt.Fprintln(out)
-		fmt.Fprintf(out, "Protection:\t\n")
+		fmt.Fprintf(out, "Protection:\n")
 		fmt.Fprintf(out, "  Delete:\t%s\n", util.YesNo(zone.Protection.Delete))
 
 		fmt.Fprintln(out)

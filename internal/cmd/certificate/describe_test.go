@@ -57,24 +57,28 @@ func TestDescribe(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"test"})
 
-	expOut := fmt.Sprintf(`ID:			123
-Name:			test
-Type:			managed
-Fingerprint:		
-Created:		%s (%s)
-Not valid before:	%s (%s)
-Not valid after:	%s (%s)
+	expOut := fmt.Sprintf(`ID:                123
+Name:              test
+Type:              managed
+Fingerprint:       
+Created:           %s (%s)
+Not valid before:  %s (%s)
+Not valid after:   %s (%s)
+
 Status:
-  Issuance:	failed
-  Renewal:	scheduled
-  Failure reason: Certificate error
+  Issuance:        failed
+  Renewal:         scheduled
+  Failure reason:  Certificate error
+
 Domain names:
   - example.com
+
 Labels:
-  key:	value
+  key:  value
+
 Used By:
-  - Type: load_balancer
-  - Name: test
+  - Type:  load_balancer
+  - Name:  test
 `,
 		util.Datetime(cert.Created), humanize.Time(cert.Created),
 		util.Datetime(cert.NotValidBefore), humanize.Time(cert.NotValidBefore),

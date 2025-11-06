@@ -55,7 +55,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Server]{
 		}
 
 		fmt.Fprintln(out)
-		fmt.Fprintf(out, "Public Net:\t\n")
+		fmt.Fprintf(out, "Public Net:\n")
 		fmt.Fprintf(out, "  IPv4:\n")
 		if server.PublicNet.IPv4.IsUnspecified() {
 			fmt.Fprintf(out, "    No Primary IPv4\n")
@@ -145,7 +145,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Server]{
 		}
 
 		fmt.Fprintln(out)
-		fmt.Fprintf(out, "Datacenter:\t\n")
+		fmt.Fprintf(out, "Datacenter:\n")
 		fmt.Fprint(out, util.PrefixLines(datacenter.DescribeDatacenter(s.Client(), server.Datacenter, true), "  "))
 
 		fmt.Fprintln(out)
@@ -163,7 +163,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Server]{
 		}
 
 		fmt.Fprintln(out)
-		fmt.Fprintf(out, "Traffic:\t\n")
+		fmt.Fprintf(out, "Traffic:\n")
 		fmt.Fprintf(out, "  Outgoing:\t%v\n", humanize.IBytes(server.OutgoingTraffic))
 		fmt.Fprintf(out, "  Ingoing:\t%v\n", humanize.IBytes(server.IngoingTraffic))
 		fmt.Fprintf(out, "  Included:\t%v\n", humanize.IBytes(server.IncludedTraffic))
@@ -177,7 +177,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Server]{
 		}
 
 		fmt.Fprintln(out)
-		fmt.Fprintf(out, "Protection:\t\n")
+		fmt.Fprintf(out, "Protection:\n")
 		fmt.Fprintf(out, "  Delete:\t%s\n", util.YesNo(server.Protection.Delete))
 		fmt.Fprintf(out, "  Rebuild:\t%s\n", util.YesNo(server.Protection.Rebuild))
 
@@ -185,7 +185,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Server]{
 		util.DescribeLabels(out, server.Labels, "")
 
 		fmt.Fprintln(out)
-		fmt.Fprintf(out, "Placement Group\n")
+		fmt.Fprintf(out, "Placement Group:\n")
 		if server.PlacementGroup != nil {
 			fmt.Fprint(out, util.PrefixLines(placementgroup.DescribePlacementGroup(s.Client(), server.PlacementGroup), "  "))
 		} else {

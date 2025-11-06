@@ -72,24 +72,24 @@ func TestDescribe(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"bx11"})
 
-	expOut := `ID:				42
-Name:				bx11
-Description:			BX11
-Size:				1.0 GiB
-Snapshot Limit:			10
-Automatic Snapshot Limit:	10
-Subaccounts Limit:		200
+	expOut := `ID:                        42
+Name:                      bx11
+Description:               BX11
+Size:                      1.0 GiB
+Snapshot Limit:            10
+Automatic Snapshot Limit:  10
+Subaccounts Limit:         200
+
 Pricings per Location:
-  - Location:	fsn1
-    Hourly:	€ 0.0051
-    Monthly:	€ 3.2000
-    Setup Fee:	€ 0.0000
+  - Location:   fsn1
+    Hourly:     € 0.0051
+    Monthly:    € 3.2000
+    Setup Fee:  € 0.0000
 
-  - Location:	hel1
-    Hourly:	€ 0.0051
-    Monthly:	€ 3.2000
-    Setup Fee:	€ 0.0000
-
+  - Location:   hel1
+    Hourly:     € 0.0051
+    Monthly:    € 3.2000
+    Setup Fee:  € 0.0000
 `
 
 	require.NoError(t, err)

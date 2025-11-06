@@ -34,14 +34,14 @@ func TestDescribe(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"hel1"})
 
-	expOut := `ID:		3
-Name:		hel1
-Description:	Helsinki DC Park 1
-Network Zone:	eu-central
-Country:	FI
-City:		Helsinki
-Latitude:	60.169855
-Longitude:	24.938379
+	expOut := `ID:            3
+Name:          hel1
+Description:   Helsinki DC Park 1
+Network Zone:  eu-central
+Country:       FI
+City:          Helsinki
+Latitude:      60.169855
+Longitude:     24.938379
 `
 
 	require.NoError(t, err)

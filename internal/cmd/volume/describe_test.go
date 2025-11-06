@@ -52,23 +52,29 @@ func TestDescribe(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"test"})
 
-	expOut := fmt.Sprintf(`ID:		123
-Name:		test
-Created:	%s (%s)
-Size:		50 GB
-Linux Device:	
+	expOut := fmt.Sprintf(`ID:            123
+Name:          test
+Created:       %s (%s)
+Size:          50 GB
+Linux Device:  
+
 Location:
-  Name:		hel1
-  Description:	Helsinki DC Park 1
-  Country:	FI
-  City:		Helsinki
-  Latitude:	60.169855
-  Longitude:	24.938379
+  ID:            3
+  Name:          hel1
+  Description:   Helsinki DC Park 1
+  Network Zone:  eu-central
+  Country:       FI
+  City:          Helsinki
+  Latitude:      60.169855
+  Longitude:     24.938379
+
 Server:
-  ID:		321
-  Name:		myServer
+  ID:    321
+  Name:  myServer
+
 Protection:
-  Delete:	no
+  Delete:  no
+
 Labels:
   No labels
 `, util.Datetime(v.Created), humanize.Time(v.Created))

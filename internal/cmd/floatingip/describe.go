@@ -25,7 +25,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.FloatingIP]{
 		}
 		return ip, hcloud.SchemaFromFloatingIP(ip), nil
 	},
-	PrintText: func(_ state.State, _ *cobra.Command, out io.Writer, floatingIP *hcloud.FloatingIP) error {
+	PrintText: func(s state.State, _ *cobra.Command, out io.Writer, floatingIP *hcloud.FloatingIP) error {
 		fmt.Fprintf(out, "ID:\t%d\n", floatingIP.ID)
 		fmt.Fprintf(out, "Type:\t%s\n", floatingIP.Type)
 		fmt.Fprintf(out, "Name:\t%s\n", floatingIP.Name)
@@ -45,7 +45,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.FloatingIP]{
 		fmt.Fprintf(out, "Server:\n")
 		if floatingIP.Server != nil {
 			fmt.Fprintf(out, "  ID:\t%d\n", floatingIP.Server.ID)
-			fmt.Fprintf(out, "  Name:\t%s\n", floatingIP.Server.Name)
+			fmt.Fprintf(out, "  Name:\t%s\n", s.Client().Server().ServerName(floatingIP.Server.ID))
 		} else {
 			fmt.Fprintf(out, "  Not assigned\n")
 		}

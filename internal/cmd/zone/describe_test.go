@@ -73,20 +73,23 @@ func TestDescribe(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"example.com"})
 
-	expOut := fmt.Sprintf(`ID:		42
-Name:		example.com
-Created:	2016-01-30 23:55:00 UTC (%s)
-Mode:		primary
-Status:		ok
-TTL:		10800
-Registrar:	hetzner
-Record Count:	0
+	expOut := fmt.Sprintf(`ID:            42
+Name:          example.com
+Created:       2016-01-30 23:55:00 UTC (%s)
+Mode:          primary
+Status:        ok
+TTL:           10800
+Registrar:     hetzner
+Record Count:  0
+
 Protection:
-  Delete:	no
+  Delete:  no
+
 Labels:
-  environment: prod
-  example.com/my: label
-  just-a-key: 
+  environment:     prod
+  example.com/my:  label
+  just-a-key:      
+
 Authoritative Nameservers:
   Assigned:
     - hydrogen.ns.hetzner.com.
@@ -96,8 +99,8 @@ Authoritative Nameservers:
     - hydrogen.ns.hetzner.com.
     - oxygen.ns.hetzner.com.
     - helium.ns.hetzner.de.
-  Delegation last check:	2016-01-30 23:55:00 UTC (%s)
-  Delegation status:		valid
+  Delegation last check:  2016-01-30 23:55:00 UTC (%s)
+  Delegation status:      valid
 `, humanize.Time(z.Created), humanize.Time(z.AuthoritativeNameservers.DelegationLastCheck))
 
 	require.NoError(t, err)
