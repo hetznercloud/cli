@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"path"
+	"path/filepath"
 	"strings"
 
 	"github.com/BurntSushi/toml"
@@ -201,7 +201,7 @@ func (cfg *config) Read(f any) error {
 
 func (cfg *config) Write(w io.Writer) (err error) {
 	if w == nil {
-		dir := path.Dir(cfg.path)
+		dir := filepath.Dir(cfg.path)
 		if err = os.MkdirAll(dir, 0750); err != nil {
 			return err
 		}
