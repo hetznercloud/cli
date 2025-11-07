@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.56.1](https://github.com/hetznercloud/cli/releases/tag/v1.56.1)
+
+### Bug Fixes
+
+- report apple sign-and-notarize error after the release is complete (#1231)
+
 ## [v1.56.0](https://github.com/hetznercloud/cli/releases/tag/v1.56.0)
 
 ### Features
