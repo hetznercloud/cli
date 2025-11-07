@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
-	"path"
+	"path/filepath"
 	"regexp"
 	"strings"
 
@@ -56,18 +56,18 @@ func run() error {
 		if f.IsDir() {
 			continue
 		}
-		filepath := path.Join(dir, f.Name())
-		bytes, err := os.ReadFile(filepath)
+		path := filepath.Join(dir, f.Name())
+		bytes, err := os.ReadFile(path)
 		if err != nil {
-			return fmt.Errorf("could not read file at %q: %w", filepath, err)
+			return fmt.Errorf("could not read file at %q: %w", path, err)
 		}
 		bytes = generatedOnRegex.ReplaceAll(bytes, nil)
 		// We do this to wrap tables in a code block. Otherwise, they won't be displayed properly in markdown viewers.
 		bytes = []byte(strings.ReplaceAll(string(bytes), "┌", "```\n┌"))
 		bytes = []byte(strings.ReplaceAll(string(bytes), "┘", "┘\n```"))
-		err = os.WriteFile(filepath, bytes, f.Type())
+		err = os.WriteFile(path, bytes, f.Type())
 		if err != nil {
-			return fmt.Errorf("could not write file at %q: %w", filepath, err)
+			return fmt.Errorf("could not write file at %q: %w", path, err)
 		}
 	}
 
