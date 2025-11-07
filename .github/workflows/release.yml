@@ -42,3 +42,6 @@ jobs:
           QUILL_NOTARY_ISSUER: ${{ secrets.APPLE_NOTARY_ISSUER }}
           QUILL_NOTARY_KEY_ID: ${{ secrets.APPLE_NOTARY_KEY_ID }}
           QUILL_NOTARY_KEY: ${{ secrets.APPLE_NOTARY_KEY }}
+
+      - name: Check for release errors
+        run: scripts/check-release-error.sh
