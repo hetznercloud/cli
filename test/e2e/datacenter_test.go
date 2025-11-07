@@ -49,13 +49,17 @@ func TestDatacenter(t *testing.T) {
 					Lit("ID:").Whitespace().Int().Newline().
 					Lit("Name:").Whitespace().Identifier().Newline().
 					Lit("Description:").Whitespace().AnyString().Newline().
+					Newline().
 					Lit("Location:").Newline().
+					Lit("  ID:").Whitespace().Int().Newline().
 					Lit("  Name:").Whitespace().LocationName().Newline().
 					Lit("  Description:").Whitespace().AnyString().Newline().
+					Lit("  Network Zone:").Whitespace().OneOfLit("eu-central", "us-east", "us-west", "ap-southeast").Newline().
 					Lit("  Country:").Whitespace().CountryCode().Newline().
 					Lit("  City:").Whitespace().AnyString().Newline().
 					Lit("  Latitude:").Whitespace().Float().Newline().
 					Lit("  Longitude:").Whitespace().Float().Newline().
+					Newline().
 					Lit("Server Types:").Newline().
 					AnyTimes(
 						NewRegex().

@@ -93,7 +93,7 @@ Rules:
     Description:  ssh
     Protocol:     tcp
     Port:         22
-    Source IPs:   
+    Source IPs:
 
 Applied To:
   - Type:            server

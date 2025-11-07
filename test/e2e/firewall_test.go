@@ -163,8 +163,10 @@ func TestFirewall(t *testing.T) {
 				Lit("ID:").Whitespace().Int().Newline().
 				Lit("Name:").Whitespace().Raw(`new-test-firewall-[0-9a-f]{8}`).Newline().
 				Lit("Created:").Whitespace().Datetime().Lit(" (").HumanizeTime().Lit(")").Newline().
+				Newline().
 				Lit("Labels:").Newline().
-				Lit("  foo: bar").Newline().
+				Lit("  foo:").Whitespace().Lit("bar").Newline().
+				Newline().
 				Lit("Rules:").Newline().
 				Lit("  - Direction:").Whitespace().Lit("in").Newline().
 				Lit("    Description:").Whitespace().Lit("Allow port 80").Newline().
@@ -174,6 +176,7 @@ func TestFirewall(t *testing.T) {
 				Whitespace().Lit("28.239.13.1/32").Newline().
 				Whitespace().Lit("28.239.14.0/24").Newline().
 				Whitespace().Lit("ff21:1eac:9a3b:ee58:5ca:990c:8bc9:c03b/128").Newline().
+				Newline().
 				Lit("  - Direction:").Whitespace().Lit("in").Newline().
 				Lit("    Description:").Whitespace().Lit("Allow port 443").Newline().
 				Lit("    Protocol:").Whitespace().Lit("tcp").Newline().
@@ -181,12 +184,14 @@ func TestFirewall(t *testing.T) {
 				Lit("    Source IPs:").Newline().
 				Whitespace().Lit("0.0.0.0/0").Newline().
 				Whitespace().Lit("::/0").Newline().
+				Newline().
 				Lit("  - Direction:").Whitespace().Lit("in").Newline().
 				Lit("    Description:").Whitespace().Lit("Some random description").Newline().
 				Lit("    Protocol:").Whitespace().Lit("tcp").Newline().
 				Lit("    Port:").Whitespace().Lit("9100").Newline().
 				Lit("    Source IPs:").Newline().
 				Whitespace().Lit("10.0.0.0/24").Newline().
+				Newline().
 				Lit("  - Direction:").Whitespace().Lit("out").Newline().
 				Lit("    Protocol:").Whitespace().Lit("tcp").Newline().
 				Lit("    Port:").Whitespace().Lit("80").Newline().
@@ -194,10 +199,12 @@ func TestFirewall(t *testing.T) {
 				Whitespace().Lit("28.239.13.1/32").Newline().
 				Whitespace().Lit("28.239.14.0/24").Newline().
 				Whitespace().Lit("ff21:1eac:9a3b:ee58:5ca:990c:8bc9:c03b/128").Newline().
+				Newline().
 				Lit("  - Direction:").Whitespace().Lit("out").Newline().
 				Lit("    Protocol:").Whitespace().Lit("icmp").Newline().
 				Lit("    Destination IPs:").Newline().
 				Whitespace().Lit("192.168.1.0/24").Newline().
+				Newline().
 				Lit("Applied To:").Newline().
 				Lit("  - Type:").Whitespace().Lit("label_selector").Newline().
 				Lit("    Label Selector:").Whitespace().Lit("foo=bar").Newline().

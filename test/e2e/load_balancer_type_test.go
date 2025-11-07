@@ -71,6 +71,7 @@ func TestLoadBalancerType(t *testing.T) {
 					Lit("Max Connections:").Whitespace().Int().Newline().
 					Lit("Max Targets:").Whitespace().Int().Newline().
 					Lit("Max assigned Certificates:").Whitespace().Int().Newline().
+					Newline().
 					Lit("Pricings per Location:").Newline().
 					AnyTimes(
 						NewRegex().
@@ -79,7 +80,7 @@ func TestLoadBalancerType(t *testing.T) {
 							Lit("    Monthly:").Whitespace().Price().Newline().
 							Lit("    Included Traffic:").Whitespace().IBytes().Newline().
 							Lit("    Additional Traffic:").Whitespace().Price().Lit(" per TB").Newline().
-							Newline(),
+							OptionalWhitespace(),
 					).End(),
 				out,
 			)

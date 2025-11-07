@@ -107,7 +107,10 @@ func TestSSHKey(t *testing.T) {
 			Lit("Name:").Whitespace().Lit(sshKeyName).Newline().
 			Lit("Created:").Whitespace().Datetime().Lit(" (").HumanizeTime().Lit(")").Newline().
 			Lit("Fingerprint:").Whitespace().Lit(fingerprint).Newline().
-			Lit("Public Key:").Newline().Lit(pubKey).Newline().
+			Newline().
+			Lit("Public Key:").Newline().
+			Lit(pubKey).Newline().
+			Newline().
 			Lit("Labels:").Newline().
 			Lit("  foo:").Whitespace().Lit("bar").Newline().
 			End(),

@@ -182,18 +182,22 @@ func TestNetwork(t *testing.T) {
 			Lit("Created:").Whitespace().Datetime().Lit(" (").HumanizeTime().Lit(")").Newline().
 			Lit("IP Range:").Whitespace().Lit("10.0.0.0/16").Newline().
 			Lit("Expose Routes to vSwitch:").Whitespace().Lit("yes").Newline().
+			Newline().
 			Lit("Subnets:").Newline().
 			Lit("  - Type:").Whitespace().Lit("cloud").Newline().
 			Lit("    Network Zone:").Whitespace().OneOfLit("eu-central", "us-east", "us-west", "ap-southeast").Newline().
 			Lit("    IP Range:").Whitespace().Lit("10.0.16.0/24").Newline().
 			Lit("    Gateway:").Whitespace().Lit("10.0.0.1").Newline().
+			Newline().
 			Lit("Routes:").Newline().
 			Lit("  - Destination:").Whitespace().Lit("10.100.1.0/24").Newline().
 			Lit("    Gateway:").Whitespace().Lit("10.0.1.1").Newline().
+			Newline().
 			Lit("Protection:").Newline().
 			Lit("  Delete:").Whitespace().Lit("yes").Newline().
+			Newline().
 			Lit("Labels:").Newline().
-			Lit("  foo: bar").Newline().
+			Lit("  foo:").Whitespace().Lit("bar").Newline().
 			End(),
 			out,
 		)
@@ -300,12 +304,16 @@ func TestNetwork(t *testing.T) {
 			Lit("Created:").Whitespace().Datetime().Lit(" (").HumanizeTime().Lit(")").Newline().
 			Lit("IP Range:").Whitespace().Lit("10.0.0.0/16").Newline().
 			Lit("Expose Routes to vSwitch:").Whitespace().Lit("no").Newline().
+			Newline().
 			Lit("Subnets:").Newline().
 			Lit("  No subnets").Newline().
+			Newline().
 			Lit("Routes:").Newline().
 			Lit("  No routes").Newline().
+			Newline().
 			Lit("Protection:").Newline().
 			Lit("  Delete:").Whitespace().Lit("no").Newline().
+			Newline().
 			Lit("Labels:").Newline().
 			Lit("  No labels").Newline().
 			End(),
