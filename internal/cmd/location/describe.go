@@ -1,6 +1,10 @@
 package location
 
 import (
+	"fmt"
+	"io"
+	"strings"
+
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
@@ -21,15 +25,21 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Location]{
 		}
 		return l, hcloud.SchemaFromLocation(l), nil
 	},
-	PrintText: func(_ state.State, cmd *cobra.Command, location *hcloud.Location) error {
-		cmd.Printf("ID:\t\t%d\n", location.ID)
-		cmd.Printf("Name:\t\t%s\n", location.Name)
-		cmd.Printf("Description:\t%s\n", location.Description)
-		cmd.Printf("Network Zone:\t%s\n", location.NetworkZone)
-		cmd.Printf("Country:\t%s\n", location.Country)
-		cmd.Printf("City:\t\t%s\n", location.City)
-		cmd.Printf("Latitude:\t%f\n", location.Latitude)
-		cmd.Printf("Longitude:\t%f\n", location.Longitude)
+	PrintText: func(_ state.State, _ *cobra.Command, out io.Writer, location *hcloud.Location) error {
+		fmt.Fprint(out, DescribeLocation(location))
 		return nil
 	},
+}
+
+func DescribeLocation(location *hcloud.Location) string {
+	var sb strings.Builder
+	fmt.Fprintf(&sb, "ID:\t%d\n", location.ID)
+	fmt.Fprintf(&sb, "Name:\t%s\n", location.Name)
+	fmt.Fprintf(&sb, "Description:\t%s\n", location.Description)
+	fmt.Fprintf(&sb, "Network Zone:\t%s\n", location.NetworkZone)
+	fmt.Fprintf(&sb, "Country:\t%s\n", location.Country)
+	fmt.Fprintf(&sb, "City:\t%s\n", location.City)
+	fmt.Fprintf(&sb, "Latitude:\t%f\n", location.Latitude)
+	fmt.Fprintf(&sb, "Longitude:\t%f\n", location.Longitude)
+	return sb.String()
 }

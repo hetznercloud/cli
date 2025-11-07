@@ -2,6 +2,7 @@ package firewall
 
 import (
 	"fmt"
+	"io"
 	"net"
 	"strings"
 
@@ -26,76 +27,79 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Firewall]{
 		}
 		return fw, hcloud.SchemaFromFirewall(fw), nil
 	},
-	PrintText: func(s state.State, cmd *cobra.Command, firewall *hcloud.Firewall) error {
-		cmd.Printf("ID:\t\t%d\n", firewall.ID)
-		cmd.Printf("Name:\t\t%s\n", firewall.Name)
-		cmd.Printf("Created:\t%s (%s)\n", util.Datetime(firewall.Created), humanize.Time(firewall.Created))
+	PrintText: func(s state.State, _ *cobra.Command, out io.Writer, firewall *hcloud.Firewall) error {
+		fmt.Fprintf(out, "ID:\t%d\n", firewall.ID)
+		fmt.Fprintf(out, "Name:\t%s\n", firewall.Name)
+		fmt.Fprintf(out, "Created:\t%s (%s)\n", util.Datetime(firewall.Created), humanize.Time(firewall.Created))
 
-		cmd.Print("Labels:\n")
-		if len(firewall.Labels) == 0 {
-			cmd.Print("  No labels\n")
-		} else {
-			for key, value := range util.IterateInOrder(firewall.Labels) {
-				cmd.Printf("  %s: %s\n", key, value)
-			}
-		}
+		fmt.Fprintln(out)
+		util.DescribeLabels(out, firewall.Labels, "")
 
-		cmd.Print("Rules:\n")
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Rules:\n")
 		if len(firewall.Rules) == 0 {
-			cmd.Print("  No rules\n")
+			fmt.Fprintf(out, "  No rules\n")
 		} else {
-			for _, rule := range firewall.Rules {
-				cmd.Printf("  - Direction:\t\t%s\n", rule.Direction)
-				if rule.Description != nil {
-					cmd.Printf("    Description:\t%s\n", *rule.Description)
+			for i, rule := range firewall.Rules {
+				if i > 0 {
+					fmt.Fprintln(out)
 				}
-				cmd.Printf("    Protocol:\t\t%s\n", rule.Protocol)
+
+				fmt.Fprintf(out, "  - Direction:\t%s\n", rule.Direction)
+				if rule.Description != nil {
+					fmt.Fprintf(out, "    Description:\t%s\n", *rule.Description)
+				}
+				fmt.Fprintf(out, "    Protocol:\t%s\n", rule.Protocol)
 				if rule.Port != nil {
-					cmd.Printf("    Port:\t\t%s\n", *rule.Port)
+					fmt.Fprintf(out, "    Port:\t%s\n", *rule.Port)
 				}
 
 				var ips []net.IPNet
 				switch rule.Direction {
 				case hcloud.FirewallRuleDirectionIn:
-					cmd.Print("    Source IPs:\n")
+					fmt.Fprintf(out, "    Source IPs:\n")
 					ips = rule.SourceIPs
 				case hcloud.FirewallRuleDirectionOut:
-					cmd.Print("    Destination IPs:\n")
+					fmt.Fprintf(out, "    Destination IPs:\n")
 					ips = rule.DestinationIPs
 				}
 
 				for _, cidr := range ips {
-					cmd.Printf("     \t\t\t%s\n", cidr.String())
+					fmt.Fprintf(out, "      %s\n", cidr.String())
 				}
 			}
 		}
-		cmd.Print("Applied To:\n")
+
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Applied To:\n")
 		if len(firewall.AppliedTo) == 0 {
-			cmd.Print("  Not applied\n")
+			fmt.Fprintf(out, "  Not applied\n")
 		} else {
-			cmd.Print(describeResources(s, firewall.AppliedTo))
+			fmt.Fprintf(out, "%s", describeResources(s.Client(), firewall.AppliedTo))
 		}
+
 		return nil
 	},
 }
 
-func describeResources(s state.State, resources []hcloud.FirewallResource) string {
+func describeResources(client hcapi2.Client, resources []hcloud.FirewallResource) string {
 	var sb strings.Builder
 
 	for _, resource := range resources {
-		sb.WriteString(fmt.Sprintf("  - Type:\t\t%s\n", resource.Type))
+		fmt.Fprintf(&sb, "  - Type:\t%s\n", resource.Type)
 
 		switch resource.Type {
 		case hcloud.FirewallResourceTypeServer:
-			sb.WriteString(fmt.Sprintf("    Server ID:\t\t%d\n", resource.Server.ID))
-			sb.WriteString(fmt.Sprintf("    Server Name:\t%s\n", s.Client().Server().ServerName(resource.Server.ID)))
+			fmt.Fprintf(&sb, "    Server ID:\t%d\n", resource.Server.ID)
+			fmt.Fprintf(&sb, "    Server Name:\t%s\n", client.Server().ServerName(resource.Server.ID))
 
 		case hcloud.FirewallResourceTypeLabelSelector:
-			sb.WriteString(fmt.Sprintf("    Label Selector:\t%s\n", resource.LabelSelector.Selector))
+			fmt.Fprintf(&sb, "    Label Selector:\t%s\n", resource.LabelSelector.Selector)
+
 			if len(resource.AppliedToResources) > 0 {
-				sb.WriteString("    Applied to resources:\n")
-				substr := describeResources(s, resource.AppliedToResources)
-				sb.WriteString(util.PrefixLines(substr, "  "))
+				fmt.Fprintf(&sb, "    Applied to resources:\n")
+				substr := describeResources(client, resource.AppliedToResources)
+				fmt.Fprint(&sb, util.PrefixLines(substr, "  "))
 			}
 		}
 	}

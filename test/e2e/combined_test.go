@@ -210,13 +210,17 @@ func TestCombined(t *testing.T) {
 					Lit("IP:").Whitespace().IPv4().Newline().
 					Lit("Blocked:").Whitespace().Lit("no").Newline().
 					Lit("Home Location:").Whitespace().LocationName().Newline().
+					Newline().
 					Lit("Server:").Newline().
 					Lit("  ID:").Whitespace().Int().Newline().
 					Lit("  Name:").Whitespace().Raw(`test-server-[0-9a-f]{8}`).Newline().
+					Newline().
 					Lit("DNS:").Newline().
-					Lit("  ").IPv4().Lit(": static.").IPv4().Lit(".clients.your-server.de").Newline().
+					Lit("  ").IPv4().Lit(":").Whitespace().Lit("static.").IPv4().Lit(".clients.your-server.de").Newline().
+					Newline().
 					Lit("Protection:").Newline().
 					Lit("  Delete:").Whitespace().Lit("no").Newline().
+					Newline().
 					Lit("Labels:").Newline().
 					Lit("  No labels").Newline().
 					End(),
@@ -297,10 +301,12 @@ func TestCombined(t *testing.T) {
 					Lit("OS version:").Whitespace().Identifier().Newline().
 					Lit("Architecture:").Whitespace().OneOfLit("x86", "arm").Newline().
 					Lit("Rapid deploy:").Whitespace().Lit("no").Newline().
+					Newline().
 					Lit("Protection:").Newline().
 					Lit("  Delete:").Whitespace().Lit("yes").Newline().
+					Newline().
 					Lit("Labels:").Newline().
-					Lit("  foo: bar").Newline().
+					Lit("  foo:").Whitespace().Lit("bar").Newline().
 					End(),
 				out,
 			)

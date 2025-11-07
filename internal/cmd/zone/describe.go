@@ -2,6 +2,7 @@ package zone
 
 import (
 	"fmt"
+	"io"
 
 	"github.com/dustin/go-humanize"
 	"github.com/spf13/cobra"
@@ -31,64 +32,63 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Zone]{
 
 		return zone, hcloud.SchemaFromZone(zone), nil
 	},
-	PrintText: func(_ state.State, cmd *cobra.Command, zone *hcloud.Zone) error {
+	PrintText: func(_ state.State, _ *cobra.Command, out io.Writer, zone *hcloud.Zone) error {
+
 		name := util.DisplayZoneName(zone.Name)
 		if name != zone.Name {
 			name = fmt.Sprintf("%s (IDNA: %s)", name, zone.Name)
 		}
 
-		cmd.Printf("ID:\t\t%d\n", zone.ID)
-		cmd.Printf("Name:\t\t%s\n", name)
-		cmd.Printf("Created:\t%s (%s)\n", util.Datetime(zone.Created), humanize.Time(zone.Created))
-		cmd.Printf("Mode:\t\t%s\n", zone.Mode)
-		cmd.Printf("Status:\t\t%s\n", zone.Status)
-		cmd.Printf("TTL:\t\t%d\n", zone.TTL)
-		cmd.Printf("Registrar:\t%s\n", zone.Registrar)
-		cmd.Printf("Record Count:\t%d\n", zone.RecordCount)
-		cmd.Printf("Protection:\n")
-		cmd.Printf("  Delete:\t%s\n", util.YesNo(zone.Protection.Delete))
+		fmt.Fprintf(out, "ID:\t%d\n", zone.ID)
+		fmt.Fprintf(out, "Name:\t%s\n", name)
+		fmt.Fprintf(out, "Created:\t%s (%s)\n", util.Datetime(zone.Created), humanize.Time(zone.Created))
+		fmt.Fprintf(out, "Mode:\t%s\n", zone.Mode)
+		fmt.Fprintf(out, "Status:\t%s\n", zone.Status)
+		fmt.Fprintf(out, "TTL:\t%d\n", zone.TTL)
+		fmt.Fprintf(out, "Registrar:\t%s\n", zone.Registrar)
+		fmt.Fprintf(out, "Record Count:\t%d\n", zone.RecordCount)
 
-		cmd.Print("Labels:\n")
-		if len(zone.Labels) == 0 {
-			cmd.Print("  No labels\n")
-		} else {
-			for key, value := range util.IterateInOrder(zone.Labels) {
-				cmd.Printf("  %s: %s\n", key, value)
-			}
-		}
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Protection:\n")
+		fmt.Fprintf(out, "  Delete:\t%s\n", util.YesNo(zone.Protection.Delete))
 
-		cmd.Printf("Authoritative Nameservers:\n")
-		cmd.Printf("  Assigned:\n")
+		fmt.Fprintln(out)
+		util.DescribeLabels(out, zone.Labels, "")
+
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Authoritative Nameservers:\n")
+		fmt.Fprintf(out, "  Assigned:\n")
 		if len(zone.AuthoritativeNameservers.Assigned) > 0 {
 			for _, srv := range zone.AuthoritativeNameservers.Assigned {
-				cmd.Printf("    - %s\n", srv)
+				fmt.Fprintf(out, "    - %s\n", srv)
 			}
 		} else {
-			cmd.Printf("    No assigned nameservers\n")
+			fmt.Fprintf(out, "    No assigned nameservers\n")
 		}
-		cmd.Printf("  Delegated:\n")
+
+		fmt.Fprintf(out, "  Delegated:\n")
 		if len(zone.AuthoritativeNameservers.Delegated) > 0 {
 			for _, srv := range zone.AuthoritativeNameservers.Delegated {
-				cmd.Printf("    - %s\n", srv)
+				fmt.Fprintf(out, "    - %s\n", srv)
 			}
 		} else {
-			cmd.Printf("    No delegated nameservers\n")
+			fmt.Fprintf(out, "    No delegated nameservers\n")
 		}
-		cmd.Printf("  Delegation last check:\t%s (%s)\n",
+		fmt.Fprintf(out, "  Delegation last check:\t%s (%s)\n",
 			util.Datetime(zone.AuthoritativeNameservers.DelegationLastCheck),
 			humanize.Time(zone.AuthoritativeNameservers.DelegationLastCheck))
-		cmd.Printf("  Delegation status:\t\t%s\n", zone.AuthoritativeNameservers.DelegationStatus)
+		fmt.Fprintf(out, "  Delegation status:\t%s\n", zone.AuthoritativeNameservers.DelegationStatus)
 
 		if zone.Mode == hcloud.ZoneModeSecondary {
-			cmd.Printf("Primary nameservers:\n")
+			fmt.Fprintf(out, "Primary nameservers:\t\n")
 			for _, ns := range zone.PrimaryNameservers {
-				cmd.Printf("  - Address:\t\t%s\n", ns.Address)
-				cmd.Printf("    Port:\t\t%d\n", ns.Port)
+				fmt.Fprintf(out, "  - Address:\t%s\n", ns.Address)
+				fmt.Fprintf(out, "    Port:\t%d\n", ns.Port)
 				if ns.TSIGAlgorithm != "" {
-					cmd.Printf("    TSIG Algorithm:\t%s\n", ns.TSIGAlgorithm)
+					fmt.Fprintf(out, "    TSIG Algorithm:\t%s\n", ns.TSIGAlgorithm)
 				}
 				if ns.TSIGKey != "" {
-					cmd.Printf("    TSIG Key:\t\t%s\n", ns.TSIGKey)
+					fmt.Fprintf(out, "    TSIG Key:\t%s\n", ns.TSIGKey)
 				}
 			}
 		}

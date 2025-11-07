@@ -83,20 +83,20 @@ func TestDescribe(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"lb11"})
 
-	expOut := `ID:				123
-Name:				lb11
-Description:			LB11
-Max Services:			5
-Max Connections:		10000
-Max Targets:			25
-Max assigned Certificates:	10
-Pricings per Location:
-  - Location:		Falkenstein
-    Hourly:		€ 1.0000
-    Monthly:		€ 2.0000
-    Included Traffic:	639 KiB
-    Additional Traffic:	€ 3.0000 per TB
+	expOut := `ID:                         123
+Name:                       lb11
+Description:                LB11
+Max Services:               5
+Max Connections:            10000
+Max Targets:                25
+Max assigned Certificates:  10
 
+Pricings per Location:
+  - Location:            Falkenstein
+    Hourly:              € 1.0000
+    Monthly:             € 2.0000
+    Included Traffic:    639 KiB
+    Additional Traffic:  € 3.0000 per TB
 `
 
 	require.NoError(t, err)

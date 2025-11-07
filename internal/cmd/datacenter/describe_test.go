@@ -30,16 +30,20 @@ func TestDescribe(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"test"})
 
-	expOut := `ID:		4
-Name:		fsn1-dc14
-Description:	Falkenstein 1 virtual DC 14
+	expOut := `ID:           4
+Name:         fsn1-dc14
+Description:  Falkenstein 1 virtual DC 14
+
 Location:
-  Name:		fsn1
-  Description:	
-  Country:	
-  City:		
-  Latitude:	0.000000
-  Longitude:	0.000000
+  ID:            0
+  Name:          fsn1
+  Description:   
+  Network Zone:  
+  Country:       
+  City:          
+  Latitude:      0.000000
+  Longitude:     0.000000
+
 Server Types:
   No Server Types
 `
@@ -100,21 +104,25 @@ func TestDescribeWithTypes(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"test"})
 
-	expOut := `ID:		4
-Name:		fsn1-dc14
-Description:	Falkenstein 1 virtual DC 14
+	expOut := `ID:           4
+Name:         fsn1-dc14
+Description:  Falkenstein 1 virtual DC 14
+
 Location:
-  Name:		fsn1
-  Description:	
-  Country:	
-  City:		
-  Latitude:	0.000000
-  Longitude:	0.000000
+  ID:            0
+  Name:          fsn1
+  Description:   
+  Network Zone:  
+  Country:       
+  City:          
+  Latitude:      0.000000
+  Longitude:     0.000000
+
 Server Types:
-  - ID: 3        Name: cpx22    Supported: true     Available: true
-  - ID: 5        Name: cpx32    Supported: true     Available: true
-  - ID: 7        Name: cpx42    Supported: true     Available: false
-  - ID: 9        Name: cpx52    Supported: true     Available: false
+  - ID: 3  Name: cpx22  Supported: true  Available: true
+  - ID: 5  Name: cpx32  Supported: true  Available: true
+  - ID: 7  Name: cpx42  Supported: true  Available: false
+  - ID: 9  Name: cpx52  Supported: true  Available: false
 `
 
 	require.NoError(t, err)

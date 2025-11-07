@@ -62,36 +62,44 @@ func TestDescribe(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"test"})
 
-	expOut := fmt.Sprintf(`ID:				123
-Name:				test
-Created:			%s (%s)
+	expOut := fmt.Sprintf(`ID:         123
+Name:       test
+Created:    %s (%s)
+Algorithm:  least_connections
+
 Public Net:
-  Enabled:			yes
-  IPv4:				192.168.2.1
-  IPv4 DNS PTR:			
-  IPv6:				::1
-  IPv6 DNS PTR:			
+  Enabled:       yes
+  IPv4:          192.168.2.1
+  IPv4 DNS PTR:  
+  IPv6:          ::1
+  IPv6 DNS PTR:  
+
 Private Net:
-    No Private Network
-Algorithm:			least_connections
-Load Balancer Type:		lb11 (ID: 123)
-  ID:				123
-  Name:				lb11
-  Description:			LB11
-  Max Services:			5
-  Max Connections:		10000
-  Max Targets:			25
-  Max assigned Certificates:	10
+  No Private Network
+
+Load Balancer Type:
+  ID:                         123
+  Name:                       lb11
+  Description:                LB11
+  Max Services:               5
+  Max Connections:            10000
+  Max Targets:                25
+  Max assigned Certificates:  10
+
 Services:
   No services
+
 Targets:
   No targets
+
 Traffic:
-  Outgoing:	10 TiB
-  Ingoing:	10 TiB
-  Included:	20 TiB
+  Outgoing:  10 TiB
+  Ingoing:   10 TiB
+  Included:  20 TiB
+
 Protection:
-  Delete:	no
+  Delete:  no
+
 Labels:
   No labels
 `, util.Datetime(lb.Created), humanize.Time(lb.Created))

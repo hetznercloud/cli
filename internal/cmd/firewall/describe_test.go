@@ -81,30 +81,33 @@ func TestDescribe(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"test"})
 
-	expOut := fmt.Sprintf(`ID:		123
-Name:		test
-Created:	%s (%s)
+	expOut := fmt.Sprintf(`ID:       123
+Name:     test
+Created:  %s (%s)
+
 Labels:
-  key: value
+  key:  value
+
 Rules:
-  - Direction:		in
-    Description:	ssh
-    Protocol:		tcp
-    Port:		22
+  - Direction:    in
+    Description:  ssh
+    Protocol:     tcp
+    Port:         22
     Source IPs:
+
 Applied To:
-  - Type:		server
-    Server ID:		321
-    Server Name:	myServer
-  - Type:		label_selector
-    Label Selector:	foobar
+  - Type:            server
+    Server ID:       321
+    Server Name:     myServer
+  - Type:            label_selector
+    Label Selector:  foobar
     Applied to resources:
-    - Type:		server
-      Server ID:		123
-      Server Name:	appliedServer1
-    - Type:		server
-      Server ID:		456
-      Server Name:	appliedServer2
+    - Type:         server
+      Server ID:    123
+      Server Name:  appliedServer1
+    - Type:         server
+      Server ID:    456
+      Server Name:  appliedServer2
 `, util.Datetime(fw.Created), humanize.Time(fw.Created))
 
 	require.NoError(t, err)

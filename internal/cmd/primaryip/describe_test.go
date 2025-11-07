@@ -44,32 +44,40 @@ func TestDescribe(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"10"})
 
-	expOut := fmt.Sprintf(`ID:		10
-Name:		test-net
-Created:	%s (%s)
-Type:		ipv4
-IP:		192.168.0.1
-Blocked:	yes
-Auto delete:	no
+	expOut := fmt.Sprintf(`ID:           10
+Name:         test-net
+Created:      %s (%s)
+Type:         ipv4
+IP:           192.168.0.1
+Blocked:      yes
+Auto delete:  no
+
 Assignee:
   Not assigned
+
 DNS:
   No reverse DNS entries
+
 Protection:
-  Delete:	no
+  Delete:  no
+
 Labels:
   No labels
+
 Datacenter:
-  ID:		0
-  Name:		
-  Description:	
+  ID:           0
+  Name:         
+  Description:  
+  
   Location:
-    Name:		
-    Description:	
-    Country:		
-    City:		
-    Latitude:		0.000000
-    Longitude:		0.000000
+    ID:            0
+    Name:          
+    Description:   
+    Network Zone:  
+    Country:       
+    City:          
+    Latitude:      0.000000
+    Longitude:     0.000000
 `, util.Datetime(primaryIP.Created), humanize.Time(primaryIP.Created))
 
 	require.NoError(t, err)

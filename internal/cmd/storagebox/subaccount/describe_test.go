@@ -59,24 +59,27 @@ func TestDescribe(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"my-storage-box", "42"})
 
-	expOut := fmt.Sprintf(`ID:			42
-Description:		host01 backup
-Created:		2016-01-30 23:55:00 UTC (%s)
-Username:		u1337-sub1
-Home Directory:		my_backups/host01.my.company
-Server:			u1337-sub1.your-storagebox.de
+	expOut := fmt.Sprintf(`ID:              42
+Description:     host01 backup
+Created:         2016-01-30 23:55:00 UTC (%s)
+Username:        u1337-sub1
+Home Directory:  my_backups/host01.my.company
+Server:          u1337-sub1.your-storagebox.de
+
 Access Settings:
-  Reachable Externally:	false
-  Samba Enabled:	false
-  SSH Enabled:		false
-  WebDAV Enabled:	false
-  Readonly:		false
+  Reachable Externally:  false
+  Samba Enabled:         false
+  SSH Enabled:           false
+  WebDAV Enabled:        false
+  Readonly:              false
+
 Labels:
-  environment: prod
-  example.com/my: label
-  just-a-key: 
+  environment:     prod
+  example.com/my:  label
+  just-a-key:      
+
 Storage Box:
-  ID:			123
+  ID:  123
 `, humanize.Time(sbs.Created))
 
 	require.NoError(t, err)

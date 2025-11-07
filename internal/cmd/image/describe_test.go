@@ -46,22 +46,24 @@ func TestDescribe(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"test", "--architecture", "x86"})
 
-	expOut := fmt.Sprintf(`ID:		123
-Type:		system
-Status:		available
-Name:		test
-Created:	%s (%s)
-Description:	Test Image
-Image size:	20.00 GB
-Disk size:	20 GB
-OS flavor:	
-OS version:	-
-Architecture:	x86
-Rapid deploy:	no
+	expOut := fmt.Sprintf(`ID:            123
+Type:          system
+Status:        available
+Name:          test
+Created:       %s (%s)
+Description:   Test Image
+Image size:    20.00 GB
+Disk size:     20 GB
+OS flavor:     
+OS version:    -
+Architecture:  x86
+Rapid deploy:  no
+
 Protection:
-  Delete:	no
+  Delete:  no
+
 Labels:
-  key: value
+  key:  value
 `, util.Datetime(img.Created), humanize.Time(img.Created))
 
 	require.NoError(t, err)

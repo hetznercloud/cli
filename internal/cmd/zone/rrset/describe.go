@@ -2,6 +2,7 @@ package rrset
 
 import (
 	"fmt"
+	"io"
 	"strconv"
 
 	"github.com/spf13/cobra"
@@ -40,36 +41,33 @@ var DescribeCmd = base.DescribeCmd[*hcloud.ZoneRRSet]{
 		}
 		return rrset, hcloud.SchemaFromZoneRRSet(rrset), nil
 	},
-	PrintText: func(_ state.State, cmd *cobra.Command, rrset *hcloud.ZoneRRSet) error {
+	PrintText: func(_ state.State, _ *cobra.Command, out io.Writer, rrset *hcloud.ZoneRRSet) error {
 		ttl := "-"
 		if rrset.TTL != nil {
 			ttl = strconv.Itoa(*rrset.TTL)
 		}
 
-		cmd.Printf("ID:\t\t%s\n", rrset.ID)
-		cmd.Printf("Type:\t\t%s\n", rrset.Type)
-		cmd.Printf("Name:\t\t%s\n", rrset.Name)
-		cmd.Printf("TTL:\t\t%s\n", ttl)
-		cmd.Printf("Protection:\n")
-		cmd.Printf("  Change:\t%s\n", util.YesNo(rrset.Protection.Change))
+		fmt.Fprintf(out, "ID:\t%s\n", rrset.ID)
+		fmt.Fprintf(out, "Type:\t%s\n", rrset.Type)
+		fmt.Fprintf(out, "Name:\t%s\n", rrset.Name)
+		fmt.Fprintf(out, "TTL:\t%s\n", ttl)
 
-		cmd.Print("Labels:\n")
-		if len(rrset.Labels) == 0 {
-			cmd.Print("  No labels\n")
-		} else {
-			for key, value := range util.IterateInOrder(rrset.Labels) {
-				cmd.Printf("  %s: %s\n", key, value)
-			}
-		}
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Protection:\n")
+		fmt.Fprintf(out, "  Change:\t%s\n", util.YesNo(rrset.Protection.Change))
 
-		cmd.Printf("Records:\n")
+		fmt.Fprintln(out)
+		util.DescribeLabels(out, rrset.Labels, "")
+
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Records:\n")
 		if len(rrset.Records) == 0 {
-			cmd.Print("  No Records\n")
+			fmt.Fprintf(out, "  No Records\n")
 		} else {
 			for _, record := range rrset.Records {
-				cmd.Printf("  - Value:\t%s\n", record.Value)
+				fmt.Fprintf(out, "  - Value:\t%s\n", record.Value)
 				if record.Comment != "" {
-					cmd.Printf("    Comment:\t%s\n", record.Comment)
+					fmt.Fprintf(out, "    Comment:\t%s\n", record.Comment)
 				}
 			}
 		}

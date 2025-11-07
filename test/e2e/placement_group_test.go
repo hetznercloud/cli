@@ -102,11 +102,14 @@ func TestPlacementGroup(t *testing.T) {
 				Lit("ID:").Whitespace().Int().Newline().
 				Lit("Name:").Whitespace().Raw(`new-test-placement-group-[0-9a-f]{8}`).Newline().
 				Lit("Created:").Whitespace().Datetime().Lit(" (").HumanizeTime().Lit(")").Newline().
-				Lit("Labels:").Newline().
-				Lit("  ").OneOfLit("baz: qux", "foo: bar").Newline().
-				Lit("  ").OneOfLit("baz: qux", "foo: bar").Newline().
-				Lit("Servers:").Newline().
 				Lit("Type:").Whitespace().Lit("spread").Newline().
+				Newline().
+				Lit("Labels:").Newline().
+				Lit("  baz:").Whitespace().Lit("qux").Newline().
+				Lit("  foo:").Whitespace().Lit("bar").Newline().
+				Newline().
+				Lit("Servers:").Newline().
+				Lit("  No servers").Newline().
 				End(),
 			out,
 		)

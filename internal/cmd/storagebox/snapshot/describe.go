@@ -2,6 +2,7 @@ package snapshot
 
 import (
 	"fmt"
+	"io"
 
 	"github.com/dustin/go-humanize"
 	"github.com/spf13/cobra"
@@ -42,28 +43,25 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBoxSnapshot]{
 		}
 		return snapshot, hcloud.SchemaFromStorageBoxSnapshot(snapshot), nil
 	},
-	PrintText: func(_ state.State, cmd *cobra.Command, snapshot *hcloud.StorageBoxSnapshot) error {
-		cmd.Printf("ID:\t\t\t%d\n", snapshot.ID)
-		cmd.Printf("Name:\t\t\t%s\n", snapshot.Name)
-		cmd.Printf("Description:\t\t%s\n", snapshot.Description)
-		cmd.Printf("Created:\t\t%s (%s)\n", util.Datetime(snapshot.Created), humanize.Time(snapshot.Created))
-		cmd.Printf("Is automatic:\t\t%s\n", util.YesNo(snapshot.IsAutomatic))
+	PrintText: func(_ state.State, _ *cobra.Command, out io.Writer, snapshot *hcloud.StorageBoxSnapshot) error {
+		fmt.Fprintf(out, "ID:\t%d\n", snapshot.ID)
+		fmt.Fprintf(out, "Name:\t%s\n", snapshot.Name)
+		fmt.Fprintf(out, "Description:\t%s\n", snapshot.Description)
+		fmt.Fprintf(out, "Created:\t%s (%s)\n", util.Datetime(snapshot.Created), humanize.Time(snapshot.Created))
+		fmt.Fprintf(out, "Is automatic:\t%s\n", util.YesNo(snapshot.IsAutomatic))
 
-		cmd.Println("Stats:")
-		cmd.Printf("  Size:\t\t\t%s\n", humanize.IBytes(snapshot.Stats.Size))
-		cmd.Printf("  Filesystem Size:\t%s\n", humanize.IBytes(snapshot.Stats.SizeFilesystem))
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Stats:\n")
+		fmt.Fprintf(out, "  Size:\t%s\n", humanize.IBytes(snapshot.Stats.Size))
+		fmt.Fprintf(out, "  Filesystem Size:\t%s\n", humanize.IBytes(snapshot.Stats.SizeFilesystem))
 
-		cmd.Println("Labels:")
-		if len(snapshot.Labels) == 0 {
-			cmd.Println("  No labels")
-		} else {
-			for key, value := range util.IterateInOrder(snapshot.Labels) {
-				cmd.Printf("  %s: %s\n", key, value)
-			}
-		}
+		fmt.Fprintln(out)
+		util.DescribeLabels(out, snapshot.Labels, "")
 
-		cmd.Println("Storage Box:")
-		cmd.Printf("  ID:\t\t\t%d\n", snapshot.StorageBox.ID)
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Storage Box:\n")
+		fmt.Fprintf(out, "  ID:\t%d\n", snapshot.StorageBox.ID)
+
 		return nil
 	},
 	Experimental: experimental.StorageBoxes,

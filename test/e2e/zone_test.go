@@ -126,10 +126,13 @@ func TestZone(t *testing.T) {
 					Lit("Type:").Whitespace().Lit("A").Newline().
 					Lit("Name:").Whitespace().Lit("foobar").Newline().
 					Lit("TTL:").Whitespace().Lit("1337").Newline().
+					Newline().
 					Lit("Protection:").Newline().
 					Lit("  Change:").Whitespace().Lit("yes").Newline().
+					Newline().
 					Lit("Labels:").Newline().
 					Lit("  No labels").Newline().
+					Newline().
 					Lit("Records:").Newline().
 					Lit("  - Value:").Whitespace().Lit("192.168.0.2").Newline().
 					End(),
@@ -222,10 +225,13 @@ func TestZone(t *testing.T) {
 				Lit("TTL:").Whitespace().Lit("600").Newline().
 				Lit("Registrar:").Whitespace().Lit("other").Newline().
 				Lit("Record Count:").Whitespace().Lit("6").Newline().
+				Newline().
 				Lit("Protection:").Newline().
 				Lit("  Delete:").Whitespace().Lit("yes").Newline().
+				Newline().
 				Lit("Labels:").Newline().
-				Lit("  foo: bar").Newline().
+				Lit("  foo:").Whitespace().Lit("bar").Newline().
+				Newline().
 				Lit("Authoritative Nameservers:").Newline().
 				Lit("  Assigned:").Newline().
 				AnyTimes(

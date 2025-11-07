@@ -92,69 +92,97 @@ func TestDescribe(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"test"})
 
-	expOut := fmt.Sprintf(`ID:		123
-Name:		test
-Status:		
-Created:	%s (%s)
-Server Type:	cax11 (ID: 45)
-  ID:		45
-  Name:		cax11
-  Description:	CAX11
-  Cores:	2
-  CPU Type:	shared
-  Memory:	4 GB
-  Disk:		0 GB
-  Storage Type:	local
+	expOut := fmt.Sprintf(`ID:       123
+Name:     test
+Status:   
+Created:  %s (%s)
+
+Server Type:
+  ID:            45
+  Name:          cax11
+  Description:   CAX11
+  Category:      
+  Cores:         2
+  CPU Type:      shared
+  Architecture:  
+  Memory:        4.0 GB
+  Disk:          40 GB
+  Storage Type:  local
+
   Deprecation:
-    Announced:		%s (%s)
-    Unavailable After:	%s (%s)
+    Announced:          %s (%s)
+    Unavailable After:  %s (%s)
+
 Public Net:
   IPv4:
     No Primary IPv4
+
   IPv6:
     No Primary IPv6
+
   Floating IPs:
     No Floating IPs
+
 Private Net:
-    No Private Networks
+  No Private Networks
+
 Volumes:
   No Volumes
+
 Image:
-  ID:		123
-  Type:		system
-  Status:	available
-  Name:		test
-  Description:	Test image
-  Image size:	20.00 GB
-  Disk size:	20 GB
-  Created:	%s (%s)
-  OS flavor:	
-  OS version:	-
-  Rapid deploy:	no
+  ID:            123
+  Type:          system
+  Status:        available
+  Name:          test
+  Created:       %s (%s)
+  Description:   Test image
+  Image size:    20.00 GB
+  Disk size:     20 GB
+  OS flavor:     
+  OS version:    -
+  Architecture:  x86
+  Rapid deploy:  no
+  
+  Protection:
+    Delete:  no
+  
+  Labels:
+    key:  value
+
 Datacenter:
-  ID:		4
-  Name:		hel1-dc2
-  Description:	Helsinki 1 virtual DC 2
+  ID:           4
+  Name:         hel1-dc2
+  Description:  Helsinki 1 virtual DC 2
+  
   Location:
-    Name:		hel1
-    Description:	Helsinki DC Park 1
-    Country:		FI
-    City:		Helsinki
-    Latitude:		60.169855
-    Longitude:		24.938379
+    ID:            3
+    Name:          hel1
+    Description:   Helsinki DC Park 1
+    Network Zone:  eu-central
+    Country:       FI
+    City:          Helsinki
+    Latitude:      60.169855
+    Longitude:     24.938379
+
+Backup Window:  Backups disabled
+
+Rescue System:  disabled
+
 Traffic:
-  Outgoing:	0 B
-  Ingoing:	0 B
-  Included:	20 TiB
-Backup Window:	Backups disabled
-Rescue System:	disabled
+  Outgoing:  0 B
+  Ingoing:   0 B
+  Included:  20 TiB
+
 ISO:
   No ISO attached
+
 Protection:
-  Delete:	yes
-  Rebuild:	yes
+  Delete:   yes
+  Rebuild:  yes
+
 Labels:
   No labels
+
 Placement Group:
   No Placement Group set
 `,

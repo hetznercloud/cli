@@ -56,20 +56,23 @@ func TestDescribe(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"my-storage-box", "my-snapshot"})
 
-	expOut := fmt.Sprintf(`ID:			456
-Name:			snapshot-1
-Description:		some-description
-Created:		2024-01-02 15:04:05 UTC (%s)
-Is automatic:		no
+	expOut := fmt.Sprintf(`ID:            456
+Name:          snapshot-1
+Description:   some-description
+Created:       2024-01-02 15:04:05 UTC (%s)
+Is automatic:  no
+
 Stats:
-  Size:			50 GiB
-  Filesystem Size:	40 GiB
+  Size:             50 GiB
+  Filesystem Size:  40 GiB
+
 Labels:
-  environment: prod
-  example.com/my: label
-  just-a-key: 
+  environment:     prod
+  example.com/my:  label
+  just-a-key:      
+
 Storage Box:
-  ID:			123
+  ID:  123
 `, humanize.Time(sbs.Created))
 
 	require.NoError(t, err)

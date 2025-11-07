@@ -1,10 +1,14 @@
 package volume
 
 import (
-	humanize "github.com/dustin/go-humanize"
+	"fmt"
+	"io"
+
+	"github.com/dustin/go-humanize"
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
+	"github.com/hetznercloud/cli/internal/cmd/location"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
@@ -22,37 +26,33 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Volume]{
 		}
 		return v, hcloud.SchemaFromVolume(v), nil
 	},
-	PrintText: func(s state.State, cmd *cobra.Command, volume *hcloud.Volume) error {
-		cmd.Printf("ID:\t\t%d\n", volume.ID)
-		cmd.Printf("Name:\t\t%s\n", volume.Name)
-		cmd.Printf("Created:\t%s (%s)\n", util.Datetime(volume.Created), humanize.Time(volume.Created))
-		cmd.Printf("Size:\t\t%s\n", humanize.Bytes(uint64(volume.Size)*humanize.GByte))
-		cmd.Printf("Linux Device:\t%s\n", volume.LinuxDevice)
-		cmd.Printf("Location:\n")
-		cmd.Printf("  Name:\t\t%s\n", volume.Location.Name)
-		cmd.Printf("  Description:\t%s\n", volume.Location.Description)
-		cmd.Printf("  Country:\t%s\n", volume.Location.Country)
-		cmd.Printf("  City:\t\t%s\n", volume.Location.City)
-		cmd.Printf("  Latitude:\t%f\n", volume.Location.Latitude)
-		cmd.Printf("  Longitude:\t%f\n", volume.Location.Longitude)
-		if volume.Server != nil {
-			cmd.Printf("Server:\n")
-			cmd.Printf("  ID:\t\t%d\n", volume.Server.ID)
-			cmd.Printf("  Name:\t\t%s\n", s.Client().Server().ServerName(volume.Server.ID))
-		} else {
-			cmd.Print("Server:\n  Not attached\n")
-		}
-		cmd.Printf("Protection:\n")
-		cmd.Printf("  Delete:\t%s\n", util.YesNo(volume.Protection.Delete))
+	PrintText: func(s state.State, _ *cobra.Command, out io.Writer, volume *hcloud.Volume) error {
 
-		cmd.Print("Labels:\n")
-		if len(volume.Labels) == 0 {
-			cmd.Print("  No labels\n")
+		fmt.Fprintf(out, "ID:\t%d\n", volume.ID)
+		fmt.Fprintf(out, "Name:\t%s\n", volume.Name)
+		fmt.Fprintf(out, "Created:\t%s (%s)\n", util.Datetime(volume.Created), humanize.Time(volume.Created))
+		fmt.Fprintf(out, "Size:\t%s\n", humanize.Bytes(uint64(volume.Size)*humanize.GByte))
+		fmt.Fprintf(out, "Linux Device:\t%s\n", volume.LinuxDevice)
+
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Location:\n")
+		fmt.Fprintf(out, "%s", util.PrefixLines(location.DescribeLocation(volume.Location), "  "))
+
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Server:\n")
+		if volume.Server != nil {
+			fmt.Fprintf(out, "  ID:\t%d\n", volume.Server.ID)
+			fmt.Fprintf(out, "  Name:\t%s\n", s.Client().Server().ServerName(volume.Server.ID))
 		} else {
-			for key, value := range util.IterateInOrder(volume.Labels) {
-				cmd.Printf("  %s: %s\n", key, value)
-			}
+			fmt.Fprintf(out, "  Not attached\n")
 		}
+
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Protection:\n")
+		fmt.Fprintf(out, "  Delete:\t%s\n", util.YesNo(volume.Protection.Delete))
+
+		fmt.Fprintln(out)
+		util.DescribeLabels(out, volume.Labels, "")
 
 		return nil
 	},

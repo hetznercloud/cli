@@ -2,6 +2,7 @@ package subaccount
 
 import (
 	"fmt"
+	"io"
 
 	"github.com/dustin/go-humanize"
 	"github.com/spf13/cobra"
@@ -42,34 +43,30 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBoxSubaccount]{
 		}
 		return subaccount, hcloud.SchemaFromStorageBoxSubaccount(subaccount), nil
 	},
-	PrintText: func(_ state.State, cmd *cobra.Command, subaccount *hcloud.StorageBoxSubaccount) error {
-
-		cmd.Printf("ID:\t\t\t%d\n", subaccount.ID)
-		cmd.Printf("Description:\t\t%s\n", util.NA(subaccount.Description))
-		cmd.Printf("Created:\t\t%s (%s)\n", util.Datetime(subaccount.Created), humanize.Time(subaccount.Created))
-		cmd.Printf("Username:\t\t%s\n", subaccount.Username)
-		cmd.Printf("Home Directory:\t\t%s\n", subaccount.HomeDirectory)
-		cmd.Printf("Server:\t\t\t%s\n", subaccount.Server)
+	PrintText: func(_ state.State, _ *cobra.Command, out io.Writer, subaccount *hcloud.StorageBoxSubaccount) error {
+		fmt.Fprintf(out, "ID:\t%d\n", subaccount.ID)
+		fmt.Fprintf(out, "Description:\t%s\n", util.NA(subaccount.Description))
+		fmt.Fprintf(out, "Created:\t%s (%s)\n", util.Datetime(subaccount.Created), humanize.Time(subaccount.Created))
+		fmt.Fprintf(out, "Username:\t%s\n", subaccount.Username)
+		fmt.Fprintf(out, "Home Directory:\t%s\n", subaccount.HomeDirectory)
+		fmt.Fprintf(out, "Server:\t%s\n", subaccount.Server)
 
 		accessSettings := subaccount.AccessSettings
-		cmd.Println("Access Settings:")
-		cmd.Printf("  Reachable Externally:\t%t\n", accessSettings.ReachableExternally)
-		cmd.Printf("  Samba Enabled:\t%t\n", accessSettings.SambaEnabled)
-		cmd.Printf("  SSH Enabled:\t\t%t\n", accessSettings.SSHEnabled)
-		cmd.Printf("  WebDAV Enabled:\t%t\n", accessSettings.WebDAVEnabled)
-		cmd.Printf("  Readonly:\t\t%t\n", accessSettings.Readonly)
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Access Settings:\n")
+		fmt.Fprintf(out, "  Reachable Externally:\t%t\n", accessSettings.ReachableExternally)
+		fmt.Fprintf(out, "  Samba Enabled:\t%t\n", accessSettings.SambaEnabled)
+		fmt.Fprintf(out, "  SSH Enabled:\t%t\n", accessSettings.SSHEnabled)
+		fmt.Fprintf(out, "  WebDAV Enabled:\t%t\n", accessSettings.WebDAVEnabled)
+		fmt.Fprintf(out, "  Readonly:\t%t\n", accessSettings.Readonly)
 
-		cmd.Println("Labels:")
-		if len(subaccount.Labels) == 0 {
-			cmd.Println("  No labels")
-		} else {
-			for key, value := range util.IterateInOrder(subaccount.Labels) {
-				cmd.Printf("  %s: %s\n", key, value)
-			}
-		}
+		fmt.Fprintln(out)
+		util.DescribeLabels(out, subaccount.Labels, "")
 
-		cmd.Println("Storage Box:")
-		cmd.Printf("  ID:\t\t\t%d\n", subaccount.StorageBox.ID)
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Storage Box:\n")
+		fmt.Fprintf(out, "  ID:\t%d\n", subaccount.StorageBox.ID)
+
 		return nil
 	},
 	Experimental: experimental.StorageBoxes,

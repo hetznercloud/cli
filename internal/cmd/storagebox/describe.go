@@ -1,13 +1,16 @@
 package storagebox
 
 import (
-	"strconv"
+	"fmt"
+	"io"
 
 	"github.com/dustin/go-humanize"
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/experimental"
+	"github.com/hetznercloud/cli/internal/cmd/location"
+	"github.com/hetznercloud/cli/internal/cmd/storageboxtype"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
@@ -25,89 +28,66 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBox]{
 		}
 		return storageBox, hcloud.SchemaFromStorageBox(storageBox), nil
 	},
-	PrintText: func(_ state.State, cmd *cobra.Command, storageBox *hcloud.StorageBox) error {
-		cmd.Printf("ID:\t\t\t\t%d\n", storageBox.ID)
-		cmd.Printf("Name:\t\t\t\t%s\n", storageBox.Name)
-		cmd.Printf("Created:\t\t\t%s (%s)\n", util.Datetime(storageBox.Created), humanize.Time(storageBox.Created))
-		cmd.Printf("Status:\t\t\t\t%s\n", storageBox.Status)
-		cmd.Printf("Username:\t\t\t%s\n", storageBox.Username)
-		cmd.Printf("Server:\t\t\t\t%s\n", storageBox.Server)
-		cmd.Printf("System:\t\t\t\t%s\n", storageBox.System)
+	PrintText: func(s state.State, _ *cobra.Command, out io.Writer, storageBox *hcloud.StorageBox) error {
+
+		fmt.Fprintf(out, "ID:\t%d\n", storageBox.ID)
+		fmt.Fprintf(out, "Name:\t%s\n", storageBox.Name)
+		fmt.Fprintf(out, "Created:\t%s (%s)\n", util.Datetime(storageBox.Created), humanize.Time(storageBox.Created))
+		fmt.Fprintf(out, "Status:\t%s\n", storageBox.Status)
+		fmt.Fprintf(out, "Username:\t%s\n", storageBox.Username)
+		fmt.Fprintf(out, "Server:\t%s\n", storageBox.Server)
+		fmt.Fprintf(out, "System:\t%s\n", storageBox.System)
 
 		snapshotPlan := storageBox.SnapshotPlan
-		cmd.Println("Snapshot Plan:")
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Snapshot Plan:\n")
 		if snapshotPlan == nil {
-			cmd.Println("  No snapshot plan active")
+			fmt.Fprintf(out, "  No snapshot plan active\n")
 		} else {
-			cmd.Printf("  Max Snapshots:\t\t%d\n", snapshotPlan.MaxSnapshots)
-			cmd.Printf("  Minute:\t\t\t%d\n", snapshotPlan.Minute)
-			cmd.Printf("  Hour:\t\t\t\t%d\n", snapshotPlan.Hour)
+			fmt.Fprintf(out, "  Max Snapshots:\t%d\n", snapshotPlan.MaxSnapshots)
+			fmt.Fprintf(out, "  Minute:\t%d\n", snapshotPlan.Minute)
+			fmt.Fprintf(out, "  Hour:\t%d\n", snapshotPlan.Hour)
 
 			if snapshotPlan.DayOfWeek != nil {
-				cmd.Printf("  Day of Week:\t\t\t%s\n", *snapshotPlan.DayOfWeek)
+				fmt.Fprintf(out, "  Day of Week:\t%s\n", *snapshotPlan.DayOfWeek)
 			}
 			if snapshotPlan.DayOfMonth != nil {
-				cmd.Printf("  Day of Month:\t\t\t%d\n", *snapshotPlan.DayOfMonth)
+				fmt.Fprintf(out, "  Day of Month:\t%d\n", *snapshotPlan.DayOfMonth)
 			}
 		}
 
 		protection := storageBox.Protection
-		cmd.Println("Protection:")
-		cmd.Printf("  Delete:\t\t\t%t\n", protection.Delete)
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Protection:\n")
+		fmt.Fprintf(out, "  Delete:\t%t\n", protection.Delete)
 
 		stats := storageBox.Stats
-		cmd.Println("Stats:")
-		cmd.Printf("  Size:\t\t\t\t%s\n", humanize.IBytes(stats.Size))
-		cmd.Printf("  Size Data:\t\t\t%s\n", humanize.IBytes(stats.SizeData))
-		cmd.Printf("  Size Snapshots:\t\t%s\n", humanize.IBytes(stats.SizeSnapshots))
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Stats:\n")
+		fmt.Fprintf(out, "  Size:\t%s\n", humanize.IBytes(stats.Size))
+		fmt.Fprintf(out, "  Size Data:\t%s\n", humanize.IBytes(stats.SizeData))
+		fmt.Fprintf(out, "  Size Snapshots:\t%s\n", humanize.IBytes(stats.SizeSnapshots))
 
-		cmd.Print("Labels:\n")
-		if len(storageBox.Labels) == 0 {
-			cmd.Print("  No labels\n")
-		} else {
-			for key, value := range util.IterateInOrder(storageBox.Labels) {
-				cmd.Printf("  %s: %s\n", key, value)
-			}
-		}
+		fmt.Fprintln(out)
+		util.DescribeLabels(out, storageBox.Labels, "")
 
 		accessSettings := storageBox.AccessSettings
-		cmd.Println("Access Settings:")
-		cmd.Printf("  Reachable Externally:\t\t%t\n", accessSettings.ReachableExternally)
-		cmd.Printf("  Samba Enabled:\t\t%t\n", accessSettings.SambaEnabled)
-		cmd.Printf("  SSH Enabled:\t\t\t%t\n", accessSettings.SSHEnabled)
-		cmd.Printf("  WebDAV Enabled:\t\t%t\n", accessSettings.WebDAVEnabled)
-		cmd.Printf("  ZFS Enabled:\t\t\t%t\n", accessSettings.ZFSEnabled)
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Access Settings:\n")
+		fmt.Fprintf(out, "  Reachable Externally:\t%t\n", accessSettings.ReachableExternally)
+		fmt.Fprintf(out, "  Samba Enabled:\t%t\n", accessSettings.SambaEnabled)
+		fmt.Fprintf(out, "  SSH Enabled:\t%t\n", accessSettings.SSHEnabled)
+		fmt.Fprintf(out, "  WebDAV Enabled:\t%t\n", accessSettings.WebDAVEnabled)
+		fmt.Fprintf(out, "  ZFS Enabled:\t%t\n", accessSettings.ZFSEnabled)
 
-		storageBoxType := storageBox.StorageBoxType
-		cmd.Println("Storage Box Type:")
-		cmd.Printf("  ID:\t\t\t\t%d\n", storageBoxType.ID)
-		cmd.Printf("  Name:\t\t\t\t%s\n", storageBoxType.Name)
-		cmd.Printf("  Description:\t\t\t%s\n", storageBoxType.Description)
-		cmd.Printf("  Size:\t\t\t\t%s\n", humanize.IBytes(uint64(storageBoxType.Size)))
+		typeDescription, _ := storageboxtype.DescribeStorageBoxType(s, storageBox.StorageBoxType, true)
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Storage Box Type:\n")
+		fmt.Fprintf(out, "%s", util.PrefixLines(typeDescription, "  "))
 
-		snapshotLimit := "-"
-		if storageBox.StorageBoxType.SnapshotLimit != nil {
-			snapshotLimit = strconv.Itoa(*storageBox.StorageBoxType.SnapshotLimit)
-		}
-		automaticSnapshotLimit := "-"
-		if storageBox.StorageBoxType.AutomaticSnapshotLimit != nil {
-			automaticSnapshotLimit = strconv.Itoa(*storageBox.StorageBoxType.AutomaticSnapshotLimit)
-		}
-		cmd.Printf("  Snapshot Limit:\t\t%s\n", snapshotLimit)
-		cmd.Printf("  Automatic Snapshot Limit:\t%s\n", automaticSnapshotLimit)
-
-		cmd.Printf("  Subaccounts Limit:\t\t%d\n", storageBoxType.SubaccountsLimit)
-
-		location := storageBox.Location
-		cmd.Println("Location:")
-		cmd.Printf("  ID:\t\t\t\t%d\n", location.ID)
-		cmd.Printf("  Name:\t\t\t\t%s\n", location.Name)
-		cmd.Printf("  Description:\t\t\t%s\n", location.Description)
-		cmd.Printf("  Network Zone:\t\t\t%s\n", location.NetworkZone)
-		cmd.Printf("  Country:\t\t\t%s\n", location.Country)
-		cmd.Printf("  City:\t\t\t\t%s\n", location.City)
-		cmd.Printf("  Latitude:\t\t\t%f\n", location.Latitude)
-		cmd.Printf("  Longitude:\t\t\t%f\n", location.Longitude)
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Location:\n")
+		fmt.Fprintf(out, "%s", util.PrefixLines(location.DescribeLocation(storageBox.Location), "  "))
 
 		return nil
 	},

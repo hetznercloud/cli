@@ -1,6 +1,9 @@
 package certificate
 
 import (
+	"fmt"
+	"io"
+
 	"github.com/dustin/go-humanize"
 	"github.com/spf13/cobra"
 
@@ -22,48 +25,54 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Certificate]{
 		}
 		return cert, hcloud.SchemaFromCertificate(cert), nil
 	},
-	PrintText: func(s state.State, cmd *cobra.Command, cert *hcloud.Certificate) error {
-		cmd.Printf("ID:\t\t\t%d\n", cert.ID)
-		cmd.Printf("Name:\t\t\t%s\n", cert.Name)
-		cmd.Printf("Type:\t\t\t%s\n", cert.Type)
-		cmd.Printf("Fingerprint:\t\t%s\n", cert.Fingerprint)
-		cmd.Printf("Created:\t\t%s (%s)\n", util.Datetime(cert.Created), humanize.Time(cert.Created))
-		cmd.Printf("Not valid before:\t%s (%s)\n", util.Datetime(cert.NotValidBefore), humanize.Time(cert.NotValidBefore))
-		cmd.Printf("Not valid after:\t%s (%s)\n", util.Datetime(cert.NotValidAfter), humanize.Time(cert.NotValidAfter))
+	PrintText: func(s state.State, _ *cobra.Command, out io.Writer, cert *hcloud.Certificate) error {
+		fmt.Fprintf(out, "ID:\t%d\n", cert.ID)
+		fmt.Fprintf(out, "Name:\t%s\n", cert.Name)
+		fmt.Fprintf(out, "Type:\t%s\n", cert.Type)
+		fmt.Fprintf(out, "Fingerprint:\t%s\n", cert.Fingerprint)
+		fmt.Fprintf(out, "Created:\t%s (%s)\n", util.Datetime(cert.Created), humanize.Time(cert.Created))
+		fmt.Fprintf(out, "Not valid before:\t%s (%s)\n", util.Datetime(cert.NotValidBefore), humanize.Time(cert.NotValidBefore))
+		fmt.Fprintf(out, "Not valid after:\t%s (%s)\n", util.Datetime(cert.NotValidAfter), humanize.Time(cert.NotValidAfter))
+
 		if cert.Status != nil {
-			cmd.Printf("Status:\n")
-			cmd.Printf("  Issuance:\t%s\n", cert.Status.Issuance)
-			cmd.Printf("  Renewal:\t%s\n", cert.Status.Renewal)
+			fmt.Fprintln(out)
+			fmt.Fprintf(out, "Status:\n")
+			fmt.Fprintf(out, "  Issuance:\t%s\n", cert.Status.Issuance)
+			fmt.Fprintf(out, "  Renewal:\t%s\n", cert.Status.Renewal)
 			if cert.Status.IsFailed() {
-				cmd.Printf("  Failure reason: %s\n", cert.Status.Error.Message)
+				fmt.Fprintf(out, "  Failure reason:\t%s\n", cert.Status.Error.Message)
 			}
 		}
-		cmd.Printf("Domain names:\n")
-		for _, domainName := range cert.DomainNames {
-			cmd.Printf("  - %s\n", domainName)
-		}
-		cmd.Print("Labels:\n")
-		if len(cert.Labels) == 0 {
-			cmd.Print("  No labels\n")
+
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Domain names:\n")
+		if len(cert.DomainNames) == 0 {
+			fmt.Fprintf(out, "  No Domain names\n")
 		} else {
-			for key, value := range util.IterateInOrder(cert.Labels) {
-				cmd.Printf("  %s:\t%s\n", key, value)
+			for _, domainName := range cert.DomainNames {
+				fmt.Fprintf(out, "  - %s\n", domainName)
 			}
+
 		}
-		cmd.Println("Used By:")
+
+		fmt.Fprintln(out)
+		util.DescribeLabels(out, cert.Labels, "")
+
+		fmt.Fprintln(out)
+		fmt.Fprintf(out, "Used By:\n")
 		if len(cert.UsedBy) == 0 {
-			cmd.Println("  Certificate unused")
+			fmt.Fprintf(out, "  Certificate unused\n")
 		} else {
 			for _, ub := range cert.UsedBy {
-				cmd.Printf("  - Type: %s\n", ub.Type)
+				fmt.Fprintf(out, "  - Type:\t%s\n", ub.Type)
 				// Currently certificates can be only attached to load balancers.
 				// If we ever get something that is not a load balancer fall back
 				// to printing the ID.
 				if ub.Type != hcloud.CertificateUsedByRefTypeLoadBalancer {
-					cmd.Printf("  - ID: %d\n", ub.ID)
+					fmt.Fprintf(out, "  - ID:\t%d\n", ub.ID)
 					continue
 				}
-				cmd.Printf("  - Name: %s\n", s.Client().LoadBalancer().LoadBalancerName(ub.ID))
+				fmt.Fprintf(out, "  - Name:\t%s\n", s.Client().LoadBalancer().LoadBalancerName(ub.ID))
 			}
 		}
 		return nil

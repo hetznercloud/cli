@@ -130,16 +130,19 @@ func TestLoadBalancer(t *testing.T) {
 			Lit("ID:").Whitespace().Int().Newline().
 			Lit("Name:").Whitespace().Lit(lbName).Newline().
 			Lit("Created:").Whitespace().Datetime().Lit(" (").HumanizeTime().Lit(")").Newline().
+			Lit("Algorithm:").Whitespace().Lit("round_robin").Newline().
+			Newline().
 			Lit("Public Net:").Newline().
 			Lit("  Enabled:").Whitespace().Lit("yes").Newline().
 			Lit("  IPv4:").Whitespace().IPv4().Newline().
 			Lit("  IPv4 DNS PTR:").Whitespace().AnyString().Newline().
 			Lit("  IPv6:").Whitespace().IPv6().Newline().
 			Lit("  IPv6 DNS PTR:").Whitespace().Lit("").Newline().
+			Newline().
 			Lit("Private Net:").Newline().
-			Lit("    No Private Network").Newline().
-			Lit("Algorithm:").Whitespace().Lit("round_robin").Newline().
-			Lit("Load Balancer Type:").Whitespace().Lit("lb11").Lit(" (ID: 1)").Newline().
+			Lit("  No Private Network").Newline().
+			Newline().
+			Lit("Load Balancer Type:").Newline().
 			Lit("  ID:").Whitespace().Lit("1").Newline().
 			Lit("  Name:").Whitespace().Lit("lb11").Newline().
 			Lit("  Description:").Whitespace().Lit("LB11").Newline().
@@ -147,16 +150,21 @@ func TestLoadBalancer(t *testing.T) {
 			Lit("  Max Connections:").Whitespace().Lit("10000").Newline().
 			Lit("  Max Targets:").Whitespace().Lit("25").Newline().
 			Lit("  Max assigned Certificates:").Whitespace().Lit("10").Newline().
+			Newline().
 			Lit("Services:").Newline().
 			Lit("  No services").Newline().
+			Newline().
 			Lit("Targets:").Newline().
 			Lit("  No targets").Newline().
+			Newline().
 			Lit("Traffic:").Newline().
 			Lit("  Outgoing:").Whitespace().Lit("0 B").Newline().
 			Lit("  Ingoing:").Whitespace().Lit("0 B").Newline().
 			Lit("  Included:").Whitespace().Lit("20 TiB").Newline().
+			Newline().
 			Lit("Protection:").Newline().
 			Lit("  Delete:").Whitespace().Lit("yes").Newline().
+			Newline().
 			Lit("Labels:").Newline().
 			Lit("  foo:").Whitespace().Lit("bar").Newline().
 			End(),

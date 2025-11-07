@@ -31,11 +31,11 @@ func TestDescribe(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"test"})
 
-	expOut := `ID:		123
-Name:		test
-Description:	Test ISO
-Type:		public
-Architecture:	x86
+	expOut := `ID:            123
+Name:          test
+Description:   Test ISO
+Type:          public
+Architecture:  x86
 `
 
 	require.NoError(t, err)

@@ -56,20 +56,23 @@ func TestDescribe(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"example.com", "www", "A"})
 
-	expOut := `ID:		www/A
-Type:		A
-Name:		www
-TTL:		600
+	expOut := `ID:    www/A
+Type:  A
+Name:  www
+TTL:   600
+
 Protection:
-  Change:	yes
+  Change:  yes
+
 Labels:
-  environment: prod
-  example.com/my: label
-  just-a-key: 
+  environment:     prod
+  example.com/my:  label
+  just-a-key:      
+
 Records:
-  - Value:	198.51.100.1
-    Comment:	My web server at Hetzner Cloud.
-  - Value:	198.51.100.2
+  - Value:    198.51.100.1
+    Comment:  My web server at Hetzner Cloud.
+  - Value:    198.51.100.2
 `
 
 	require.NoError(t, err)

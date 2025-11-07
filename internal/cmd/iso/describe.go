@@ -1,6 +1,10 @@
 package iso
 
 import (
+	"fmt"
+	"io"
+	"strings"
+
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
@@ -22,19 +26,26 @@ var DescribeCmd = base.DescribeCmd[*hcloud.ISO]{
 		}
 		return iso, hcloud.SchemaFromISO(iso), nil
 	},
-	PrintText: func(_ state.State, cmd *cobra.Command, iso *hcloud.ISO) error {
-		cmd.Printf("ID:\t\t%d\n", iso.ID)
-		cmd.Printf("Name:\t\t%s\n", iso.Name)
-		cmd.Printf("Description:\t%s\n", iso.Description)
-		cmd.Printf("Type:\t\t%s\n", iso.Type)
-		cmd.Print(util.DescribeDeprecation(iso))
-
-		architecture := "-"
-		if iso.Architecture != nil {
-			architecture = string(*iso.Architecture)
-		}
-		cmd.Printf("Architecture:\t%s\n", architecture)
-
+	PrintText: func(_ state.State, _ *cobra.Command, out io.Writer, iso *hcloud.ISO) error {
+		fmt.Fprint(out, DescribeISO(iso))
 		return nil
 	},
+}
+
+func DescribeISO(iso *hcloud.ISO) string {
+	var sb strings.Builder
+
+	fmt.Fprintf(&sb, "ID:\t%d\n", iso.ID)
+	fmt.Fprintf(&sb, "Name:\t%s\n", iso.Name)
+	fmt.Fprintf(&sb, "Description:\t%s\n", iso.Description)
+	fmt.Fprintf(&sb, "Type:\t%s\n", iso.Type)
+	fmt.Fprintf(&sb, "%s", util.DescribeDeprecation(iso))
+
+	architecture := "-"
+	if iso.Architecture != nil {
+		architecture = string(*iso.Architecture)
+	}
+	fmt.Fprintf(&sb, "Architecture:\t%s\n", architecture)
+
+	return sb.String()
 }

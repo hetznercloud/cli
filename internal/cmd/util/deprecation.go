@@ -14,7 +14,7 @@ func DescribeDeprecation(resource hcloud.Deprecatable) string {
 	}
 
 	info := "Deprecation:\n"
-	info += fmt.Sprintf("  Announced:\t\t%s (%s)\n", Datetime(resource.DeprecationAnnounced()), humanize.Time(resource.DeprecationAnnounced()))
+	info += fmt.Sprintf("  Announced:\t%s (%s)\n", Datetime(resource.DeprecationAnnounced()), humanize.Time(resource.DeprecationAnnounced()))
 	info += fmt.Sprintf("  Unavailable After:\t%s (%s)\n", Datetime(resource.UnavailableAfter()), humanize.Time(resource.UnavailableAfter()))
 
 	return info

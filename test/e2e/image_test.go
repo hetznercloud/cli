@@ -71,8 +71,10 @@ func TestImage(t *testing.T) {
 					Lit("OS version:").Whitespace().Identifier().Newline().
 					Lit("Architecture:").Whitespace().OneOfLit("x86", "arm").Newline().
 					Lit("Rapid deploy:").Whitespace().OneOfLit("yes", "no").Newline().
+					Newline().
 					Lit("Protection:").Newline().
 					Lit("  Delete:").Whitespace().OneOfLit("yes", "no").Newline().
+					Newline().
 					Lit("Labels:").Newline().
 					Lit("  No labels").Newline().
 					End(),

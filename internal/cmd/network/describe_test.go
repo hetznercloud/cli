@@ -41,19 +41,23 @@ func TestDescribe(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"test"})
 
-	expOut := fmt.Sprintf(`ID:		123
-Name:		test
-Created:	%s (%s)
-IP Range:	10.0.0.0/24
-Expose Routes to vSwitch: no
+	expOut := fmt.Sprintf(`ID:                        123
+Name:                      test
+Created:                   %s (%s)
+IP Range:                  10.0.0.0/24
+Expose Routes to vSwitch:  no
+
 Subnets:
   No subnets
+
 Routes:
   No routes
+
 Protection:
-  Delete:	yes
+  Delete:  yes
+
 Labels:
-  key: value
+  key:  value
 `, util.Datetime(n.Created), humanize.Time(n.Created))
 
 	require.NoError(t, err)

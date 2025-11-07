@@ -125,14 +125,18 @@ func TestFloatingIP(t *testing.T) {
 						Lit("IP:").Whitespace().IPv4().Newline().
 						Lit("Blocked:").Whitespace().Lit("no").Newline().
 						Lit("Home Location:").Whitespace().LocationName().Newline().
+						Newline().
 						Lit("Server:").Newline().
 						Lit("  Not assigned").Newline().
+						Newline().
 						Lit("DNS:").Newline().
-						Lit("  ").IPv4().Lit(": s1.example.com").Newline().
+						Lit("  ").IPv4().Lit(":").Whitespace().Lit("s1.example.com").Newline().
+						Newline().
 						Lit("Protection:").Newline().
 						Lit("  Delete:").Whitespace().Lit("yes").Newline().
+						Newline().
 						Lit("Labels:").Newline().
-						Lit("  foo: bar").Newline().
+						Lit("  foo:").Whitespace().Lit("bar").Newline().
 						End(),
 					out,
 				)
@@ -268,12 +272,16 @@ func TestFloatingIP(t *testing.T) {
 						Lit("IP:").Whitespace().IPv6().Lit("/64").Newline().
 						Lit("Blocked:").Whitespace().Lit("no").Newline().
 						Lit("Home Location:").Whitespace().LocationName().Newline().
+						Newline().
 						Lit("Server:").Newline().
 						Lit("  Not assigned").Newline().
+						Newline().
 						Lit("DNS:").Newline().
 						Lit("  No reverse DNS entries").Newline().
+						Newline().
 						Lit("Protection:").Newline().
 						Lit("  Delete:").Whitespace().Lit("no").Newline().
+						Newline().
 						Lit("Labels:").Newline().
 						Lit("  No labels").Newline().
 						End(),
