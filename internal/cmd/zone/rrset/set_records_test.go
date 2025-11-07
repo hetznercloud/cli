@@ -55,7 +55,7 @@ func TestSetRecords(t *testing.T) {
 		expOut := "Set records on Zone RRSet www A\n"
 
 		require.NoError(t, err)
-		assert.Equal(t, ExperimentalWarning, errOut)
+		assert.Empty(t, errOut)
 		assert.Equal(t, expOut, out)
 	})
 
@@ -90,7 +90,7 @@ func TestSetRecords(t *testing.T) {
 		expOut := "Created and set records on Zone RRSet www A\n"
 
 		require.NoError(t, err)
-		assert.Equal(t, ExperimentalWarning, errOut)
+		assert.Empty(t, errOut)
 		assert.Equal(t, expOut, out)
 	})
 
@@ -118,7 +118,7 @@ func TestSetRecords(t *testing.T) {
 		expOut := "Zone RRSet www A deleted\n"
 
 		require.NoError(t, err)
-		assert.Equal(t, ExperimentalWarning, errOut)
+		assert.Empty(t, errOut)
 		assert.Equal(t, expOut, out)
 	})
 
@@ -141,7 +141,7 @@ func TestSetRecords(t *testing.T) {
 		expOut := "Zone RRSet www A doesn't exist. No action necessary.\n"
 
 		require.NoError(t, err)
-		assert.Equal(t, ExperimentalWarning, errOut)
+		assert.Empty(t, errOut)
 		assert.Equal(t, expOut, out)
 	})
 }

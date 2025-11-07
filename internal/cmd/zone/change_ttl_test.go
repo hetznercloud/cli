@@ -36,6 +36,6 @@ func TestChangeTTL(t *testing.T) {
 	expOut := "Changed default TTL on Zone example.com\n"
 
 	require.NoError(t, err)
-	assert.Equal(t, ExperimentalWarning, errOut)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

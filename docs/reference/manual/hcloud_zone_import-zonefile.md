@@ -1,14 +1,6 @@
 ## hcloud zone import-zonefile
 
-[experimental] Imports a zone file, replacing all Zone RRSets
-
-### Synopsis
-
 Imports a zone file, replacing all Zone RRSets
-
-Experimental: DNS API is in beta, breaking changes may occur within minor releases.
-See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
-
 
 ```
 hcloud zone import-zonefile --zonefile <file> <zone>
@@ -38,4 +30,4 @@ hcloud zone import-zonefile --zonefile <file> <zone>
 
 ### SEE ALSO
 
-* [hcloud zone](hcloud_zone.md)	 - [experimental] Manage DNS Zones and Zone RRSets (records)
+* [hcloud zone](hcloud_zone.md)	 - Manage DNS Zones and Zone RRSets (records)

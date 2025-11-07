@@ -69,6 +69,6 @@ www    A      600   change       198.51.100.1   environment=prod, example.com/my
 `
 
 	require.NoError(t, err)
-	assert.Equal(t, ExperimentalWarning, errOut)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

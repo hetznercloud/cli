@@ -3,7 +3,6 @@ package zone
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/hetznercloud/cli/internal/cmd/experimental"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/cmd/zone/rrset"
 	"github.com/hetznercloud/cli/internal/state"
@@ -49,5 +48,5 @@ func NewCommand(s state.State) *cobra.Command {
 		rrset.RemoveRecordsCmd.CobraCommand(s),
 	)
 
-	return experimental.DNS(s, cmd)
+	return cmd
 }

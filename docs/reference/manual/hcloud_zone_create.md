@@ -1,14 +1,6 @@
 ## hcloud zone create
 
-[experimental] Create a Zone
-
-### Synopsis
-
 Create a Zone
-
-Experimental: DNS API is in beta, breaking changes may occur within minor releases.
-See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
-
 
 ```
 hcloud zone create [options] --name <name> [--mode secondary --primary-nameservers <file>]
@@ -44,4 +36,4 @@ hcloud zone create [options] --name <name> [--mode secondary --primary-nameserve
 
 ### SEE ALSO
 
-* [hcloud zone](hcloud_zone.md)	 - [experimental] Manage DNS Zones and Zone RRSets (records)
+* [hcloud zone](hcloud_zone.md)	 - Manage DNS Zones and Zone RRSets (records)

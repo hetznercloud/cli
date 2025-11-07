@@ -104,6 +104,6 @@ Authoritative Nameservers:
 `, humanize.Time(z.Created), humanize.Time(z.AuthoritativeNameservers.DelegationLastCheck))
 
 	require.NoError(t, err)
-	assert.Equal(t, ExperimentalWarning, errOut)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

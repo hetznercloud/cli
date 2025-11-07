@@ -39,7 +39,7 @@ func TestDelete(t *testing.T) {
 	expOut := "Zone 123 deleted\n"
 
 	require.NoError(t, err)
-	assert.Equal(t, ExperimentalWarning, errOut)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
 
@@ -87,6 +87,6 @@ func TestDeleteMultiple(t *testing.T) {
 	out, errOut, err := fx.Run(cmd, names)
 
 	require.NoError(t, err)
-	assert.Equal(t, ExperimentalWarning, errOut)
+	assert.Empty(t, errOut)
 	assert.Equal(t, "Zones example1.com, example2.com, example3.com deleted\n", out)
 }

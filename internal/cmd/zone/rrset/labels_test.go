@@ -49,7 +49,7 @@ func TestLabelAdd(t *testing.T) {
 	expOut := "Label(s) key added to Zone RRSet www A\n"
 
 	require.NoError(t, err)
-	assert.Equal(t, ExperimentalWarning, errOut)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
 
@@ -91,6 +91,6 @@ func TestLabelRemove(t *testing.T) {
 	expOut := "Label(s) key removed from Zone RRSet www A\n"
 
 	require.NoError(t, err)
-	assert.Equal(t, ExperimentalWarning, errOut)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

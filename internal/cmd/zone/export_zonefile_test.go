@@ -40,7 +40,7 @@ func TestExportZonefile(t *testing.T) {
 	expOut := zonefile
 
 	require.NoError(t, err)
-	assert.Equal(t, ExperimentalWarning, errOut)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
 
@@ -67,7 +67,7 @@ func TestExportZonefileJSON(t *testing.T) {
 	expOut := fmt.Sprintf(`{ "zonefile": %q }`, zonefile)
 
 	require.NoError(t, err)
-	assert.Equal(t, ExperimentalWarning, errOut)
+	assert.Empty(t, errOut)
 	assert.JSONEq(t, expOut, out)
 }
 
@@ -95,6 +95,6 @@ func TestExportZonefileYAML(t *testing.T) {
 	expOut := fmt.Sprintf(`{ "zonefile": %q }`, zonefile)
 
 	require.NoError(t, err)
-	assert.Equal(t, ExperimentalWarning, errOut)
+	assert.Empty(t, errOut)
 	assert.YAMLEq(t, expOut, out)
 }

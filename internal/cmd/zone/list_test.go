@@ -60,7 +60,7 @@ func TestList(t *testing.T) {
 `, util.Age(z.Created, time.Now()))
 
 	require.NoError(t, err)
-	assert.Equal(t, ExperimentalWarning, errOut)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
 
@@ -103,7 +103,7 @@ func TestListPrimaryNameservers(t *testing.T) {
 `
 
 	require.NoError(t, err)
-	assert.Equal(t, ExperimentalWarning, errOut)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
 func TestListAuthoritativeNameservers(t *testing.T) {
@@ -141,6 +141,6 @@ func TestListAuthoritativeNameservers(t *testing.T) {
 `
 
 	require.NoError(t, err)
-	assert.Equal(t, ExperimentalWarning, errOut)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

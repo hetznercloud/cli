@@ -51,7 +51,7 @@ func TestCreate(t *testing.T) {
 	expOut := "Zone example.com created\n"
 
 	require.NoError(t, err)
-	assert.Equal(t, ExperimentalWarning, errOut)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
 
@@ -100,7 +100,7 @@ func TestCreateJSON(t *testing.T) {
 
 	jsonOut, out, err := fx.Run(cmd, []string{"-o=json", "--name", "example.com", "--mode", "primary", "--ttl", "600", "--label", "foo=bar"})
 
-	expOut := ExperimentalWarning + "Zone example.com created\n"
+	expOut := "Zone example.com created\n"
 
 	require.NoError(t, err)
 	assert.Equal(t, expOut, out)

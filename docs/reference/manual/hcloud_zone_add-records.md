@@ -1,6 +1,6 @@
 ## hcloud zone add-records
 
-[experimental] Add records to a Zone RRSet
+Add records to a Zone RRSet
 
 ### Synopsis
 
@@ -22,10 +22,6 @@ Example file content:
     "comment": "My other server at Hetzner Cloud."
   }
 ]
-
-Experimental: DNS API is in beta, breaking changes may occur within minor releases.
-See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
-
 
 ```
 hcloud zone add-records (--record <value>... | --records-file <file>) <zone> <name> <type>
@@ -56,4 +52,4 @@ hcloud zone add-records (--record <value>... | --records-file <file>) <zone> <na
 
 ### SEE ALSO
 
-* [hcloud zone](hcloud_zone.md)	 - [experimental] Manage DNS Zones and Zone RRSets (records)
+* [hcloud zone](hcloud_zone.md)	 - Manage DNS Zones and Zone RRSets (records)

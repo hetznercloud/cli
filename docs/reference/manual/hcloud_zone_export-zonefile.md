@@ -1,14 +1,6 @@
 ## hcloud zone export-zonefile
 
-[experimental] Returns a generated Zone file in BIND (RFC 1034/1035) format
-
-### Synopsis
-
 Returns a generated Zone file in BIND (RFC 1034/1035) format
-
-Experimental: DNS API is in beta, breaking changes may occur within minor releases.
-See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
-
 
 ```
 hcloud zone export-zonefile [options] <zone>
@@ -37,4 +29,4 @@ hcloud zone export-zonefile [options] <zone>
 
 ### SEE ALSO
 
-* [hcloud zone](hcloud_zone.md)	 - [experimental] Manage DNS Zones and Zone RRSets (records)
+* [hcloud zone](hcloud_zone.md)	 - Manage DNS Zones and Zone RRSets (records)

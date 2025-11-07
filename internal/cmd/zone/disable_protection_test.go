@@ -37,6 +37,6 @@ func TestDisableProtection(t *testing.T) {
 	out, errOut, err := fx.Run(cmd, args)
 
 	require.NoError(t, err)
-	assert.Equal(t, ExperimentalWarning, errOut)
+	assert.Empty(t, errOut)
 	assert.Equal(t, "Resource protection disabled for Zone example.com\n", out)
 }

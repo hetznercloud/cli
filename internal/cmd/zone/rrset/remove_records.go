@@ -7,7 +7,6 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
-	"github.com/hetznercloud/cli/internal/cmd/experimental"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
@@ -75,5 +74,4 @@ If the Zone RRSet doesn't contain any records, it will automatically be deleted.
 		cmd.Printf("Removed records from Zone RRSet %s %s\n", rrset.Name, rrset.Type)
 		return nil
 	},
-	Experimental: experimental.DNS,
 }
