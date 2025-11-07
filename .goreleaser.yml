@@ -28,11 +28,10 @@ builds:
     goarch: [amd64, arm64]
     hooks:
       post:
-        - cmd: >
-            quill
-                sign-and-notarize "{{ .Path }}"
-                --dry-run={{ .IsSnapshot }}
-                --ad-hoc={{ .IsSnapshot }}
+        # sign-and-notarize might fails if the Apple license agreement is not signed.
+        # This ensures that the release process continues instead of stopping and having
+        # a release without assets. The error is reported at the end of the CI job.
+        - cmd: bash -c 'quill sign-and-notarize "{{ .Path }}" --dry-run={{ .IsSnapshot }} --ad-hoc={{ .IsSnapshot }} || touch sign-and-notarize.error'
           output: true
 
 kos:

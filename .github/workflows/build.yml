@@ -27,3 +27,6 @@ jobs:
         with:
           name: Preview Binaries
           path: dist/hcloud-*/hcloud
+
+      - name: Check for release errors
+        run: scripts/check-release-error.sh
