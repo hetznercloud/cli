@@ -1,5 +1,19 @@
 # Changelog
 
+## [v1.56.0](https://github.com/hetznercloud/cli/releases/tag/v1.56.0)
+
+### Features
+
+- format user provided TXT records when not quoted (#1208)
+
+### Bug Fixes
+
+- more readable default time format (#1197)
+- **iso**: broken `--type` flag in list command (#1221)
+- Storage Boxes not listed in `hcloud all list` (#1222)
+- consistent tab spacing in describe commands (#1216)
+- filepaths not correctly resolved on Windows (#1229)
+
 ## [v1.55.0](https://github.com/hetznercloud/cli/releases/tag/v1.55.0)
 
 ### Storage Box API Experimental
