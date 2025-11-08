@@ -24,7 +24,7 @@ jobs:
         run: diff -u <(echo -n) <(gofmt -d -s .)
 
       - name: Run golangci-lint
-        uses: golangci/golangci-lint-action@v8
+        uses: golangci/golangci-lint-action@v9
         with:
           # golangci-lint was already installed in a previous step.
           install-mode: none
