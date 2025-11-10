@@ -50,6 +50,6 @@ func TestEnableProtection(t *testing.T) {
 	out, errOut, err := fx.Run(cmd, args)
 
 	require.NoError(t, err)
-	assert.Equal(t, ExperimentalWarning, errOut)
+	assert.Empty(t, errOut)
 	assert.Equal(t, "Resource protection enabled for Zone RRSet www A\n", out)
 }

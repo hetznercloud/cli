@@ -1,6 +1,6 @@
 ## hcloud zone rrset remove-records
 
-[experimental] Remove records from a Zone RRSet.
+Remove records from a Zone RRSet.
 
 ### Synopsis
 
@@ -22,10 +22,6 @@ Example file content:
     "comment": "My other server at Hetzner Cloud."
   }
 ]
-
-Experimental: DNS API is in beta, breaking changes may occur within minor releases.
-See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
-
 
 ```
 hcloud zone rrset remove-records (--record <value>... | --records-file <file>) <zone> <name> <type>
@@ -55,4 +51,4 @@ hcloud zone rrset remove-records (--record <value>... | --records-file <file>) <
 
 ### SEE ALSO
 
-* [hcloud zone rrset](hcloud_zone_rrset.md)	 - [experimental] Manage Zone RRSets (records)
+* [hcloud zone rrset](hcloud_zone_rrset.md)	 - Manage Zone RRSets (records)

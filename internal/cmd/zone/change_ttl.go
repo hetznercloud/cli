@@ -7,7 +7,6 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
-	"github.com/hetznercloud/cli/internal/cmd/experimental"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
@@ -59,5 +58,4 @@ var ChangeTTLCmd = base.Cmd{
 		cmd.Printf("Changed default TTL on Zone %s\n", zone.Name)
 		return nil
 	},
-	Experimental: experimental.DNS,
 }

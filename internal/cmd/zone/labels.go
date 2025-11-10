@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
-	"github.com/hetznercloud/cli/internal/cmd/experimental"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
@@ -46,5 +45,4 @@ var LabelCmds = base.LabelCmds[*hcloud.Zone]{
 	GetIDOrName: func(zone *hcloud.Zone) string {
 		return zone.Name
 	},
-	Experimental: experimental.DNS,
 }

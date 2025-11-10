@@ -1,6 +1,6 @@
 ## hcloud zone change-primary-nameservers
 
-[experimental] Changes the primary nameservers of a secondary Zone
+Changes the primary nameservers of a secondary Zone
 
 ### Synopsis
 
@@ -24,10 +24,6 @@ Example file content:
     "tsig_key": "example-key"
   }
 ]
-
-Experimental: DNS API is in beta, breaking changes may occur within minor releases.
-See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
-
 
 ```
 hcloud zone change-primary-nameservers --primary-nameservers-file <file> <zone>
@@ -56,4 +52,4 @@ hcloud zone change-primary-nameservers --primary-nameservers-file <file> <zone>
 
 ### SEE ALSO
 
-* [hcloud zone](hcloud_zone.md)	 - [experimental] Manage DNS Zones and Zone RRSets (records)
+* [hcloud zone](hcloud_zone.md)	 - Manage DNS Zones and Zone RRSets (records)

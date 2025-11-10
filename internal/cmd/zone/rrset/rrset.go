@@ -7,7 +7,6 @@ import (
 	"golang.org/x/exp/maps"
 
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
-	"github.com/hetznercloud/cli/internal/cmd/experimental"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
@@ -52,7 +51,7 @@ user provider TXT records are not quoted, they will be formatted for you.`,
 		RemoveRecordsCmd.CobraCommand(s),
 	)
 
-	return experimental.DNS(s, cmd)
+	return cmd
 }
 
 // addRecordsFlags adds flags for setting records. Used in [CreateCmd], [AddRecordsCmd] [RemoveRecordsCmd].

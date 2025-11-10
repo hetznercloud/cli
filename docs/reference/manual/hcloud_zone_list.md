@@ -1,6 +1,6 @@
 ## hcloud zone list
 
-[experimental] List Zones
+List Zones
 
 ### Synopsis
 
@@ -25,10 +25,6 @@ Columns:
  - registrar
  - status
  - ttl
-
-Experimental: DNS API is in beta, breaking changes may occur within minor releases.
-See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
-
 
 ```
 hcloud zone list [options]
@@ -60,4 +56,4 @@ hcloud zone list [options]
 
 ### SEE ALSO
 
-* [hcloud zone](hcloud_zone.md)	 - [experimental] Manage DNS Zones and Zone RRSets (records)
+* [hcloud zone](hcloud_zone.md)	 - Manage DNS Zones and Zone RRSets (records)

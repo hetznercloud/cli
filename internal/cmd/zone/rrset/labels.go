@@ -7,7 +7,6 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
-	"github.com/hetznercloud/cli/internal/cmd/experimental"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
@@ -72,5 +71,4 @@ var LabelCmds = base.LabelCmds[*hcloud.ZoneRRSet]{
 	GetIDOrName: func(rrset *hcloud.ZoneRRSet) string {
 		return fmt.Sprintf("%s %s", rrset.Name, rrset.Type)
 	},
-	Experimental: experimental.DNS,
 }

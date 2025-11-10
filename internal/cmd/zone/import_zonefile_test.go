@@ -39,6 +39,6 @@ func TestImportZonefile(t *testing.T) {
 	expOut := "Zone file for Zone example.com imported\n"
 
 	require.NoError(t, err)
-	assert.Equal(t, ExperimentalWarning, errOut)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

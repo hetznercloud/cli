@@ -1,14 +1,6 @@
 ## hcloud zone rrset describe
 
-[experimental] Describe a Zone RRSet
-
-### Synopsis
-
 Describe a Zone RRSet
-
-Experimental: DNS API is in beta, breaking changes may occur within minor releases.
-See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
-
 
 ```
 hcloud zone rrset describe [options] <zone> <name> <type>
@@ -37,4 +29,4 @@ hcloud zone rrset describe [options] <zone> <name> <type>
 
 ### SEE ALSO
 
-* [hcloud zone rrset](hcloud_zone_rrset.md)	 - [experimental] Manage Zone RRSets (records)
+* [hcloud zone rrset](hcloud_zone_rrset.md)	 - Manage Zone RRSets (records)

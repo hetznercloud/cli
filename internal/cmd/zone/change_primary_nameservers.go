@@ -10,7 +10,6 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
-	"github.com/hetznercloud/cli/internal/cmd/experimental"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
@@ -88,7 +87,6 @@ Example file content:
 		cmd.Printf("Primary nameservers for Zone %s updated\n", zone.Name)
 		return nil
 	},
-	Experimental: experimental.DNS,
 }
 
 func parsePrimaryNameservers(path string) ([]hcloud.ZoneChangePrimaryNameserversOptsPrimaryNameserver, error) {

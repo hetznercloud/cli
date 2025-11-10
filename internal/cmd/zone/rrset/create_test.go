@@ -57,6 +57,6 @@ func TestCreate(t *testing.T) {
 	expOut := "Zone RRSet www A created\n"
 
 	require.NoError(t, err)
-	assert.Equal(t, ExperimentalWarning, errOut)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

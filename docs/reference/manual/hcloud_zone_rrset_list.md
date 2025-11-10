@@ -1,6 +1,6 @@
 ## hcloud zone rrset list
 
-[experimental] List Zone RRSets
+List Zone RRSets
 
 ### Synopsis
 
@@ -18,10 +18,6 @@ Columns:
  - records
  - ttl
  - type
-
-Experimental: DNS API is in beta, breaking changes may occur within minor releases.
-See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
-
 
 ```
 hcloud zone rrset list [options] <zone>
@@ -53,4 +49,4 @@ hcloud zone rrset list [options] <zone>
 
 ### SEE ALSO
 
-* [hcloud zone rrset](hcloud_zone_rrset.md)	 - [experimental] Manage Zone RRSets (records)
+* [hcloud zone rrset](hcloud_zone_rrset.md)	 - Manage Zone RRSets (records)

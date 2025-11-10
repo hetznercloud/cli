@@ -46,4 +46,4 @@ A command-line interface for Hetzner Cloud
 * [hcloud storage-box-type](hcloud_storage-box-type.md)	 - [experimental] View Storage Box Types
 * [hcloud version](hcloud_version.md)	 - Print version information
 * [hcloud volume](hcloud_volume.md)	 - Manage Volumes
-* [hcloud zone](hcloud_zone.md)	 - [experimental] Manage DNS Zones and Zone RRSets (records)
+* [hcloud zone](hcloud_zone.md)	 - Manage DNS Zones and Zone RRSets (records)

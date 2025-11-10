@@ -1,14 +1,6 @@
 ## hcloud zone remove-label
 
-[experimental] Remove a label from a Zone
-
-### Synopsis
-
 Remove a label from a Zone
-
-Experimental: DNS API is in beta, breaking changes may occur within minor releases.
-See https://docs.hetzner.cloud/changelog#2025-10-07-dns-beta for more details.
-
 
 ```
 hcloud zone remove-label <zone> (--all | <label>...)
@@ -37,4 +29,4 @@ hcloud zone remove-label <zone> (--all | <label>...)
 
 ### SEE ALSO
 
-* [hcloud zone](hcloud_zone.md)	 - [experimental] Manage DNS Zones and Zone RRSets (records)
+* [hcloud zone](hcloud_zone.md)	 - Manage DNS Zones and Zone RRSets (records)
