@@ -282,8 +282,8 @@ ID    NAME       IP RANGE       SERVERS    AGE
 
 FIREWALLS
 ---
-ID    NAME   RULES COUNT   APPLIED TO COUNT             
-123   test   5 Rules       2 Servers | 0 Label Selectors
+ID    NAME   RULES COUNT   APPLIED TO COUNT                AGE
+123   test   5 Rules       2 Servers | 0 Label Selectors   7m 
 
 CERTIFICATES
 ---

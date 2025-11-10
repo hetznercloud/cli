@@ -38,13 +38,14 @@ func TestList(t *testing.T) {
 				Rules:     make([]hcloud.FirewallRule, 5),
 				AppliedTo: make([]hcloud.FirewallResource, 2),
 				Labels:    make(map[string]string),
+				Created:   time.Now().Add(-20 * time.Second),
 			},
 		}, nil)
 
 	out, errOut, err := fx.Run(cmd, []string{})
 
-	expOut := `ID    NAME   RULES COUNT   APPLIED TO COUNT             
-123   test   5 Rules       2 Servers | 0 Label Selectors
+	expOut := `ID    NAME   RULES COUNT   APPLIED TO COUNT                AGE
+123   test   5 Rules       2 Servers | 0 Label Selectors   20s
 `
 
 	require.NoError(t, err)
