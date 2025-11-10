@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.58.0](https://github.com/hetznercloud/cli/releases/tag/v1.58.0)
+
+### Features
+
+- **firewall**: add list columns for labels, created and age (#1239)
+
 ## [v1.57.0](https://github.com/hetznercloud/cli/releases/tag/v1.57.0)
 
 ### DNS API is now generally available
