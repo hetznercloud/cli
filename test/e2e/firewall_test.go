@@ -213,6 +213,26 @@ func TestFirewall(t *testing.T) {
 		)
 	})
 
+	t.Run("list", func(t *testing.T) {
+		t.Run("table", func(t *testing.T) {
+			out, err := runCommand(t, "firewall", "list", "--output", "columns=id,name,rules_count,applied_to_count,labels,created,age")
+			require.NoError(t, err)
+			assert.Regexp(t,
+				NewRegex().Start().
+					SeparatedByWhitespace("ID", "NAME", "RULES COUNT", "APPLIED TO COUNT", "LABELS", "CREATED", "AGE").Newline().
+					Int().Whitespace().
+					Raw(`new-test-firewall-[0-9a-f]{8}`).Whitespace().
+					Lit("5 Rules").Whitespace().
+					Lit("0 Servers | 1 Label Selector").Whitespace().
+					Lit("foo=bar").Whitespace().
+					Datetime().Whitespace().
+					Age().OptionalWhitespace().Newline().
+					End(),
+				out,
+			)
+		})
+	})
+
 	t.Run("remove-from-resource", func(t *testing.T) {
 		t.Run("unknown-type", func(t *testing.T) {
 			out, err := runCommand(t, "firewall", "remove-from-resource", "--type", "non-existing-type", strconv.FormatInt(firewallID, 10))

@@ -8,11 +8,14 @@ Displays a list of Firewalls.
 
 Output can be controlled with the -o flag. Use -o noheader to suppress the
 table header. Displayed columns and their order can be set with
--o columns=applied_to_count,id (see available columns below).
+-o columns=age,applied_to_count (see available columns below).
 
 Columns:
+ - age
  - applied_to_count
+ - created
  - id
+ - labels
  - name
  - rules_count
 

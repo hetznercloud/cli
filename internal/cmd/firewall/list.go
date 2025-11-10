@@ -2,11 +2,13 @@ package firewall
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/spf13/pflag"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/output"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/cli/internal/state/config"
@@ -17,7 +19,7 @@ import (
 var ListCmd = &base.ListCmd[*hcloud.Firewall, schema.Firewall]{
 	ResourceNamePlural: "Firewalls",
 	JSONKeyGetByName:   "firewalls",
-	DefaultColumns:     []string{"id", "name", "rules_count", "applied_to_count"},
+	DefaultColumns:     []string{"id", "name", "rules_count", "applied_to_count", "age"},
 	SortOption:         config.OptionSortFirewall,
 
 	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.Firewall, error) {
@@ -57,6 +59,15 @@ var ListCmd = &base.ListCmd[*hcloud.Firewall, schema.Firewall]{
 					labelSelectorsText = "Label Selector"
 				}
 				return fmt.Sprintf("%d %s | %d %s", servers, serversText, labelSelectors, labelSelectorsText)
+			}).
+			AddFieldFn("labels", func(firewall *hcloud.Firewall) string {
+				return util.LabelsToString(firewall.Labels)
+			}).
+			AddFieldFn("created", func(firewall *hcloud.Firewall) string {
+				return util.Datetime(firewall.Created)
+			}).
+			AddFieldFn("age", func(firewall *hcloud.Firewall) string {
+				return util.Age(firewall.Created, time.Now())
 			})
 	},
 
