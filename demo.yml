@@ -5,8 +5,11 @@ settings:
   width: 80
   height: 24
   type_speed: 50ms
+  timeout: 120s
 
   environment:
+    - name: TERM
+      value: xterm-256color
     - name: HCLOUD_TOKEN
       value:
 
