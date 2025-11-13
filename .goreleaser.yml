@@ -21,6 +21,9 @@ builds:
     goos: [freebsd, windows, linux]
     goarch: [amd64, arm, arm64, "386"]
     goarm: ["6", "7"]
+    ignore:
+      - goos: windows
+        goarch: arm
 
   - <<: *build_defaults
     id: hcloud-build-darwin
