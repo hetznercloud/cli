@@ -10,7 +10,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/swaggest/assertjson"
 
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -76,7 +75,7 @@ func TestPlacementGroup(t *testing.T) {
 		t.Run("json", func(t *testing.T) {
 			out, err := runCommand(t, "placement-group", "list", "-o=json")
 			require.NoError(t, err)
-			assertjson.Equal(t, []byte(fmt.Sprintf(`
+			assert.JSONEq(t, fmt.Sprintf(`
 [
   {
     "id": %d,
@@ -89,7 +88,7 @@ func TestPlacementGroup(t *testing.T) {
     "servers": [],
     "type": "spread"
   }
-]`, pgID, pgName)), []byte(out))
+]`, pgID, pgName), out)
 		})
 	})
 

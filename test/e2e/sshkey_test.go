@@ -11,7 +11,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/swaggest/assertjson"
 
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/exp/kit/sshutil"
@@ -69,7 +68,7 @@ func TestSSHKey(t *testing.T) {
 		t.Run("json", func(t *testing.T) {
 			out, err := runCommand(t, "ssh-key", "list", "-o=json")
 			require.NoError(t, err)
-			assertjson.Equal(t, []byte(fmt.Sprintf(`
+			assert.JSONEq(t, fmt.Sprintf(`
 [
   {
     "id": %d,
@@ -82,7 +81,7 @@ func TestSSHKey(t *testing.T) {
     },
     "created": "<ignore-diff>"
   }
-]`, sshKeyID, sshKeyName, fingerprint, pubKey)), []byte(out))
+]`, sshKeyID, sshKeyName, fingerprint, pubKey), out)
 		})
 	})
 

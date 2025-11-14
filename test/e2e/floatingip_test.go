@@ -12,7 +12,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/swaggest/assertjson"
 
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -170,7 +169,7 @@ func TestFloatingIP(t *testing.T) {
 			t.Run("json", func(t *testing.T) {
 				out, err := runCommand(t, "floating-ip", "list", "-o=json")
 				require.NoError(t, err)
-				assertjson.Equal(t, []byte(fmt.Sprintf(`
+				assert.JSONEq(t, fmt.Sprintf(`
 [
   {
     "id": %d,
@@ -205,7 +204,7 @@ func TestFloatingIP(t *testing.T) {
     "name": "%s"
   }
 ]
-`, floatingIPId, ipStr, ipStr, TestLocationName, floatingIPName)), []byte(out))
+`, floatingIPId, ipStr, ipStr, TestLocationName, floatingIPName), out)
 			})
 		})
 

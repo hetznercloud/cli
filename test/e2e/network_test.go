@@ -10,7 +10,6 @@ import (
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"github.com/swaggest/assertjson"
 
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -206,7 +205,7 @@ func TestNetwork(t *testing.T) {
 	t.Run("list", func(t *testing.T) {
 		out, err := runCommand(t, "network", "list", "-o=json")
 		require.NoError(t, err)
-		assertjson.Equal(t, []byte(fmt.Sprintf(`
+		assert.JSONEq(t, fmt.Sprintf(`
 [
   {
     "id": %d,
@@ -238,7 +237,7 @@ func TestNetwork(t *testing.T) {
     "expose_routes_to_vswitch": true
   }
 ]
-`, networkID, networkName)), []byte(out))
+`, networkID, networkName), out)
 	})
 
 	t.Run("remove-route", func(t *testing.T) {
