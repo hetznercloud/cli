@@ -49,14 +49,15 @@ func runCreate(s state.State, cmd *cobra.Command, args []string) error {
 
 	envToken := os.Getenv("HCLOUD_TOKEN")
 	if envToken != "" {
-		if len(envToken) != 64 {
+		switch {
+		case len(envToken) != 64:
 			if tokenFromEnv {
 				return errors.New("invalid token: must be 64 characters in length")
 			}
 			cmd.Println("Warning: HCLOUD_TOKEN is set, but token is invalid (must be exactly 64 characters long)")
-		} else if tokenFromEnv {
+		case tokenFromEnv:
 			token = envToken
-		} else {
+		default:
 			cmd.Print("The HCLOUD_TOKEN environment variable is set. Do you want to use the token from HCLOUD_TOKEN for the new context? (Y/n): ")
 			scanner := bufio.NewScanner(os.Stdin)
 			scanner.Scan()
