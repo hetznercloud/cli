@@ -61,8 +61,8 @@ Context new-context created and activated
 			args:   []string{"new-context"},
 			isTerm: false,
 			config: testConfig,
-			err:    "context create is an interactive command",
-			expErr: "Error: context create is an interactive command\n",
+			err:    "non-interactive tty detected. Use --token-from-env to use HCLOUD_TOKEN from the environment",
+			expErr: "Error: non-interactive tty detected. Use --token-from-env to use HCLOUD_TOKEN from the environment\n",
 		},
 		{
 			name:   "existing context",
