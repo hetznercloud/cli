@@ -2,7 +2,6 @@ package all_test
 
 import (
 	_ "embed"
-	"fmt"
 	"net"
 	"testing"
 	"time"
@@ -390,8 +389,6 @@ func TestListAllPaidJSON(t *testing.T) {
 		}, nil)
 
 	jsonOut, errOut, err := fx.Run(cmd, []string{"--paid", "-o=json"})
-
-	fmt.Println(jsonOut)
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
