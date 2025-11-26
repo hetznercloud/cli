@@ -45,9 +45,14 @@ On Linux and macOS you can also install the hcloud CLI using Homebrew:
 brew install hcloud
 ```
 
-### 1.4 Installation using scoop
+### 1.4 Installation in Windows using winget or scoop
 
-On Windows, you can install `hcloud` using scoop:
+On Windows, you can install `hcloud` using winget (Windows Package Manager) or scoop:
+
+
+```bash
+winget install hcloud
+```
 
 ```bash
 scoop install hcloud
