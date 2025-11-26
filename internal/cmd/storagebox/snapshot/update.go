@@ -13,12 +13,12 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var UpdateCmd = base.UpdateCmd{
+var UpdateCmd = base.UpdateCmd[*hcloud.StorageBoxSnapshot]{
 	ResourceNameSingular:       "Storage Box Snapshot",
 	ShortDescription:           "Update a Storage Box Snapshot",
 	NameSuggestions:            func(c hcapi2.Client) func() []string { return c.StorageBox().Names },
 	PositionalArgumentOverride: []string{"storage-box", "snapshot"},
-	FetchWithArgs: func(s state.State, _ *cobra.Command, args []string) (any, *hcloud.Response, error) {
+	FetchWithArgs: func(s state.State, _ *cobra.Command, args []string) (*hcloud.StorageBoxSnapshot, *hcloud.Response, error) {
 		storageBox, _, err := s.Client().StorageBox().Get(s, args[0])
 		if err != nil {
 			return nil, nil, err
@@ -32,8 +32,7 @@ var UpdateCmd = base.UpdateCmd{
 		cmd.Flags().String("description", "", "Description of the Storage Box Snapshot")
 		cmd.MarkFlagsOneRequired("description")
 	},
-	Update: func(s state.State, cmd *cobra.Command, resource interface{}, _ map[string]pflag.Value) error {
-		snapshot := resource.(*hcloud.StorageBoxSnapshot)
+	Update: func(s state.State, cmd *cobra.Command, snapshot *hcloud.StorageBoxSnapshot, _ map[string]pflag.Value) error {
 		var opts hcloud.StorageBoxSnapshotUpdateOpts
 		if cmd.Flags().Changed("description") {
 			description, _ := cmd.Flags().GetString("description")

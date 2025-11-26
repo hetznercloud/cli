@@ -14,11 +14,11 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var UpdateCmd = base.UpdateCmd{
+var UpdateCmd = base.UpdateCmd[*hcloud.Image]{
 	ResourceNameSingular: "Image",
 	ShortDescription:     "Update an Image",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Image().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
+	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.Image, *hcloud.Response, error) {
 		id, err := strconv.ParseInt(idOrName, 10, 64)
 		if err != nil {
 			return nil, nil, fmt.Errorf("invalid snapshot or backup ID %q", idOrName)
@@ -30,8 +30,7 @@ var UpdateCmd = base.UpdateCmd{
 		cmd.Flags().String("type", "", "Image type")
 		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("snapshot"))
 	},
-	Update: func(s state.State, _ *cobra.Command, resource interface{}, flags map[string]pflag.Value) error {
-		image := resource.(*hcloud.Image)
+	Update: func(s state.State, _ *cobra.Command, image *hcloud.Image, flags map[string]pflag.Value) error {
 		updOpts := hcloud.ImageUpdateOpts{
 			Description: hcloud.Ptr(flags["description"].String()),
 			Type:        hcloud.ImageType(flags["type"].String()),

@@ -9,16 +9,15 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var DeleteCmd = base.DeleteCmd{
+var DeleteCmd = base.DeleteCmd[*hcloud.Certificate]{
 	ResourceNameSingular: "Certificate",
 	ResourceNamePlural:   "Certificates",
 	ShortDescription:     "Delete a Certificate",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Firewall().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
+	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.Certificate, *hcloud.Response, error) {
 		return s.Client().Certificate().Get(s, idOrName)
 	},
-	Delete: func(s state.State, _ *cobra.Command, resource interface{}) (*hcloud.Action, error) {
-		certificate := resource.(*hcloud.Certificate)
+	Delete: func(s state.State, _ *cobra.Command, certificate *hcloud.Certificate) (*hcloud.Action, error) {
 		_, err := s.Client().Certificate().Delete(s, certificate)
 		return nil, err
 	},

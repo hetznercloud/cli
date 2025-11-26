@@ -10,22 +10,21 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var UpdateCmd = base.UpdateCmd{
+var UpdateCmd = base.UpdateCmd[*hcloud.Volume]{
 	ResourceNameSingular: "Volume",
 	ShortDescription:     "Update a Volume",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Volume().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
+	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.Volume, *hcloud.Response, error) {
 		return s.Client().Volume().Get(s, idOrName)
 	},
 	DefineFlags: func(cmd *cobra.Command) {
 		cmd.Flags().String("name", "", "Volume name")
 	},
-	Update: func(s state.State, _ *cobra.Command, resource interface{}, flags map[string]pflag.Value) error {
-		floatingIP := resource.(*hcloud.Volume)
+	Update: func(s state.State, _ *cobra.Command, volume *hcloud.Volume, flags map[string]pflag.Value) error {
 		updOpts := hcloud.VolumeUpdateOpts{
 			Name: flags["name"].String(),
 		}
-		_, _, err := s.Client().Volume().Update(s, floatingIP, updOpts)
+		_, _, err := s.Client().Volume().Update(s, volume, updOpts)
 		if err != nil {
 			return err
 		}

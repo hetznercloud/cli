@@ -10,22 +10,21 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var UpdateCmd = base.UpdateCmd{
+var UpdateCmd = base.UpdateCmd[*hcloud.LoadBalancer]{
 	ResourceNameSingular: "Load Balancer",
 	ShortDescription:     "Update a Load Balancer",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.LoadBalancer().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
+	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.LoadBalancer, *hcloud.Response, error) {
 		return s.Client().LoadBalancer().Get(s, idOrName)
 	},
 	DefineFlags: func(cmd *cobra.Command) {
 		cmd.Flags().String("name", "", "Load Balancer name")
 	},
-	Update: func(s state.State, _ *cobra.Command, resource interface{}, flags map[string]pflag.Value) error {
-		floatingIP := resource.(*hcloud.LoadBalancer)
+	Update: func(s state.State, _ *cobra.Command, loadBalancer *hcloud.LoadBalancer, flags map[string]pflag.Value) error {
 		updOpts := hcloud.LoadBalancerUpdateOpts{
 			Name: flags["name"].String(),
 		}
-		_, _, err := s.Client().LoadBalancer().Update(s, floatingIP, updOpts)
+		_, _, err := s.Client().LoadBalancer().Update(s, loadBalancer, updOpts)
 		if err != nil {
 			return err
 		}

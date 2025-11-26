@@ -14,7 +14,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var UpdateCmd = base.UpdateCmd{
+var UpdateCmd = base.UpdateCmd[*hcloud.StorageBoxSubaccount]{
 	ResourceNameSingular: "Storage Box Subaccount",
 	ShortDescription:     "Update a Storage Box Subaccount",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.StorageBox().Names },
@@ -25,7 +25,7 @@ var UpdateCmd = base.UpdateCmd{
 		}
 	},
 	PositionalArgumentOverride: []string{"storage-box", "subaccount"},
-	FetchWithArgs: func(s state.State, _ *cobra.Command, args []string) (any, *hcloud.Response, error) {
+	FetchWithArgs: func(s state.State, _ *cobra.Command, args []string) (*hcloud.StorageBoxSubaccount, *hcloud.Response, error) {
 		storageBoxIDOrName, subaccountIDOrName := args[0], args[1]
 		storageBox, _, err := s.Client().StorageBox().Get(s, storageBoxIDOrName)
 		if err != nil {
@@ -40,8 +40,7 @@ var UpdateCmd = base.UpdateCmd{
 		cmd.Flags().String("description", "", "Description of the Storage Box Snapshot")
 		cmd.MarkFlagsOneRequired("description")
 	},
-	Update: func(s state.State, cmd *cobra.Command, resource interface{}, _ map[string]pflag.Value) error {
-		subaccount := resource.(*hcloud.StorageBoxSubaccount)
+	Update: func(s state.State, cmd *cobra.Command, subaccount *hcloud.StorageBoxSubaccount, _ map[string]pflag.Value) error {
 		var opts hcloud.StorageBoxSubaccountUpdateOpts
 		if cmd.Flags().Changed("description") {
 			description, _ := cmd.Flags().GetString("description")

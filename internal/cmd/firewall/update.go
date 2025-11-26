@@ -10,18 +10,17 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var UpdateCmd = base.UpdateCmd{
+var UpdateCmd = base.UpdateCmd[*hcloud.Firewall]{
 	ResourceNameSingular: "Firewall",
 	ShortDescription:     "Update a Firewall",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Firewall().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
+	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.Firewall, *hcloud.Response, error) {
 		return s.Client().Firewall().Get(s, idOrName)
 	},
 	DefineFlags: func(cmd *cobra.Command) {
 		cmd.Flags().String("name", "", "Firewall name")
 	},
-	Update: func(s state.State, _ *cobra.Command, resource interface{}, flags map[string]pflag.Value) error {
-		firewall := resource.(*hcloud.Firewall)
+	Update: func(s state.State, _ *cobra.Command, firewall *hcloud.Firewall, flags map[string]pflag.Value) error {
 		updOpts := hcloud.FirewallUpdateOpts{
 			Name: flags["name"].String(),
 		}

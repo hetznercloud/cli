@@ -16,16 +16,16 @@ import (
 
 var mu = sync.Mutex{}
 
-var fakeDeleteCmd = &base.DeleteCmd{
+var fakeDeleteCmd = &base.DeleteCmd[*fakeResource]{
 	ResourceNameSingular: "Fake resource",
 	ResourceNamePlural:   "Fake resources",
-	Delete: func(_ state.State, cmd *cobra.Command, _ interface{}) (*hcloud.Action, error) {
+	Delete: func(_ state.State, cmd *cobra.Command, _ *fakeResource) (*hcloud.Action, error) {
 		defer mu.Unlock()
 		cmd.Println("Deleting fake resource")
 		return nil, nil
 	},
 
-	Fetch: func(_ state.State, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
+	Fetch: func(_ state.State, cmd *cobra.Command, idOrName string) (*fakeResource, *hcloud.Response, error) {
 		mu.Lock()
 		cmd.Println("Fetching fake resource")
 
