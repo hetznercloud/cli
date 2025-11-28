@@ -3,11 +3,13 @@ package volume
 import (
 	"fmt"
 	"strconv"
+	"sync"
+
+	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
-	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 var LabelCmds = base.LabelCmds[*hcloud.Volume]{
@@ -38,5 +40,53 @@ var LabelCmds = base.LabelCmds[*hcloud.Volume]{
 	},
 	GetIDOrName: func(volume *hcloud.Volume) string {
 		return strconv.FormatInt(volume.ID, 10)
+	},
+	FetchBatch: func(s state.State, idOrNames []string) ([]*hcloud.Volume, []error) {
+		volumes := make([]*hcloud.Volume, len(idOrNames))
+		errors := make([]error, len(idOrNames))
+
+		var wg sync.WaitGroup
+		for i, idOrName := range idOrNames {
+			wg.Add(1)
+			go func(idx int, id string) {
+				defer wg.Done()
+				volume, _, err := s.Client().Volume().Get(s, id)
+				if err != nil {
+					errors[idx] = err
+					return
+				}
+				if volume == nil {
+					errors[idx] = fmt.Errorf("Volume not found: %s", id)
+					return
+				}
+				volumes[idx] = volume
+			}(i, idOrName)
+		}
+		wg.Wait()
+
+		return volumes, errors
+	},
+	SetLabelsBatch: func(s state.State, volumes []*hcloud.Volume, labels map[string]string) []error {
+		errors := make([]error, len(volumes))
+
+		var wg sync.WaitGroup
+		for i, volume := range volumes {
+			if volume == nil {
+				continue
+			}
+
+			wg.Add(1)
+			go func(idx int, vol *hcloud.Volume) {
+				defer wg.Done()
+				opts := hcloud.VolumeUpdateOpts{
+					Labels: labels,
+				}
+				_, _, err := s.Client().Volume().Update(s, vol, opts)
+				errors[idx] = err
+			}(i, volume)
+		}
+		wg.Wait()
+
+		return errors
 	},
 }
