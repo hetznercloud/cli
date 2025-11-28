@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.58.0](https://github.com/hetznercloud/cli/releases/tag/v1.58.0)
+
+### Features
+
+- **firewall**: add list columns for labels, created and age (#1239)
+- drop builds for windows armv6 and armv7 (32 bit) (#1246)
+- **context**: allow creation in non-interactive tty (#1252)
+
 ## [v1.57.0](https://github.com/hetznercloud/cli/releases/tag/v1.57.0)
 
 ### DNS API is now generally available
