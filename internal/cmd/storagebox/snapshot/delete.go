@@ -13,7 +13,7 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var DeleteCmd = base.DeleteCmd{
+var DeleteCmd = base.DeleteCmd[*hcloud.StorageBoxSnapshot]{
 	ResourceNameSingular:       "Storage Box Snapshot",
 	ResourceNamePlural:         "Storage Box Snapshots",
 	ShortDescription:           "Delete a Storage Box Snapshot",
@@ -25,7 +25,7 @@ var DeleteCmd = base.DeleteCmd{
 		}
 	},
 
-	FetchFunc: func(s state.State, _ *cobra.Command, args []string) (base.FetchFunc, error) {
+	FetchFunc: func(s state.State, _ *cobra.Command, args []string) (base.FetchFunc[*hcloud.StorageBoxSnapshot], error) {
 		storageBox, _, err := s.Client().StorageBox().Get(s, args[0])
 		if err != nil {
 			return nil, err
@@ -33,13 +33,12 @@ var DeleteCmd = base.DeleteCmd{
 		if storageBox == nil {
 			return nil, fmt.Errorf("Storage Box not found: %s", args[0])
 		}
-		return func(s state.State, _ *cobra.Command, idOrName string) (any, *hcloud.Response, error) {
+		return func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.StorageBoxSnapshot, *hcloud.Response, error) {
 			return s.Client().StorageBox().GetSnapshot(s, storageBox, idOrName)
 		}, nil
 	},
 
-	Delete: func(s state.State, _ *cobra.Command, resource any) (*hcloud.Action, error) {
-		snapshot := resource.(*hcloud.StorageBoxSnapshot)
+	Delete: func(s state.State, _ *cobra.Command, snapshot *hcloud.StorageBoxSnapshot) (*hcloud.Action, error) {
 		result, _, err := s.Client().StorageBox().DeleteSnapshot(s, snapshot)
 		return result.Action, err
 	},

@@ -16,18 +16,18 @@ import (
 )
 
 // UpdateCmd allows defining commands for updating a resource.
-type UpdateCmd struct {
+type UpdateCmd[T any] struct {
 	ResourceNameSingular string // e.g. "Server"
 	ShortDescription     string
 	NameSuggestions      func(client hcapi2.Client) func() []string
 	DefineFlags          func(*cobra.Command)
 
-	Fetch func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error)
+	Fetch func(s state.State, cmd *cobra.Command, idOrName string) (T, *hcloud.Response, error)
 	// Can be set in case the resource has more than a single identifier that is used in the positional arguments.
 	// See [UpdateCmd.PositionalArgumentOverride].
-	FetchWithArgs func(s state.State, cmd *cobra.Command, args []string) (any, *hcloud.Response, error)
+	FetchWithArgs func(s state.State, cmd *cobra.Command, args []string) (T, *hcloud.Response, error)
 
-	Update func(s state.State, cmd *cobra.Command, resource interface{}, flags map[string]pflag.Value) error
+	Update func(s state.State, cmd *cobra.Command, resource T, flags map[string]pflag.Value) error
 
 	// In case the resource does not have a single identifier that matches [UpdateCmd.ResourceNameSingular], this field
 	// can be set to define the list of positional arguments.
@@ -46,7 +46,7 @@ type UpdateCmd struct {
 }
 
 // CobraCommand creates a command that can be registered with cobra.
-func (uc *UpdateCmd) CobraCommand(s state.State) *cobra.Command {
+func (uc *UpdateCmd[T]) CobraCommand(s state.State) *cobra.Command {
 	var suggestArgs []cobra.CompletionFunc
 	switch {
 	case uc.NameSuggestions != nil:
@@ -79,9 +79,9 @@ func (uc *UpdateCmd) CobraCommand(s state.State) *cobra.Command {
 }
 
 // Run executes a update command.
-func (uc *UpdateCmd) Run(s state.State, cmd *cobra.Command, args []string) error {
+func (uc *UpdateCmd[T]) Run(s state.State, cmd *cobra.Command, args []string) error {
 	var (
-		resource any
+		resource T
 		err      error
 	)
 	if uc.FetchWithArgs != nil {

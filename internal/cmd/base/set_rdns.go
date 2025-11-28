@@ -15,19 +15,19 @@ import (
 )
 
 // SetRdnsCmd allows defining commands for setting the RDNS of a resource.
-type SetRdnsCmd struct {
+type SetRdnsCmd[T hcloud.RDNSSupporter] struct {
 	ResourceNameSingular string // e.g. "Server"
 	ShortDescription     string
 	NameSuggestions      func(client hcapi2.Client) func() []string
-	Fetch                func(s state.State, cmd *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error)
-	GetDefaultIP         func(resource interface{}) net.IP
+	Fetch                func(s state.State, cmd *cobra.Command, idOrName string) (T, *hcloud.Response, error)
+	GetDefaultIP         func(resource T) net.IP
 
 	// Experimental is a function that will be used to mark the command as experimental.
 	Experimental func(state.State, *cobra.Command) *cobra.Command
 }
 
 // CobraCommand creates a command that can be registered with cobra.
-func (rc *SetRdnsCmd) CobraCommand(s state.State) *cobra.Command {
+func (rc *SetRdnsCmd[T]) CobraCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   fmt.Sprintf("set-rdns [--ip <ip>] (--hostname <hostname> | --reset) <%s>", util.ToKebabCase(rc.ResourceNameSingular)),
 		Short:                 rc.ShortDescription,
@@ -52,7 +52,7 @@ func (rc *SetRdnsCmd) CobraCommand(s state.State) *cobra.Command {
 }
 
 // Run executes a setRDNS command.
-func (rc *SetRdnsCmd) Run(s state.State, cmd *cobra.Command, args []string) error {
+func (rc *SetRdnsCmd[T]) Run(s state.State, cmd *cobra.Command, args []string) error {
 	var hostnamePtr *string
 	if reset, _ := cmd.Flags().GetBool("reset"); reset {
 		hostnamePtr = nil
@@ -81,7 +81,7 @@ func (rc *SetRdnsCmd) Run(s state.State, cmd *cobra.Command, args []string) erro
 		ip = rc.GetDefaultIP(resource)
 	}
 
-	action, _, err := s.Client().RDNS().ChangeDNSPtr(s, resource.(hcloud.RDNSSupporter), ip, hostnamePtr)
+	action, _, err := s.Client().RDNS().ChangeDNSPtr(s, resource, ip, hostnamePtr)
 	if err != nil {
 		return err
 	}

@@ -10,18 +10,17 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var UpdateCmd = base.UpdateCmd{
+var UpdateCmd = base.UpdateCmd[*hcloud.PlacementGroup]{
 	ResourceNameSingular: "Placement Group",
 	ShortDescription:     "Update a Placement Group",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.PlacementGroup().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
+	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.PlacementGroup, *hcloud.Response, error) {
 		return s.Client().PlacementGroup().Get(s, idOrName)
 	},
 	DefineFlags: func(cmd *cobra.Command) {
 		cmd.Flags().String("name", "", "Placement Group name")
 	},
-	Update: func(s state.State, _ *cobra.Command, resource interface{}, flags map[string]pflag.Value) error {
-		placementGroup := resource.(*hcloud.PlacementGroup)
+	Update: func(s state.State, _ *cobra.Command, placementGroup *hcloud.PlacementGroup, flags map[string]pflag.Value) error {
 		updOpts := hcloud.PlacementGroupUpdateOpts{
 			Name: flags["name"].String(),
 		}

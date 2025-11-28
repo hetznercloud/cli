@@ -11,18 +11,17 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var UpdateCmd = base.UpdateCmd{
+var UpdateCmd = base.UpdateCmd[*hcloud.StorageBox]{
 	ResourceNameSingular: "Storage Box",
 	ShortDescription:     "Update a Storage Box",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.StorageBox().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (any, *hcloud.Response, error) {
+	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.StorageBox, *hcloud.Response, error) {
 		return s.Client().StorageBox().Get(s, idOrName)
 	},
 	DefineFlags: func(cmd *cobra.Command) {
 		cmd.Flags().String("name", "", "Storage Box name")
 	},
-	Update: func(s state.State, _ *cobra.Command, resource interface{}, flags map[string]pflag.Value) error {
-		storageBox := resource.(*hcloud.StorageBox)
+	Update: func(s state.State, _ *cobra.Command, storageBox *hcloud.StorageBox, flags map[string]pflag.Value) error {
 		opts := hcloud.StorageBoxUpdateOpts{
 			Name: flags["name"].String(),
 		}

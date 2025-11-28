@@ -10,19 +10,18 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var UpdateCmd = base.UpdateCmd{
+var UpdateCmd = base.UpdateCmd[*hcloud.PrimaryIP]{
 	ResourceNameSingular: "Primary IP",
 	ShortDescription:     "Update a Primary IP",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.PrimaryIP().Names(false, false, nil) },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
+	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.PrimaryIP, *hcloud.Response, error) {
 		return s.Client().PrimaryIP().Get(s, idOrName)
 	},
 	DefineFlags: func(cmd *cobra.Command) {
 		cmd.Flags().String("name", "", "Primary IP name")
 		cmd.Flags().Bool("auto-delete", false, "Delete this Primary IP when the resource it is assigned to is deleted (true, false)")
 	},
-	Update: func(s state.State, cmd *cobra.Command, resource interface{}, flags map[string]pflag.Value) error {
-		primaryIP := resource.(*hcloud.PrimaryIP)
+	Update: func(s state.State, cmd *cobra.Command, primaryIP *hcloud.PrimaryIP, flags map[string]pflag.Value) error {
 		updOpts := hcloud.PrimaryIPUpdateOpts{
 			Name: flags["name"].String(),
 		}

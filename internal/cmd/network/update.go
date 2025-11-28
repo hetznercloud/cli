@@ -10,22 +10,21 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-var UpdateCmd = base.UpdateCmd{
+var UpdateCmd = base.UpdateCmd[*hcloud.Network]{
 	ResourceNameSingular: "Network",
 	ShortDescription:     "Update a Network.\n\nTo enable or disable exposing routes to the vSwitch connection you can use the subcommand \"hcloud network expose-routes-to-vswitch\".",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Network().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (interface{}, *hcloud.Response, error) {
+	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.Network, *hcloud.Response, error) {
 		return s.Client().Network().Get(s, idOrName)
 	},
 	DefineFlags: func(cmd *cobra.Command) {
 		cmd.Flags().String("name", "", "Network name")
 	},
-	Update: func(s state.State, _ *cobra.Command, resource interface{}, flags map[string]pflag.Value) error {
-		floatingIP := resource.(*hcloud.Network)
+	Update: func(s state.State, _ *cobra.Command, network *hcloud.Network, flags map[string]pflag.Value) error {
 		updOpts := hcloud.NetworkUpdateOpts{
 			Name: flags["name"].String(),
 		}
-		_, _, err := s.Client().Network().Update(s, floatingIP, updOpts)
+		_, _, err := s.Client().Network().Update(s, network, updOpts)
 		if err != nil {
 			return err
 		}

@@ -17,19 +17,19 @@ import (
 )
 
 // DeleteCmd allows defining commands for deleting a resource.
-type DeleteCmd struct {
+type DeleteCmd[T any] struct {
 	ResourceNameSingular string // e.g. "Server"
 	ResourceNamePlural   string // e.g. "Servers"
 	ShortDescription     string
 	NameSuggestions      func(client hcapi2.Client) func() []string
 	AdditionalFlags      func(*cobra.Command)
-	Fetch                FetchFunc
-	Delete               func(s state.State, cmd *cobra.Command, resource interface{}) (*hcloud.Action, error)
+	Fetch                FetchFunc[T]
+	Delete               func(s state.State, cmd *cobra.Command, resource T) (*hcloud.Action, error)
 
 	// FetchFunc is a factory function that produces [DeleteCmd.Fetch]. Should be set in case the resource has
 	// more than a single identifier that is used in the positional arguments.
 	// See [DeleteCmd.PositionalArgumentOverride].
-	FetchFunc func(s state.State, cmd *cobra.Command, args []string) (FetchFunc, error)
+	FetchFunc func(s state.State, cmd *cobra.Command, args []string) (FetchFunc[T], error)
 
 	// In case the resource does not have a single identifier that matches [DeleteCmd.ResourceNameSingular], this field
 	// can be set to define the list of positional arguments.
@@ -48,10 +48,10 @@ type DeleteCmd struct {
 	Experimental func(state.State, *cobra.Command) *cobra.Command
 }
 
-type FetchFunc func(s state.State, cmd *cobra.Command, idOrName string) (any, *hcloud.Response, error)
+type FetchFunc[T any] func(s state.State, cmd *cobra.Command, idOrName string) (T, *hcloud.Response, error)
 
 // CobraCommand creates a command that can be registered with cobra.
-func (dc *DeleteCmd) CobraCommand(s state.State) *cobra.Command {
+func (dc *DeleteCmd[T]) CobraCommand(s state.State) *cobra.Command {
 	var suggestArgs []cobra.CompletionFunc
 	switch {
 	case dc.NameSuggestions != nil:
@@ -94,14 +94,14 @@ func (dc *DeleteCmd) CobraCommand(s state.State) *cobra.Command {
 const deleteBatchSize = 10
 
 // Run executes a delete command.
-func (dc *DeleteCmd) Run(s state.State, cmd *cobra.Command, args []string) error {
+func (dc *DeleteCmd[T]) Run(s state.State, cmd *cobra.Command, args []string) error {
 	toDelete := args[max(0, len(dc.PositionalArgumentOverride)-1):]
 
 	errs := make([]error, 0, len(toDelete))
 	deleted := make([]string, 0, len(toDelete))
 
 	var (
-		fetch FetchFunc
+		fetch FetchFunc[T]
 		err   error
 	)
 	if dc.FetchFunc != nil {
