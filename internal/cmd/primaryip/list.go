@@ -20,7 +20,7 @@ import (
 var ListCmd = &base.ListCmd[*hcloud.PrimaryIP, schema.PrimaryIP]{
 	ResourceNamePlural: "Primary IPs",
 	JSONKeyGetByName:   "primary_ips",
-	DefaultColumns:     []string{"id", "type", "name", "ip", "assignee", "dns", "auto_delete", "age"},
+	DefaultColumns:     []string{"id", "type", "name", "ip", "assignee", "auto_delete", "age"},
 	SortOption:         config.OptionSortPrimaryIP,
 
 	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.PrimaryIP, error) {
