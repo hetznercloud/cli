@@ -1,6 +1,8 @@
 package network
 
 import (
+	"fmt"
+
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
@@ -30,7 +32,7 @@ var ChangeProtectionCmds = base.ChangeProtectionCmds[*hcloud.Network, hcloud.Net
 		return s.Client().Network().ChangeProtection(s, network, opts)
 	},
 
-	GetIDFunction: func(network *hcloud.Network) int64 {
-		return network.ID
+	IDOrName: func(network *hcloud.Network) string {
+		return fmt.Sprint(network.ID)
 	},
 }

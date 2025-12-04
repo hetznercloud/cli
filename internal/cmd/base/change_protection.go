@@ -49,7 +49,7 @@ type ChangeProtectionCmds[T, Opts any] struct {
 	ChangeProtectionFunction func(s state.State, resource T, opts Opts) (*hcloud.Action, *hcloud.Response, error)
 
 	// GetIDFunction is used to retrieve the ID of a resource
-	GetIDFunction func(resource T) int64
+	IDOrName func(resource T) string
 
 	// Experimental is a function that will be used to mark the command as experimental.
 	Experimental func(state.State, *cobra.Command) *cobra.Command
@@ -195,11 +195,11 @@ func (cpc *ChangeProtectionCmds[T, Opts]) ChangeProtection(s state.State, cmd *c
 		return err
 	}
 
-	id := cpc.GetIDFunction(resource)
+	idOrName := cpc.IDOrName(resource)
 	if enable {
-		cmd.Printf("Resource protection enabled for %s %d\n", cpc.ResourceNameSingular, id)
+		cmd.Printf("Resource protection enabled for %s %s\n", cpc.ResourceNameSingular, idOrName)
 	} else {
-		cmd.Printf("Resource protection disabled for %s %d\n", cpc.ResourceNameSingular, id)
+		cmd.Printf("Resource protection disabled for %s %s\n", cpc.ResourceNameSingular, idOrName)
 	}
 	return nil
 }

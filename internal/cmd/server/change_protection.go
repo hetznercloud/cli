@@ -1,6 +1,8 @@
 package server
 
 import (
+	"fmt"
+
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
@@ -33,7 +35,7 @@ var ChangeProtectionCmds = base.ChangeProtectionCmds[*hcloud.Server, hcloud.Serv
 		return s.Client().Server().ChangeProtection(s, server, opts)
 	},
 
-	GetIDFunction: func(server *hcloud.Server) int64 {
-		return server.ID
+	IDOrName: func(server *hcloud.Server) string {
+		return fmt.Sprint(server.ID)
 	},
 }

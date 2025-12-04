@@ -1,6 +1,8 @@
 package volume
 
 import (
+	"fmt"
+
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
@@ -30,7 +32,7 @@ var ChangeProtectionCmds = base.ChangeProtectionCmds[*hcloud.Volume, hcloud.Volu
 		return s.Client().Volume().ChangeProtection(s, volume, opts)
 	},
 
-	GetIDFunction: func(volume *hcloud.Volume) int64 {
-		return volume.ID
+	IDOrName: func(volume *hcloud.Volume) string {
+		return fmt.Sprint(volume.ID)
 	},
 }
