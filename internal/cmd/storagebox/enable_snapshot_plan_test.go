@@ -42,6 +42,6 @@ func TestEnableSnapshotPlan(t *testing.T) {
 	out, errOut, err := fx.Run(cmd, args)
 
 	require.NoError(t, err)
-	assert.Equal(t, ExperimentalWarning, errOut)
+	assert.Empty(t, errOut)
 	assert.Equal(t, "Snapshot Plan enabled for Storage Box 123\n", out)
 }

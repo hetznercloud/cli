@@ -41,6 +41,6 @@ func TestChangeType(t *testing.T) {
 	out, errOut, err := fx.Run(cmd, args)
 
 	require.NoError(t, err)
-	assert.Equal(t, ExperimentalWarning, errOut)
+	assert.Empty(t, errOut)
 	assert.Equal(t, "Storage Box 123 upgraded to type bx21\n", out)
 }
