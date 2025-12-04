@@ -7,7 +7,6 @@ import (
 	"github.com/spf13/pflag"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
-	"github.com/hetznercloud/cli/internal/cmd/experimental"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -44,5 +43,4 @@ var UpdateCmd = base.UpdateCmd[*hcloud.StorageBoxSnapshot]{
 		}
 		return nil
 	},
-	Experimental: experimental.StorageBoxes,
 }

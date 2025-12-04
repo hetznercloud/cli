@@ -6,7 +6,6 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
-	"github.com/hetznercloud/cli/internal/cmd/experimental"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -36,6 +35,4 @@ var ChangeProtectionCmds = base.ChangeProtectionCmds[*hcloud.StorageBox, hcloud.
 	IDOrName: func(storageBox *hcloud.StorageBox) string {
 		return fmt.Sprint(storageBox.ID)
 	},
-
-	Experimental: experimental.StorageBoxes,
 }

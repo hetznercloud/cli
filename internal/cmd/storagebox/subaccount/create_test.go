@@ -63,7 +63,7 @@ func TestCreate(t *testing.T) {
 	expOut := "Storage Box Subaccount 1 created\n"
 
 	require.NoError(t, err)
-	assert.Equal(t, ExperimentalWarning, errOut)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
 
@@ -132,6 +132,6 @@ func TestCreateJSON(t *testing.T) {
 	expOut := "Storage Box Subaccount 42 created\n"
 
 	require.NoError(t, err)
-	assert.Equal(t, ExperimentalWarning+expOut, out)
+	assert.Equal(t, expOut, out)
 	assert.JSONEq(t, createResponseJSON, jsonOut)
 }

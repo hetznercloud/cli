@@ -49,7 +49,7 @@ func TestList(t *testing.T) {
 `
 
 	require.NoError(t, err)
-	assert.Equal(t, ExperimentalWarning, errOut)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
 
@@ -94,6 +94,6 @@ func TestListColumnDeprecated(t *testing.T) {
 `
 
 	require.NoError(t, err)
-	assert.Equal(t, ExperimentalWarning, errOut)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
