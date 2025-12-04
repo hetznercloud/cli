@@ -46,6 +46,9 @@ type ChangeProtectionCmds[T, Opts any] struct {
 	// Levels maps all available protection levels to a function that sets the corresponding value in the Opts struct
 	ProtectionLevels map[string]func(opts *Opts, value bool)
 
+	// If ProtectionLevelOptional is set, all protection levels will always be applied
+	ProtectionLevelsOptional bool
+
 	// ChangeProtectionFunction is used to change the protection on a specific resource given the Opts
 	ChangeProtectionFunction func(s state.State, resource T, opts Opts) (*hcloud.Action, *hcloud.Response, error)
 
@@ -87,9 +90,17 @@ func (cpc *ChangeProtectionCmds[T, Opts]) newChangeProtectionCmd(s state.State, 
 
 	var levelUsage string
 	if len(levels) == 1 {
-		levelUsage = levels[0]
+		if cpc.ProtectionLevelsOptional {
+			levelUsage = fmt.Sprintf("[%s]", levels[0])
+		} else {
+			levelUsage = levels[0]
+		}
 	} else {
-		levelUsage = fmt.Sprintf("(%s)...", strings.Join(levels, "|"))
+		if cpc.ProtectionLevelsOptional {
+			levelUsage = fmt.Sprintf("[%s]...", strings.Join(levels, "|"))
+		} else {
+			levelUsage = fmt.Sprintf("(%s)...", strings.Join(levels, "|"))
+		}
 	}
 
 	var shortDescription string
@@ -164,6 +175,10 @@ func (cpc *ChangeProtectionCmds[T, Opts]) Run(s state.State, cmd *cobra.Command,
 	}
 
 	levels := args[max(1, len(cpc.PositionalArgumentOverride)):]
+	if cpc.ProtectionLevelsOptional {
+		levels = maps.Keys(cpc.ProtectionLevels)
+	}
+
 	opts, err := cpc.GetChangeProtectionOpts(enable, levels)
 	if err != nil {
 		return err

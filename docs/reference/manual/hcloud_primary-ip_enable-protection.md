@@ -1,6 +1,6 @@
 ## hcloud primary-ip enable-protection
 
-Enable Protection for a Primary IP
+Enable resource protection for a Primary IP
 
 ```
 hcloud primary-ip enable-protection <primary-ip> [delete]
