@@ -92,11 +92,12 @@ func (cpc *ChangeProtectionCmds[T, Opts]) newChangeProtectionCmd(s state.State, 
 	}
 
 	var shortDescription string
-	if cpc.ShortDescription != "" {
+	switch {
+	case cpc.ShortDescription != "":
 		shortDescription = cpc.ShortDescription
-	} else if enable {
+	case enable:
 		shortDescription = fmt.Sprintf("Enable resource protection for a %s", cpc.ResourceNameSingular)
-	} else {
+	case !enable:
 		shortDescription = fmt.Sprintf("Disable resource protection for a %s", cpc.ResourceNameSingular)
 	}
 
