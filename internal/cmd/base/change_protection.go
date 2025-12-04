@@ -171,6 +171,7 @@ func (cpc *ChangeProtectionCmds[T, Opts]) Run(s state.State, cmd *cobra.Command,
 	// resource is an interface that always has a type, so the interface is never nil
 	// (i.e. == nil) is always false.
 	if reflect.ValueOf(resource).IsNil() {
+		args := args[:max(1, len(cpc.PositionalArgumentOverride))]
 		return fmt.Errorf("%s not found: %s", cpc.ResourceNameSingular, strings.Join(args, " "))
 	}
 
