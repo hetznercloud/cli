@@ -1,6 +1,6 @@
 ## hcloud volume disable-protection
 
-Disable resource protection for a volume
+Disable resource protection for a Volume
 
 ```
 hcloud volume disable-protection <volume> delete

@@ -42,7 +42,7 @@ var CreateCmd = base.CreateCmd[*hcloud.Network]{
 		exposeRoutesToVSwitch, _ := cmd.Flags().GetBool("expose-routes-to-vswitch")
 		protection, _ := cmd.Flags().GetStringSlice("enable-protection")
 
-		protectionOpts, err := getChangeProtectionOpts(true, protection)
+		protectionOpts, err := ChangeProtectionCmds.GetChangeProtectionOpts(true, protection)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -61,8 +61,10 @@ var CreateCmd = base.CreateCmd[*hcloud.Network]{
 
 		cmd.Printf("Network %d created\n", network.ID)
 
-		if err := changeProtection(s, cmd, network, true, protectionOpts); err != nil {
-			return nil, nil, err
+		if protectionOpts.Delete != nil {
+			if err := ChangeProtectionCmds.ChangeProtection(s, cmd, network, true, protectionOpts); err != nil {
+				return nil, nil, err
+			}
 		}
 
 		network, _, err = s.Client().Network().GetByID(s, network.ID)

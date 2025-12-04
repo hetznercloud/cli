@@ -38,10 +38,10 @@ Manage Servers
 * [hcloud server detach-from-network](hcloud_server_detach-from-network.md)	 - Detach a Server from a Network
 * [hcloud server detach-iso](hcloud_server_detach-iso.md)	 - Detach an ISO from a Server
 * [hcloud server disable-backup](hcloud_server_disable-backup.md)	 - Disable backup for a server
-* [hcloud server disable-protection](hcloud_server_disable-protection.md)	 - Disable resource protection for a server
+* [hcloud server disable-protection](hcloud_server_disable-protection.md)	 - Disable resource protection for a Server
 * [hcloud server disable-rescue](hcloud_server_disable-rescue.md)	 - Disable rescue for a server
 * [hcloud server enable-backup](hcloud_server_enable-backup.md)	 - Enable backup for a server
-* [hcloud server enable-protection](hcloud_server_enable-protection.md)	 - Enable resource protection for a server
+* [hcloud server enable-protection](hcloud_server_enable-protection.md)	 - Enable resource protection for a Server
 * [hcloud server enable-rescue](hcloud_server_enable-rescue.md)	 - Enable rescue for a server
 * [hcloud server ip](hcloud_server_ip.md)	 - Print a server's IP address
 * [hcloud server list](hcloud_server_list.md)	 - List Servers

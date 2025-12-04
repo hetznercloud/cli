@@ -31,8 +31,8 @@ Manage Volumes
 * [hcloud volume delete](hcloud_volume_delete.md)	 - Delete a Volume
 * [hcloud volume describe](hcloud_volume_describe.md)	 - Describe a Volume
 * [hcloud volume detach](hcloud_volume_detach.md)	 - Detach a Volume
-* [hcloud volume disable-protection](hcloud_volume_disable-protection.md)	 - Disable resource protection for a volume
-* [hcloud volume enable-protection](hcloud_volume_enable-protection.md)	 - Enable resource protection for a volume
+* [hcloud volume disable-protection](hcloud_volume_disable-protection.md)	 - Disable resource protection for a Volume
+* [hcloud volume enable-protection](hcloud_volume_enable-protection.md)	 - Enable resource protection for a Volume
 * [hcloud volume list](hcloud_volume_list.md)	 - List Volumes
 * [hcloud volume remove-label](hcloud_volume_remove-label.md)	 - Remove a label from a Volume
 * [hcloud volume resize](hcloud_volume_resize.md)	 - Resize a volume

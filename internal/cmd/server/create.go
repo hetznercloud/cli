@@ -126,8 +126,10 @@ var CreateCmd = base.CreateCmd[*createResult]{
 
 		cmd.Printf("Server %d created\n", result.Server.ID)
 
-		if err := changeProtection(s, cmd, result.Server, true, protectionOpts); err != nil {
-			return nil, nil, err
+		if protectionOpts.Delete != nil || protectionOpts.Rebuild != nil {
+			if err := ChangeProtectionCmds.ChangeProtection(s, cmd, result.Server, true, protectionOpts); err != nil {
+				return nil, nil, err
+			}
 		}
 
 		enableBackup, _ := cmd.Flags().GetBool("enable-backup")
@@ -468,7 +470,7 @@ func createOptsFromFlags(
 		createOpts.PlacementGroup = placementGroup
 	}
 
-	protectionOps, err = getChangeProtectionOpts(true, protection)
+	protectionOps, err = ChangeProtectionCmds.GetChangeProtectionOpts(true, protection)
 	return
 }
 
