@@ -1,14 +1,6 @@
 ## hcloud storage-box update-access-settings
 
-[experimental] Update access settings of the primary Storage Box account
-
-### Synopsis
-
 Update access settings of the primary Storage Box account
-
-Experimental: Storage Box support is experimental, breaking changes may occur within minor releases.
-See https://github.com/hetznercloud/cli/issues/1202 for more details.
-
 
 ```
 hcloud storage-box update-access-settings [options] <storage-box>
@@ -41,4 +33,4 @@ hcloud storage-box update-access-settings [options] <storage-box>
 
 ### SEE ALSO
 
-* [hcloud storage-box](hcloud_storage-box.md)	 - [experimental] Manage Storage Boxes
+* [hcloud storage-box](hcloud_storage-box.md)	 - Manage Storage Boxes

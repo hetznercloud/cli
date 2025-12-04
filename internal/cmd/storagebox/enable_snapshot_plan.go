@@ -7,7 +7,6 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
-	"github.com/hetznercloud/cli/internal/cmd/experimental"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
@@ -96,5 +95,4 @@ Allowed values for --day-of-week are:
 		cmd.Printf("Snapshot Plan enabled for Storage Box %d\n", storageBox.ID)
 		return nil
 	},
-	Experimental: experimental.StorageBoxes,
 }

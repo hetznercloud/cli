@@ -9,7 +9,6 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
-	"github.com/hetznercloud/cli/internal/cmd/experimental"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
@@ -35,7 +34,6 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBoxType]{
 		fmt.Fprint(out, description)
 		return nil
 	},
-	Experimental: experimental.StorageBoxes,
 }
 
 func DescribeStorageBoxType(s state.State, storageBoxType *hcloud.StorageBoxType, short bool) (string, error) {

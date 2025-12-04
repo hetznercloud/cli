@@ -7,7 +7,6 @@ import (
 	"github.com/spf13/pflag"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
-	"github.com/hetznercloud/cli/internal/cmd/experimental"
 	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
@@ -53,6 +52,5 @@ var ListCmd = base.ListCmd[*hcloud.StorageBoxType, schema.StorageBoxType]{
 			})
 	},
 
-	Schema:       hcloud.SchemaFromStorageBoxType,
-	Experimental: experimental.StorageBoxes,
+	Schema: hcloud.SchemaFromStorageBoxType,
 }

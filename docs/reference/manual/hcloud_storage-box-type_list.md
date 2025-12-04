@@ -1,6 +1,6 @@
 ## hcloud storage-box-type list
 
-[experimental] List Storage Box Types
+List Storage Box Types
 
 ### Synopsis
 
@@ -19,10 +19,6 @@ Columns:
  - size
  - snapshot_limit
  - subaccounts_limit
-
-Experimental: Storage Box support is experimental, breaking changes may occur within minor releases.
-See https://github.com/hetznercloud/cli/issues/1202 for more details.
-
 
 ```
 hcloud storage-box-type list [options]
@@ -53,4 +49,4 @@ hcloud storage-box-type list [options]
 
 ### SEE ALSO
 
-* [hcloud storage-box-type](hcloud_storage-box-type.md)	 - [experimental] View Storage Box Types
+* [hcloud storage-box-type](hcloud_storage-box-type.md)	 - View Storage Box Types
