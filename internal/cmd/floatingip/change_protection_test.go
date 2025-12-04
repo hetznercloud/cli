@@ -16,7 +16,7 @@ func TestEnableProtection(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := floatingip.EnableProtectionCmd.CobraCommand(fx.State())
+	cmd := floatingip.ChangeProtectionCmds.EnableCobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	fx.Client.FloatingIPClient.EXPECT().
@@ -34,6 +34,34 @@ func TestEnableProtection(t *testing.T) {
 	out, errOut, err := fx.Run(cmd, []string{"test", "delete"})
 
 	expOut := "Resource protection enabled for Floating IP 123\n"
+
+	require.NoError(t, err)
+	assert.Empty(t, errOut)
+	assert.Equal(t, expOut, out)
+}
+
+func TestDisableProtection(t *testing.T) {
+	fx := testutil.NewFixture(t)
+	defer fx.Finish()
+
+	cmd := floatingip.ChangeProtectionCmds.DisableCobraCommand(fx.State())
+	fx.ExpectEnsureToken()
+
+	fx.Client.FloatingIPClient.EXPECT().
+		Get(gomock.Any(), "test").
+		Return(&hcloud.FloatingIP{ID: 123}, nil, nil)
+	fx.Client.FloatingIPClient.EXPECT().
+		ChangeProtection(gomock.Any(), &hcloud.FloatingIP{ID: 123}, hcloud.FloatingIPChangeProtectionOpts{
+			Delete: hcloud.Ptr(false),
+		}).
+		Return(&hcloud.Action{ID: 123}, nil, nil)
+	fx.ActionWaiter.EXPECT().
+		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).
+		Return(nil)
+
+	out, errOut, err := fx.Run(cmd, []string{"test", "delete"})
+
+	expOut := "Resource protection disabled for Floating IP 123\n"
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)

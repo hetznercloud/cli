@@ -251,7 +251,7 @@ func buildUserData(files []string) (string, error) {
 
 func createOptsFromFlags(
 	s state.State, cmd *cobra.Command,
-) (createOpts hcloud.ServerCreateOpts, protectionOps hcloud.ServerChangeProtectionOpts, err error) {
+) (createOpts hcloud.ServerCreateOpts, protectionOpts hcloud.ServerChangeProtectionOpts, err error) {
 	flags := cmd.Flags()
 	name, _ := flags.GetString("name")
 	serverTypeName, _ := flags.GetString("type")
@@ -470,7 +470,7 @@ func createOptsFromFlags(
 		createOpts.PlacementGroup = placementGroup
 	}
 
-	protectionOps, err = ChangeProtectionCmds.GetChangeProtectionOpts(true, protection)
+	protectionOpts, err = ChangeProtectionCmds.GetChangeProtectionOpts(true, protection)
 	return
 }
 

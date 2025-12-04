@@ -19,10 +19,11 @@ import (
 
 // ChangeProtectionCmds allows defining commands for changing a resource's protection.
 type ChangeProtectionCmds[T, Opts any] struct {
-	ResourceNameSingular string // e.g. "Server"
-	ShortDescription     string
-	NameSuggestions      func(client hcapi2.Client) func() []string
-	AdditionalFlags      func(*cobra.Command)
+	ResourceNameSingular    string // e.g. "Server"
+	ShortEnableDescription  string
+	ShortDisableDescription string
+	NameSuggestions         func(client hcapi2.Client) func() []string
+	AdditionalFlags         func(*cobra.Command)
 	// Fetch is called to fetch the resource to describe.
 	// The first returned interface is the resource itself as a hcloud struct, the second is the schema for the resource.
 	Fetch func(s state.State, cmd *cobra.Command, idOrName string) (T, *hcloud.Response, error)
@@ -92,13 +93,18 @@ func (cpc *ChangeProtectionCmds[T, Opts]) newChangeProtectionCmd(s state.State, 
 	}
 
 	var shortDescription string
-	switch {
-	case cpc.ShortDescription != "":
-		shortDescription = cpc.ShortDescription
-	case enable:
-		shortDescription = fmt.Sprintf("Enable resource protection for a %s", cpc.ResourceNameSingular)
-	case !enable:
-		shortDescription = fmt.Sprintf("Disable resource protection for a %s", cpc.ResourceNameSingular)
+	if enable {
+		if cpc.ShortEnableDescription != "" {
+			shortDescription = cpc.ShortEnableDescription
+		} else {
+			shortDescription = fmt.Sprintf("Enable resource protection for a %s", cpc.ResourceNameSingular)
+		}
+	} else {
+		if cpc.ShortDisableDescription != "" {
+			shortDescription = cpc.ShortDisableDescription
+		} else {
+			shortDescription = fmt.Sprintf("Disable resource protection for a %s", cpc.ResourceNameSingular)
+		}
 	}
 
 	cmd := &cobra.Command{
