@@ -234,6 +234,12 @@ func TestCombined(t *testing.T) {
 			assert.Equal(t, fmt.Sprintf("%s\n", serverName), out)
 		})
 
+		t.Run("unassign", func(t *testing.T) {
+			out, err := runCommand(t, "floating-ip", "unassign", strconv.FormatInt(floatingIP, 10))
+			require.NoError(t, err)
+			assert.Equal(t, fmt.Sprintf("Floating IP %d unassigned\n", floatingIP), out)
+		})
+
 		t.Run("delete", func(t *testing.T) {
 			out, err := runCommand(t, "floating-ip", "delete", strconv.FormatInt(floatingIP, 10))
 			require.NoError(t, err)
