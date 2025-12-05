@@ -61,7 +61,7 @@ linters:
     rules:
       - linters:
           - revive
-        path: internal/cmd/util/.+\.go
+        path: internal/cmd/(util|context)/.+\.go
         text: var-naming
 
 formatters:
