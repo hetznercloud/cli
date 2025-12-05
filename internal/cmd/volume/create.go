@@ -57,7 +57,7 @@ var CreateCmd = base.CreateCmd[*hcloud.Volume]{
 		labels, _ := cmd.Flags().GetStringToString("label")
 		protection, _ := cmd.Flags().GetStringSlice("enable-protection")
 
-		protectionOpts, err := getChangeProtectionOpts(true, protection)
+		protectionOpts, err := ChangeProtectionCmds.GetChangeProtectionOpts(true, protection)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -103,8 +103,10 @@ var CreateCmd = base.CreateCmd[*hcloud.Volume]{
 		}
 		cmd.Printf("Volume %d created\n", result.Volume.ID)
 
-		if err := changeProtection(s, cmd, result.Volume, true, protectionOpts); err != nil {
-			return nil, nil, err
+		if protectionOpts.Delete != nil {
+			if err := ChangeProtectionCmds.ChangeProtection(s, cmd, result.Volume, true, protectionOpts); err != nil {
+				return nil, nil, err
+			}
 		}
 
 		volume, _, err := s.Client().Volume().GetByID(s, result.Volume.ID)

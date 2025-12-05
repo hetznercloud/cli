@@ -29,8 +29,8 @@ func NewCommand(s state.State) *cobra.Command {
 	)
 
 	util.AddGroup(cmd, "protection", "Protection",
-		EnableProtectionCmd.CobraCommand(s),
-		DisableProtectionCmd.CobraCommand(s),
+		ChangeProtectionCmds.EnableCobraCommand(s),
+		ChangeProtectionCmds.DisableCobraCommand(s),
 	)
 
 	util.AddGroup(cmd, "attach", "Attach",

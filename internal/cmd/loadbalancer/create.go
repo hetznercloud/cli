@@ -60,7 +60,7 @@ var CreateCmd = base.CreateCmd[*hcloud.LoadBalancer]{
 		protection, _ := cmd.Flags().GetStringSlice("enable-protection")
 		network, _ := cmd.Flags().GetString("network")
 
-		protectionOpts, err := getChangeProtectionOpts(true, protection)
+		protectionOpts, err := ChangeProtectionCmds.GetChangeProtectionOpts(true, protection)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -101,8 +101,10 @@ var CreateCmd = base.CreateCmd[*hcloud.LoadBalancer]{
 		}
 		cmd.Printf("Load Balancer %d created\n", result.LoadBalancer.ID)
 
-		if err := changeProtection(s, cmd, result.LoadBalancer, true, protectionOpts); err != nil {
-			return nil, nil, err
+		if protectionOpts.Delete != nil {
+			if err := ChangeProtectionCmds.ChangeProtection(s, cmd, result.LoadBalancer, true, protectionOpts); err != nil {
+				return nil, nil, err
+			}
 		}
 
 		loadBalancer, _, err := s.Client().LoadBalancer().GetByID(s, result.LoadBalancer.ID)

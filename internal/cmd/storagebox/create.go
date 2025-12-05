@@ -62,7 +62,7 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBox]{
 		labels, _ := cmd.Flags().GetStringToString("label")
 		protection, _ := cmd.Flags().GetStringSlice("enable-protection")
 
-		protectionOpts, err := getChangeProtectionOpts(true, protection)
+		protectionOpts, err := ChangeProtectionCmds.GetChangeProtectionOpts(true, protection)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -132,8 +132,10 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBox]{
 			return nil, nil, fmt.Errorf("Storage Box not found: %d", result.StorageBox.ID)
 		}
 
-		if err := changeProtection(s, cmd, storageBox, true, protectionOpts); err != nil {
-			return nil, nil, err
+		if protectionOpts.Delete != nil {
+			if err := ChangeProtectionCmds.ChangeProtection(s, cmd, storageBox, true, protectionOpts); err != nil {
+				return nil, nil, err
+			}
 		}
 
 		return storageBox, util.Wrap("storage_box", hcloud.SchemaFromStorageBox(result.StorageBox)), nil

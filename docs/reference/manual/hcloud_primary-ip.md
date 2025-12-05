@@ -30,8 +30,8 @@ Manage Primary IPs
 * [hcloud primary-ip create](hcloud_primary-ip_create.md)	 - Create a Primary IP
 * [hcloud primary-ip delete](hcloud_primary-ip_delete.md)	 - Delete a Primary IP
 * [hcloud primary-ip describe](hcloud_primary-ip_describe.md)	 - Describe a Primary IP
-* [hcloud primary-ip disable-protection](hcloud_primary-ip_disable-protection.md)	 - Disable Protection for a Primary IP
-* [hcloud primary-ip enable-protection](hcloud_primary-ip_enable-protection.md)	 - Enable Protection for a Primary IP
+* [hcloud primary-ip disable-protection](hcloud_primary-ip_disable-protection.md)	 - Disable resource protection for a Primary IP
+* [hcloud primary-ip enable-protection](hcloud_primary-ip_enable-protection.md)	 - Enable resource protection for a Primary IP
 * [hcloud primary-ip list](hcloud_primary-ip_list.md)	 - List Primary IPs
 * [hcloud primary-ip remove-label](hcloud_primary-ip_remove-label.md)	 - Remove a label from a Primary IP
 * [hcloud primary-ip set-rdns](hcloud_primary-ip_set-rdns.md)	 - Change reverse DNS of a Primary IP

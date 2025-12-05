@@ -41,8 +41,8 @@ user provider TXT records are not quoted, they will be formatted for you.`,
 	)
 
 	util.AddGroup(cmd, "protection", "Protection",
-		EnableProtectionCmd.CobraCommand(s),
-		DisableProtectionCmd.CobraCommand(s),
+		ChangeProtectionCmds.EnableCobraCommand(s),
+		ChangeProtectionCmds.DisableCobraCommand(s),
 	)
 
 	util.AddGroup(cmd, "records", "Manage Records",

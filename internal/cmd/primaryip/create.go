@@ -53,7 +53,7 @@ var CreateCmd = base.CreateCmd[*hcloud.PrimaryIP]{
 		protection, _ := cmd.Flags().GetStringSlice("enable-protection")
 		autoDelete, _ := cmd.Flags().GetBool("auto-delete")
 
-		protectionOpts, err := getChangeProtectionOpts(true, protection)
+		protectionOpts, err := ChangeProtectionCmds.GetChangeProtectionOpts(true, protection)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -86,7 +86,7 @@ var CreateCmd = base.CreateCmd[*hcloud.PrimaryIP]{
 		cmd.Printf("Primary IP %d created\n", result.PrimaryIP.ID)
 
 		if len(protection) > 0 {
-			if err := changeProtection(s, cmd, result.PrimaryIP, true, protectionOpts); err != nil {
+			if err := ChangeProtectionCmds.ChangeProtection(s, cmd, result.PrimaryIP, true, protectionOpts); err != nil {
 				return nil, nil, err
 			}
 		}

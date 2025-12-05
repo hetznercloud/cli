@@ -60,7 +60,7 @@ var CreateCmd = base.CreateCmd[*hcloud.Zone]{
 			return nil, nil, fmt.Errorf("unknown Zone mode: %s", mode)
 		}
 
-		protectionOpts, err := getChangeProtectionOpts(true, protection)
+		protectionOpts, err := ChangeProtectionCmds.GetChangeProtectionOpts(true, protection)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -119,8 +119,10 @@ var CreateCmd = base.CreateCmd[*hcloud.Zone]{
 		}
 		cmd.Printf("Zone %s created\n", result.Zone.Name)
 
-		if err := changeProtection(s, cmd, result.Zone, true, protectionOpts); err != nil {
-			return nil, nil, err
+		if protectionOpts.Delete != nil {
+			if err := ChangeProtectionCmds.ChangeProtection(s, cmd, result.Zone, true, protectionOpts); err != nil {
+				return nil, nil, err
+			}
 		}
 
 		// Assigned authoritative nameserver is only set after the action completed. Need to reload the zone

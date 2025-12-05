@@ -1,6 +1,6 @@
 ## hcloud network disable-protection
 
-Disable resource protection for a network
+Disable resource protection for a Network
 
 ```
 hcloud network disable-protection <network> delete

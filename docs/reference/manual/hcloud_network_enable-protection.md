@@ -1,6 +1,6 @@
 ## hcloud network enable-protection
 
-Enable resource protection for a network
+Enable resource protection for a Network
 
 ```
 hcloud network enable-protection <network> delete

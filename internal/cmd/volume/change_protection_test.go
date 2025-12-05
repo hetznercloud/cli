@@ -16,7 +16,7 @@ func TestEnableProtection(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := volume.EnableProtectionCmd.CobraCommand(fx.State())
+	cmd := volume.ChangeProtectionCmds.EnableCobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
 	v := &hcloud.Volume{ID: 123, Name: "myVolume"}
@@ -39,4 +39,33 @@ func TestEnableProtection(t *testing.T) {
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
 	assert.Equal(t, "Resource protection enabled for Volume 123\n", out)
+}
+
+func TestDisableProtection(t *testing.T) {
+	fx := testutil.NewFixture(t)
+	defer fx.Finish()
+
+	cmd := volume.ChangeProtectionCmds.DisableCobraCommand(fx.State())
+	fx.ExpectEnsureToken()
+
+	v := &hcloud.Volume{ID: 123, Name: "myVolume"}
+
+	fx.Client.VolumeClient.EXPECT().
+		Get(gomock.Any(), "myVolume").
+		Return(v, nil, nil)
+	fx.Client.VolumeClient.EXPECT().
+		ChangeProtection(gomock.Any(), v, hcloud.VolumeChangeProtectionOpts{
+			Delete: hcloud.Ptr(false),
+		}).
+		Return(&hcloud.Action{ID: 789}, nil, nil)
+	fx.ActionWaiter.EXPECT().
+		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 789}).
+		Return(nil)
+
+	args := []string{"myVolume", "delete"}
+	out, errOut, err := fx.Run(cmd, args)
+
+	require.NoError(t, err)
+	assert.Empty(t, errOut)
+	assert.Equal(t, "Resource protection disabled for Volume 123\n", out)
 }

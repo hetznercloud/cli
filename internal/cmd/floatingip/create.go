@@ -61,7 +61,7 @@ var CreateCmd = base.CreateCmd[*hcloud.FloatingIP]{
 		labels, _ := cmd.Flags().GetStringToString("label")
 		protection, _ := cmd.Flags().GetStringSlice("enable-protection")
 
-		protectionOps, err := getChangeProtectionOpts(true, protection)
+		protectionOpts, err := ChangeProtectionCmds.GetChangeProtectionOpts(true, protection)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -101,8 +101,10 @@ var CreateCmd = base.CreateCmd[*hcloud.FloatingIP]{
 
 		cmd.Printf("Floating IP %d created\n", result.FloatingIP.ID)
 
-		if err := changeProtection(s, cmd, result.FloatingIP, true, protectionOps); err != nil {
-			return nil, nil, err
+		if protectionOpts.Delete != nil {
+			if err := ChangeProtectionCmds.ChangeProtection(s, cmd, result.FloatingIP, true, protectionOpts); err != nil {
+				return nil, nil, err
+			}
 		}
 
 		floatingIP, _, err := s.Client().FloatingIP().GetByID(s, result.FloatingIP.ID)

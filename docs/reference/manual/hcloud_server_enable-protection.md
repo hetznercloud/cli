@@ -1,9 +1,9 @@
 ## hcloud server enable-protection
 
-Enable resource protection for a server
+Enable resource protection for a Server
 
 ```
-hcloud server enable-protection <server> (rebuild|delete)...
+hcloud server enable-protection <server> (delete|rebuild)...
 ```
 
 ### Options
