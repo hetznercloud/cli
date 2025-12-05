@@ -76,6 +76,6 @@ Storage Box:
 `, humanize.Time(sbs.Created))
 
 	require.NoError(t, err)
-	assert.Equal(t, ExperimentalWarning, errOut)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }

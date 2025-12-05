@@ -1,6 +1,6 @@
 ## hcloud storage-box enable-snapshot-plan
 
-[experimental] Enable automatic snapshots for a Storage Box
+Enable automatic snapshots for a Storage Box
 
 ### Synopsis
 
@@ -14,10 +14,6 @@ Allowed values for --day-of-week are:
 - Thursday, Thu, 4
 - Friday, Fri, 5
 - Saturday, Sat, 6
-
-Experimental: Storage Box support is experimental, breaking changes may occur within minor releases.
-See https://github.com/hetznercloud/cli/issues/1202 for more details.
-
 
 ```
 hcloud storage-box enable-snapshot-plan [options] <storage-box>
@@ -50,4 +46,4 @@ hcloud storage-box enable-snapshot-plan [options] <storage-box>
 
 ### SEE ALSO
 
-* [hcloud storage-box](hcloud_storage-box.md)	 - [experimental] Manage Storage Boxes
+* [hcloud storage-box](hcloud_storage-box.md)	 - Manage Storage Boxes

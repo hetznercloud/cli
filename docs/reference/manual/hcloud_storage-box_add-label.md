@@ -1,14 +1,6 @@
 ## hcloud storage-box add-label
 
-[experimental] Add a label to a Storage Box
-
-### Synopsis
-
 Add a label to a Storage Box
-
-Experimental: Storage Box support is experimental, breaking changes may occur within minor releases.
-See https://github.com/hetznercloud/cli/issues/1202 for more details.
-
 
 ```
 hcloud storage-box add-label [--overwrite] <storage-box> <label>...
@@ -37,4 +29,4 @@ hcloud storage-box add-label [--overwrite] <storage-box> <label>...
 
 ### SEE ALSO
 
-* [hcloud storage-box](hcloud_storage-box.md)	 - [experimental] Manage Storage Boxes
+* [hcloud storage-box](hcloud_storage-box.md)	 - Manage Storage Boxes

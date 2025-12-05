@@ -3,7 +3,6 @@ package storagebox
 import (
 	"github.com/spf13/cobra"
 
-	"github.com/hetznercloud/cli/internal/cmd/experimental"
 	"github.com/hetznercloud/cli/internal/cmd/storagebox/snapshot"
 	"github.com/hetznercloud/cli/internal/cmd/storagebox/subaccount"
 	"github.com/hetznercloud/cli/internal/cmd/util"
@@ -49,5 +48,5 @@ func NewCommand(s state.State) *cobra.Command {
 		ResetPasswordCmd.CobraCommand(s),
 		UpdateAccessSettingsCmd.CobraCommand(s),
 	)
-	return experimental.StorageBoxes(s, cmd)
+	return cmd
 }

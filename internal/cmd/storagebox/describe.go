@@ -8,7 +8,6 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
-	"github.com/hetznercloud/cli/internal/cmd/experimental"
 	"github.com/hetznercloud/cli/internal/cmd/location"
 	"github.com/hetznercloud/cli/internal/cmd/storageboxtype"
 	"github.com/hetznercloud/cli/internal/cmd/util"
@@ -91,5 +90,4 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBox]{
 
 		return nil
 	},
-	Experimental: experimental.StorageBoxes,
 }

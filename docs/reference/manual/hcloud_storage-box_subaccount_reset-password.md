@@ -1,14 +1,6 @@
 ## hcloud storage-box subaccount reset-password
 
-[experimental] Reset the password of a Storage Box Subaccount
-
-### Synopsis
-
 Reset the password of a Storage Box Subaccount
-
-Experimental: Storage Box support is experimental, breaking changes may occur within minor releases.
-See https://github.com/hetznercloud/cli/issues/1202 for more details.
-
 
 ```
 hcloud storage-box subaccount reset-password --password <password> <storage-box> <subaccount>
@@ -37,4 +29,4 @@ hcloud storage-box subaccount reset-password --password <password> <storage-box>
 
 ### SEE ALSO
 
-* [hcloud storage-box subaccount](hcloud_storage-box_subaccount.md)	 - [experimental] Manage Storage Box Subaccounts
+* [hcloud storage-box subaccount](hcloud_storage-box_subaccount.md)	 - Manage Storage Box Subaccounts
