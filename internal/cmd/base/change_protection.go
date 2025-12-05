@@ -3,7 +3,6 @@ package base
 import (
 	"fmt"
 	"log"
-	"reflect"
 	"slices"
 	"strings"
 
@@ -25,13 +24,12 @@ type ChangeProtectionCmds[T, Opts any] struct {
 	NameSuggestions         func(client hcapi2.Client) func() []string
 	AdditionalFlags         func(*cobra.Command)
 	// Fetch is called to fetch the resource to describe.
-	// The first returned interface is the resource itself as a hcloud struct, the second is the schema for the resource.
 	Fetch func(s state.State, cmd *cobra.Command, idOrName string) (T, *hcloud.Response, error)
 	// Can be set in case the resource has more than a single identifier that is used in the positional arguments.
-	// See [DescribeCmd.PositionalArgumentOverride].
+	// See [ChangeProtectionCmds.PositionalArgumentOverride].
 	FetchWithArgs func(s state.State, cmd *cobra.Command, args []string) (T, *hcloud.Response, error)
 
-	// In case the resource does not have a single identifier that matches [DescribeCmd.ResourceNameSingular], this field
+	// In case the resource does not have a single identifier that matches [ChangeProtectionCmds.ResourceNameSingular], this field
 	// can be set to define the list of positional arguments.
 	// For example, passing:
 	//     []string{"a", "b", "c"}
@@ -39,20 +37,20 @@ type ChangeProtectionCmds[T, Opts any] struct {
 	//     <a> <b> <c>
 	PositionalArgumentOverride []string
 
-	// Can be set if the default [DescribeCmd.NameSuggestions] is not enough. This is usually the case when
-	// [DescribeCmd.FetchWithArgs] and [DescribeCmd.PositionalArgumentOverride] is being used.
+	// Can be set if the default [ChangeProtectionCmds.NameSuggestions] is not enough. This is usually the case when
+	// [ChangeProtectionCmds.FetchWithArgs] and [ChangeProtectionCmds.PositionalArgumentOverride] is being used.
 	ValidArgsFunction func(client hcapi2.Client) []cobra.CompletionFunc
 
-	// Levels maps all available protection levels to a function that sets the corresponding value in the Opts struct
+	// ProtectionLevels maps all available protection levels to a function that sets the corresponding value in the Opts struct
 	ProtectionLevels map[string]func(opts *Opts, value bool)
 
-	// If ProtectionLevelOptional is set, all protection levels will always be applied
+	// If ProtectionLevelsOptional is set, all protection levels will always be applied
 	ProtectionLevelsOptional bool
 
 	// ChangeProtectionFunction is used to change the protection on a specific resource given the Opts
 	ChangeProtectionFunction func(s state.State, resource T, opts Opts) (*hcloud.Action, *hcloud.Response, error)
 
-	// GetIDFunction is used to retrieve the ID of a resource
+	// IDOrName is used to retrieve a string representation of the resource
 	IDOrName func(resource T) string
 
 	// Experimental is a function that will be used to mark the command as experimental.
@@ -168,9 +166,8 @@ func (cpc *ChangeProtectionCmds[T, Opts]) Run(s state.State, cmd *cobra.Command,
 		return err
 	}
 
-	// resource is an interface that always has a type, so the interface is never nil
-	// (i.e. == nil) is always false.
-	if reflect.ValueOf(resource).IsNil() {
+	// compiler doesn't allow `resource == nil` here
+	if util.IsNil(resource) {
 		args := args[:max(1, len(cpc.PositionalArgumentOverride))]
 		return fmt.Errorf("%s not found: %s", cpc.ResourceNameSingular, strings.Join(args, " "))
 	}
