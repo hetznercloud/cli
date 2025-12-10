@@ -13,7 +13,7 @@ require (
 	github.com/goccy/go-yaml v1.19.0
 	github.com/guptarohit/asciigraph v0.7.3
 	github.com/hetznercloud/hcloud-go/v2 v2.32.0
-	github.com/jedib0t/go-pretty/v6 v6.7.5
+	github.com/jedib0t/go-pretty/v6 v6.7.7
 	github.com/spf13/cast v1.10.0
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/pflag v1.0.10
