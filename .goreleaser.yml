@@ -84,7 +84,7 @@ signs:
 
 archives:
   - id: hcloud-archive
-    builds:
+    ids:
       - hcloud-build
       - hcloud-build-darwin
     name_template: "{{ .Binary }}-{{ .Os }}-{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}"
