@@ -66,20 +66,15 @@ func TestDescribe(t *testing.T) {
 				"key": "value",
 			},
 		},
-		Datacenter: &hcloud.Datacenter{
-			ID:   4,
-			Name: "hel1-dc2",
-			Location: &hcloud.Location{
-				ID:          3,
-				Name:        "hel1",
-				Description: "Helsinki DC Park 1",
-				NetworkZone: "eu-central",
-				Country:     "FI",
-				City:        "Helsinki",
-				Latitude:    60.169855,
-				Longitude:   24.938379,
-			},
-			Description: "Helsinki 1 virtual DC 2",
+		Location: &hcloud.Location{
+			ID:          3,
+			Name:        "hel1",
+			Description: "Helsinki DC Park 1",
+			NetworkZone: "eu-central",
+			Country:     "FI",
+			City:        "Helsinki",
+			Latitude:    60.169855,
+			Longitude:   24.938379,
 		},
 		IncludedTraffic: 20 * util.Tebibyte,
 		Protection:      hcloud.ServerProtection{Delete: true, Rebuild: true},
@@ -149,20 +144,15 @@ Image:
   Labels:
     key:  value
 
-Datacenter:
-  ID:           4
-  Name:         hel1-dc2
-  Description:  Helsinki 1 virtual DC 2
-  
-  Location:
-    ID:            3
-    Name:          hel1
-    Description:   Helsinki DC Park 1
-    Network Zone:  eu-central
-    Country:       FI
-    City:          Helsinki
-    Latitude:      60.169855
-    Longitude:     24.938379
+Location:
+  ID:            3
+  Name:          hel1
+  Description:   Helsinki DC Park 1
+  Network Zone:  eu-central
+  Country:       FI
+  City:          Helsinki
+  Latitude:      60.169855
+  Longitude:     24.938379
 
 Backup Window:  Backups disabled
 

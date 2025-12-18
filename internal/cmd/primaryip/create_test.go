@@ -62,12 +62,14 @@ func TestCreate(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"--name=my-ip", "--type=ipv4", "--datacenter=fsn1-dc14", "--auto-delete", "--label", "foo=bar"})
 
+	expErr := "Warning: The --datacenter flag is deprecated. Use --location instead.\n"
+
 	expOut := `Primary IP 1 created
 IPv4: 192.168.2.1
 `
 
 	require.NoError(t, err)
-	assert.Empty(t, errOut)
+	assert.Equal(t, expErr, errOut)
 	assert.Equal(t, expOut, out)
 }
 
@@ -124,7 +126,9 @@ func TestCreateJSON(t *testing.T) {
 
 	jsonOut, out, err := fx.Run(cmd, []string{"-o=json", "--name=my-ip", "--type=ipv4", "--datacenter=fsn1-dc14", "--auto-delete", "--label", "foo=bar"})
 
-	expOut := "Primary IP 1 created\n"
+	expOut := `Warning: The --datacenter flag is deprecated. Use --location instead.
+Primary IP 1 created
+`
 
 	require.NoError(t, err)
 	assert.Equal(t, expOut, out)
