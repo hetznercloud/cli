@@ -52,6 +52,11 @@ linters:
     gosmopolitan:
       allow-time-local: true
 
+    # TODO: remove the below exception before merging
+    gomoddirectives:
+      replace-allow-list:
+        - github.com/hetznercloud/hcloud-go/v2
+
   exclusions:
     generated: lax
     presets:
@@ -63,6 +68,9 @@ linters:
           - revive
         path: internal/cmd/(util|context)/.+\.go
         text: var-naming
+      - linters:
+          - staticcheck
+        text: Datacenter is deprecated
 
 formatters:
   enable:
