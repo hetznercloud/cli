@@ -28,9 +28,12 @@ var CreateCmd = base.CreateCmd[*hcloud.PrimaryIP]{
 		cmd.Flags().String("name", "", "Name (required)")
 		_ = cmd.MarkFlagRequired("name")
 
-		cmd.Flags().Int64("assignee-id", 0, "Assignee (usually a Server) to assign Primary IP to (required if 'datacenter' is not specified)")
+		cmd.Flags().Int64("assignee-id", 0, "Assignee (usually a Server) to assign Primary IP to")
 
-		cmd.Flags().String("datacenter", "", "Datacenter (ID or name) (required if 'assignee-id' is not specified)")
+		cmd.Flags().String("location", "", "Location of Primary IP")
+		_ = cmd.RegisterFlagCompletionFunc("location", cmpl.SuggestCandidatesF(client.Location().Names))
+
+		cmd.Flags().String("datacenter", "", "Datacenter (ID or name) (deprecated)")
 		_ = cmd.RegisterFlagCompletionFunc("datacenter", cmpl.SuggestCandidatesF(client.Datacenter().Names))
 
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
@@ -40,8 +43,8 @@ var CreateCmd = base.CreateCmd[*hcloud.PrimaryIP]{
 
 		cmd.Flags().Bool("auto-delete", false, "Delete Primary IP if assigned resource is deleted (true, false)")
 
-		cmd.MarkFlagsOneRequired("assignee-id", "datacenter")
-		cmd.MarkFlagsMutuallyExclusive("assignee-id", "datacenter")
+		cmd.MarkFlagsOneRequired("assignee-id", "datacenter", "location")
+		cmd.MarkFlagsMutuallyExclusive("assignee-id", "datacenter", "location")
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, _ []string) (*hcloud.PrimaryIP, any, error) {
@@ -49,6 +52,7 @@ var CreateCmd = base.CreateCmd[*hcloud.PrimaryIP]{
 		name, _ := cmd.Flags().GetString("name")
 		assigneeID, _ := cmd.Flags().GetInt64("assignee-id")
 		datacenter, _ := cmd.Flags().GetString("datacenter")
+		locationIDOrName, _ := cmd.Flags().GetString("location")
 		labels, _ := cmd.Flags().GetStringToString("label")
 		protection, _ := cmd.Flags().GetStringSlice("enable-protection")
 		autoDelete, _ := cmd.Flags().GetBool("auto-delete")
@@ -70,6 +74,19 @@ var CreateCmd = base.CreateCmd[*hcloud.PrimaryIP]{
 		}
 		if cmd.Flags().Changed("auto-delete") {
 			createOpts.AutoDelete = &autoDelete
+		}
+		if cmd.Flags().Changed("location") {
+			location, _, err := s.Client().Location().Get(s, locationIDOrName)
+			if err != nil {
+				return nil, nil, err
+			}
+			if location == nil {
+				return nil, nil, fmt.Errorf("Location not found: %s", locationIDOrName)
+			}
+			createOpts.Location = location.Name
+		}
+		if cmd.Flags().Changed("datacenter") {
+			cmd.PrintErrln("Warning: The --datacenter flag is deprecated. Use --location instead.")
 		}
 
 		result, _, err := s.Client().PrimaryIP().Create(s, createOpts)

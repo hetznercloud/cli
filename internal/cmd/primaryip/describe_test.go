@@ -35,7 +35,7 @@ func TestDescribe(t *testing.T) {
 		Blocked:      true,
 		AutoDelete:   false,
 		AssigneeType: "server",
-		Datacenter:   &hcloud.Datacenter{ID: 0, Location: &hcloud.Location{ID: 0}},
+		Location:     &hcloud.Location{ID: 0},
 	}
 
 	fx.Client.PrimaryIPClient.EXPECT().
@@ -64,20 +64,15 @@ Protection:
 Labels:
   No labels
 
-Datacenter:
-  ID:           0
-  Name:         
-  Description:  
-  
-  Location:
-    ID:            0
-    Name:          
-    Description:   
-    Network Zone:  
-    Country:       
-    City:          
-    Latitude:      0.000000
-    Longitude:     0.000000
+Location:
+  ID:            0
+  Name:          
+  Description:   
+  Network Zone:  
+  Country:       
+  City:          
+  Latitude:      0.000000
+  Longitude:     0.000000
 `, util.Datetime(primaryIP.Created), humanize.Time(primaryIP.Created))
 
 	require.NoError(t, err)
