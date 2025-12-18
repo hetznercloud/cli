@@ -116,7 +116,7 @@ $ hcloud location list --output yaml | yq '.[] | [{"id": .id, "name": .name}]'
 ## Go Template Format
 
 `describe` commands support the Go string template format as well. You can read up on the syntax in the 
-[Go documentation](https://pkg.go.dev/text/template/). The data structures passed to the template are defined
+[Go documentation](https://pkg.go.dev/text/template). The data structures passed to the template are defined
 by our API and can be found in [hcloud-go](https://pkg.go.dev/github.com/hetznercloud/hcloud-go/v2/hcloud/schema).
 
 For example, you could obtain the number of cores of a server using the following command:

@@ -6,7 +6,7 @@ This tutorial will guide you through the process of setting up the hcloud CLI on
 
 Before you begin, ensure you have the following:
 
-- A [Hetzner Cloud account](https://console.hetzner.cloud).
+- A [Hetzner Cloud account](https://console.hetzner.com).
 
 ## 1. Install the hcloud CLI
 
@@ -144,7 +144,7 @@ and source this file from your PowerShell profile.
 The hcloud CLI uses contexts to manage multiple Hetzner Cloud tokens and set configuration preferences.
 
 First, you need to create an API token.
-Follow the instructions in the [Hetzner Cloud documentation](https://docs.hetzner.com/cloud/api/getting-started/generating-api-token) to create your project API token.
+Follow the instructions in the [Hetzner Cloud documentation](https://docs.hetzner.com/cloud/api/getting-started/generating-api-token/) to create your project API token.
 
 Once you have your token, you can create a context using the following command:
 
@@ -179,4 +179,4 @@ ID   NAME        DESCRIPTION                   LOCATION
 If you see this output, congratulations! You have successfully set up the hcloud CLI on your local machine.
 
 If there are any problems, make sure you followed all steps of this tutorial correctly. If there still are problems,
-you can reach out to our [Support](https://console.hetzner.cloud/support) to get help.
+you can reach out to our [Support](https://console.hetzner.com/support) to get help.

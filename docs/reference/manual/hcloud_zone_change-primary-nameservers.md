@@ -6,7 +6,8 @@ Changes the primary nameservers of a secondary Zone
 
 Changes the primary nameservers of a secondary Zone.
 
-Input file has to be in JSON format. You can find the schema at https://docs.hetzner.cloud/reference/cloud#zone-actions-change-a-zone-primary-nameservers
+Input file has to be in JSON format. You can find the schema at
+https://docs.hetzner.cloud/reference/cloud#zone-actions-change-a-zones-primary-nameservers
 
 Example file content:
 

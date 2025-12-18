@@ -44,7 +44,7 @@ func TestAdd(t *testing.T) {
   token = "super secret token"
   [contexts.preferences]
     array_option = ["1", "2", "3"]
-    endpoint = "https://test-endpoint.com"
+    endpoint = "https://example.com"
     quiet = true
     [contexts.preferences.nested]
       array_option = ["1", "2", "3"]
@@ -83,7 +83,7 @@ active_context = "test_context"
   token = "super secret token"
   [contexts.preferences]
     array_option = ["1", "2", "3", "a", "b", "c"]
-    endpoint = "https://test-endpoint.com"
+    endpoint = "https://example.com"
     quiet = true
     [contexts.preferences.nested]
       array_option = ["1", "2", "3"]
@@ -111,7 +111,7 @@ active_context = "test_context"
   token = "super secret token"
   [contexts.preferences]
     array_option = ["1", "2", "3"]
-    endpoint = "https://test-endpoint.com"
+    endpoint = "https://example.com"
     quiet = true
     [contexts.preferences.nested]
       array_option = ["1", "2", "3", "a", "b", "c"]
@@ -140,7 +140,7 @@ active_context = "test_context"
   token = "super secret token"
   [contexts.preferences]
     array_option = ["1", "2", "3"]
-    endpoint = "https://test-endpoint.com"
+    endpoint = "https://example.com"
     quiet = true
     [contexts.preferences.nested]
       array_option = ["1", "2", "3"]
@@ -170,7 +170,7 @@ active_context = "test_context"
   token = "super secret token"
   [contexts.preferences]
     array_option = ["1", "2", "3"]
-    endpoint = "https://test-endpoint.com"
+    endpoint = "https://example.com"
     quiet = true
     [contexts.preferences.nested]
       array_option = ["1", "2", "3"]
@@ -204,7 +204,7 @@ active_context = "test_context"
   token = "super secret token"
   [contexts.preferences]
     array_option = ["1", "2", "3"]
-    endpoint = "https://test-endpoint.com"
+    endpoint = "https://example.com"
     quiet = true
     [contexts.preferences.nested]
       array_option = ["1", "2", "3"]

@@ -80,7 +80,7 @@ hcloud storage-box enable-snapshot-plan backups \
 
 This release adds support for the new [DNS API](https://docs.hetzner.cloud/reference/cloud#dns).
 
-The DNS API is currently in **beta**, which will likely end on 10 November 2025. After the beta ended, it will no longer be possible to create new zones in the old DNS system. See the [DNS Beta FAQ](https://docs.hetzner.com/networking/dns/faq/beta) for more details.
+The DNS API is currently in **beta**, which will likely end on 10 November 2025. After the beta ended, it will no longer be possible to create new zones in the old DNS system. See the [DNS Beta FAQ](https://docs.hetzner.com/networking/dns/faq/beta/) for more details.
 
 Future minor releases of this project may include breaking changes for features that are related to the DNS API.
 

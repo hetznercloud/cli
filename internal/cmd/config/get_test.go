@@ -34,7 +34,7 @@ func TestGet(t *testing.T) {
   name = "test_context"
   token = "super secret token"
   [contexts.preferences]
-    endpoint = "https://test-endpoint.com"
+    endpoint = "https://example.com"
     quiet = true
     [contexts.preferences.deeply]
       [contexts.preferences.deeply.nested]
@@ -66,7 +66,7 @@ func TestGet(t *testing.T) {
 		},
 		{
 			key:    "endpoint",
-			expOut: "https://test-endpoint.com\n",
+			expOut: "https://example.com\n",
 		},
 		{
 			key:    "poll-interval",

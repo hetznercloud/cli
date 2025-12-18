@@ -11,4 +11,4 @@ This documentation is written and organized following the [Diátaxis](https://di
 ## Getting help
 
 - 🐛 Report bugs using [our issue tracker](https://github.com/hetznercloud/cli/issues/new?template=bug.yaml).
-- 🙋 If you need help, reach us using the [Support Center](https://console.hetzner.cloud/support).
+- 🙋 If you need help, reach us using the [Support Center](https://console.hetzner.com/support).

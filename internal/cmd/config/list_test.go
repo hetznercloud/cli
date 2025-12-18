@@ -34,7 +34,7 @@ func TestList(t *testing.T) {
   name = "test_context"
   token = "super secret token"
   [contexts.preferences]
-    endpoint = "https://test-endpoint.com"
+    endpoint = "https://example.com"
     quiet = true
     [contexts.preferences.deeply]
       [contexts.preferences.deeply.nested]
@@ -58,14 +58,14 @@ func TestList(t *testing.T) {
 		{
 			name: "default",
 			args: []string{},
-			expOut: `KEY                    VALUE                    
-context                test_context             
-debug                  yes                      
-deeply.nested.option   bar                      
-endpoint               https://test-endpoint.com
-poll-interval          1.234s                   
-quiet                  yes                      
-token                  [redacted]               
+			expOut: `KEY                    VALUE              
+context                test_context       
+debug                  yes                
+deeply.nested.option   bar                
+endpoint               https://example.com
+poll-interval          1.234s             
+quiet                  yes                
+token                  [redacted]         
 `,
 		},
 		{
@@ -84,26 +84,26 @@ token
 		{
 			name: "no header",
 			args: []string{"-o=noheader"},
-			expOut: `context                test_context             
-debug                  yes                      
-deeply.nested.option   bar                      
-endpoint               https://test-endpoint.com
-poll-interval          1.234s                   
-quiet                  yes                      
-token                  [redacted]               
+			expOut: `context                test_context       
+debug                  yes                
+deeply.nested.option   bar                
+endpoint               https://example.com
+poll-interval          1.234s             
+quiet                  yes                
+token                  [redacted]         
 `,
 		},
 		{
 			name: "allow sensitive",
 			args: []string{"--allow-sensitive"},
-			expOut: `KEY                    VALUE                    
-context                test_context             
-debug                  yes                      
-deeply.nested.option   bar                      
-endpoint               https://test-endpoint.com
-poll-interval          1.234s                   
-quiet                  yes                      
-token                  super secret token       
+			expOut: `KEY                    VALUE              
+context                test_context       
+debug                  yes                
+deeply.nested.option   bar                
+endpoint               https://example.com
+poll-interval          1.234s             
+quiet                  yes                
+token                  super secret token 
 `,
 		},
 		{
@@ -125,7 +125,7 @@ token                  super secret token
     },
     {
       "key": "endpoint",
-      "value": "https://test-endpoint.com"
+      "value": "https://example.com"
     },
     {
       "key": "poll-interval",
@@ -165,6 +165,6 @@ token                  super secret token
 func setTestValues(cfg config.Config) {
 	_ = os.Setenv("HCLOUD_POLL_INTERVAL", "1234ms")
 	_ = os.Setenv("HCLOUD_DEBUG", "true")
-	_ = cfg.FlagSet().Set("endpoint", "https://test-endpoint.com")
+	_ = cfg.FlagSet().Set("endpoint", "https://example.com")
 	_ = cfg.FlagSet().Set("quiet", "true")
 }
