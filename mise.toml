@@ -5,7 +5,3 @@ go = "1.25.5"
 "github:goreleaser/goreleaser" = "v2.13.1"
 "github:anchore/quill" = "v0.5.1"
 "github:jstemmer/go-junit-report" = "v2.1.0"
-
-[settings]
-# Experimental features are needed for the Go backend
-experimental = true
