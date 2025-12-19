@@ -29,7 +29,7 @@ func TestRequestConsole(t *testing.T) {
 		Return(hcloud.ServerRequestConsoleResult{
 			Action:   &hcloud.Action{ID: 789},
 			Password: "root-password",
-			WSSURL:   "wss://console.hetzner.cloud/?token=123",
+			WSSURL:   "wss://console.hetzner.com/?token=123",
 		}, nil, nil)
 	fx.ActionWaiter.EXPECT().
 		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 789}).
@@ -40,7 +40,7 @@ func TestRequestConsole(t *testing.T) {
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
-	assert.Equal(t, "Console for Server 123:\nWebSocket URL: wss://console.hetzner.cloud/?token=123\nVNC Password: root-password\n", out)
+	assert.Equal(t, "Console for Server 123:\nWebSocket URL: wss://console.hetzner.com/?token=123\nVNC Password: root-password\n", out)
 }
 
 func TestRequestConsoleJSON(t *testing.T) {
@@ -60,7 +60,7 @@ func TestRequestConsoleJSON(t *testing.T) {
 		Return(hcloud.ServerRequestConsoleResult{
 			Action:   &hcloud.Action{ID: 789},
 			Password: "root-password",
-			WSSURL:   "wss://console.hetzner.cloud/?token=123",
+			WSSURL:   "wss://console.hetzner.com/?token=123",
 		}, nil, nil)
 	fx.ActionWaiter.EXPECT().
 		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 789}).
@@ -71,5 +71,5 @@ func TestRequestConsoleJSON(t *testing.T) {
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
-	assert.JSONEq(t, `{"wss_url": "wss://console.hetzner.cloud/?token=123", "password": "root-password"}`, out)
+	assert.JSONEq(t, `{"wss_url": "wss://console.hetzner.com/?token=123", "password": "root-password"}`, out)
 }

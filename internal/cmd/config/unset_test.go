@@ -43,7 +43,7 @@ func TestUnset(t *testing.T) {
   name = "test_context"
   token = "super secret token"
   [contexts.preferences]
-    endpoint = "https://test-endpoint.com"
+    endpoint = "https://example.com"
     quiet = true
     [contexts.preferences.deeply]
       [contexts.preferences.deeply.nested]
@@ -85,7 +85,7 @@ active_context = "test_context"
   name = "test_context"
   token = "super secret token"
   [contexts.preferences]
-    endpoint = "https://test-endpoint.com"
+    endpoint = "https://example.com"
     [contexts.preferences.deeply]
       [contexts.preferences.deeply.nested]
         option = "bar"
@@ -122,7 +122,7 @@ active_context = "test_context"
   name = "test_context"
   token = "super secret token"
   [contexts.preferences]
-    endpoint = "https://test-endpoint.com"
+    endpoint = "https://example.com"
     quiet = true
     [contexts.preferences.deeply]
       [contexts.preferences.deeply.nested]
@@ -149,7 +149,7 @@ active_context = "test_context"
   name = "test_context"
   token = "super secret token"
   [contexts.preferences]
-    endpoint = "https://test-endpoint.com"
+    endpoint = "https://example.com"
     quiet = true
     [contexts.preferences.deeply]
       [contexts.preferences.deeply.nested]
@@ -187,7 +187,7 @@ active_context = "test_context"
   name = "test_context"
   token = "super secret token"
   [contexts.preferences]
-    endpoint = "https://test-endpoint.com"
+    endpoint = "https://example.com"
     quiet = true
     [contexts.preferences.deeply]
       [contexts.preferences.deeply.nested]
@@ -217,7 +217,7 @@ active_context = "test_context"
   name = "test_context"
   token = "super secret token"
   [contexts.preferences]
-    endpoint = "https://test-endpoint.com"
+    endpoint = "https://example.com"
     quiet = true
     [contexts.preferences.deeply]
       [contexts.preferences.deeply.nested]
@@ -245,7 +245,7 @@ active_context = "test_context"
   name = "test_context"
   token = "super secret token"
   [contexts.preferences]
-    endpoint = "https://test-endpoint.com"
+    endpoint = "https://example.com"
     quiet = true
     [contexts.preferences.nested]
       option = "foo"
