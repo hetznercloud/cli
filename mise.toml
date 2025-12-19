@@ -1,10 +1,10 @@
 [tools]
 go = "1.25.5"
 "go:go.uber.org/mock/mockgen" = "v0.6.0"
-"ubi:golangci/golangci-lint" = "2.7.2"
-"ubi:goreleaser/goreleaser" = "v2.13.1"
-"ubi:anchore/quill" = "v0.5.1"
-"ubi:jstemmer/go-junit-report" = "v2.1.0"
+"github:golangci/golangci-lint" = "2.7.2"
+"github:goreleaser/goreleaser" = "v2.13.1"
+"github:anchore/quill" = "v0.5.1"
+"github:jstemmer/go-junit-report" = "v2.1.0"
 
 [settings]
 # Experimental features are needed for the Go backend
