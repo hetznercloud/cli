@@ -510,3 +510,19 @@ func (mr *MockZoneClientMockRecorder) UpdateRRSet(ctx, rrset, opts any) *gomock.
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateRRSet", reflect.TypeOf((*MockZoneClient)(nil).UpdateRRSet), ctx, rrset, opts)
 }
+
+// UpdateRRSetRecords mocks base method.
+func (m *MockZoneClient) UpdateRRSetRecords(ctx context.Context, rrset *hcloud.ZoneRRSet, opts hcloud.ZoneRRSetUpdateRecordsOpts) (*hcloud.Action, *hcloud.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "UpdateRRSetRecords", ctx, rrset, opts)
+	ret0, _ := ret[0].(*hcloud.Action)
+	ret1, _ := ret[1].(*hcloud.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// UpdateRRSetRecords indicates an expected call of UpdateRRSetRecords.
+func (mr *MockZoneClientMockRecorder) UpdateRRSetRecords(ctx, rrset, opts any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateRRSetRecords", reflect.TypeOf((*MockZoneClient)(nil).UpdateRRSetRecords), ctx, rrset, opts)
+}
