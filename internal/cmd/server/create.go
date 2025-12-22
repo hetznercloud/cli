@@ -433,6 +433,8 @@ func createOptsFromFlags(
 	}
 
 	if datacenterIDOrName != "" {
+		cmd.PrintErrln("Warning: The --datacenter flag is deprecated. Use --location instead.")
+
 		var datacenter *hcloud.Datacenter
 		datacenter, _, err = s.Client().Datacenter().Get(s, datacenterIDOrName)
 		if err != nil {
@@ -444,6 +446,7 @@ func createOptsFromFlags(
 		}
 		createOpts.Datacenter = datacenter
 	}
+
 	if locationIDOrName != "" {
 		var location *hcloud.Location
 		location, _, err = s.Client().Location().Get(s, locationIDOrName)
