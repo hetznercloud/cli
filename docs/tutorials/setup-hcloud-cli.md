@@ -45,7 +45,17 @@ On Linux and macOS you can also install the hcloud CLI using Homebrew:
 brew install hcloud
 ```
 
-### 1.4 Installation using scoop
+### 1.4 Installation using mise-en-place
+
+On Linux, macOS and Windows, if you are using [mise-en-place](https://github.com/jdx/mise), the polyglot tool version manager you can use a command like this to install `hcloud` cli:
+
+```bash
+mise use -g hcloud@latest
+```
+
+*Note: This repository is using `mise` as explained in [CONTRIBUTING](../../CONTRIBUTING.md)*
+
+### 1.5 Installation using scoop
 
 On Windows, you can install `hcloud` using scoop:
 
@@ -53,7 +63,7 @@ On Windows, you can install `hcloud` using scoop:
 scoop install hcloud
 ```
 
-### 1.5 Using hcloud with Docker
+### 1.6 Using hcloud with Docker
 
 Instead of installing hcloud on the host, you can also use our docker image at `hetznercloud/cli`.
 
