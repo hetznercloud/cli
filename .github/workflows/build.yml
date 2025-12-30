@@ -18,7 +18,7 @@ jobs:
       - name: Set up tools
         uses: jdx/mise-action@v3
         with:
-          version: 2025.12.12 # renovate: datasource=github-releases depName=jdx/mise
+          version: 2025.12.13 # renovate: datasource=github-releases depName=jdx/mise
 
       - name: Run GoReleaser
         run: goreleaser release --clean --snapshot --skip=sign
