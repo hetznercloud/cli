@@ -2,6 +2,13 @@
 
 Create a Primary IP
 
+### Synopsis
+
+Create a Primary IP.
+
+The --datacenter flag is deprecated. Use --location or --assignee-id instead.
+See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters
+
 ```
 hcloud primary-ip create [options] --type <ipv4|ipv6> --name <name>
 ```

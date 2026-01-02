@@ -16,8 +16,12 @@ import (
 var CreateCmd = base.CreateCmd[*hcloud.PrimaryIP]{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:                   "create [options] --type <ipv4|ipv6> --name <name>",
-			Short:                 "Create a Primary IP",
+			Use:   "create [options] --type <ipv4|ipv6> --name <name>",
+			Short: "Create a Primary IP",
+			Long: `Create a Primary IP.
+
+The --datacenter flag is deprecated. Use --location or --assignee-id instead.
+See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters`,
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
 		}
@@ -86,7 +90,7 @@ var CreateCmd = base.CreateCmd[*hcloud.PrimaryIP]{
 			createOpts.Location = location.Name
 		}
 		if cmd.Flags().Changed("datacenter") {
-			cmd.PrintErrln("Warning: The --datacenter flag is deprecated. Use --location instead.")
+			cmd.PrintErrln("Warning: The --datacenter flag is deprecated. Use --location or --assignee-id instead.")
 		}
 
 		result, _, err := s.Client().PrimaryIP().Create(s, createOpts)

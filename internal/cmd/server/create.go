@@ -41,6 +41,10 @@ var CreateCmd = base.CreateCmd[*createResult]{
 		cmd := &cobra.Command{
 			Use:   "create [options] --name <name> --type <server-type> --image <image>",
 			Short: "Create a Server",
+			Long: `Create a Server.
+
+The --datacenter flag is deprecated. Use --location instead.
+See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters`,
 		}
 
 		cmd.Flags().String("name", "", "Server name (required)")
@@ -57,7 +61,7 @@ var CreateCmd = base.CreateCmd[*createResult]{
 		cmd.Flags().String("location", "", "Location (ID or name)")
 		_ = cmd.RegisterFlagCompletionFunc("location", cmpl.SuggestCandidatesF(client.Location().Names))
 
-		cmd.Flags().String("datacenter", "", "Datacenter (ID or name)")
+		cmd.Flags().String("datacenter", "", "Datacenter (ID or name) (deprecated)")
 		_ = cmd.RegisterFlagCompletionFunc("datacenter", cmpl.SuggestCandidatesF(client.Datacenter().Names))
 
 		cmd.Flags().StringSlice("ssh-key", nil, "ID or name of SSH Key to inject (can be specified multiple times)")
