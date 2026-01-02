@@ -63,6 +63,9 @@ linters:
           - revive
         path: internal/cmd/(util|context)/.+\.go
         text: var-naming
+      - linters:
+          - staticcheck
+        text: Datacenter is deprecated
 
 formatters:
   enable:
