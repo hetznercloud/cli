@@ -53,7 +53,8 @@ On Linux, macOS and Windows, if you are using [mise-en-place](https://github.com
 mise use -g hcloud@latest
 ```
 
-*Note: This repository is using `mise` as explained in [CONTRIBUTING](../../CONTRIBUTING.md)*
+> [!NOTE]  
+> This repository is using `mise` as explained in [CONTRIBUTING](../../CONTRIBUTING.md)
 
 ### 1.5 Installation using scoop
 
