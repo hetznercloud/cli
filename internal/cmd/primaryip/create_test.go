@@ -62,7 +62,7 @@ func TestCreate(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"--name=my-ip", "--type=ipv4", "--datacenter=fsn1-dc14", "--auto-delete", "--label", "foo=bar"})
 
-	expErr := "Warning: The --datacenter flag is deprecated. Use --location instead.\n"
+	expErr := "Warning: The --datacenter flag is deprecated. Use --location or --assignee-id instead.\n"
 
 	expOut := `Primary IP 1 created
 IPv4: 192.168.2.1
@@ -126,7 +126,7 @@ func TestCreateJSON(t *testing.T) {
 
 	jsonOut, out, err := fx.Run(cmd, []string{"-o=json", "--name=my-ip", "--type=ipv4", "--datacenter=fsn1-dc14", "--auto-delete", "--label", "foo=bar"})
 
-	expOut := `Warning: The --datacenter flag is deprecated. Use --location instead.
+	expOut := `Warning: The --datacenter flag is deprecated. Use --location or --assignee-id instead.
 Primary IP 1 created
 `
 
