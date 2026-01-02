@@ -2,6 +2,13 @@
 
 Create a Server
 
+### Synopsis
+
+Create a Server.
+
+The --datacenter flag is deprecated. Use --location instead.
+See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters
+
 ```
 hcloud server create [options] --name <name> --type <server-type> --image <image>
 ```
@@ -11,7 +18,7 @@ hcloud server create [options] --name <name> --type <server-type> --image <image
 ```
       --allow-deprecated-image            Enable the use of deprecated Images (default: false) (true, false)
       --automount                         Automount Volumes after attach (default: false) (true, false)
-      --datacenter string                 Datacenter (ID or name)
+      --datacenter string                 Datacenter (ID or name) (deprecated)
       --enable-backup                     Enable automatic backups (true, false)
       --enable-protection strings         Enable protection (delete, rebuild) (default: none)
       --firewall strings                  ID or name of Firewall to attach the Server to (can be specified multiple times)

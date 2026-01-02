@@ -41,6 +41,10 @@ var CreateCmd = base.CreateCmd[*createResult]{
 		cmd := &cobra.Command{
 			Use:   "create [options] --name <name> --type <server-type> --image <image>",
 			Short: "Create a Server",
+			Long: `Create a Server.
+
+The --datacenter flag is deprecated. Use --location instead.
+See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters`,
 		}
 
 		cmd.Flags().String("name", "", "Server name (required)")
@@ -57,7 +61,7 @@ var CreateCmd = base.CreateCmd[*createResult]{
 		cmd.Flags().String("location", "", "Location (ID or name)")
 		_ = cmd.RegisterFlagCompletionFunc("location", cmpl.SuggestCandidatesF(client.Location().Names))
 
-		cmd.Flags().String("datacenter", "", "Datacenter (ID or name)")
+		cmd.Flags().String("datacenter", "", "Datacenter (ID or name) (deprecated)")
 		_ = cmd.RegisterFlagCompletionFunc("datacenter", cmpl.SuggestCandidatesF(client.Datacenter().Names))
 
 		cmd.Flags().StringSlice("ssh-key", nil, "ID or name of SSH Key to inject (can be specified multiple times)")
@@ -433,6 +437,8 @@ func createOptsFromFlags(
 	}
 
 	if datacenterIDOrName != "" {
+		cmd.PrintErrln("Warning: The --datacenter flag is deprecated. Use --location instead.")
+
 		var datacenter *hcloud.Datacenter
 		datacenter, _, err = s.Client().Datacenter().Get(s, datacenterIDOrName)
 		if err != nil {
@@ -444,6 +450,7 @@ func createOptsFromFlags(
 		}
 		createOpts.Datacenter = datacenter
 	}
+
 	if locationIDOrName != "" {
 		var location *hcloud.Location
 		location, _, err = s.Client().Location().Get(s, locationIDOrName)
