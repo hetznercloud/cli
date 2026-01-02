@@ -47,7 +47,7 @@ brew install hcloud
 
 ### 1.4 Installation using mise-en-place
 
-On Linux, macOS and Windows, if you are using [mise-en-place](https://github.com/jdx/mise), the polyglot tool version manager you can use a command like this to install `hcloud` cli:
+On Linux, macOS and Windows, if you are using [mise-en-place](https://github.com/jdx/mise), you can use this command to install `hcloud` globally:
 
 ```bash
 mise use -g hcloud@latest
