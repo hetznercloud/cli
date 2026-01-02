@@ -5,6 +5,16 @@
     "auto_delete": true,
     "blocked": false,
     "created": "2016-01-30T23:50:00Z",
+    "location": {
+      "city": "",
+      "country": "",
+      "description": "",
+      "id": 0,
+      "latitude": 0,
+      "longitude": 0,
+      "name": "",
+      "network_zone": ""
+    },
     "datacenter": {
       "description": "",
       "id": 1,
