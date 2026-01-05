@@ -444,8 +444,7 @@ func createOptsFromFlags(
 		// Else -> Backwards-compatible split
 		var datacenterID int64
 		datacenterID, err = strconv.ParseInt(datacenterIDOrName, 10, 64)
-
-		if err != nil {
+		if err == nil {
 			// Input was a valid number/ID
 			var datacenter *hcloud.Datacenter
 			datacenter, _, err = s.Client().Datacenter().GetByID(s, datacenterID)
@@ -466,6 +465,7 @@ func createOptsFromFlags(
 
 			if len(parts) != 2 {
 				err = fmt.Errorf("Datacenter name is not valid, expected format $LOCATION-$DATACENTER, but got: %s", datacenterIDOrName)
+				return
 			}
 
 			createOpts.Location = &hcloud.Location{Name: parts[0]}

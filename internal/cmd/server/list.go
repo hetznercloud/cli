@@ -91,9 +91,9 @@ var ListCmd = &base.ListCmd[*hcloud.Server, schema.Server]{
 			AddFieldFn("datacenter", func(server *hcloud.Server) string {
 				if server.Datacenter != nil {
 					return server.Datacenter.Name
-				} else {
-					return "-"
 				}
+				return "-"
+
 			}).
 			AddFieldFn("location", func(server *hcloud.Server) string {
 				return server.Location.Name

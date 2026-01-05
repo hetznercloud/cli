@@ -7,7 +7,7 @@ Create a Primary IP
 Create a Primary IP.
 
 The --datacenter flag is deprecated. Use --location or --assignee-id instead.
-See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters
+See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters.
 
 ```
 hcloud primary-ip create [options] --type <ipv4|ipv6> --name <name>
@@ -18,11 +18,11 @@ hcloud primary-ip create [options] --type <ipv4|ipv6> --name <name>
 ```
       --assignee-id int             Assignee (usually a Server) to assign Primary IP to
       --auto-delete                 Delete Primary IP if assigned resource is deleted (true, false)
-      --datacenter string           Datacenter (ID or name) (deprecated)
+      --datacenter string           Datacenter (name) (deprecated)
       --enable-protection strings   Enable protection (delete) (default: none)
   -h, --help                        help for create
       --label stringToString        User-defined labels ('key=value') (can be specified multiple times) (default [])
-      --location string             Location of Primary IP
+      --location string             Location (ID or name) of Primary IP
       --name string                 Name (required)
   -o, --output stringArray          output options: json|yaml
       --type string                 Type (ipv4 or ipv6) (required)

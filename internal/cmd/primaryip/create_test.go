@@ -39,7 +39,7 @@ func TestCreate(t *testing.T) {
 			hcloud.PrimaryIPCreateOpts{
 				Name:         "my-ip",
 				Type:         "ipv4",
-				Datacenter:   "fsn1-dc14",
+				Location:     "fsn1",
 				Labels:       map[string]string{"foo": "bar"},
 				AssigneeType: "server",
 				AutoDelete:   hcloud.Ptr(true),
@@ -87,6 +87,9 @@ func TestCreateJSON(t *testing.T) {
 		Name: "my-ip",
 		IP:   net.ParseIP("192.168.2.1"),
 		Type: "ipv4",
+		Location: &hcloud.Location{
+			Name: "fsn1",
+		},
 		Datacenter: &hcloud.Datacenter{
 			ID:       1,
 			Name:     "fsn1-dc14",
@@ -106,7 +109,7 @@ func TestCreateJSON(t *testing.T) {
 			hcloud.PrimaryIPCreateOpts{
 				Name:         "my-ip",
 				Type:         "ipv4",
-				Datacenter:   "fsn1-dc14",
+				Location:     "fsn1",
 				Labels:       map[string]string{"foo": "bar"},
 				AssigneeType: "server",
 				AutoDelete:   hcloud.Ptr(true),
