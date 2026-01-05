@@ -1,5 +1,28 @@
 # Changelog
 
+## [v1.59.0](https://github.com/hetznercloud/cli/releases/tag/v1.59.0)
+
+### Deprecation of `datacenter` attribute for Primary IPs and Servers
+
+The `datacenter` attribute is deprecated in the `Primary IPs` and `Servers` API resources and will be removed after 1 July 2026. See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters for more details.
+
+The `location` attribute already exists for Servers, and was added for Primary IPs.
+
+Therefor the `datacenter` attribute is deprecated in favor of the `location` attribute in the following commands:
+
+- `hcloud server create`
+- `hcloud server describe`
+- `hcloud server list`
+- `hcloud primary-ip create`
+- `hcloud primary-ip describe`
+- `hcloud primary-ip list`
+
+In list commands, the `datacenter` columns is not longer shown by default, and is replaced with the `location` column.
+
+### Features
+
+- **server,primary-ip**: deprecate datacenter (#1278)
+
 ## [v1.58.0](https://github.com/hetznercloud/cli/releases/tag/v1.58.0)
 
 ### Features
