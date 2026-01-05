@@ -9,6 +9,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/datacenter"
+	"github.com/hetznercloud/cli/internal/cmd/location"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
@@ -62,8 +63,15 @@ var DescribeCmd = base.DescribeCmd[*hcloud.PrimaryIP]{
 		util.DescribeLabels(out, primaryIP.Labels, "")
 
 		fmt.Fprintln(out)
-		fmt.Fprintf(out, "Datacenter:\n")
-		fmt.Fprintf(out, "%s", util.PrefixLines(datacenter.DescribeDatacenter(s.Client(), primaryIP.Datacenter, true), "  "))
+		fmt.Fprintf(out, "Location:\n")
+		fmt.Fprintf(out, "%s", util.PrefixLines(location.DescribeLocation(primaryIP.Location), "  "))
+
+		if primaryIP.Datacenter != nil {
+			fmt.Fprintln(out)
+			fmt.Fprintf(out, "Datacenter:\n")
+			fmt.Fprintf(out, "%s", util.PrefixLines(datacenter.DescribeDatacenter(s.Client(), primaryIP.Datacenter, true), "  "))
+		}
+
 		return nil
 	},
 }

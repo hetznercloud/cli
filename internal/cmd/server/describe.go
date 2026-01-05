@@ -12,6 +12,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/datacenter"
 	"github.com/hetznercloud/cli/internal/cmd/image"
 	"github.com/hetznercloud/cli/internal/cmd/iso"
+	"github.com/hetznercloud/cli/internal/cmd/location"
 	"github.com/hetznercloud/cli/internal/cmd/placementgroup"
 	"github.com/hetznercloud/cli/internal/cmd/servertype"
 	"github.com/hetznercloud/cli/internal/cmd/util"
@@ -45,7 +46,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Server]{
 		// As we already know the location the server is in, we can show the deprecation info
 		// of that server type in that specific location.
 		locationInfoIndex := slices.IndexFunc(server.ServerType.Locations, func(locInfo hcloud.ServerTypeLocation) bool {
-			return locInfo.Location.Name == server.Datacenter.Location.Name
+			return locInfo.Location.Name == server.Location.Name
 		})
 		if locationInfoIndex >= 0 {
 			if text := util.DescribeDeprecation(server.ServerType.Locations[locationInfoIndex]); text != "" {
@@ -145,8 +146,14 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Server]{
 		}
 
 		fmt.Fprintln(out)
-		fmt.Fprintf(out, "Datacenter:\n")
-		fmt.Fprint(out, util.PrefixLines(datacenter.DescribeDatacenter(s.Client(), server.Datacenter, true), "  "))
+		fmt.Fprintf(out, "Location:\n")
+		fmt.Fprint(out, util.PrefixLines(location.DescribeLocation(server.Location), "  "))
+
+		if server.Datacenter != nil {
+			fmt.Fprintln(out)
+			fmt.Fprintf(out, "Datacenter:\n")
+			fmt.Fprintf(out, "%s", util.PrefixLines(datacenter.DescribeDatacenter(s.Client(), server.Datacenter, true), "  "))
+		}
 
 		fmt.Fprintln(out)
 		if server.BackupWindow != "" {

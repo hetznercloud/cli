@@ -41,6 +41,7 @@ func TestListAll(t *testing.T) {
 					},
 				},
 				Created:    time.Now().Add(-72 * time.Hour),
+				Location:   &hcloud.Location{Name: "hel1"},
 				Datacenter: &hcloud.Datacenter{Name: "hel1-dc2"},
 			},
 		}, nil)
@@ -236,8 +237,8 @@ func TestListAll(t *testing.T) {
 
 	expOut := `SERVERS
 ---
-ID    NAME        STATUS    IPV4        IPV6   PRIVATE NET   DATACENTER   AGE
-123   my server   running   192.0.2.1   -      -             hel1-dc2     3d 
+ID    NAME        STATUS    IPV4        IPV6   PRIVATE NET   LOCATION   AGE
+123   my server   running   192.0.2.1   -      -             hel1       3d 
 
 IMAGES
 ---

@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	humanize "github.com/dustin/go-humanize"
+	"github.com/dustin/go-humanize"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
@@ -37,7 +37,7 @@ var serverStatusStrings = []string{
 var ListCmd = &base.ListCmd[*hcloud.Server, schema.Server]{
 	ResourceNamePlural: "Servers",
 	JSONKeyGetByName:   "servers",
-	DefaultColumns:     []string{"id", "name", "status", "ipv4", "ipv6", "private_net", "datacenter", "age"},
+	DefaultColumns:     []string{"id", "name", "status", "ipv4", "ipv6", "private_net", "location", "age"},
 	SortOption:         config.OptionSortServer,
 
 	AdditionalFlags: func(cmd *cobra.Command) {
@@ -89,10 +89,14 @@ var ListCmd = &base.ListCmd[*hcloud.Server, schema.Server]{
 				return humanize.IBytes(server.OutgoingTraffic)
 			}).
 			AddFieldFn("datacenter", func(server *hcloud.Server) string {
-				return server.Datacenter.Name
+				if server.Datacenter != nil {
+					return server.Datacenter.Name
+				}
+				return "-"
+
 			}).
 			AddFieldFn("location", func(server *hcloud.Server) string {
-				return server.Datacenter.Location.Name
+				return server.Location.Name
 			}).
 			AddFieldFn("labels", func(server *hcloud.Server) string {
 				return util.LabelsToString(server.Labels)
