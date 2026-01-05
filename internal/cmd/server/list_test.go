@@ -34,10 +34,10 @@ func TestList(t *testing.T) {
 		).
 		Return([]*hcloud.Server{
 			{
-				ID:         123,
-				Name:       "test",
-				Status:     hcloud.ServerStatusRunning,
-				Datacenter: &hcloud.Datacenter{Name: "fsn1-dc14"},
+				ID:       123,
+				Name:     "test",
+				Status:   hcloud.ServerStatusRunning,
+				Location: &hcloud.Location{Name: "fsn1"},
 				PublicNet: hcloud.ServerPublicNet{
 					IPv4: hcloud.ServerPublicNetIPv4{
 						IP: net.ParseIP("192.168.2.1"),
@@ -49,8 +49,8 @@ func TestList(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"--status", "running"})
 
-	expOut := `ID    NAME   STATUS    IPV4          IPV6   PRIVATE NET   DATACENTER   AGE
-123   test   running   192.168.2.1   -      -             fsn1-dc14    20s
+	expOut := `ID    NAME   STATUS    IPV4          IPV6   PRIVATE NET   LOCATION   AGE
+123   test   running   192.168.2.1   -      -             fsn1       20s
 `
 
 	require.NoError(t, err)

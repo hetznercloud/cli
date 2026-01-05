@@ -9,6 +9,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
+	"github.com/hetznercloud/cli/internal/cmd/datacenter"
 	"github.com/hetznercloud/cli/internal/cmd/image"
 	"github.com/hetznercloud/cli/internal/cmd/iso"
 	"github.com/hetznercloud/cli/internal/cmd/location"
@@ -147,6 +148,12 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Server]{
 		fmt.Fprintln(out)
 		fmt.Fprintf(out, "Location:\n")
 		fmt.Fprint(out, util.PrefixLines(location.DescribeLocation(server.Location), "  "))
+
+		if server.Datacenter != nil {
+			fmt.Fprintln(out)
+			fmt.Fprintf(out, "Datacenter:\n")
+			fmt.Fprintf(out, "%s", util.PrefixLines(datacenter.DescribeDatacenter(s.Client(), server.Datacenter, true), "  "))
+		}
 
 		fmt.Fprintln(out)
 		if server.BackupWindow != "" {

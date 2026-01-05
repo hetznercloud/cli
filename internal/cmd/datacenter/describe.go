@@ -41,13 +41,13 @@ func DescribeDatacenter(client hcapi2.Client, datacenter *hcloud.Datacenter, sho
 	fmt.Fprintf(&sb, "Name:\t%s\n", datacenter.Name)
 	fmt.Fprintf(&sb, "Description:\t%s\n", datacenter.Description)
 
-	fmt.Fprintln(&sb)
-	fmt.Fprintf(&sb, "Location:\n")
-	fmt.Fprint(&sb, util.PrefixLines(location.DescribeLocation(datacenter.Location), "  "))
-
 	if short {
 		return sb.String()
 	}
+
+	fmt.Fprintln(&sb)
+	fmt.Fprintf(&sb, "Location:\n")
+	fmt.Fprint(&sb, util.PrefixLines(location.DescribeLocation(datacenter.Location), "  "))
 
 	type ServerTypeStatus struct {
 		ID        int64
