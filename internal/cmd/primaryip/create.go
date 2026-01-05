@@ -2,6 +2,7 @@ package primaryip
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/spf13/cobra"
 
@@ -34,10 +35,10 @@ See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters`,
 
 		cmd.Flags().Int64("assignee-id", 0, "Assignee (usually a Server) to assign Primary IP to")
 
-		cmd.Flags().String("location", "", "Location of Primary IP")
+		cmd.Flags().String("location", "", "Location (ID or name) of Primary IP")
 		_ = cmd.RegisterFlagCompletionFunc("location", cmpl.SuggestCandidatesF(client.Location().Names))
 
-		cmd.Flags().String("datacenter", "", "Datacenter (ID or name) (deprecated)")
+		cmd.Flags().String("datacenter", "", "Datacenter (name) (deprecated)")
 		_ = cmd.RegisterFlagCompletionFunc("datacenter", cmpl.SuggestCandidatesF(client.Datacenter().Names))
 
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
@@ -70,7 +71,6 @@ See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters`,
 			Type:         hcloud.PrimaryIPType(typ),
 			Name:         name,
 			AssigneeType: "server",
-			Datacenter:   datacenter,
 			Labels:       labels,
 		}
 		if assigneeID != 0 {
@@ -91,6 +91,17 @@ See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters`,
 		}
 		if cmd.Flags().Changed("datacenter") {
 			cmd.PrintErrln("Warning: The --datacenter flag is deprecated. Use --location or --assignee-id instead.")
+
+			// Backward compatible datacenter argument.
+			// datacenter hel1-dc2 => location hel1
+			parts := strings.Split(datacenter, "-")
+
+			if len(parts) != 2 {
+				return nil, nil, fmt.Errorf("Datacenter name is not valid, expected format $LOCATION-$DATACENTER, but got: %s", datacenter)
+			}
+
+			locationName := parts[0]
+			createOpts.Location = locationName
 		}
 
 		result, _, err := s.Client().PrimaryIP().Create(s, createOpts)

@@ -9,6 +9,7 @@ import (
 	"mime/multipart"
 	"net/textproto"
 	"os"
+	"strconv"
 	"strings"
 	"time"
 
@@ -439,16 +440,36 @@ func createOptsFromFlags(
 	if datacenterIDOrName != "" {
 		cmd.PrintErrln("Warning: The --datacenter flag is deprecated. Use --location instead.")
 
-		var datacenter *hcloud.Datacenter
-		datacenter, _, err = s.Client().Datacenter().Get(s, datacenterIDOrName)
+		// If parseable as ID -> GetByID and use Location Name
+		// Else -> Backwards-compatible split
+		var datacenterID int64
+		datacenterID, err = strconv.ParseInt(datacenterIDOrName, 10, 64)
+
 		if err != nil {
-			return
+			// Input was a valid number/ID
+			var datacenter *hcloud.Datacenter
+			datacenter, _, err = s.Client().Datacenter().GetByID(s, datacenterID)
+			if err != nil {
+				return
+			}
+			if datacenter == nil {
+				err = fmt.Errorf("Datacenter not found: %s", datacenterIDOrName)
+				return
+			}
+			createOpts.Location = datacenter.Location
+		} else {
+			// Input was not a valid number/ID, probably DC name
+
+			// Backward compatible datacenter argument.
+			// datacenter hel1-dc2 => location hel1
+			parts := strings.Split(datacenterIDOrName, "-")
+
+			if len(parts) != 2 {
+				err = fmt.Errorf("Datacenter name is not valid, expected format $LOCATION-$DATACENTER, but got: %s", datacenterIDOrName)
+			}
+
+			createOpts.Location = &hcloud.Location{Name: parts[0]}
 		}
-		if datacenter == nil {
-			err = fmt.Errorf("Datacenter not found: %s", datacenterIDOrName)
-			return
-		}
-		createOpts.Datacenter = datacenter
 	}
 
 	if locationIDOrName != "" {
