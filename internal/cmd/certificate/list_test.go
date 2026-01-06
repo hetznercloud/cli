@@ -4,6 +4,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/gkampitakis/go-snaps/snaps"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/mock/gomock"
@@ -43,11 +44,7 @@ func TestList(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{})
 
-	expOut := `ID    NAME   TYPE      DOMAIN NAMES   NOT VALID AFTER           AGE
-123   test   managed   example.com    2036-08-20 12:00:00 UTC   20m
-`
-
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
-	assert.Equal(t, expOut, out)
+	snaps.MatchSnapshot(t, out)
 }

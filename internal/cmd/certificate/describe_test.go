@@ -1,17 +1,16 @@
 package certificate_test
 
 import (
-	"fmt"
 	"testing"
+	"testing/synctest"
 	"time"
 
-	"github.com/dustin/go-humanize"
+	"github.com/gkampitakis/go-snaps/snaps"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/cmd/certificate"
-	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -55,36 +54,11 @@ func TestDescribe(t *testing.T) {
 		LoadBalancerName(int64(123)).
 		Return("test")
 
-	out, errOut, err := fx.Run(cmd, []string{"test"})
+	synctest.Test(t, func(t *testing.T) {
+		out, errOut, err := fx.Run(cmd, []string{"test"})
 
-	expOut := fmt.Sprintf(`ID:                123
-Name:              test
-Type:              managed
-Fingerprint:       
-Created:           %s (%s)
-Not valid before:  %s (%s)
-Not valid after:   %s (%s)
-
-Status:
-  Issuance:        failed
-  Renewal:         scheduled
-  Failure reason:  Certificate error
-
-Domain names:
-  - example.com
-
-Labels:
-  key:  value
-
-Used By:
-  - Type:  load_balancer
-  - Name:  test
-`,
-		util.Datetime(cert.Created), humanize.Time(cert.Created),
-		util.Datetime(cert.NotValidBefore), humanize.Time(cert.NotValidBefore),
-		util.Datetime(cert.NotValidAfter), humanize.Time(cert.NotValidAfter))
-
-	require.NoError(t, err)
-	assert.Empty(t, errOut)
-	assert.Equal(t, expOut, out)
+		require.NoError(t, err)
+		assert.Empty(t, errOut)
+		snaps.MatchSnapshot(t, out)
+	})
 }

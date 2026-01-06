@@ -1,0 +1,26 @@
+
+[TestDescribe - 1]
+ID:                123
+Name:              test
+Type:              managed
+Fingerprint:       
+Created:           2020-08-24 12:00:00 UTC (20 years from now)
+Not valid before:  2020-08-24 12:00:00 UTC (20 years from now)
+Not valid after:   2036-08-12 12:00:00 UTC (a long while from now)
+
+Status:
+  Issuance:        failed
+  Renewal:         scheduled
+  Failure reason:  Certificate error
+
+Domain names:
+  - example.com
+
+Labels:
+  key:  value
+
+Used By:
+  - Type:  load_balancer
+  - Name:  test
+
+---
