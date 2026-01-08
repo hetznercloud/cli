@@ -163,6 +163,15 @@ func (lc *ListCmd[T, S]) Run(s state.State, cmd *cobra.Command, args []string) e
 
 	t := output.NewTable[T](out)
 	lc.OutputTable(t, s.Client())
+
+	warnings, err := t.ValidateColumns(cols)
+	if err != nil {
+		return err
+	}
+	for _, warning := range warnings {
+		cmd.PrintErrln("Warning:", warning)
+	}
+
 	if !outOpts.IsSet("noheader") {
 		t.WriteHeader(cols)
 	}
