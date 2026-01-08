@@ -93,7 +93,6 @@ var ListCmd = &base.ListCmd[*hcloud.Server, schema.Server]{
 					return server.Datacenter.Name
 				}
 				return "-"
-
 			}).
 			AddFieldFn("location", func(server *hcloud.Server) string {
 				return server.Location.Name
@@ -140,7 +139,8 @@ var ListCmd = &base.ListCmd[*hcloud.Server, schema.Server]{
 					return "-"
 				}
 				return server.PlacementGroup.Name
-			})
+			}).
+			MarkFieldAsDeprecated("datacenter", "The datacenter column is deprecated. Use location column instead.")
 	},
 
 	Schema: hcloud.SchemaFromServer,
