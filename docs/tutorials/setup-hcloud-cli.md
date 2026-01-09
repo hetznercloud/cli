@@ -45,9 +45,16 @@ On Linux and macOS you can also install the hcloud CLI using Homebrew:
 brew install hcloud
 ```
 
-### 1.4 Installation using scoop
+### 1.4 Installation on Windows using WinGet or Scoop
 
-On Windows, you can install `hcloud` using scoop:
+> [!WARNING]
+> The WinGet and Scoop package entries are not maintained by Hetzner.
+
+On Windows, you can install `hcloud` using WinGet (Windows Package Manager) or Scoop:
+
+```bash
+winget install HetznerCloud.CLI
+```
 
 ```bash
 scoop install hcloud
