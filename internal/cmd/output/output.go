@@ -174,6 +174,7 @@ func NewTable[T any](out io.Writer) *Table[T] {
 		fieldMapping:  map[string]FieldFn[T]{},
 		fieldAlias:    map[string]string{},
 		allowedFields: map[string]bool{},
+		deprecations:  map[string]string{},
 	}
 }
 
@@ -187,6 +188,7 @@ type Table[T any] struct {
 	fieldMapping  map[string]FieldFn[T]
 	fieldAlias    map[string]string
 	allowedFields map[string]bool
+	deprecations  map[string]string
 }
 
 // Columns returns a list of known output columns.
@@ -209,6 +211,13 @@ func (o *Table[T]) AddFieldFn(field string, fn FieldFn[T]) *Table[T] {
 	o.fieldMapping[field] = fn
 	o.allowedFields[field] = true
 	o.columns[field] = true
+	return o
+}
+
+// MarkFieldAsDeprecated marks the specified field as deprecated. The message will be printed
+// to stderr if the column is used.
+func (o *Table[T]) MarkFieldAsDeprecated(field string, message string) *Table[T] {
+	o.deprecations[field] = message
 	return o
 }
 
@@ -250,18 +259,21 @@ func (o *Table[T]) RemoveAllowedField(fields ...string) *Table[T] {
 	return o
 }
 
-// ValidateColumns returns an error if invalid columns are specified.
-func (o *Table[T]) ValidateColumns(cols []string) error {
-	var invalidCols []string
+// ValidateColumns returns a list of warnings for the used columns and an error if invalid columns are specified.
+func (o *Table[T]) ValidateColumns(cols []string) ([]string, error) {
+	var warnings, invalidCols []string
 	for _, col := range cols {
+		if warning, isDeprecated := o.deprecations[strings.ToLower(col)]; isDeprecated {
+			warnings = append(warnings, warning)
+		}
 		if _, ok := o.allowedFields[strings.ToLower(col)]; !ok {
 			invalidCols = append(invalidCols, col)
 		}
 	}
 	if len(invalidCols) > 0 {
-		return fmt.Errorf("invalid table columns: %s", strings.Join(invalidCols, ","))
+		return warnings, fmt.Errorf("invalid table columns: %s", strings.Join(invalidCols, ","))
 	}
-	return nil
+	return warnings, nil
 }
 
 // WriteHeader writes the table header.

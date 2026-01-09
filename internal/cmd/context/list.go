@@ -43,8 +43,12 @@ func runList(s state.State, cmd *cobra.Command, _ []string) error {
 	}
 
 	tw := newListOutputTable(cmd.OutOrStdout())
-	if err := tw.ValidateColumns(cols); err != nil {
+	warnings, err := tw.ValidateColumns(cols)
+	if err != nil {
 		return err
+	}
+	for _, warning := range warnings {
+		cmd.PrintErrln("Warning:", warning)
 	}
 
 	if !outOpts.IsSet("noheader") {

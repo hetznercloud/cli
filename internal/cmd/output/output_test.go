@@ -51,11 +51,18 @@ func TestTableOutput(t *testing.T) {
 		assert.Contains(t, to.fieldMapping, "leeroy jenkins")
 	})
 
+	t.Run("MarkFieldAsDeprecated", func(t *testing.T) {
+		to.MarkFieldAsDeprecated("name", "This field is deprecated")
+
+		assert.Contains(t, to.deprecations, "name")
+	})
+
 	t.Run("ValidateColumns", func(t *testing.T) {
-		err := to.ValidateColumns([]string{"non-existent", "NAME"})
+		warnings, err := to.ValidateColumns([]string{"non-existent", "NAME"})
 
 		require.ErrorContains(t, err, "non-existent")
 		assert.NotContains(t, err.Error(), "name")
+		assert.Contains(t, warnings, "This field is deprecated")
 	})
 
 	t.Run("WriteHeader", func(t *testing.T) {
