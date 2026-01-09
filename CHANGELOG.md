@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.60.0](https://github.com/hetznercloud/cli/releases/tag/v1.60.0)
+
+### Features
+
+- **table**: mark columns as deprecated and show warning (#1300)
+
 ## [v1.59.0](https://github.com/hetznercloud/cli/releases/tag/v1.59.0)
 
 ### Deprecation of `datacenter` attribute for Primary IPs and Servers
