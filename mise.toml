@@ -5,3 +5,4 @@ go = "1.25.5"
 "github:goreleaser/goreleaser" = "v2.13.2"   # renovate: datasource=github-releases depName=goreleaser/goreleaser
 "github:anchore/quill" = "v0.5.1"            # renovate: datasource=github-releases depName=anchore/quill
 "github:jstemmer/go-junit-report" = "v2.1.0" # renovate: datasource=github-releases depName=jstemmer/go-junit-report
+"github:KevinGimbel/mktoc" = "5.1.1"         # renovate: datasource=github-releases depName=KevinGimbel/mktoc

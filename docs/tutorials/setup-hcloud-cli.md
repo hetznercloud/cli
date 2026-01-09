@@ -2,6 +2,25 @@
 
 This tutorial will guide you through the process of setting up the hcloud CLI on your local machine.
 
+<!-- BEGIN mktoc -->
+
+- [Setup the hcloud CLI](#setup-the-hcloud-cli)
+- [Prerequisites](#prerequisites)
+- [1. Install the hcloud CLI](#1-install-the-hcloud-cli)
+  - [1.1 Manual installation](#11-manual-installation)
+  - [1.2 Installation using Go](#12-installation-using-go)
+  - [1.3 Installation using Homebrew](#13-installation-using-homebrew)
+  - [1.4 Installation using scoop](#14-installation-using-scoop)
+  - [1.5 Using hcloud with Docker](#15-using-hcloud-with-docker)
+- [2. (Optional) Setup auto-completion](#2-optional-setup-auto-completion)
+  - [2.1 Bash](#21-bash)
+  - [2.2 Zsh](#22-zsh)
+  - [2.3 Fish](#23-fish)
+  - [2.4 PowerShell](#24-powershell)
+- [3. Create a context](#3-create-a-context)
+- [4. Verify everything works](#4-verify-everything-works)
+<!-- END mktoc -->
+
 ## Prerequisites
 
 Before you begin, ensure you have the following:
