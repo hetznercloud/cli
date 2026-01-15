@@ -1,6 +1,8 @@
 /hcloud
 /dist
 /bats
+/completions
+/manpages
 /cmd/hcloud/hcloud
 hcloud_cli.p12
 coverage.txt
