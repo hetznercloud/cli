@@ -13,6 +13,7 @@ import (
 )
 
 func main() {
+	//nolint:gosec
 	if err := os.MkdirAll("./manpages", 0755); err != nil {
 		log.Fatal(err)
 	}
