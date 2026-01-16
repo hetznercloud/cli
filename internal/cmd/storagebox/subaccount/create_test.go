@@ -81,6 +81,7 @@ func TestCreateJSON(t *testing.T) {
 
 	sbs := &hcloud.StorageBoxSubaccount{
 		ID:            42,
+		Name:          "u1337-sub1",
 		Username:      "u1337-sub1",
 		HomeDirectory: "my_backups/host01.my.company",
 		Server:        "u1337-sub1.your-storagebox.de",

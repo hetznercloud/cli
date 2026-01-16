@@ -17,6 +17,7 @@ Columns:
  - home_directory
  - id
  - labels
+ - name
  - server
  - username
 
