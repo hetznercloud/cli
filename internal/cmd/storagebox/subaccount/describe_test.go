@@ -30,6 +30,7 @@ func TestDescribe(t *testing.T) {
 	}
 	sbs := &hcloud.StorageBoxSubaccount{
 		ID:            42,
+		Name:          "u1337-sub1",
 		Username:      "u1337-sub1",
 		HomeDirectory: "my_backups/host01.my.company",
 		Server:        "u1337-sub1.your-storagebox.de",
@@ -60,6 +61,7 @@ func TestDescribe(t *testing.T) {
 	out, errOut, err := fx.Run(cmd, []string{"my-storage-box", "42"})
 
 	expOut := fmt.Sprintf(`ID:              42
+Name:            u1337-sub1
 Description:     host01 backup
 Created:         2016-01-30 23:55:00 UTC (%s)
 Username:        u1337-sub1

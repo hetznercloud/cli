@@ -19,6 +19,7 @@ hcloud storage-box subaccount update [options] <storage-box> <subaccount>
 ```
       --description string   Description of the Storage Box Subaccount
   -h, --help                 help for update
+      --name string          Name of the Storage Box Subaccount
 ```
 
 ### Options inherited from parent commands
