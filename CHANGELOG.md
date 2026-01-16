@@ -1,5 +1,29 @@
 # Changelog
 
+## [v1.60.0](https://github.com/hetznercloud/cli/releases/tag/v1.60.0)
+
+### Storage Box Subaccounts are no longer identified by `username`
+
+Storage Box Subaccounts now have a `name` property, allowing users to specify custom names for their Subaccounts.
+
+More importantly, Storage Box Subaccounts (`<subaccount>`) are now identified  by `id` or `name`, instead of by `id` or `username`.
+
+```diff
+ hcloud storage-box subaccount describe <storage-box> <subaccount>
+-hcloud storage-box subaccount describe my-storage-box u1337-sub1
++hcloud storage-box subaccount describe my-storage-box my-subaccount
+```
+
+Existing Subaccounts have been updated to use their `username` as `name` value.
+
+See our [changelog](https://docs.hetzner.cloud/changelog#2026-01-15-storage-box-subaccount-name) for more details.
+
+### Features
+
+- **table**: mark columns as deprecated and show warning (#1300)
+- **server**: deprecate datacenter column (#1301)
+- **storage-box**: add name property to subaccounts (#1315)
+
 ## [v1.59.0](https://github.com/hetznercloud/cli/releases/tag/v1.59.0)
 
 ### Deprecation of `datacenter` attribute for Primary IPs and Servers
