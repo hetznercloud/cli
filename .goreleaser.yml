@@ -49,7 +49,7 @@ nfpms:
       {{- .ConventionalExtension -}}
     package_name: hcloud-cli
     ids: [hcloud-build]
-    provides: [hcloud, hcloud-cli]
+    provides: [hcloud]
     vendor: Hetzner Cloud GmbH
     homepage: https://github.com/hetznercloud/cli
     maintainer: Hetzner Cloud GmbH <support-cloud@hetzner.com>
