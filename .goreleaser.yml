@@ -2,6 +2,8 @@ version: 2
 before:
   hooks:
     - go mod tidy
+    - ./scripts/completions.sh
+    - go run scripts/manpages.go
 
 builds:
   - <<: &build_defaults
@@ -36,6 +38,49 @@ builds:
         # a release without assets. The error is reported at the end of the CI job.
         - cmd: bash -c 'quill sign-and-notarize "{{ .Path }}" --dry-run={{ .IsSnapshot }} --ad-hoc={{ .IsSnapshot }} || touch sign-and-notarize.error'
           output: true
+
+nfpms:
+  - id: default
+    # See https://goreleaser.com/customization/nfpm/#conventional-file-names-debian-and-armv6
+    file_name_template: >-
+      {{- trimsuffix .ConventionalFileName .ConventionalExtension -}}
+      {{- if and (eq .Arm "6") (eq .ConventionalExtension ".deb") }}6{{ end -}}
+      {{- if not (eq .Amd64 "v1")}}{{ .Amd64 }}{{ end -}}
+      {{- .ConventionalExtension -}}
+    package_name: hcloud-cli
+    ids: [hcloud-build]
+    provides: [hcloud]
+    vendor: Hetzner Cloud GmbH
+    homepage: https://github.com/hetznercloud/cli
+    maintainer: Hetzner Cloud GmbH <support-cloud@hetzner.com>
+    formats:
+      - deb
+      - rpm
+      - apk
+    description: A command-line interface for Hetzner Cloud
+    license: MIT
+
+    contents:
+      - src: ./completions/hcloud.bash
+        dst: /usr/share/bash-completion/completions/hcloud
+        file_info:
+          mode: 0644
+      - src: ./completions/hcloud.fish
+        dst: /usr/share/fish/vendor_completions.d/hcloud.fish
+        file_info:
+          mode: 0644
+      - src: ./completions/hcloud.zsh
+        dst: /usr/share/zsh/vendor-completions/_hcloud
+        file_info:
+          mode: 0644
+      - src: ./LICENSE
+        dst: /usr/share/doc/hcloud/license
+        file_info:
+          mode: 0644
+      - src: ./manpages/*
+        dst: /usr/share/man/man1/
+        file_info:
+          mode: 0644
 
 kos:
   - id: container-images
