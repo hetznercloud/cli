@@ -17,7 +17,7 @@ hcloud storage-box subaccount update [options] <storage-box> <subaccount>
 ### Options
 
 ```
-      --description string   Description of the Storage Box Snapshot
+      --description string   Description of the Storage Box Subaccount
   -h, --help                 help for update
 ```
 

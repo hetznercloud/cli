@@ -37,7 +37,7 @@ var UpdateCmd = base.UpdateCmd[*hcloud.StorageBoxSubaccount]{
 		return s.Client().StorageBox().GetSubaccount(s, storageBox, subaccountIDOrName)
 	},
 	DefineFlags: func(cmd *cobra.Command) {
-		cmd.Flags().String("description", "", "Description of the Storage Box Snapshot")
+		cmd.Flags().String("description", "", "Description of the Storage Box Subaccount")
 		cmd.MarkFlagsOneRequired("description")
 	},
 	Update: func(s state.State, cmd *cobra.Command, subaccount *hcloud.StorageBoxSubaccount, _ map[string]pflag.Value) error {
