@@ -45,6 +45,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBoxSubaccount]{
 	},
 	PrintText: func(_ state.State, _ *cobra.Command, out io.Writer, subaccount *hcloud.StorageBoxSubaccount) error {
 		fmt.Fprintf(out, "ID:\t%d\n", subaccount.ID)
+		fmt.Fprintf(out, "Name:\t%s\n", subaccount.Name)
 		fmt.Fprintf(out, "Description:\t%s\n", util.NA(subaccount.Description))
 		fmt.Fprintf(out, "Created:\t%s (%s)\n", util.Datetime(subaccount.Created), humanize.Time(subaccount.Created))
 		fmt.Fprintf(out, "Username:\t%s\n", subaccount.Username)

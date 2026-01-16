@@ -24,6 +24,8 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBoxSubaccount]{
 			DisableFlagsInUseLine: true,
 		}
 
+		cmd.Flags().String("name", "", "Name for the Subaccount")
+
 		cmd.Flags().String("password", "", "Password for the Subaccount (required)")
 		_ = cmd.MarkFlagRequired("password")
 
@@ -44,6 +46,7 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBoxSubaccount]{
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) (*hcloud.StorageBoxSubaccount, any, error) {
 		storageBoxIDOrName := args[0]
+		name, _ := cmd.Flags().GetString("name")
 		password, _ := cmd.Flags().GetString("password")
 		homeDirectory, _ := cmd.Flags().GetString("home-directory")
 		description, _ := cmd.Flags().GetString("description")
@@ -81,6 +84,7 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBoxSubaccount]{
 		}
 
 		opts := hcloud.StorageBoxSubaccountCreateOpts{
+			Name:           name,
 			HomeDirectory:  homeDirectory,
 			Password:       password,
 			Description:    description,

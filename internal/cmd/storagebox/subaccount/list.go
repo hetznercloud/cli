@@ -23,7 +23,7 @@ var ListCmd = base.ListCmd[*hcloud.StorageBoxSubaccount, schema.StorageBoxSubacc
 	ResourceNamePlural: "Storage Box Subaccounts",
 	JSONKeyGetByName:   "subaccounts",
 
-	DefaultColumns: []string{"id", "username", "home_directory", "description", "server", "age"},
+	DefaultColumns: []string{"id", "name", "home_directory", "description", "username", "server", "age"},
 
 	ValidArgsFunction: func(client hcapi2.Client) cobra.CompletionFunc {
 		return cmpl.SuggestCandidatesF(client.StorageBox().Names)

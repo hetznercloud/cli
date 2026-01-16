@@ -24,6 +24,7 @@ hcloud storage-box subaccount create [options] --password <password> --home-dire
   -h, --help                    help for create
       --home-directory string   Home directory for the Subaccount (required)
       --label stringToString    User-defined labels ('key=value') (can be specified multiple times) (default [])
+      --name string             Name for the Subaccount
   -o, --output stringArray      output options: json|yaml
       --password string         Password for the Subaccount (required)
       --reachable-externally    Whether the Storage Box should be accessible from outside the Hetzner network (true, false)
