@@ -1,6 +1,7 @@
 {
   "subaccount": {
     "id": 42,
+    "name": "u1337-sub1",
     "username": "u1337-sub1",
     "home_directory": "my_backups/host01.my.company",
     "server": "u1337-sub1.your-storagebox.de",
