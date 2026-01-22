@@ -1,14 +1,6 @@
 ## hcloud storage-box-type
 
-[experimental] View Storage Box Types
-
-### Synopsis
-
 View Storage Box Types
-
-Experimental: Storage Box support is experimental, breaking changes may occur within minor releases.
-See https://github.com/hetznercloud/cli/issues/1202 for more details.
-
 
 ### Options
 
@@ -33,5 +25,5 @@ See https://github.com/hetznercloud/cli/issues/1202 for more details.
 ### SEE ALSO
 
 * [hcloud](hcloud.md)	 - Hetzner Cloud CLI
-* [hcloud storage-box-type describe](hcloud_storage-box-type_describe.md)	 - [experimental] Describe a Storage Box Type
-* [hcloud storage-box-type list](hcloud_storage-box-type_list.md)	 - [experimental] List Storage Box Types
+* [hcloud storage-box-type describe](hcloud_storage-box-type_describe.md)	 - Describe a Storage Box Type
+* [hcloud storage-box-type list](hcloud_storage-box-type_list.md)	 - List Storage Box Types

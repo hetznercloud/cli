@@ -1,14 +1,6 @@
 ## hcloud storage-box create
 
-[experimental] Create a new Storage Box
-
-### Synopsis
-
 Create a new Storage Box
-
-Experimental: Storage Box support is experimental, breaking changes may occur within minor releases.
-See https://github.com/hetznercloud/cli/issues/1202 for more details.
-
 
 ```
 hcloud storage-box create [options] --name <name> --type <type> --location <location> --password <password>
@@ -49,4 +41,4 @@ hcloud storage-box create [options] --name <name> --type <type> --location <loca
 
 ### SEE ALSO
 
-* [hcloud storage-box](hcloud_storage-box.md)	 - [experimental] Manage Storage Boxes
+* [hcloud storage-box](hcloud_storage-box.md)	 - Manage Storage Boxes

@@ -1,14 +1,6 @@
 ## hcloud storage-box subaccount change-home-directory
 
-[experimental] Update access settings of the Storage Box Subaccount
-
-### Synopsis
-
 Update access settings of the Storage Box Subaccount
-
-Experimental: Storage Box support is experimental, breaking changes may occur within minor releases.
-See https://github.com/hetznercloud/cli/issues/1202 for more details.
-
 
 ```
 hcloud storage-box subaccount change-home-directory --home-directory <home-directory> <storage-box> <subaccount>
@@ -37,4 +29,4 @@ hcloud storage-box subaccount change-home-directory --home-directory <home-direc
 
 ### SEE ALSO
 
-* [hcloud storage-box subaccount](hcloud_storage-box_subaccount.md)	 - [experimental] Manage Storage Box Subaccounts
+* [hcloud storage-box subaccount](hcloud_storage-box_subaccount.md)	 - Manage Storage Box Subaccounts

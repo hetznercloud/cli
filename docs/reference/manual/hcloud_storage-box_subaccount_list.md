@@ -1,6 +1,6 @@
 ## hcloud storage-box subaccount list
 
-[experimental] List Storage Box Subaccounts
+List Storage Box Subaccounts
 
 ### Synopsis
 
@@ -20,10 +20,6 @@ Columns:
  - name
  - server
  - username
-
-Experimental: Storage Box support is experimental, breaking changes may occur within minor releases.
-See https://github.com/hetznercloud/cli/issues/1202 for more details.
-
 
 ```
 hcloud storage-box subaccount list [options] <storage-box>
@@ -54,4 +50,4 @@ hcloud storage-box subaccount list [options] <storage-box>
 
 ### SEE ALSO
 
-* [hcloud storage-box subaccount](hcloud_storage-box_subaccount.md)	 - [experimental] Manage Storage Box Subaccounts
+* [hcloud storage-box subaccount](hcloud_storage-box_subaccount.md)	 - Manage Storage Box Subaccounts

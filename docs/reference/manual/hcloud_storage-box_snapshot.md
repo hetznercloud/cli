@@ -1,14 +1,6 @@
 ## hcloud storage-box snapshot
 
-[experimental] Manage Storage Box Snapshots
-
-### Synopsis
-
 Manage Storage Box Snapshots
-
-Experimental: Storage Box support is experimental, breaking changes may occur within minor releases.
-See https://github.com/hetznercloud/cli/issues/1202 for more details.
-
 
 ### Options
 
@@ -32,11 +24,11 @@ See https://github.com/hetznercloud/cli/issues/1202 for more details.
 
 ### SEE ALSO
 
-* [hcloud storage-box](hcloud_storage-box.md)	 - [experimental] Manage Storage Boxes
-* [hcloud storage-box snapshot add-label](hcloud_storage-box_snapshot_add-label.md)	 - [experimental] Add a label to a Storage Box Snapshot
-* [hcloud storage-box snapshot create](hcloud_storage-box_snapshot_create.md)	 - [experimental] Create a Storage Box Snapshot
-* [hcloud storage-box snapshot delete](hcloud_storage-box_snapshot_delete.md)	 - [experimental] Delete a Storage Box Snapshot
-* [hcloud storage-box snapshot describe](hcloud_storage-box_snapshot_describe.md)	 - [experimental] Describe a Storage Box Snapshot
-* [hcloud storage-box snapshot list](hcloud_storage-box_snapshot_list.md)	 - [experimental] List Storage Box Snapshots
-* [hcloud storage-box snapshot remove-label](hcloud_storage-box_snapshot_remove-label.md)	 - [experimental] Remove a label from a Storage Box Snapshot
-* [hcloud storage-box snapshot update](hcloud_storage-box_snapshot_update.md)	 - [experimental] Update a Storage Box Snapshot
+* [hcloud storage-box](hcloud_storage-box.md)	 - Manage Storage Boxes
+* [hcloud storage-box snapshot add-label](hcloud_storage-box_snapshot_add-label.md)	 - Add a label to a Storage Box Snapshot
+* [hcloud storage-box snapshot create](hcloud_storage-box_snapshot_create.md)	 - Create a Storage Box Snapshot
+* [hcloud storage-box snapshot delete](hcloud_storage-box_snapshot_delete.md)	 - Delete a Storage Box Snapshot
+* [hcloud storage-box snapshot describe](hcloud_storage-box_snapshot_describe.md)	 - Describe a Storage Box Snapshot
+* [hcloud storage-box snapshot list](hcloud_storage-box_snapshot_list.md)	 - List Storage Box Snapshots
+* [hcloud storage-box snapshot remove-label](hcloud_storage-box_snapshot_remove-label.md)	 - Remove a label from a Storage Box Snapshot
+* [hcloud storage-box snapshot update](hcloud_storage-box_snapshot_update.md)	 - Update a Storage Box Snapshot

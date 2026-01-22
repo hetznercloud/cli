@@ -1,14 +1,6 @@
 ## hcloud storage-box snapshot add-label
 
-[experimental] Add a label to a Storage Box Snapshot
-
-### Synopsis
-
 Add a label to a Storage Box Snapshot
-
-Experimental: Storage Box support is experimental, breaking changes may occur within minor releases.
-See https://github.com/hetznercloud/cli/issues/1202 for more details.
-
 
 ```
 hcloud storage-box snapshot add-label [--overwrite] <storage-box> <snapshot> <label>...
@@ -37,4 +29,4 @@ hcloud storage-box snapshot add-label [--overwrite] <storage-box> <snapshot> <la
 
 ### SEE ALSO
 
-* [hcloud storage-box snapshot](hcloud_storage-box_snapshot.md)	 - [experimental] Manage Storage Box Snapshots
+* [hcloud storage-box snapshot](hcloud_storage-box_snapshot.md)	 - Manage Storage Box Snapshots

@@ -45,6 +45,6 @@ func TestUpdateAccessSettings(t *testing.T) {
 	out, errOut, err := fx.Run(cmd, args)
 
 	require.NoError(t, err)
-	assert.Equal(t, ExperimentalWarning, errOut)
+	assert.Empty(t, errOut)
 	assert.Equal(t, "Access settings updated for Storage Box Subaccount 456\n", out)
 }

@@ -1,14 +1,6 @@
 ## hcloud storage-box snapshot update
 
-[experimental] Update a Storage Box Snapshot
-
-### Synopsis
-
 Update a Storage Box Snapshot
-
-Experimental: Storage Box support is experimental, breaking changes may occur within minor releases.
-See https://github.com/hetznercloud/cli/issues/1202 for more details.
-
 
 ```
 hcloud storage-box snapshot update [options] <storage-box> <snapshot>
@@ -37,4 +29,4 @@ hcloud storage-box snapshot update [options] <storage-box> <snapshot>
 
 ### SEE ALSO
 
-* [hcloud storage-box snapshot](hcloud_storage-box_snapshot.md)	 - [experimental] Manage Storage Box Snapshots
+* [hcloud storage-box snapshot](hcloud_storage-box_snapshot.md)	 - Manage Storage Box Snapshots

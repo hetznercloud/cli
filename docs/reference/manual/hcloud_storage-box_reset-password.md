@@ -1,14 +1,6 @@
 ## hcloud storage-box reset-password
 
-[experimental] Reset the password of a Storage Box
-
-### Synopsis
-
 Reset the password of a Storage Box
-
-Experimental: Storage Box support is experimental, breaking changes may occur within minor releases.
-See https://github.com/hetznercloud/cli/issues/1202 for more details.
-
 
 ```
 hcloud storage-box reset-password --password <password> <storage-box>
@@ -37,4 +29,4 @@ hcloud storage-box reset-password --password <password> <storage-box>
 
 ### SEE ALSO
 
-* [hcloud storage-box](hcloud_storage-box.md)	 - [experimental] Manage Storage Boxes
+* [hcloud storage-box](hcloud_storage-box.md)	 - Manage Storage Boxes
