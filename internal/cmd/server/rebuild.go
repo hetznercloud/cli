@@ -2,6 +2,8 @@ package server
 
 import (
 	"fmt"
+	"io"
+	"os"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -16,7 +18,7 @@ import (
 var RebuildCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:                   "rebuild [--allow-deprecated-image] --image <image> <server>",
+			Use:                   "rebuild [options] --image <image> <server>",
 			Short:                 "Rebuild a server",
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Server().Names)),
 			TraverseChildren:      true,
@@ -26,7 +28,10 @@ var RebuildCmd = base.Cmd{
 		cmd.Flags().String("image", "", "ID or name of Image to rebuild from (required)")
 		_ = cmd.RegisterFlagCompletionFunc("image", cmpl.SuggestCandidatesF(client.Image().Names))
 		_ = cmd.MarkFlagRequired("image")
+
 		cmd.Flags().Bool("allow-deprecated-image", false, "Enable the use of deprecated images (default: false) (true, false)")
+
+		cmd.Flags().StringArray("user-data-from-file", []string{}, "Read user data from specified file (use - to read from stdin)")
 
 		return cmd
 	},
@@ -41,6 +46,8 @@ var RebuildCmd = base.Cmd{
 		}
 
 		imageIDOrName, _ := cmd.Flags().GetString("image")
+		userDataFiles, _ := cmd.Flags().GetStringArray("user-data-from-file")
+
 		// Select correct image based on Server Type architecture
 		image, _, err := s.Client().Image().GetForArchitecture(s, imageIDOrName, server.ServerType.Architecture)
 		if err != nil {
@@ -63,6 +70,26 @@ var RebuildCmd = base.Cmd{
 		opts := hcloud.ServerRebuildOpts{
 			Image: image,
 		}
+		if len(userDataFiles) == 1 {
+			var data []byte
+			if userDataFiles[0] == "-" {
+				data, err = io.ReadAll(os.Stdin)
+			} else {
+				data, err = os.ReadFile(userDataFiles[0])
+			}
+			if err != nil {
+				return err
+			}
+			userData := string(data)
+			opts.UserData = &userData
+		} else if len(userDataFiles) > 1 {
+			userData, err := buildUserData(userDataFiles)
+			if err != nil {
+				return err
+			}
+			opts.UserData = &userData
+		}
+
 		result, _, err := s.Client().Server().RebuildWithResult(s, server, opts)
 		if err != nil {
 			return err
