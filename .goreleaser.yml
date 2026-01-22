@@ -27,6 +27,7 @@ builds:
     id: hcloud-build-linux-other
     goos: [ linux ]
     goarch: [ arm, "386" ]
+    goarm: [ "6", "7" ]
 
   - <<: *build_defaults
     id: hcloud-build-freebsd
