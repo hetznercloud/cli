@@ -35,6 +35,8 @@ jobs:
             --exclude 'github.com'
             --exclude '169.254.169.254'
             --exclude 'https://docs.hetzner.cloud/changelog#new-product'
+            --exclude 'https://docs.hetzner.cloud/reference/cloud#'
+            --exclude 'https://docs.hetzner.cloud/reference/hetzner#'
             --exclude 'https://style-guide.europa.eu/en/content/-/isg/topic'
             --exclude 'https://www.hetzner.com/news/arm64-cloud'
             '**/*.md'
