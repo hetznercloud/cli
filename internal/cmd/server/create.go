@@ -206,7 +206,7 @@ func detectContentType(data string) string {
 }
 
 func buildUserData(files []string) (string, error) {
-	if len(files) <= 0 {
+	if len(files) == 0 {
 		return "", nil
 	}
 
