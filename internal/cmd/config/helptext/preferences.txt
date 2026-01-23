@@ -15,6 +15,10 @@
 ├──────────────────────────┼──────────────────────┼─────────────┼──────────────────────────┼─────────────────────────────────┼────────────────────────────┤
 │ hetzner-endpoint         │ Hetzner API endpoint │ string      │ hetzner_endpoint         │ HETZNER_ENDPOINT                │ --hetzner-endpoint         │
 ├──────────────────────────┼──────────────────────┼─────────────┼──────────────────────────┼─────────────────────────────────┼────────────────────────────┤
+│ markdown-table-format    │ Force table          │ boolean     │ markdown_table_format    │ HCLOUD_MARKDOWN_TABLE_FORMAT    │ --markdown-table-format    │
+│                          │ formatting in help   │             │                          │                                 │                            │
+│                          │ outputs to markdown  │             │                          │                                 │                            │
+├──────────────────────────┼──────────────────────┼─────────────┼──────────────────────────┼─────────────────────────────────┼────────────────────────────┤
 │ no-experimental-warnings │ If true,             │ boolean     │ no_experimental_warnings │ HCLOUD_NO_EXPERIMENTAL_WARNINGS │ --no-experimental-warnings │
 │                          │ experimental         │             │                          │                                 │                            │
 │                          │ warnings are not     │             │                          │                                 │                            │

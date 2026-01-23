@@ -40,6 +40,7 @@ func run() error {
 	cmd := cli.NewRootCommand(s)
 
 	// Generate the docs
+	config.OptionMarkdownTableFormat.Override(cfg, true)
 	if err := doc.GenMarkdownTree(cmd, dir); err != nil {
 		return fmt.Errorf("error generating docs: %w", err)
 	}
