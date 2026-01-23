@@ -2,8 +2,6 @@ package server
 
 import (
 	"fmt"
-	"io"
-	"os"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -70,19 +68,8 @@ var RebuildCmd = base.Cmd{
 		opts := hcloud.ServerRebuildOpts{
 			Image: image,
 		}
-		if len(userDataFiles) == 1 {
-			var data []byte
-			if userDataFiles[0] == "-" {
-				data, err = io.ReadAll(os.Stdin)
-			} else {
-				data, err = os.ReadFile(userDataFiles[0])
-			}
-			if err != nil {
-				return err
-			}
-			userData := string(data)
-			opts.UserData = &userData
-		} else if len(userDataFiles) > 1 {
+
+		if len(userDataFiles) > 0 {
 			userData, err := buildUserData(userDataFiles)
 			if err != nil {
 				return err

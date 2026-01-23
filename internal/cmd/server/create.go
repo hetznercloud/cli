@@ -206,6 +206,23 @@ func detectContentType(data string) string {
 }
 
 func buildUserData(files []string) (string, error) {
+	if len(files) <= 0 {
+		return "", nil
+	}
+
+	var (
+		data []byte
+		err  error
+	)
+	if len(files) == 1 {
+		if file := files[0]; file == "-" {
+			data, err = io.ReadAll(os.Stdin)
+		} else {
+			data, err = os.ReadFile(file)
+		}
+		return string(data), err
+	}
+
 	var (
 		buf = new(bytes.Buffer)
 		mp  = multipart.NewWriter(buf)
@@ -215,10 +232,6 @@ func buildUserData(files []string) (string, error) {
 	fmt.Fprint(buf, "Content-Type: multipart/mixed; boundary="+mp.Boundary()+"\r\n\r\n")
 
 	for _, file := range files {
-		var (
-			data []byte
-			err  error
-		)
 		if file == "-" {
 			data, err = io.ReadAll(os.Stdin)
 		} else {
@@ -352,22 +365,10 @@ func createOptsFromFlags(
 		publicNetConfiguration.IPv6 = primaryIPv6
 	}
 	createOpts.PublicNet = publicNetConfiguration
-	if len(userDataFiles) == 1 {
-		var data []byte
-		if userDataFiles[0] == "-" {
-			data, err = io.ReadAll(os.Stdin)
-		} else {
-			data, err = os.ReadFile(userDataFiles[0])
-		}
-		if err != nil {
-			return
-		}
-		createOpts.UserData = string(data)
-	} else if len(userDataFiles) > 1 {
-		createOpts.UserData, err = buildUserData(userDataFiles)
-		if err != nil {
-			return
-		}
+
+	createOpts.UserData, err = buildUserData(userDataFiles)
+	if err != nil {
+		return
 	}
 
 	if !flags.Changed("ssh-key") && config.OptionDefaultSSHKeys.Changed(s.Config()) {
