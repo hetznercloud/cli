@@ -1,5 +1,16 @@
 # Changelog
 
+## [v1.61.0](https://github.com/hetznercloud/cli/releases/tag/v1.61.0)
+
+### Storage Boxes support is now generally available
+
+The experimental phase for Storage Boxes is over, and Storage Boxes support is now generally available.
+
+### Features
+
+- Storage Box support no longer experimental (#1267)
+- **server**: allow specifying user-data for rebuild (#1319)
+
 ## [v1.60.0](https://github.com/hetznercloud/cli/releases/tag/v1.60.0)
 
 ### Storage Box Subaccounts are no longer identified by `username`
