@@ -3,15 +3,16 @@
 Rebuild a server
 
 ```
-hcloud server rebuild [--allow-deprecated-image] --image <image> <server>
+hcloud server rebuild [options] --image <image> <server>
 ```
 
 ### Options
 
 ```
-      --allow-deprecated-image   Enable the use of deprecated images (default: false) (true, false)
-  -h, --help                     help for rebuild
-      --image string             ID or name of Image to rebuild from (required)
+      --allow-deprecated-image            Enable the use of deprecated images (default: false) (true, false)
+  -h, --help                              help for rebuild
+      --image string                      ID or name of Image to rebuild from (required)
+      --user-data-from-file stringArray   Read user data from specified file (use - to read from stdin)
 ```
 
 ### Options inherited from parent commands
