@@ -2,20 +2,42 @@ package config
 
 import (
 	_ "embed"
+	"fmt"
 
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
+	"github.com/hetznercloud/cli/internal/state/config"
 )
 
 //go:embed helptext/other.txt
 var nonPreferenceOptions string
 
+//go:embed helptext/other.md
+var nonPreferenceOptionsMd string
+
 //go:embed helptext/preferences.txt
 var preferenceOptions string
 
+//go:embed helptext/preferences.md
+var preferenceOptionsMd string
+
 func NewCommand(s state.State) *cobra.Command {
+	var (
+		nonPreferenceOptions = nonPreferenceOptions
+		preferenceOptions    = preferenceOptions
+	)
+
+	useMarkdown, err := config.OptionMarkdownTableFormat.Get(s.Config())
+	fmt.Println(useMarkdown)
+	fmt.Println(err)
+
+	if useMarkdown, err := config.OptionMarkdownTableFormat.Get(s.Config()); err == nil && useMarkdown {
+		nonPreferenceOptions = nonPreferenceOptionsMd
+		preferenceOptions = preferenceOptionsMd
+	}
+
 	cmd := &cobra.Command{
 		Use:   "config",
 		Short: "Manage configuration",

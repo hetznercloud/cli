@@ -160,6 +160,15 @@ var (
 		nil,
 	)
 
+	OptionMarkdownTableFormat = newOpt(
+		"markdown-table-format",
+		"Force table formatting in help outputs to markdown",
+		false,
+		DefaultPreferenceFlags,
+		nil,
+		nil,
+	)
+
 	OptionPollInterval = newOpt(
 		"poll-interval",
 		"Interval at which to poll information, for example action progress",
