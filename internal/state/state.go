@@ -4,6 +4,8 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"net"
+	"net/http"
 	"os"
 	"strings"
 
@@ -126,6 +128,17 @@ func (c *state) newClient() (hcapi2.Client, error) {
 		opts = append(opts, hcloud.WithPollOpts(hcloud.PollOpts{
 			BackoffFunc: hcloud.ConstantBackoff(pollInterval),
 		}))
+	}
+
+	if staticIp, err := config.OptionStaticIp.Get(c.config); err == nil && staticIp != "" {
+		tr := &http.Transport{DialContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
+			split := strings.Split(addr, ":")
+			return net.Dial(network, fmt.Sprintf("%s:%s", staticIp, split[1]))
+		}}
+		client := &http.Client{Transport: tr}
+		opts = append(opts, hcloud.WithHTTPClient(client))
+	} else if err != nil {
+		return nil, err
 	}
 
 	return hcapi2.NewClient(opts...), nil

@@ -115,6 +115,15 @@ var (
 		&overrides{configKey: "active_context"},
 	)
 
+	OptionStaticIp = newOpt(
+		"static-ip",
+		"Use static ip for Hetzner API endpoint",
+		"",
+		DefaultPreferenceFlags,
+		nil,
+		nil,
+	)
+
 	OptionEndpoint = newOpt(
 		"endpoint",
 		"Hetzner Cloud API endpoint",
