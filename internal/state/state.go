@@ -92,13 +92,14 @@ func (c *state) newClient() (hcapi2.Client, error) {
 		return nil, err
 	}
 
+	var debugWriter io.Writer
+
 	if debug {
 		filePath, err := config.OptionDebugFile.Get(c.config)
 		if err != nil {
 			return nil, err
 		}
 
-		var debugWriter io.Writer
 		if filePath == "" {
 			debugWriter = os.Stderr
 		} else {
@@ -155,8 +156,8 @@ func (c *state) newClient() (hcapi2.Client, error) {
 		if rootCA != "" {
 			certs := x509.NewCertPool()
 			pemData, err := os.ReadFile(rootCA)
-			if err != nil {
-				fmt.Printf("Error reading root CA certificate %s:\n%s\n", rootCA, err)
+			if err != nil && debug {
+				fmt.Fprintf(debugWriter, "Error reading root CA certificate %s:\n%s\n", rootCA, err)
 			}
 			if err == nil {
 				certs.AppendCertsFromPEM(pemData)
