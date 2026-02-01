@@ -2,6 +2,8 @@ package state
 
 import (
 	"context"
+	"crypto/tls"
+	"crypto/x509"
 	"fmt"
 	"io"
 	"net"
@@ -130,15 +132,42 @@ func (c *state) newClient() (hcapi2.Client, error) {
 		}))
 	}
 
-	if staticIp, err := config.OptionStaticIp.Get(c.config); err == nil && staticIp != "" {
-		tr := &http.Transport{DialContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
-			split := strings.Split(addr, ":")
-			return net.Dial(network, fmt.Sprintf("%s:%s", staticIp, split[1]))
-		}}
+	staticIp, err := config.OptionStaticIp.Get(c.config)
+	if err != nil {
+		return nil, err
+	}
+
+	rootCA, err := config.OptionRootCA.Get(c.config)
+	if err != nil {
+		return nil, err
+	}
+
+	if staticIp != "" || rootCA != "" {
+		tr := &http.Transport{}
+
+		if staticIp != "" {
+			tr.DialContext = func(ctx context.Context, network, addr string) (net.Conn, error) {
+				split := strings.Split(addr, ":")
+				return net.Dial(network, fmt.Sprintf("%s:%s", staticIp, split[1]))
+			}
+		}
+
+		if rootCA != "" {
+			certs := x509.NewCertPool()
+			pemData, err := os.ReadFile(rootCA)
+			if err != nil {
+				fmt.Printf("Error reading root CA certificate %s:\n%s\n", rootCA, err)
+			}
+			if err == nil {
+				certs.AppendCertsFromPEM(pemData)
+				tr.TLSClientConfig = &tls.Config{
+					RootCAs: certs,
+				}
+			}
+		}
+
 		client := &http.Client{Transport: tr}
 		opts = append(opts, hcloud.WithHTTPClient(client))
-	} else if err != nil {
-		return nil, err
 	}
 
 	return hcapi2.NewClient(opts...), nil

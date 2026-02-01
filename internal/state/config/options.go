@@ -117,7 +117,16 @@ var (
 
 	OptionStaticIp = newOpt(
 		"static-ip",
-		"Use static ip for Hetzner API endpoint",
+		"Set a static ip for Hetzner API endpoint",
+		"",
+		DefaultPreferenceFlags,
+		nil,
+		nil,
+	)
+
+	OptionRootCA = newOpt(
+		"root-ca",
+		"Set a custom root CA for Hetzner API endpoint",
 		"",
 		DefaultPreferenceFlags,
 		nil,
