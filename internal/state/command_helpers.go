@@ -17,12 +17,3 @@ type ActionWaiter interface {
 type TokenEnsurer interface {
 	EnsureToken(cmd *cobra.Command, args []string) error
 }
-
-func WrapCtx(
-	ctx context.Context,
-	fn func(context.Context, *cobra.Command, []string) error,
-) func(*cobra.Command, []string) error {
-	return func(cmd *cobra.Command, args []string) error {
-		return fn(ctx, cmd, args)
-	}
-}
