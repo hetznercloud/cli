@@ -410,13 +410,6 @@ func FormatHcloudError(err error) string {
 	}
 }
 
-func OptionalString(s *string, defaultValue string) string {
-	if s == nil || *s == "" {
-		return defaultValue
-	}
-	return *s
-}
-
 // WeekdayFromString converts a string representation of a weekday to a time.Weekday.
 // It accepts full names (e.g., "Monday") and abbreviations (e.g., "Mon"). It is case-insensitive.
 // It also accepts numbers (0-6) where 0 is Sunday, 1 is Monday, ..., and 6 is Saturday.
