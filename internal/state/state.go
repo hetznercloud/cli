@@ -35,7 +35,7 @@ type state struct {
 	term   terminal.Terminal
 }
 
-func New(cfg config.Config, ctx context.Context) (State, error) {
+func New(ctx context.Context, cfg config.Config) (State, error) {
 	s := &state{
 		Context: ctx,
 		config:  cfg,

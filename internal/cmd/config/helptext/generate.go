@@ -63,12 +63,12 @@ func generateTable(outFile string, mask, filter config.OptionFlag, extraRows ...
 		t.AppendSeparator()
 	}
 
-	err := os.WriteFile(outFile+".txt", []byte(t.Render()+"\n"), 0644)
+	err := os.WriteFile(outFile+".txt", []byte(t.Render()+"\n"), 0644) //nolint:gosec
 	if err != nil {
 		panic(err)
 	}
 
-	err = os.WriteFile(outFile+".md", []byte(t.RenderMarkdown()+"\n"), 0644)
+	err = os.WriteFile(outFile+".md", []byte(t.RenderMarkdown()+"\n"), 0644) //nolint:gosec
 	if err != nil {
 		panic(err)
 	}

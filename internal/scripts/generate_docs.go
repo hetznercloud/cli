@@ -34,7 +34,7 @@ func run() error {
 	ctx := context.Background()
 	ctx = context.WithValue(ctx, state.ContextKeyMarkdownTables{}, true)
 	cfg := config.New()
-	s, err := state.New(cfg, ctx)
+	s, err := state.New(ctx, cfg)
 	if err != nil {
 		return fmt.Errorf("could not create state: %w", err)
 	}

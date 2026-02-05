@@ -25,7 +25,7 @@ func main() {
 		log.Fatalf("unable to read config file \"%s\": %s\n", cfg.Path(), err)
 	}
 
-	s, err := state.New(cfg, ctx)
+	s, err := state.New(ctx, cfg)
 	if err != nil {
 		log.Fatalln(err)
 	}
