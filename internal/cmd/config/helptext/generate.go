@@ -68,7 +68,7 @@ func generateTable(outFile string, mask, filter config.OptionFlag, extraRows ...
 		panic(err)
 	}
 
-	err = os.WriteFile(outFile+".md", []byte(t.RenderMarkdown()+"\n"), 0644) //nolint:gosec
+	err = os.WriteFile(outFile+".md", []byte(escapeString(t.RenderMarkdown())+"\n"), 0644) //nolint:gosec
 	if err != nil {
 		panic(err)
 	}
@@ -89,4 +89,9 @@ func getTypeName(opt config.IOption) string {
 	default:
 		panic(fmt.Sprintf("missing type name for %T", t))
 	}
+}
+
+func escapeString(s string) string {
+	replacer := strings.NewReplacer("<", "\\<", ">", "\\>", "_", "\\_")
+	return replacer.Replace(s)
 }
