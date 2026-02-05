@@ -17,28 +17,18 @@ import (
 
 func main() {
 	generateTable(
-		"preferences.txt",
+		"preferences",
 		config.OptionFlagPreference|config.OptionFlagHidden,
 		config.OptionFlagPreference,
 		table.Row{"sort.<resource>", "Default sorting for resource", "string list", "sort.<resource>", "HCLOUD_SORT_<RESOURCE>", ""},
 	)
-	generateTable("other.txt",
+	generateTable("other",
 		config.OptionFlagPreference|config.OptionFlagHidden,
 		0,
 	)
 }
 
 func generateTable(outFile string, mask, filter config.OptionFlag, extraRows ...table.Row) {
-	f, err := os.OpenFile(outFile, os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644) //nolint:gosec
-	if err != nil {
-		panic(err)
-	}
-	defer func() {
-		if err := f.Close(); err != nil {
-			panic(err)
-		}
-	}()
-
 	t := table.NewWriter()
 	t.SetStyle(table.StyleLight)
 	t.SetColumnConfigs([]table.ColumnConfig{
@@ -49,7 +39,6 @@ func generateTable(outFile string, mask, filter config.OptionFlag, extraRows ...
 		},
 	})
 
-	t.SetOutputMirror(f)
 	t.AppendHeader(table.Row{"Option", "Description", "Type", "Config key", "Environment variable", "Flag"})
 
 	var opts []config.IOption
@@ -74,7 +63,15 @@ func generateTable(outFile string, mask, filter config.OptionFlag, extraRows ...
 		t.AppendSeparator()
 	}
 
-	t.Render()
+	err := os.WriteFile(outFile+".txt", []byte(t.Render()+"\n"), 0644)
+	if err != nil {
+		panic(err)
+	}
+
+	err = os.WriteFile(outFile+".md", []byte(t.RenderMarkdown()+"\n"), 0644)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func getTypeName(opt config.IOption) string {

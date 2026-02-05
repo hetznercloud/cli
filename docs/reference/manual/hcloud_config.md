@@ -24,62 +24,27 @@ Option values can have following types:
 Most options are 'preferences' - these options can be set globally and can additionally be overridden
 for each context. Below is a list of all non-preference options:
 
-```
-┌─────────┬──────────────────────┬────────┬────────────────┬──────────────────────┬───────────┐
-│ OPTION  │ DESCRIPTION          │ TYPE   │ CONFIG KEY     │ ENVIRONMENT VARIABLE │ FLAG      │
-├─────────┼──────────────────────┼────────┼────────────────┼──────────────────────┼───────────┤
-│ config  │ Config file path     │ string │                │ HCLOUD_CONFIG        │ --config  │
-│         │ (default             │        │                │                      │           │
-│         │ "~/.config/hcloud/cl │        │                │                      │           │
-│         │ i.toml")             │        │                │                      │           │
-├─────────┼──────────────────────┼────────┼────────────────┼──────────────────────┼───────────┤
-│ context │ Currently active     │ string │ active_context │ HCLOUD_CONTEXT       │ --context │
-│         │ context              │        │                │                      │           │
-├─────────┼──────────────────────┼────────┼────────────────┼──────────────────────┼───────────┤
-│ token   │ Hetzner Cloud API    │ string │ token          │ HCLOUD_TOKEN         │           │
-│         │ token                │        │                │                      │           │
-└─────────┴──────────────────────┴────────┴────────────────┴──────────────────────┴───────────┘
-```
+| Option | Description | Type | Config key | Environment variable | Flag |
+| --- | --- | --- | --- | --- | --- |
+| config | Config file path (default "~/.config/hcloud/cli.toml") | string |  | HCLOUD_CONFIG | --config |
+| context | Currently active context | string | active_context | HCLOUD_CONTEXT | --context |
+| token | Hetzner Cloud API token | string | token | HCLOUD_TOKEN |  |
 
 Since the above options are not preferences, they cannot be modified with 'hcloud config set' or 
 'hcloud config unset'. However, you are able to retrieve them using 'hcloud config get' and 'hcloud config list'.
 Following options are preferences and can be used with set/unset/add/remove:
 
-```
-┌──────────────────────────┬──────────────────────┬─────────────┬──────────────────────────┬─────────────────────────────────┬────────────────────────────┐
-│ OPTION                   │ DESCRIPTION          │ TYPE        │ CONFIG KEY               │ ENVIRONMENT VARIABLE            │ FLAG                       │
-├──────────────────────────┼──────────────────────┼─────────────┼──────────────────────────┼─────────────────────────────────┼────────────────────────────┤
-│ debug                    │ Enable debug output  │ boolean     │ debug                    │ HCLOUD_DEBUG                    │ --debug                    │
-├──────────────────────────┼──────────────────────┼─────────────┼──────────────────────────┼─────────────────────────────────┼────────────────────────────┤
-│ debug-file               │ File to write debug  │ string      │ debug_file               │ HCLOUD_DEBUG_FILE               │ --debug-file               │
-│                          │ output to            │             │                          │                                 │                            │
-├──────────────────────────┼──────────────────────┼─────────────┼──────────────────────────┼─────────────────────────────────┼────────────────────────────┤
-│ default-ssh-keys         │ Default SSH Keys for │ string list │ default_ssh_keys         │ HCLOUD_DEFAULT_SSH_KEYS         │                            │
-│                          │ new Servers and      │             │                          │                                 │                            │
-│                          │ Storage Boxes        │             │                          │                                 │                            │
-├──────────────────────────┼──────────────────────┼─────────────┼──────────────────────────┼─────────────────────────────────┼────────────────────────────┤
-│ endpoint                 │ Hetzner Cloud API    │ string      │ endpoint                 │ HCLOUD_ENDPOINT                 │ --endpoint                 │
-│                          │ endpoint             │             │                          │                                 │                            │
-├──────────────────────────┼──────────────────────┼─────────────┼──────────────────────────┼─────────────────────────────────┼────────────────────────────┤
-│ hetzner-endpoint         │ Hetzner API endpoint │ string      │ hetzner_endpoint         │ HETZNER_ENDPOINT                │ --hetzner-endpoint         │
-├──────────────────────────┼──────────────────────┼─────────────┼──────────────────────────┼─────────────────────────────────┼────────────────────────────┤
-│ no-experimental-warnings │ If true,             │ boolean     │ no_experimental_warnings │ HCLOUD_NO_EXPERIMENTAL_WARNINGS │ --no-experimental-warnings │
-│                          │ experimental         │             │                          │                                 │                            │
-│                          │ warnings are not     │             │                          │                                 │                            │
-│                          │ shown                │             │                          │                                 │                            │
-├──────────────────────────┼──────────────────────┼─────────────┼──────────────────────────┼─────────────────────────────────┼────────────────────────────┤
-│ poll-interval            │ Interval at which to │ duration    │ poll_interval            │ HCLOUD_POLL_INTERVAL            │ --poll-interval            │
-│                          │ poll information,    │             │                          │                                 │                            │
-│                          │ for example action   │             │                          │                                 │                            │
-│                          │ progress             │             │                          │                                 │                            │
-├──────────────────────────┼──────────────────────┼─────────────┼──────────────────────────┼─────────────────────────────────┼────────────────────────────┤
-│ quiet                    │ If true, only print  │ boolean     │ quiet                    │ HCLOUD_QUIET                    │ --quiet                    │
-│                          │ error messages       │             │                          │                                 │                            │
-├──────────────────────────┼──────────────────────┼─────────────┼──────────────────────────┼─────────────────────────────────┼────────────────────────────┤
-│ sort.<resource>          │ Default sorting for  │ string list │ sort.<resource>          │ HCLOUD_SORT_<RESOURCE>          │                            │
-│                          │ resource             │             │                          │                                 │                            │
-└──────────────────────────┴──────────────────────┴─────────────┴──────────────────────────┴─────────────────────────────────┴────────────────────────────┘
-```
+| Option | Description | Type | Config key | Environment variable | Flag |
+| --- | --- | --- | --- | --- | --- |
+| debug | Enable debug output | boolean | debug | HCLOUD_DEBUG | --debug |
+| debug-file | File to write debug output to | string | debug_file | HCLOUD_DEBUG_FILE | --debug-file |
+| default-ssh-keys | Default SSH Keys for new Servers and Storage Boxes | string list | default_ssh_keys | HCLOUD_DEFAULT_SSH_KEYS |  |
+| endpoint | Hetzner Cloud API endpoint | string | endpoint | HCLOUD_ENDPOINT | --endpoint |
+| hetzner-endpoint | Hetzner API endpoint | string | hetzner_endpoint | HETZNER_ENDPOINT | --hetzner-endpoint |
+| no-experimental-warnings | If true, experimental warnings are not shown | boolean | no_experimental_warnings | HCLOUD_NO_EXPERIMENTAL_WARNINGS | --no-experimental-warnings |
+| poll-interval | Interval at which to poll information, for example action progress | duration | poll_interval | HCLOUD_POLL_INTERVAL | --poll-interval |
+| quiet | If true, only print error messages | boolean | quiet | HCLOUD_QUIET | --quiet |
+| sort.<resource> | Default sorting for resource | string list | sort.<resource> | HCLOUD_SORT_<RESOURCE> |  |
 
 Options will be persisted in the configuration file. To find out where your configuration file is located
 on disk, run 'hcloud config get config'.

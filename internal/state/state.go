@@ -14,6 +14,8 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
+type ContextKeyMarkdownTables struct{}
+
 type State interface {
 	context.Context
 
@@ -33,9 +35,9 @@ type state struct {
 	term   terminal.Terminal
 }
 
-func New(cfg config.Config) (State, error) {
+func New(cfg config.Config, ctx context.Context) (State, error) {
 	s := &state{
-		Context: context.Background(),
+		Context: ctx,
 		config:  cfg,
 		term:    terminal.DefaultTerminal{},
 	}
