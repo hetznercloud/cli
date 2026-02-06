@@ -43,6 +43,7 @@ func NewRootCommand(s state.State) *cobra.Command {
 		SilenceUsage:          true,
 		SilenceErrors:         true,
 		DisableFlagsInUseLine: true,
+		DisableAutoGenTag:     true,
 	}
 
 	util.AddGroup(cmd, "resource", "Resources",

@@ -29,3 +29,4 @@ hcloud server enable-protection <server> (delete|rebuild)...
 ### SEE ALSO
 
 * [hcloud server](hcloud_server.md)	 - Manage Servers
+

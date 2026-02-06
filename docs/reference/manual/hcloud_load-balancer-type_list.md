@@ -49,3 +49,4 @@ hcloud load-balancer-type list [options]
 ### SEE ALSO
 
 * [hcloud load-balancer-type](hcloud_load-balancer-type.md)	 - View Load Balancer Types
+

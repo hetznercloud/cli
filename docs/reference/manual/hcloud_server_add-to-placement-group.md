@@ -30,3 +30,4 @@ hcloud server add-to-placement-group --placement-group <placement-group> <server
 ### SEE ALSO
 
 * [hcloud server](hcloud_server.md)	 - Manage Servers
+

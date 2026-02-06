@@ -29,3 +29,4 @@ hcloud floating-ip disable-protection <floating-ip> delete
 ### SEE ALSO
 
 * [hcloud floating-ip](hcloud_floating-ip.md)	 - Manage Floating IPs
+

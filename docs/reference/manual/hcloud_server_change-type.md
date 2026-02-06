@@ -30,3 +30,4 @@ hcloud server change-type [--keep-disk] <server> <server-type>
 ### SEE ALSO
 
 * [hcloud server](hcloud_server.md)	 - Manage Servers
+

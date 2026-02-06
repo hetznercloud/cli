@@ -30,3 +30,4 @@ hcloud storage-box remove-label <storage-box> (--all | <label>...)
 ### SEE ALSO
 
 * [hcloud storage-box](hcloud_storage-box.md)	 - Manage Storage Boxes
+

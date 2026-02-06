@@ -29,3 +29,4 @@ hcloud certificate retry <certificate>
 ### SEE ALSO
 
 * [hcloud certificate](hcloud_certificate.md)	 - Manage Certificates
+

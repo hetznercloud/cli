@@ -30,3 +30,4 @@ hcloud location describe [options] <location>
 ### SEE ALSO
 
 * [hcloud location](hcloud_location.md)	 - View Locations
+

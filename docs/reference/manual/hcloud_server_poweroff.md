@@ -29,3 +29,4 @@ hcloud server poweroff <server>
 ### SEE ALSO
 
 * [hcloud server](hcloud_server.md)	 - Manage Servers
+

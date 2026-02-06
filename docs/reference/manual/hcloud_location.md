@@ -27,3 +27,4 @@ View Locations
 * [hcloud](hcloud.md)	 - Hetzner Cloud CLI
 * [hcloud location describe](hcloud_location_describe.md)	 - Describe a Location
 * [hcloud location list](hcloud_location_list.md)	 - List Locations
+

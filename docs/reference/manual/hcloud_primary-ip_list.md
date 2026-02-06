@@ -56,3 +56,4 @@ hcloud primary-ip list [options]
 ### SEE ALSO
 
 * [hcloud primary-ip](hcloud_primary-ip.md)	 - Manage Primary IPs
+

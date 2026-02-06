@@ -29,3 +29,4 @@ hcloud storage-box disable-snapshot-plan <storage-box>
 ### SEE ALSO
 
 * [hcloud storage-box](hcloud_storage-box.md)	 - Manage Storage Boxes
+

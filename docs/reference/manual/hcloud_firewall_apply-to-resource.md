@@ -32,3 +32,4 @@ hcloud firewall apply-to-resource (--type server --server <server> | --type labe
 ### SEE ALSO
 
 * [hcloud firewall](hcloud_firewall.md)	 - Manage Firewalls
+

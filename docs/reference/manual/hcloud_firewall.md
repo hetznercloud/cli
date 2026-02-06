@@ -37,3 +37,4 @@ Manage Firewalls
 * [hcloud firewall remove-label](hcloud_firewall_remove-label.md)	 - Remove a label from a Firewall
 * [hcloud firewall replace-rules](hcloud_firewall_replace-rules.md)	 - Replaces all rules from a Firewall from a file
 * [hcloud firewall update](hcloud_firewall_update.md)	 - Update a Firewall
+

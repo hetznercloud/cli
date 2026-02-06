@@ -52,3 +52,4 @@ hcloud all list [options]
 ### SEE ALSO
 
 * [hcloud all](hcloud_all.md)	 - Commands that apply to all resources
+

@@ -32,3 +32,4 @@ Manage contexts
 * [hcloud context rename](hcloud_context_rename.md)	 - Rename a context
 * [hcloud context unset](hcloud_context_unset.md)	 - Unset used context
 * [hcloud context use](hcloud_context_use.md)	 - Use a context
+

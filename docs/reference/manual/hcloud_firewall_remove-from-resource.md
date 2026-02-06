@@ -32,3 +32,4 @@ hcloud firewall remove-from-resource (--type server --server <server> | --type l
 ### SEE ALSO
 
 * [hcloud firewall](hcloud_firewall.md)	 - Manage Firewalls
+

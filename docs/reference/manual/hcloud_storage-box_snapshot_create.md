@@ -32,3 +32,4 @@ hcloud storage-box snapshot create [--description <description>] <storage-box>
 ### SEE ALSO
 
 * [hcloud storage-box snapshot](hcloud_storage-box_snapshot.md)	 - Manage Storage Box Snapshots
+

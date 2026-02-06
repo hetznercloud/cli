@@ -45,3 +45,4 @@ hcloud primary-ip create [options] --type <ipv4|ipv6> --name <name>
 ### SEE ALSO
 
 * [hcloud primary-ip](hcloud_primary-ip.md)	 - Manage Primary IPs
+

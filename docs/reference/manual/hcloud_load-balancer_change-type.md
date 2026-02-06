@@ -29,3 +29,4 @@ hcloud load-balancer change-type <load-balancer> <load-balancer-type>
 ### SEE ALSO
 
 * [hcloud load-balancer](hcloud_load-balancer.md)	 - Manage Load Balancers
+

@@ -30,3 +30,4 @@ hcloud server-type describe [options] <server-type>
 ### SEE ALSO
 
 * [hcloud server-type](hcloud_server-type.md)	 - View Server Types
+

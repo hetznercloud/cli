@@ -43,3 +43,4 @@ Manage Storage Boxes
 * [hcloud storage-box subaccount](hcloud_storage-box_subaccount.md)	 - Manage Storage Box Subaccounts
 * [hcloud storage-box update](hcloud_storage-box_update.md)	 - Update a Storage Box
 * [hcloud storage-box update-access-settings](hcloud_storage-box_update-access-settings.md)	 - Update access settings of the primary Storage Box account
+

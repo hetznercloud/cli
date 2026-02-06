@@ -47,3 +47,4 @@ hcloud storage-box enable-snapshot-plan [options] <storage-box>
 ### SEE ALSO
 
 * [hcloud storage-box](hcloud_storage-box.md)	 - Manage Storage Boxes
+

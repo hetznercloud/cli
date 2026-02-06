@@ -29,3 +29,4 @@ hcloud floating-ip assign <floating-ip> <server>
 ### SEE ALSO
 
 * [hcloud floating-ip](hcloud_floating-ip.md)	 - Manage Floating IPs
+

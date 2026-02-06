@@ -34,3 +34,4 @@ hcloud config set <key> <value>...
 ### SEE ALSO
 
 * [hcloud config](hcloud_config.md)	 - Manage configuration
+

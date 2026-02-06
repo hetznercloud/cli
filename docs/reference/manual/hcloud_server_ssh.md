@@ -32,3 +32,4 @@ hcloud server ssh [options] <server> [--] [ssh options] [command [argument...]]
 ### SEE ALSO
 
 * [hcloud server](hcloud_server.md)	 - Manage Servers
+

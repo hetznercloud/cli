@@ -30,3 +30,4 @@ hcloud certificate remove-label <certificate> (--all | <label>...)
 ### SEE ALSO
 
 * [hcloud certificate](hcloud_certificate.md)	 - Manage Certificates
+

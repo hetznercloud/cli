@@ -29,3 +29,4 @@ hcloud certificate delete <certificate>...
 ### SEE ALSO
 
 * [hcloud certificate](hcloud_certificate.md)	 - Manage Certificates
+

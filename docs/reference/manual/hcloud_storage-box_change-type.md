@@ -34,3 +34,4 @@ hcloud storage-box change-type <storage-box> <storage-box-type>
 ### SEE ALSO
 
 * [hcloud storage-box](hcloud_storage-box.md)	 - Manage Storage Boxes
+

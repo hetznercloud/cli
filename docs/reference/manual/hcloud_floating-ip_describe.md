@@ -30,3 +30,4 @@ hcloud floating-ip describe [options] <floating-ip>
 ### SEE ALSO
 
 * [hcloud floating-ip](hcloud_floating-ip.md)	 - Manage Floating IPs
+

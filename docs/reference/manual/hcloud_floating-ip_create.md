@@ -37,3 +37,4 @@ hcloud floating-ip create [options] --type <ipv4|ipv6> (--home-location <locatio
 ### SEE ALSO
 
 * [hcloud floating-ip](hcloud_floating-ip.md)	 - Manage Floating IPs
+

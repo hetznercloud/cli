@@ -36,3 +36,4 @@ hcloud certificate create [options] --name <name> (--type managed --domain <doma
 ### SEE ALSO
 
 * [hcloud certificate](hcloud_certificate.md)	 - Manage Certificates
+

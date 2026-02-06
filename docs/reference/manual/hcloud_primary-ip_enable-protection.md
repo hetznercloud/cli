@@ -29,3 +29,4 @@ hcloud primary-ip enable-protection <primary-ip> [delete]
 ### SEE ALSO
 
 * [hcloud primary-ip](hcloud_primary-ip.md)	 - Manage Primary IPs
+

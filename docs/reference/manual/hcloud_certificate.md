@@ -33,3 +33,4 @@ Manage Certificates
 * [hcloud certificate remove-label](hcloud_certificate_remove-label.md)	 - Remove a label from a Certificate
 * [hcloud certificate retry](hcloud_certificate_retry.md)	 - Retry a managed Certificate's issuance
 * [hcloud certificate update](hcloud_certificate_update.md)	 - Update a Certificate
+

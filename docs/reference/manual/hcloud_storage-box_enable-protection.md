@@ -29,3 +29,4 @@ hcloud storage-box enable-protection <storage-box> delete
 ### SEE ALSO
 
 * [hcloud storage-box](hcloud_storage-box.md)	 - Manage Storage Boxes
+

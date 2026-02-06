@@ -35,3 +35,4 @@ hcloud server shutdown [options] <server>
 ### SEE ALSO
 
 * [hcloud server](hcloud_server.md)	 - Manage Servers
+

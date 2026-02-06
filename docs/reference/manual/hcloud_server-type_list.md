@@ -55,3 +55,4 @@ hcloud server-type list [options]
 ### SEE ALSO
 
 * [hcloud server-type](hcloud_server-type.md)	 - View Server Types
+

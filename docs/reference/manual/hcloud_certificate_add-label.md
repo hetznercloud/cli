@@ -30,3 +30,4 @@ hcloud certificate add-label [--overwrite] <certificate> <label>...
 ### SEE ALSO
 
 * [hcloud certificate](hcloud_certificate.md)	 - Manage Certificates
+

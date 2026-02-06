@@ -30,3 +30,4 @@ hcloud load-balancer-type describe [options] <load-balancer-type>
 ### SEE ALSO
 
 * [hcloud load-balancer-type](hcloud_load-balancer-type.md)	 - View Load Balancer Types
+

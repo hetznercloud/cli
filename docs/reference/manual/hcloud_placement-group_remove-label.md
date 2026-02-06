@@ -30,3 +30,4 @@ hcloud placement-group remove-label <placement-group> (--all | <label>...)
 ### SEE ALSO
 
 * [hcloud placement-group](hcloud_placement-group.md)	 - Manage Placement Groups
+

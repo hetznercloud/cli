@@ -52,3 +52,4 @@ hcloud storage-box snapshot list [options] <storage-box>
 ### SEE ALSO
 
 * [hcloud storage-box snapshot](hcloud_storage-box_snapshot.md)	 - Manage Storage Box Snapshots
+

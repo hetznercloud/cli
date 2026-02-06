@@ -58,3 +58,4 @@ hcloud server create [options] --name <name> --type <server-type> --image <image
 ### SEE ALSO
 
 * [hcloud server](hcloud_server.md)	 - Manage Servers
+

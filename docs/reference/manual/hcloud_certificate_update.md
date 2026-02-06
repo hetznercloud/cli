@@ -30,3 +30,4 @@ hcloud certificate update [options] <certificate>
 ### SEE ALSO
 
 * [hcloud certificate](hcloud_certificate.md)	 - Manage Certificates
+

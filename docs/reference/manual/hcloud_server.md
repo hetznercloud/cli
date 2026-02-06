@@ -59,3 +59,4 @@ Manage Servers
 * [hcloud server shutdown](hcloud_server_shutdown.md)	 - Shutdown a server
 * [hcloud server ssh](hcloud_server_ssh.md)	 - Spawn an SSH connection for the Server
 * [hcloud server update](hcloud_server_update.md)	 - Update a Server
+
