@@ -36,7 +36,7 @@ func newRootCommand(t *testing.T) *cobra.Command {
 		t.Fatalf("unable to read config file \"%s\": %s\n", cfg.Path(), err)
 	}
 
-	s, err := state.New(cfg)
+	s, err := state.New(t.Context(), cfg)
 	if err != nil {
 		t.Fatal(err)
 	}

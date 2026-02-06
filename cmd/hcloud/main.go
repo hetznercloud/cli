@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"os"
 
@@ -17,12 +18,14 @@ func init() {
 }
 
 func main() {
+	ctx := context.Background()
+
 	cfg := config.New()
 	if err := cfg.Read(nil); err != nil {
 		log.Fatalf("unable to read config file \"%s\": %s\n", cfg.Path(), err)
 	}
 
-	s, err := state.New(cfg)
+	s, err := state.New(ctx, cfg)
 	if err != nil {
 		log.Fatalln(err)
 	}

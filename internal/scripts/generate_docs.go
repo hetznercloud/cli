@@ -1,11 +1,11 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"path/filepath"
 	"regexp"
-	"strings"
 
 	"github.com/spf13/cobra/doc"
 
@@ -31,8 +31,10 @@ func run() error {
 		return fmt.Errorf("error creating docs directory: %w", err)
 	}
 
+	ctx := context.Background()
+	ctx = context.WithValue(ctx, state.ContextKeyMarkdownTables{}, true)
 	cfg := config.New()
-	s, err := state.New(cfg)
+	s, err := state.New(ctx, cfg)
 	if err != nil {
 		return fmt.Errorf("could not create state: %w", err)
 	}
@@ -62,9 +64,6 @@ func run() error {
 			return fmt.Errorf("could not read file at %q: %w", path, err)
 		}
 		bytes = generatedOnRegex.ReplaceAll(bytes, nil)
-		// We do this to wrap tables in a code block. Otherwise, they won't be displayed properly in markdown viewers.
-		bytes = []byte(strings.ReplaceAll(string(bytes), "┌", "```\n┌"))
-		bytes = []byte(strings.ReplaceAll(string(bytes), "┘", "┘\n```"))
 		err = os.WriteFile(path, bytes, f.Type())
 		if err != nil {
 			return fmt.Errorf("could not write file at %q: %w", path, err)

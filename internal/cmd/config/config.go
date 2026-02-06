@@ -10,12 +10,28 @@ import (
 )
 
 //go:embed helptext/other.txt
-var nonPreferenceOptions string
+var nonPreferenceOptionsPlain string
+
+//go:embed helptext/other.md
+var nonPreferenceOptionsMd string
 
 //go:embed helptext/preferences.txt
-var preferenceOptions string
+var preferenceOptionsPlain string
+
+//go:embed helptext/preferences.md
+var preferenceOptionsMd string
 
 func NewCommand(s state.State) *cobra.Command {
+	var nonPreferenceOptions, preferenceOptions string
+
+	if s.Value(state.ContextKeyMarkdownTables{}) == true {
+		nonPreferenceOptions = nonPreferenceOptionsMd
+		preferenceOptions = preferenceOptionsMd
+	} else {
+		nonPreferenceOptions = nonPreferenceOptionsPlain
+		preferenceOptions = preferenceOptionsPlain
+	}
+
 	cmd := &cobra.Command{
 		Use:   "config",
 		Short: "Manage configuration",
