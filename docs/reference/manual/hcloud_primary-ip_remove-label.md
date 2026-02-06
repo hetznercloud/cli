@@ -30,3 +30,4 @@ hcloud primary-ip remove-label <primary-ip> (--all | <label>...)
 ### SEE ALSO
 
 * [hcloud primary-ip](hcloud_primary-ip.md)	 - Manage Primary IPs
+

@@ -38,3 +38,4 @@ hcloud load-balancer create [options] --name <name> --type <type>
 ### SEE ALSO
 
 * [hcloud load-balancer](hcloud_load-balancer.md)	 - Manage Load Balancers
+

@@ -30,3 +30,4 @@ hcloud firewall replace-rules --rules-file <file> <firewall>
 ### SEE ALSO
 
 * [hcloud firewall](hcloud_firewall.md)	 - Manage Firewalls
+

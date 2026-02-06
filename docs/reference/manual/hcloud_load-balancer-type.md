@@ -27,3 +27,4 @@ View Load Balancer Types
 * [hcloud](hcloud.md)	 - Hetzner Cloud CLI
 * [hcloud load-balancer-type describe](hcloud_load-balancer-type_describe.md)	 - Describe a Load Balancer Type
 * [hcloud load-balancer-type list](hcloud_load-balancer-type_list.md)	 - List Load Balancer Types
+

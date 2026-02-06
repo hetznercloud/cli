@@ -50,3 +50,4 @@ hcloud storage-box-type list [options]
 ### SEE ALSO
 
 * [hcloud storage-box-type](hcloud_storage-box-type.md)	 - View Storage Box Types
+

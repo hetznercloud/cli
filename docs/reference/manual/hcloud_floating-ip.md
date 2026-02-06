@@ -37,3 +37,4 @@ Manage Floating IPs
 * [hcloud floating-ip set-rdns](hcloud_floating-ip_set-rdns.md)	 - Change reverse DNS of a Floating IP
 * [hcloud floating-ip unassign](hcloud_floating-ip_unassign.md)	 - Unassign a Floating IP
 * [hcloud floating-ip update](hcloud_floating-ip_update.md)	 - Update a Floating IP
+

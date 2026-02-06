@@ -30,3 +30,4 @@ hcloud storage-box-type describe [options] <storage-box-type>
 ### SEE ALSO
 
 * [hcloud storage-box-type](hcloud_storage-box-type.md)	 - View Storage Box Types
+

@@ -33,3 +33,4 @@ hcloud server metrics [options] (--type <cpu|disk|network>)... <server>
 ### SEE ALSO
 
 * [hcloud server](hcloud_server.md)	 - Manage Servers
+

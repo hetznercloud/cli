@@ -50,3 +50,4 @@ hcloud location list [options]
 ### SEE ALSO
 
 * [hcloud location](hcloud_location.md)	 - View Locations
+

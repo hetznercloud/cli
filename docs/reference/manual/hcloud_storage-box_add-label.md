@@ -30,3 +30,4 @@ hcloud storage-box add-label [--overwrite] <storage-box> <label>...
 ### SEE ALSO
 
 * [hcloud storage-box](hcloud_storage-box.md)	 - Manage Storage Boxes
+

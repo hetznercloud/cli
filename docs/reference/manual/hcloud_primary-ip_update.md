@@ -31,3 +31,4 @@ hcloud primary-ip update [options] <primary-ip>
 ### SEE ALSO
 
 * [hcloud primary-ip](hcloud_primary-ip.md)	 - Manage Primary IPs
+

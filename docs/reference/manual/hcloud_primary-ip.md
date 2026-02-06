@@ -37,3 +37,4 @@ Manage Primary IPs
 * [hcloud primary-ip set-rdns](hcloud_primary-ip_set-rdns.md)	 - Change reverse DNS of a Primary IP
 * [hcloud primary-ip unassign](hcloud_primary-ip_unassign.md)	 - Unassign a Primary IP from an assignee (usually a server)
 * [hcloud primary-ip update](hcloud_primary-ip_update.md)	 - Update a Primary IP
+

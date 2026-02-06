@@ -27,3 +27,4 @@ View Storage Box Types
 * [hcloud](hcloud.md)	 - Hetzner Cloud CLI
 * [hcloud storage-box-type describe](hcloud_storage-box-type_describe.md)	 - Describe a Storage Box Type
 * [hcloud storage-box-type list](hcloud_storage-box-type_list.md)	 - List Storage Box Types
+

@@ -32,3 +32,4 @@ Manage Placement Groups
 * [hcloud placement-group list](hcloud_placement-group_list.md)	 - List Placement Groups
 * [hcloud placement-group remove-label](hcloud_placement-group_remove-label.md)	 - Remove a label from a Placement Group
 * [hcloud placement-group update](hcloud_placement-group_update.md)	 - Update a Placement Group
+

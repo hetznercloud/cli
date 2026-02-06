@@ -29,3 +29,4 @@ hcloud server disable-rescue <server>
 ### SEE ALSO
 
 * [hcloud server](hcloud_server.md)	 - Manage Servers
+

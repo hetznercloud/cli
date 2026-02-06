@@ -54,3 +54,4 @@ hcloud storage-box list [options]
 ### SEE ALSO
 
 * [hcloud storage-box](hcloud_storage-box.md)	 - Manage Storage Boxes
+

@@ -30,3 +30,4 @@ hcloud server add-label [--overwrite] <server> <label>...
 ### SEE ALSO
 
 * [hcloud server](hcloud_server.md)	 - Manage Servers
+
