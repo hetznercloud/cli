@@ -7,7 +7,6 @@ toolchain go1.25.7
 require (
 	github.com/BurntSushi/toml v1.6.0
 	github.com/cheggaaa/pb/v3 v3.1.7
-	github.com/cpuguy83/go-md2man/v2 v2.0.7
 	github.com/dustin/go-humanize v1.0.1
 	github.com/fatih/color v1.18.0
 	github.com/fatih/structs v1.1.0
@@ -34,6 +33,7 @@ require (
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/bool64/shared v0.1.6 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
+	github.com/cpuguy83/go-md2man/v2 v2.0.7 // indirect
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc // indirect
 	github.com/fsnotify/fsnotify v1.9.0 // indirect
 	github.com/go-viper/mapstructure/v2 v2.4.0 // indirect

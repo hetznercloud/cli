@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	// We import md2man here so we can keep it up to date in go.mod
-	_ "github.com/cpuguy83/go-md2man/v2/md2man"
 
 	"github.com/spf13/cobra/doc"
 
