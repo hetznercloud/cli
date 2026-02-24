@@ -19,7 +19,7 @@ import (
 var ListCmd = &base.ListCmd[*hcloud.ServerType, schema.ServerType]{
 	ResourceNamePlural: "Server Types",
 	JSONKeyGetByName:   "server_types",
-	DefaultColumns:     []string{"id", "name", "cores", "cpu_type", "architecture", "memory", "disk", "storage_type", "location"},
+	DefaultColumns:     []string{"id", "name", "cores", "cpu_type", "architecture", "memory", "disk", "location"},
 	SortOption:         nil, // Server Types do not support sorting
 
 	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.ServerType, error) {
