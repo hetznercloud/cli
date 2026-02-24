@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 mockgen -package mock -destination zz_hcapi_mock.go \
   github.com/hetznercloud/cli/internal/hcapi2 \
 ActionClient,\
