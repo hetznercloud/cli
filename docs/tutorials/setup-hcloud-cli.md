@@ -39,6 +39,9 @@ go install github.com/hetznercloud/cli/cmd/hcloud@latest
 
 ### 1.3 Installation using .deb package (Debian/Ubuntu)
 
+> [!WARNING]
+> Debian packages are experimental and might change or break in the future.
+
 On Debian and Ubuntu-based distributions, you can install the hcloud CLI using the `.deb` package:
 
 1. Download the latest `.deb` package from the [GitHub releases page](https://github.com/hetznercloud/cli/releases/latest).
@@ -56,6 +59,9 @@ sudo dpkg -i hcloud-cli_<version>_linux_amd64.deb
 The `.deb` package includes shell completions for bash, zsh, and fish, as well as man pages.
 
 ### 1.4 Installation using .rpm package (Fedora/RHEL/CentOS)
+
+> [!WARNING]
+> RPM packages are experimental and might change or break in the future.
 
 On Fedora, RHEL, CentOS, and other RPM-based distributions, you can install the hcloud CLI using the `.rpm` package:
 
