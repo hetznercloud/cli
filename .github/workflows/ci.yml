@@ -18,7 +18,7 @@ jobs:
       - name: Set up tools
         uses: jdx/mise-action@v3
         with:
-          version: 2026.2.3 # renovate: datasource=github-releases depName=jdx/mise
+          version: 2026.2.21 # renovate: datasource=github-releases depName=jdx/mise
 
       - name: Run gofmt
         run: diff -u <(echo -n) <(gofmt -d -s .)
@@ -38,7 +38,7 @@ jobs:
       - name: Set up tools
         uses: jdx/mise-action@v3
         with:
-          version: 2026.2.3 # renovate: datasource=github-releases depName=jdx/mise
+          version: 2026.2.21 # renovate: datasource=github-releases depName=jdx/mise
 
       - name: Run tests
         run: go test -coverpkg=./internal/... -coverprofile=coverage.txt -v -race ./...
@@ -63,7 +63,7 @@ jobs:
       - name: Set up tools
         uses: jdx/mise-action@v3
         with:
-          version: 2026.2.3 # renovate: datasource=github-releases depName=jdx/mise
+          version: 2026.2.21 # renovate: datasource=github-releases depName=jdx/mise
 
       - uses: hetznercloud/tps-action@main
 
@@ -92,7 +92,7 @@ jobs:
       - name: Set up tools
         uses: jdx/mise-action@v3
         with:
-          version: 2026.2.3 # renovate: datasource=github-releases depName=jdx/mise
+          version: 2026.2.21 # renovate: datasource=github-releases depName=jdx/mise
 
       - name: Delete old generated files
         run: find . -name 'zz_*.go' -delete
@@ -115,7 +115,7 @@ jobs:
       - name: Set up tools
         uses: jdx/mise-action@v3
         with:
-          version: 2026.2.3 # renovate: datasource=github-releases depName=jdx/mise
+          version: 2026.2.21 # renovate: datasource=github-releases depName=jdx/mise
 
       - name: Run go mod tidy
         run: go mod tidy
