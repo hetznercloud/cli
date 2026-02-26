@@ -37,7 +37,46 @@ go install github.com/hetznercloud/cli/cmd/hcloud@latest
 > [!NOTE]
 > Both of the above installation methods do not provide automatic updates. Please make sure to keep your installation up to date manually.
 
-### 1.3 Installation using Homebrew
+### 1.3 Installation using .deb package (Debian/Ubuntu)
+
+On Debian and Ubuntu-based distributions, you can install the hcloud CLI using the `.deb` package:
+
+1. Download the latest `.deb` package from the [GitHub releases page](https://github.com/hetznercloud/cli/releases/latest).
+
+2. Install the package using `dpkg`:
+
+```bash
+# Download the package (replace with the actual version and architecture)
+curl -sSLO https://github.com/hetznercloud/cli/releases/latest/download/hcloud-cli_<version>_linux_amd64.deb
+
+# Install the package
+sudo dpkg -i hcloud-cli_<version>_linux_amd64.deb
+```
+
+The `.deb` package includes shell completions for bash, zsh, and fish, as well as man pages.
+
+### 1.4 Installation using .rpm package (Fedora/RHEL/CentOS)
+
+On Fedora, RHEL, CentOS, and other RPM-based distributions, you can install the hcloud CLI using the `.rpm` package:
+
+1. Download the latest `.rpm` package from the [GitHub releases page](https://github.com/hetznercloud/cli/releases/latest).
+
+2. Install the package using `rpm` or `dnf`:
+
+```bash
+# Download the package (replace with the actual version and architecture)
+curl -sSLO https://github.com/hetznercloud/cli/releases/latest/download/hcloud-cli-<version>-1.x86_64.rpm
+
+# Install using dnf (Fedora/RHEL 8+/CentOS 8+)
+sudo dnf install hcloud-cli-<version>-1.x86_64.rpm
+
+# Or install using rpm
+sudo rpm -i hcloud-cli-<version>-1.x86_64.rpm
+```
+
+The `.rpm` package includes shell completions for bash, zsh, and fish, as well as man pages.
+
+### 1.5 Installation using Homebrew
 
 On Linux and macOS you can also install the hcloud CLI using Homebrew:
 
@@ -45,7 +84,7 @@ On Linux and macOS you can also install the hcloud CLI using Homebrew:
 brew install hcloud
 ```
 
-### 1.4 Installation on Windows using WinGet or Scoop
+### 1.6 Installation on Windows using WinGet or Scoop
 
 > [!WARNING]
 > The WinGet and Scoop package entries are not maintained by Hetzner.
@@ -60,7 +99,7 @@ winget install HetznerCloud.CLI
 scoop install hcloud
 ```
 
-### 1.5 Using hcloud with Docker
+### 1.7 Using hcloud with Docker
 
 Instead of installing hcloud on the host, you can also use our docker image at `hetznercloud/cli`.
 
@@ -82,7 +121,7 @@ docker run -it --rm --entrypoint /bin/sh hetznercloud/cli:latest
 ---
 
 > [!WARNING]
-> Debian-based distributions (using apt) provide outdated versions of the hcloud CLI.
+> Some third-party package repositories may provide outdated versions of the hcloud CLI.
 > Please consider one of the other installation methods.
 
 ## 2. (Optional) Setup auto-completion
