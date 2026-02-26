@@ -2,6 +2,6 @@
 go = "1.25.7"
 "go:go.uber.org/mock/mockgen" = "v0.6.0"
 "github:golangci/golangci-lint" = "2.8.0"
-"github:goreleaser/goreleaser" = "v2.13.3"
+"github:goreleaser/goreleaser" = "v2.14.1"
 "github:anchore/quill" = "v0.5.1"
 "github:jstemmer/go-junit-report" = "v2.1.0"
