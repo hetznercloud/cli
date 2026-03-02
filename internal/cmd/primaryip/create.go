@@ -34,6 +34,8 @@ See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters.`,
 		_ = cmd.MarkFlagRequired("name")
 
 		cmd.Flags().Int64("assignee-id", 0, "Assignee (usually a Server) to assign Primary IP to")
+		cmd.Flags().String("assignee-type", "server", "Assignee Type to assign Primary IP to (default: server)")
+		_ = cmd.RegisterFlagCompletionFunc("assignee-type", cmpl.SuggestCandidates("server"))
 
 		cmd.Flags().String("location", "", "Location (ID or name) of Primary IP")
 		_ = cmd.RegisterFlagCompletionFunc("location", cmpl.SuggestCandidatesF(client.Location().Names))
@@ -56,6 +58,7 @@ See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters.`,
 		typ, _ := cmd.Flags().GetString("type")
 		name, _ := cmd.Flags().GetString("name")
 		assigneeID, _ := cmd.Flags().GetInt64("assignee-id")
+		assigneeType, _ := cmd.Flags().GetString("assignee-type")
 		datacenter, _ := cmd.Flags().GetString("datacenter")
 		locationIDOrName, _ := cmd.Flags().GetString("location")
 		labels, _ := cmd.Flags().GetStringToString("label")
@@ -70,7 +73,7 @@ See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters.`,
 		createOpts := hcloud.PrimaryIPCreateOpts{
 			Type:         hcloud.PrimaryIPType(typ),
 			Name:         name,
-			AssigneeType: "server",
+			AssigneeType: assigneeType,
 			Labels:       labels,
 		}
 		if assigneeID != 0 {
