@@ -23,7 +23,7 @@ jobs:
       - name: Run GoReleaser
         run: goreleaser release --clean --snapshot --skip=sign
 
-      - uses: actions/upload-artifact@v6
+      - uses: actions/upload-artifact@v7
         with:
           name: Preview Binaries
           path: dist/hcloud-*/hcloud
