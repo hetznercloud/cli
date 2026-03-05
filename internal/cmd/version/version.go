@@ -32,14 +32,17 @@ func runVersion(cmd *cobra.Command, _ []string) error {
 	if long {
 		tw := tabwriter.NewWriter(cmd.OutOrStdout(), 0, 8, 2, ' ', 0)
 		fmt.Fprintln(tw)
-		fmt.Fprintf(tw, "go version:\t%s\n", runtime.Version())
+		fmt.Fprintf(tw, "go version:\t%s (%s)\n", runtime.Version(), runtime.Compiler)
 		fmt.Fprintf(tw, "platform:\t%s/%s\n", runtime.GOOS, runtime.GOARCH)
-		fmt.Fprintf(tw, "compiler:\t%s\n", runtime.Compiler)
 
 		if info, ok := debug.ReadBuildInfo(); ok {
-			fmt.Fprintf(tw, "revision:\t%s\n", getSettingsValue(info.Settings, "vcs.revision", "unknown"))
+			rev := getSettingsValue(info.Settings, "vcs.revision", "unknown")
+			if modified := getSettingsValue(info.Settings, "vcs.modified", "false"); modified == "true" {
+				rev += " (modified)"
+			}
+
+			fmt.Fprintf(tw, "revision:\t%s\n", rev)
 			fmt.Fprintf(tw, "revision date:\t%s\n", getSettingsValue(info.Settings, "vcs.time", "unknown"))
-			fmt.Fprintf(tw, "modified:\t%s\n", getSettingsValue(info.Settings, "vcs.modified", "unknown"))
 		}
 		return tw.Flush()
 	}
