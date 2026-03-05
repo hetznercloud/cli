@@ -1,8 +1,10 @@
 package version
 
 import (
+	"fmt"
 	"runtime"
 	"runtime/debug"
+	"text/tabwriter"
 
 	"github.com/spf13/cobra"
 
@@ -28,42 +30,27 @@ func runVersion(cmd *cobra.Command, _ []string) error {
 
 	long, _ := cmd.Flags().GetBool("long")
 	if long {
-		m := versionMetadata()
-		cmd.Printf(`revision:   %s
-build date: %s
-go version: %s
-platform:   %s
-`,
-			m["revision"],
-			m["build date"],
-			m["go version"],
-			m["platform"],
-		)
+		tw := tabwriter.NewWriter(cmd.OutOrStdout(), 0, 8, 2, ' ', 0)
+		fmt.Fprintln(tw)
+		fmt.Fprintf(tw, "go version:\t%s\n", runtime.Version())
+		fmt.Fprintf(tw, "platform:\t%s/%s\n", runtime.GOOS, runtime.GOARCH)
+		fmt.Fprintf(tw, "compiler:\t%s\n", runtime.Compiler)
+
+		if info, ok := debug.ReadBuildInfo(); ok {
+			fmt.Fprintf(tw, "revision:\t%s\n", getSettingsValue(info.Settings, "vcs.revision", "unknown"))
+			fmt.Fprintf(tw, "revision date:\t%s\n", getSettingsValue(info.Settings, "vcs.time", "unknown"))
+			fmt.Fprintf(tw, "modified:\t%s\n", getSettingsValue(info.Settings, "vcs.modified", "unknown"))
+		}
+		return tw.Flush()
 	}
 	return nil
 }
 
-func versionMetadata() map[string]string {
-	m := map[string]string{
-		"revision":   "unknown",
-		"build date": "unknown",
-		"go version": runtime.Version(),
-		"platform":   runtime.GOOS + "/" + runtime.GOARCH,
-	}
-
-	info, ok := debug.ReadBuildInfo()
-	if !ok {
-		return m
-	}
-
-	for _, setting := range info.Settings {
-		if setting.Key == "vcs.revision" {
-			m["revision"] = setting.Value
-		}
-		if setting.Key == "vcs.time" {
-			m["date"] = setting.Value
+func getSettingsValue(settings []debug.BuildSetting, key, def string) string {
+	for _, setting := range settings {
+		if setting.Key == key {
+			return setting.Value
 		}
 	}
-
-	return m
+	return def
 }
