@@ -161,7 +161,7 @@ func TestFloatingIP(t *testing.T) {
 						Lit("delete").Whitespace().
 						Lit("foo=bar").Whitespace().
 						Datetime().Whitespace().
-						Age().OptionalWhitespace().Newline().
+						Age().Newline().
 						End(),
 					out,
 				)
@@ -309,8 +309,8 @@ func TestFloatingIP(t *testing.T) {
 			require.NoError(t, err)
 			assert.Regexp(t,
 				NewRegex().Start().
-					SeparatedByWhitespace("IP", "DNS").OptionalWhitespace().Newline().
-					Lit(ipStr).Lit("/64").Whitespace().Lit("2 entries").OptionalWhitespace().Newline().
+					SeparatedByWhitespace("IP", "DNS").Newline().
+					Lit(ipStr).Lit("/64").Whitespace().Lit("2 entries").Newline().
 					End(),
 				out,
 			)

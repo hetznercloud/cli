@@ -20,7 +20,7 @@ func TestImage(t *testing.T) {
 
 			assert.Regexp(t,
 				NewRegex().Start().
-					SeparatedByWhitespace("ID", "TYPE", "NAME", "DESCRIPTION", "ARCHITECTURE", "IMAGE SIZE", "DISK SIZE", "CREATED", "DEPRECATED").OptionalWhitespace().Newline().
+					SeparatedByWhitespace("ID", "TYPE", "NAME", "DESCRIPTION", "ARCHITECTURE", "IMAGE SIZE", "DISK SIZE", "CREATED", "DEPRECATED").Newline().
 					AnyTimes(
 						NewRegex().
 							Int().Whitespace().
@@ -31,8 +31,7 @@ func TestImage(t *testing.T) {
 							OneOf("-", NewRegex().FileSize()).Whitespace().
 							FileSize().Whitespace().
 							Datetime().Whitespace().
-							OneOf("-", NewRegex().Datetime()).
-							OptionalWhitespace().Newline(),
+							OneOf("-", NewRegex().Datetime()).Newline(),
 					).
 					End(),
 				out,

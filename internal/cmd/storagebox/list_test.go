@@ -70,7 +70,7 @@ func TestList(t *testing.T) {
 	out, errOut, err := fx.Run(cmd, []string{})
 
 	expOut := `ID    NAME   USERNAME   SERVER                     TYPE   SIZE     LOCATION   AGE
-123   test   u12345     u1337.your-storagebox.de   bx11   42 GiB   fsn1       3h 
+123   test   u12345     u1337.your-storagebox.de   bx11   42 GiB   fsn1       3h
 `
 
 	require.NoError(t, err)
