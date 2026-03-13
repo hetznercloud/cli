@@ -8,12 +8,20 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/output"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/state"
+	"github.com/hetznercloud/cli/internal/state/config"
 )
 
 type presentation struct {
 	Name   string
 	Token  string
 	Active string
+}
+
+type schemaPresentation struct {
+	Name        string         `json:"name"`
+	Token       string         `json:"token"`
+	Active      bool           `json:"active"`
+	Preferences map[string]any `json:"preferences,omitempty"`
 }
 
 func NewListCommand(s state.State) *cobra.Command {
@@ -30,11 +38,12 @@ func NewListCommand(s state.State) *cobra.Command {
 		DisableFlagsInUseLine: true,
 		RunE:                  state.Wrap(s, runList),
 	}
-	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(cols))
+	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(cols), output.OptionJSON(), output.OptionYAML())
 	return cmd
 }
 
 func runList(s state.State, cmd *cobra.Command, _ []string) error {
+	cfg := s.Config()
 	outOpts := output.FlagsForCommand(cmd)
 
 	cols := []string{"active", "name"}
@@ -42,7 +51,36 @@ func runList(s state.State, cmd *cobra.Command, _ []string) error {
 		cols = outOpts["columns"]
 	}
 
-	tw := newListOutputTable(cmd.OutOrStdout())
+	quiet, err := config.OptionQuiet.Get(s.Config())
+	if err != nil {
+		return err
+	}
+
+	out := cmd.OutOrStdout()
+	if quiet {
+		// If we are in quiet mode, we saved the original output in cmd.errWriter. We can now restore it.
+		out = cmd.ErrOrStderr()
+	}
+
+	isSchema := outOpts.IsSet("json") || outOpts.IsSet("yaml")
+	if isSchema {
+		contexts, activeCtx := cfg.Contexts(), cfg.ActiveContext()
+		schema := make([]schemaPresentation, 0, len(contexts))
+		for _, ctx := range contexts {
+			schema = append(schema, schemaPresentation{
+				Name:        ctx.Name(),
+				Token:       ctx.Token(),
+				Active:      ctx == activeCtx,
+				Preferences: ctx.Preferences(),
+			})
+		}
+		if outOpts.IsSet("json") {
+			return util.DescribeJSON(out, schema)
+		}
+		return util.DescribeYAML(out, schema)
+	}
+
+	tw := newListOutputTable(out)
 	warnings, err := tw.ValidateColumns(cols)
 	if err != nil {
 		return err
@@ -54,7 +92,6 @@ func runList(s state.State, cmd *cobra.Command, _ []string) error {
 	if !outOpts.IsSet("noheader") {
 		tw.WriteHeader(cols)
 	}
-	cfg := s.Config()
 	for _, context := range cfg.Contexts() {
 		presentation := presentation{
 			Name:   context.Name(),
