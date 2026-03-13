@@ -1,5 +1,12 @@
 # Changelog
 
+## [v1.62.0](https://github.com/hetznercloud/cli/releases/tag/v1.62.0)
+
+### Features
+
+- build .deb and .rpm release files (#1311)
+- **primary-ip**: new flag to specify assignee-type on primary-ip create (#1348)
+
 ## [v1.61.0](https://github.com/hetznercloud/cli/releases/tag/v1.61.0)
 
 ### Storage Boxes support is now generally available
