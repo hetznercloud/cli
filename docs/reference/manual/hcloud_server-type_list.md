@@ -20,6 +20,7 @@ Columns:
  - disk
  - id
  - included_traffic
+ - location
  - memory
  - name
  - storage_type
