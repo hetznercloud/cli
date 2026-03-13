@@ -46,7 +46,7 @@ func TestList(t *testing.T) {
 	out, errOut, err := fx.Run(cmd, []string{})
 
 	expOut := `ID    NAME   CORES   CPU TYPE   ARCHITECTURE   MEMORY   DISK    STORAGE TYPE
-123   test   2       shared     arm            8.0 GB   80 GB   local       
+123   test   2       shared     arm            8.0 GB   80 GB   local
 `
 
 	require.NoError(t, err)
@@ -100,9 +100,9 @@ func TestListColumnDeprecated(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"-o=columns=id,name,deprecated"})
 
-	expOut := `ID    NAME         DEPRECATED                     
+	expOut := `ID    NAME         DEPRECATED
 123   deprecated   fsn1=2025-04-01,nbg1=2025-05-01
-124   current      -                              
+124   current      -
 `
 
 	require.NoError(t, err)

@@ -43,7 +43,7 @@ func TestList(t *testing.T) {
 	out, errOut, err := fx.Run(cmd, []string{})
 
 	expOut := `ID    NAME   DESCRIPTION   TYPE     ARCHITECTURE
-123   test   Test ISO      public   x86         
+123   test   Test ISO      public   x86
 `
 
 	require.NoError(t, err)
@@ -95,8 +95,8 @@ func TestListPrivate(t *testing.T) {
 	out, errOut, err := fx.Run(cmd, []string{"--type=private"})
 
 	expOut := `ID    NAME       DESCRIPTION          TYPE      ARCHITECTURE
-456   private1   Test Private ISO 1   private   x86         
-789   private2   Test Private ISO 2   private   x86         
+456   private1   Test Private ISO 1   private   x86
+789   private2   Test Private ISO 2   private   x86
 `
 
 	require.NoError(t, err)

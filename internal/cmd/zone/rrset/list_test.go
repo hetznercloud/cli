@@ -63,9 +63,9 @@ func TestList(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"example.com", "-o=columns=name,type,ttl,protection,records,labels"})
 
-	expOut := `NAME   TYPE   TTL   PROTECTION   RECORDS        LABELS                                            
+	expOut := `NAME   TYPE   TTL   PROTECTION   RECORDS        LABELS
 www    A      600   change       198.51.100.1   environment=prod, example.com/my=label, just-a-key
-                                 198.51.100.2                                                     
+                                 198.51.100.2
 `
 
 	require.NoError(t, err)

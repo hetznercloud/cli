@@ -84,8 +84,8 @@ func TestList(t *testing.T) {
 	testutil.TestCommand(t, fakeListCmd, map[string]testutil.TestCase{
 		"no flags": {
 			Args: []string{"list"},
-			ExpOut: `ID    NAME 
-123   test 
+			ExpOut: `ID    NAME
+123   test
 456   test2
 789   test3
 `,
@@ -102,8 +102,8 @@ func TestList(t *testing.T) {
 		},
 		"quiet": {
 			Args: []string{"list", "--quiet"},
-			ExpOut: `ID    NAME 
-123   test 
+			ExpOut: `ID    NAME
+123   test
 456   test2
 789   test3
 `,

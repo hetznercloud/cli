@@ -55,12 +55,12 @@ func TestNetwork(t *testing.T) {
 		require.NoError(t, err)
 		assert.Regexp(t,
 			NewRegex().Start().
-				SeparatedByWhitespace("SERVERS", "IP", "RANGE", "LABELS", "PROTECTION", "CREATED", "AGE").OptionalWhitespace().Newline().
+				SeparatedByWhitespace("SERVERS", "IP", "RANGE", "LABELS", "PROTECTION", "CREATED", "AGE").Newline().
 				Lit("0 servers").Whitespace().
 				Lit("10.0.0.0/24").Whitespace().
 				Lit("delete").Whitespace().
 				Datetime().Whitespace().
-				Age().OptionalWhitespace().Newline().End(),
+				Age().Newline().End(),
 			out,
 		)
 	})
