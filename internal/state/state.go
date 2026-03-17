@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state/config"
@@ -124,11 +125,33 @@ func (c *state) newClient() (hcapi2.Client, error) {
 		return nil, err
 	}
 
-	if pollInterval > 0 {
+	if pollInterval > 0 && config.OptionPollInterval.Changed(c.config) {
 		opts = append(opts, hcloud.WithPollOpts(hcloud.PollOpts{
 			BackoffFunc: hcloud.ConstantBackoff(pollInterval),
+		}))
+	} else {
+		opts = append(opts, hcloud.WithPollOpts(hcloud.PollOpts{
+			BackoffFunc: customPollBackoffFunc(),
 		}))
 	}
 
 	return hcapi2.NewClient(opts...), nil
+}
+
+func customPollBackoffFunc() hcloud.BackoffFunc {
+	constantFunc := hcloud.ConstantBackoff(500 * time.Millisecond)
+
+	exponentialFunc := hcloud.ExponentialBackoffWithOpts(hcloud.ExponentialBackoffOpts{
+		Base:       500 * time.Millisecond,
+		Multiplier: 1.5,
+		Cap:        2500 * time.Millisecond,
+	})
+
+	// Poll every 500ms for the first 5s, then use an exponential backoff capped to 2500ms
+	return func(retries int) time.Duration {
+		if retries < 10 {
+			return constantFunc(retries)
+		}
+		return exponentialFunc(retries)
+	}
 }
