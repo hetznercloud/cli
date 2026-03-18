@@ -152,6 +152,6 @@ func customPollBackoffFunc() hcloud.BackoffFunc {
 		if retries < 10 {
 			return constantFunc(retries)
 		}
-		return exponentialFunc(retries)
+		return exponentialFunc(retries - 10)
 	}
 }
