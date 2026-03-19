@@ -19,7 +19,7 @@ type presentation struct {
 
 type schemaPresentation struct {
 	Name        string         `json:"name"`
-	Token       string         `json:"token"`
+	Token       string         `json:"token,omitempty"`
 	Active      bool           `json:"active"`
 	Preferences map[string]any `json:"preferences,omitempty"`
 }
@@ -38,11 +38,16 @@ func NewListCommand(s state.State) *cobra.Command {
 		DisableFlagsInUseLine: true,
 		RunE:                  state.Wrap(s, runList),
 	}
+
+	cmd.Flags().Bool("allow-sensitive", false, "Allow showing sensitive values in JSON/YAML output (true, false)")
+
 	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(cols), output.OptionJSON(), output.OptionYAML())
 	return cmd
 }
 
 func runList(s state.State, cmd *cobra.Command, _ []string) error {
+	allowSensitive, _ := cmd.Flags().GetBool("allow-sensitive")
+
 	cfg := s.Config()
 	outOpts := output.FlagsForCommand(cmd)
 
@@ -67,12 +72,15 @@ func runList(s state.State, cmd *cobra.Command, _ []string) error {
 		contexts, activeCtx := cfg.Contexts(), cfg.ActiveContext()
 		schema := make([]schemaPresentation, 0, len(contexts))
 		for _, ctx := range contexts {
-			schema = append(schema, schemaPresentation{
+			pres := schemaPresentation{
 				Name:        ctx.Name(),
-				Token:       ctx.Token(),
 				Active:      ctx == activeCtx,
 				Preferences: ctx.Preferences(),
-			})
+			}
+			if allowSensitive {
+				pres.Token = ctx.Token()
+			}
+			schema = append(schema, pres)
 		}
 		if outOpts.IsSet("json") {
 			return util.DescribeJSON(out, schema)

@@ -96,6 +96,26 @@ my-third-context
 			expOut: `[
   {
     "name": "my-context",
+    "active": true
+  },
+  {
+    "name": "my-other-context",
+    "active": false
+  },
+  {
+    "name": "my-third-context",
+    "active": false
+  }
+]
+`,
+		},
+		{
+			name:   "json allow-sensitive",
+			args:   []string{"-o=json", "--allow-sensitive"},
+			config: testConfig,
+			expOut: `[
+  {
+    "name": "my-context",
     "token": "super secret token",
     "active": true
   },
