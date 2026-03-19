@@ -12,13 +12,14 @@ import (
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
+	"github.com/hetznercloud/hcloud-go/v2/hcloud/exp/kit/sliceutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
 var ListCmd = &base.ListCmd[*hcloud.ServerType, schema.ServerType]{
 	ResourceNamePlural: "Server Types",
 	JSONKeyGetByName:   "server_types",
-	DefaultColumns:     []string{"id", "name", "cores", "cpu_type", "architecture", "memory", "disk", "storage_type"},
+	DefaultColumns:     []string{"id", "name", "cores", "cpu_type", "architecture", "memory", "disk", "location"},
 	SortOption:         nil, // Server Types do not support sorting
 
 	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.ServerType, error) {
@@ -32,6 +33,13 @@ var ListCmd = &base.ListCmd[*hcloud.ServerType, schema.ServerType]{
 	OutputTable: func(t *output.Table[*hcloud.ServerType], _ hcapi2.Client) {
 		t.
 			AddAllowedFields(&hcloud.ServerType{}).
+			AddFieldFn("location", func(serverType *hcloud.ServerType) string {
+				locationNames := sliceutil.Transform(
+					serverType.Locations,
+					func(l hcloud.ServerTypeLocation) string { return l.Location.Name },
+				)
+				return strings.Join(locationNames, ",")
+			}).
 			AddFieldAlias("storagetype", "storage type").
 			AddFieldFn("memory", func(serverType *hcloud.ServerType) string {
 				return fmt.Sprintf("%.1f GB", serverType.Memory)

@@ -40,13 +40,18 @@ func TestList(t *testing.T) {
 				Memory:       8.0,
 				Disk:         80,
 				StorageType:  hcloud.StorageTypeLocal,
+				Locations: []hcloud.ServerTypeLocation{
+					{Location: &hcloud.Location{ID: 1, Name: "fsn1"}},
+					{Location: &hcloud.Location{ID: 2, Name: "nbg1"}},
+					{Location: &hcloud.Location{ID: 3, Name: "hel1"}},
+				},
 			},
 		}, nil)
 
 	out, errOut, err := fx.Run(cmd, []string{})
 
-	expOut := `ID    NAME   CORES   CPU TYPE   ARCHITECTURE   MEMORY   DISK    STORAGE TYPE
-123   test   2       shared     arm            8.0 GB   80 GB   local
+	expOut := `ID    NAME   CORES   CPU TYPE   ARCHITECTURE   MEMORY   DISK    LOCATION
+123   test   2       shared     arm            8.0 GB   80 GB   fsn1,nbg1,hel1
 `
 
 	require.NoError(t, err)
