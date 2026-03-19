@@ -166,6 +166,7 @@ func NewTable[T any](out io.Writer) *Table[T] {
 
 	w := table.NewWriter()
 	w.SetStyle(style)
+	w.SuppressTrailingSpaces()
 
 	return &Table[T]{
 		out:           out,

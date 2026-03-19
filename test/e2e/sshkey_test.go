@@ -53,14 +53,14 @@ func TestSSHKey(t *testing.T) {
 			require.NoError(t, err)
 			assert.Regexp(t,
 				NewRegex().Start().
-					SeparatedByWhitespace("ID", "NAME", "FINGERPRINT", "PUBLIC KEY", "LABELS", "CREATED", "AGE").OptionalWhitespace().Newline().
+					SeparatedByWhitespace("ID", "NAME", "FINGERPRINT", "PUBLIC KEY", "LABELS", "CREATED", "AGE").Newline().
 					Lit(strconv.FormatInt(sshKeyID, 10)).Whitespace().
 					Lit(sshKeyName).Whitespace().
 					Lit(fingerprint).Whitespace().
 					Lit(pubKey).Whitespace().
 					Lit("baz=qux, foo=bar").Whitespace().
 					Datetime().Whitespace().
-					Age().OptionalWhitespace().Newline().
+					Age().Newline().
 					End(),
 				out,
 			)

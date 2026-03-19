@@ -61,7 +61,7 @@ func TestList(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"test"})
 
-	expOut := fmt.Sprintf(`ID    NAME         DESCRIPTION        SIZE     IS AUTOMATIC   AGE 
+	expOut := fmt.Sprintf(`ID    NAME         DESCRIPTION        SIZE     IS AUTOMATIC   AGE
 456   snapshot-1   some-description   50 GiB   no             %s
 `, util.Age(sbs.Created, time.Now()))
 

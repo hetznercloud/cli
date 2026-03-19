@@ -55,7 +55,7 @@ func TestList(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{})
 
-	expOut := fmt.Sprintf(`ID   NAME          STATUS   MODE      RECORD COUNT   AGE  
+	expOut := fmt.Sprintf(`ID   NAME          STATUS   MODE      RECORD COUNT   AGE
 42   example.com   ok       primary   0              %s
 `, util.Age(z.Created, time.Now()))
 
@@ -98,7 +98,7 @@ func TestListPrimaryNameservers(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"-o=columns=id,primary_nameservers"})
 
-	expOut := `ID   PRIMARY NAMESERVERS                                   
+	expOut := `ID   PRIMARY NAMESERVERS
 42   primary.example.com:53, 192.0.2.7:53, [2001:db8::7]:53
 `
 
@@ -136,7 +136,7 @@ func TestListAuthoritativeNameservers(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"-o=columns=id,authoritative_nameservers"})
 
-	expOut := `ID   AUTHORITATIVE NAMESERVERS                                              
+	expOut := `ID   AUTHORITATIVE NAMESERVERS
 42   helium.ns.hetzner.de., hydrogen.ns.hetzner.com., oxygen.ns.hetzner.com.
 `
 

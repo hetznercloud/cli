@@ -108,7 +108,7 @@ func runCertificateTestSuite(t *testing.T, certName string, certID int64, certTy
 				SeparatedByWhitespace(
 					"ID", "NAME", "LABELS", "TYPE", "CREATED", "NOT VALID BEFORE", "NOT VALID AFTER",
 					"DOMAIN NAMES", "FINGERPRINT", "ISSUANCE STATUS", "RENEWAL STATUS", "AGE",
-				).OptionalWhitespace().Newline().
+				).Newline().
 				Lit(strconv.FormatInt(certID, 10)).Whitespace().
 				Lit(certName).Whitespace().
 				Lit(strings.Join(labels, ", ")).Whitespace().
@@ -120,7 +120,7 @@ func runCertificateTestSuite(t *testing.T, certName string, certID int64, certTy
 				Raw(fingerprintRegex).Whitespace().
 				OneOf("completed", "n/a").Whitespace().
 				Lit("n/a").Whitespace().
-				Age().OptionalWhitespace().Newline().
+				Age().Newline().
 				End(),
 			out,
 		)

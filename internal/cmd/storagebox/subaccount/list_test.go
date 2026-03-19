@@ -66,7 +66,7 @@ func TestList(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"test"})
 
-	expOut := fmt.Sprintf(`ID   NAME         HOME DIRECTORY                 DESCRIPTION     USERNAME     SERVER                          AGE  
+	expOut := fmt.Sprintf(`ID   NAME         HOME DIRECTORY                 DESCRIPTION     USERNAME     SERVER                          AGE
 42   u1337-sub1   my_backups/host01.my.company   host01 backup   u1337-sub1   u1337-sub1.your-storagebox.de   %s
 `, util.Age(sbs.Created, time.Now()))
 

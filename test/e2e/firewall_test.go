@@ -226,7 +226,7 @@ func TestFirewall(t *testing.T) {
 					Lit("0 Servers | 1 Label Selector").Whitespace().
 					Lit("foo=bar").Whitespace().
 					Datetime().Whitespace().
-					Age().OptionalWhitespace().Newline().
+					Age().Newline().
 					End(),
 				out,
 			)
