@@ -37,7 +37,7 @@ token = "super secret token"
 	}
 
 	testCases := []testCase{
-		{
+		{ //nolint:gosec
 			name:   "new context",
 			args:   []string{"new-context"},
 			isTerm: true,
@@ -64,7 +64,7 @@ Context new-context created and activated
 			err:    "non-interactive tty detected. Use --token-from-env to use HCLOUD_TOKEN from the environment",
 			expErr: "Error: non-interactive tty detected. Use --token-from-env to use HCLOUD_TOKEN from the environment\n",
 		},
-		{
+		{ //nolint:gosec
 			name:   "existing context",
 			args:   []string{"my-context"},
 			isTerm: true,
