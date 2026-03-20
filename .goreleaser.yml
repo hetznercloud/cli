@@ -1,9 +1,12 @@
 version: 2
 before:
   hooks:
-    - go mod tidy
     - ./scripts/completions.sh
     - go run ./scripts manpages
+
+# https://goreleaser.com/cookbooks/build-go-modules/#building-go-modules
+gomod:
+  proxy: true
 
 builds:
   - <<: &build_defaults
