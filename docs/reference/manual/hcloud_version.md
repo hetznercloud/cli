@@ -10,6 +10,7 @@ hcloud version
 
 ```
   -h, --help   help for version
+      --long   Print more version information (true, false)
 ```
 
 ### Options inherited from parent commands
