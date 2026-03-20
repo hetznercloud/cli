@@ -21,8 +21,9 @@ hcloud context list [options]
 ### Options
 
 ```
+      --allow-sensitive      Allow showing sensitive values in JSON/YAML output (true, false)
   -h, --help                 help for list
-  -o, --output stringArray   output options: noheader|columns=...
+  -o, --output stringArray   output options: noheader|columns=...|json|yaml
 ```
 
 ### Options inherited from parent commands

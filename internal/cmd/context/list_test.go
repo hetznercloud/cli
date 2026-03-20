@@ -89,6 +89,49 @@ my-third-context
          my-third-context
 `,
 		},
+		{
+			name:   "json",
+			args:   []string{"-o=json"},
+			config: testConfig,
+			expOut: `[
+  {
+    "name": "my-context",
+    "active": true
+  },
+  {
+    "name": "my-other-context",
+    "active": false
+  },
+  {
+    "name": "my-third-context",
+    "active": false
+  }
+]
+`,
+		},
+		{
+			name:   "json allow-sensitive",
+			args:   []string{"-o=json", "--allow-sensitive"},
+			config: testConfig,
+			expOut: `[
+  {
+    "name": "my-context",
+    "token": "super secret token",
+    "active": true
+  },
+  {
+    "name": "my-other-context",
+    "token": "another super secret token",
+    "active": false
+  },
+  {
+    "name": "my-third-context",
+    "token": "yet another super secret token",
+    "active": false
+  }
+]
+`,
+		},
 	}
 
 	for _, tt := range testCases {
