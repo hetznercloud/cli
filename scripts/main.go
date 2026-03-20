@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/cobra/doc"
@@ -29,7 +30,7 @@ func main() {
 	case "manpages":
 		err = generateManPages()
 	default:
-		log.Fatalln("Unknown argument:", arg)
+		log.Fatalln("Unknown argument:", strconv.Quote(arg))
 	}
 	if err != nil {
 		log.Fatalln(err)
