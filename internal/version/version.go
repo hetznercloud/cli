@@ -2,7 +2,7 @@ package version
 
 var (
 	// version is a semver version (https://semver.org).
-	version = "1.61.0" // x-releaser-pleaser-version
+	version = "1.62.0" // x-releaser-pleaser-version
 
 	// versionPrerelease is a semver version pre-release identifier (https://semver.org).
 	//
