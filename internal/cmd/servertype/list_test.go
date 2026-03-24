@@ -21,6 +21,11 @@ func TestList(t *testing.T) {
 
 	cmd := servertype.ListCmd.CobraCommand(fx.State())
 
+	serverTypeDeprecation := hcloud.DeprecatableResource{Deprecation: &hcloud.DeprecationInfo{
+		Announced:        time.Date(2025, 1, 1, 0, 0, 0, 0, time.UTC),
+		UnavailableAfter: time.Date(2025, 4, 1, 0, 0, 0, 0, time.UTC),
+	}}
+
 	fx.ExpectEnsureToken()
 	fx.Client.ServerTypeClient.EXPECT().
 		AllWithOpts(
@@ -41,7 +46,7 @@ func TestList(t *testing.T) {
 				Disk:         80,
 				StorageType:  hcloud.StorageTypeLocal,
 				Locations: []hcloud.ServerTypeLocation{
-					{Location: &hcloud.Location{ID: 1, Name: "fsn1"}},
+					{Location: &hcloud.Location{ID: 1, Name: "fsn1"}, DeprecatableResource: serverTypeDeprecation},
 					{Location: &hcloud.Location{ID: 2, Name: "nbg1"}},
 					{Location: &hcloud.Location{ID: 3, Name: "hel1"}},
 				},
@@ -51,7 +56,7 @@ func TestList(t *testing.T) {
 	out, errOut, err := fx.Run(cmd, []string{})
 
 	expOut := `ID    NAME   CORES   CPU TYPE   ARCHITECTURE   MEMORY   DISK    LOCATION
-123   test   2       shared     arm            8.0 GB   80 GB   fsn1,nbg1,hel1
+123   test   2       shared     arm            8.0 GB   80 GB   nbg1,hel1
 `
 
 	require.NoError(t, err)
