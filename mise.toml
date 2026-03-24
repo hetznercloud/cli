@@ -1,5 +1,5 @@
 [tools]
-go = "1.25.8"
+go = "1.26.1"
 "go:go.uber.org/mock/mockgen" = "v0.6.0"
 "github:golangci/golangci-lint" = "2.11.3"
 "github:goreleaser/goreleaser" = "v2.14.3"
