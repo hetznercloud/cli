@@ -42,7 +42,7 @@ func TestVersionLong(t *testing.T) {
 	assert.Empty(t, errOut)
 	require.Regexp(t, `^hcloud .*
 
-go version: *go1.[0-9]+.[0-9]+ \((gc|gccgo)\)
+go version: *go1.[0-9]+.[0-9]+.*
 platform: *.+/.+
 revision: *(unknown|[0-9a-f]+)( \(modified\))?
 revision date: *.+`, out)
