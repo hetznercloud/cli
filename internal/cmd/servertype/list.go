@@ -2,6 +2,7 @@ package servertype
 
 import (
 	"fmt"
+	"slices"
 	"strings"
 	"time"
 
@@ -34,11 +35,17 @@ var ListCmd = &base.ListCmd[*hcloud.ServerType, schema.ServerType]{
 		t.
 			AddAllowedFields(&hcloud.ServerType{}).
 			AddFieldFn("location", func(serverType *hcloud.ServerType) string {
-				locationNames := sliceutil.Transform(
-					serverType.Locations,
-					func(l hcloud.ServerTypeLocation) string { return l.Location.Name },
+				now := time.Now()
+				return strings.Join(
+					sliceutil.Transform(
+						slices.DeleteFunc(
+							slices.Clone(serverType.Locations),
+							func(l hcloud.ServerTypeLocation) bool { return l.IsDeprecated() && l.UnavailableAfter().Before(now) },
+						),
+						func(l hcloud.ServerTypeLocation) string { return l.Location.Name },
+					),
+					",",
 				)
-				return strings.Join(locationNames, ",")
 			}).
 			AddFieldAlias("storagetype", "storage type").
 			AddFieldFn("memory", func(serverType *hcloud.ServerType) string {
