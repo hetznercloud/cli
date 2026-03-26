@@ -56,6 +56,10 @@ var (
 	info, ok = debug.ReadBuildInfo()
 )
 
+// getSettingsValue is a helper for getting values from debug.ReadBuildInfo()
+// This is only a fallback for builds that do not use goreleaser, since goreleaser
+// usually injects the above variables using ldflags. debug.ReadBuildInfo() will be
+// used for example when installing using 'go install'.
 func getSettingsValue(key, def string) string {
 	if !ok {
 		return def
