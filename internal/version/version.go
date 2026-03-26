@@ -22,7 +22,7 @@ var (
 	// Can be set by goreleaser because debug.ReadBuildInfo() is not available for goreleaser builds
 	commit = ""
 
-	// Commit is the latest commit hash during build time
+	// Commit is the latest full commit hash during build time
 	Commit = func() string {
 		if commit != "" {
 			return commit

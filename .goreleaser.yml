@@ -15,7 +15,7 @@ builds:
         - -w
         - -X {{ .ModulePath }}/internal/version.version={{ .Version }}
         - -X {{ .ModulePath }}/internal/version.versionPrerelease={{- if .IsSnapshot -}}dev+{{ .ShortCommit }}{{- end -}}
-        - -X {{ .ModulePath }}/internal/version.commit={{ .Commit }}
+        - -X {{ .ModulePath }}/internal/version.commit={{ .FullCommit }}
         - -X {{ .ModulePath }}/internal/version.commitDate={{ .CommitDate }}
       env:
         - CGO_ENABLED=0
@@ -111,7 +111,7 @@ kos:
       - -w
       - -X {{ .ModulePath }}/internal/version.version={{ .Version }}
       - -X {{ .ModulePath }}/internal/version.versionPrerelease={{- if .IsSnapshot -}}dev+{{ .ShortCommit }}{{- end -}}
-      - -X {{ .ModulePath }}/internal/version.commit={{ .Commit }}
+      - -X {{ .ModulePath }}/internal/version.commit={{ .FullCommit }}
       - -X {{ .ModulePath }}/internal/version.commitDate={{ .CommitDate }}
       - -X {{ .ModulePath }}/internal/state/config.defaultConfigPathOverride=/config.toml
 
