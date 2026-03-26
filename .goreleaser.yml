@@ -17,6 +17,7 @@ builds:
         - -X {{ .ModulePath }}/internal/version.versionPrerelease={{- if .IsSnapshot -}}dev+{{ .ShortCommit }}{{- end -}}
         - -X {{ .ModulePath }}/internal/version.commit={{ .FullCommit }}
         - -X {{ .ModulePath }}/internal/version.commitDate={{ .CommitDate }}
+        - -X {{ .ModulePath }}/internal/version.modified={{ .IsGitDirty }}
       env:
         - CGO_ENABLED=0
 
@@ -113,6 +114,7 @@ kos:
       - -X {{ .ModulePath }}/internal/version.versionPrerelease={{- if .IsSnapshot -}}dev+{{ .ShortCommit }}{{- end -}}
       - -X {{ .ModulePath }}/internal/version.commit={{ .FullCommit }}
       - -X {{ .ModulePath }}/internal/version.commitDate={{ .CommitDate }}
+      - -X {{ .ModulePath }}/internal/version.modified={{ .IsGitDirty }}
       - -X {{ .ModulePath }}/internal/state/config.defaultConfigPathOverride=/config.toml
 
 snapshot:

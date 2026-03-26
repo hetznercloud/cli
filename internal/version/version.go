@@ -41,8 +41,14 @@ var (
 		return getSettingsValue("vcs.time", "unknown")
 	}()
 
+	// Can be set by goreleaser because debug.ReadBuildInfo() is not available for goreleaser builds
+	modified = ""
+
 	// Modified specifies whether the git worktree was dirty during build time
 	Modified = func() bool {
+		if modified != "" {
+			return modified == "true"
+		}
 		return getSettingsValue("vcs.modified", "false") == "true"
 	}()
 
