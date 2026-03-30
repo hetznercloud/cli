@@ -3,7 +3,6 @@ package version
 import (
 	"fmt"
 	"runtime"
-	"runtime/debug"
 	"text/tabwriter"
 
 	"github.com/spf13/cobra"
@@ -35,25 +34,14 @@ func runVersion(cmd *cobra.Command, _ []string) error {
 		fmt.Fprintf(tw, "go version:\t%s (%s)\n", runtime.Version(), runtime.Compiler)
 		fmt.Fprintf(tw, "platform:\t%s/%s\n", runtime.GOOS, runtime.GOARCH)
 
-		if info, ok := debug.ReadBuildInfo(); ok {
-			rev := getSettingsValue(info.Settings, "vcs.revision", "unknown")
-			if modified := getSettingsValue(info.Settings, "vcs.modified", "false"); modified == "true" {
-				rev += " (modified)"
-			}
-
-			fmt.Fprintf(tw, "revision:\t%s\n", rev)
-			fmt.Fprintf(tw, "revision date:\t%s\n", getSettingsValue(info.Settings, "vcs.time", "unknown"))
+		rev := version.Commit
+		if version.Modified {
+			rev += " (modified)"
 		}
+
+		fmt.Fprintf(tw, "revision:\t%s\n", rev)
+		fmt.Fprintf(tw, "revision date:\t%s\n", version.CommitDate)
 		return tw.Flush()
 	}
 	return nil
-}
-
-func getSettingsValue(settings []debug.BuildSetting, key, def string) string {
-	for _, setting := range settings {
-		if setting.Key == key {
-			return setting.Value
-		}
-	}
-	return def
 }
