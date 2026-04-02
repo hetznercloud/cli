@@ -49,6 +49,11 @@ func DescribeDatacenter(client hcapi2.Client, datacenter *hcloud.Datacenter, sho
 	fmt.Fprintf(&sb, "Location:\n")
 	fmt.Fprint(&sb, util.PrefixLines(location.DescribeLocation(datacenter.Location), "  "))
 
+	// datacenter.ServerTypes will not be populated anymore after 2026-10-01.
+	if dst := datacenter.ServerTypes; dst.Available == nil && dst.Supported == nil && dst.AvailableForMigration == nil {
+		return sb.String()
+	}
+
 	type ServerTypeStatus struct {
 		ID        int64
 		Available bool

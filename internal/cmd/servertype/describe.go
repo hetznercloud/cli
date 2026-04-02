@@ -65,6 +65,8 @@ func DescribeServerType(s state.State, serverType *hcloud.ServerType, short bool
 	for _, info := range locations {
 
 		fmt.Fprintf(&sb, "  - Location:\t%s\n", info.Location.Name)
+		fmt.Fprintf(&sb, "    Available:\t%s\n", util.YesNo(info.Available))
+		fmt.Fprintf(&sb, "    Recommended:\t%s\n", util.YesNo(info.Recommended))
 
 		if deprecationText := util.DescribeDeprecation(info); deprecationText != "" {
 			fmt.Fprint(&sb, util.PrefixLines(deprecationText, "    "))
@@ -97,8 +99,7 @@ func fullPricingInfo(s state.State, serverType *hcloud.ServerType) ([]hcloud.Ser
 }
 
 type locationInfo struct {
-	Location *hcloud.Location
-	hcloud.DeprecatableResource
+	*hcloud.ServerTypeLocation
 	Pricing hcloud.ServerTypeLocationPricing
 }
 
@@ -106,7 +107,7 @@ func joinLocationInfo(serverType *hcloud.ServerType, pricings []hcloud.ServerTyp
 	locations := make([]locationInfo, 0, len(serverType.Locations))
 
 	for _, location := range serverType.Locations {
-		info := locationInfo{Location: location.Location, DeprecatableResource: location.DeprecatableResource}
+		info := locationInfo{ServerTypeLocation: &location}
 
 		for _, pricing := range pricings {
 			// Pricing endpoint only sets the location name

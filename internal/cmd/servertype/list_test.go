@@ -46,17 +46,18 @@ func TestList(t *testing.T) {
 				Disk:         80,
 				StorageType:  hcloud.StorageTypeLocal,
 				Locations: []hcloud.ServerTypeLocation{
-					{Location: &hcloud.Location{ID: 1, Name: "fsn1"}, DeprecatableResource: serverTypeDeprecation},
-					{Location: &hcloud.Location{ID: 2, Name: "nbg1"}},
-					{Location: &hcloud.Location{ID: 3, Name: "hel1"}},
+					{Location: &hcloud.Location{ID: 1, Name: "fsn1"}, Available: false, Recommended: false,
+						DeprecatableResource: serverTypeDeprecation},
+					{Location: &hcloud.Location{ID: 2, Name: "nbg1"}, Available: true, Recommended: false},
+					{Location: &hcloud.Location{ID: 3, Name: "hel1"}, Available: true, Recommended: true},
 				},
 			},
 		}, nil)
 
-	out, errOut, err := fx.Run(cmd, []string{})
+	out, errOut, err := fx.Run(cmd, []string{"-o=columns=id,name,cores,cpu_type,architecture,memory,disk,location,location_available,location_recommended"})
 
-	expOut := `ID    NAME   CORES   CPU TYPE   ARCHITECTURE   MEMORY   DISK    LOCATION
-123   test   2       shared     arm            8.0 GB   80 GB   nbg1,hel1
+	expOut := `ID    NAME   CORES   CPU TYPE   ARCHITECTURE   MEMORY   DISK    LOCATION     LOCATION AVAILABLE   LOCATION RECOMMENDED
+123   test   2       shared     arm            8.0 GB   80 GB   nbg1, hel1   nbg1, hel1           hel1
 `
 
 	require.NoError(t, err)

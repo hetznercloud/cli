@@ -44,6 +44,8 @@ func TestDescribe(t *testing.T) {
 				{
 					Location:             &hcloud.Location{Name: "fsn1"},
 					DeprecatableResource: deprecation,
+					Available:            true,
+					Recommended:          false,
 				},
 			},
 		}, nil, nil)
@@ -112,7 +114,9 @@ Disk:          40 GB
 Storage Type:  local
 
 Locations:
-  - Location:  fsn1
+  - Location:     fsn1
+    Available:    yes
+    Recommended:  no
     Deprecation:
       Announced:           %s (%s)
       Unavailable After:   %s (%s)

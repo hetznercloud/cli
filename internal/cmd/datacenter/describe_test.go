@@ -43,9 +43,6 @@ Location:
   City:          
   Latitude:      0.000000
   Longitude:     0.000000
-
-Server Types:
-  No Server Types
 `
 
 	require.NoError(t, err)
