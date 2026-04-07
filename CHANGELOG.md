@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.62.1](https://github.com/hetznercloud/cli/releases/tag/v1.62.1)
+
+### Bug Fixes
+
+- **server-type**: do not print locations that are unavailable (after deprecation) (#1369)
+- long version info not displayed correctly in release builds (#1374)
+- only generate signature for `checksums.txt` release asset (#1366)
+
 ## [v1.62.0](https://github.com/hetznercloud/cli/releases/tag/v1.62.0)
 
 ### Features
