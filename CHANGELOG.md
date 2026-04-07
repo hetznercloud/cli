@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.62.2](https://github.com/hetznercloud/cli/releases/tag/v1.62.2)
+
+### Bug Fixes
+
+- invalid goreleaser artifacts name for signing step (#1380)
+
 ## [v1.62.1](https://github.com/hetznercloud/cli/releases/tag/v1.62.1)
 
 ### Bug Fixes

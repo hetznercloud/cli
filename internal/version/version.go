@@ -4,7 +4,7 @@ import "runtime/debug"
 
 var (
 	// version is a semver version (https://semver.org).
-	version = "1.62.1" // x-releaser-pleaser-version
+	version = "1.62.2" // x-releaser-pleaser-version
 
 	// versionPrerelease is a semver version pre-release identifier (https://semver.org).
 	//
