@@ -125,7 +125,7 @@ checksum:
   algorithm: sha256
 
 signs:
-  - artifacts: checksums
+  - artifacts: checksum
     signature: ${artifact}.sig
     id: hcloud-sign
     args:
