@@ -71,13 +71,21 @@ See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters.`,
 		}
 
 		createOpts := hcloud.PrimaryIPCreateOpts{
-			Type:         hcloud.PrimaryIPType(typ),
-			Name:         name,
-			AssigneeType: assigneeType,
-			Labels:       labels,
+			Type:   hcloud.PrimaryIPType(typ),
+			Name:   name,
+			Labels: labels,
 		}
 		if assigneeID != 0 {
 			createOpts.AssigneeID = &assigneeID
+			if !cmd.Flags().Changed("assignee-type") {
+				cmd.PrintErrln(
+					"Warning: " +
+						"The --assignee-type flag will soon be required together" +
+						"with the --assignee-id flag. Consider explicitly setting " +
+						"the --assignee-type flag.",
+				)
+			}
+			createOpts.AssigneeType = assigneeType
 		}
 		if cmd.Flags().Changed("auto-delete") {
 			createOpts.AutoDelete = &autoDelete
