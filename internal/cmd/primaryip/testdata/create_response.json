@@ -28,12 +28,7 @@
         "name": "fsn1",
         "network_zone": ""
       },
-      "name": "fsn1-dc14",
-      "server_types": {
-        "available": null,
-        "available_for_migration": null,
-        "supported": null
-      }
+      "name": "fsn1-dc14"
     },
     "dns_ptr": [],
     "id": 1,

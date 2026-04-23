@@ -95,11 +95,6 @@ func TestListJSON(t *testing.T) {
       "latitude": 0,
       "longitude": 0,
       "network_zone": ""
-    },
-    "server_types": {
-      "supported": null,
-      "available_for_migration": null,
-      "available": null
     }
   }
 ]`, out)

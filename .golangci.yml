@@ -65,7 +65,7 @@ linters:
         text: var-naming
       - linters:
           - staticcheck
-        text: Datacenter is deprecated
+        text: (Datacenter|ServerTypes) is deprecated
 
 formatters:
   enable:
