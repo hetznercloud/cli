@@ -2,7 +2,6 @@ package servertype
 
 import (
 	"fmt"
-	"slices"
 	"strings"
 	"time"
 
@@ -13,7 +12,6 @@ import (
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
-	"github.com/hetznercloud/hcloud-go/v2/hcloud/exp/kit/sliceutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud/schema"
 )
 
@@ -36,16 +34,20 @@ var ListCmd = &base.ListCmd[*hcloud.ServerType, schema.ServerType]{
 			AddAllowedFields(&hcloud.ServerType{}).
 			AddFieldFn("location", func(serverType *hcloud.ServerType) string {
 				now := time.Now()
-				return strings.Join(
-					sliceutil.Transform(
-						slices.DeleteFunc(
-							slices.Clone(serverType.Locations),
-							func(l hcloud.ServerTypeLocation) bool { return l.IsDeprecated() && l.UnavailableAfter().Before(now) },
-						),
-						func(l hcloud.ServerTypeLocation) string { return l.Location.Name },
-					),
-					",",
-				)
+				return listLocationNames(serverType, func(l hcloud.ServerTypeLocation) bool {
+					return l.IsDeprecated() && l.UnavailableAfter().Before(now)
+				})
+			}).
+			AddFieldFn("location_available", func(serverType *hcloud.ServerType) string {
+				now := time.Now()
+				return listLocationNames(serverType, func(l hcloud.ServerTypeLocation) bool {
+					return (l.IsDeprecated() && l.UnavailableAfter().Before(now)) || !l.Available
+				})
+			}).
+			AddFieldFn("location_recommended", func(serverType *hcloud.ServerType) string {
+				return listLocationNames(serverType, func(l hcloud.ServerTypeLocation) bool {
+					return !l.Recommended
+				})
 			}).
 			AddFieldAlias("storagetype", "storage type").
 			AddFieldFn("memory", func(serverType *hcloud.ServerType) string {
@@ -78,4 +80,14 @@ var ListCmd = &base.ListCmd[*hcloud.ServerType, schema.ServerType]{
 	},
 
 	Schema: hcloud.SchemaFromServerType,
+}
+
+func listLocationNames(serverType *hcloud.ServerType, del func(hcloud.ServerTypeLocation) bool) string {
+	var locationNames []string
+	for _, l := range serverType.Locations {
+		if !del(l) {
+			locationNames = append(locationNames, l.Location.Name)
+		}
+	}
+	return strings.Join(locationNames, ", ")
 }

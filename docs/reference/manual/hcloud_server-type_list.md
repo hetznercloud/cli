@@ -21,6 +21,8 @@ Columns:
  - id
  - included_traffic
  - location
+ - location_available
+ - location_recommended
  - memory
  - name
  - storage_type
