@@ -157,12 +157,16 @@ func TestCreateJSON(t *testing.T) {
 						ID:   1,
 						Name: "fsn1",
 					},
+					Available:   true,
+					Recommended: true,
 				},
 				{
 					Location: &hcloud.Location{
 						ID:   2,
 						Name: "nbg1",
 					},
+					Available:   true,
+					Recommended: false,
 				},
 			},
 		},

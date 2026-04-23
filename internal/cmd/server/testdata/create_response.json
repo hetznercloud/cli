@@ -26,12 +26,7 @@
         "name": "fsn1",
         "network_zone": ""
       },
-      "name": "fsn1-dc14",
-      "server_types": {
-        "available": null,
-        "available_for_migration": null,
-        "supported": null
-      }
+      "name": "fsn1-dc14"
     },
     "id": 1234,
     "image": {
@@ -111,8 +106,8 @@
       "prices": null,
       "storage_type": "local",
       "locations": [
-        { "id": 1, "name": "fsn1", "deprecation": null },
-        { "id": 2, "name": "nbg1", "deprecation": null }
+        { "id": 1, "name": "fsn1", "deprecation": null, "available": true, "recommended": true },
+        { "id": 2, "name": "nbg1", "deprecation": null, "available": true, "recommended": false }
       ]
     },
     "status": "running",
