@@ -169,6 +169,15 @@ var (
 		nil,
 	)
 
+	OptionProxy = newOpt(
+		"proxy",
+		"A proxy url to use",
+		"",
+		DefaultPreferenceFlags,
+		nil,
+		nil,
+	)
+
 	OptionQuiet = newOpt(
 		"quiet",
 		"If true, only print error messages",

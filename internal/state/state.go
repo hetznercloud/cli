@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"net/url"
 	"os"
 	"strings"
 	"time"
@@ -133,6 +134,18 @@ func (c *state) newClient() (hcapi2.Client, error) {
 		opts = append(opts, hcloud.WithPollOpts(hcloud.PollOpts{
 			BackoffFunc: customPollBackoffFunc(),
 		}))
+	}
+
+	proxyUrlStr, err := config.OptionProxy.Get(c.config)
+	if err != nil {
+		return nil, err
+	}
+	if len(proxyUrlStr) > 0 {
+		proxyUrl, err := url.Parse(proxyUrlStr)
+		if err != nil {
+			return nil, err
+		}
+		opts = append(opts, hcloud.WithProxy(proxyUrl))
 	}
 
 	return hcapi2.NewClient(opts...), nil
