@@ -17,8 +17,8 @@ var DeleteCmd = base.DeleteCmd[*hcloud.StorageBox]{
 	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.StorageBox, *hcloud.Response, error) {
 		return s.Client().StorageBox().Get(s, idOrName)
 	},
-	Delete: func(s state.State, _ *cobra.Command, storageBox *hcloud.StorageBox) (*hcloud.Action, error) {
+	Delete: func(s state.State, _ *cobra.Command, storageBox *hcloud.StorageBox) ([]*hcloud.Action, error) {
 		result, _, err := s.Client().StorageBox().Delete(s, storageBox)
-		return result.Action, err
+		return []*hcloud.Action{result.Action}, err
 	},
 }

@@ -17,7 +17,7 @@ var DeleteCmd = base.DeleteCmd[*hcloud.FloatingIP]{
 	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.FloatingIP, *hcloud.Response, error) {
 		return s.Client().FloatingIP().Get(s, idOrName)
 	},
-	Delete: func(s state.State, _ *cobra.Command, floatingIP *hcloud.FloatingIP) (*hcloud.Action, error) {
+	Delete: func(s state.State, _ *cobra.Command, floatingIP *hcloud.FloatingIP) ([]*hcloud.Action, error) {
 		_, err := s.Client().FloatingIP().Delete(s, floatingIP)
 		return nil, err
 	},

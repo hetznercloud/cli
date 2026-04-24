@@ -19,7 +19,7 @@ var mu = sync.Mutex{}
 var fakeDeleteCmd = &base.DeleteCmd[*fakeResource]{
 	ResourceNameSingular: "Fake resource",
 	ResourceNamePlural:   "Fake resources",
-	Delete: func(_ state.State, cmd *cobra.Command, _ *fakeResource) (*hcloud.Action, error) {
+	Delete: func(_ state.State, cmd *cobra.Command, _ *fakeResource) ([]*hcloud.Action, error) {
 		defer mu.Unlock()
 		cmd.Println("Deleting fake resource")
 		return nil, nil

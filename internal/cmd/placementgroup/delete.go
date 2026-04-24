@@ -17,7 +17,7 @@ var DeleteCmd = base.DeleteCmd[*hcloud.PlacementGroup]{
 	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.PlacementGroup, *hcloud.Response, error) {
 		return s.Client().PlacementGroup().Get(s, idOrName)
 	},
-	Delete: func(s state.State, _ *cobra.Command, placementGroup *hcloud.PlacementGroup) (*hcloud.Action, error) {
+	Delete: func(s state.State, _ *cobra.Command, placementGroup *hcloud.PlacementGroup) ([]*hcloud.Action, error) {
 		_, err := s.Client().PlacementGroup().Delete(s, placementGroup)
 		return nil, err
 	},

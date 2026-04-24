@@ -37,8 +37,8 @@ var DeleteCmd = base.DeleteCmd[*hcloud.StorageBoxSnapshot]{
 		}, nil
 	},
 
-	Delete: func(s state.State, _ *cobra.Command, snapshot *hcloud.StorageBoxSnapshot) (*hcloud.Action, error) {
+	Delete: func(s state.State, _ *cobra.Command, snapshot *hcloud.StorageBoxSnapshot) ([]*hcloud.Action, error) {
 		result, _, err := s.Client().StorageBox().DeleteSnapshot(s, snapshot)
-		return result.Action, err
+		return []*hcloud.Action{result.Action}, err
 	},
 }
