@@ -1,5 +1,19 @@
 # Changelog
 
+## [v1.63.0](https://github.com/hetznercloud/cli/releases/tag/v1.63.0)
+
+### Available and recommended Server Types have been moved
+
+- The Server Types list in `hcloud datacenter describe` is deprecated and will not be displayed anymore after 2026-10-01. The two commands below should be used for this purpose instead.
+- `hcloud server-type describe` now shows an `Available` and `Recommended` value for each location.
+- `hcloud server-type list` now has additional columns `location_available` and  `location_recommended`.
+
+See the [changelog](https://docs.hetzner.cloud/changelog#2026-04-01-datacenter-deprecations) for more details.
+
+### Features
+
+- **datacenter, server-type**: move available and recommended to server_type (#1384)
+
 ## [v1.62.2](https://github.com/hetznercloud/cli/releases/tag/v1.62.2)
 
 ### Bug Fixes
