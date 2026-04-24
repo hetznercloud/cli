@@ -17,7 +17,7 @@ var DeleteCmd = base.DeleteCmd[*hcloud.Certificate]{
 	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.Certificate, *hcloud.Response, error) {
 		return s.Client().Certificate().Get(s, idOrName)
 	},
-	Delete: func(s state.State, _ *cobra.Command, certificate *hcloud.Certificate) (*hcloud.Action, error) {
+	Delete: func(s state.State, _ *cobra.Command, certificate *hcloud.Certificate) ([]*hcloud.Action, error) {
 		_, err := s.Client().Certificate().Delete(s, certificate)
 		return nil, err
 	},

@@ -24,7 +24,7 @@ type DeleteCmd[T any] struct {
 	NameSuggestions      func(client hcapi2.Client) func() []string
 	AdditionalFlags      func(*cobra.Command)
 	Fetch                FetchFunc[T]
-	Delete               func(s state.State, cmd *cobra.Command, resource T) (*hcloud.Action, error)
+	Delete               func(s state.State, cmd *cobra.Command, resource T) ([]*hcloud.Action, error)
 
 	// FetchFunc is a factory function that produces [DeleteCmd.Fetch]. Should be set in case the resource has
 	// more than a single identifier that is used in the positional arguments.
@@ -115,7 +115,7 @@ func (dc *DeleteCmd[T]) Run(s state.State, cmd *cobra.Command, args []string) er
 
 	for batch := range slices.Chunk(toDelete, deleteBatchSize) {
 		results := make([]util.ResourceState, len(batch))
-		actions := make([]*hcloud.Action, 0, len(batch))
+		var actions []*hcloud.Action
 
 		for i, idOrName := range batch {
 			results[i] = util.ResourceState{IDOrName: idOrName}
@@ -130,14 +130,12 @@ func (dc *DeleteCmd[T]) Run(s state.State, cmd *cobra.Command, args []string) er
 				continue
 			}
 
-			action, err := dc.Delete(s, cmd, resource)
+			deleteActions, err := dc.Delete(s, cmd, resource)
 			if err != nil {
 				results[i].Error = err
 				continue
 			}
-			if action != nil {
-				actions = append(actions, action)
-			}
+			actions = append(actions, deleteActions...)
 		}
 
 		for _, result := range results {

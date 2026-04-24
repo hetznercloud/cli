@@ -17,11 +17,11 @@ var DeleteCmd = base.DeleteCmd[*hcloud.Server]{
 	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.Server, *hcloud.Response, error) {
 		return s.Client().Server().Get(s, idOrName)
 	},
-	Delete: func(s state.State, _ *cobra.Command, server *hcloud.Server) (*hcloud.Action, error) {
+	Delete: func(s state.State, _ *cobra.Command, server *hcloud.Server) ([]*hcloud.Action, error) {
 		result, _, err := s.Client().Server().DeleteWithResult(s, server)
 		if err != nil {
 			return nil, err
 		}
-		return result.Action, nil
+		return []*hcloud.Action{result.Action}, nil
 	},
 }

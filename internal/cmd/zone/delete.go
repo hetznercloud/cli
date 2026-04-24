@@ -25,11 +25,11 @@ var DeleteCmd = base.DeleteCmd[*hcloud.Zone]{
 
 		return s.Client().Zone().Get(s, idOrName)
 	},
-	Delete: func(s state.State, _ *cobra.Command, zone *hcloud.Zone) (*hcloud.Action, error) {
+	Delete: func(s state.State, _ *cobra.Command, zone *hcloud.Zone) ([]*hcloud.Action, error) {
 		res, _, err := s.Client().Zone().Delete(s, zone)
 		if err != nil {
 			return nil, err
 		}
-		return res.Action, nil
+		return []*hcloud.Action{res.Action}, nil
 	},
 }

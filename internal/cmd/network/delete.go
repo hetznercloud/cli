@@ -17,7 +17,7 @@ var DeleteCmd = base.DeleteCmd[*hcloud.Network]{
 	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.Network, *hcloud.Response, error) {
 		return s.Client().Network().Get(s, idOrName)
 	},
-	Delete: func(s state.State, _ *cobra.Command, network *hcloud.Network) (*hcloud.Action, error) {
+	Delete: func(s state.State, _ *cobra.Command, network *hcloud.Network) ([]*hcloud.Action, error) {
 		_, err := s.Client().Network().Delete(s, network)
 		return nil, err
 	},

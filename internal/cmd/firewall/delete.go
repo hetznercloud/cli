@@ -17,7 +17,7 @@ var DeleteCmd = base.DeleteCmd[*hcloud.Firewall]{
 	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.Firewall, *hcloud.Response, error) {
 		return s.Client().Firewall().Get(s, idOrName)
 	},
-	Delete: func(s state.State, _ *cobra.Command, firewall *hcloud.Firewall) (*hcloud.Action, error) {
+	Delete: func(s state.State, _ *cobra.Command, firewall *hcloud.Firewall) ([]*hcloud.Action, error) {
 		_, err := s.Client().Firewall().Delete(s, firewall)
 		return nil, err
 	},

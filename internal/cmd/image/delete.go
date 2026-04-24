@@ -24,7 +24,7 @@ var DeleteCmd = base.DeleteCmd[*hcloud.Image]{
 		}
 		return s.Client().Image().GetByID(s, id)
 	},
-	Delete: func(s state.State, _ *cobra.Command, image *hcloud.Image) (*hcloud.Action, error) {
+	Delete: func(s state.State, _ *cobra.Command, image *hcloud.Image) ([]*hcloud.Action, error) {
 		_, err := s.Client().Image().Delete(s, image)
 		return nil, err
 	},

@@ -17,7 +17,7 @@ var DeleteCmd = base.DeleteCmd[*hcloud.Volume]{
 	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.Volume, *hcloud.Response, error) {
 		return s.Client().Volume().Get(s, idOrName)
 	},
-	Delete: func(s state.State, _ *cobra.Command, volume *hcloud.Volume) (*hcloud.Action, error) {
+	Delete: func(s state.State, _ *cobra.Command, volume *hcloud.Volume) ([]*hcloud.Action, error) {
 		_, err := s.Client().Volume().Delete(s, volume)
 		return nil, err
 	},
