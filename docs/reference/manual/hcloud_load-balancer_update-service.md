@@ -26,6 +26,7 @@ hcloud load-balancer update-service [options] --listen-port <1-65535> <load-bala
       --http-cookie-name string                  Sticky Sessions: Cookie Name which will be set
       --http-redirect-http                       Enable or disable redirect all traffic on port 80 to port 443 (true, false)
       --http-sticky-sessions                     Enable or disable (with --http-sticky-sessions=false) Sticky Sessions (true, false)
+      --http-timeout-idle duration               Idle timeout for HTTP connections (30s-300s)
       --listen-port int                          The listen port of the service that you want to update (required)
       --protocol string                          The protocol to use for load balancing traffic
       --proxy-protocol                           Enable or disable (with --proxy-protocol=false) Proxy Protocol (true, false)
