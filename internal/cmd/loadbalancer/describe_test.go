@@ -51,6 +51,35 @@ func TestDescribe(t *testing.T) {
 		Algorithm: hcloud.LoadBalancerAlgorithm{
 			Type: hcloud.LoadBalancerAlgorithmTypeLeastConnections,
 		},
+		Services: []hcloud.LoadBalancerService{
+			{
+				Protocol:        hcloud.LoadBalancerServiceProtocolHTTP,
+				ListenPort:      80,
+				DestinationPort: 8080,
+				Proxyprotocol:   true,
+				HTTP: hcloud.LoadBalancerServiceHTTP{
+					TimeoutIdle:    60 * time.Second,
+					StickySessions: true,
+					CookieName:     "my-cookie",
+					CookieLifetime: 5 * time.Minute,
+					RedirectHTTP:   true,
+				},
+				HealthCheck: hcloud.LoadBalancerServiceHealthCheck{
+					Protocol: hcloud.LoadBalancerServiceProtocolHTTP,
+					Port:     8080,
+					Timeout:  10 * time.Second,
+					Interval: 15 * time.Second,
+					Retries:  3,
+					HTTP: &hcloud.LoadBalancerServiceHealthCheckHTTP{
+						Domain:      "example.com",
+						Path:        "/health",
+						Response:    "OK",
+						StatusCodes: []string{"200", "201"},
+						TLS:         true,
+					},
+				},
+			},
+		},
 		IncludedTraffic: 20 * util.Tebibyte,
 		IngoingTraffic:  10 * util.Tebibyte,
 		OutgoingTraffic: 10 * util.Tebibyte,
@@ -87,7 +116,24 @@ Load Balancer Type:
   Max assigned Certificates:  10
 
 Services:
-  No services
+  - Protocol:                http
+    Listen Port:             80
+    Destination Port:        8080
+    Proxy Protocol:          yes
+    Timeout Idle:            60s
+    Sticky Sessions:         yes
+    Sticky Cookie Name:      my-cookie
+    Sticky Cookie Lifetime:  300s
+    Health Check:
+      Protocol:      http
+      Timeout:       10s
+      Interval:      every 15s
+      Retries:       3
+      HTTP Domain:   example.com
+      HTTP Path:     /health
+      Response:      OK
+      TLS:           yes
+      Status Codes:  [200 201]
 
 Targets:
   No targets
