@@ -36,6 +36,7 @@ var UpdateServiceCmd = base.Cmd{
 		cmd.Flags().String("http-cookie-name", "", "Sticky Sessions: Cookie Name which will be set")
 		cmd.Flags().Duration("http-cookie-lifetime", 0, "Sticky Sessions: Lifetime of the cookie")
 		cmd.Flags().StringSlice("http-certificates", []string{}, "IDs or names of Certificates which should be attached to this Load Balancer")
+		cmd.Flags().Duration("http-timeout-idle", 0, "Idle timeout for HTTP connections (30s-300s)")
 
 		cmd.Flags().String("health-check-protocol", "", "The protocol the health check is performed over")
 		cmd.Flags().Int("health-check-port", 0, "The port the health check is performed over")
@@ -102,6 +103,10 @@ var UpdateServiceCmd = base.Cmd{
 		if cmd.Flag("http-cookie-lifetime").Changed {
 			cookieLifetime, _ := cmd.Flags().GetDuration("http-cookie-lifetime")
 			opts.HTTP.CookieLifetime = &cookieLifetime
+		}
+		if cmd.Flag("http-timeout-idle").Changed {
+			timeoutIdle, _ := cmd.Flags().GetDuration("http-timeout-idle")
+			opts.HTTP.TimeoutIdle = &timeoutIdle
 		}
 		if cmd.Flag("http-certificates").Changed {
 			certificates, _ := cmd.Flags().GetStringSlice("http-certificates")

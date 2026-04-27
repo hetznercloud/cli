@@ -31,6 +31,7 @@ func TestAddService(t *testing.T) {
 			HTTP: &hcloud.LoadBalancerAddServiceOptsHTTP{
 				StickySessions: hcloud.Ptr(false),
 				RedirectHTTP:   hcloud.Ptr(false),
+				TimeoutIdle:    hcloud.Ptr(60 * time.Second),
 			},
 			Proxyprotocol: hcloud.Ptr(false),
 		}).
@@ -39,7 +40,7 @@ func TestAddService(t *testing.T) {
 		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).
 		Return(nil)
 
-	out, errOut, err := fx.Run(cmd, []string{"123", "--protocol", "http", "--listen-port", "80", "--destination-port", "8080"})
+	out, errOut, err := fx.Run(cmd, []string{"123", "--protocol", "http", "--listen-port", "80", "--destination-port", "8080", "--http-timeout-idle", "60s"})
 
 	expOut := "Service was added to Load Balancer 123\n"
 

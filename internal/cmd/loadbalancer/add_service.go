@@ -34,6 +34,7 @@ var AddServiceCmd = base.Cmd{
 		cmd.Flags().Duration("http-cookie-lifetime", 0, "Sticky Sessions: Lifetime of the cookie")
 		cmd.Flags().StringSlice("http-certificates", []string{}, "IDs or names of Certificates which should be attached to this Load Balancer")
 		cmd.Flags().Bool("http-redirect-http", false, "Redirect all traffic on port 80 to port 443 (true, false)")
+		cmd.Flags().Duration("http-timeout-idle", 0, "Idle timeout for HTTP connections (30s-300s)")
 
 		cmd.Flags().String("health-check-protocol", "", "The protocol the health check is performed over")
 		cmd.Flags().Int("health-check-port", 0, "The port the health check is performed over")
@@ -91,6 +92,7 @@ var AddServiceCmd = base.Cmd{
 		httpCookieName, _ := cmd.Flags().GetString("http-cookie-name")
 		httpCookieLifetime, _ := cmd.Flags().GetDuration("http-cookie-lifetime")
 		httpRedirect, _ := cmd.Flags().GetBool("http-redirect-http")
+		httpTimeoutIdle, _ := cmd.Flags().GetDuration("http-timeout-idle")
 
 		loadBalancer, _, err := s.Client().LoadBalancer().Get(s, idOrName)
 		if err != nil {
@@ -123,6 +125,10 @@ var AddServiceCmd = base.Cmd{
 			if httpCookieLifetime != 0 {
 				opts.HTTP.CookieLifetime = &httpCookieLifetime
 			}
+			if httpTimeoutIdle != 0 {
+				opts.HTTP.TimeoutIdle = &httpTimeoutIdle
+			}
+
 			for _, idOrName := range httpCertificates {
 				cert, _, err := s.Client().Certificate().Get(s, idOrName)
 				if err != nil {
