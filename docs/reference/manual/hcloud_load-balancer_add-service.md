@@ -26,6 +26,7 @@ hcloud load-balancer add-service [options] (--protocol http | --protocol tcp --l
       --http-cookie-name string                  Sticky Sessions: Cookie Name we set
       --http-redirect-http                       Redirect all traffic on port 80 to port 443 (true, false)
       --http-sticky-sessions                     Enable Sticky Sessions (true, false)
+      --http-timeout-idle duration               Idle timeout for HTTP connections (30s-300s)
       --listen-port int                          Listen port of the service
       --protocol string                          Protocol of the service (required)
       --proxy-protocol                           Enable proxyprotocol (true, false)
