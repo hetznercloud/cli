@@ -76,6 +76,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.LoadBalancer]{
 				fmt.Fprintf(out, "    Destination Port:\t%d\n", service.DestinationPort)
 				fmt.Fprintf(out, "    Proxy Protocol:\t%s\n", util.YesNo(service.Proxyprotocol))
 				if service.Protocol != hcloud.LoadBalancerServiceProtocolTCP {
+					fmt.Fprintf(out, "    Timeout Idle:\t%vs\n", service.HTTP.TimeoutIdle.Seconds())
 					fmt.Fprintf(out, "    Sticky Sessions:\t%s\n", util.YesNo(service.HTTP.StickySessions))
 					if service.HTTP.StickySessions {
 						fmt.Fprintf(out, "    Sticky Cookie Name:\t%s\n", service.HTTP.CookieName)

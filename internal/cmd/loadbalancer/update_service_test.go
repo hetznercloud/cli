@@ -37,6 +37,7 @@ func TestUpdateService(t *testing.T) {
 				CookieName:     hcloud.Ptr("test"),
 				CookieLifetime: hcloud.Ptr(10 * time.Minute),
 				Certificates:   []*hcloud.Certificate{{ID: 1}},
+				TimeoutIdle:    hcloud.Ptr(60 * time.Second),
 			},
 			HealthCheck: &hcloud.LoadBalancerUpdateServiceOptsHealthCheck{
 				Protocol: hcloud.LoadBalancerServiceProtocolTCP,
@@ -69,6 +70,7 @@ func TestUpdateService(t *testing.T) {
 		"--http-cookie-name", "test",
 		"--http-cookie-lifetime", "10m",
 		"--http-certificates", "1",
+		"--http-timeout-idle", "60s",
 		"--health-check-protocol", "tcp",
 		"--health-check-port", "8080",
 		"--health-check-interval", "10s",
