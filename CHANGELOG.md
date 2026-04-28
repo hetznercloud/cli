@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.64.1](https://github.com/hetznercloud/cli/releases/tag/v1.64.1)
+
+### Bug Fixes
+
+- apple's signing and notarizing release pipeline
+
 ## [v1.64.0](https://github.com/hetznercloud/cli/releases/tag/v1.64.0)
 
 ### Primary IPs `assignee_type` behavior change
