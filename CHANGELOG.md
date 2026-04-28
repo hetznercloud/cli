@@ -1,5 +1,23 @@
 # Changelog
 
+## [v1.64.0](https://github.com/hetznercloud/cli/releases/tag/v1.64.0)
+
+### Primary IPs `assignee_type` behavior change
+
+When creating a Primary IP with the `primary-ip` command, the `--assignee-type` flag will be required together with the `--assignee-id` flag. Using the default value (`server`) for the `--assignee-type` flag is deprecated. Consider explicitly setting the `--assignee-type` flag.
+
+As of 1 August 2026, the behavior of the Primary IP `assignee_type` property will change, and will return `unassigned` when the Primary IP is not assigned (when `assignee_id` is `null`). The goal is to eventually assign Primary IPs to other resource types, not only to `server`.
+
+See the [changelog](https://docs.hetzner.cloud/changelog#2026-04-27-primary-ips-will-return-unassigned) for more details.
+
+In addition, the Primary IP request body `assignee_type` property of the operation [`POST /v1/primary_ips`](https://docs.hetzner.cloud/reference/cloud#tag/primary-ips/create_primary_ip) is now optional. Primary IPs created without `assignee_type` return `server` until 1 August 2026, after this date, its value will be `unassigned`.
+
+See the [changelog](https://docs.hetzner.cloud/changelog#2026-04-27-primary-ips-make-assignee_type-optional) for more details.
+
+### Features
+
+- **primary-ip**: `--assignee-type` is optional when creating a Primary IP (#1395)
+
 ## [v1.63.0](https://github.com/hetznercloud/cli/releases/tag/v1.63.0)
 
 ### Available and recommended Server Types have been moved
