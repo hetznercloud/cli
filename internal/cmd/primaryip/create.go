@@ -22,7 +22,15 @@ var CreateCmd = base.CreateCmd[*hcloud.PrimaryIP]{
 			Long: `Create a Primary IP.
 
 The --datacenter flag is deprecated. Use --location or --assignee-id instead.
-See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters.`,
+See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters.
+
+The --assignee-type flag will be required together with the --assignee-id flag. Using 
+the default value (server) for the --assignee-type flag is deprecated. Consider 
+explicitly setting the --assignee-type flag.
+
+See https://docs.hetzner.cloud/changelog#2026-04-27-primary-ips-will-return-unassigned
+and https://docs.hetzner.cloud/changelog#2026-04-27-primary-ips-make-assignee_type-optional.
+`,
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
 		}
@@ -71,13 +79,22 @@ See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters.`,
 		}
 
 		createOpts := hcloud.PrimaryIPCreateOpts{
-			Type:         hcloud.PrimaryIPType(typ),
-			Name:         name,
-			AssigneeType: assigneeType,
-			Labels:       labels,
+			Type:   hcloud.PrimaryIPType(typ),
+			Name:   name,
+			Labels: labels,
 		}
 		if assigneeID != 0 {
 			createOpts.AssigneeID = &assigneeID
+			if !cmd.Flags().Changed("assignee-type") {
+				cmd.PrintErrln(
+					"Warning: " +
+						"The --assignee-type flag will be required together " +
+						"with the --assignee-id flag and will no longer default " +
+						"to 'server'. Consider explicitly setting the " +
+						"--assignee-type flag.",
+				)
+			}
+			createOpts.AssigneeType = assigneeType
 		}
 		if cmd.Flags().Changed("auto-delete") {
 			createOpts.AutoDelete = &autoDelete

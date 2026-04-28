@@ -37,12 +37,11 @@ func TestCreate(t *testing.T) {
 		Create(
 			gomock.Any(),
 			hcloud.PrimaryIPCreateOpts{
-				Name:         "my-ip",
-				Type:         "ipv4",
-				Location:     "fsn1",
-				Labels:       map[string]string{"foo": "bar"},
-				AssigneeType: "server",
-				AutoDelete:   hcloud.Ptr(true),
+				Name:       "my-ip",
+				Type:       "ipv4",
+				Location:   "fsn1",
+				Labels:     map[string]string{"foo": "bar"},
+				AutoDelete: hcloud.Ptr(true),
 			},
 		).
 		Return(
@@ -107,12 +106,11 @@ func TestCreateJSON(t *testing.T) {
 		Create(
 			gomock.Any(),
 			hcloud.PrimaryIPCreateOpts{
-				Name:         "my-ip",
-				Type:         "ipv4",
-				Location:     "fsn1",
-				Labels:       map[string]string{"foo": "bar"},
-				AssigneeType: "server",
-				AutoDelete:   hcloud.Ptr(true),
+				Name:       "my-ip",
+				Type:       "ipv4",
+				Location:   "fsn1",
+				Labels:     map[string]string{"foo": "bar"},
+				AutoDelete: hcloud.Ptr(true),
 			},
 		).
 		Return(
