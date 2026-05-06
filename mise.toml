@@ -1,7 +1,7 @@
 [tools]
 go = "1.26.2"
 "go:go.uber.org/mock/mockgen" = "v0.6.0"
-"github:golangci/golangci-lint" = "2.11.4"
+"github:golangci/golangci-lint" = "2.12.2"
 "github:goreleaser/goreleaser" = "v2.15.4"
 "github:anchore/quill" = "v0.7.1"
 "github:jstemmer/go-junit-report" = "v2.1.0"
