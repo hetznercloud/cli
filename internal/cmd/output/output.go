@@ -225,7 +225,7 @@ func (o *Table[T]) MarkFieldAsDeprecated(field string, message string) *Table[T]
 // AddAllowedFields reads all first level fieldnames of the struct and allows them to be used.
 func (o *Table[T]) AddAllowedFields(obj T) *Table[T] {
 	v := reflect.ValueOf(obj)
-	if v.Kind() == reflect.Ptr {
+	if v.Kind() == reflect.Pointer {
 		v = v.Elem()
 	}
 	if v.Kind() != reflect.Struct {
