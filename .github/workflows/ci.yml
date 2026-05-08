@@ -118,10 +118,24 @@ jobs:
           version: 2026.4.19 # renovate: datasource=github-releases depName=jdx/mise
 
       - name: Run go mod tidy
-        run: go mod tidy
-
-      - name: Check uncommitted changes
-        run: git diff --exit-code
+        run: go mod tidy -diff
 
       - if: failure()
         run: echo "::error::Check failed, please run 'go mod tidy' and commit the changes."
+
+  go-fix:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Set up tools
+        uses: jdx/mise-action@v4
+        with:
+          version: 2026.4.19 # renovate: datasource=github-releases depName=jdx/mise
+
+      - name: Run go mod tidy
+        run: go fix -diff ./...
+
+      - if: failure()
+        run: echo "::error::Check failed, please run 'go fix ./...' and commit the changes."
