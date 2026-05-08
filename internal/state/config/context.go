@@ -6,17 +6,19 @@ type Context interface {
 	Preferences() Preferences
 }
 
-func NewContext(name, token string) Context {
+func NewContext(name, token, tokenCmd string) Context {
 	return &context{
-		ContextName:  name,
-		ContextToken: token,
+		ContextName:         name,
+		ContextToken:        token,
+		ContextTokenCommand: tokenCmd,
 	}
 }
 
 type context struct {
-	ContextName        string      `toml:"name"`
-	ContextToken       string      `toml:"token"`
-	ContextPreferences Preferences `toml:"preferences"`
+	ContextName         string      `toml:"name"`
+	ContextToken        string      `toml:"token,omitempty"`
+	ContextTokenCommand string      `toml:"token_command,omitempty"`
+	ContextPreferences  Preferences `toml:"preferences"`
 }
 
 func (ctx *context) Name() string {
@@ -24,7 +26,7 @@ func (ctx *context) Name() string {
 }
 
 // Token returns the token for the context.
-// If you just need the token regardless of the context, please use [OptionToken] instead.
+// If you just need the token regardless of the context, please use [config.RetrieveToken] instead.
 func (ctx *context) Token() string {
 	return ctx.ContextToken
 }

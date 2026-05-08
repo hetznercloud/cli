@@ -17,7 +17,7 @@ import (
 
 func NewCreateCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   "create [--token-from-env] <name>",
+		Use:                   "create [options] <name>",
 		Short:                 "Create a new context",
 		Args:                  util.Validate,
 		TraverseChildren:      true,
@@ -26,11 +26,14 @@ func NewCreateCommand(s state.State) *cobra.Command {
 		RunE:                  state.Wrap(s, runCreate),
 	}
 	cmd.Flags().Bool("token-from-env", false, "If true, the HCLOUD_TOKEN from the environment will be used without asking")
+	cmd.Flags().String("token-from-command", "", "If set, this command will be executed to retrieve the token on each run")
+	cmd.MarkFlagsMutuallyExclusive("token-from-env", "token-from-command")
 	return cmd
 }
 
 func runCreate(s state.State, cmd *cobra.Command, args []string) error {
 	tokenFromEnv, _ := cmd.Flags().GetBool("token-from-env")
+	tokenCmd, _ := cmd.Flags().GetString("token-from-command")
 
 	cfg := s.Config()
 	if !s.Terminal().StdoutIsTerminal() && !tokenFromEnv {
@@ -47,8 +50,7 @@ func runCreate(s state.State, cmd *cobra.Command, args []string) error {
 
 	var token string
 
-	envToken := os.Getenv("HCLOUD_TOKEN")
-	if envToken != "" {
+	if envToken := os.Getenv("HCLOUD_TOKEN"); tokenCmd == "" && envToken != "" {
 		switch {
 		case len(envToken) != 64:
 			if tokenFromEnv {
@@ -67,7 +69,7 @@ func runCreate(s state.State, cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	if token == "" {
+	if tokenCmd == "" && token == "" {
 		if tokenFromEnv {
 			return errors.New("no token provided")
 		}
@@ -92,7 +94,7 @@ func runCreate(s state.State, cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	context := config.NewContext(name, token)
+	context := config.NewContext(name, token, tokenCmd)
 
 	cfg.SetContexts(append(cfg.Contexts(), context))
 	cfg.SetActiveContext(context)

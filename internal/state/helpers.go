@@ -15,7 +15,7 @@ func Wrap(s State, f func(State, *cobra.Command, []string) error) func(*cobra.Co
 }
 
 func (c *state) EnsureToken(_ *cobra.Command, _ []string) error {
-	token, err := config.OptionToken.Get(c.config)
+	token, err := config.RetrieveToken(c.config)
 	if err != nil {
 		return err
 	}

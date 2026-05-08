@@ -1,7 +1,6 @@
 package config
 
 import (
-	"bytes"
 	"errors"
 	"fmt"
 	"io"
@@ -150,11 +149,13 @@ func (cfg *config) Read(f any) error {
 	}
 
 	if cfg.schema.ActiveContext != "" {
-		// ReadConfig resets the current config and reads the new values
+		// We set the currently active context using viper.MergeConfigMap.
 		// We don't use viper.Set here because of the value hierarchy. We want the env and flags to
 		// be able to override the currently active context. viper.Set would take precedence over
 		// env and flags.
-		err = cfg.v.ReadConfig(bytes.NewReader([]byte(fmt.Sprintf("context = %q\n", cfg.schema.ActiveContext))))
+		err = cfg.v.MergeConfigMap(map[string]any{
+			"context": cfg.schema.ActiveContext,
+		})
 		if err != nil {
 			return err
 		}
@@ -189,10 +190,13 @@ func (cfg *config) Read(f any) error {
 		if err = cfg.activeContext.ContextPreferences.merge(cfg.v); err != nil {
 			return err
 		}
-		// Merge token into viper
+		// Merge token and token_cmd into viper
 		// We use viper.MergeConfig here for the same reason as above, except for
 		// that we merge the config instead of replacing it.
-		if err = cfg.v.MergeConfig(bytes.NewReader([]byte(fmt.Sprintf(`token = "%s"`, cfg.activeContext.ContextToken)))); err != nil {
+		if err = cfg.v.MergeConfigMap(map[string]any{
+			"token":         cfg.activeContext.ContextToken,
+			"token_command": cfg.activeContext.ContextTokenCommand,
+		}); err != nil {
 			return err
 		}
 	}

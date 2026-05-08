@@ -99,6 +99,15 @@ var (
 		nil,
 	)
 
+	OptionTokenCommand = newOpt(
+		"token_command",
+		"Command to retrieve Hetzner Cloud API token",
+		"",
+		OptionFlagConfig|OptionFlagEnv,
+		nil,
+		nil,
+	)
+
 	OptionContext = newOpt(
 		"context",
 		"Currently active context",

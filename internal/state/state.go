@@ -64,7 +64,7 @@ func (c *state) Terminal() terminal.Terminal {
 }
 
 func (c *state) newClient() (hcapi2.Client, error) {
-	tok, err := config.OptionToken.Get(c.config)
+	tok, err := config.RetrieveToken(c.config)
 	if err != nil {
 		return nil, err
 	}

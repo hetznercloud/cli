@@ -9,8 +9,9 @@ hcloud context create [--token-from-env] <name>
 ### Options
 
 ```
-  -h, --help             help for create
-      --token-from-env   If true, the HCLOUD_TOKEN from the environment will be used without asking
+  -h, --help                        help for create
+      --token-from-command string   If set, this command will be executed to retrieve the token on each run
+      --token-from-env              If true, the HCLOUD_TOKEN from the environment will be used without asking
 ```
 
 ### Options inherited from parent commands
