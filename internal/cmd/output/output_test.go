@@ -44,7 +44,7 @@ func TestTableOutput(t *testing.T) {
 	})
 
 	t.Run("AddFieldOutputFn", func(t *testing.T) {
-		to.AddFieldFn("leeroy jenkins", func(interface{}) string {
+		to.AddFieldFn("leeroy jenkins", func(any) string {
 			return "LEEROY JENKINS!!!"
 		})
 

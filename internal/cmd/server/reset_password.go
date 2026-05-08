@@ -47,7 +47,7 @@ var ResetPasswordCmd = base.Cmd{
 		}
 
 		if outputFlags.IsSet("json") || outputFlags.IsSet("yaml") {
-			schema := make(map[string]interface{})
+			schema := make(map[string]any)
 			schema["root_password"] = result.RootPassword
 			if outputFlags.IsSet("json") {
 				return util.DescribeJSON(cmd.OutOrStdout(), schema)

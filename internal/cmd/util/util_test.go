@@ -89,7 +89,6 @@ func TestOnlyOneSet(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			actual := util.ExactlyOneSet(tt.s, tt.ss...)
 			if tt.expected != actual {
@@ -145,7 +144,6 @@ func TestAge(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			actual := util.Age(tt.t, tt.now)
 			if tt.expected != actual {
@@ -236,7 +234,7 @@ func TestDescribeYAML(t *testing.T) {
 }
 
 func TestWrap(t *testing.T) {
-	wrapped := util.Wrap("json", map[string]interface{}{
+	wrapped := util.Wrap("json", map[string]any{
 		"foo": "bar",
 	})
 	jsonString, err := json.Marshal(wrapped)
@@ -280,7 +278,7 @@ func TestIsNil(t *testing.T) {
 	assert.True(t, util.IsNil((map[int]int)(nil)))
 	assert.True(t, util.IsNil(([]int)(nil)))
 	assert.True(t, util.IsNil((func())(nil)))
-	assert.True(t, util.IsNil((interface{})(nil)))
+	assert.True(t, util.IsNil((any)(nil)))
 	assert.True(t, util.IsNil((error)(nil)))
 	assert.False(t, util.IsNil(0))
 	assert.False(t, util.IsNil(""))
@@ -292,7 +290,7 @@ func TestFilterNil(t *testing.T) {
 	type testStruct struct {
 		a, b, c int //nolint:unused
 	}
-	assert.Equal(t, []interface{}{0, ""}, util.FilterNil([]interface{}{0, nil, ""}))
+	assert.Equal(t, []any{0, ""}, util.FilterNil([]any{0, nil, ""}))
 	assert.Equal(t, []*testStruct{{1, 2, 3}, {}}, util.FilterNil([]*testStruct{{1, 2, 3}, nil, {}, (*testStruct)(nil)}))
 }
 

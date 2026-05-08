@@ -18,7 +18,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.ZoneRRSet]{
 	ShortDescription:           "Describe a Zone RRSet",
 	PositionalArgumentOverride: []string{"zone", "name", "type"},
 	ValidArgsFunction:          rrsetArgumentsCompletionFuncs,
-	FetchWithArgs: func(s state.State, _ *cobra.Command, args []string) (*hcloud.ZoneRRSet, interface{}, error) {
+	FetchWithArgs: func(s state.State, _ *cobra.Command, args []string) (*hcloud.ZoneRRSet, any, error) {
 		zoneIDOrName, rrsetName, rrsetType := args[0], args[1], args[2]
 
 		zoneIDOrName, err := util.ParseZoneIDOrName(zoneIDOrName)

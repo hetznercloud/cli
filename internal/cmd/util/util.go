@@ -173,7 +173,7 @@ func PrefixLines(text, prefix string) string {
 	return prefix + strings.ReplaceAll(text, "\n", "\n"+prefix) + tail
 }
 
-func DescribeFormat(w io.Writer, object interface{}, format string) error {
+func DescribeFormat(w io.Writer, object any, format string) error {
 	if !strings.HasSuffix(format, "\n") {
 		format += "\n"
 	}
@@ -184,13 +184,13 @@ func DescribeFormat(w io.Writer, object interface{}, format string) error {
 	return t.Execute(w, object)
 }
 
-func DescribeJSON(w io.Writer, object interface{}) error {
+func DescribeJSON(w io.Writer, object any) error {
 	enc := json.NewEncoder(w)
 	enc.SetIndent("", "  ")
 	return enc.Encode(object)
 }
 
-func DescribeYAML(w io.Writer, object interface{}) error {
+func DescribeYAML(w io.Writer, object any) error {
 	enc := yaml.NewEncoder(w)
 	return enc.Encode(object)
 }

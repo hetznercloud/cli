@@ -97,7 +97,7 @@ var MetricsCmd = base.Cmd{
 		}
 		switch {
 		case outputFlags.IsSet("json") || outputFlags.IsSet("yaml"):
-			var schema map[string]interface{}
+			var schema map[string]any
 			if err := json.NewDecoder(resp.Body).Decode(&schema); err != nil {
 				return err
 			}

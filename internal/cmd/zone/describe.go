@@ -18,7 +18,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Zone]{
 	ResourceNameSingular: "Zone",
 	ShortDescription:     "Describe a Zone",
 	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Zone().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.Zone, interface{}, error) {
+	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.Zone, any, error) {
 		idOrName, err := util.ParseZoneIDOrName(idOrName)
 		if err != nil {
 			return nil, nil, fmt.Errorf("failed to convert Zone name to ascii: %w", err)

@@ -154,7 +154,7 @@ func (cfg *config) Read(f any) error {
 		// We don't use viper.Set here because of the value hierarchy. We want the env and flags to
 		// be able to override the currently active context. viper.Set would take precedence over
 		// env and flags.
-		err = cfg.v.ReadConfig(bytes.NewReader([]byte(fmt.Sprintf("context = %q\n", cfg.schema.ActiveContext))))
+		err = cfg.v.ReadConfig(bytes.NewReader(fmt.Appendf(nil, "context = %q\n", cfg.schema.ActiveContext)))
 		if err != nil {
 			return err
 		}
@@ -192,7 +192,7 @@ func (cfg *config) Read(f any) error {
 		// Merge token into viper
 		// We use viper.MergeConfig here for the same reason as above, except for
 		// that we merge the config instead of replacing it.
-		if err = cfg.v.MergeConfig(bytes.NewReader([]byte(fmt.Sprintf(`token = "%s"`, cfg.activeContext.ContextToken)))); err != nil {
+		if err = cfg.v.MergeConfig(bytes.NewReader(fmt.Appendf(nil, `token = "%s"`, cfg.activeContext.ContextToken))); err != nil {
 			return err
 		}
 	}

@@ -31,7 +31,6 @@ func TestSuggestCandidates(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			f := cmpl.SuggestCandidates(tt.cs...)
 			sug, d := f(nil, nil, tt.toComplete)
@@ -94,7 +93,6 @@ func TestSuggestArgs(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		tt := tt
 		t.Run(tt.name, func(t *testing.T) {
 			f := cmpl.SuggestArgs(tt.vfs...)
 			sug, d := f(nil, tt.args, "")

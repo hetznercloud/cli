@@ -98,7 +98,6 @@ Listed resources are:
 
 		// Start all requests in parallel in order to minimize response time
 		for i, lc := range cmds {
-			i, lc := i, lc
 			ch := make(chan response)
 			responseChs[i] = ch
 
