@@ -21,11 +21,11 @@ require (
 	github.com/stretchr/testify v1.11.1
 	github.com/swaggest/assertjson v1.10.0
 	go.uber.org/mock v0.6.0
-	golang.org/x/crypto v0.50.0
-	golang.org/x/exp v0.0.0-20260410095643-746e56fc9e2f
-	golang.org/x/net v0.53.0
-	golang.org/x/term v0.42.0
-	golang.org/x/text v0.36.0
+	golang.org/x/crypto v0.51.0
+	golang.org/x/exp v0.0.0-20260508232706-74f9aab9d74a
+	golang.org/x/net v0.54.0
+	golang.org/x/term v0.43.0
+	golang.org/x/text v0.37.0
 )
 
 require (
@@ -59,7 +59,7 @@ require (
 	github.com/yudai/golcs v0.0.0-20170316035057-ecda9a501e82 // indirect
 	go.yaml.in/yaml/v2 v2.4.2 // indirect
 	go.yaml.in/yaml/v3 v3.0.4 // indirect
-	golang.org/x/sys v0.43.0 // indirect
+	golang.org/x/sys v0.44.0 // indirect
 	google.golang.org/protobuf v1.36.8 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
