@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"os"
 	"os/exec"
 	"runtime"
 	"strings"
@@ -21,7 +22,7 @@ func RetrieveToken(c Config) (string, error) {
 		return "", err
 	}
 	if cmdStr != "" {
-		return tokenFromCommand(cmdStr)
+		return tokenFromCommand(c, cmdStr)
 	}
 	return "", nil
 }
@@ -30,7 +31,7 @@ func RetrieveToken(c Config) (string, error) {
 // Since the command is provided by the user and might be expensive, we cache the command result after the first successful run.
 var cmdCache = make(map[string]string)
 
-func tokenFromCommand(cmdStr string) (string, error) {
+func tokenFromCommand(c Config, cmdStr string) (string, error) {
 	if tok, ok := cmdCache[cmdStr]; ok {
 		return tok, nil
 	}
@@ -41,6 +42,10 @@ func tokenFromCommand(cmdStr string) (string, error) {
 	} else {
 		cmd = exec.Command("sh", "-c", cmdStr)
 	}
+
+	cmd.Env = append(cmd.Environ(), fmt.Sprintf("HCLOUD_CONTEXT=%s", c.ActiveContext().Name()))
+	cmd.Stderr = os.Stderr
+
 	out, err := cmd.Output()
 	if err != nil {
 		return "", fmt.Errorf("could not retrieve token: %w", err)
