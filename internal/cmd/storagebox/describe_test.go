@@ -154,8 +154,8 @@ Storage Box Type:
   Subaccounts Limit:         200
   
   Deprecation:
-    Announced:          2023-06-01 00:00:00 UTC (2 years ago)
-    Unavailable After:  2023-09-01 00:00:00 UTC (2 years ago)
+    Announced:          2023-06-01 00:00:00 UTC (%s)
+    Unavailable After:  2023-09-01 00:00:00 UTC (%s)
 
 Location:
   ID:            42
@@ -166,7 +166,10 @@ Location:
   City:          Falkenstein
   Latitude:      50.476120
   Longitude:     12.370071
-`, humanize.Time(storageBox.Created))
+`,
+		humanize.Time(storageBox.Created),
+		humanize.Time(storageBox.StorageBoxType.Deprecation.Announced),
+		humanize.Time(storageBox.StorageBoxType.Deprecation.UnavailableAfter))
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
