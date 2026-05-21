@@ -1,5 +1,17 @@
 # Changelog
 
+## [v1.65.0](https://github.com/hetznercloud/cli/releases/tag/v1.65.0)
+
+### Load Balancer HTTP Services now support `TimeoutIdle`
+
+A timeout for HTTP connections can now be set with `--http-timeout-idle` while creating or updating Load Balancer services.
+
+See the [changelog](https://docs.hetzner.cloud/changelog#2026-04-30-load-balancers-http-idle-timeout-can-now-be-configured) for more information.
+
+### Features
+
+- **load-balancer**: support --http-timeout-idle flag (#1394)
+
 ## [v1.64.1](https://github.com/hetznercloud/cli/releases/tag/v1.64.1)
 
 ### Bug Fixes
