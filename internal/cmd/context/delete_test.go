@@ -37,7 +37,7 @@ token = "super secret token"
 			name:   "delete active context",
 			args:   []string{"my-context"},
 			config: testConfig,
-			expErr: "Warning: You are deleting the currently active context. Please select a new active context.\n",
+			expErr: "Warning: You deleted the currently active context. Please select a new active context.\n",
 			expOut: `active_context = ""
 
 [[contexts]]

@@ -34,7 +34,7 @@ func runDelete(s state.State, _ *cobra.Command, args []string) error {
 		return fmt.Errorf("context not found: %v", name)
 	}
 	if cfg.ActiveContext() == context {
-		_, _ = fmt.Fprintln(os.Stderr, "Warning: You are deleting the currently active context. Please select a new active context.")
+		_, _ = fmt.Fprintln(os.Stderr, "Warning: You deleted the currently active context. Please select a new active context.")
 		cfg.SetActiveContext(nil)
 	}
 	config.RemoveContext(cfg, context)
