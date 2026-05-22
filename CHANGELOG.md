@@ -1,5 +1,11 @@
 # Changelog
 
+## [v1.65.1](https://github.com/hetznercloud/cli/releases/tag/v1.65.1)
+
+### Bug Fixes
+
+- **cmd**: Change tense for deletion of active context (#1412)
+
 ## [v1.65.0](https://github.com/hetznercloud/cli/releases/tag/v1.65.0)
 
 ### Load Balancer HTTP Services now support `TimeoutIdle`
