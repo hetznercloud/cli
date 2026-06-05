@@ -39,5 +39,7 @@ jobs:
             --exclude 'https://docs.hetzner.cloud/reference/hetzner#'
             --exclude 'https://style-guide.europa.eu/en/content/-/isg/topic'
             --exclude 'https://www.hetzner.com/news/arm64-cloud'
+            --exclude 'https://docs.hetzner.com/networking/dns/faq/beta/'
+            --exclude 'https://docs.hetzner.com/networking/dns/migration-to-hetzner-console/process/'
             '**/*.md'
             '**/*.go'
