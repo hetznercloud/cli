@@ -47,7 +47,7 @@ jobs:
         if: >
           !startsWith(github.head_ref, 'renovate/') &&
           !startsWith(github.head_ref, 'releaser-pleaser--')
-        uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354 # v6
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v6
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           flags: unit
@@ -78,7 +78,7 @@ jobs:
         if: >
           !startsWith(github.head_ref, 'renovate/') &&
           !startsWith(github.head_ref, 'release-please--')
-        uses: codecov/codecov-action@e79a6962e0d4c0c17b229090214935d2e33f8354 # v6
+        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v6
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           flags: e2e
