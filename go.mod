@@ -6,6 +6,7 @@ toolchain go1.27.2
 
 require (
 	github.com/BurntSushi/toml v1.6.0
+	github.com/alexsnet/go-vnc v0.1.0
 	github.com/cheggaaa/pb/v3 v3.2.1
 	github.com/dustin/go-humanize v1.1.0
 	github.com/fatih/color v1.19.0
