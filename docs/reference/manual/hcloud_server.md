@@ -55,6 +55,7 @@ Manage Servers
 * [hcloud server request-console](hcloud_server_request-console.md)	 - Request a WebSocket VNC console for a Server
 * [hcloud server reset](hcloud_server_reset.md)	 - Reset a Server
 * [hcloud server reset-password](hcloud_server_reset-password.md)	 - Reset the root password of a Server
+* [hcloud server screenshot](hcloud_server_screenshot.md)	 - Take a screenshot of the Server VNC console
 * [hcloud server set-rdns](hcloud_server_set-rdns.md)	 - Change reverse DNS of a Server
 * [hcloud server shutdown](hcloud_server_shutdown.md)	 - Shutdown a server
 * [hcloud server ssh](hcloud_server_ssh.md)	 - Spawn an SSH connection for the Server
