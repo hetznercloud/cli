@@ -32,6 +32,15 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Datacenter]{
 		fmt.Fprint(out, DescribeDatacenter(s.Client(), datacenter, false))
 		return nil
 	},
+	Configure: func(s state.State, c *cobra.Command) *cobra.Command {
+		c.Long += `The 'datacenter' commands are deprecated and will be removed after 1 Oct. 2026.
+After this date, requests to the datacenters API endpoints will return HTTP 410 Gone.
+
+See https://docs.hetzner.cloud/changelog#2026-06-02-datacenters-deprecated for more details.
+`
+		c.Deprecated = "see https://docs.hetzner.cloud/changelog#2026-06-02-datacenters-deprecated for more details."
+		return c
+	},
 }
 
 func DescribeDatacenter(client hcapi2.Client, datacenter *hcloud.Datacenter, short bool) string {

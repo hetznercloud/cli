@@ -15,6 +15,7 @@ func NewCommand(s state.State) *cobra.Command {
 		Args:                  util.Validate,
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
+		Deprecated:            `see https://docs.hetzner.cloud/changelog#2026-06-02-datacenters-deprecated for more details.`,
 	}
 	cmd.AddCommand(
 		ListCmd.CobraCommand(s),

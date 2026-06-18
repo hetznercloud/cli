@@ -28,7 +28,6 @@ A command-line interface for Hetzner Cloud
 * [hcloud completion](hcloud_completion.md)	 - Output shell completion code for the specified shell
 * [hcloud config](hcloud_config.md)	 - Manage configuration
 * [hcloud context](hcloud_context.md)	 - Manage contexts
-* [hcloud datacenter](hcloud_datacenter.md)	 - View Datacenters
 * [hcloud firewall](hcloud_firewall.md)	 - Manage Firewalls
 * [hcloud floating-ip](hcloud_floating-ip.md)	 - Manage Floating IPs
 * [hcloud image](hcloud_image.md)	 - Manage Images
