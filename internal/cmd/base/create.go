@@ -19,8 +19,8 @@ type CreateCmd[T any] struct {
 	// It should return the created resource, the schema of the resource and an error.
 	Run           func(state.State, *cobra.Command, []string) (T, any, error)
 	PrintResource func(state.State, *cobra.Command, T)
-	// Experimental is a function that will be used to mark the command as experimental.
-	Experimental func(state.State, *cobra.Command) *cobra.Command
+	// Configure is a function that can be used to configure the command directly.
+	Configure func(state.State, *cobra.Command) *cobra.Command
 }
 
 // CobraCommand creates a command that can be registered with cobra.
@@ -78,8 +78,8 @@ func (cc *CreateCmd[T]) CobraCommand(s state.State) *cobra.Command {
 		return nil
 	}
 
-	if cc.Experimental != nil {
-		cmd = cc.Experimental(s, cmd)
+	if cc.Configure != nil {
+		cmd = cc.Configure(s, cmd)
 	}
 	return cmd
 }

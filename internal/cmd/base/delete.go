@@ -44,8 +44,8 @@ type DeleteCmd[T any] struct {
 	// [DeleteCmd.FetchWithArgs] and [DeleteCmd.PositionalArgumentOverride] is being used.
 	ValidArgsFunction func(client hcapi2.Client) []cobra.CompletionFunc
 
-	// Experimental is a function that will be used to mark the command as experimental.
-	Experimental func(state.State, *cobra.Command) *cobra.Command
+	// Configure is a function that can be used to configure the command directly.
+	Configure func(state.State, *cobra.Command) *cobra.Command
 }
 
 type FetchFunc[T any] func(s state.State, cmd *cobra.Command, idOrName string) (T, *hcloud.Response, error)
@@ -84,8 +84,8 @@ func (dc *DeleteCmd[T]) CobraCommand(s state.State) *cobra.Command {
 	if dc.AdditionalFlags != nil {
 		dc.AdditionalFlags(cmd)
 	}
-	if dc.Experimental != nil {
-		cmd = dc.Experimental(s, cmd)
+	if dc.Configure != nil {
+		cmd = dc.Configure(s, cmd)
 	}
 	return cmd
 }
