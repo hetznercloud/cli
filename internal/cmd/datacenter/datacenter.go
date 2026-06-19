@@ -7,6 +7,12 @@ import (
 	"github.com/hetznercloud/cli/internal/state"
 )
 
+const deprecationNotice = `The 'hcloud datacenter ...' commands are deprecated and will be removed after 1 Oct. 2026.
+After this date, requests to the datacenters API endpoints will return HTTP 410 Gone.
+
+See https://docs.hetzner.cloud/changelog#2026-06-02-datacenters-deprecated for more details.
+`
+
 func NewCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
 		Use:                   "datacenter",
@@ -16,11 +22,7 @@ func NewCommand(s state.State) *cobra.Command {
 		TraverseChildren:      true,
 		DisableFlagsInUseLine: true,
 
-		Long: `The 'hcloud datacenter ...' commands are deprecated and will be removed after 1 Oct. 2026.
-After this date, requests to the datacenters API endpoints will return HTTP 410 Gone.
-
-See https://docs.hetzner.cloud/changelog#2026-06-02-datacenters-deprecated for more details.
-`,
+		Long: deprecationNotice,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			cmd.PrintErrln("Warning: The 'datacenter' commands are deprecated. Use the 'location' commands instead.")
 		},
