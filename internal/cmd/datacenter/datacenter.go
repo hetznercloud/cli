@@ -23,7 +23,7 @@ func NewCommand(s state.State) *cobra.Command {
 		DisableFlagsInUseLine: true,
 
 		Long: deprecationNotice,
-		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		PersistentPreRun: func(cmd *cobra.Command, _ []string) {
 			cmd.PrintErrln("Warning: The 'datacenter' commands are deprecated. Use the 'location' commands instead.")
 		},
 	}
