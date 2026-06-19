@@ -31,6 +31,7 @@ jobs:
             --include-fragments
             --exclude 'api.hetzner.cloud'
             --exclude 'api.hetzner.com'
+            --exclude 'asciinema.org'
             --exclude 'codecov.io'
             --exclude 'github.com'
             --exclude '169.254.169.254'
