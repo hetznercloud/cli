@@ -32,6 +32,11 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Datacenter]{
 		fmt.Fprint(out, DescribeDatacenter(s.Client(), datacenter, false))
 		return nil
 	},
+	Configure: func(_ state.State, c *cobra.Command) *cobra.Command {
+		c.Short += " (deprecated)"
+		c.Long = deprecationNotice
+		return c
+	},
 }
 
 func DescribeDatacenter(client hcapi2.Client, datacenter *hcloud.Datacenter, short bool) string {

@@ -1,6 +1,9 @@
 package datacenter
 
 import (
+	"fmt"
+
+	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
@@ -35,4 +38,10 @@ var ListCmd = &base.ListCmd[*hcloud.Datacenter, schema.Datacenter]{
 	},
 
 	Schema: hcloud.SchemaFromDatacenter,
+
+	Configure: func(_ state.State, c *cobra.Command) *cobra.Command {
+		c.Short += " (deprecated)"
+		c.Long = fmt.Sprintf("%s\n%s", deprecationNotice, c.Long)
+		return c
+	},
 }

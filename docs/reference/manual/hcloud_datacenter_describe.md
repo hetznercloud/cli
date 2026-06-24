@@ -1,6 +1,14 @@
 ## hcloud datacenter describe
 
-Describe a Datacenter
+Describe a Datacenter (deprecated)
+
+### Synopsis
+
+The 'hcloud datacenter ...' commands are deprecated and will be removed after 1 Oct. 2026.
+After this date, requests to the datacenters API endpoints will return HTTP 410 Gone.
+
+See https://docs.hetzner.cloud/changelog#2026-06-02-datacenters-deprecated for more details.
+
 
 ```
 hcloud datacenter describe [options] <datacenter>
@@ -29,5 +37,5 @@ hcloud datacenter describe [options] <datacenter>
 
 ### SEE ALSO
 
-* [hcloud datacenter](hcloud_datacenter.md)	 - View Datacenters
+* [hcloud datacenter](hcloud_datacenter.md)	 - View Datacenters (deprecated)
 

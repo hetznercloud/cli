@@ -1,8 +1,13 @@
 ## hcloud datacenter list
 
-List Datacenters
+List Datacenters (deprecated)
 
 ### Synopsis
+
+The 'hcloud datacenter ...' commands are deprecated and will be removed after 1 Oct. 2026.
+After this date, requests to the datacenters API endpoints will return HTTP 410 Gone.
+
+See https://docs.hetzner.cloud/changelog#2026-06-02-datacenters-deprecated for more details.
 
 Displays a list of Datacenters.
 
@@ -45,5 +50,5 @@ hcloud datacenter list [options]
 
 ### SEE ALSO
 
-* [hcloud datacenter](hcloud_datacenter.md)	 - View Datacenters
+* [hcloud datacenter](hcloud_datacenter.md)	 - View Datacenters (deprecated)
 
