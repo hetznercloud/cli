@@ -53,8 +53,8 @@ type ChangeProtectionCmds[T, Opts any] struct {
 	// IDOrName is used to retrieve a string representation of the resource
 	IDOrName func(resource T) string
 
-	// Experimental is a function that will be used to mark the command as experimental.
-	Experimental func(state.State, *cobra.Command) *cobra.Command
+	// Configure is a function that can be used to configure the command directly.
+	Configure func(state.State, *cobra.Command) *cobra.Command
 }
 
 func (cpc *ChangeProtectionCmds[T, Opts]) newChangeProtectionCmd(s state.State, enable bool) *cobra.Command {
@@ -133,8 +133,8 @@ func (cpc *ChangeProtectionCmds[T, Opts]) newChangeProtectionCmd(s state.State, 
 		cpc.AdditionalFlags(cmd)
 	}
 
-	if cpc.Experimental != nil {
-		cmd = cpc.Experimental(s, cmd)
+	if cpc.Configure != nil {
+		cmd = cpc.Configure(s, cmd)
 	}
 
 	return cmd

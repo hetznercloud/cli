@@ -41,8 +41,8 @@ type UpdateCmd[T any] struct {
 	// [UpdateCmd.FetchWithArgs] and [UpdateCmd.PositionalArgumentOverride] is being used.
 	ValidArgsFunction func(client hcapi2.Client) []cobra.CompletionFunc
 
-	// Experimental is a function that will be used to mark the command as experimental.
-	Experimental func(state.State, *cobra.Command) *cobra.Command
+	// Configure is a function that can be used to configure the command directly.
+	Configure func(state.State, *cobra.Command) *cobra.Command
 }
 
 // CobraCommand creates a command that can be registered with cobra.
@@ -72,8 +72,8 @@ func (uc *UpdateCmd[T]) CobraCommand(s state.State) *cobra.Command {
 		},
 	}
 	uc.DefineFlags(cmd)
-	if uc.Experimental != nil {
-		cmd = uc.Experimental(s, cmd)
+	if uc.Configure != nil {
+		cmd = uc.Configure(s, cmd)
 	}
 	return cmd
 }

@@ -56,8 +56,8 @@ type ListCmd[T any, S any] struct {
 	// Can be set if auto-completion is needed (usually if [ListCmd.FetchWithArgs] is used)
 	ValidArgsFunction func(client hcapi2.Client) cobra.CompletionFunc
 
-	// Experimental is a function that will be used to mark the command as experimental.
-	Experimental func(state.State, *cobra.Command) *cobra.Command
+	// Configure is a function that can be used to configure the command directly.
+	Configure func(state.State, *cobra.Command) *cobra.Command
 }
 
 // CobraCommand creates a command that can be registered with cobra.
@@ -92,8 +92,8 @@ func (lc *ListCmd[T, S]) CobraCommand(s state.State) *cobra.Command {
 		lc.AdditionalFlags(cmd)
 	}
 	cmd.Flags().StringSliceP("sort", "s", []string{}, "Determine the sorting of the result")
-	if lc.Experimental != nil {
-		cmd = lc.Experimental(s, cmd)
+	if lc.Configure != nil {
+		cmd = lc.Configure(s, cmd)
 	}
 	return cmd
 }
