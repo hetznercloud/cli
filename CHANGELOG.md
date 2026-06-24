@@ -1,5 +1,23 @@
 # Changelog
 
+## [v1.66.0](https://github.com/hetznercloud/cli/releases/tag/v1.66.0)
+
+### Datacenters commands are now deprecated
+
+The `hcloud datacenters list` and `hcloud datacenters describe` commands are now deprecated.
+
+The endpoints `GET /v1/datacenters` and `GET /v1/datacenters/{id}` are now deprecated and will be removed after 1 Oct. 2026. After this date, requests to these endpoints will return `HTTP 410 Gone`.
+
+See the [changelog](https://docs.hetzner.cloud/changelog#2026-06-02-datacenters-deprecated) for more details.
+
+### Features
+
+- deprecate `hcloud datacenters ...` commands (#1436)
+
+### Bug Fixes
+
+- **cmd**: Change tense for deletion of active context (#1412)
+
 ## [v1.65.0](https://github.com/hetznercloud/cli/releases/tag/v1.65.0)
 
 ### Load Balancer HTTP Services now support `TimeoutIdle`
