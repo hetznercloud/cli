@@ -6,6 +6,7 @@ toolchain go1.26.4
 
 require (
 	github.com/BurntSushi/toml v1.6.0
+	github.com/alexsnet/go-vnc v0.1.1-0.20230622101630-c02fb4ae6247 // We need an unreleased fix
 	github.com/cheggaaa/pb/v3 v3.1.7
 	github.com/dustin/go-humanize v1.0.1
 	github.com/fatih/color v1.19.0
