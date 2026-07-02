@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"net/http"
 	"os"
 	"strings"
 	"time"
@@ -134,6 +135,15 @@ func (c *state) newClient() (hcapi2.Client, error) {
 			BackoffFunc: customPollBackoffFunc(),
 		}))
 	}
+
+	httpTimeout, err := config.OptionHTTPTimeout.Get(c.config)
+	if err != nil {
+		return nil, err
+	}
+
+	client := http.DefaultClient
+	client.Timeout = httpTimeout
+	opts = append(opts, hcloud.WithHTTPClient(client))
 
 	return hcapi2.NewClient(opts...), nil
 }

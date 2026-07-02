@@ -15,6 +15,10 @@
 ├──────────────────────────┼──────────────────────┼─────────────┼──────────────────────────┼─────────────────────────────────┼────────────────────────────┤
 │ hetzner-endpoint         │ Hetzner API endpoint │ string      │ hetzner_endpoint         │ HETZNER_ENDPOINT                │ --hetzner-endpoint         │
 ├──────────────────────────┼──────────────────────┼─────────────┼──────────────────────────┼─────────────────────────────────┼────────────────────────────┤
+│ http-timeout             │ Timeout for HTTP     │ duration    │ http_timeout             │ HCLOUD_HTTP_TIMEOUT             │ --http-timeout             │
+│                          │ requests (0 = no     │             │                          │                                 │                            │
+│                          │ timeout)             │             │                          │                                 │                            │
+├──────────────────────────┼──────────────────────┼─────────────┼──────────────────────────┼─────────────────────────────────┼────────────────────────────┤
 │ no-experimental-warnings │ If true,             │ boolean     │ no_experimental_warnings │ HCLOUD_NO_EXPERIMENTAL_WARNINGS │ --no-experimental-warnings │
 │                          │ experimental         │             │                          │                                 │                            │
 │                          │ warnings are not     │             │                          │                                 │                            │

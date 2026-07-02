@@ -16,6 +16,7 @@ A command-line interface for Hetzner Cloud
       --endpoint string            Hetzner Cloud API endpoint (default "https://api.hetzner.cloud/v1")
   -h, --help                       help for hcloud
       --hetzner-endpoint string    Hetzner API endpoint (default "https://api.hetzner.com/v1")
+      --http-timeout duration      Timeout for HTTP requests (0 = no timeout)
       --no-experimental-warnings   If true, experimental warnings are not shown
       --poll-interval duration     Interval at which to poll information, for example action progress (default 500ms)
       --quiet                      If true, only print error messages

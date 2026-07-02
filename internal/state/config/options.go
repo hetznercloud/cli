@@ -169,6 +169,15 @@ var (
 		nil,
 	)
 
+	OptionHTTPTimeout = newOpt(
+		"http-timeout",
+		"Timeout for HTTP requests (0 = no timeout)",
+		0*time.Second,
+		DefaultPreferenceFlags,
+		nil,
+		nil,
+	)
+
 	OptionQuiet = newOpt(
 		"quiet",
 		"If true, only print error messages",
