@@ -141,7 +141,7 @@ func (c *state) newClient() (hcapi2.Client, error) {
 		return nil, err
 	}
 
-	client := http.DefaultClient
+	client := &http.Client{}
 	client.Timeout = httpTimeout
 	opts = append(opts, hcloud.WithHTTPClient(client))
 
