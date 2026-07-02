@@ -171,7 +171,7 @@ var (
 
 	OptionHTTPTimeout = newOpt(
 		"http-timeout",
-		"Timeout for HTTP requests (0 = no timeout)",
+		"Timeout for HTTP requests (default 0 = no timeout)",
 		0*time.Second,
 		DefaultPreferenceFlags,
 		nil,
