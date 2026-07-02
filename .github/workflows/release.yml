@@ -24,7 +24,7 @@ jobs:
       - name: Set up tools
         uses: jdx/mise-action@e6a8b3978addb5a52f2b4cd9d91eafa7f0ab959d # v4
         with:
-          version: 2026.6.11 # renovate: datasource=github-releases depName=jdx/mise
+          version: 2026.6.14 # renovate: datasource=github-releases depName=jdx/mise
 
       - name: Import GPG key
         id: import_gpg

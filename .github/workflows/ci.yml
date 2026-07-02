@@ -18,7 +18,7 @@ jobs:
       - name: Set up tools
         uses: jdx/mise-action@e6a8b3978addb5a52f2b4cd9d91eafa7f0ab959d # v4
         with:
-          version: 2026.6.11 # renovate: datasource=github-releases depName=jdx/mise
+          version: 2026.6.14 # renovate: datasource=github-releases depName=jdx/mise
 
       - name: Run gofmt
         run: diff -u <(echo -n) <(gofmt -d -s .)
@@ -38,7 +38,7 @@ jobs:
       - name: Set up tools
         uses: jdx/mise-action@e6a8b3978addb5a52f2b4cd9d91eafa7f0ab959d # v4
         with:
-          version: 2026.6.11 # renovate: datasource=github-releases depName=jdx/mise
+          version: 2026.6.14 # renovate: datasource=github-releases depName=jdx/mise
 
       - name: Run tests
         run: go test -coverpkg=./internal/... -coverprofile=coverage.txt -v -race ./...
@@ -63,7 +63,7 @@ jobs:
       - name: Set up tools
         uses: jdx/mise-action@e6a8b3978addb5a52f2b4cd9d91eafa7f0ab959d # v4
         with:
-          version: 2026.6.11 # renovate: datasource=github-releases depName=jdx/mise
+          version: 2026.6.14 # renovate: datasource=github-releases depName=jdx/mise
 
       - uses: hetznercloud/tps-action@dc6d67c5768ca43b840429b6c7409cda61cf4092 # main
 
@@ -92,7 +92,7 @@ jobs:
       - name: Set up tools
         uses: jdx/mise-action@e6a8b3978addb5a52f2b4cd9d91eafa7f0ab959d # v4
         with:
-          version: 2026.6.11 # renovate: datasource=github-releases depName=jdx/mise
+          version: 2026.6.14 # renovate: datasource=github-releases depName=jdx/mise
 
       - name: Delete old generated files
         run: find . -name 'zz_*.go' -delete
@@ -115,7 +115,7 @@ jobs:
       - name: Set up tools
         uses: jdx/mise-action@e6a8b3978addb5a52f2b4cd9d91eafa7f0ab959d # v4
         with:
-          version: 2026.6.11 # renovate: datasource=github-releases depName=jdx/mise
+          version: 2026.6.14 # renovate: datasource=github-releases depName=jdx/mise
 
       - name: Run go mod tidy
         run: go mod tidy -diff
@@ -132,7 +132,7 @@ jobs:
       - name: Set up tools
         uses: jdx/mise-action@e6a8b3978addb5a52f2b4cd9d91eafa7f0ab959d # v4
         with:
-          version: 2026.6.11 # renovate: datasource=github-releases depName=jdx/mise
+          version: 2026.6.14 # renovate: datasource=github-releases depName=jdx/mise
 
       - name: Run go mod tidy
         run: go fix -diff ./...
