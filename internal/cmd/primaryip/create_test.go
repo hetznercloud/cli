@@ -33,6 +33,10 @@ func TestCreate(t *testing.T) {
 		Labels:     map[string]string{"foo": "bar"},
 	}
 
+	fx.Client.LocationClient.EXPECT().
+		Get(gomock.Any(), "fsn1").
+		Return(&hcloud.Location{Name: "fsn1"}, &hcloud.Response{}, nil)
+
 	fx.Client.PrimaryIPClient.EXPECT().
 		Create(
 			gomock.Any(),
@@ -59,16 +63,14 @@ func TestCreate(t *testing.T) {
 		GetByID(gomock.Any(), primaryIP.ID).
 		Return(primaryIP, &hcloud.Response{}, nil)
 
-	out, errOut, err := fx.Run(cmd, []string{"--name=my-ip", "--type=ipv4", "--datacenter=fsn1-dc14", "--auto-delete", "--label", "foo=bar"})
-
-	expErr := "Warning: The --datacenter flag is deprecated. Use --location or --assignee-id instead.\n"
+	out, errOut, err := fx.Run(cmd, []string{"--name=my-ip", "--type=ipv4", "--location=fsn1", "--auto-delete", "--label", "foo=bar"})
 
 	expOut := `Primary IP 1 created
 IPv4: 192.168.2.1
 `
 
 	require.NoError(t, err)
-	assert.Equal(t, expErr, errOut)
+	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
 
@@ -89,11 +91,6 @@ func TestCreateJSON(t *testing.T) {
 		Location: &hcloud.Location{
 			Name: "fsn1",
 		},
-		Datacenter: &hcloud.Datacenter{
-			ID:       1,
-			Name:     "fsn1-dc14",
-			Location: &hcloud.Location{ID: 1, Name: "fsn1"},
-		},
 		Created:      time.Date(2016, 1, 30, 23, 50, 0, 0, time.UTC),
 		Labels:       map[string]string{"foo": "bar"},
 		AutoDelete:   true,
@@ -101,6 +98,10 @@ func TestCreateJSON(t *testing.T) {
 		AssigneeType: "server",
 		DNSPtr:       map[string]string{},
 	}
+
+	fx.Client.LocationClient.EXPECT().
+		Get(gomock.Any(), "fsn1").
+		Return(&hcloud.Location{Name: "fsn1"}, nil, nil)
 
 	fx.Client.PrimaryIPClient.EXPECT().
 		Create(
@@ -125,10 +126,9 @@ func TestCreateJSON(t *testing.T) {
 		GetByID(gomock.Any(), primaryIP.ID).
 		Return(primaryIP, nil, nil)
 
-	jsonOut, out, err := fx.Run(cmd, []string{"-o=json", "--name=my-ip", "--type=ipv4", "--datacenter=fsn1-dc14", "--auto-delete", "--label", "foo=bar"})
+	jsonOut, out, err := fx.Run(cmd, []string{"-o=json", "--name=my-ip", "--type=ipv4", "--location=fsn1", "--auto-delete", "--label", "foo=bar"})
 
-	expOut := `Warning: The --datacenter flag is deprecated. Use --location or --assignee-id instead.
-Primary IP 1 created
+	expOut := `Primary IP 1 created
 `
 
 	require.NoError(t, err)

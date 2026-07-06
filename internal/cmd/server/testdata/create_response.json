@@ -13,21 +13,6 @@
       "name": "",
       "network_zone": ""
     },
-    "datacenter": {
-      "description": "",
-      "id": 1,
-      "location": {
-        "city": "",
-        "country": "",
-        "description": "",
-        "id": 1,
-        "latitude": 0,
-        "longitude": 0,
-        "name": "fsn1",
-        "network_zone": ""
-      },
-      "name": "fsn1-dc14"
-    },
     "id": 1234,
     "image": {
       "architecture": "",
@@ -106,8 +91,20 @@
       "prices": null,
       "storage_type": "local",
       "locations": [
-        { "id": 1, "name": "fsn1", "deprecation": null, "available": true, "recommended": true },
-        { "id": 2, "name": "nbg1", "deprecation": null, "available": true, "recommended": false }
+        {
+          "id": 1,
+          "name": "fsn1",
+          "deprecation": null,
+          "available": true,
+          "recommended": true
+        },
+        {
+          "id": 2,
+          "name": "nbg1",
+          "deprecation": null,
+          "available": true,
+          "recommended": false
+        }
       ]
     },
     "status": "running",
