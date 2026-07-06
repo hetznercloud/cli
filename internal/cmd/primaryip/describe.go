@@ -26,7 +26,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.PrimaryIP]{
 		}
 		return ip, hcloud.SchemaFromPrimaryIP(ip), nil
 	},
-	PrintText: func(s state.State, _ *cobra.Command, out io.Writer, primaryIP *hcloud.PrimaryIP) error {
+	PrintText: func(_ state.State, _ *cobra.Command, out io.Writer, primaryIP *hcloud.PrimaryIP) error {
 		fmt.Fprintf(out, "ID:\t%d\n", primaryIP.ID)
 		fmt.Fprintf(out, "Name:\t%s\n", primaryIP.Name)
 		fmt.Fprintf(out, "Created:\t%s (%s)\n", util.Datetime(primaryIP.Created), humanize.Time(primaryIP.Created))
