@@ -32,7 +32,13 @@ var DescribeCmd = base.DescribeCmd[*hcloud.PrimaryIP]{
 		fmt.Fprintf(out, "Name:\t%s\n", primaryIP.Name)
 		fmt.Fprintf(out, "Created:\t%s (%s)\n", util.Datetime(primaryIP.Created), humanize.Time(primaryIP.Created))
 		fmt.Fprintf(out, "Type:\t%s\n", primaryIP.Type)
-		fmt.Fprintf(out, "IP:\t%s\n", primaryIP.IP.String())
+
+		if primaryIP.Network != nil {
+			fmt.Fprintf(out, "IP:\t%s\n", primaryIP.Network.String())
+		} else {
+			fmt.Fprintf(out, "IP:\t%s\n", primaryIP.IP.String())
+		}
+
 		fmt.Fprintf(out, "Blocked:\t%s\n", util.YesNo(primaryIP.Blocked))
 		fmt.Fprintf(out, "Auto delete:\t%s\n", util.YesNo(primaryIP.AutoDelete))
 
