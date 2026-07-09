@@ -88,3 +88,78 @@ Location:
 	assert.Empty(t, errOut)
 	assert.Equal(t, expOut, out)
 }
+
+func TestDescribeIPv6(t *testing.T) {
+	fx := testutil.NewFixture(t)
+	defer fx.Finish()
+
+	time.Local = time.UTC
+
+	cmd := primaryip.DescribeCmd.CobraCommand(fx.State())
+	fx.ExpectEnsureToken()
+
+	ip, ipNet, _ := net.ParseCIDR("2001:db8::/64")
+
+	primaryIP := &hcloud.PrimaryIP{
+		ID:           10,
+		Name:         "test-net",
+		Type:         "ipv6",
+		Created:      time.Date(2036, 8, 12, 12, 0, 0, 0, time.UTC),
+		IP:           ip,
+		Network:      ipNet,
+		Blocked:      true,
+		AutoDelete:   false,
+		AssigneeType: "server",
+		Location: &hcloud.Location{
+			ID:          3,
+			Name:        "hel1",
+			Description: "Helsinki DC Park 1",
+			NetworkZone: "eu-central",
+			Country:     "FI",
+			City:        "Helsinki",
+			Latitude:    60.169855,
+			Longitude:   24.938379,
+		},
+	}
+
+	fx.Client.PrimaryIPClient.EXPECT().
+		Get(gomock.Any(), "10").
+		Return(primaryIP, nil, nil)
+
+	out, errOut, err := fx.Run(cmd, []string{"10"})
+
+	expOut := fmt.Sprintf(`ID:           10
+Name:         test-net
+Created:      %s (%s)
+Type:         ipv6
+IP:           2001:db8::/64
+Blocked:      yes
+Auto delete:  no
+
+Assignee:
+  Not assigned
+
+DNS:
+  No reverse DNS entries
+
+Protection:
+  Delete:  no
+
+Labels:
+  No labels
+
+Location:
+  ID:            3
+  Name:          hel1
+  Description:   Helsinki DC Park 1
+  Network Zone:  eu-central
+  Country:       FI
+  City:          Helsinki
+  Latitude:      60.169855
+  Longitude:     24.938379
+`, util.Datetime(primaryIP.Created), humanize.Time(primaryIP.Created))
+
+	require.NoError(t, err)
+	assert.Empty(t, errOut)
+	assert.Equal(t, expOut, out)
+}
