@@ -75,7 +75,7 @@ func NewRootCommand(s state.State) *cobra.Command {
 		completion.NewCommand(s),
 		context.NewCommand(s),
 		configCmd.NewCommand(s),
-		api.ApiCmd.CobraCommand(s),
+		api.APICmd.CobraCommand(s),
 	)
 
 	cmd.PersistentFlags().AddFlagSet(s.Config().FlagSet())

@@ -1,7 +1,6 @@
 package api
 
 import (
-	_ "embed"
 	"encoding/json"
 	"io"
 	"net/url"
@@ -15,8 +14,8 @@ import (
 	"github.com/hetznercloud/cli/internal/state"
 )
 
-var ApiCmd = base.Cmd{
-	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
+var APICmd = base.Cmd{
+	BaseCobraCommand: func(_ hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
 			Use:   "api [options] <path>",
 			Short: "Make API call",
