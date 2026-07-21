@@ -14,7 +14,6 @@ Columns:
  - age
  - backup_window
  - created
- - datacenter
  - id
  - included_traffic
  - ingoing_traffic

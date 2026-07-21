@@ -9,7 +9,6 @@ import (
 	"mime/multipart"
 	"net/textproto"
 	"os"
-	"strconv"
 	"strings"
 	"time"
 
@@ -42,10 +41,6 @@ var CreateCmd = base.CreateCmd[*createResult]{
 		cmd := &cobra.Command{
 			Use:   "create [options] --name <name> --type <server-type> --image <image>",
 			Short: "Create a Server",
-			Long: `Create a Server.
-
-The --datacenter flag is deprecated. Use --location instead.
-See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters.`,
 		}
 
 		cmd.Flags().String("name", "", "Server name (required)")
@@ -61,9 +56,6 @@ See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters.`,
 
 		cmd.Flags().String("location", "", "Location (ID or name)")
 		_ = cmd.RegisterFlagCompletionFunc("location", cmpl.SuggestCandidatesF(client.Location().Names))
-
-		cmd.Flags().String("datacenter", "", "Datacenter (ID or name) (deprecated)")
-		_ = cmd.RegisterFlagCompletionFunc("datacenter", cmpl.SuggestCandidatesF(client.Datacenter().Names))
 
 		cmd.Flags().StringSlice("ssh-key", nil, "ID or name of SSH Key to inject (can be specified multiple times)")
 		_ = cmd.RegisterFlagCompletionFunc("ssh-key", cmpl.SuggestCandidatesF(client.SSHKey().Names))
@@ -114,8 +106,6 @@ See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters.`,
 		var locName string
 		if createOpts.Location != nil {
 			locName = createOpts.Location.Name
-		} else if createOpts.Datacenter != nil {
-			locName = createOpts.Datacenter.Location.Name
 		}
 
 		cmd.Print(deprecatedServerTypeWarning(createOpts.ServerType, locName))
@@ -275,7 +265,6 @@ func createOptsFromFlags(
 	serverTypeName, _ := flags.GetString("type")
 	imageIDorName, _ := flags.GetString("image")
 	locationIDOrName, _ := flags.GetString("location")
-	datacenterIDOrName, _ := flags.GetString("datacenter")
 	userDataFiles, _ := flags.GetStringArray("user-data-from-file")
 	startAfterCreate, _ := flags.GetBool("start-after-create")
 	sshKeys, _ := flags.GetStringSlice("ssh-key")
@@ -436,41 +425,6 @@ func createOptsFromFlags(
 			return
 		}
 		createOpts.Firewalls = append(createOpts.Firewalls, &hcloud.ServerCreateFirewall{Firewall: *firewall})
-	}
-
-	if datacenterIDOrName != "" {
-		cmd.PrintErrln("Warning: The --datacenter flag is deprecated. Use --location instead.")
-
-		// If parseable as ID -> GetByID and use Location Name
-		// Else -> Backwards-compatible split
-		var datacenterID int64
-		datacenterID, err = strconv.ParseInt(datacenterIDOrName, 10, 64)
-		if err == nil {
-			// Input was a valid number/ID
-			var datacenter *hcloud.Datacenter
-			datacenter, _, err = s.Client().Datacenter().GetByID(s, datacenterID)
-			if err != nil {
-				return
-			}
-			if datacenter == nil {
-				err = fmt.Errorf("Datacenter not found: %s", datacenterIDOrName)
-				return
-			}
-			createOpts.Location = datacenter.Location
-		} else {
-			// Input was not a valid number/ID, probably DC name
-
-			// Backward compatible datacenter argument.
-			// datacenter hel1-dc2 => location hel1
-			parts := strings.Split(datacenterIDOrName, "-")
-
-			if len(parts) != 2 {
-				err = fmt.Errorf("Datacenter name is not valid, expected format $LOCATION-$DATACENTER, but got: %s", datacenterIDOrName)
-				return
-			}
-
-			createOpts.Location = &hcloud.Location{Name: parts[0]}
-		}
 	}
 
 	if locationIDOrName != "" {

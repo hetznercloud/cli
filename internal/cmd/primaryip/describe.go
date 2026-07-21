@@ -8,7 +8,6 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
-	"github.com/hetznercloud/cli/internal/cmd/datacenter"
 	"github.com/hetznercloud/cli/internal/cmd/location"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
@@ -27,7 +26,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.PrimaryIP]{
 		}
 		return ip, hcloud.SchemaFromPrimaryIP(ip), nil
 	},
-	PrintText: func(s state.State, _ *cobra.Command, out io.Writer, primaryIP *hcloud.PrimaryIP) error {
+	PrintText: func(_ state.State, _ *cobra.Command, out io.Writer, primaryIP *hcloud.PrimaryIP) error {
 		fmt.Fprintf(out, "ID:\t%d\n", primaryIP.ID)
 		fmt.Fprintf(out, "Name:\t%s\n", primaryIP.Name)
 		fmt.Fprintf(out, "Created:\t%s (%s)\n", util.Datetime(primaryIP.Created), humanize.Time(primaryIP.Created))
@@ -71,12 +70,6 @@ var DescribeCmd = base.DescribeCmd[*hcloud.PrimaryIP]{
 		fmt.Fprintln(out)
 		fmt.Fprintf(out, "Location:\n")
 		fmt.Fprintf(out, "%s", util.PrefixLines(location.DescribeLocation(primaryIP.Location), "  "))
-
-		if primaryIP.Datacenter != nil {
-			fmt.Fprintln(out)
-			fmt.Fprintf(out, "Datacenter:\n")
-			fmt.Fprintf(out, "%s", util.PrefixLines(datacenter.DescribeDatacenter(s.Client(), primaryIP.Datacenter, true), "  "))
-		}
 
 		return nil
 	},
