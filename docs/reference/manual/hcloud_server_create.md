@@ -2,6 +2,13 @@
 
 Create a Server
 
+### Synopsis
+
+Create a Server.
+
+The --datacenter flag has been removed. Use --location instead.
+See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters.
+
 ```
 hcloud server create [options] --name <name> --type <server-type> --image <image>
 ```

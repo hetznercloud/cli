@@ -6,8 +6,11 @@ Create a Primary IP
 
 Create a Primary IP.
 
+The --datacenter flag has been removed. Use --location or --assignee-id instead.
+See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters.
+
 The --assignee-type flag will be required together with the --assignee-id flag. Using
-the default value (server) for the --assignee-type flag is deprecated. Consider 
+the default value (server) for the --assignee-type flag is deprecated. Consider
 explicitly setting the --assignee-type flag.
 
 See https://docs.hetzner.cloud/changelog#2026-04-27-primary-ips-will-return-unassigned

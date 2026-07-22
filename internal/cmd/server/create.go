@@ -41,6 +41,10 @@ var CreateCmd = base.CreateCmd[*createResult]{
 		cmd := &cobra.Command{
 			Use:   "create [options] --name <name> --type <server-type> --image <image>",
 			Short: "Create a Server",
+			Long: `Create a Server.
+
+The --datacenter flag has been removed. Use --location instead.
+See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters.`,
 		}
 
 		cmd.Flags().String("name", "", "Server name (required)")
