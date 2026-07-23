@@ -42,6 +42,10 @@ var APICmd = base.Cmd{
 			body = strings.NewReader(data)
 		}
 
+		if !strings.HasPrefix(path, "/") {
+			path = "/" + path
+		}
+
 		u, err := url.Parse(path)
 		if err != nil {
 			return err
