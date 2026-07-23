@@ -1,6 +1,7 @@
 package api
 
 import (
+	"bytes"
 	"encoding/json"
 	"io"
 	"net/url"
@@ -68,7 +69,11 @@ var APICmd = base.Cmd{
 			return err
 		}
 
-		cmd.Print(string(respBody))
+		var formatted bytes.Buffer
+		if err := json.Indent(&formatted, respBody, "", "  "); err != nil {
+			return err
+		}
+		cmd.Print(formatted.String())
 		return nil
 	},
 }
