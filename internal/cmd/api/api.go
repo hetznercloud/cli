@@ -78,11 +78,12 @@ var APICmd = base.Cmd{
 			return err
 		}
 
-		var respBody json.RawMessage
-		_, err = s.Client().Do(req, &respBody)
+		var respBuf bytes.Buffer
+		_, err = s.Client().Do(req, &respBuf)
 		if err != nil {
 			return err
 		}
+		respBody := respBuf.Bytes()
 
 		if json.Valid(respBody) {
 			var formatted bytes.Buffer
