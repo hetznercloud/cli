@@ -69,11 +69,15 @@ var APICmd = base.Cmd{
 			return err
 		}
 
-		var formatted bytes.Buffer
-		if err := json.Indent(&formatted, respBody, "", "  "); err != nil {
-			return err
+		if json.Valid(respBody) {
+			var formatted bytes.Buffer
+			if err := json.Indent(&formatted, respBody, "", "  "); err != nil {
+				return err
+			}
+			cmd.Println(formatted.String())
+		} else if len(respBody) > 0 {
+			cmd.Println(string(respBody))
 		}
-		cmd.Print(formatted.String())
 		return nil
 	},
 }
