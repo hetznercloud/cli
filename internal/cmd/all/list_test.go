@@ -40,9 +40,8 @@ func TestListAll(t *testing.T) {
 						IP: net.ParseIP("192.0.2.1"),
 					},
 				},
-				Created:    time.Now().Add(-72 * time.Hour),
-				Location:   &hcloud.Location{Name: "hel1"},
-				Datacenter: &hcloud.Datacenter{Name: "hel1-dc2"},
+				Created:  time.Now().Add(-72 * time.Hour),
+				Location: &hcloud.Location{Name: "hel1"},
 			},
 		}, nil)
 	fx.Client.NetworkClient.EXPECT().
@@ -102,12 +101,11 @@ func TestListAll(t *testing.T) {
 		AllWithOpts(gomock.Any(), hcloud.PrimaryIPListOpts{}).
 		Return([]*hcloud.PrimaryIP{
 			{
-				ID:         123,
-				Name:       "test",
-				Created:    time.Now().Add(-2 * time.Hour),
-				Datacenter: &hcloud.Datacenter{Name: "fsn1-dc14"},
-				Type:       hcloud.PrimaryIPTypeIPv4,
-				IP:         net.ParseIP("127.0.0.1"),
+				ID:      123,
+				Name:    "test",
+				Created: time.Now().Add(-2 * time.Hour),
+				Type:    hcloud.PrimaryIPTypeIPv4,
+				IP:      net.ParseIP("127.0.0.1"),
 			},
 		}, nil)
 	fx.Client.FloatingIPClient.EXPECT().

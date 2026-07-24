@@ -134,14 +134,6 @@ func TestCreateJSON(t *testing.T) {
 		},
 		Created: time.Date(2016, 1, 30, 23, 50, 0, 0, time.UTC),
 		Labels:  make(map[string]string),
-		Datacenter: &hcloud.Datacenter{
-			ID:   1,
-			Name: "fsn1-dc14",
-			Location: &hcloud.Location{
-				ID:   1,
-				Name: "fsn1",
-			},
-		},
 		ServerType: &hcloud.ServerType{
 			ID:           1,
 			Name:         "cpx22",

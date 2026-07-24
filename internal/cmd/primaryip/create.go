@@ -2,7 +2,6 @@ package primaryip
 
 import (
 	"fmt"
-	"strings"
 
 	"github.com/spf13/cobra"
 
@@ -21,11 +20,11 @@ var CreateCmd = base.CreateCmd[*hcloud.PrimaryIP]{
 			Short: "Create a Primary IP",
 			Long: `Create a Primary IP.
 
-The --datacenter flag is deprecated. Use --location or --assignee-id instead.
-See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters.
+The --datacenter flag has been removed. Use --location or --assignee-id instead.
+See https://docs.hetzner.cloud/changelog#2026-07-01-removing-datacenters.
 
-The --assignee-type flag will be required together with the --assignee-id flag. Using 
-the default value (server) for the --assignee-type flag is deprecated. Consider 
+The --assignee-type flag will be required together with the --assignee-id flag. Using
+the default value (server) for the --assignee-type flag is deprecated. Consider
 explicitly setting the --assignee-type flag.
 
 See https://docs.hetzner.cloud/changelog#2026-04-27-primary-ips-will-return-unassigned
@@ -48,9 +47,6 @@ and https://docs.hetzner.cloud/changelog#2026-04-27-primary-ips-make-assignee_ty
 		cmd.Flags().String("location", "", "Location (ID or name) of Primary IP")
 		_ = cmd.RegisterFlagCompletionFunc("location", cmpl.SuggestCandidatesF(client.Location().Names))
 
-		cmd.Flags().String("datacenter", "", "Datacenter (name) (deprecated)")
-		_ = cmd.RegisterFlagCompletionFunc("datacenter", cmpl.SuggestCandidatesF(client.Datacenter().Names))
-
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 
 		cmd.Flags().StringSlice("enable-protection", []string{}, "Enable protection (delete) (default: none)")
@@ -58,8 +54,8 @@ and https://docs.hetzner.cloud/changelog#2026-04-27-primary-ips-make-assignee_ty
 
 		cmd.Flags().Bool("auto-delete", false, "Delete Primary IP if assigned resource is deleted (true, false)")
 
-		cmd.MarkFlagsOneRequired("assignee-id", "datacenter", "location")
-		cmd.MarkFlagsMutuallyExclusive("assignee-id", "datacenter", "location")
+		cmd.MarkFlagsOneRequired("assignee-id", "location")
+		cmd.MarkFlagsMutuallyExclusive("assignee-id", "location")
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, _ []string) (*hcloud.PrimaryIP, any, error) {
@@ -67,7 +63,6 @@ and https://docs.hetzner.cloud/changelog#2026-04-27-primary-ips-make-assignee_ty
 		name, _ := cmd.Flags().GetString("name")
 		assigneeID, _ := cmd.Flags().GetInt64("assignee-id")
 		assigneeType, _ := cmd.Flags().GetString("assignee-type")
-		datacenter, _ := cmd.Flags().GetString("datacenter")
 		locationIDOrName, _ := cmd.Flags().GetString("location")
 		labels, _ := cmd.Flags().GetStringToString("label")
 		protection, _ := cmd.Flags().GetStringSlice("enable-protection")
@@ -108,20 +103,6 @@ and https://docs.hetzner.cloud/changelog#2026-04-27-primary-ips-make-assignee_ty
 				return nil, nil, fmt.Errorf("Location not found: %s", locationIDOrName)
 			}
 			createOpts.Location = location.Name
-		}
-		if cmd.Flags().Changed("datacenter") {
-			cmd.PrintErrln("Warning: The --datacenter flag is deprecated. Use --location or --assignee-id instead.")
-
-			// Backward compatible datacenter argument.
-			// datacenter hel1-dc2 => location hel1
-			parts := strings.Split(datacenter, "-")
-
-			if len(parts) != 2 {
-				return nil, nil, fmt.Errorf("Datacenter name is not valid, expected format $LOCATION-$DATACENTER, but got: %s", datacenter)
-			}
-
-			locationName := parts[0]
-			createOpts.Location = locationName
 		}
 
 		result, _, err := s.Client().PrimaryIP().Create(s, createOpts)
