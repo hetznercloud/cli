@@ -25,6 +25,9 @@ func TestCreate(t *testing.T) {
 	cmd := loadbalancer.CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
+	fx.Client.LoadBalancerTypeClient.EXPECT().
+		Get(gomock.Any(), "lb11").
+		Return(&hcloud.LoadBalancerType{Name: "lb11"}, nil, nil)
 	fx.Client.LoadBalancerClient.EXPECT().
 		Create(gomock.Any(), hcloud.LoadBalancerCreateOpts{
 			Name:             "myLoadBalancer",
@@ -88,6 +91,9 @@ func TestCreateJSON(t *testing.T) {
 		Targets:         []hcloud.LoadBalancerTarget{},
 	}
 
+	fx.Client.LoadBalancerTypeClient.EXPECT().
+		Get(gomock.Any(), "lb11").
+		Return(&hcloud.LoadBalancerType{Name: "lb11"}, nil, nil)
 	fx.Client.LoadBalancerClient.EXPECT().
 		Create(gomock.Any(), hcloud.LoadBalancerCreateOpts{
 			Name:             "myLoadBalancer",
@@ -132,6 +138,9 @@ func TestCreateProtection(t *testing.T) {
 		},
 	}
 
+	fx.Client.LoadBalancerTypeClient.EXPECT().
+		Get(gomock.Any(), "lb11").
+		Return(&hcloud.LoadBalancerType{Name: "lb11"}, nil, nil)
 	fx.Client.LoadBalancerClient.EXPECT().
 		Create(gomock.Any(), hcloud.LoadBalancerCreateOpts{
 			Name:             "myLoadBalancer",
