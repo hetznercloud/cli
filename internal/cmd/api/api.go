@@ -3,7 +3,9 @@ package api
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
+	"net/http"
 	"net/url"
 	"os"
 	"strings"
@@ -11,6 +13,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
+	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 )
@@ -23,6 +26,8 @@ var APICmd = base.Cmd{
 		}
 
 		cmd.Flags().StringP("method", "X", "GET", "HTTP method to use for API call")
+		_ = cmd.RegisterFlagCompletionFunc("method", cmpl.SuggestCandidates("GET", "POST", "PUT", "DELETE"))
+
 		cmd.Flags().StringP("data", "d", "", "HTTP request body content (use - to read from stdin)")
 		cmd.Flags().StringToStringP("value", "v", nil, "key=value pairs to pass as query parameters")
 		return cmd
@@ -32,6 +37,16 @@ var APICmd = base.Cmd{
 		method, _ := cmd.Flags().GetString("method")
 		data, _ := cmd.Flags().GetString("data")
 		values, _ := cmd.Flags().GetStringToString("value")
+
+		method = strings.ToUpper(method)
+		switch method {
+		case http.MethodGet, http.MethodHead, http.MethodPost,
+			http.MethodPut, http.MethodPatch, http.MethodDelete,
+			http.MethodConnect, http.MethodOptions, http.MethodTrace:
+			break
+		default:
+			return fmt.Errorf("unknown HTTP method: %s", method)
+		}
 
 		var body io.Reader
 		switch data {
