@@ -44,6 +44,8 @@ var ChangeTypeCmd = base.Cmd{
 			return fmt.Errorf("Load Balancer Type not found: %s", loadBalancerTypeIDOrName)
 		}
 
+		cmd.Print(deprecatedLoadBalancerTypeWarning(loadBalancerType))
+
 		opts := hcloud.LoadBalancerChangeTypeOpts{
 			LoadBalancerType: loadBalancerType,
 		}

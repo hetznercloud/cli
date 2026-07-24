@@ -52,7 +52,7 @@ var CreateCmd = base.CreateCmd[*hcloud.LoadBalancer]{
 	},
 	Run: func(s state.State, cmd *cobra.Command, _ []string) (*hcloud.LoadBalancer, any, error) {
 		name, _ := cmd.Flags().GetString("name")
-		serverType, _ := cmd.Flags().GetString("type")
+		loadBalancerTypeName, _ := cmd.Flags().GetString("type")
 		algorithmType, _ := cmd.Flags().GetString("algorithm-type")
 		location, _ := cmd.Flags().GetString("location")
 		networkZone, _ := cmd.Flags().GetString("network-zone")
@@ -65,12 +65,20 @@ var CreateCmd = base.CreateCmd[*hcloud.LoadBalancer]{
 			return nil, nil, err
 		}
 
+		loadBalancerType, _, err := s.Client().LoadBalancerType().Get(s, loadBalancerTypeName)
+		if err != nil {
+			return nil, nil, err
+		}
+		if loadBalancerType == nil {
+			return nil, nil, fmt.Errorf("Load Balancer Type not found: %s", loadBalancerTypeName)
+		}
+
+		cmd.Print(deprecatedLoadBalancerTypeWarning(loadBalancerType))
+
 		createOpts := hcloud.LoadBalancerCreateOpts{
-			Name: name,
-			LoadBalancerType: &hcloud.LoadBalancerType{
-				Name: serverType,
-			},
-			Labels: labels,
+			Name:             name,
+			LoadBalancerType: loadBalancerType,
+			Labels:           labels,
 		}
 		if algorithmType != "" {
 			createOpts.Algorithm = &hcloud.LoadBalancerAlgorithm{Type: hcloud.LoadBalancerAlgorithmType(algorithmType)}
