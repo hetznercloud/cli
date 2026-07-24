@@ -44,7 +44,7 @@ var CreateCmd = base.CreateCmd[*createResult]{
 			Long: `Create a Server.
 
 The --datacenter flag has been removed. Use --location instead.
-See https://docs.hetzner.cloud/changelog#2025-12-16-phasing-out-datacenters.`,
+See https://docs.hetzner.cloud/changelog#2026-07-01-removing-datacenters.`,
 		}
 
 		cmd.Flags().String("name", "", "Server name (required)")
