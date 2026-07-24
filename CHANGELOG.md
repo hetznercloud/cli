@@ -1,5 +1,38 @@
 # Changelog
 
+## [v1.67.0](https://github.com/hetznercloud/cli/releases/tag/v1.67.0)
+
+### Removed deprecated Datacenter from Server and Primary IP
+
+Removed the deprecated Datacenter property from the Server and Primary IP resources. Since the property was already removed from the Hetzner Cloud API, we do not consider this a breaking change (see [changelog entry](https://docs.hetzner.cloud/changelog#2026-07-01-removing-datacenters)).
+
+The `hcloud primary-ip create --datacenter` and `hcloud server create --datacenter` flags have been removed in favor of `--location`. Additionally, `hcloud primary-ip describe` and `hcloud server describe` will no longer show the Datacenter property.
+
+In place of the `--datacenter` flag the `--location` flag can be used. The Location name is the first part of the Datacenter name, e.g. the part before `-`. Example:
+
+**Before:**
+
+```sh
+$ hcloud server create --datacenter fsn1-dc14
+$ hcloud primary-ip create --datacenter hel1-dc2
+```
+
+**After:**
+
+```sh
+$ hcloud server create --location fsn1
+$ hcloud primary-ip create --location hel1
+```
+
+### Features
+
+- add http-timeout option (#1445)
+- remove datacenter property from server and primary_ip (#1460)
+
+### Bug Fixes
+
+- **primary-ip**: format IPv6 properly in describe (#1451)
+
 ## [v1.66.0](https://github.com/hetznercloud/cli/releases/tag/v1.66.0)
 
 ### Datacenters commands are now deprecated
