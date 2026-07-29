@@ -5,6 +5,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/output"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -27,7 +28,13 @@ var ListCmd = base.ListCmd[*hcloud.LoadBalancerType, schema.LoadBalancerType]{
 
 	OutputTable: func(t *output.Table[*hcloud.LoadBalancerType], _ hcapi2.Client) {
 		t.
-			AddAllowedFields(&hcloud.LoadBalancerType{})
+			AddAllowedFields(&hcloud.LoadBalancerType{}).
+			AddFieldFn("deprecated", func(lbType *hcloud.LoadBalancerType) string {
+				if !lbType.IsDeprecated() {
+					return "-"
+				}
+				return util.Datetime(lbType.UnavailableAfter())
+			})
 	},
 
 	Schema: hcloud.SchemaFromLoadBalancerType,

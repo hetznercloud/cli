@@ -8,9 +8,10 @@ Displays a list of Load Balancer Types.
 
 Output can be controlled with the -o flag. Use -o noheader to suppress the
 table header. Displayed columns and their order can be set with
--o columns=description,id (see available columns below).
+-o columns=deprecated,description (see available columns below).
 
 Columns:
+ - deprecated
  - description
  - id
  - max_assigned_certificates
