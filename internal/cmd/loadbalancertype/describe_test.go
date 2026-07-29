@@ -19,6 +19,8 @@ func TestDescribe(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
+	time.Local = time.UTC
+
 	cmd := loadbalancertype.DescribeCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
@@ -30,10 +32,12 @@ func TestDescribe(t *testing.T) {
 		MaxConnections:          10000,
 		MaxTargets:              25,
 		MaxAssignedCertificates: 10,
-		DeprecatableResource: hcloud.DeprecatableResource{Deprecation: &hcloud.DeprecationInfo{
-			Announced:        time.Date(2036, 1, 1, 0, 0, 0, 0, time.UTC),
-			UnavailableAfter: time.Date(2036, 4, 1, 0, 0, 0, 0, time.UTC),
-		}},
+		DeprecatableResource: hcloud.DeprecatableResource{
+			Deprecation: &hcloud.DeprecationInfo{
+				Announced:        time.Date(2036, 1, 1, 0, 0, 0, 0, time.UTC),
+				UnavailableAfter: time.Date(2036, 4, 1, 0, 0, 0, 0, time.UTC),
+			},
+		},
 	}
 
 	fx.Client.LoadBalancerTypeClient.EXPECT().
@@ -101,8 +105,8 @@ Max Targets:                25
 Max assigned Certificates:  10
 
 Deprecation:
-  Announced:          2036-01-01 01:00:00 CET (%s)
-  Unavailable After:  2036-04-01 02:00:00 CEST (%s)
+  Announced:          2036-01-01 00:00:00 UTC (%s)
+  Unavailable After:  2036-04-01 00:00:00 UTC (%s)
 
 Pricings per Location:
   - Location:            Falkenstein
