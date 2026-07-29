@@ -1,8 +1,11 @@
 package loadbalancertype_test
 
 import (
+	"fmt"
 	"testing"
+	"time"
 
+	"github.com/dustin/go-humanize"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/mock/gomock"
@@ -19,17 +22,23 @@ func TestDescribe(t *testing.T) {
 	cmd := loadbalancertype.DescribeCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
 
+	lbType := &hcloud.LoadBalancerType{
+		ID:                      123,
+		Name:                    "lb11",
+		Description:             "LB11",
+		MaxServices:             5,
+		MaxConnections:          10000,
+		MaxTargets:              25,
+		MaxAssignedCertificates: 10,
+		DeprecatableResource: hcloud.DeprecatableResource{Deprecation: &hcloud.DeprecationInfo{
+			Announced:        time.Date(2036, 1, 1, 0, 0, 0, 0, time.UTC),
+			UnavailableAfter: time.Date(2036, 4, 1, 0, 0, 0, 0, time.UTC),
+		}},
+	}
+
 	fx.Client.LoadBalancerTypeClient.EXPECT().
 		Get(gomock.Any(), "lb11").
-		Return(&hcloud.LoadBalancerType{
-			ID:                      123,
-			Name:                    "lb11",
-			Description:             "LB11",
-			MaxServices:             5,
-			MaxConnections:          10000,
-			MaxTargets:              25,
-			MaxAssignedCertificates: 10,
-		}, nil, nil)
+		Return(lbType, nil, nil)
 
 	fx.Client.PricingClient.EXPECT().
 		Get(gomock.Any()).
@@ -83,7 +92,7 @@ func TestDescribe(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"lb11"})
 
-	expOut := `ID:                         123
+	expOut := fmt.Sprintf(`ID:                         123
 Name:                       lb11
 Description:                LB11
 Max Services:               5
@@ -91,13 +100,17 @@ Max Connections:            10000
 Max Targets:                25
 Max assigned Certificates:  10
 
+Deprecation:
+  Announced:          2036-01-01 01:00:00 CET (%s)
+  Unavailable After:  2036-04-01 02:00:00 CEST (%s)
+
 Pricings per Location:
   - Location:            Falkenstein
     Hourly:              € 1.0000
     Monthly:             € 2.0000
     Included Traffic:    639 KiB
     Additional Traffic:  € 3.0000 per TB
-`
+`, humanize.Time(lbType.DeprecationAnnounced()), humanize.Time(lbType.UnavailableAfter()))
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
