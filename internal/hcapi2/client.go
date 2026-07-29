@@ -1,6 +1,9 @@
 package hcapi2
 
 import (
+	"context"
+	"io"
+	"net/http"
 	"sync"
 
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -31,6 +34,8 @@ type Client interface {
 	StorageBoxType() StorageBoxTypeClient
 	Zone() ZoneClient
 	WithOpts(...hcloud.ClientOption)
+	NewRequest(ctx context.Context, method, path string, body io.Reader) (*http.Request, error)
+	Do(req *http.Request, v any) (*hcloud.Response, error)
 }
 
 type clientCache struct {
@@ -80,6 +85,14 @@ func (c *client) WithOpts(opts ...hcloud.ClientOption) {
 	defer c.mu.Unlock()
 	c.opts = append(c.opts, opts...)
 	c.update()
+}
+
+func (c *client) NewRequest(ctx context.Context, method, path string, body io.Reader) (*http.Request, error) {
+	return c.client.NewRequest(ctx, method, path, body)
+}
+
+func (c *client) Do(req *http.Request, v any) (*hcloud.Response, error) {
+	return c.client.Do(req, v)
 }
 
 func (c *client) update() {
