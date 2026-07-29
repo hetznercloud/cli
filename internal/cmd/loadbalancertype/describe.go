@@ -43,6 +43,11 @@ func DescribeLoadBalancerType(s state.State, loadBalancerType *hcloud.LoadBalanc
 	fmt.Fprintf(&sb, "Max Targets:\t%d\n", loadBalancerType.MaxTargets)
 	fmt.Fprintf(&sb, "Max assigned Certificates:\t%d\n", loadBalancerType.MaxAssignedCertificates)
 
+	if deprecationText := util.DescribeDeprecation(loadBalancerType); deprecationText != "" {
+		fmt.Fprintln(&sb)
+		fmt.Fprint(&sb, deprecationText)
+	}
+
 	if short {
 		return sb.String()
 	}
