@@ -1,6 +1,8 @@
 package loadbalancertype
 
 import (
+	"context"
+
 	"github.com/spf13/pflag"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
@@ -18,12 +20,12 @@ var ListCmd = base.ListCmd[*hcloud.LoadBalancerType, schema.LoadBalancerType]{
 	DefaultColumns:     []string{"id", "name", "description", "max_services", "max_connections", "max_targets"},
 	SortOption:         nil, // Load Balancer Types do not support sorting
 
-	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.LoadBalancerType, error) {
+	Fetch: func(ctx context.Context, s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.LoadBalancerType, error) {
 		opts := hcloud.LoadBalancerTypeListOpts{ListOpts: listOpts}
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		return s.Client().LoadBalancerType().AllWithOpts(s, opts)
+		return s.Client().LoadBalancerType().AllWithOpts(ctx, opts)
 	},
 
 	OutputTable: func(t *output.Table[*hcloud.LoadBalancerType], _ hcapi2.Client) {

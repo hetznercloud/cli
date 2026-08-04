@@ -13,12 +13,12 @@ var DeleteCmd = base.DeleteCmd[*hcloud.StorageBox]{
 	ResourceNameSingular: "Storage Box",
 	ResourceNamePlural:   "Storage Boxes",
 	ShortDescription:     "Delete a Storage Box",
-	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.StorageBox().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.StorageBox, *hcloud.Response, error) {
-		return s.Client().StorageBox().Get(s, idOrName)
+	NameSuggestions:      func(c hcapi2.Client) hcapi2.CompletionFunc { return c.StorageBox().Names },
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (*hcloud.StorageBox, *hcloud.Response, error) {
+		return s.Client().StorageBox().Get(cmd.Context(), idOrName)
 	},
-	Delete: func(s state.State, _ *cobra.Command, storageBox *hcloud.StorageBox) ([]*hcloud.Action, error) {
-		result, _, err := s.Client().StorageBox().Delete(s, storageBox)
+	Delete: func(s state.State, cmd *cobra.Command, storageBox *hcloud.StorageBox) ([]*hcloud.Action, error) {
+		result, _, err := s.Client().StorageBox().Delete(cmd.Context(), storageBox)
 		return []*hcloud.Action{result.Action}, err
 	},
 }

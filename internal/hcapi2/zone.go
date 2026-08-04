@@ -12,9 +12,9 @@ import (
 // additional helper functions.
 type ZoneClient interface {
 	hcloud.IZoneClient
-	Names() []string
-	LabelKeys(idOrName string) []string
-	RRSetLabelKeys(zoneIDOrName, rrsetName string, rrsetType hcloud.ZoneRRSetType) []string
+	Names(context.Context) ([]string, error)
+	LabelKeys(context.Context, string) ([]string, error)
+	RRSetLabelKeys(context.Context, string, string, hcloud.ZoneRRSetType) ([]string, error)
 }
 
 func NewZoneClient(client *hcloud.ZoneClient) ZoneClient {
@@ -27,10 +27,10 @@ type zoneClient struct {
 	hcloud.IZoneClient
 }
 
-func (c *zoneClient) Names() []string {
-	zones, err := c.All(context.Background())
-	if err != nil || len(zones) == 0 {
-		return nil
+func (c *zoneClient) Names(ctx context.Context) ([]string, error) {
+	zones, err := c.All(ctx)
+	if err != nil {
+		return nil, err
 	}
 	names := make([]string, 0, len(zones)*2)
 	for _, zone := range zones {
@@ -47,31 +47,37 @@ func (c *zoneClient) Names() []string {
 			names = append(names, displayName)
 		}
 	}
-	return names
+	return names, nil
 }
 
-func (c *zoneClient) LabelKeys(idOrName string) []string {
-	if idOrIDNAName, err := util.ParseZoneIDOrName(idOrName); err == nil {
-		// Ignore any errors in conversion
-		idOrName = idOrIDNAName
+func (c *zoneClient) LabelKeys(ctx context.Context, idOrName string) ([]string, error) {
+	idOrName, err := util.ParseZoneIDOrName(idOrName)
+	if err != nil {
+		return nil, err
 	}
 
-	zone, _, err := c.Get(context.Background(), idOrName)
-	if err != nil || len(zone.Labels) == 0 {
-		return nil
+	zone, _, err := c.Get(ctx, idOrName)
+	if err != nil {
+		return nil, err
 	}
-	return labelKeys(zone.Labels)
+	if zone == nil {
+		return nil, nil
+	}
+	return labelKeys(zone.Labels), nil
 }
 
-func (c *zoneClient) RRSetLabelKeys(zoneIDOrName, rrsetName string, rrsetType hcloud.ZoneRRSetType) []string {
-	if idOrIDNAName, err := util.ParseZoneIDOrName(zoneIDOrName); err == nil {
-		// Ignore any errors in conversion
-		zoneIDOrName = idOrIDNAName
+func (c *zoneClient) RRSetLabelKeys(ctx context.Context, zoneIDOrName, rrsetName string, rrsetType hcloud.ZoneRRSetType) ([]string, error) {
+	zoneIDOrName, err := util.ParseZoneIDOrName(zoneIDOrName)
+	if err != nil {
+		return nil, err
 	}
 
-	rrset, _, err := c.GetRRSetByNameAndType(context.Background(), &hcloud.Zone{Name: zoneIDOrName}, rrsetName, rrsetType)
-	if err != nil || len(rrset.Labels) == 0 {
-		return nil
+	rrset, _, err := c.GetRRSetByNameAndType(ctx, &hcloud.Zone{Name: zoneIDOrName}, rrsetName, rrsetType)
+	if err != nil {
+		return nil, err
 	}
-	return labelKeys(rrset.Labels)
+	if rrset == nil {
+		return nil, nil
+	}
+	return labelKeys(rrset.Labels), nil
 }

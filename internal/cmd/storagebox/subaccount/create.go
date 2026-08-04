@@ -26,10 +26,10 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBoxSubaccount]{
 		cmd.Flags().String("name", "", "Name for the Subaccount")
 
 		cmd.Flags().String("password", "", "Password for the Subaccount (required)")
-		_ = cmd.MarkFlagRequired("password")
+		util.MarkFlagRequired(cmd, "password")
 
 		cmd.Flags().String("home-directory", "", "Home directory for the Subaccount (required)")
-		_ = cmd.MarkFlagRequired("home-directory")
+		util.MarkFlagRequired(cmd, "home-directory")
 
 		cmd.Flags().String("description", "", "Description for the Subaccount")
 
@@ -57,7 +57,7 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBoxSubaccount]{
 		reachableExternally, _ := cmd.Flags().GetBool("reachable-externally")
 		readonly, _ := cmd.Flags().GetBool("readonly")
 
-		storageBox, _, err := s.Client().StorageBox().Get(s, storageBoxIDOrName)
+		storageBox, _, err := s.Client().StorageBox().Get(cmd.Context(), storageBoxIDOrName)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -91,15 +91,15 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBoxSubaccount]{
 			Labels:         labels,
 		}
 
-		result, _, err := s.Client().StorageBox().CreateSubaccount(s, storageBox, opts)
+		result, _, err := s.Client().StorageBox().CreateSubaccount(cmd.Context(), storageBox, opts)
 		if err != nil {
 			return nil, nil, err
 		}
-		if err := s.WaitForActions(s, cmd, result.Action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, result.Action); err != nil {
 			return nil, nil, err
 		}
 
-		subaccount, _, err := s.Client().StorageBox().GetSubaccountByID(s, storageBox, result.Subaccount.ID)
+		subaccount, _, err := s.Client().StorageBox().GetSubaccountByID(cmd.Context(), storageBox, result.Subaccount.ID)
 		if err != nil {
 			return nil, nil, err
 		}

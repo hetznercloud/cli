@@ -15,7 +15,7 @@ import (
 func TestSet(t *testing.T) {
 	os.Clearenv()
 
-	_, deleteNestedOption := config.NewTestOption(
+	nestedOption, deleteNestedOption := config.NewTestOption(
 		"nested.option",
 		"nested option",
 		"foo",
@@ -24,7 +24,7 @@ func TestSet(t *testing.T) {
 	)
 	defer deleteNestedOption()
 
-	_, deleteDeeplyNestedOption := config.NewTestOption(
+	deeplyNestedOption, deleteDeeplyNestedOption := config.NewTestOption(
 		"deeply.nested.option",
 		"deeply nested option",
 		"foo",
@@ -33,7 +33,7 @@ func TestSet(t *testing.T) {
 	)
 	defer deleteDeeplyNestedOption()
 
-	_, deleteArrayOption := config.NewTestOption[[]string](
+	arrayOption, deleteArrayOption := config.NewTestOption[[]string](
 		"array-option",
 		"array option",
 		nil,
@@ -275,7 +275,7 @@ active_context = ""
 				defer tt.postRun()
 			}
 
-			fx := testutil.NewFixtureWithConfigFile(t, []byte(tt.config))
+			fx := testutil.NewFixtureWithConfigFile(t, []byte(tt.config), nestedOption, deeplyNestedOption, arrayOption)
 			defer fx.Finish()
 
 			cmd := configCmd.NewSetCommand(fx.State())

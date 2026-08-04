@@ -33,9 +33,12 @@ var ExportZonefileCmd = base.Cmd{
 			return fmt.Errorf("failed to convert Zone name to ascii: %w", err)
 		}
 
-		outputFlags := output.FlagsForCommand(cmd)
+		outputFlags, err := output.FlagsForCommand(cmd)
+		if err != nil {
+			return err
+		}
 
-		zone, _, err := s.Client().Zone().Get(s, idOrName)
+		zone, _, err := s.Client().Zone().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return err
 		}
@@ -43,7 +46,7 @@ var ExportZonefileCmd = base.Cmd{
 			return fmt.Errorf("Zone not found: %s", idOrName)
 		}
 
-		res, _, err := s.Client().Zone().ExportZonefile(s, zone)
+		res, _, err := s.Client().Zone().ExportZonefile(cmd.Context(), zone)
 		if err != nil {
 			return err
 		}

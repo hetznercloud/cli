@@ -1,8 +1,6 @@
 package rrset
 
 import (
-	"context"
-
 	"github.com/spf13/cobra"
 	"golang.org/x/exp/maps"
 
@@ -75,7 +73,7 @@ func recordsFromFlags(cmd *cobra.Command) ([]hcloud.ZoneRRSetRecord, error) {
 			return nil, err
 		}
 
-		parsedRecords, err = parseRecords(recordsFile)
+		parsedRecords, err = parseRecords(cmd.InOrStdin(), recordsFile)
 		if err != nil {
 			return nil, err
 		}
@@ -103,16 +101,16 @@ func rrsetArgumentsCompletionFuncs(client hcapi2.Client) []cobra.CompletionFunc 
 
 	return []cobra.CompletionFunc{
 		cmpl.SuggestCandidatesF(client.Zone().Names),
-		cmpl.SuggestCandidatesCtx(func(_ *cobra.Command, args []string) []string {
+		cmpl.SuggestCandidatesCtxE(func(cmd *cobra.Command, args []string) ([]string, error) {
 			zoneIDOrName := args[0]
 			zoneIDOrName, err := util.ParseZoneIDOrName(zoneIDOrName)
 			if err != nil {
-				return nil
+				return nil, err
 			}
 
-			rrsets, err := client.Zone().AllRRSets(context.Background(), &hcloud.Zone{Name: zoneIDOrName})
+			rrsets, err := client.Zone().AllRRSets(cmd.Context(), &hcloud.Zone{Name: zoneIDOrName})
 			if err != nil {
-				return nil
+				return nil, err
 			}
 
 			uniqueRRSetNames := map[string]struct{}{}
@@ -121,18 +119,18 @@ func rrsetArgumentsCompletionFuncs(client hcapi2.Client) []cobra.CompletionFunc 
 				uniqueRRSetNames[rrset.Name] = struct{}{}
 			}
 
-			return maps.Keys(uniqueRRSetNames)
+			return maps.Keys(uniqueRRSetNames), nil
 		}),
-		cmpl.SuggestCandidatesCtx(func(_ *cobra.Command, args []string) []string {
+		cmpl.SuggestCandidatesCtxE(func(cmd *cobra.Command, args []string) ([]string, error) {
 			zoneIDOrName, rrsetName := args[0], args[1]
 			zoneIDOrName, err := util.ParseZoneIDOrName(zoneIDOrName)
 			if err != nil {
-				return nil
+				return nil, err
 			}
 
-			rrsets, err := client.Zone().AllRRSetsWithOpts(context.Background(), &hcloud.Zone{Name: zoneIDOrName}, hcloud.ZoneRRSetListOpts{Name: rrsetName})
+			rrsets, err := client.Zone().AllRRSetsWithOpts(cmd.Context(), &hcloud.Zone{Name: zoneIDOrName}, hcloud.ZoneRRSetListOpts{Name: rrsetName})
 			if err != nil {
-				return nil
+				return nil, err
 			}
 
 			uniqueRRSetTypes := map[string]struct{}{}
@@ -141,7 +139,7 @@ func rrsetArgumentsCompletionFuncs(client hcapi2.Client) []cobra.CompletionFunc 
 				uniqueRRSetTypes[string(rrset.Type)] = struct{}{}
 			}
 
-			return maps.Keys(uniqueRRSetTypes)
+			return maps.Keys(uniqueRRSetTypes), nil
 		}),
 	}
 }

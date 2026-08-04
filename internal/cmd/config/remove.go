@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"os"
 	"reflect"
 
 	"github.com/spf13/cobra"
@@ -24,8 +23,8 @@ func NewRemoveCommand(s state.State) *cobra.Command {
 		SilenceUsage:          true,
 		RunE:                  state.Wrap(s, runRemove),
 		ValidArgsFunction: cmpl.NoFileCompletion(cmpl.SuggestArgs(
-			cmpl.SuggestCandidates(getOptionNames(config.OptionFlagPreference|config.OptionFlagSlice)...),
-			cmpl.SuggestCandidatesCtx(suggestOptionCompletions),
+			cmpl.SuggestCandidates(getOptionNames(s.Config(), config.OptionFlagPreference|config.OptionFlagSlice)...),
+			cmpl.SuggestCandidatesCtx(suggestOptionCompletions(s.Config())),
 		)),
 	}
 	cmd.Flags().Bool("global", false, "Remove the value(s) globally (for all contexts) (true, false)")
@@ -41,7 +40,7 @@ func runRemove(s state.State, cmd *cobra.Command, args []string) error {
 	}
 
 	key, values := args[0], args[1:]
-	opt, err := getPreference(key)
+	opt, err := getPreference(s.Config(), key)
 	if err != nil {
 		return err
 	}
@@ -66,9 +65,9 @@ func runRemove(s state.State, cmd *cobra.Command, args []string) error {
 	}
 
 	if len(removed) == 0 {
-		_, _ = fmt.Fprintln(os.Stderr, "Warning: no values were removed")
+		cmd.PrintErrln("Warning: no values were removed")
 	} else if len(removed) < len(values) {
-		_, _ = fmt.Fprintln(os.Stderr, "Warning: some values were not removed")
+		cmd.PrintErrln("Warning: some values were not removed")
 	}
 
 	if global {

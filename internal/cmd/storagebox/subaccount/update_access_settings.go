@@ -44,7 +44,7 @@ var UpdateAccessSettingsCmd = base.Cmd{
 		reachableExternally, _ := cmd.Flags().GetBool("reachable-externally")
 		readonly, _ := cmd.Flags().GetBool("readonly")
 
-		storageBox, _, err := s.Client().StorageBox().Get(s, storageBoxIDOrName)
+		storageBox, _, err := s.Client().StorageBox().Get(cmd.Context(), storageBoxIDOrName)
 		if err != nil {
 			return err
 		}
@@ -52,7 +52,7 @@ var UpdateAccessSettingsCmd = base.Cmd{
 			return fmt.Errorf("Storage Box not found: %s", storageBoxIDOrName)
 		}
 
-		subaccount, _, err := s.Client().StorageBox().GetSubaccount(s, storageBox, subaccountIDOrName)
+		subaccount, _, err := s.Client().StorageBox().GetSubaccount(cmd.Context(), storageBox, subaccountIDOrName)
 		if err != nil {
 			return err
 		}
@@ -77,12 +77,12 @@ var UpdateAccessSettingsCmd = base.Cmd{
 			opts.Readonly = &readonly
 		}
 
-		action, _, err := s.Client().StorageBox().UpdateSubaccountAccessSettings(s, subaccount, opts)
+		action, _, err := s.Client().StorageBox().UpdateSubaccountAccessSettings(cmd.Context(), subaccount, opts)
 		if err != nil {
 			return err
 		}
 
-		if err := s.WaitForActions(s, cmd, action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, action); err != nil {
 			return err
 		}
 

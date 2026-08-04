@@ -30,7 +30,7 @@ Please note that it is not possible to downgrade to a Storage Box Type that offe
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		storageBox, _, err := s.Client().StorageBox().Get(s, idOrName)
+		storageBox, _, err := s.Client().StorageBox().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return err
 		}
@@ -39,7 +39,7 @@ Please note that it is not possible to downgrade to a Storage Box Type that offe
 		}
 
 		storageBoxTypeIDOrName := args[1]
-		storageBoxType, _, err := s.Client().StorageBoxType().Get(s, storageBoxTypeIDOrName)
+		storageBoxType, _, err := s.Client().StorageBoxType().Get(cmd.Context(), storageBoxTypeIDOrName)
 		if err != nil {
 			return err
 		}
@@ -54,12 +54,12 @@ Please note that it is not possible to downgrade to a Storage Box Type that offe
 		opts := hcloud.StorageBoxChangeTypeOpts{
 			StorageBoxType: storageBoxType,
 		}
-		action, _, err := s.Client().StorageBox().ChangeType(s, storageBox, opts)
+		action, _, err := s.Client().StorageBox().ChangeType(cmd.Context(), storageBox, opts)
 		if err != nil {
 			return err
 		}
 
-		if err := s.WaitForActions(s, cmd, action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, action); err != nil {
 			return err
 		}
 

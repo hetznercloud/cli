@@ -322,17 +322,18 @@ func (mr *MockCertificateClientMockRecorder) GetByName(ctx, name any) *gomock.Ca
 }
 
 // LabelKeys mocks base method.
-func (m *MockCertificateClient) LabelKeys(arg0 string) []string {
+func (m *MockCertificateClient) LabelKeys(arg0 context.Context, arg1 string) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "LabelKeys", arg0)
+	ret := m.ctrl.Call(m, "LabelKeys", arg0, arg1)
 	ret0, _ := ret[0].([]string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // LabelKeys indicates an expected call of LabelKeys.
-func (mr *MockCertificateClientMockRecorder) LabelKeys(arg0 any) *gomock.Call {
+func (mr *MockCertificateClientMockRecorder) LabelKeys(arg0, arg1 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LabelKeys", reflect.TypeOf((*MockCertificateClient)(nil).LabelKeys), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LabelKeys", reflect.TypeOf((*MockCertificateClient)(nil).LabelKeys), arg0, arg1)
 }
 
 // List mocks base method.
@@ -352,17 +353,18 @@ func (mr *MockCertificateClientMockRecorder) List(ctx, opts any) *gomock.Call {
 }
 
 // Names mocks base method.
-func (m *MockCertificateClient) Names() []string {
+func (m *MockCertificateClient) Names(arg0 context.Context) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Names")
+	ret := m.ctrl.Call(m, "Names", arg0)
 	ret0, _ := ret[0].([]string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Names indicates an expected call of Names.
-func (mr *MockCertificateClientMockRecorder) Names() *gomock.Call {
+func (mr *MockCertificateClientMockRecorder) Names(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockCertificateClient)(nil).Names))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockCertificateClient)(nil).Names), arg0)
 }
 
 // RetryIssuance mocks base method.
@@ -516,17 +518,18 @@ func (mr *MockDatacenterClientMockRecorder) List(ctx, opts any) *gomock.Call {
 }
 
 // Names mocks base method.
-func (m *MockDatacenterClient) Names() []string {
+func (m *MockDatacenterClient) Names(arg0 context.Context) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Names")
+	ret := m.ctrl.Call(m, "Names", arg0)
 	ret0, _ := ret[0].([]string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Names indicates an expected call of Names.
-func (mr *MockDatacenterClientMockRecorder) Names() *gomock.Call {
+func (mr *MockDatacenterClientMockRecorder) Names(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockDatacenterClient)(nil).Names))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockDatacenterClient)(nil).Names), arg0)
 }
 
 // MockImageClient is a mock of ImageClient interface.
@@ -695,17 +698,18 @@ func (mr *MockImageClientMockRecorder) GetForArchitecture(ctx, idOrName, archite
 }
 
 // LabelKeys mocks base method.
-func (m *MockImageClient) LabelKeys(arg0 string) []string {
+func (m *MockImageClient) LabelKeys(arg0 context.Context, arg1 string) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "LabelKeys", arg0)
+	ret := m.ctrl.Call(m, "LabelKeys", arg0, arg1)
 	ret0, _ := ret[0].([]string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // LabelKeys indicates an expected call of LabelKeys.
-func (mr *MockImageClientMockRecorder) LabelKeys(arg0 any) *gomock.Call {
+func (mr *MockImageClientMockRecorder) LabelKeys(arg0, arg1 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LabelKeys", reflect.TypeOf((*MockImageClient)(nil).LabelKeys), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LabelKeys", reflect.TypeOf((*MockImageClient)(nil).LabelKeys), arg0, arg1)
 }
 
 // List mocks base method.
@@ -725,17 +729,18 @@ func (mr *MockImageClientMockRecorder) List(ctx, opts any) *gomock.Call {
 }
 
 // Names mocks base method.
-func (m *MockImageClient) Names() []string {
+func (m *MockImageClient) Names(arg0 context.Context) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Names")
+	ret := m.ctrl.Call(m, "Names", arg0)
 	ret0, _ := ret[0].([]string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Names indicates an expected call of Names.
-func (mr *MockImageClientMockRecorder) Names() *gomock.Call {
+func (mr *MockImageClientMockRecorder) Names(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockImageClient)(nil).Names))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockImageClient)(nil).Names), arg0)
 }
 
 // Update mocks base method.
@@ -873,17 +878,18 @@ func (mr *MockISOClientMockRecorder) List(ctx, opts any) *gomock.Call {
 }
 
 // Names mocks base method.
-func (m *MockISOClient) Names() []string {
+func (m *MockISOClient) Names(arg0 context.Context) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Names")
+	ret := m.ctrl.Call(m, "Names", arg0)
 	ret0, _ := ret[0].([]string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Names indicates an expected call of Names.
-func (mr *MockISOClientMockRecorder) Names() *gomock.Call {
+func (mr *MockISOClientMockRecorder) Names(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockISOClient)(nil).Names))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockISOClient)(nil).Names), arg0)
 }
 
 // MockFirewallClient is a mock of FirewallClient interface.
@@ -1036,17 +1042,18 @@ func (mr *MockFirewallClientMockRecorder) GetByName(ctx, name any) *gomock.Call 
 }
 
 // LabelKeys mocks base method.
-func (m *MockFirewallClient) LabelKeys(arg0 string) []string {
+func (m *MockFirewallClient) LabelKeys(arg0 context.Context, arg1 string) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "LabelKeys", arg0)
+	ret := m.ctrl.Call(m, "LabelKeys", arg0, arg1)
 	ret0, _ := ret[0].([]string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // LabelKeys indicates an expected call of LabelKeys.
-func (mr *MockFirewallClientMockRecorder) LabelKeys(arg0 any) *gomock.Call {
+func (mr *MockFirewallClientMockRecorder) LabelKeys(arg0, arg1 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LabelKeys", reflect.TypeOf((*MockFirewallClient)(nil).LabelKeys), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LabelKeys", reflect.TypeOf((*MockFirewallClient)(nil).LabelKeys), arg0, arg1)
 }
 
 // List mocks base method.
@@ -1066,17 +1073,18 @@ func (mr *MockFirewallClientMockRecorder) List(ctx, opts any) *gomock.Call {
 }
 
 // Names mocks base method.
-func (m *MockFirewallClient) Names() []string {
+func (m *MockFirewallClient) Names(arg0 context.Context) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Names")
+	ret := m.ctrl.Call(m, "Names", arg0)
 	ret0, _ := ret[0].([]string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Names indicates an expected call of Names.
-func (mr *MockFirewallClientMockRecorder) Names() *gomock.Call {
+func (mr *MockFirewallClientMockRecorder) Names(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockFirewallClient)(nil).Names))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockFirewallClient)(nil).Names), arg0)
 }
 
 // RemoveResources mocks base method.
@@ -1309,17 +1317,18 @@ func (mr *MockFloatingIPClientMockRecorder) GetByName(ctx, name any) *gomock.Cal
 }
 
 // LabelKeys mocks base method.
-func (m *MockFloatingIPClient) LabelKeys(idOrName string) []string {
+func (m *MockFloatingIPClient) LabelKeys(arg0 context.Context, arg1 string) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "LabelKeys", idOrName)
+	ret := m.ctrl.Call(m, "LabelKeys", arg0, arg1)
 	ret0, _ := ret[0].([]string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // LabelKeys indicates an expected call of LabelKeys.
-func (mr *MockFloatingIPClientMockRecorder) LabelKeys(idOrName any) *gomock.Call {
+func (mr *MockFloatingIPClientMockRecorder) LabelKeys(arg0, arg1 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LabelKeys", reflect.TypeOf((*MockFloatingIPClient)(nil).LabelKeys), idOrName)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LabelKeys", reflect.TypeOf((*MockFloatingIPClient)(nil).LabelKeys), arg0, arg1)
 }
 
 // List mocks base method.
@@ -1339,17 +1348,18 @@ func (mr *MockFloatingIPClientMockRecorder) List(ctx, opts any) *gomock.Call {
 }
 
 // Names mocks base method.
-func (m *MockFloatingIPClient) Names() []string {
+func (m *MockFloatingIPClient) Names(arg0 context.Context) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Names")
+	ret := m.ctrl.Call(m, "Names", arg0)
 	ret0, _ := ret[0].([]string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Names indicates an expected call of Names.
-func (mr *MockFloatingIPClientMockRecorder) Names() *gomock.Call {
+func (mr *MockFloatingIPClientMockRecorder) Names(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockFloatingIPClient)(nil).Names))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockFloatingIPClient)(nil).Names), arg0)
 }
 
 // Unassign mocks base method.
@@ -1582,17 +1592,18 @@ func (mr *MockPrimaryIPClientMockRecorder) GetByName(ctx, name any) *gomock.Call
 }
 
 // LabelKeys mocks base method.
-func (m *MockPrimaryIPClient) LabelKeys(idOrName string) []string {
+func (m *MockPrimaryIPClient) LabelKeys(arg0 context.Context, arg1 string) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "LabelKeys", idOrName)
+	ret := m.ctrl.Call(m, "LabelKeys", arg0, arg1)
 	ret0, _ := ret[0].([]string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // LabelKeys indicates an expected call of LabelKeys.
-func (mr *MockPrimaryIPClientMockRecorder) LabelKeys(idOrName any) *gomock.Call {
+func (mr *MockPrimaryIPClientMockRecorder) LabelKeys(arg0, arg1 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LabelKeys", reflect.TypeOf((*MockPrimaryIPClient)(nil).LabelKeys), idOrName)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LabelKeys", reflect.TypeOf((*MockPrimaryIPClient)(nil).LabelKeys), arg0, arg1)
 }
 
 // List mocks base method.
@@ -1612,10 +1623,10 @@ func (mr *MockPrimaryIPClientMockRecorder) List(ctx, opts any) *gomock.Call {
 }
 
 // Names mocks base method.
-func (m *MockPrimaryIPClient) Names(hideAssigned, hideUnassigned bool, ipType *hcloud.PrimaryIPType) func() []string {
+func (m *MockPrimaryIPClient) Names(hideAssigned, hideUnassigned bool, ipType *hcloud.PrimaryIPType) func(context.Context) ([]string, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Names", hideAssigned, hideUnassigned, ipType)
-	ret0, _ := ret[0].(func() []string)
+	ret0, _ := ret[0].(func(context.Context) ([]string, error))
 	return ret0
 }
 
@@ -1776,31 +1787,33 @@ func (mr *MockLocationClientMockRecorder) List(ctx, opts any) *gomock.Call {
 }
 
 // Names mocks base method.
-func (m *MockLocationClient) Names() []string {
+func (m *MockLocationClient) Names(arg0 context.Context) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Names")
+	ret := m.ctrl.Call(m, "Names", arg0)
 	ret0, _ := ret[0].([]string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Names indicates an expected call of Names.
-func (mr *MockLocationClientMockRecorder) Names() *gomock.Call {
+func (mr *MockLocationClientMockRecorder) Names(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockLocationClient)(nil).Names))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockLocationClient)(nil).Names), arg0)
 }
 
 // NetworkZones mocks base method.
-func (m *MockLocationClient) NetworkZones() []string {
+func (m *MockLocationClient) NetworkZones(arg0 context.Context) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "NetworkZones")
+	ret := m.ctrl.Call(m, "NetworkZones", arg0)
 	ret0, _ := ret[0].([]string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // NetworkZones indicates an expected call of NetworkZones.
-func (mr *MockLocationClientMockRecorder) NetworkZones() *gomock.Call {
+func (mr *MockLocationClientMockRecorder) NetworkZones(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NetworkZones", reflect.TypeOf((*MockLocationClient)(nil).NetworkZones))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NetworkZones", reflect.TypeOf((*MockLocationClient)(nil).NetworkZones), arg0)
 }
 
 // MockLoadBalancerClient is a mock of LoadBalancerClient interface.
@@ -2161,17 +2174,18 @@ func (mr *MockLoadBalancerClientMockRecorder) GetMetrics(ctx, loadBalancer, opts
 }
 
 // LabelKeys mocks base method.
-func (m *MockLoadBalancerClient) LabelKeys(arg0 string) []string {
+func (m *MockLoadBalancerClient) LabelKeys(arg0 context.Context, arg1 string) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "LabelKeys", arg0)
+	ret := m.ctrl.Call(m, "LabelKeys", arg0, arg1)
 	ret0, _ := ret[0].([]string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // LabelKeys indicates an expected call of LabelKeys.
-func (mr *MockLoadBalancerClientMockRecorder) LabelKeys(arg0 any) *gomock.Call {
+func (mr *MockLoadBalancerClientMockRecorder) LabelKeys(arg0, arg1 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LabelKeys", reflect.TypeOf((*MockLoadBalancerClient)(nil).LabelKeys), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LabelKeys", reflect.TypeOf((*MockLoadBalancerClient)(nil).LabelKeys), arg0, arg1)
 }
 
 // List mocks base method.
@@ -2191,31 +2205,33 @@ func (mr *MockLoadBalancerClientMockRecorder) List(ctx, opts any) *gomock.Call {
 }
 
 // LoadBalancerName mocks base method.
-func (m *MockLoadBalancerClient) LoadBalancerName(id int64) string {
+func (m *MockLoadBalancerClient) LoadBalancerName(arg0 context.Context, arg1 int64) (string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "LoadBalancerName", id)
+	ret := m.ctrl.Call(m, "LoadBalancerName", arg0, arg1)
 	ret0, _ := ret[0].(string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // LoadBalancerName indicates an expected call of LoadBalancerName.
-func (mr *MockLoadBalancerClientMockRecorder) LoadBalancerName(id any) *gomock.Call {
+func (mr *MockLoadBalancerClientMockRecorder) LoadBalancerName(arg0, arg1 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LoadBalancerName", reflect.TypeOf((*MockLoadBalancerClient)(nil).LoadBalancerName), id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LoadBalancerName", reflect.TypeOf((*MockLoadBalancerClient)(nil).LoadBalancerName), arg0, arg1)
 }
 
 // Names mocks base method.
-func (m *MockLoadBalancerClient) Names() []string {
+func (m *MockLoadBalancerClient) Names(arg0 context.Context) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Names")
+	ret := m.ctrl.Call(m, "Names", arg0)
 	ret0, _ := ret[0].([]string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Names indicates an expected call of Names.
-func (mr *MockLoadBalancerClientMockRecorder) Names() *gomock.Call {
+func (mr *MockLoadBalancerClientMockRecorder) Names(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockLoadBalancerClient)(nil).Names))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockLoadBalancerClient)(nil).Names), arg0)
 }
 
 // RemoveIPTarget mocks base method.
@@ -2416,46 +2432,19 @@ func (mr *MockLoadBalancerTypeClientMockRecorder) List(ctx, opts any) *gomock.Ca
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockLoadBalancerTypeClient)(nil).List), ctx, opts)
 }
 
-// LoadBalancerTypeDescription mocks base method.
-func (m *MockLoadBalancerTypeClient) LoadBalancerTypeDescription(id int64) string {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "LoadBalancerTypeDescription", id)
-	ret0, _ := ret[0].(string)
-	return ret0
-}
-
-// LoadBalancerTypeDescription indicates an expected call of LoadBalancerTypeDescription.
-func (mr *MockLoadBalancerTypeClientMockRecorder) LoadBalancerTypeDescription(id any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LoadBalancerTypeDescription", reflect.TypeOf((*MockLoadBalancerTypeClient)(nil).LoadBalancerTypeDescription), id)
-}
-
-// LoadBalancerTypeName mocks base method.
-func (m *MockLoadBalancerTypeClient) LoadBalancerTypeName(id int64) string {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "LoadBalancerTypeName", id)
-	ret0, _ := ret[0].(string)
-	return ret0
-}
-
-// LoadBalancerTypeName indicates an expected call of LoadBalancerTypeName.
-func (mr *MockLoadBalancerTypeClientMockRecorder) LoadBalancerTypeName(id any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LoadBalancerTypeName", reflect.TypeOf((*MockLoadBalancerTypeClient)(nil).LoadBalancerTypeName), id)
-}
-
 // Names mocks base method.
-func (m *MockLoadBalancerTypeClient) Names() []string {
+func (m *MockLoadBalancerTypeClient) Names(arg0 context.Context) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Names")
+	ret := m.ctrl.Call(m, "Names", arg0)
 	ret0, _ := ret[0].([]string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Names indicates an expected call of Names.
-func (mr *MockLoadBalancerTypeClientMockRecorder) Names() *gomock.Call {
+func (mr *MockLoadBalancerTypeClientMockRecorder) Names(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockLoadBalancerTypeClient)(nil).Names))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockLoadBalancerTypeClient)(nil).Names), arg0)
 }
 
 // MockNetworkClient is a mock of NetworkClient interface.
@@ -2688,17 +2677,18 @@ func (mr *MockNetworkClientMockRecorder) GetByName(ctx, name any) *gomock.Call {
 }
 
 // LabelKeys mocks base method.
-func (m *MockNetworkClient) LabelKeys(arg0 string) []string {
+func (m *MockNetworkClient) LabelKeys(arg0 context.Context, arg1 string) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "LabelKeys", arg0)
+	ret := m.ctrl.Call(m, "LabelKeys", arg0, arg1)
 	ret0, _ := ret[0].([]string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // LabelKeys indicates an expected call of LabelKeys.
-func (mr *MockNetworkClientMockRecorder) LabelKeys(arg0 any) *gomock.Call {
+func (mr *MockNetworkClientMockRecorder) LabelKeys(arg0, arg1 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LabelKeys", reflect.TypeOf((*MockNetworkClient)(nil).LabelKeys), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LabelKeys", reflect.TypeOf((*MockNetworkClient)(nil).LabelKeys), arg0, arg1)
 }
 
 // List mocks base method.
@@ -2718,31 +2708,33 @@ func (mr *MockNetworkClientMockRecorder) List(ctx, opts any) *gomock.Call {
 }
 
 // Name mocks base method.
-func (m *MockNetworkClient) Name(arg0 int64) string {
+func (m *MockNetworkClient) Name(arg0 context.Context, arg1 int64) (string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Name", arg0)
+	ret := m.ctrl.Call(m, "Name", arg0, arg1)
 	ret0, _ := ret[0].(string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Name indicates an expected call of Name.
-func (mr *MockNetworkClientMockRecorder) Name(arg0 any) *gomock.Call {
+func (mr *MockNetworkClientMockRecorder) Name(arg0, arg1 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Name", reflect.TypeOf((*MockNetworkClient)(nil).Name), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Name", reflect.TypeOf((*MockNetworkClient)(nil).Name), arg0, arg1)
 }
 
 // Names mocks base method.
-func (m *MockNetworkClient) Names() []string {
+func (m *MockNetworkClient) Names(arg0 context.Context) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Names")
+	ret := m.ctrl.Call(m, "Names", arg0)
 	ret0, _ := ret[0].([]string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Names indicates an expected call of Names.
-func (mr *MockNetworkClientMockRecorder) Names() *gomock.Call {
+func (mr *MockNetworkClientMockRecorder) Names(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockNetworkClient)(nil).Names))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockNetworkClient)(nil).Names), arg0)
 }
 
 // Update mocks base method.
@@ -3151,17 +3143,18 @@ func (mr *MockServerClientMockRecorder) GetMetrics(ctx, server, opts any) *gomoc
 }
 
 // LabelKeys mocks base method.
-func (m *MockServerClient) LabelKeys(idOrName string) []string {
+func (m *MockServerClient) LabelKeys(arg0 context.Context, arg1 string) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "LabelKeys", idOrName)
+	ret := m.ctrl.Call(m, "LabelKeys", arg0, arg1)
 	ret0, _ := ret[0].([]string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // LabelKeys indicates an expected call of LabelKeys.
-func (mr *MockServerClientMockRecorder) LabelKeys(idOrName any) *gomock.Call {
+func (mr *MockServerClientMockRecorder) LabelKeys(arg0, arg1 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LabelKeys", reflect.TypeOf((*MockServerClient)(nil).LabelKeys), idOrName)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LabelKeys", reflect.TypeOf((*MockServerClient)(nil).LabelKeys), arg0, arg1)
 }
 
 // List mocks base method.
@@ -3181,17 +3174,18 @@ func (mr *MockServerClientMockRecorder) List(ctx, opts any) *gomock.Call {
 }
 
 // Names mocks base method.
-func (m *MockServerClient) Names() []string {
+func (m *MockServerClient) Names(arg0 context.Context) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Names")
+	ret := m.ctrl.Call(m, "Names", arg0)
 	ret0, _ := ret[0].([]string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Names indicates an expected call of Names.
-func (mr *MockServerClientMockRecorder) Names() *gomock.Call {
+func (mr *MockServerClientMockRecorder) Names(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockServerClient)(nil).Names))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockServerClient)(nil).Names), arg0)
 }
 
 // Poweroff mocks base method.
@@ -3339,17 +3333,18 @@ func (mr *MockServerClientMockRecorder) ResetPassword(ctx, server any) *gomock.C
 }
 
 // ServerName mocks base method.
-func (m *MockServerClient) ServerName(id int64) string {
+func (m *MockServerClient) ServerName(arg0 context.Context, arg1 int64) (string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ServerName", id)
+	ret := m.ctrl.Call(m, "ServerName", arg0, arg1)
 	ret0, _ := ret[0].(string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // ServerName indicates an expected call of ServerName.
-func (mr *MockServerClientMockRecorder) ServerName(id any) *gomock.Call {
+func (mr *MockServerClientMockRecorder) ServerName(arg0, arg1 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ServerName", reflect.TypeOf((*MockServerClient)(nil).ServerName), id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ServerName", reflect.TypeOf((*MockServerClient)(nil).ServerName), arg0, arg1)
 }
 
 // Shutdown mocks base method.
@@ -3503,45 +3498,33 @@ func (mr *MockServerTypeClientMockRecorder) List(ctx, opts any) *gomock.Call {
 }
 
 // Names mocks base method.
-func (m *MockServerTypeClient) Names() []string {
+func (m *MockServerTypeClient) Names(arg0 context.Context) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Names")
+	ret := m.ctrl.Call(m, "Names", arg0)
 	ret0, _ := ret[0].([]string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Names indicates an expected call of Names.
-func (mr *MockServerTypeClientMockRecorder) Names() *gomock.Call {
+func (mr *MockServerTypeClientMockRecorder) Names(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockServerTypeClient)(nil).Names))
-}
-
-// ServerTypeDescription mocks base method.
-func (m *MockServerTypeClient) ServerTypeDescription(id int64) string {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ServerTypeDescription", id)
-	ret0, _ := ret[0].(string)
-	return ret0
-}
-
-// ServerTypeDescription indicates an expected call of ServerTypeDescription.
-func (mr *MockServerTypeClientMockRecorder) ServerTypeDescription(id any) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ServerTypeDescription", reflect.TypeOf((*MockServerTypeClient)(nil).ServerTypeDescription), id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockServerTypeClient)(nil).Names), arg0)
 }
 
 // ServerTypeName mocks base method.
-func (m *MockServerTypeClient) ServerTypeName(id int64) string {
+func (m *MockServerTypeClient) ServerTypeName(arg0 context.Context, arg1 int64) (string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "ServerTypeName", id)
+	ret := m.ctrl.Call(m, "ServerTypeName", arg0, arg1)
 	ret0, _ := ret[0].(string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // ServerTypeName indicates an expected call of ServerTypeName.
-func (mr *MockServerTypeClientMockRecorder) ServerTypeName(id any) *gomock.Call {
+func (mr *MockServerTypeClientMockRecorder) ServerTypeName(arg0, arg1 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ServerTypeName", reflect.TypeOf((*MockServerTypeClient)(nil).ServerTypeName), id)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ServerTypeName", reflect.TypeOf((*MockServerTypeClient)(nil).ServerTypeName), arg0, arg1)
 }
 
 // MockSSHKeyClient is a mock of SSHKeyClient interface.
@@ -3694,17 +3677,18 @@ func (mr *MockSSHKeyClientMockRecorder) GetByName(ctx, name any) *gomock.Call {
 }
 
 // LabelKeys mocks base method.
-func (m *MockSSHKeyClient) LabelKeys(idOrName string) []string {
+func (m *MockSSHKeyClient) LabelKeys(arg0 context.Context, arg1 string) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "LabelKeys", idOrName)
+	ret := m.ctrl.Call(m, "LabelKeys", arg0, arg1)
 	ret0, _ := ret[0].([]string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // LabelKeys indicates an expected call of LabelKeys.
-func (mr *MockSSHKeyClientMockRecorder) LabelKeys(idOrName any) *gomock.Call {
+func (mr *MockSSHKeyClientMockRecorder) LabelKeys(arg0, arg1 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LabelKeys", reflect.TypeOf((*MockSSHKeyClient)(nil).LabelKeys), idOrName)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LabelKeys", reflect.TypeOf((*MockSSHKeyClient)(nil).LabelKeys), arg0, arg1)
 }
 
 // List mocks base method.
@@ -3724,17 +3708,18 @@ func (mr *MockSSHKeyClientMockRecorder) List(ctx, opts any) *gomock.Call {
 }
 
 // Names mocks base method.
-func (m *MockSSHKeyClient) Names() []string {
+func (m *MockSSHKeyClient) Names(arg0 context.Context) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Names")
+	ret := m.ctrl.Call(m, "Names", arg0)
 	ret0, _ := ret[0].([]string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Names indicates an expected call of Names.
-func (mr *MockSSHKeyClientMockRecorder) Names() *gomock.Call {
+func (mr *MockSSHKeyClientMockRecorder) Names(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockSSHKeyClient)(nil).Names))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockSSHKeyClient)(nil).Names), arg0)
 }
 
 // Update mocks base method.
@@ -3951,17 +3936,18 @@ func (mr *MockVolumeClientMockRecorder) GetByName(ctx, name any) *gomock.Call {
 }
 
 // LabelKeys mocks base method.
-func (m *MockVolumeClient) LabelKeys(idOrName string) []string {
+func (m *MockVolumeClient) LabelKeys(arg0 context.Context, arg1 string) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "LabelKeys", idOrName)
+	ret := m.ctrl.Call(m, "LabelKeys", arg0, arg1)
 	ret0, _ := ret[0].([]string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // LabelKeys indicates an expected call of LabelKeys.
-func (mr *MockVolumeClientMockRecorder) LabelKeys(idOrName any) *gomock.Call {
+func (mr *MockVolumeClientMockRecorder) LabelKeys(arg0, arg1 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LabelKeys", reflect.TypeOf((*MockVolumeClient)(nil).LabelKeys), idOrName)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LabelKeys", reflect.TypeOf((*MockVolumeClient)(nil).LabelKeys), arg0, arg1)
 }
 
 // List mocks base method.
@@ -3981,17 +3967,18 @@ func (mr *MockVolumeClientMockRecorder) List(ctx, opts any) *gomock.Call {
 }
 
 // Names mocks base method.
-func (m *MockVolumeClient) Names() []string {
+func (m *MockVolumeClient) Names(arg0 context.Context) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Names")
+	ret := m.ctrl.Call(m, "Names", arg0)
 	ret0, _ := ret[0].([]string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Names indicates an expected call of Names.
-func (mr *MockVolumeClientMockRecorder) Names() *gomock.Call {
+func (mr *MockVolumeClientMockRecorder) Names(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockVolumeClient)(nil).Names))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockVolumeClient)(nil).Names), arg0)
 }
 
 // Resize mocks base method.
@@ -4160,17 +4147,18 @@ func (mr *MockPlacementGroupClientMockRecorder) GetByName(ctx, name any) *gomock
 }
 
 // LabelKeys mocks base method.
-func (m *MockPlacementGroupClient) LabelKeys(arg0 string) []string {
+func (m *MockPlacementGroupClient) LabelKeys(arg0 context.Context, arg1 string) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "LabelKeys", arg0)
+	ret := m.ctrl.Call(m, "LabelKeys", arg0, arg1)
 	ret0, _ := ret[0].([]string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // LabelKeys indicates an expected call of LabelKeys.
-func (mr *MockPlacementGroupClientMockRecorder) LabelKeys(arg0 any) *gomock.Call {
+func (mr *MockPlacementGroupClientMockRecorder) LabelKeys(arg0, arg1 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LabelKeys", reflect.TypeOf((*MockPlacementGroupClient)(nil).LabelKeys), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LabelKeys", reflect.TypeOf((*MockPlacementGroupClient)(nil).LabelKeys), arg0, arg1)
 }
 
 // List mocks base method.
@@ -4190,17 +4178,18 @@ func (mr *MockPlacementGroupClientMockRecorder) List(ctx, opts any) *gomock.Call
 }
 
 // Names mocks base method.
-func (m *MockPlacementGroupClient) Names() []string {
+func (m *MockPlacementGroupClient) Names(arg0 context.Context) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Names")
+	ret := m.ctrl.Call(m, "Names", arg0)
 	ret0, _ := ret[0].([]string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Names indicates an expected call of Names.
-func (mr *MockPlacementGroupClientMockRecorder) Names() *gomock.Call {
+func (mr *MockPlacementGroupClientMockRecorder) Names(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockPlacementGroupClient)(nil).Names))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockPlacementGroupClient)(nil).Names), arg0)
 }
 
 // Update mocks base method.
@@ -4766,17 +4755,18 @@ func (mr *MockStorageBoxClientMockRecorder) GetSubaccountByUsername(ctx, storage
 }
 
 // LabelKeys mocks base method.
-func (m *MockStorageBoxClient) LabelKeys(arg0 string) []string {
+func (m *MockStorageBoxClient) LabelKeys(arg0 context.Context, arg1 string) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "LabelKeys", arg0)
+	ret := m.ctrl.Call(m, "LabelKeys", arg0, arg1)
 	ret0, _ := ret[0].([]string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // LabelKeys indicates an expected call of LabelKeys.
-func (mr *MockStorageBoxClientMockRecorder) LabelKeys(arg0 any) *gomock.Call {
+func (mr *MockStorageBoxClientMockRecorder) LabelKeys(arg0, arg1 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LabelKeys", reflect.TypeOf((*MockStorageBoxClient)(nil).LabelKeys), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LabelKeys", reflect.TypeOf((*MockStorageBoxClient)(nil).LabelKeys), arg0, arg1)
 }
 
 // List mocks base method.
@@ -4828,17 +4818,18 @@ func (mr *MockStorageBoxClientMockRecorder) ListSubaccounts(ctx, storageBox, opt
 }
 
 // Names mocks base method.
-func (m *MockStorageBoxClient) Names() []string {
+func (m *MockStorageBoxClient) Names(arg0 context.Context) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Names")
+	ret := m.ctrl.Call(m, "Names", arg0)
 	ret0, _ := ret[0].([]string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Names indicates an expected call of Names.
-func (mr *MockStorageBoxClientMockRecorder) Names() *gomock.Call {
+func (mr *MockStorageBoxClientMockRecorder) Names(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockStorageBoxClient)(nil).Names))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockStorageBoxClient)(nil).Names), arg0)
 }
 
 // ResetPassword mocks base method.
@@ -4890,17 +4881,18 @@ func (mr *MockStorageBoxClientMockRecorder) RollbackSnapshot(ctx, storageBox, op
 }
 
 // SnapshotLabelKeys mocks base method.
-func (m *MockStorageBoxClient) SnapshotLabelKeys(arg0, arg1 string) []string {
+func (m *MockStorageBoxClient) SnapshotLabelKeys(arg0 context.Context, arg1, arg2 string) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "SnapshotLabelKeys", arg0, arg1)
+	ret := m.ctrl.Call(m, "SnapshotLabelKeys", arg0, arg1, arg2)
 	ret0, _ := ret[0].([]string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // SnapshotLabelKeys indicates an expected call of SnapshotLabelKeys.
-func (mr *MockStorageBoxClientMockRecorder) SnapshotLabelKeys(arg0, arg1 any) *gomock.Call {
+func (mr *MockStorageBoxClientMockRecorder) SnapshotLabelKeys(arg0, arg1, arg2 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SnapshotLabelKeys", reflect.TypeOf((*MockStorageBoxClient)(nil).SnapshotLabelKeys), arg0, arg1)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SnapshotLabelKeys", reflect.TypeOf((*MockStorageBoxClient)(nil).SnapshotLabelKeys), arg0, arg1, arg2)
 }
 
 // Update mocks base method.
@@ -5102,17 +5094,18 @@ func (mr *MockStorageBoxTypeClientMockRecorder) List(ctx, opts any) *gomock.Call
 }
 
 // Names mocks base method.
-func (m *MockStorageBoxTypeClient) Names() []string {
+func (m *MockStorageBoxTypeClient) Names(arg0 context.Context) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Names")
+	ret := m.ctrl.Call(m, "Names", arg0)
 	ret0, _ := ret[0].([]string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Names indicates an expected call of Names.
-func (mr *MockStorageBoxTypeClientMockRecorder) Names() *gomock.Call {
+func (mr *MockStorageBoxTypeClientMockRecorder) Names(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockStorageBoxTypeClient)(nil).Names))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockStorageBoxTypeClient)(nil).Names), arg0)
 }
 
 // MockZoneClient is a mock of ZoneClient interface.
@@ -5472,17 +5465,18 @@ func (mr *MockZoneClientMockRecorder) ImportZonefile(ctx, zone, opts any) *gomoc
 }
 
 // LabelKeys mocks base method.
-func (m *MockZoneClient) LabelKeys(idOrName string) []string {
+func (m *MockZoneClient) LabelKeys(arg0 context.Context, arg1 string) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "LabelKeys", idOrName)
+	ret := m.ctrl.Call(m, "LabelKeys", arg0, arg1)
 	ret0, _ := ret[0].([]string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // LabelKeys indicates an expected call of LabelKeys.
-func (mr *MockZoneClientMockRecorder) LabelKeys(idOrName any) *gomock.Call {
+func (mr *MockZoneClientMockRecorder) LabelKeys(arg0, arg1 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LabelKeys", reflect.TypeOf((*MockZoneClient)(nil).LabelKeys), idOrName)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "LabelKeys", reflect.TypeOf((*MockZoneClient)(nil).LabelKeys), arg0, arg1)
 }
 
 // List mocks base method.
@@ -5518,31 +5512,33 @@ func (mr *MockZoneClientMockRecorder) ListRRSets(ctx, zone, opts any) *gomock.Ca
 }
 
 // Names mocks base method.
-func (m *MockZoneClient) Names() []string {
+func (m *MockZoneClient) Names(arg0 context.Context) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Names")
+	ret := m.ctrl.Call(m, "Names", arg0)
 	ret0, _ := ret[0].([]string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // Names indicates an expected call of Names.
-func (mr *MockZoneClientMockRecorder) Names() *gomock.Call {
+func (mr *MockZoneClientMockRecorder) Names(arg0 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockZoneClient)(nil).Names))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Names", reflect.TypeOf((*MockZoneClient)(nil).Names), arg0)
 }
 
 // RRSetLabelKeys mocks base method.
-func (m *MockZoneClient) RRSetLabelKeys(zoneIDOrName, rrsetName string, rrsetType hcloud.ZoneRRSetType) []string {
+func (m *MockZoneClient) RRSetLabelKeys(arg0 context.Context, arg1, arg2 string, arg3 hcloud.ZoneRRSetType) ([]string, error) {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "RRSetLabelKeys", zoneIDOrName, rrsetName, rrsetType)
+	ret := m.ctrl.Call(m, "RRSetLabelKeys", arg0, arg1, arg2, arg3)
 	ret0, _ := ret[0].([]string)
-	return ret0
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
 }
 
 // RRSetLabelKeys indicates an expected call of RRSetLabelKeys.
-func (mr *MockZoneClientMockRecorder) RRSetLabelKeys(zoneIDOrName, rrsetName, rrsetType any) *gomock.Call {
+func (mr *MockZoneClientMockRecorder) RRSetLabelKeys(arg0, arg1, arg2, arg3 any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RRSetLabelKeys", reflect.TypeOf((*MockZoneClient)(nil).RRSetLabelKeys), zoneIDOrName, rrsetName, rrsetType)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RRSetLabelKeys", reflect.TypeOf((*MockZoneClient)(nil).RRSetLabelKeys), arg0, arg1, arg2, arg3)
 }
 
 // RemoveRRSetRecords mocks base method.

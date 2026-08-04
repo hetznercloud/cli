@@ -7,6 +7,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -22,11 +23,11 @@ var ApplyToResourceCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 		cmd.Flags().String("type", "", "Resource Type (server, label_selector) (required)")
-		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("server", "label_selector"))
-		_ = cmd.MarkFlagRequired("type")
+		cmpl.RegisterFlagCompletion(cmd, "type", cmpl.SuggestCandidates("server", "label_selector"))
+		util.MarkFlagRequired(cmd, "type")
 
 		cmd.Flags().String("server", "", "Server name of ID (required when type is server)")
-		_ = cmd.RegisterFlagCompletionFunc("server", cmpl.SuggestCandidatesF(client.Server().Names))
+		cmpl.RegisterFlagCompletion(cmd, "server", cmpl.SuggestCandidatesF(client.Server().Names))
 
 		cmd.Flags().StringP("label-selector", "l", "", "Label Selector")
 		return cmd
@@ -52,7 +53,7 @@ var ApplyToResourceCmd = base.Cmd{
 		serverIDOrName, _ := cmd.Flags().GetString("server")
 		labelSelector, _ := cmd.Flags().GetString("label-selector")
 		idOrName := args[0]
-		firewall, _, err := s.Client().Firewall().Get(s, idOrName)
+		firewall, _, err := s.Client().Firewall().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return err
 		}
@@ -63,7 +64,7 @@ var ApplyToResourceCmd = base.Cmd{
 
 		switch opts.Type {
 		case hcloud.FirewallResourceTypeServer:
-			server, _, err := s.Client().Server().Get(s, serverIDOrName)
+			server, _, err := s.Client().Server().Get(cmd.Context(), serverIDOrName)
 			if err != nil {
 				return err
 			}
@@ -77,11 +78,11 @@ var ApplyToResourceCmd = base.Cmd{
 			return fmt.Errorf("unknown type %s", opts.Type)
 		}
 
-		actions, _, err := s.Client().Firewall().ApplyResources(s, firewall, []hcloud.FirewallResource{opts})
+		actions, _, err := s.Client().Firewall().ApplyResources(cmd.Context(), firewall, []hcloud.FirewallResource{opts})
 		if err != nil {
 			return err
 		}
-		if err := s.WaitForActions(s, cmd, actions...); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, actions...); err != nil {
 			return err
 		}
 		cmd.Printf("Firewall %d applied to resource\n", firewall.ID)

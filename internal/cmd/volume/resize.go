@@ -7,6 +7,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 )
@@ -21,11 +22,11 @@ var ResizeCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 		cmd.Flags().Int("size", 0, "New size (GB) of the Volume (required)")
-		_ = cmd.MarkFlagRequired("size")
+		util.MarkFlagRequired(cmd, "size")
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
-		volume, _, err := s.Client().Volume().Get(s, args[0])
+		volume, _, err := s.Client().Volume().Get(cmd.Context(), args[0])
 		if err != nil {
 			return err
 		}
@@ -34,12 +35,12 @@ var ResizeCmd = base.Cmd{
 		}
 
 		size, _ := cmd.Flags().GetInt("size")
-		action, _, err := s.Client().Volume().Resize(s, volume, size)
+		action, _, err := s.Client().Volume().Resize(cmd.Context(), volume, size)
 		if err != nil {
 			return err
 		}
 
-		if err := s.WaitForActions(s, cmd, action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, action); err != nil {
 			return err
 		}
 

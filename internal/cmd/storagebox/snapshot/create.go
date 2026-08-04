@@ -34,7 +34,7 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBoxSnapshot]{
 		description, _ := cmd.Flags().GetString("description")
 		labels, _ := cmd.Flags().GetStringToString("label")
 
-		storageBox, _, err := s.Client().StorageBox().Get(s, storageBoxIDOrName)
+		storageBox, _, err := s.Client().StorageBox().Get(cmd.Context(), storageBoxIDOrName)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -47,15 +47,15 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBoxSnapshot]{
 			Description: description,
 		}
 
-		result, _, err := s.Client().StorageBox().CreateSnapshot(s, storageBox, opts)
+		result, _, err := s.Client().StorageBox().CreateSnapshot(cmd.Context(), storageBox, opts)
 		if err != nil {
 			return nil, nil, err
 		}
-		if err := s.WaitForActions(s, cmd, result.Action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, result.Action); err != nil {
 			return nil, nil, err
 		}
 
-		snapshot, _, err := s.Client().StorageBox().GetSnapshotByID(s, storageBox, result.Snapshot.ID)
+		snapshot, _, err := s.Client().StorageBox().GetSnapshotByID(cmd.Context(), storageBox, result.Snapshot.ID)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -67,8 +67,8 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBoxSnapshot]{
 
 		return snapshot, util.Wrap("snapshot", hcloud.SchemaFromStorageBoxSnapshot(snapshot)), nil
 	},
-	PrintResource: func(_ state.State, cmd *cobra.Command, snapshot *hcloud.StorageBoxSnapshot) {
-		cmd.Printf("Name: %s\n", snapshot.Name)
-		cmd.Printf("Size: %s\n", humanize.IBytes(snapshot.Stats.Size))
+	PrintResource: func(_ state.State, cmd *cobra.Command, snapshot *hcloud.StorageBoxSnapshot) error {
+		_, err := fmt.Fprintf(cmd.OutOrStdout(), "Name: %s\nSize: %s\n", snapshot.Name, humanize.IBytes(snapshot.Stats.Size))
+		return err
 	},
 }

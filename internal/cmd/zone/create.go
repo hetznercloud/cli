@@ -22,23 +22,23 @@ var CreateCmd = base.CreateCmd[*hcloud.Zone]{
 			DisableFlagsInUseLine: true,
 		}
 		cmd.Flags().String("name", "", "Zone name (required)")
-		_ = cmd.MarkFlagRequired("name")
+		util.MarkFlagRequired(cmd, "name")
 
 		cmd.Flags().String("mode", "primary", "Mode of the Zone (primary, secondary)")
-		_ = cmd.RegisterFlagCompletionFunc("mode", cmpl.SuggestCandidates(string(hcloud.ZoneModePrimary), string(hcloud.ZoneModeSecondary)))
+		cmpl.RegisterFlagCompletion(cmd, "mode", cmpl.SuggestCandidates(string(hcloud.ZoneModePrimary), string(hcloud.ZoneModeSecondary)))
 
 		cmd.Flags().Int("ttl", 0, "Default Time To Live (TTL) of the Zone")
 
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 
 		cmd.Flags().StringSlice("enable-protection", []string{}, "Enable protection (delete) (default: none)")
-		_ = cmd.RegisterFlagCompletionFunc("enable-protection", cmpl.SuggestCandidates("delete"))
+		cmpl.RegisterFlagCompletion(cmd, "enable-protection", cmpl.SuggestCandidates("delete"))
 
 		cmd.Flags().String("primary-nameservers-file", "", "JSON file containing the new primary nameservers. (See 'hcloud zone change-primary-nameservers -h' for help)")
-		_ = cmd.MarkFlagFilename("primary-nameservers-file", "json")
+		util.MarkFlagFilename(cmd, "primary-nameservers-file", "json")
 
 		cmd.Flags().String("zonefile", "", "Zone file in BIND (RFC 1034/1035) format (use - to read from stdin)")
-		_ = cmd.MarkFlagFilename("zonefile")
+		util.MarkFlagFilename(cmd, "zonefile")
 
 		return cmd
 	},
@@ -77,7 +77,7 @@ var CreateCmd = base.CreateCmd[*hcloud.Zone]{
 				return nil, nil, err
 			}
 
-			nameservers, err := parsePrimaryNameservers(file)
+			nameservers, err := parsePrimaryNameservers(cmd.InOrStdin(), file)
 			if err != nil {
 				return nil, nil, err
 			}
@@ -103,18 +103,18 @@ var CreateCmd = base.CreateCmd[*hcloud.Zone]{
 			}
 
 			zonefile, _ := cmd.Flags().GetString("zonefile")
-			createOpts.Zonefile, err = readZonefile(zonefile)
+			createOpts.Zonefile, err = readZonefile(cmd.InOrStdin(), zonefile)
 			if err != nil {
 				return nil, nil, err
 			}
 		}
 
-		result, _, err := s.Client().Zone().Create(s, createOpts)
+		result, _, err := s.Client().Zone().Create(cmd.Context(), createOpts)
 		if err != nil {
 			return nil, nil, err
 		}
 
-		if err := s.WaitForActions(s, cmd, result.Action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, result.Action); err != nil {
 			return nil, nil, err
 		}
 		cmd.Printf("Zone %s created\n", result.Zone.Name)
@@ -126,7 +126,7 @@ var CreateCmd = base.CreateCmd[*hcloud.Zone]{
 		}
 
 		// Assigned authoritative nameserver is only set after the action completed. Need to reload the zone
-		zone, _, err := s.Client().Zone().GetByID(s, result.Zone.ID)
+		zone, _, err := s.Client().Zone().GetByID(cmd.Context(), result.Zone.ID)
 		if err != nil {
 			return nil, nil, err
 		}

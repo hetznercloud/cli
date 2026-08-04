@@ -23,7 +23,7 @@ var UnassignCmd = base.Cmd{
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		floatingIP, _, err := s.Client().FloatingIP().Get(s, idOrName)
+		floatingIP, _, err := s.Client().FloatingIP().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return err
 		}
@@ -31,12 +31,12 @@ var UnassignCmd = base.Cmd{
 			return fmt.Errorf("Floating IP not found: %v", idOrName)
 		}
 
-		action, _, err := s.Client().FloatingIP().Unassign(s, floatingIP)
+		action, _, err := s.Client().FloatingIP().Unassign(cmd.Context(), floatingIP)
 		if err != nil {
 			return err
 		}
 
-		if err := s.WaitForActions(s, cmd, action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, action); err != nil {
 			return err
 		}
 

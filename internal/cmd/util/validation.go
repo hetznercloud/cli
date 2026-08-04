@@ -2,7 +2,6 @@ package util
 
 import (
 	"fmt"
-	"os"
 	"regexp"
 	"strings"
 
@@ -53,8 +52,8 @@ func validate(cmd *cobra.Command, args []string, lenient bool) error {
 		}
 	}
 	if len(args) > len(expected) && !isVariadic && !lenient {
-		_, _ = fmt.Fprintln(os.Stderr, use)
-		_, _ = fmt.Fprintln(os.Stderr, strings.Repeat(" ", len(use)+1)+"^")
+		cmd.PrintErrln(use)
+		cmd.PrintErrln(strings.Repeat(" ", len(use)+1) + "^")
 		return fmt.Errorf("expected exactly %d positional argument(s), but got %d", len(expected), len(args))
 	}
 
@@ -62,8 +61,8 @@ func validate(cmd *cobra.Command, args []string, lenient bool) error {
 		if i >= len(args) {
 			idx := strings.Index(use, "<"+expected[i]+">")
 			if idx != -1 {
-				_, _ = fmt.Fprintln(os.Stderr, use)
-				_, _ = fmt.Fprintln(os.Stderr, strings.Repeat(" ", idx+1)+strings.Repeat("^", len(expected[i])))
+				cmd.PrintErrln(use)
+				cmd.PrintErrln(strings.Repeat(" ", idx+1) + strings.Repeat("^", len(expected[i])))
 			}
 			return fmt.Errorf("expected argument(s) %s at position %d", expected[i], i+1)
 		}

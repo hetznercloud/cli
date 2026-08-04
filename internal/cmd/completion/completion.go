@@ -2,7 +2,6 @@ package completion
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/spf13/cobra"
 
@@ -100,16 +99,17 @@ and source this file from your PowerShell profile.
 		DisableFlagsInUseLine: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			var err error
+			out := cmd.OutOrStdout()
 
 			switch args[0] {
 			case "bash":
-				err = cmd.Root().GenBashCompletion(os.Stdout)
+				err = cmd.Root().GenBashCompletion(out)
 			case "fish":
-				err = cmd.Root().GenFishCompletion(os.Stdout, true)
+				err = cmd.Root().GenFishCompletion(out, true)
 			case "zsh":
-				err = cmd.Root().GenZshCompletion(os.Stdout)
+				err = cmd.Root().GenZshCompletion(out)
 			case "powershell":
-				err = cmd.Root().GenPowerShellCompletion(os.Stdout)
+				err = cmd.Root().GenPowerShellCompletion(out)
 			default:
 				err = fmt.Errorf("Unsupported shell: %s", args[0])
 			}

@@ -22,17 +22,17 @@ var CreateCmd = base.CreateCmd[*hcloud.Network]{
 		}
 
 		cmd.Flags().String("name", "", "Network name (required)")
-		_ = cmd.MarkFlagRequired("name")
+		util.MarkFlagRequired(cmd, "name")
 
 		cmd.Flags().IPNet("ip-range", net.IPNet{}, "Network IP range (required)")
-		_ = cmd.MarkFlagRequired("ip-range")
+		util.MarkFlagRequired(cmd, "ip-range")
 
 		cmd.Flags().Bool("expose-routes-to-vswitch", false, "Expose routes from this Network to the vSwitch connection. It only takes effect if a vSwitch connection is active. (true, false)")
 
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 
 		cmd.Flags().StringSlice("enable-protection", []string{}, "Enable protection (delete) (default: none)")
-		_ = cmd.RegisterFlagCompletionFunc("enable-protection", cmpl.SuggestCandidates("delete"))
+		cmpl.RegisterFlagCompletion(cmd, "enable-protection", cmpl.SuggestCandidates("delete"))
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, _ []string) (*hcloud.Network, any, error) {
@@ -54,7 +54,7 @@ var CreateCmd = base.CreateCmd[*hcloud.Network]{
 			ExposeRoutesToVSwitch: exposeRoutesToVSwitch,
 		}
 
-		network, _, err := s.Client().Network().Create(s, createOpts)
+		network, _, err := s.Client().Network().Create(cmd.Context(), createOpts)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -67,7 +67,7 @@ var CreateCmd = base.CreateCmd[*hcloud.Network]{
 			}
 		}
 
-		network, _, err = s.Client().Network().GetByID(s, network.ID)
+		network, _, err = s.Client().Network().GetByID(cmd.Context(), network.ID)
 		if err != nil {
 			return nil, nil, err
 		}

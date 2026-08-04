@@ -13,6 +13,7 @@ import (
 	require "github.com/stretchr/testify/require"
 
 	"github.com/hetznercloud/cli/internal/cmd/util"
+	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
@@ -27,7 +28,7 @@ func TestNA(t *testing.T) {
 }
 
 func TestDatetime(t *testing.T) {
-	time.Local = time.UTC
+	testutil.SetTimezone(t, time.UTC)
 	tm := time.Date(2022, 11, 17, 15, 22, 12, 11, time.UTC)
 	assert.Equal(t, "2022-11-17 15:22:12 UTC", util.Datetime(tm))
 }

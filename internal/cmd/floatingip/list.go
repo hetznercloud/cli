@@ -1,6 +1,7 @@
 package floatingip
 
 import (
+	"context"
 	"fmt"
 	"strings"
 	"time"
@@ -23,12 +24,12 @@ var ListCmd = &base.ListCmd[*hcloud.FloatingIP, schema.FloatingIP]{
 	DefaultColumns:     []string{"id", "type", "name", "description", "ip", "home", "server", "dns", "age"},
 	SortOption:         config.OptionSortFloatingIP,
 
-	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.FloatingIP, error) {
+	Fetch: func(ctx context.Context, s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.FloatingIP, error) {
 		opts := hcloud.FloatingIPListOpts{ListOpts: listOpts}
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		return s.Client().FloatingIP().AllWithOpts(s, opts)
+		return s.Client().FloatingIP().AllWithOpts(ctx, opts)
 	},
 
 	OutputTable: func(t *output.Table[*hcloud.FloatingIP], client hcapi2.Client) {
@@ -46,12 +47,12 @@ var ListCmd = &base.ListCmd[*hcloud.FloatingIP, schema.FloatingIP]{
 				}
 				return util.NA(dns)
 			}).
-			AddFieldFn("server", func(floatingIP *hcloud.FloatingIP) string {
+			AddFieldFnE("server", func(ctx context.Context, floatingIP *hcloud.FloatingIP) (string, error) {
 				var server string
 				if floatingIP.Server != nil {
-					return client.Server().ServerName(floatingIP.Server.ID)
+					return client.Server().ServerName(ctx, floatingIP.Server.ID)
 				}
-				return util.NA(server)
+				return util.NA(server), nil
 			}).
 			AddFieldFn("home", func(floatingIP *hcloud.FloatingIP) string {
 				return floatingIP.HomeLocation.Name

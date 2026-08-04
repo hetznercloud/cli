@@ -16,17 +16,17 @@ var DeleteCmd = base.DeleteCmd[*hcloud.Zone]{
 	ResourceNameSingular: "Zone",
 	ResourceNamePlural:   "Zones",
 	ShortDescription:     "Delete a Zone",
-	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Zone().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.Zone, *hcloud.Response, error) {
+	NameSuggestions:      func(c hcapi2.Client) hcapi2.CompletionFunc { return c.Zone().Names },
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (*hcloud.Zone, *hcloud.Response, error) {
 		idOrName, err := util.ParseZoneIDOrName(idOrName)
 		if err != nil {
 			return nil, nil, fmt.Errorf("failed to convert Zone name to ascii: %w", err)
 		}
 
-		return s.Client().Zone().Get(s, idOrName)
+		return s.Client().Zone().Get(cmd.Context(), idOrName)
 	},
-	Delete: func(s state.State, _ *cobra.Command, zone *hcloud.Zone) ([]*hcloud.Action, error) {
-		res, _, err := s.Client().Zone().Delete(s, zone)
+	Delete: func(s state.State, cmd *cobra.Command, zone *hcloud.Zone) ([]*hcloud.Action, error) {
+		res, _, err := s.Client().Zone().Delete(cmd.Context(), zone)
 		if err != nil {
 			return nil, err
 		}

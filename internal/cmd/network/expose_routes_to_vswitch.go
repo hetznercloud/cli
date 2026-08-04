@@ -29,7 +29,7 @@ var ExposeRoutesToVSwitchCmd = base.Cmd{
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		network, _, err := s.Client().Network().Get(s, idOrName)
+		network, _, err := s.Client().Network().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return err
 		}
@@ -42,7 +42,7 @@ var ExposeRoutesToVSwitchCmd = base.Cmd{
 			ExposeRoutesToVSwitch: hcloud.Ptr(!disable),
 		}
 
-		_, _, err = s.Client().Network().Update(s, network, opts)
+		_, _, err = s.Client().Network().Update(cmd.Context(), network, opts)
 		if err != nil {
 			return err
 		}

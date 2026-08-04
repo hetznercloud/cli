@@ -28,10 +28,10 @@ func TestSSH(t *testing.T) {
 			Get(gomock.Any(), srv.Name).
 			Return(&srv, nil, nil)
 
-		server.SSHPath = "echo"
 	}
 
-	testutil.TestCommand(t, &server.SSHCmd, map[string]testutil.TestCase{
+	sshCmd := server.NewSSHCommand("echo")
+	testutil.TestCommand(t, &sshCmd, map[string]testutil.TestCase{
 		"single arg": {
 			Args:   []string{"ssh", srv.Name},
 			PreRun: preRun,

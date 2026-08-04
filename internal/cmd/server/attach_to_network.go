@@ -8,6 +8,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -24,8 +25,8 @@ var AttachToNetworkCmd = base.Cmd{
 		}
 
 		cmd.Flags().StringP("network", "n", "", "Network (ID or name) (required)")
-		_ = cmd.RegisterFlagCompletionFunc("network", cmpl.SuggestCandidatesF(client.Network().Names))
-		_ = cmd.MarkFlagRequired("network")
+		cmpl.RegisterFlagCompletion(cmd, "network", cmpl.SuggestCandidatesF(client.Network().Names))
+		util.MarkFlagRequired(cmd, "network")
 
 		cmd.Flags().IP("ip", nil, "IP address to assign to the Server (auto-assigned if omitted)")
 		cmd.Flags().IPNet("ip-range", net.IPNet{}, "IP range in CIDR block notation of the subnet to attach to (auto-assigned if omitted)")
@@ -35,7 +36,7 @@ var AttachToNetworkCmd = base.Cmd{
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		server, _, err := s.Client().Server().Get(s, idOrName)
+		server, _, err := s.Client().Server().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return err
 		}
@@ -44,7 +45,7 @@ var AttachToNetworkCmd = base.Cmd{
 		}
 
 		networkIDOrName, _ := cmd.Flags().GetString("network")
-		network, _, err := s.Client().Network().Get(s, networkIDOrName)
+		network, _, err := s.Client().Network().Get(cmd.Context(), networkIDOrName)
 		if err != nil {
 			return err
 		}
@@ -64,13 +65,13 @@ var AttachToNetworkCmd = base.Cmd{
 		if cmd.Flags().Changed("ip-range") {
 			opts.IPRange = &ipRange
 		}
-		action, _, err := s.Client().Server().AttachToNetwork(s, server, opts)
+		action, _, err := s.Client().Server().AttachToNetwork(cmd.Context(), server, opts)
 
 		if err != nil {
 			return err
 		}
 
-		if err := s.WaitForActions(s, cmd, action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, action); err != nil {
 			return err
 		}
 

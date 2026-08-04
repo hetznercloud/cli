@@ -22,15 +22,15 @@ var EnableRescueCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 		cmd.Flags().String("type", "linux64", "Rescue type")
-		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("linux64"))
+		cmpl.RegisterFlagCompletion(cmd, "type", cmpl.SuggestCandidates("linux64"))
 
 		cmd.Flags().StringSlice("ssh-key", nil, "ID or name of SSH Key to inject (can be specified multiple times)")
-		_ = cmd.RegisterFlagCompletionFunc("ssh-key", cmpl.SuggestCandidatesF(client.SSHKey().Names))
+		cmpl.RegisterFlagCompletion(cmd, "ssh-key", cmpl.SuggestCandidatesF(client.SSHKey().Names))
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		server, _, err := s.Client().Server().Get(s, idOrName)
+		server, _, err := s.Client().Server().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return err
 		}
@@ -55,7 +55,7 @@ var EnableRescueCmd = base.Cmd{
 
 		sshKeys, _ := cmd.Flags().GetStringSlice("ssh-key")
 		for _, sshKeyIDOrName := range sshKeys {
-			sshKey, _, err := s.Client().SSHKey().Get(s, sshKeyIDOrName)
+			sshKey, _, err := s.Client().SSHKey().Get(cmd.Context(), sshKeyIDOrName)
 			if err != nil {
 				return err
 			}
@@ -65,12 +65,12 @@ var EnableRescueCmd = base.Cmd{
 			opts.SSHKeys = append(opts.SSHKeys, sshKey)
 		}
 
-		result, _, err := s.Client().Server().EnableRescue(s, server, opts)
+		result, _, err := s.Client().Server().EnableRescue(cmd.Context(), server, opts)
 		if err != nil {
 			return err
 		}
 
-		if err := s.WaitForActions(s, cmd, result.Action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, result.Action); err != nil {
 			return err
 		}
 

@@ -26,9 +26,12 @@ var RequestConsoleCmd = base.Cmd{
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
-		outOpts := output.FlagsForCommand(cmd)
+		outOpts, err := output.FlagsForCommand(cmd)
+		if err != nil {
+			return err
+		}
 		idOrName := args[0]
-		server, _, err := s.Client().Server().Get(s, idOrName)
+		server, _, err := s.Client().Server().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return err
 		}
@@ -36,12 +39,12 @@ var RequestConsoleCmd = base.Cmd{
 			return fmt.Errorf("Server not found: %s", idOrName)
 		}
 
-		result, _, err := s.Client().Server().RequestConsole(s, server)
+		result, _, err := s.Client().Server().RequestConsole(cmd.Context(), server)
 		if err != nil {
 			return err
 		}
 
-		if err := s.WaitForActions(s, cmd, result.Action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, result.Action); err != nil {
 			return err
 		}
 

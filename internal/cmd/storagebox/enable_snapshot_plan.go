@@ -36,17 +36,17 @@ Allowed values for --day-of-week are:
 		}
 
 		cmd.Flags().Int("max-snapshots", 0, "Maximum amount of Snapshots that should be created by this Snapshot Plan")
-		_ = cmd.MarkFlagRequired("max-snapshots")
+		util.MarkFlagRequired(cmd, "max-snapshots")
 
 		cmd.Flags().Int("minute", 0, "Minute the Snapshot Plan should be executed on (UTC)")
-		_ = cmd.MarkFlagRequired("minute")
+		util.MarkFlagRequired(cmd, "minute")
 		cmd.Flags().Int("hour", 0, "Hour the Snapshot Plan should be executed on (UTC)")
-		_ = cmd.MarkFlagRequired("hour")
+		util.MarkFlagRequired(cmd, "hour")
 
 		cmd.Flags().String("day-of-week", "", "Day of the week the Snapshot Plan should be executed on. Not specified means every day")
 		cmd.Flags().Int("day-of-month", 0, "Day of the month the Snapshot Plan should be executed on. Not specified means every day")
 
-		_ = cmd.RegisterFlagCompletionFunc("day-of-week", cmpl.SuggestCandidates("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"))
+		cmpl.RegisterFlagCompletion(cmd, "day-of-week", cmpl.SuggestCandidates("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"))
 
 		return cmd
 	},
@@ -58,7 +58,7 @@ Allowed values for --day-of-week are:
 		dayOfWeek, _ := cmd.Flags().GetString("day-of-week")
 		dayOfMonth, _ := cmd.Flags().GetInt("day-of-month")
 
-		storageBox, _, err := s.Client().StorageBox().Get(s, idOrName)
+		storageBox, _, err := s.Client().StorageBox().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return err
 		}
@@ -83,12 +83,12 @@ Allowed values for --day-of-week are:
 			opts.DayOfMonth = &dayOfMonth
 		}
 
-		action, _, err := s.Client().StorageBox().EnableSnapshotPlan(s, storageBox, opts)
+		action, _, err := s.Client().StorageBox().EnableSnapshotPlan(cmd.Context(), storageBox, opts)
 		if err != nil {
 			return err
 		}
 
-		if err := s.WaitForActions(s, cmd, action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, action); err != nil {
 			return err
 		}
 

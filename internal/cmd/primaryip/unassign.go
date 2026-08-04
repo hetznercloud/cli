@@ -26,7 +26,7 @@ var UnAssignCmd = base.Cmd{
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		primaryIP, _, err := s.Client().PrimaryIP().Get(s, idOrName)
+		primaryIP, _, err := s.Client().PrimaryIP().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return err
 		}
@@ -34,12 +34,12 @@ var UnAssignCmd = base.Cmd{
 			return fmt.Errorf("Primary IP not found: %v", idOrName)
 		}
 
-		action, _, err := s.Client().PrimaryIP().Unassign(s, primaryIP.ID)
+		action, _, err := s.Client().PrimaryIP().Unassign(cmd.Context(), primaryIP.ID)
 		if err != nil {
 			return err
 		}
 
-		if err := s.WaitForActions(s, cmd, action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, action); err != nil {
 			return err
 		}
 

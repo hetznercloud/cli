@@ -1,6 +1,7 @@
 package snapshot
 
 import (
+	"context"
 	"fmt"
 	"time"
 
@@ -36,11 +37,11 @@ var ListCmd = base.ListCmd[*hcloud.StorageBoxSnapshot, schema.StorageBoxSnapshot
 		cmd.Flags().Bool("automatic", false, "Only show automatic snapshots (true, false)")
 	},
 
-	FetchWithArgs: func(s state.State, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string, args []string) ([]*hcloud.StorageBoxSnapshot, error) {
+	FetchWithArgs: func(ctx context.Context, s state.State, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string, args []string) ([]*hcloud.StorageBoxSnapshot, error) {
 		storageBoxIDOrName := args[0]
 		isAutomatic, _ := flags.GetBool("automatic")
 
-		storageBox, _, err := s.Client().StorageBox().Get(s, storageBoxIDOrName)
+		storageBox, _, err := s.Client().StorageBox().Get(ctx, storageBoxIDOrName)
 		if err != nil {
 			return nil, err
 		}
@@ -55,7 +56,7 @@ var ListCmd = base.ListCmd[*hcloud.StorageBoxSnapshot, schema.StorageBoxSnapshot
 		if flags.Changed("automatic") {
 			opts.IsAutomatic = &isAutomatic
 		}
-		return s.Client().StorageBox().AllSnapshotsWithOpts(s, storageBox, opts)
+		return s.Client().StorageBox().AllSnapshotsWithOpts(ctx, storageBox, opts)
 	},
 
 	OutputTable: func(t *output.Table[*hcloud.StorageBoxSnapshot], _ hcapi2.Client) {

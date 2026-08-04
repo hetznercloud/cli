@@ -13,12 +13,12 @@ var DeleteCmd = base.DeleteCmd[*hcloud.FloatingIP]{
 	ResourceNameSingular: "Floating IP",
 	ResourceNamePlural:   "Floating IPs",
 	ShortDescription:     "Delete a Floating IP",
-	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.FloatingIP().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.FloatingIP, *hcloud.Response, error) {
-		return s.Client().FloatingIP().Get(s, idOrName)
+	NameSuggestions:      func(c hcapi2.Client) hcapi2.CompletionFunc { return c.FloatingIP().Names },
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (*hcloud.FloatingIP, *hcloud.Response, error) {
+		return s.Client().FloatingIP().Get(cmd.Context(), idOrName)
 	},
-	Delete: func(s state.State, _ *cobra.Command, floatingIP *hcloud.FloatingIP) ([]*hcloud.Action, error) {
-		_, err := s.Client().FloatingIP().Delete(s, floatingIP)
+	Delete: func(s state.State, cmd *cobra.Command, floatingIP *hcloud.FloatingIP) ([]*hcloud.Action, error) {
+		_, err := s.Client().FloatingIP().Delete(cmd.Context(), floatingIP)
 		return nil, err
 	},
 }

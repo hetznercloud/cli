@@ -42,7 +42,7 @@ If the Zone RRSet doesn't contain any records, it will automatically be deleted.
 
 		zone := &hcloud.Zone{Name: zoneIDOrName}
 
-		rrset, _, err := s.Client().Zone().GetRRSetByNameAndType(s, zone, rrsetName, hcloud.ZoneRRSetType(rrsetType))
+		rrset, _, err := s.Client().Zone().GetRRSetByNameAndType(cmd.Context(), zone, rrsetName, hcloud.ZoneRRSetType(rrsetType))
 		if err != nil {
 			return err
 		}
@@ -62,12 +62,12 @@ If the Zone RRSet doesn't contain any records, it will automatically be deleted.
 			FormatTXTRecords(cmd, opts.Records)
 		}
 
-		action, _, err := s.Client().Zone().RemoveRRSetRecords(s, rrset, opts)
+		action, _, err := s.Client().Zone().RemoveRRSetRecords(cmd.Context(), rrset, opts)
 		if err != nil {
 			return err
 		}
 
-		if err := s.WaitForActions(s, cmd, action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, action); err != nil {
 			return err
 		}
 

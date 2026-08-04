@@ -1,6 +1,7 @@
 package network
 
 import (
+	"context"
 	"fmt"
 	"strings"
 	"time"
@@ -22,12 +23,12 @@ var ListCmd = &base.ListCmd[*hcloud.Network, schema.Network]{
 	DefaultColumns:     []string{"id", "name", "ip_range", "servers", "age"},
 	SortOption:         nil, // Networks do not support sorting
 
-	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.Network, error) {
+	Fetch: func(ctx context.Context, s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.Network, error) {
 		opts := hcloud.NetworkListOpts{ListOpts: listOpts}
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		return s.Client().Network().AllWithOpts(s, opts)
+		return s.Client().Network().AllWithOpts(ctx, opts)
 	},
 
 	OutputTable: func(t *output.Table[*hcloud.Network], _ hcapi2.Client) {

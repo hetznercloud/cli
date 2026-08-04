@@ -1,6 +1,7 @@
 package sshkey
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 
@@ -14,10 +15,10 @@ var LabelCmds = base.LabelCmds[*hcloud.SSHKey]{
 	ResourceNameSingular:   "SSH Key",
 	ShortDescriptionAdd:    "Add a label to an SSH Key",
 	ShortDescriptionRemove: "Remove a label from an SSH Key",
-	NameSuggestions:        func(c hcapi2.Client) func() []string { return c.SSHKey().Names },
-	LabelKeySuggestions:    func(c hcapi2.Client) func(idOrName string) []string { return c.SSHKey().LabelKeys },
-	Fetch: func(s state.State, idOrName string) (*hcloud.SSHKey, error) {
-		sshKey, _, err := s.Client().SSHKey().Get(s, idOrName)
+	NameSuggestions:        func(c hcapi2.Client) hcapi2.CompletionFunc { return c.SSHKey().Names },
+	LabelKeySuggestions:    func(c hcapi2.Client) hcapi2.LabelCompletionFunc { return c.SSHKey().LabelKeys },
+	Fetch: func(ctx context.Context, s state.State, idOrName string) (*hcloud.SSHKey, error) {
+		sshKey, _, err := s.Client().SSHKey().Get(ctx, idOrName)
 		if err != nil {
 			return nil, err
 		}
@@ -26,11 +27,11 @@ var LabelCmds = base.LabelCmds[*hcloud.SSHKey]{
 		}
 		return sshKey, nil
 	},
-	SetLabels: func(s state.State, sshKey *hcloud.SSHKey, labels map[string]string) error {
+	SetLabels: func(ctx context.Context, s state.State, sshKey *hcloud.SSHKey, labels map[string]string) error {
 		opts := hcloud.SSHKeyUpdateOpts{
 			Labels: labels,
 		}
-		_, _, err := s.Client().SSHKey().Update(s, sshKey, opts)
+		_, _, err := s.Client().SSHKey().Update(ctx, sshKey, opts)
 		return err
 	},
 	GetLabels: func(sshKey *hcloud.SSHKey) map[string]string {

@@ -13,20 +13,20 @@ import (
 var UpdateCmd = base.UpdateCmd[*hcloud.FloatingIP]{
 	ResourceNameSingular: "Floating IP",
 	ShortDescription:     "Update a Floating IP",
-	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.FloatingIP().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.FloatingIP, *hcloud.Response, error) {
-		return s.Client().FloatingIP().Get(s, idOrName)
+	NameSuggestions:      func(c hcapi2.Client) hcapi2.CompletionFunc { return c.FloatingIP().Names },
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (*hcloud.FloatingIP, *hcloud.Response, error) {
+		return s.Client().FloatingIP().Get(cmd.Context(), idOrName)
 	},
 	DefineFlags: func(cmd *cobra.Command) {
 		cmd.Flags().String("name", "", "Floating IP name")
 		cmd.Flags().String("description", "", "Floating IP description")
 	},
-	Update: func(s state.State, _ *cobra.Command, floatingIP *hcloud.FloatingIP, flags map[string]pflag.Value) error {
+	Update: func(s state.State, cmd *cobra.Command, floatingIP *hcloud.FloatingIP, flags map[string]pflag.Value) error {
 		updOpts := hcloud.FloatingIPUpdateOpts{
 			Name:        flags["name"].String(),
 			Description: flags["description"].String(),
 		}
-		_, _, err := s.Client().FloatingIP().Update(s, floatingIP, updOpts)
+		_, _, err := s.Client().FloatingIP().Update(cmd.Context(), floatingIP, updOpts)
 		if err != nil {
 			return err
 		}

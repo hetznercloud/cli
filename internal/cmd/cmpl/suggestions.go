@@ -1,6 +1,7 @@
 package cmpl
 
 import (
+	"context"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -14,8 +15,8 @@ import (
 // cobra/Command.RegisterFlagCompletionFunc or assigned  to
 // cobra/Command.ValidArgsFunction.
 func SuggestCandidates(cs ...string) cobra.CompletionFunc {
-	return SuggestCandidatesF(func() []string {
-		return cs
+	return SuggestCandidatesF(func(context.Context) ([]string, error) {
+		return cs, nil
 	})
 }
 
@@ -23,10 +24,21 @@ func SuggestCandidates(cs ...string) cobra.CompletionFunc {
 // to obtain a list of completion candidates. Once the list of candidates is
 // obtained the function returned by SuggestCandidatesF behaves like the
 // function returned by SuggestCandidates.
-func SuggestCandidatesF(cf func() []string) cobra.CompletionFunc {
-	return SuggestCandidatesCtx(func(*cobra.Command, []string) []string {
-		return cf()
-	})
+type CandidateFunc = func(context.Context) ([]string, error)
+
+func SuggestCandidatesF(cf CandidateFunc) cobra.CompletionFunc {
+	return func(cmd *cobra.Command, _ []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		ctx := context.Background()
+		if cmd != nil {
+			ctx = cmd.Context()
+		}
+		candidates, err := cf(ctx)
+		if err != nil {
+			cobra.CompError(err.Error())
+			return nil, cobra.ShellCompDirectiveError
+		}
+		return selectCandidates(candidates, toComplete), cobra.ShellCompDirectiveDefault
+	}
 }
 
 // SuggestCandidatesCtx returns a function that uses the candidate function cf
@@ -37,22 +49,36 @@ func SuggestCandidatesF(cf func() []string) cobra.CompletionFunc {
 // Once the list of candidates is obtained the function returned by
 // SuggestCandidatesCtx behaves like the function returned by SuggestCandidates.
 func SuggestCandidatesCtx(cf func(*cobra.Command, []string) []string) cobra.CompletionFunc {
+	return SuggestCandidatesCtxE(func(cmd *cobra.Command, args []string) ([]string, error) {
+		return cf(cmd, args), nil
+	})
+}
+
+type ContextualCandidateFunc func(*cobra.Command, []string) ([]string, error)
+
+func SuggestCandidatesCtxE(cf ContextualCandidateFunc) cobra.CompletionFunc {
 	return func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
-		cs := cf(cmd, args)
-		if toComplete == "" {
-			return cs, cobra.ShellCompDirectiveDefault
+		candidates, err := cf(cmd, args)
+		if err != nil {
+			cobra.CompError(err.Error())
+			return nil, cobra.ShellCompDirectiveError
 		}
-
-		var sel []string
-		for _, c := range cs {
-			if !strings.HasPrefix(c, toComplete) {
-				continue
-			}
-			sel = append(sel, c)
-		}
-
-		return sel, cobra.ShellCompDirectiveDefault
+		return selectCandidates(candidates, toComplete), cobra.ShellCompDirectiveDefault
 	}
+}
+
+func selectCandidates(candidates []string, prefix string) []string {
+	if prefix == "" {
+		return candidates
+	}
+
+	var selected []string
+	for _, candidate := range candidates {
+		if strings.HasPrefix(candidate, prefix) {
+			selected = append(selected, candidate)
+		}
+	}
+	return selected
 }
 
 // SuggestNothing returns a function that provides no suggestions.
@@ -91,7 +117,7 @@ func SuggestArgs(vfs ...cobra.CompletionFunc) cobra.CompletionFunc {
 // file completion.
 func NoFileCompletion(f cobra.CompletionFunc) cobra.CompletionFunc {
 	return func(command *cobra.Command, i []string, s string) ([]string, cobra.ShellCompDirective) {
-		candidates, _ := f(command, i, s)
-		return candidates, cobra.ShellCompDirectiveNoFileComp
+		candidates, directive := f(command, i, s)
+		return candidates, directive | cobra.ShellCompDirectiveNoFileComp
 	}
 }

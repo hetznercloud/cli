@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 
@@ -14,10 +15,10 @@ var LabelCmds = base.LabelCmds[*hcloud.Server]{
 	ResourceNameSingular:   "Server",
 	ShortDescriptionAdd:    "Add a label to a Server",
 	ShortDescriptionRemove: "Remove a label from a Server",
-	NameSuggestions:        func(c hcapi2.Client) func() []string { return c.Server().Names },
-	LabelKeySuggestions:    func(c hcapi2.Client) func(idOrName string) []string { return c.Server().LabelKeys },
-	Fetch: func(s state.State, idOrName string) (*hcloud.Server, error) {
-		server, _, err := s.Client().Server().Get(s, idOrName)
+	NameSuggestions:        func(c hcapi2.Client) hcapi2.CompletionFunc { return c.Server().Names },
+	LabelKeySuggestions:    func(c hcapi2.Client) hcapi2.LabelCompletionFunc { return c.Server().LabelKeys },
+	Fetch: func(ctx context.Context, s state.State, idOrName string) (*hcloud.Server, error) {
+		server, _, err := s.Client().Server().Get(ctx, idOrName)
 		if err != nil {
 			return nil, err
 		}
@@ -26,11 +27,11 @@ var LabelCmds = base.LabelCmds[*hcloud.Server]{
 		}
 		return server, nil
 	},
-	SetLabels: func(s state.State, server *hcloud.Server, labels map[string]string) error {
+	SetLabels: func(ctx context.Context, s state.State, server *hcloud.Server, labels map[string]string) error {
 		opts := hcloud.ServerUpdateOpts{
 			Labels: labels,
 		}
-		_, _, err := s.Client().Server().Update(s, server, opts)
+		_, _, err := s.Client().Server().Update(ctx, server, opts)
 		return err
 	},
 	GetLabels: func(server *hcloud.Server) map[string]string {

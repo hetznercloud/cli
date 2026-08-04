@@ -5,7 +5,24 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"sync"
+	"testing"
+	"time"
 )
+
+var timezoneMu sync.Mutex
+
+// SetTimezone scopes the process-wide local timezone to a test and serializes tests that change it.
+func SetTimezone(t testing.TB, location *time.Location) {
+	t.Helper()
+	timezoneMu.Lock()
+	previous := time.Local
+	time.Local = location
+	t.Cleanup(func() {
+		time.Local = previous
+		timezoneMu.Unlock()
+	})
+}
 
 // CaptureOutStreams redirects stdout & stderr while running fn and returns the outputs as a string.
 // If there's an error during capture, it returns the error, otherwise it returns the error

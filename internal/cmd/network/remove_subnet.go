@@ -8,6 +8,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -23,13 +24,13 @@ var RemoveSubnetCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 		cmd.Flags().IPNet("ip-range", net.IPNet{}, "Subnet IP range (required)")
-		_ = cmd.MarkFlagRequired("ip-range")
+		util.MarkFlagRequired(cmd, "ip-range")
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		ipRange, _ := cmd.Flags().GetIPNet("ip-range")
 		idOrName := args[0]
-		network, _, err := s.Client().Network().Get(s, idOrName)
+		network, _, err := s.Client().Network().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return err
 		}
@@ -42,11 +43,11 @@ var RemoveSubnetCmd = base.Cmd{
 				IPRange: &ipRange,
 			},
 		}
-		action, _, err := s.Client().Network().DeleteSubnet(s, network, opts)
+		action, _, err := s.Client().Network().DeleteSubnet(cmd.Context(), network, opts)
 		if err != nil {
 			return err
 		}
-		if err := s.WaitForActions(s, cmd, action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, action); err != nil {
 			return err
 		}
 		cmd.Printf("Subnet %s removed from Network %d\n", ipRange.String(), network.ID)

@@ -2,13 +2,15 @@ package config
 
 import (
 	"reflect"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestOptions(t *testing.T) {
-	for _, opt := range Options {
+	for _, opt := range DefaultOptions() {
 		kind := reflect.TypeOf(opt.T()).Kind()
 		if kind == reflect.Slice && !opt.HasFlags(OptionFlagSlice) {
 			t.Errorf("option %s is a slice but does not have the slice flag", opt.GetName())
@@ -20,6 +22,14 @@ func TestOptions(t *testing.T) {
 			t.Errorf("%s: sensitive options shouldn't have pflags", opt.GetName())
 		}
 	}
+}
+
+func TestUnsupportedFlagOptionReturnsError(t *testing.T) {
+	option := newOpt("unsupported", "unsupported test option", struct{}{}, OptionFlagPFlag, nil, nil)
+	cfg := New(WithOptions(option))
+
+	err := cfg.LoadReader(strings.NewReader(""))
+	require.ErrorContains(t, err, `option "unsupported" has unsupported flag type`)
 }
 
 func TestOption_HasFlags(t *testing.T) {

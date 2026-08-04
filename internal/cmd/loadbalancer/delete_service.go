@@ -7,6 +7,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 )
@@ -22,20 +23,20 @@ var DeleteServiceCmd = base.Cmd{
 		}
 
 		cmd.Flags().Int("listen-port", 0, "The listen port of the service you want to delete (required)")
-		_ = cmd.MarkFlagRequired("listen-port")
+		util.MarkFlagRequired(cmd, "listen-port")
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		listenPort, _ := cmd.Flags().GetInt("listen-port")
 		idOrName := args[0]
-		loadBalancer, _, err := s.Client().LoadBalancer().Get(s, idOrName)
+		loadBalancer, _, err := s.Client().LoadBalancer().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return err
 		}
 		if loadBalancer == nil {
 			return fmt.Errorf("Load Balancer not found: %s", idOrName)
 		}
-		_, _, err = s.Client().LoadBalancer().DeleteService(s, loadBalancer, listenPort)
+		_, _, err = s.Client().LoadBalancer().DeleteService(cmd.Context(), loadBalancer, listenPort)
 		if err != nil {
 			return err
 		}

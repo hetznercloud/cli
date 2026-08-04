@@ -2,7 +2,6 @@ package hcapi2
 
 import (
 	"context"
-	"strconv"
 
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -11,7 +10,7 @@ import (
 // additional helper functions.
 type DatacenterClient interface {
 	hcloud.IDatacenterClient
-	Names() []string
+	Names(context.Context) ([]string, error)
 }
 
 func NewDatacenterClient(client hcloud.IDatacenterClient) DatacenterClient {
@@ -26,18 +25,10 @@ type datacenterClient struct {
 
 // Names obtains a list of available data centers. It returns nil if
 // data center names could not be fetched.
-func (c *datacenterClient) Names() []string {
-	dcs, err := c.All(context.Background())
-	if err != nil || len(dcs) == 0 {
-		return nil
+func (c *datacenterClient) Names(ctx context.Context) ([]string, error) {
+	datacenters, err := c.All(ctx)
+	if err != nil {
+		return nil, err
 	}
-	names := make([]string, len(dcs))
-	for i, dc := range dcs {
-		name := dc.Name
-		if name == "" {
-			name = strconv.FormatInt(dc.ID, 10)
-		}
-		names[i] = name
-	}
-	return names
+	return resourceNames(datacenters, func(datacenter *hcloud.Datacenter) int64 { return datacenter.ID }, func(datacenter *hcloud.Datacenter) string { return datacenter.Name }), nil
 }

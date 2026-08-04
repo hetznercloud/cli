@@ -25,10 +25,10 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBoxSubaccount]{
 			SuggestSubaccounts(client),
 		}
 	},
-	FetchWithArgs: func(s state.State, _ *cobra.Command, args []string) (*hcloud.StorageBoxSubaccount, any, error) {
+	FetchWithArgs: func(s state.State, cmd *cobra.Command, args []string) (*hcloud.StorageBoxSubaccount, any, error) {
 		storageBoxIDOrName, subaccountIDOrName := args[0], args[1]
 
-		storageBox, _, err := s.Client().StorageBox().Get(s, storageBoxIDOrName)
+		storageBox, _, err := s.Client().StorageBox().Get(cmd.Context(), storageBoxIDOrName)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -36,7 +36,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBoxSubaccount]{
 			return nil, nil, fmt.Errorf("Storage Box not found: %s", storageBoxIDOrName)
 		}
 
-		subaccount, _, err := s.Client().StorageBox().GetSubaccount(s, storageBox, subaccountIDOrName)
+		subaccount, _, err := s.Client().StorageBox().GetSubaccount(cmd.Context(), storageBox, subaccountIDOrName)
 		if err != nil {
 			return nil, nil, err
 		}

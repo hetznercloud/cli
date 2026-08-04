@@ -1,6 +1,7 @@
 package storagebox
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -23,23 +24,23 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBox]{
 		}
 
 		cmd.Flags().String("name", "", "Storage Box name (required)")
-		_ = cmd.MarkFlagRequired("name")
+		util.MarkFlagRequired(cmd, "name")
 
 		cmd.Flags().String("type", "", "Storage Box Type (ID or name) (required)")
-		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidatesF(client.StorageBoxType().Names))
-		_ = cmd.MarkFlagRequired("type")
+		cmpl.RegisterFlagCompletion(cmd, "type", cmpl.SuggestCandidatesF(client.StorageBoxType().Names))
+		util.MarkFlagRequired(cmd, "type")
 
 		cmd.Flags().String("location", "", "Location (ID or name) (required)")
-		_ = cmd.MarkFlagRequired("location")
-		_ = cmd.RegisterFlagCompletionFunc("location", cmpl.SuggestCandidatesF(client.Location().Names))
+		util.MarkFlagRequired(cmd, "location")
+		cmpl.RegisterFlagCompletion(cmd, "location", cmpl.SuggestCandidatesF(client.Location().Names))
 
 		cmd.Flags().String("password", "", "The password that will be set for this Storage Box (required)")
-		_ = cmd.MarkFlagRequired("password")
+		util.MarkFlagRequired(cmd, "password")
 
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 
 		cmd.Flags().StringArray("ssh-key", []string{}, "SSH public keys in OpenSSH format or as the ID or name of an existing SSH key")
-		_ = cmd.RegisterFlagCompletionFunc("ssh-key", cmpl.SuggestCandidatesF(client.SSHKey().Names))
+		cmpl.RegisterFlagCompletion(cmd, "ssh-key", cmpl.SuggestCandidatesF(client.SSHKey().Names))
 
 		cmd.Flags().Bool("enable-samba", false, "Whether the Samba subsystem should be enabled (true, false)")
 		cmd.Flags().Bool("enable-ssh", false, "Whether the SSH subsystem should be enabled (true, false)")
@@ -48,7 +49,7 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBox]{
 		cmd.Flags().Bool("reachable-externally", false, "Whether the Storage Box should be accessible from outside the Hetzner network (true, false)")
 
 		cmd.Flags().StringSlice("enable-protection", []string{}, "Enable protection (delete) (default: none)")
-		_ = cmd.RegisterFlagCompletionFunc("enable-protection", cmpl.SuggestCandidates("delete"))
+		cmpl.RegisterFlagCompletion(cmd, "enable-protection", cmpl.SuggestCandidates("delete"))
 
 		return cmd
 	},
@@ -81,7 +82,7 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBox]{
 
 		resolvedSSHKeys := make([]*hcloud.SSHKey, len(sshKeys))
 		for i, sshKey := range sshKeys {
-			resolvedSSHKeys[i], err = resolveSSHKey(s, sshKey)
+			resolvedSSHKeys[i], err = resolveSSHKey(cmd.Context(), s, sshKey)
 			if err != nil {
 				return nil, nil, err
 			}
@@ -113,17 +114,17 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBox]{
 			SSHKeys:        resolvedSSHKeys,
 			AccessSettings: &accessSettings,
 		}
-		result, _, err := s.Client().StorageBox().Create(s, opts)
+		result, _, err := s.Client().StorageBox().Create(cmd.Context(), opts)
 		if err != nil {
 			return nil, nil, err
 		}
 
-		if err := s.WaitForActions(s, cmd, result.Action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, result.Action); err != nil {
 			return nil, nil, err
 		}
 		cmd.Printf("Storage Box %d created\n", result.StorageBox.ID)
 
-		storageBox, _, err := s.Client().StorageBox().GetByID(s, result.StorageBox.ID)
+		storageBox, _, err := s.Client().StorageBox().GetByID(cmd.Context(), result.StorageBox.ID)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -139,9 +140,9 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBox]{
 
 		return storageBox, util.Wrap("storage_box", hcloud.SchemaFromStorageBox(result.StorageBox)), nil
 	},
-	PrintResource: func(_ state.State, cmd *cobra.Command, storageBox *hcloud.StorageBox) {
-		cmd.Printf("Server: %s\n", storageBox.Server)
-		cmd.Printf("Username: %s\n", storageBox.Username)
+	PrintResource: func(_ state.State, cmd *cobra.Command, storageBox *hcloud.StorageBox) error {
+		_, err := fmt.Fprintf(cmd.OutOrStdout(), "Server: %s\nUsername: %s\n", storageBox.Server, storageBox.Username)
+		return err
 	},
 }
 
@@ -150,13 +151,13 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBox]{
 // - Otherwise, it is treated as an ID or name of an existing SSH key in the project.
 // - If an SSH key with the given ID or name exists, it is returned.
 // - Otherwise, pubKey is returned wrapped in a [hcloud.SSHKey].
-func resolveSSHKey(s state.State, pubKey string) (*hcloud.SSHKey, error) {
+func resolveSSHKey(ctx context.Context, s state.State, pubKey string) (*hcloud.SSHKey, error) {
 	_, _, _, _, err := ssh.ParseAuthorizedKey([]byte(pubKey))
 	if err == nil {
 		return &hcloud.SSHKey{PublicKey: pubKey}, nil
 	}
 
-	sshKey, _, err := s.Client().SSHKey().Get(s, pubKey)
+	sshKey, _, err := s.Client().SSHKey().Get(ctx, pubKey)
 	if err != nil {
 		return nil, err
 	}

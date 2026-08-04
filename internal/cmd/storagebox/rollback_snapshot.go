@@ -8,6 +8,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/cli/internal/cmd/storagebox/snapshot"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -25,8 +26,8 @@ var RollbackSnapshotCmd = base.Cmd{
 		}
 
 		cmd.Flags().String("snapshot", "", "The name or ID of the snapshot to roll back to")
-		_ = cmd.MarkFlagRequired("snapshot")
-		_ = cmd.RegisterFlagCompletionFunc("snapshot", snapshot.SuggestSnapshots(client))
+		util.MarkFlagRequired(cmd, "snapshot")
+		cmpl.RegisterFlagCompletion(cmd, "snapshot", snapshot.SuggestSnapshots(client))
 
 		return cmd
 	},
@@ -34,7 +35,7 @@ var RollbackSnapshotCmd = base.Cmd{
 		idOrName := args[0]
 		snapshotIDOrName, _ := cmd.Flags().GetString("snapshot")
 
-		storageBox, _, err := s.Client().StorageBox().Get(s, idOrName)
+		storageBox, _, err := s.Client().StorageBox().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return err
 		}
@@ -42,7 +43,7 @@ var RollbackSnapshotCmd = base.Cmd{
 			return fmt.Errorf("Storage Box not found: %s", idOrName)
 		}
 
-		snapshot, _, err := s.Client().StorageBox().GetSnapshot(s, storageBox, snapshotIDOrName)
+		snapshot, _, err := s.Client().StorageBox().GetSnapshot(cmd.Context(), storageBox, snapshotIDOrName)
 		if err != nil {
 			return err
 		}
@@ -50,14 +51,14 @@ var RollbackSnapshotCmd = base.Cmd{
 			return fmt.Errorf("Storage Box Snapshot not found: %s", snapshotIDOrName)
 		}
 
-		action, _, err := s.Client().StorageBox().RollbackSnapshot(s, storageBox, hcloud.StorageBoxRollbackSnapshotOpts{
+		action, _, err := s.Client().StorageBox().RollbackSnapshot(cmd.Context(), storageBox, hcloud.StorageBoxRollbackSnapshotOpts{
 			Snapshot: snapshot,
 		})
 		if err != nil {
 			return err
 		}
 
-		if err := s.WaitForActions(s, cmd, action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, action); err != nil {
 			return err
 		}
 

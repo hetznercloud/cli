@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -14,7 +15,7 @@ import (
 var ChangeProtectionCmds = base.ChangeProtectionCmds[*hcloud.Server, hcloud.ServerChangeProtectionOpts]{
 	ResourceNameSingular: "Server",
 
-	NameSuggestions: func(client hcapi2.Client) func() []string {
+	NameSuggestions: func(client hcapi2.Client) hcapi2.CompletionFunc {
 		return client.Server().Names
 	},
 
@@ -27,12 +28,12 @@ var ChangeProtectionCmds = base.ChangeProtectionCmds[*hcloud.Server, hcloud.Serv
 		},
 	},
 
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.Server, *hcloud.Response, error) {
-		return s.Client().Server().Get(s, idOrName)
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (*hcloud.Server, *hcloud.Response, error) {
+		return s.Client().Server().Get(cmd.Context(), idOrName)
 	},
 
-	ChangeProtectionFunction: func(s state.State, server *hcloud.Server, opts hcloud.ServerChangeProtectionOpts) (*hcloud.Action, *hcloud.Response, error) {
-		return s.Client().Server().ChangeProtection(s, server, opts)
+	ChangeProtectionFunction: func(ctx context.Context, s state.State, server *hcloud.Server, opts hcloud.ServerChangeProtectionOpts) (*hcloud.Action, *hcloud.Response, error) {
+		return s.Client().Server().ChangeProtection(ctx, server, opts)
 	},
 
 	IDOrName: func(server *hcloud.Server) string {

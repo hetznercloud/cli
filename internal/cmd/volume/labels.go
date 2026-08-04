@@ -1,6 +1,7 @@
 package volume
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 
@@ -14,10 +15,10 @@ var LabelCmds = base.LabelCmds[*hcloud.Volume]{
 	ResourceNameSingular:   "Volume",
 	ShortDescriptionAdd:    "Add a label to a Volume",
 	ShortDescriptionRemove: "Remove a label from a Volume",
-	NameSuggestions:        func(c hcapi2.Client) func() []string { return c.Volume().Names },
-	LabelKeySuggestions:    func(c hcapi2.Client) func(idOrName string) []string { return c.Volume().LabelKeys },
-	Fetch: func(s state.State, idOrName string) (*hcloud.Volume, error) {
-		volume, _, err := s.Client().Volume().Get(s, idOrName)
+	NameSuggestions:        func(c hcapi2.Client) hcapi2.CompletionFunc { return c.Volume().Names },
+	LabelKeySuggestions:    func(c hcapi2.Client) hcapi2.LabelCompletionFunc { return c.Volume().LabelKeys },
+	Fetch: func(ctx context.Context, s state.State, idOrName string) (*hcloud.Volume, error) {
+		volume, _, err := s.Client().Volume().Get(ctx, idOrName)
 		if err != nil {
 			return nil, err
 		}
@@ -26,11 +27,11 @@ var LabelCmds = base.LabelCmds[*hcloud.Volume]{
 		}
 		return volume, nil
 	},
-	SetLabels: func(s state.State, volume *hcloud.Volume, labels map[string]string) error {
+	SetLabels: func(ctx context.Context, s state.State, volume *hcloud.Volume, labels map[string]string) error {
 		opts := hcloud.VolumeUpdateOpts{
 			Labels: labels,
 		}
-		_, _, err := s.Client().Volume().Update(s, volume, opts)
+		_, _, err := s.Client().Volume().Update(ctx, volume, opts)
 		return err
 	},
 	GetLabels: func(volume *hcloud.Volume) map[string]string {

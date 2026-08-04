@@ -17,7 +17,7 @@ func TestList(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	time.Local = time.UTC
+	testutil.SetTimezone(t, time.UTC)
 
 	cmd := servertype.ListCmd.CobraCommand(fx.State())
 
@@ -54,10 +54,10 @@ func TestList(t *testing.T) {
 			},
 		}, nil)
 
-	out, errOut, err := fx.Run(cmd, []string{"-o=columns=id,name,cores,cpu_type,architecture,memory,disk,location,location_available,location_recommended"})
+	out, errOut, err := fx.Run(cmd, []string{"-o=columns=id,name,cores,cpu_type,architecture,memory,disk,location,location_availability_signal,location_recommended"})
 
-	expOut := `ID    NAME   CORES   CPU TYPE   ARCHITECTURE   MEMORY   DISK    LOCATION     LOCATION AVAILABLE   LOCATION RECOMMENDED
-123   test   2       shared     arm            8.0 GB   80 GB   nbg1, hel1   nbg1, hel1           hel1
+	expOut := `ID    NAME   CORES   CPU TYPE   ARCHITECTURE   MEMORY   DISK    LOCATION     LOCATION AVAILABILITY SIGNAL   LOCATION RECOMMENDED
+123   test   2       shared     arm            8.0 GB   80 GB   nbg1, hel1   nbg1, hel1                     hel1
 `
 
 	require.NoError(t, err)
@@ -69,7 +69,7 @@ func TestListColumnDeprecated(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	time.Local = time.UTC
+	testutil.SetTimezone(t, time.UTC)
 
 	cmd := servertype.ListCmd.CobraCommand(fx.State())
 

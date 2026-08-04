@@ -24,6 +24,8 @@ func NewUnsetCommand(s state.State) *cobra.Command {
 
 func runUnset(s state.State, _ *cobra.Command, _ []string) error {
 	cfg := s.Config()
-	cfg.SetActiveContext(nil)
+	if err := cfg.SetActiveContext(nil); err != nil {
+		return err
+	}
 	return cfg.Write(nil)
 }

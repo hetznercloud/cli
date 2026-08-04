@@ -2,7 +2,6 @@ package hcapi2
 
 import (
 	"context"
-	"strconv"
 
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -11,8 +10,8 @@ import (
 // some additional helper functions.
 type FloatingIPClient interface {
 	hcloud.IFloatingIPClient
-	Names() []string
-	LabelKeys(idOrName string) []string
+	Names(context.Context) ([]string, error)
+	LabelKeys(context.Context, string) ([]string, error)
 }
 
 // NewFloatingIPClient creates a new floating IP client.
@@ -30,28 +29,23 @@ type floatingIPClient struct {
 
 // Names obtains a list of available floating IPs. It returns nil if
 // no floating IP names could be fetched or none were available.
-func (c *floatingIPClient) Names() []string {
-	fips, err := c.All(context.Background())
-	if err != nil || len(fips) == 0 {
-		return nil
+func (c *floatingIPClient) Names(ctx context.Context) ([]string, error) {
+	fips, err := c.All(ctx)
+	if err != nil {
+		return nil, err
 	}
-	names := make([]string, len(fips))
-	for i, fip := range fips {
-		name := fip.Name
-		if name == "" {
-			name = strconv.FormatInt(fip.ID, 10)
-		}
-		names[i] = name
-	}
-	return names
+	return resourceNames(fips, func(fip *hcloud.FloatingIP) int64 { return fip.ID }, func(fip *hcloud.FloatingIP) string { return fip.Name }), nil
 }
 
 // LabelKeys returns a slice containing the keys of all labels
 // assigned to the Floating IP with the passed idOrName.
-func (c *floatingIPClient) LabelKeys(idOrName string) []string {
-	fip, _, err := c.Get(context.Background(), idOrName)
-	if err != nil || fip == nil || len(fip.Labels) == 0 {
-		return nil
+func (c *floatingIPClient) LabelKeys(ctx context.Context, idOrName string) ([]string, error) {
+	fip, _, err := c.Get(ctx, idOrName)
+	if err != nil {
+		return nil, err
 	}
-	return labelKeys(fip.Labels)
+	if fip == nil {
+		return nil, nil
+	}
+	return labelKeys(fip.Labels), nil
 }

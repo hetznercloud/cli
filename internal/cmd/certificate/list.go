@@ -1,6 +1,7 @@
 package certificate
 
 import (
+	"context"
 	"strings"
 	"time"
 
@@ -22,12 +23,12 @@ var ListCmd = &base.ListCmd[*hcloud.Certificate, schema.Certificate]{
 	DefaultColumns:     []string{"id", "name", "type", "domain_names", "not_valid_after", "age"},
 	SortOption:         config.OptionSortCertificate,
 
-	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.Certificate, error) {
+	Fetch: func(ctx context.Context, s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.Certificate, error) {
 		opts := hcloud.CertificateListOpts{ListOpts: listOpts}
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		return s.Client().Certificate().AllWithOpts(s, opts)
+		return s.Client().Certificate().AllWithOpts(ctx, opts)
 	},
 
 	OutputTable: func(t *output.Table[*hcloud.Certificate], _ hcapi2.Client) {

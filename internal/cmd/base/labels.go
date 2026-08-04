@@ -1,15 +1,16 @@
 package base
 
 import (
+	"context"
 	"errors"
 	"fmt"
-	"log"
 	"slices"
 	"strings"
 
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/registration"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
@@ -20,14 +21,14 @@ type LabelCmds[T any] struct {
 	ResourceNameSingular   string
 	ShortDescriptionAdd    string
 	ShortDescriptionRemove string
-	NameSuggestions        func(client hcapi2.Client) func() []string
-	LabelKeySuggestions    func(client hcapi2.Client) func(idOrName string) []string
-	Fetch                  func(s state.State, idOrName string) (T, error)
+	NameSuggestions        func(client hcapi2.Client) hcapi2.CompletionFunc
+	LabelKeySuggestions    func(client hcapi2.Client) hcapi2.LabelCompletionFunc
+	Fetch                  func(ctx context.Context, s state.State, idOrName string) (T, error)
 
 	// Can be set in case the resource has more than a single identifier that is used in the positional arguments.
 	// See [LabelCmds.PositionalArgumentOverride].
-	FetchWithArgs func(s state.State, args []string) (T, error)
-	SetLabels     func(s state.State, resource T, labels map[string]string) error
+	FetchWithArgs func(ctx context.Context, s state.State, args []string) (T, error)
+	SetLabels     func(ctx context.Context, s state.State, resource T, labels map[string]string) error
 	GetLabels     func(resource T) map[string]string
 	GetIDOrName   func(resource T) string
 
@@ -53,6 +54,7 @@ type LabelCmds[T any] struct {
 // AddCobraCommand creates a command that can be registered with cobra.
 func (lc *LabelCmds[T]) AddCobraCommand(s state.State) *cobra.Command {
 	var suggestArgs []cobra.CompletionFunc
+	var constructionErr error
 	switch {
 	case lc.NameSuggestions != nil:
 		suggestArgs = append(suggestArgs,
@@ -61,7 +63,7 @@ func (lc *LabelCmds[T]) AddCobraCommand(s state.State) *cobra.Command {
 	case lc.ValidArgsFunction != nil:
 		suggestArgs = append(suggestArgs, lc.ValidArgsFunction(s.Client())...)
 	default:
-		log.Fatalf("label command %s is missing ValidArgsFunction or NameSuggestions", lc.ResourceNameSingular)
+		constructionErr = fmt.Errorf("label command %s is missing ValidArgsFunction or NameSuggestions", lc.ResourceNameSingular)
 	}
 
 	cmd := &cobra.Command{
@@ -76,6 +78,7 @@ func (lc *LabelCmds[T]) AddCobraCommand(s state.State) *cobra.Command {
 			return lc.RunAdd(s, cmd, args)
 		},
 	}
+	registration.Record(cmd, constructionErr)
 
 	cmd.Flags().BoolP("overwrite", "o", false, "Overwrite label if it exists already (true, false)")
 
@@ -94,9 +97,9 @@ func (lc *LabelCmds[T]) RunAdd(s state.State, cmd *cobra.Command, args []string)
 	var err error
 
 	if lc.FetchWithArgs != nil {
-		resource, err = lc.FetchWithArgs(s, args)
+		resource, err = lc.FetchWithArgs(cmd.Context(), s, args)
 	} else {
-		resource, err = lc.Fetch(s, args[0])
+		resource, err = lc.Fetch(cmd.Context(), s, args[0])
 	}
 
 	if err != nil {
@@ -122,7 +125,7 @@ func (lc *LabelCmds[T]) RunAdd(s state.State, cmd *cobra.Command, args []string)
 		labels[key] = val
 	}
 
-	if err := lc.SetLabels(s, resource, labels); err != nil {
+	if err := lc.SetLabels(cmd.Context(), s, resource, labels); err != nil {
 		return err
 	}
 
@@ -145,21 +148,22 @@ func (lc *LabelCmds[T]) validateAddLabel(_ *cobra.Command, args []string) error 
 // RemoveCobraCommand creates a command that can be registered with cobra.
 func (lc *LabelCmds[T]) RemoveCobraCommand(s state.State) *cobra.Command {
 	var suggestArgs []cobra.CompletionFunc
+	var constructionErr error
 	switch {
 	case lc.NameSuggestions != nil:
 		suggestArgs = append(suggestArgs,
 			cmpl.SuggestCandidatesF(lc.NameSuggestions(s.Client())),
-			cmpl.SuggestCandidatesCtx(func(_ *cobra.Command, args []string) []string {
+			cmpl.SuggestCandidatesCtxE(func(cmd *cobra.Command, args []string) ([]string, error) {
 				if len(args) != 1 {
-					return nil
+					return nil, nil
 				}
-				return lc.LabelKeySuggestions(s.Client())(args[0])
+				return lc.LabelKeySuggestions(s.Client())(cmd.Context(), args[0])
 			}),
 		)
 	case lc.ValidArgsFunction != nil:
 		suggestArgs = append(suggestArgs, lc.ValidArgsFunction(s.Client())...)
 	default:
-		log.Fatalf("label command %s is missing ValidArgsFunction or NameSuggestions", lc.ResourceNameSingular)
+		constructionErr = fmt.Errorf("label command %s is missing ValidArgsFunction or NameSuggestions", lc.ResourceNameSingular)
 	}
 
 	cmd := &cobra.Command{
@@ -174,6 +178,7 @@ func (lc *LabelCmds[T]) RemoveCobraCommand(s state.State) *cobra.Command {
 			return lc.RunRemove(s, cmd, args)
 		},
 	}
+	registration.Record(cmd, constructionErr)
 
 	cmd.Flags().BoolP("all", "a", false, "Remove all labels")
 
@@ -192,9 +197,9 @@ func (lc *LabelCmds[T]) RunRemove(s state.State, cmd *cobra.Command, args []stri
 	var err error
 
 	if lc.FetchWithArgs != nil {
-		resource, err = lc.FetchWithArgs(s, args)
+		resource, err = lc.FetchWithArgs(cmd.Context(), s, args)
 	} else {
-		resource, err = lc.Fetch(s, args[0])
+		resource, err = lc.Fetch(cmd.Context(), s, args[0])
 	}
 
 	if err != nil {
@@ -215,7 +220,7 @@ func (lc *LabelCmds[T]) RunRemove(s state.State, cmd *cobra.Command, args []stri
 		}
 	}
 
-	if err := lc.SetLabels(s, resource, labels); err != nil {
+	if err := lc.SetLabels(cmd.Context(), s, resource, labels); err != nil {
 		return err
 	}
 

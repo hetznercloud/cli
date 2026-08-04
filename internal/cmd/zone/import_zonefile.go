@@ -27,8 +27,8 @@ var ImportZonefileCmd = base.Cmd{
 		}
 
 		cmd.Flags().String("zonefile", "", "Zone file in BIND (RFC 1034/1035) format (use - to read from stdin)")
-		_ = cmd.MarkFlagRequired("zonefile")
-		_ = cmd.MarkFlagFilename("zonefile")
+		util.MarkFlagRequired(cmd, "zonefile")
+		util.MarkFlagFilename(cmd, "zonefile")
 
 		output.AddFlag(cmd, output.OptionJSON(), output.OptionYAML())
 
@@ -41,7 +41,7 @@ var ImportZonefileCmd = base.Cmd{
 			return fmt.Errorf("failed to convert Zone name to ascii: %w", err)
 		}
 
-		zone, _, err := s.Client().Zone().Get(s, idOrName)
+		zone, _, err := s.Client().Zone().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return err
 		}
@@ -52,17 +52,17 @@ var ImportZonefileCmd = base.Cmd{
 		opts := hcloud.ZoneImportZonefileOpts{}
 
 		zonefile, _ := cmd.Flags().GetString("zonefile")
-		opts.Zonefile, err = readZonefile(zonefile)
+		opts.Zonefile, err = readZonefile(cmd.InOrStdin(), zonefile)
 		if err != nil {
 			return err
 		}
 
-		action, _, err := s.Client().Zone().ImportZonefile(s, zone, opts)
+		action, _, err := s.Client().Zone().ImportZonefile(cmd.Context(), zone, opts)
 		if err != nil {
 			return err
 		}
 
-		if err := s.WaitForActions(s, cmd, action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, action); err != nil {
 			return err
 		}
 
@@ -72,12 +72,12 @@ var ImportZonefileCmd = base.Cmd{
 	},
 }
 
-func readZonefile(zonefile string) (string, error) {
+func readZonefile(stdin io.Reader, zonefile string) (string, error) {
 	var data []byte
 	var err error
 
 	if zonefile == "-" {
-		data, err = io.ReadAll(os.Stdin)
+		data, err = io.ReadAll(stdin)
 	} else {
 		data, err = os.ReadFile(zonefile)
 	}

@@ -34,23 +34,23 @@ and https://docs.hetzner.cloud/changelog#2026-04-27-primary-ips-make-assignee_ty
 			DisableFlagsInUseLine: true,
 		}
 		cmd.Flags().String("type", "", "Type (ipv4 or ipv6) (required)")
-		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("ipv4", "ipv6"))
-		_ = cmd.MarkFlagRequired("type")
+		cmpl.RegisterFlagCompletion(cmd, "type", cmpl.SuggestCandidates("ipv4", "ipv6"))
+		util.MarkFlagRequired(cmd, "type")
 
 		cmd.Flags().String("name", "", "Name (required)")
-		_ = cmd.MarkFlagRequired("name")
+		util.MarkFlagRequired(cmd, "name")
 
 		cmd.Flags().Int64("assignee-id", 0, "Assignee (usually a Server) to assign Primary IP to")
 		cmd.Flags().String("assignee-type", "server", "Assignee Type to assign Primary IP to (default: server)")
-		_ = cmd.RegisterFlagCompletionFunc("assignee-type", cmpl.SuggestCandidates("server"))
+		cmpl.RegisterFlagCompletion(cmd, "assignee-type", cmpl.SuggestCandidates("server"))
 
 		cmd.Flags().String("location", "", "Location (ID or name) of Primary IP")
-		_ = cmd.RegisterFlagCompletionFunc("location", cmpl.SuggestCandidatesF(client.Location().Names))
+		cmpl.RegisterFlagCompletion(cmd, "location", cmpl.SuggestCandidatesF(client.Location().Names))
 
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 
 		cmd.Flags().StringSlice("enable-protection", []string{}, "Enable protection (delete) (default: none)")
-		_ = cmd.RegisterFlagCompletionFunc("enable-protection", cmpl.SuggestCandidates("delete"))
+		cmpl.RegisterFlagCompletion(cmd, "enable-protection", cmpl.SuggestCandidates("delete"))
 
 		cmd.Flags().Bool("auto-delete", false, "Delete Primary IP if assigned resource is deleted (true, false)")
 
@@ -95,7 +95,7 @@ and https://docs.hetzner.cloud/changelog#2026-04-27-primary-ips-make-assignee_ty
 			createOpts.AutoDelete = &autoDelete
 		}
 		if cmd.Flags().Changed("location") {
-			location, _, err := s.Client().Location().Get(s, locationIDOrName)
+			location, _, err := s.Client().Location().Get(cmd.Context(), locationIDOrName)
 			if err != nil {
 				return nil, nil, err
 			}
@@ -105,13 +105,13 @@ and https://docs.hetzner.cloud/changelog#2026-04-27-primary-ips-make-assignee_ty
 			createOpts.Location = location.Name
 		}
 
-		result, _, err := s.Client().PrimaryIP().Create(s, createOpts)
+		result, _, err := s.Client().PrimaryIP().Create(cmd.Context(), createOpts)
 		if err != nil {
 			return nil, nil, err
 		}
 
 		if result.Action != nil {
-			if err := s.WaitForActions(s, cmd, result.Action); err != nil {
+			if err := s.WaitForActions(cmd.Context(), cmd, result.Action); err != nil {
 				return nil, nil, err
 			}
 		}
@@ -124,7 +124,7 @@ and https://docs.hetzner.cloud/changelog#2026-04-27-primary-ips-make-assignee_ty
 			}
 		}
 
-		primaryIP, _, err := s.Client().PrimaryIP().GetByID(s, result.PrimaryIP.ID)
+		primaryIP, _, err := s.Client().PrimaryIP().GetByID(cmd.Context(), result.PrimaryIP.ID)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -134,7 +134,8 @@ and https://docs.hetzner.cloud/changelog#2026-04-27-primary-ips-make-assignee_ty
 
 		return primaryIP, util.Wrap("primary_ip", hcloud.SchemaFromPrimaryIP(primaryIP)), nil
 	},
-	PrintResource: func(_ state.State, cmd *cobra.Command, primaryIP *hcloud.PrimaryIP) {
-		cmd.Printf("IP%s: %s\n", primaryIP.Type[2:], primaryIP.IP)
+	PrintResource: func(_ state.State, cmd *cobra.Command, primaryIP *hcloud.PrimaryIP) error {
+		_, err := fmt.Fprintf(cmd.OutOrStdout(), "IP%s: %s\n", primaryIP.Type[2:], primaryIP.IP)
+		return err
 	},
 }

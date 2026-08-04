@@ -1,6 +1,8 @@
 package output
 
 import (
+	"context"
+	"errors"
 	"fmt"
 	"io"
 	"reflect"
@@ -62,7 +64,7 @@ func AddFlag(cmd *cobra.Command, options ...Option) {
 		[]string{},
 		fmt.Sprintf("output options: %s", strings.Join(names, "|")),
 	)
-	_ = cmd.RegisterFlagCompletionFunc(flagName, cmpl.SuggestCandidates(values...))
+	cmpl.RegisterFlagCompletion(cmd, flagName, cmpl.SuggestCandidates(values...))
 	cmd.PreRunE = util.ChainRunE(cmd.PreRunE, validateOutputFlag(options))
 }
 
@@ -108,9 +110,12 @@ func validateOutputFlag(options []Option) func(cmd *cobra.Command, args []string
 	}
 }
 
-func FlagsForCommand(cmd *cobra.Command) Opts {
-	opts, _ := cmd.Flags().GetStringArray(flagName)
-	return parseOutputFlags(opts)
+func FlagsForCommand(cmd *cobra.Command) (Opts, error) {
+	opts, err := cmd.Flags().GetStringArray(flagName)
+	if err != nil {
+		return nil, err
+	}
+	return parseOutputFlags(opts), nil
 }
 
 type Opts map[string][]string
@@ -173,6 +178,7 @@ func NewTable[T any](out io.Writer) *Table[T] {
 		w:             w,
 		columns:       map[string]bool{},
 		fieldMapping:  map[string]FieldFn[T]{},
+		fieldMappingE: map[string]FieldFnE[T]{},
 		fieldAlias:    map[string]string{},
 		allowedFields: map[string]bool{},
 		deprecations:  map[string]string{},
@@ -180,13 +186,16 @@ func NewTable[T any](out io.Writer) *Table[T] {
 }
 
 type FieldFn[T any] func(obj T) string
+type FieldFnE[T any] func(context.Context, T) (string, error)
 
 // Table is a generic way to format object as a table.
 type Table[T any] struct {
 	out           io.Writer
 	w             table.Writer
+	err           error
 	columns       map[string]bool
 	fieldMapping  map[string]FieldFn[T]
+	fieldMappingE map[string]FieldFnE[T]
 	fieldAlias    map[string]string
 	allowedFields map[string]bool
 	deprecations  map[string]string
@@ -215,6 +224,14 @@ func (o *Table[T]) AddFieldFn(field string, fn FieldFn[T]) *Table[T] {
 	return o
 }
 
+// AddFieldFnE adds a context-aware field function that can report errors.
+func (o *Table[T]) AddFieldFnE(field string, fn FieldFnE[T]) *Table[T] {
+	o.fieldMappingE[field] = fn
+	o.allowedFields[field] = true
+	o.columns[field] = true
+	return o
+}
+
 // MarkFieldAsDeprecated marks the specified field as deprecated. The message will be printed
 // to stderr if the column is used.
 func (o *Table[T]) MarkFieldAsDeprecated(field string, message string) *Table[T] {
@@ -226,10 +243,15 @@ func (o *Table[T]) MarkFieldAsDeprecated(field string, message string) *Table[T]
 func (o *Table[T]) AddAllowedFields(obj T) *Table[T] {
 	v := reflect.ValueOf(obj)
 	if v.Kind() == reflect.Pointer {
-		v = v.Elem()
+		if v.IsNil() {
+			v = reflect.New(v.Type().Elem()).Elem()
+		} else {
+			v = v.Elem()
+		}
 	}
 	if v.Kind() != reflect.Struct {
-		panic("AddAllowedFields input must be a struct or a pointer to a struct")
+		o.err = errors.Join(o.err, fmt.Errorf("allowed fields must come from a struct or pointer to a struct, got %T", obj))
+		return o
 	}
 	t := v.Type()
 	for i := 0; i < v.NumField(); i++ {
@@ -262,6 +284,9 @@ func (o *Table[T]) RemoveAllowedField(fields ...string) *Table[T] {
 
 // ValidateColumns returns a list of warnings for the used columns and an error if invalid columns are specified.
 func (o *Table[T]) ValidateColumns(cols []string) ([]string, error) {
+	if o.err != nil {
+		return nil, o.err
+	}
 	var warnings, invalidCols []string
 	for _, col := range cols {
 		if warning, isDeprecated := o.deprecations[strings.ToLower(col)]; isDeprecated {
@@ -291,13 +316,15 @@ func (o *Table[T]) WriteHeader(columns []string) {
 }
 
 func (o *Table[T]) Flush() error {
-	_, _ = o.out.Write([]byte(o.w.Render()))
-	_, _ = o.out.Write([]byte("\n"))
-	return nil
+	if _, err := io.WriteString(o.out, o.w.Render()); err != nil {
+		return err
+	}
+	_, err := io.WriteString(o.out, "\n")
+	return err
 }
 
 // Write writes a table line.
-func (o *Table[T]) Write(columns []string, obj T) {
+func (o *Table[T]) Write(ctx context.Context, columns []string, obj T) error {
 	data := structs.Map(obj)
 	dataL := map[string]any{}
 	for key, value := range data {
@@ -308,10 +335,26 @@ func (o *Table[T]) Write(columns []string, obj T) {
 	for _, col := range columns {
 		colName := strings.ToLower(col)
 		if alias, ok := o.fieldAlias[colName]; ok {
+			if fn, ok := o.fieldMappingE[alias]; ok {
+				value, err := fn(ctx, obj)
+				if err != nil {
+					return fmt.Errorf("render column %q: %w", col, err)
+				}
+				out = append(out, value)
+				continue
+			}
 			if fn, ok := o.fieldMapping[alias]; ok {
 				out = append(out, fn(obj))
 				continue
 			}
+		}
+		if fn, ok := o.fieldMappingE[colName]; ok {
+			value, err := fn(ctx, obj)
+			if err != nil {
+				return fmt.Errorf("render column %q: %w", col, err)
+			}
+			out = append(out, value)
+			continue
 		}
 		if fn, ok := o.fieldMapping[colName]; ok {
 			out = append(out, fn(obj))
@@ -334,10 +377,12 @@ func (o *Table[T]) Write(columns []string, obj T) {
 		}
 	}
 	o.w.AppendRow(out)
+	return nil
 }
 
 func (o *Table[T]) ToAny() *Table[any] {
 	fieldMapping := make(map[string]FieldFn[any])
+	fieldMappingE := make(map[string]FieldFnE[any])
 	for k, v := range o.fieldMapping {
 		fieldMapping[k] = func(obj any) string {
 			if castedObj, ok := obj.(T); ok {
@@ -346,13 +391,24 @@ func (o *Table[T]) ToAny() *Table[any] {
 			return ""
 		}
 	}
+	for k, v := range o.fieldMappingE {
+		fieldMappingE[k] = func(ctx context.Context, obj any) (string, error) {
+			if castedObj, ok := obj.(T); ok {
+				return v(ctx, castedObj)
+			}
+			return "", fmt.Errorf("unexpected table object type %T", obj)
+		}
+	}
 	return &Table[any]{
 		out:           o.out,
 		w:             o.w,
+		err:           o.err,
 		columns:       o.columns,
 		fieldMapping:  fieldMapping,
+		fieldMappingE: fieldMappingE,
 		fieldAlias:    o.fieldAlias,
 		allowedFields: o.allowedFields,
+		deprecations:  o.deprecations,
 	}
 }
 

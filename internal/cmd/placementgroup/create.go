@@ -17,12 +17,12 @@ var CreateCmd = base.CreateCmd[*hcloud.PlacementGroup]{
 			Short: "Create a Placement Group",
 		}
 		cmd.Flags().String("name", "", "Name")
-		_ = cmd.MarkFlagRequired("name")
+		util.MarkFlagRequired(cmd, "name")
 
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 
 		cmd.Flags().String("type", "", "Type of the Placement Group")
-		_ = cmd.MarkFlagRequired("type")
+		util.MarkFlagRequired(cmd, "type")
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, _ []string) (*hcloud.PlacementGroup, any, error) {
@@ -36,13 +36,13 @@ var CreateCmd = base.CreateCmd[*hcloud.PlacementGroup]{
 			Type:   hcloud.PlacementGroupType(placementGroupType),
 		}
 
-		result, _, err := s.Client().PlacementGroup().Create(s, opts)
+		result, _, err := s.Client().PlacementGroup().Create(cmd.Context(), opts)
 		if err != nil {
 			return nil, nil, err
 		}
 
 		if result.Action != nil {
-			if err := s.WaitForActions(s, cmd, result.Action); err != nil {
+			if err := s.WaitForActions(cmd.Context(), cmd, result.Action); err != nil {
 				return nil, nil, err
 			}
 		}

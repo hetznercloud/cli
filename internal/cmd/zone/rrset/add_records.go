@@ -42,7 +42,7 @@ If the Zone RRSet doesn't exist, it will automatically be created.
 			return fmt.Errorf("failed to convert Zone name to ascii: %w", err)
 		}
 
-		zone, _, err := s.Client().Zone().Get(s, zoneIDOrName)
+		zone, _, err := s.Client().Zone().Get(cmd.Context(), zoneIDOrName)
 		if err != nil {
 			return err
 		}
@@ -74,12 +74,12 @@ If the Zone RRSet doesn't exist, it will automatically be created.
 			opts.TTL = &ttl
 		}
 
-		action, _, err := s.Client().Zone().AddRRSetRecords(s, rrset, opts)
+		action, _, err := s.Client().Zone().AddRRSetRecords(cmd.Context(), rrset, opts)
 		if err != nil {
 			return err
 		}
 
-		if err := s.WaitForActions(s, cmd, action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, action); err != nil {
 			return err
 		}
 

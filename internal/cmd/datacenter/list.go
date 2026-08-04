@@ -1,6 +1,7 @@
 package datacenter
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -21,12 +22,12 @@ var ListCmd = &base.ListCmd[*hcloud.Datacenter, schema.Datacenter]{
 	DefaultColumns:     []string{"id", "name", "description", "location"},
 	SortOption:         config.OptionSortDatacenter,
 
-	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.Datacenter, error) {
+	Fetch: func(ctx context.Context, s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.Datacenter, error) {
 		opts := hcloud.DatacenterListOpts{ListOpts: listOpts}
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		return s.Client().Datacenter().AllWithOpts(s, opts)
+		return s.Client().Datacenter().AllWithOpts(ctx, opts)
 	},
 
 	OutputTable: func(t *output.Table[*hcloud.Datacenter], _ hcapi2.Client) {

@@ -1,6 +1,7 @@
 package zone
 
 import (
+	"context"
 	"fmt"
 	"net"
 	"strconv"
@@ -29,10 +30,10 @@ var ListCmd = &base.ListCmd[*hcloud.Zone, schema.Zone]{
 
 	AdditionalFlags: func(cmd *cobra.Command) {
 		cmd.Flags().String("mode", "", "Only Zones with this mode are displayed")
-		_ = cmd.RegisterFlagCompletionFunc("mode", cmpl.SuggestCandidates(string(hcloud.ZoneModePrimary), string(hcloud.ZoneModeSecondary)))
+		cmpl.RegisterFlagCompletion(cmd, "mode", cmpl.SuggestCandidates(string(hcloud.ZoneModePrimary), string(hcloud.ZoneModeSecondary)))
 	},
 
-	Fetch: func(s state.State, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.Zone, error) {
+	Fetch: func(ctx context.Context, s state.State, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.Zone, error) {
 		opts := hcloud.ZoneListOpts{ListOpts: listOpts}
 		if len(sorts) > 0 {
 			opts.Sort = sorts
@@ -48,7 +49,7 @@ var ListCmd = &base.ListCmd[*hcloud.Zone, schema.Zone]{
 			opts.Mode = hcloud.ZoneMode(mode)
 		}
 
-		return s.Client().Zone().AllWithOpts(s, opts)
+		return s.Client().Zone().AllWithOpts(ctx, opts)
 	},
 
 	OutputTable: func(t *output.Table[*hcloud.Zone], _ hcapi2.Client) {

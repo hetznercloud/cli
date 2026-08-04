@@ -1,6 +1,7 @@
 package placementgroup
 
 import (
+	"context"
 	"fmt"
 	"time"
 
@@ -22,12 +23,12 @@ var ListCmd = &base.ListCmd[*hcloud.PlacementGroup, schema.PlacementGroup]{
 	DefaultColumns:     []string{"id", "name", "servers", "type", "age"},
 	SortOption:         config.OptionSortPlacementGroup,
 
-	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.PlacementGroup, error) {
+	Fetch: func(ctx context.Context, s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.PlacementGroup, error) {
 		opts := hcloud.PlacementGroupListOpts{ListOpts: listOpts}
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		return s.Client().PlacementGroup().AllWithOpts(s, opts)
+		return s.Client().PlacementGroup().AllWithOpts(ctx, opts)
 	},
 
 	OutputTable: func(t *output.Table[*hcloud.PlacementGroup], _ hcapi2.Client) {

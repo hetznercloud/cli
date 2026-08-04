@@ -1,8 +1,9 @@
 package base
 
 import (
+	"context"
+	"errors"
 	"fmt"
-	"log"
 	"slices"
 	"strings"
 
@@ -10,6 +11,7 @@ import (
 	"golang.org/x/exp/maps"
 
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/registration"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
@@ -21,7 +23,7 @@ type ChangeProtectionCmds[T, Opts any] struct {
 	ResourceNameSingular    string // e.g. "Server"
 	ShortEnableDescription  string
 	ShortDisableDescription string
-	NameSuggestions         func(client hcapi2.Client) func() []string
+	NameSuggestions         func(client hcapi2.Client) hcapi2.CompletionFunc
 	AdditionalFlags         func(*cobra.Command)
 	// Fetch is called to fetch the resource to describe.
 	Fetch func(s state.State, cmd *cobra.Command, idOrName string) (T, *hcloud.Response, error)
@@ -48,7 +50,7 @@ type ChangeProtectionCmds[T, Opts any] struct {
 	ProtectionLevelsOptional bool
 
 	// ChangeProtectionFunction is used to change the protection on a specific resource given the Opts
-	ChangeProtectionFunction func(s state.State, resource T, opts Opts) (*hcloud.Action, *hcloud.Response, error)
+	ChangeProtectionFunction func(ctx context.Context, s state.State, resource T, opts Opts) (*hcloud.Action, *hcloud.Response, error)
 
 	// IDOrName is used to retrieve a string representation of the resource
 	IDOrName func(resource T) string
@@ -58,8 +60,9 @@ type ChangeProtectionCmds[T, Opts any] struct {
 }
 
 func (cpc *ChangeProtectionCmds[T, Opts]) newChangeProtectionCmd(s state.State, enable bool) *cobra.Command {
+	var constructionErr error
 	if len(cpc.ProtectionLevels) < 1 {
-		log.Fatalf("change protection command %s is missing ProtectionLevels", cpc.ResourceNameSingular)
+		constructionErr = fmt.Errorf("change protection command %s is missing ProtectionLevels", cpc.ResourceNameSingular)
 	}
 
 	levels := maps.Keys(cpc.ProtectionLevels)
@@ -74,7 +77,10 @@ func (cpc *ChangeProtectionCmds[T, Opts]) newChangeProtectionCmd(s state.State, 
 	case cpc.ValidArgsFunction != nil:
 		suggestArgs = append(suggestArgs, cpc.ValidArgsFunction(s.Client())...)
 	default:
-		log.Fatalf("change protection command %s is missing ValidArgsFunction or NameSuggestions", cpc.ResourceNameSingular)
+		constructionErr = errors.Join(
+			constructionErr,
+			fmt.Errorf("change protection command %s is missing ValidArgsFunction or NameSuggestions", cpc.ResourceNameSingular),
+		)
 	}
 
 	suggestArgs = append(suggestArgs, cmpl.SuggestCandidates(levels...))
@@ -128,6 +134,7 @@ func (cpc *ChangeProtectionCmds[T, Opts]) newChangeProtectionCmd(s state.State, 
 			return cpc.Run(s, cmd, args, enable)
 		},
 	}
+	registration.Record(cmd, constructionErr)
 
 	if cpc.AdditionalFlags != nil {
 		cpc.AdditionalFlags(cmd)
@@ -206,12 +213,12 @@ func (cpc *ChangeProtectionCmds[T, Opts]) GetChangeProtectionOpts(enable bool, l
 func (cpc *ChangeProtectionCmds[T, Opts]) ChangeProtection(s state.State, cmd *cobra.Command,
 	resource T, enable bool, opts Opts) error {
 
-	action, _, err := cpc.ChangeProtectionFunction(s, resource, opts)
+	action, _, err := cpc.ChangeProtectionFunction(cmd.Context(), s, resource, opts)
 	if err != nil {
 		return err
 	}
 
-	if err := s.WaitForActions(s, cmd, action); err != nil {
+	if err := s.WaitForActions(cmd.Context(), cmd, action); err != nil {
 		return err
 	}
 

@@ -24,7 +24,7 @@ var ChangeTTLCmd = base.Cmd{
 		}
 
 		cmd.Flags().Int("ttl", 3600, "Default Time To Live (TTL) of the Zone (required)")
-		_ = cmd.MarkFlagRequired("ttl")
+		util.MarkFlagRequired(cmd, "ttl")
 
 		return cmd
 	},
@@ -35,7 +35,7 @@ var ChangeTTLCmd = base.Cmd{
 			return fmt.Errorf("failed to convert Zone name to ascii: %w", err)
 		}
 
-		zone, _, err := s.Client().Zone().Get(s, idOrName)
+		zone, _, err := s.Client().Zone().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return err
 		}
@@ -46,12 +46,12 @@ var ChangeTTLCmd = base.Cmd{
 		ttl, _ := cmd.Flags().GetInt("ttl")
 		opts := hcloud.ZoneChangeTTLOpts{TTL: ttl}
 
-		action, _, err := s.Client().Zone().ChangeTTL(s, zone, opts)
+		action, _, err := s.Client().Zone().ChangeTTL(cmd.Context(), zone, opts)
 		if err != nil {
 			return err
 		}
 
-		if err := s.WaitForActions(s, cmd, action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, action); err != nil {
 			return err
 		}
 

@@ -2,16 +2,15 @@ package hcapi2
 
 import (
 	"context"
-	"strconv"
 
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 type StorageBoxClient interface {
 	hcloud.IStorageBoxClient
-	Names() []string
-	LabelKeys(string) []string
-	SnapshotLabelKeys(string, string) []string
+	Names(context.Context) ([]string, error)
+	LabelKeys(context.Context, string) ([]string, error)
+	SnapshotLabelKeys(context.Context, string, string) ([]string, error)
 }
 
 func NewStorageBoxClient(client hcloud.IStorageBoxClient) StorageBoxClient {
@@ -26,42 +25,43 @@ type storageBoxClient struct {
 
 // Names obtains a list of available Storage Boxes. It returns nil if Storage Box
 // names could not be fetched or none are available.
-func (c *storageBoxClient) Names() []string {
-	storageBoxes, err := c.All(context.Background())
-	if err != nil || len(storageBoxes) == 0 {
-		return nil
+func (c *storageBoxClient) Names(ctx context.Context) ([]string, error) {
+	storageBoxes, err := c.All(ctx)
+	if err != nil {
+		return nil, err
 	}
-	names := make([]string, len(storageBoxes))
-	for i, storageBox := range storageBoxes {
-		name := storageBox.Name
-		if name == "" {
-			name = strconv.FormatInt(storageBox.ID, 10)
-		}
-		names[i] = name
-	}
-	return names
+	return resourceNames(storageBoxes, func(storageBox *hcloud.StorageBox) int64 { return storageBox.ID }, func(storageBox *hcloud.StorageBox) string { return storageBox.Name }), nil
 }
 
 // LabelKeys returns a slice containing the keys of all labels assigned to
 // the Storage Box with the passed name or id.
-func (c *storageBoxClient) LabelKeys(nameOrID string) []string {
-	storageBox, _, err := c.Get(context.Background(), nameOrID)
-	if err != nil || storageBox == nil || len(storageBox.Labels) == 0 {
-		return nil
+func (c *storageBoxClient) LabelKeys(ctx context.Context, nameOrID string) ([]string, error) {
+	storageBox, _, err := c.Get(ctx, nameOrID)
+	if err != nil {
+		return nil, err
 	}
-	return labelKeys(storageBox.Labels)
+	if storageBox == nil {
+		return nil, nil
+	}
+	return labelKeys(storageBox.Labels), nil
 }
 
 // SnapshotLabelKeys returns a slice containing the keys of all labels assigned to
 // the Storage Box Snapshot with the passed name or id.
-func (c *storageBoxClient) SnapshotLabelKeys(storageBoxNameOrID, snapshotNameOrID string) []string {
-	storageBox, _, err := c.Get(context.Background(), storageBoxNameOrID)
-	if err != nil || storageBox == nil {
-		return nil
+func (c *storageBoxClient) SnapshotLabelKeys(ctx context.Context, storageBoxNameOrID, snapshotNameOrID string) ([]string, error) {
+	storageBox, _, err := c.Get(ctx, storageBoxNameOrID)
+	if err != nil {
+		return nil, err
 	}
-	storageBoxSnapshot, _, err := c.GetSnapshot(context.Background(), storageBox, snapshotNameOrID)
-	if err != nil || storageBoxSnapshot == nil || len(storageBoxSnapshot.Labels) == 0 {
-		return nil
+	if storageBox == nil {
+		return nil, nil
 	}
-	return labelKeys(storageBoxSnapshot.Labels)
+	storageBoxSnapshot, _, err := c.GetSnapshot(ctx, storageBox, snapshotNameOrID)
+	if err != nil {
+		return nil, err
+	}
+	if storageBoxSnapshot == nil {
+		return nil, nil
+	}
+	return labelKeys(storageBoxSnapshot.Labels), nil
 }

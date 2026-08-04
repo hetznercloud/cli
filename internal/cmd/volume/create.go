@@ -24,26 +24,26 @@ var CreateCmd = base.CreateCmd[*hcloud.Volume]{
 			DisableFlagsInUseLine: true,
 		}
 		cmd.Flags().String("name", "", "Volume name (required)")
-		_ = cmd.MarkFlagRequired("name")
+		util.MarkFlagRequired(cmd, "name")
 
 		cmd.Flags().String("server", "", "Server (ID or name)")
-		_ = cmd.RegisterFlagCompletionFunc("server", cmpl.SuggestCandidatesF(client.Server().Names))
+		cmpl.RegisterFlagCompletion(cmd, "server", cmpl.SuggestCandidatesF(client.Server().Names))
 
 		cmd.Flags().String("location", "", "Location (ID or name)")
-		_ = cmd.RegisterFlagCompletionFunc("location", cmpl.SuggestCandidatesF(client.Location().Names))
+		cmpl.RegisterFlagCompletion(cmd, "location", cmpl.SuggestCandidatesF(client.Location().Names))
 
 		cmd.Flags().Int("size", 0, "Size (GB) (required)")
-		_ = cmd.MarkFlagRequired("size")
+		util.MarkFlagRequired(cmd, "size")
 
 		cmd.Flags().Bool("automount", false, "Automount Volume after attach (Server must be provided) (true, false)")
 
 		cmd.Flags().String("format", "", "Format Volume after creation (ext4 or xfs)")
-		_ = cmd.RegisterFlagCompletionFunc("format", cmpl.SuggestCandidates("ext4", "xfs"))
+		cmpl.RegisterFlagCompletion(cmd, "format", cmpl.SuggestCandidates("ext4", "xfs"))
 
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 
 		cmd.Flags().StringSlice("enable-protection", []string{}, "Enable protection (delete) (default: none)")
-		_ = cmd.RegisterFlagCompletionFunc("enable-protection", cmpl.SuggestCandidates("delete"))
+		cmpl.RegisterFlagCompletion(cmd, "enable-protection", cmpl.SuggestCandidates("delete"))
 
 		return cmd
 	},
@@ -77,7 +77,7 @@ var CreateCmd = base.CreateCmd[*hcloud.Volume]{
 			}
 		}
 		if serverIDOrName != "" {
-			server, _, err := s.Client().Server().Get(s, serverIDOrName)
+			server, _, err := s.Client().Server().Get(cmd.Context(), serverIDOrName)
 			if err != nil {
 				return nil, nil, err
 			}
@@ -93,12 +93,12 @@ var CreateCmd = base.CreateCmd[*hcloud.Volume]{
 			createOpts.Format = &format
 		}
 
-		result, _, err := s.Client().Volume().Create(s, createOpts)
+		result, _, err := s.Client().Volume().Create(cmd.Context(), createOpts)
 		if err != nil {
 			return nil, nil, err
 		}
 
-		if err := s.WaitForActions(s, cmd, actionutil.AppendNext(result.Action, result.NextActions)...); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, actionutil.AppendNext(result.Action, result.NextActions)...); err != nil {
 			return nil, nil, err
 		}
 		cmd.Printf("Volume %d created\n", result.Volume.ID)
@@ -109,7 +109,7 @@ var CreateCmd = base.CreateCmd[*hcloud.Volume]{
 			}
 		}
 
-		volume, _, err := s.Client().Volume().GetByID(s, result.Volume.ID)
+		volume, _, err := s.Client().Volume().GetByID(cmd.Context(), result.Volume.ID)
 		if err != nil {
 			return nil, nil, err
 		}

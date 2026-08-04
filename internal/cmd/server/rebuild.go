@@ -8,6 +8,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -24,8 +25,8 @@ var RebuildCmd = base.Cmd{
 		}
 
 		cmd.Flags().String("image", "", "ID or name of Image to rebuild from (required)")
-		_ = cmd.RegisterFlagCompletionFunc("image", cmpl.SuggestCandidatesF(client.Image().Names))
-		_ = cmd.MarkFlagRequired("image")
+		cmpl.RegisterFlagCompletion(cmd, "image", cmpl.SuggestCandidatesF(client.Image().Names))
+		util.MarkFlagRequired(cmd, "image")
 
 		cmd.Flags().Bool("allow-deprecated-image", false, "Enable the use of deprecated images (default: false) (true, false)")
 
@@ -35,7 +36,7 @@ var RebuildCmd = base.Cmd{
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		serverIDOrName := args[0]
-		server, _, err := s.Client().Server().Get(s, serverIDOrName)
+		server, _, err := s.Client().Server().Get(cmd.Context(), serverIDOrName)
 		if err != nil {
 			return err
 		}
@@ -47,7 +48,7 @@ var RebuildCmd = base.Cmd{
 		userDataFiles, _ := cmd.Flags().GetStringArray("user-data-from-file")
 
 		// Select correct image based on Server Type architecture
-		image, _, err := s.Client().Image().GetForArchitecture(s, imageIDOrName, server.ServerType.Architecture)
+		image, _, err := s.Client().Image().GetForArchitecture(cmd.Context(), imageIDOrName, server.ServerType.Architecture)
 		if err != nil {
 			return err
 		}
@@ -70,19 +71,19 @@ var RebuildCmd = base.Cmd{
 		}
 
 		if len(userDataFiles) > 0 {
-			userData, err := buildUserData(userDataFiles)
+			userData, err := buildUserData(cmd.InOrStdin(), userDataFiles)
 			if err != nil {
 				return err
 			}
 			opts.UserData = &userData
 		}
 
-		result, _, err := s.Client().Server().RebuildWithResult(s, server, opts)
+		result, _, err := s.Client().Server().RebuildWithResult(cmd.Context(), server, opts)
 		if err != nil {
 			return err
 		}
 
-		if err := s.WaitForActions(s, cmd, result.Action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, result.Action); err != nil {
 			return err
 		}
 

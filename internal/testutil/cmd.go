@@ -64,7 +64,8 @@ func TestCommand(t *testing.T, cmd TestableCommand, cases map[string]TestCase) {
 			fx := NewFixture(t)
 			defer fx.Finish()
 
-			rootCmd := cli.NewRootCommand(fx.State())
+			rootCmd, err := cli.NewRootCommand(fx.State(), false)
+			require.NoError(t, err)
 			fx.ExpectEnsureToken()
 
 			rootCmd.AddCommand(cmd.CobraCommand(fx.State()))

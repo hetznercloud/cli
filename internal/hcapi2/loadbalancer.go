@@ -12,9 +12,9 @@ import (
 // additional helper functions.
 type LoadBalancerClient interface {
 	hcloud.ILoadBalancerClient
-	LoadBalancerName(id int64) string
-	Names() []string
-	LabelKeys(string) []string
+	LoadBalancerName(context.Context, int64) (string, error)
+	Names(context.Context) ([]string, error)
+	LabelKeys(context.Context, string) ([]string, error)
 }
 
 func NewLoadBalancerClient(client hcloud.ILoadBalancerClient) LoadBalancerClient {
@@ -32,51 +32,46 @@ type loadBalancerClient struct {
 	err  error
 }
 
-// LoadBalancerName obtains the name of the server with id. If the name could not
-// be fetched it returns the value id converted to a string.
-func (c *loadBalancerClient) LoadBalancerName(id int64) string {
-	if err := c.init(); err != nil {
-		return strconv.FormatInt(id, 10)
+// LoadBalancerName obtains the name of the load balancer with id. It returns
+// the numeric ID when the API response does not contain a matching named load balancer.
+func (c *loadBalancerClient) LoadBalancerName(ctx context.Context, id int64) (string, error) {
+	if err := c.init(ctx); err != nil {
+		return "", err
 	}
 
 	lb, ok := c.lbByID[id]
 	if !ok || lb.Name == "" {
-		return strconv.FormatInt(id, 10)
+		return strconv.FormatInt(id, 10), nil
 	}
-	return lb.Name
+	return lb.Name, nil
 }
 
 // Names obtains a list of available data centers. It returns nil if
 // data center names could not be fetched.
-func (c *loadBalancerClient) Names() []string {
-	dcs, err := c.All(context.Background())
-	if err != nil || len(dcs) == 0 {
-		return nil
+func (c *loadBalancerClient) Names(ctx context.Context) ([]string, error) {
+	loadBalancers, err := c.All(ctx)
+	if err != nil {
+		return nil, err
 	}
-	names := make([]string, len(dcs))
-	for i, dc := range dcs {
-		name := dc.Name
-		if name == "" {
-			name = strconv.FormatInt(dc.ID, 10)
-		}
-		names[i] = name
-	}
-	return names
+	return resourceNames(loadBalancers, func(loadBalancer *hcloud.LoadBalancer) int64 { return loadBalancer.ID }, func(loadBalancer *hcloud.LoadBalancer) string { return loadBalancer.Name }), nil
 }
 
 // LabelKeys returns a slice containing the keys of all labels
 // assigned to the loadBalancer with the passed idOrName.
-func (c *loadBalancerClient) LabelKeys(idOrName string) []string {
-	loadBalancer, _, err := c.Get(context.Background(), idOrName)
-	if err != nil || loadBalancer == nil || len(loadBalancer.Labels) == 0 {
-		return nil
+func (c *loadBalancerClient) LabelKeys(ctx context.Context, idOrName string) ([]string, error) {
+	loadBalancer, _, err := c.Get(ctx, idOrName)
+	if err != nil {
+		return nil, err
 	}
-	return labelKeys(loadBalancer.Labels)
+	if loadBalancer == nil {
+		return nil, nil
+	}
+	return labelKeys(loadBalancer.Labels), nil
 }
 
-func (c *loadBalancerClient) init() error {
+func (c *loadBalancerClient) init(ctx context.Context) error {
 	c.once.Do(func() {
-		srvs, err := c.All(context.Background())
+		srvs, err := c.All(ctx)
 		if err != nil {
 			c.err = err
 		}

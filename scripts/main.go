@@ -1,9 +1,8 @@
 package main
 
 import (
-	"context"
+	"errors"
 	"fmt"
-	"log"
 	"os"
 	"strconv"
 
@@ -19,21 +18,26 @@ import (
 //go:generate go run $GOFILE docs
 
 func main() {
-	if len(os.Args) < 2 {
-		log.Fatalln("Usage: docs|manpages")
+	if err := run(os.Args[1:]); err != nil {
+		if _, writeErr := fmt.Fprintf(os.Stderr, "hcloud documentation generator: %v\n", err); writeErr != nil {
+			os.Exit(1)
+		}
+		os.Exit(1)
+	}
+}
+
+func run(args []string) error {
+	if len(args) < 1 {
+		return errors.New("usage: docs|manpages")
 	}
 
-	var err error
-	switch arg := os.Args[1]; arg {
+	switch arg := args[0]; arg {
 	case "docs":
-		err = generateDocs()
+		return generateDocs()
 	case "manpages":
-		err = generateManPages()
+		return generateManPages()
 	default:
-		log.Fatalln("Unknown argument:", strconv.Quote(arg))
-	}
-	if err != nil {
-		log.Fatalln(err)
+		return fmt.Errorf("unknown argument: %s", strconv.Quote(arg))
 	}
 }
 
@@ -43,13 +47,9 @@ func generateDocs() error {
 		return err
 	}
 
-	cmd, err := newRootCommand(true)
-	if err != nil {
-		return err
-	}
-
-	// Generate the docs
-	return doc.GenMarkdownTree(cmd, dir)
+	return withRootCommand(true, func(cmd *cobra.Command) error {
+		return doc.GenMarkdownTree(cmd, dir)
+	})
 }
 
 func generateManPages() error {
@@ -58,15 +58,12 @@ func generateManPages() error {
 		return err
 	}
 
-	cmd, err := newRootCommand(true)
-	if err != nil {
-		return err
-	}
-
-	return doc.GenManTree(cmd, &doc.GenManHeader{
-		Source: version.Version,
-		Manual: "CLI for Hetzner API",
-	}, dir)
+	return withRootCommand(true, func(cmd *cobra.Command) error {
+		return doc.GenManTree(cmd, &doc.GenManHeader{
+			Source: version.Version,
+			Manual: "CLI for Hetzner API",
+		}, dir)
+	})
 }
 
 func ensureEmptyDir(dir string) error {
@@ -81,14 +78,18 @@ func ensureEmptyDir(dir string) error {
 	return nil
 }
 
-func newRootCommand(withMdTables bool) (*cobra.Command, error) {
-	ctx := context.Background()
-	if withMdTables {
-		ctx = context.WithValue(ctx, state.ContextKeyMarkdownTables{}, true)
-	}
-	s, err := state.New(ctx, config.New())
+func withRootCommand(withMdTables bool, run func(*cobra.Command) error) (err error) {
+	s, err := state.New(config.New(), state.Options{Stderr: os.Stderr})
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return cli.NewRootCommand(s), nil
+	defer func() {
+		err = errors.Join(err, s.Close())
+	}()
+
+	cmd, err := cli.NewRootCommand(s, withMdTables)
+	if err != nil {
+		return err
+	}
+	return run(cmd)
 }

@@ -1,6 +1,7 @@
 package sshkey
 
 import (
+	"context"
 	"time"
 
 	"github.com/spf13/pflag"
@@ -21,12 +22,12 @@ var ListCmd = &base.ListCmd[*hcloud.SSHKey, schema.SSHKey]{
 	DefaultColumns:     []string{"id", "name", "fingerprint", "age"},
 	SortOption:         config.OptionSortSSHKey,
 
-	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.SSHKey, error) {
+	Fetch: func(ctx context.Context, s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.SSHKey, error) {
 		opts := hcloud.SSHKeyListOpts{ListOpts: listOpts}
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		return s.Client().SSHKey().AllWithOpts(s, opts)
+		return s.Client().SSHKey().AllWithOpts(ctx, opts)
 	},
 
 	OutputTable: func(t *output.Table[*hcloud.SSHKey], _ hcapi2.Client) {

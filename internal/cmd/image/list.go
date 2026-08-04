@@ -1,6 +1,7 @@
 package image
 
 import (
+	"context"
 	"fmt"
 	"strings"
 	"time"
@@ -28,12 +29,12 @@ var ListCmd = &base.ListCmd[*hcloud.Image, schema.Image]{
 
 	AdditionalFlags: func(cmd *cobra.Command) {
 		cmd.Flags().StringSliceP("type", "t", []string{}, "Only show Images of given type: system|app|snapshot|backup")
-		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("backup", "snapshot", "system", "app"))
+		cmpl.RegisterFlagCompletion(cmd, "type", cmpl.SuggestCandidates("backup", "snapshot", "system", "app"))
 
 		cmd.Flags().StringSliceP("architecture", "a", []string{}, "Only show Images of given architecture: x86|arm")
-		_ = cmd.RegisterFlagCompletionFunc("architecture", cmpl.SuggestCandidates(string(hcloud.ArchitectureX86), string(hcloud.ArchitectureARM)))
+		cmpl.RegisterFlagCompletion(cmd, "architecture", cmpl.SuggestCandidates(string(hcloud.ArchitectureX86), string(hcloud.ArchitectureARM)))
 	},
-	Fetch: func(s state.State, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.Image, error) {
+	Fetch: func(ctx context.Context, s state.State, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.Image, error) {
 		opts := hcloud.ImageListOpts{ListOpts: listOpts, IncludeDeprecated: true}
 
 		types, _ := flags.GetStringSlice("type")
@@ -63,7 +64,7 @@ var ListCmd = &base.ListCmd[*hcloud.Image, schema.Image]{
 			opts.Sort = sorts
 		}
 
-		return s.Client().Image().AllWithOpts(s, opts)
+		return s.Client().Image().AllWithOpts(ctx, opts)
 	},
 
 	OutputTable: func(t *output.Table[*hcloud.Image], client hcapi2.Client) {
@@ -91,17 +92,17 @@ var ListCmd = &base.ListCmd[*hcloud.Image, schema.Image]{
 			AddFieldFn("created", func(image *hcloud.Image) string {
 				return humanize.Time(image.Created)
 			}).
-			AddFieldFn("bound_to", func(image *hcloud.Image) string {
+			AddFieldFnE("bound_to", func(ctx context.Context, image *hcloud.Image) (string, error) {
 				if image.BoundTo != nil {
-					return client.Server().ServerName(image.BoundTo.ID)
+					return client.Server().ServerName(ctx, image.BoundTo.ID)
 				}
-				return util.NA("")
+				return util.NA(""), nil
 			}).
-			AddFieldFn("created_from", func(image *hcloud.Image) string {
+			AddFieldFnE("created_from", func(ctx context.Context, image *hcloud.Image) (string, error) {
 				if image.CreatedFrom != nil {
-					return client.Server().ServerName(image.CreatedFrom.ID)
+					return client.Server().ServerName(ctx, image.CreatedFrom.ID)
 				}
-				return util.NA("")
+				return util.NA(""), nil
 			}).
 			AddFieldFn("protection", func(image *hcloud.Image) string {
 				var protection []string

@@ -34,11 +34,11 @@ var CreateCmd = base.CreateCmd[*hcloud.ZoneRRSet]{
 		}
 
 		cmd.Flags().String("name", "", "Name of the Zone RRSet (required)")
-		_ = cmd.MarkFlagRequired("name")
+		util.MarkFlagRequired(cmd, "name")
 
 		cmd.Flags().String("type", "", "Type of the Zone RRSet (required)")
-		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates(rrsetTypeStrings...))
-		_ = cmd.MarkFlagRequired("type")
+		cmpl.RegisterFlagCompletion(cmd, "type", cmpl.SuggestCandidates(rrsetTypeStrings...))
+		util.MarkFlagRequired(cmd, "type")
 
 		cmd.Flags().Int("ttl", 0, "Time To Live (TTL) of the RRSet")
 
@@ -63,7 +63,7 @@ var CreateCmd = base.CreateCmd[*hcloud.ZoneRRSet]{
 			return nil, nil, fmt.Errorf("unknown Zone RRSet type: %s", typ)
 		}
 
-		zone, _, err := s.Client().Zone().Get(s, zoneIDOrName)
+		zone, _, err := s.Client().Zone().Get(cmd.Context(), zoneIDOrName)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -92,12 +92,12 @@ var CreateCmd = base.CreateCmd[*hcloud.ZoneRRSet]{
 			createOpts.TTL = &ttl
 		}
 
-		result, _, err := s.Client().Zone().CreateRRSet(s, zone, createOpts)
+		result, _, err := s.Client().Zone().CreateRRSet(cmd.Context(), zone, createOpts)
 		if err != nil {
 			return nil, nil, err
 		}
 
-		if err := s.WaitForActions(s, cmd, result.Action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, result.Action); err != nil {
 			return nil, nil, err
 		}
 		cmd.Printf("Zone RRSet %s %s created\n", result.RRSet.Name, result.RRSet.Type)

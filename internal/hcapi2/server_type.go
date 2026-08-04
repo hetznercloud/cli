@@ -10,9 +10,8 @@ import (
 
 type ServerTypeClient interface {
 	hcloud.IServerTypeClient
-	Names() []string
-	ServerTypeName(id int64) string
-	ServerTypeDescription(id int64) string
+	Names(context.Context) ([]string, error)
+	ServerTypeName(context.Context, int64) (string, error)
 }
 
 func NewServerTypeClient(client hcloud.IServerTypeClient) ServerTypeClient {
@@ -29,50 +28,36 @@ type serverTypeClient struct {
 	err         error
 }
 
-// ServerTypeName obtains the name of the server type with id. If the name could not
-// be fetched it returns the value id converted to a string.
-func (c *serverTypeClient) ServerTypeName(id int64) string {
-	if err := c.init(); err != nil {
-		return strconv.FormatInt(id, 10)
+// ServerTypeName obtains the name of the server type with id. It returns the
+// numeric ID when the API response does not contain a matching named type.
+func (c *serverTypeClient) ServerTypeName(ctx context.Context, id int64) (string, error) {
+	if err := c.init(ctx); err != nil {
+		return "", err
 	}
 
 	serverType, ok := c.srvTypeByID[id]
 	if !ok || serverType.Name == "" {
-		return strconv.FormatInt(id, 10)
+		return strconv.FormatInt(id, 10), nil
 	}
-	return serverType.Name
-}
-
-// ServerTypeDescription obtains the description of the server type with id. If the name could not
-// be fetched it returns the value id converted to a string.
-func (c *serverTypeClient) ServerTypeDescription(id int64) string {
-	if err := c.init(); err != nil {
-		return strconv.FormatInt(id, 10)
-	}
-
-	serverType, ok := c.srvTypeByID[id]
-	if !ok || serverType.Description == "" {
-		return strconv.FormatInt(id, 10)
-	}
-	return serverType.Description
+	return serverType.Name, nil
 }
 
 // Names returns a slice of all available server types.
-func (c *serverTypeClient) Names() []string {
-	sts, err := c.All(context.Background())
-	if err != nil || len(sts) == 0 {
-		return nil
+func (c *serverTypeClient) Names(ctx context.Context) ([]string, error) {
+	serverTypes, err := c.All(ctx)
+	if err != nil {
+		return nil, err
 	}
-	names := make([]string, len(sts))
-	for i, st := range sts {
+	names := make([]string, len(serverTypes))
+	for i, st := range serverTypes {
 		names[i] = st.Name
 	}
-	return names
+	return names, nil
 }
 
-func (c *serverTypeClient) init() error {
+func (c *serverTypeClient) init(ctx context.Context) error {
 	c.once.Do(func() {
-		serverTypes, err := c.All(context.Background())
+		serverTypes, err := c.All(ctx)
 		if err != nil {
 			c.err = err
 		}

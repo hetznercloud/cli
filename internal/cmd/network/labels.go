@@ -1,6 +1,7 @@
 package network
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 
@@ -14,10 +15,10 @@ var LabelCmds = base.LabelCmds[*hcloud.Network]{
 	ResourceNameSingular:   "Network",
 	ShortDescriptionAdd:    "Add a label to a Network",
 	ShortDescriptionRemove: "Remove a label from a Network",
-	NameSuggestions:        func(c hcapi2.Client) func() []string { return c.Network().Names },
-	LabelKeySuggestions:    func(c hcapi2.Client) func(idOrName string) []string { return c.Network().LabelKeys },
-	Fetch: func(s state.State, idOrName string) (*hcloud.Network, error) {
-		network, _, err := s.Client().Network().Get(s, idOrName)
+	NameSuggestions:        func(c hcapi2.Client) hcapi2.CompletionFunc { return c.Network().Names },
+	LabelKeySuggestions:    func(c hcapi2.Client) hcapi2.LabelCompletionFunc { return c.Network().LabelKeys },
+	Fetch: func(ctx context.Context, s state.State, idOrName string) (*hcloud.Network, error) {
+		network, _, err := s.Client().Network().Get(ctx, idOrName)
 		if err != nil {
 			return nil, err
 		}
@@ -26,11 +27,11 @@ var LabelCmds = base.LabelCmds[*hcloud.Network]{
 		}
 		return network, nil
 	},
-	SetLabels: func(s state.State, network *hcloud.Network, labels map[string]string) error {
+	SetLabels: func(ctx context.Context, s state.State, network *hcloud.Network, labels map[string]string) error {
 		opts := hcloud.NetworkUpdateOpts{
 			Labels: labels,
 		}
-		_, _, err := s.Client().Network().Update(s, network, opts)
+		_, _, err := s.Client().Network().Update(ctx, network, opts)
 		return err
 	},
 	GetLabels: func(network *hcloud.Network) map[string]string {

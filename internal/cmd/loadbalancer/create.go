@@ -23,30 +23,30 @@ var CreateCmd = base.CreateCmd[*hcloud.LoadBalancer]{
 		}
 
 		cmd.Flags().String("name", "", "Load Balancer name (required)")
-		_ = cmd.MarkFlagRequired("name")
+		util.MarkFlagRequired(cmd, "name")
 
 		cmd.Flags().String("type", "", "Load Balancer Type (ID or name) (required)")
-		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidatesF(client.LoadBalancerType().Names))
-		_ = cmd.MarkFlagRequired("type")
+		cmpl.RegisterFlagCompletion(cmd, "type", cmpl.SuggestCandidatesF(client.LoadBalancerType().Names))
+		util.MarkFlagRequired(cmd, "type")
 
 		cmd.Flags().String("algorithm-type", "", "Algorithm Type name (round_robin or least_connections)")
-		_ = cmd.RegisterFlagCompletionFunc("algorithm-type", cmpl.SuggestCandidates(
+		cmpl.RegisterFlagCompletion(cmd, "algorithm-type", cmpl.SuggestCandidates(
 			string(hcloud.LoadBalancerAlgorithmTypeLeastConnections),
 			string(hcloud.LoadBalancerAlgorithmTypeRoundRobin),
 		))
 		cmd.Flags().String("location", "", "Location (ID or name)")
-		_ = cmd.RegisterFlagCompletionFunc("location", cmpl.SuggestCandidatesF(client.Location().Names))
+		cmpl.RegisterFlagCompletion(cmd, "location", cmpl.SuggestCandidatesF(client.Location().Names))
 
 		cmd.Flags().String("network-zone", "", "Network Zone")
-		_ = cmd.RegisterFlagCompletionFunc("network-zone", cmpl.SuggestCandidatesF(client.Location().NetworkZones))
+		cmpl.RegisterFlagCompletion(cmd, "network-zone", cmpl.SuggestCandidatesF(client.Location().NetworkZones))
 
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 
 		cmd.Flags().StringSlice("enable-protection", []string{}, "Enable protection (delete) (default: none)")
-		_ = cmd.RegisterFlagCompletionFunc("enable-protection", cmpl.SuggestCandidates("delete"))
+		cmpl.RegisterFlagCompletion(cmd, "enable-protection", cmpl.SuggestCandidates("delete"))
 
 		cmd.Flags().String("network", "", "Name or ID of the Network the Load Balancer should be attached to on creation")
-		_ = cmd.RegisterFlagCompletionFunc("network", cmpl.SuggestCandidatesF(client.Network().Names))
+		cmpl.RegisterFlagCompletion(cmd, "network", cmpl.SuggestCandidatesF(client.Network().Names))
 
 		return cmd
 	},
@@ -65,7 +65,7 @@ var CreateCmd = base.CreateCmd[*hcloud.LoadBalancer]{
 			return nil, nil, err
 		}
 
-		loadBalancerType, _, err := s.Client().LoadBalancerType().Get(s, loadBalancerTypeName)
+		loadBalancerType, _, err := s.Client().LoadBalancerType().Get(cmd.Context(), loadBalancerTypeName)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -90,7 +90,7 @@ var CreateCmd = base.CreateCmd[*hcloud.LoadBalancer]{
 			createOpts.Location = &hcloud.Location{Name: location}
 		}
 		if network != "" {
-			net, _, err := s.Client().Network().Get(s, network)
+			net, _, err := s.Client().Network().Get(cmd.Context(), network)
 			if err != nil {
 				return nil, nil, err
 			}
@@ -99,12 +99,12 @@ var CreateCmd = base.CreateCmd[*hcloud.LoadBalancer]{
 			}
 			createOpts.Network = net
 		}
-		result, _, err := s.Client().LoadBalancer().Create(s, createOpts)
+		result, _, err := s.Client().LoadBalancer().Create(cmd.Context(), createOpts)
 		if err != nil {
 			return nil, nil, err
 		}
 
-		if err := s.WaitForActions(s, cmd, result.Action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, result.Action); err != nil {
 			return nil, nil, err
 		}
 		cmd.Printf("Load Balancer %d created\n", result.LoadBalancer.ID)
@@ -115,7 +115,7 @@ var CreateCmd = base.CreateCmd[*hcloud.LoadBalancer]{
 			}
 		}
 
-		loadBalancer, _, err := s.Client().LoadBalancer().GetByID(s, result.LoadBalancer.ID)
+		loadBalancer, _, err := s.Client().LoadBalancer().GetByID(cmd.Context(), result.LoadBalancer.ID)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -126,8 +126,8 @@ var CreateCmd = base.CreateCmd[*hcloud.LoadBalancer]{
 		return loadBalancer, util.Wrap("load_balancer", hcloud.SchemaFromLoadBalancer(loadBalancer)), nil
 	},
 
-	PrintResource: func(_ state.State, cmd *cobra.Command, loadBalancer *hcloud.LoadBalancer) {
-		cmd.Printf("IPv4: %s\n", loadBalancer.PublicNet.IPv4.IP.String())
-		cmd.Printf("IPv6: %s\n", loadBalancer.PublicNet.IPv6.IP.String())
+	PrintResource: func(_ state.State, cmd *cobra.Command, loadBalancer *hcloud.LoadBalancer) error {
+		_, err := fmt.Fprintf(cmd.OutOrStdout(), "IPv4: %s\nIPv6: %s\n", loadBalancer.PublicNet.IPv4.IP.String(), loadBalancer.PublicNet.IPv6.IP.String())
+		return err
 	},
 }

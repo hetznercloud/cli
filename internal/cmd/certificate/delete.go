@@ -13,12 +13,12 @@ var DeleteCmd = base.DeleteCmd[*hcloud.Certificate]{
 	ResourceNameSingular: "Certificate",
 	ResourceNamePlural:   "Certificates",
 	ShortDescription:     "Delete a Certificate",
-	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Firewall().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.Certificate, *hcloud.Response, error) {
-		return s.Client().Certificate().Get(s, idOrName)
+	NameSuggestions:      func(c hcapi2.Client) hcapi2.CompletionFunc { return c.Certificate().Names },
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (*hcloud.Certificate, *hcloud.Response, error) {
+		return s.Client().Certificate().Get(cmd.Context(), idOrName)
 	},
-	Delete: func(s state.State, _ *cobra.Command, certificate *hcloud.Certificate) ([]*hcloud.Action, error) {
-		_, err := s.Client().Certificate().Delete(s, certificate)
+	Delete: func(s state.State, cmd *cobra.Command, certificate *hcloud.Certificate) ([]*hcloud.Action, error) {
+		_, err := s.Client().Certificate().Delete(cmd.Context(), certificate)
 		return nil, err
 	},
 }

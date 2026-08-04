@@ -7,6 +7,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -22,13 +23,13 @@ var DetachFromNetworkCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 		cmd.Flags().StringP("network", "n", "", "Network (ID or name) (required)")
-		_ = cmd.RegisterFlagCompletionFunc("network", cmpl.SuggestCandidatesF(client.Network().Names))
-		_ = cmd.MarkFlagRequired("network")
+		cmpl.RegisterFlagCompletion(cmd, "network", cmpl.SuggestCandidatesF(client.Network().Names))
+		util.MarkFlagRequired(cmd, "network")
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		loadBalancer, _, err := s.Client().LoadBalancer().Get(s, idOrName)
+		loadBalancer, _, err := s.Client().LoadBalancer().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return err
 		}
@@ -36,7 +37,7 @@ var DetachFromNetworkCmd = base.Cmd{
 			return fmt.Errorf("Load Balancer not found: %s", idOrName)
 		}
 		networkIDOrName, _ := cmd.Flags().GetString("network")
-		network, _, err := s.Client().Network().Get(s, networkIDOrName)
+		network, _, err := s.Client().Network().Get(cmd.Context(), networkIDOrName)
 		if err != nil {
 			return err
 		}
@@ -47,12 +48,12 @@ var DetachFromNetworkCmd = base.Cmd{
 		opts := hcloud.LoadBalancerDetachFromNetworkOpts{
 			Network: network,
 		}
-		action, _, err := s.Client().LoadBalancer().DetachFromNetwork(s, loadBalancer, opts)
+		action, _, err := s.Client().LoadBalancer().DetachFromNetwork(cmd.Context(), loadBalancer, opts)
 		if err != nil {
 			return err
 		}
 
-		if err := s.WaitForActions(s, cmd, action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, action); err != nil {
 			return err
 		}
 

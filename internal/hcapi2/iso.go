@@ -2,7 +2,6 @@ package hcapi2
 
 import (
 	"context"
-	"strconv"
 
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -11,7 +10,7 @@ import (
 // additional helper functions.
 type ISOClient interface {
 	hcloud.IISOClient
-	Names() []string
+	Names(context.Context) ([]string, error)
 }
 
 func NewISOClient(client hcloud.IISOClient) ISOClient {
@@ -26,18 +25,10 @@ type isoClient struct {
 
 // Names obtains a list of available data centers. It returns nil if
 // iso names could not be fetched.
-func (c *isoClient) Names() []string {
-	isos, err := c.All(context.Background())
-	if err != nil || len(isos) == 0 {
-		return nil
+func (c *isoClient) Names(ctx context.Context) ([]string, error) {
+	isos, err := c.All(ctx)
+	if err != nil {
+		return nil, err
 	}
-	names := make([]string, len(isos))
-	for i, iso := range isos {
-		name := iso.Name
-		if name == "" {
-			name = strconv.FormatInt(iso.ID, 10)
-		}
-		names[i] = name
-	}
-	return names
+	return resourceNames(isos, func(iso *hcloud.ISO) int64 { return iso.ID }, func(iso *hcloud.ISO) string { return iso.Name }), nil
 }

@@ -2,7 +2,6 @@ package hcapi2
 
 import (
 	"context"
-	"strconv"
 
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -11,8 +10,8 @@ import (
 // helper functions.
 type VolumeClient interface {
 	hcloud.IVolumeClient
-	Names() []string
-	LabelKeys(idOrName string) []string
+	Names(context.Context) ([]string, error)
+	LabelKeys(context.Context, string) ([]string, error)
 }
 
 func NewVolumeClient(client hcloud.IVolumeClient) VolumeClient {
@@ -28,28 +27,23 @@ type volumeClient struct {
 // Names obtains a list of available volumes for the current account. It
 // returns nil if the current project has no volumes or the volume names could
 // not be fetched.
-func (c *volumeClient) Names() []string {
-	vols, err := c.All(context.Background())
-	if err != nil || len(vols) == 0 {
-		return nil
+func (c *volumeClient) Names(ctx context.Context) ([]string, error) {
+	volumes, err := c.All(ctx)
+	if err != nil {
+		return nil, err
 	}
-	names := make([]string, len(vols))
-	for i, vol := range vols {
-		name := vol.Name
-		if name == "" {
-			name = strconv.FormatInt(vol.ID, 10)
-		}
-		names[i] = name
-	}
-	return names
+	return resourceNames(volumes, func(volume *hcloud.Volume) int64 { return volume.ID }, func(volume *hcloud.Volume) string { return volume.Name }), nil
 }
 
 // LabelKeys returns a slice containing the keys of all labels assigned
 // to the Volume with the passed idOrName.
-func (c *volumeClient) LabelKeys(idOrName string) []string {
-	vol, _, err := c.Get(context.Background(), idOrName)
-	if err != nil || vol == nil || len(vol.Labels) == 0 {
-		return nil
+func (c *volumeClient) LabelKeys(ctx context.Context, idOrName string) ([]string, error) {
+	volume, _, err := c.Get(ctx, idOrName)
+	if err != nil {
+		return nil, err
 	}
-	return labelKeys(vol.Labels)
+	if volume == nil {
+		return nil, nil
+	}
+	return labelKeys(volume.Labels), nil
 }

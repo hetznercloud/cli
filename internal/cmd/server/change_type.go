@@ -30,7 +30,7 @@ var ChangeTypeCmd = base.Cmd{
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		server, _, err := s.Client().Server().Get(s, idOrName)
+		server, _, err := s.Client().Server().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return err
 		}
@@ -39,7 +39,7 @@ var ChangeTypeCmd = base.Cmd{
 		}
 
 		serverTypeIDOrName := args[1]
-		serverType, _, err := s.Client().ServerType().Get(s, serverTypeIDOrName)
+		serverType, _, err := s.Client().ServerType().Get(cmd.Context(), serverTypeIDOrName)
 		if err != nil {
 			return err
 		}
@@ -54,12 +54,12 @@ var ChangeTypeCmd = base.Cmd{
 			ServerType:  serverType,
 			UpgradeDisk: !keepDisk,
 		}
-		action, _, err := s.Client().Server().ChangeType(s, server, opts)
+		action, _, err := s.Client().Server().ChangeType(cmd.Context(), server, opts)
 		if err != nil {
 			return err
 		}
 
-		if err := s.WaitForActions(s, cmd, action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, action); err != nil {
 			return err
 		}
 

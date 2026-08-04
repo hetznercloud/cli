@@ -2,6 +2,7 @@ package server
 
 import (
 	"bytes"
+	"context"
 	"encoding/base64"
 	"errors"
 	"fmt"
@@ -17,6 +18,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/cli/internal/state/config"
@@ -48,21 +50,21 @@ See https://docs.hetzner.cloud/changelog#2026-07-01-removing-datacenters.`,
 		}
 
 		cmd.Flags().String("name", "", "Server name (required)")
-		_ = cmd.MarkFlagRequired("name")
+		util.MarkFlagRequired(cmd, "name")
 
 		cmd.Flags().String("type", "", "Server Type (ID or name) (required)")
-		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidatesF(client.ServerType().Names))
-		_ = cmd.MarkFlagRequired("type")
+		cmpl.RegisterFlagCompletion(cmd, "type", cmpl.SuggestCandidatesF(client.ServerType().Names))
+		util.MarkFlagRequired(cmd, "type")
 
 		cmd.Flags().String("image", "", "Image (ID or name) (required)")
-		_ = cmd.RegisterFlagCompletionFunc("image", cmpl.SuggestCandidatesF(client.Image().Names))
-		_ = cmd.MarkFlagRequired("image")
+		cmpl.RegisterFlagCompletion(cmd, "image", cmpl.SuggestCandidatesF(client.Image().Names))
+		util.MarkFlagRequired(cmd, "image")
 
 		cmd.Flags().String("location", "", "Location (ID or name)")
-		_ = cmd.RegisterFlagCompletionFunc("location", cmpl.SuggestCandidatesF(client.Location().Names))
+		cmpl.RegisterFlagCompletion(cmd, "location", cmpl.SuggestCandidatesF(client.Location().Names))
 
 		cmd.Flags().StringSlice("ssh-key", nil, "ID or name of SSH Key to inject (can be specified multiple times)")
-		_ = cmd.RegisterFlagCompletionFunc("ssh-key", cmpl.SuggestCandidatesF(client.SSHKey().Names))
+		cmpl.RegisterFlagCompletion(cmd, "ssh-key", cmpl.SuggestCandidatesF(client.SSHKey().Names))
 
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 
@@ -71,29 +73,29 @@ See https://docs.hetzner.cloud/changelog#2026-07-01-removing-datacenters.`,
 		cmd.Flags().Bool("start-after-create", true, "Start Server right after creation (true, false)")
 
 		cmd.Flags().StringSlice("volume", nil, "ID or name of Volume to attach (can be specified multiple times)")
-		_ = cmd.RegisterFlagCompletionFunc("volume", cmpl.SuggestCandidatesF(client.Volume().Names))
+		cmpl.RegisterFlagCompletion(cmd, "volume", cmpl.SuggestCandidatesF(client.Volume().Names))
 
 		cmd.Flags().StringSlice("network", nil, "ID or name of Network to attach the Server to (can be specified multiple times)")
-		_ = cmd.RegisterFlagCompletionFunc("network", cmpl.SuggestCandidatesF(client.Network().Names))
+		cmpl.RegisterFlagCompletion(cmd, "network", cmpl.SuggestCandidatesF(client.Network().Names))
 
 		cmd.Flags().StringSlice("firewall", nil, "ID or name of Firewall to attach the Server to (can be specified multiple times)")
-		_ = cmd.RegisterFlagCompletionFunc("firewall", cmpl.SuggestCandidatesF(client.Firewall().Names))
+		cmpl.RegisterFlagCompletion(cmd, "firewall", cmpl.SuggestCandidatesF(client.Firewall().Names))
 
 		cmd.Flags().Bool("automount", false, "Automount Volumes after attach (default: false) (true, false)")
 		cmd.Flags().Bool("allow-deprecated-image", false, "Enable the use of deprecated Images (default: false) (true, false)")
 
 		cmd.Flags().String("placement-group", "", "Placement Group (ID of name)")
-		_ = cmd.RegisterFlagCompletionFunc("placement-group", cmpl.SuggestCandidatesF(client.PlacementGroup().Names))
+		cmpl.RegisterFlagCompletion(cmd, "placement-group", cmpl.SuggestCandidatesF(client.PlacementGroup().Names))
 		cmd.Flags().String("primary-ipv4", "", "Primary IPv4 (ID of name)")
-		_ = cmd.RegisterFlagCompletionFunc("primary-ipv4", cmpl.SuggestCandidatesF(client.PrimaryIP().Names(true, false, hcloud.Ptr(hcloud.PrimaryIPTypeIPv4))))
+		cmpl.RegisterFlagCompletion(cmd, "primary-ipv4", cmpl.SuggestCandidatesF(client.PrimaryIP().Names(true, false, hcloud.Ptr(hcloud.PrimaryIPTypeIPv4))))
 		cmd.Flags().String("primary-ipv6", "", "Primary IPv6 (ID of name)")
-		_ = cmd.RegisterFlagCompletionFunc("primary-ipv6", cmpl.SuggestCandidatesF(client.PrimaryIP().Names(true, false, hcloud.Ptr(hcloud.PrimaryIPTypeIPv6))))
+		cmpl.RegisterFlagCompletion(cmd, "primary-ipv6", cmpl.SuggestCandidatesF(client.PrimaryIP().Names(true, false, hcloud.Ptr(hcloud.PrimaryIPTypeIPv6))))
 
 		cmd.Flags().Bool("without-ipv4", false, "Creates the Server without an IPv4 (default: false) (true, false)")
 		cmd.Flags().Bool("without-ipv6", false, "Creates the Server without an IPv6 (default: false) (true, false)")
 
 		cmd.Flags().StringSlice("enable-protection", []string{}, "Enable protection (delete, rebuild) (default: none)")
-		_ = cmd.RegisterFlagCompletionFunc("enable-protection", cmpl.SuggestCandidates("delete", "rebuild"))
+		cmpl.RegisterFlagCompletion(cmd, "enable-protection", cmpl.SuggestCandidates("delete", "rebuild"))
 
 		cmd.Flags().Bool("enable-backup", false, "Enable automatic backups (true, false)")
 
@@ -114,12 +116,12 @@ See https://docs.hetzner.cloud/changelog#2026-07-01-removing-datacenters.`,
 
 		cmd.Print(deprecatedServerTypeWarning(createOpts.ServerType, locName))
 
-		result, _, err := s.Client().Server().Create(s, createOpts)
+		result, _, err := s.Client().Server().Create(cmd.Context(), createOpts)
 		if err != nil {
 			return nil, nil, err
 		}
 
-		if err := s.WaitForActions(s, cmd, actionutil.AppendNext(result.Action, result.NextActions)...); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, actionutil.AppendNext(result.Action, result.NextActions)...); err != nil {
 			return nil, nil, err
 		}
 
@@ -133,19 +135,19 @@ See https://docs.hetzner.cloud/changelog#2026-07-01-removing-datacenters.`,
 
 		enableBackup, _ := cmd.Flags().GetBool("enable-backup")
 		if enableBackup {
-			action, _, err := s.Client().Server().EnableBackup(s, result.Server, "")
+			action, _, err := s.Client().Server().EnableBackup(cmd.Context(), result.Server, "")
 			if err != nil {
 				return nil, nil, err
 			}
 
-			if err := s.WaitForActions(s, cmd, action); err != nil {
+			if err := s.WaitForActions(cmd.Context(), cmd, action); err != nil {
 				return nil, nil, err
 			}
 
 			cmd.Printf("Backups enabled for Server %d\n", result.Server.ID)
 		}
 
-		server, _, err := s.Client().Server().GetByID(s, result.Server.ID)
+		server, _, err := s.Client().Server().GetByID(cmd.Context(), result.Server.ID)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -157,27 +159,34 @@ See https://docs.hetzner.cloud/changelog#2026-07-01-removing-datacenters.`,
 			createResultSchema{Server: hcloud.SchemaFromServer(server), RootPassword: result.RootPassword}, nil
 	},
 
-	PrintResource: func(s state.State, cmd *cobra.Command, result *createResult) {
+	PrintResource: func(s state.State, cmd *cobra.Command, result *createResult) error {
 		server := result.Server
+		var output strings.Builder
 
 		if !server.PublicNet.IPv4.IsUnspecified() {
-			cmd.Printf("IPv4: %s\n", server.PublicNet.IPv4.IP.String())
+			fmt.Fprintf(&output, "IPv4: %s\n", server.PublicNet.IPv4.IP.String())
 		}
 		if !server.PublicNet.IPv6.IsUnspecified() {
-			cmd.Printf("IPv6: %s1\n", server.PublicNet.IPv6.Network.IP.String())
-			cmd.Printf("IPv6 Network: %s\n", server.PublicNet.IPv6.Network.String())
+			fmt.Fprintf(&output, "IPv6: %s1\n", server.PublicNet.IPv6.Network.IP.String())
+			fmt.Fprintf(&output, "IPv6 Network: %s\n", server.PublicNet.IPv6.Network.String())
 		}
 		if len(server.PrivateNet) > 0 {
-			cmd.Printf("Private Networks:\n")
+			fmt.Fprint(&output, "Private Networks:\n")
 			for _, network := range server.PrivateNet {
-				cmd.Printf("\t- %s (%s)\n", network.IP.String(), s.Client().Network().Name(network.Network.ID))
+				name, err := s.Client().Network().Name(cmd.Context(), network.Network.ID)
+				if err != nil {
+					return err
+				}
+				fmt.Fprintf(&output, "\t- %s (%s)\n", network.IP.String(), name)
 			}
 		}
 		// Only print the root password if it's not empty,
 		// which is only the case if it wasn't created with an SSH key.
 		if result.RootPassword != "" {
-			cmd.Printf("Root password: %s\n", result.RootPassword)
+			fmt.Fprintf(&output, "Root password: %s\n", result.RootPassword)
 		}
+		_, err := io.WriteString(cmd.OutOrStdout(), output.String())
+		return err
 	},
 }
 
@@ -199,7 +208,7 @@ func detectContentType(data string) string {
 	return ""
 }
 
-func buildUserData(files []string) (string, error) {
+func buildUserData(stdin io.Reader, files []string) (string, error) {
 	if len(files) == 0 {
 		return "", nil
 	}
@@ -210,7 +219,7 @@ func buildUserData(files []string) (string, error) {
 	)
 	if len(files) == 1 {
 		if file := files[0]; file == "-" {
-			data, err = io.ReadAll(os.Stdin)
+			data, err = io.ReadAll(stdin)
 		} else {
 			data, err = os.ReadFile(file)
 		}
@@ -227,7 +236,7 @@ func buildUserData(files []string) (string, error) {
 
 	for _, file := range files {
 		if file == "-" {
-			data, err = io.ReadAll(os.Stdin)
+			data, err = io.ReadAll(stdin)
 		} else {
 			data, err = os.ReadFile(file)
 		}
@@ -285,7 +294,7 @@ func createOptsFromFlags(
 	primaryIPv6IDorName, _ := flags.GetString("primary-ipv6")
 	protection, _ := flags.GetStringSlice("enable-protection")
 
-	serverType, _, err := s.Client().ServerType().Get(s, serverTypeName)
+	serverType, _, err := s.Client().ServerType().Get(cmd.Context(), serverTypeName)
 	if err != nil {
 		return
 	}
@@ -295,7 +304,7 @@ func createOptsFromFlags(
 	}
 
 	// Select correct image based on Server Type architecture
-	image, _, err := s.Client().Image().GetForArchitecture(s, imageIDorName, serverType.Architecture)
+	image, _, err := s.Client().Image().GetForArchitecture(cmd.Context(), imageIDorName, serverType.Architecture)
 	if err != nil {
 		return
 	}
@@ -335,7 +344,7 @@ func createOptsFromFlags(
 	}
 	if primaryIPv4IDorName != "" {
 		var primaryIPv4 *hcloud.PrimaryIP
-		primaryIPv4, _, err = s.Client().PrimaryIP().Get(s, primaryIPv4IDorName)
+		primaryIPv4, _, err = s.Client().PrimaryIP().Get(cmd.Context(), primaryIPv4IDorName)
 		if err != nil {
 			return
 		}
@@ -347,7 +356,7 @@ func createOptsFromFlags(
 	}
 	if primaryIPv6IDorName != "" {
 		var primaryIPv6 *hcloud.PrimaryIP
-		primaryIPv6, _, err = s.Client().PrimaryIP().Get(s, primaryIPv6IDorName)
+		primaryIPv6, _, err = s.Client().PrimaryIP().Get(cmd.Context(), primaryIPv6IDorName)
 		if err != nil {
 			return
 		}
@@ -359,7 +368,7 @@ func createOptsFromFlags(
 	}
 	createOpts.PublicNet = publicNetConfiguration
 
-	createOpts.UserData, err = buildUserData(userDataFiles)
+	createOpts.UserData, err = buildUserData(cmd.InOrStdin(), userDataFiles)
 	if err != nil {
 		return
 	}
@@ -373,13 +382,13 @@ func createOptsFromFlags(
 
 	for _, sshKeyIDOrName := range sshKeys {
 		var sshKey *hcloud.SSHKey
-		sshKey, _, err = s.Client().SSHKey().Get(s, sshKeyIDOrName)
+		sshKey, _, err = s.Client().SSHKey().Get(cmd.Context(), sshKeyIDOrName)
 		if err != nil {
 			return
 		}
 
 		if sshKey == nil {
-			sshKey, err = getSSHKeyForFingerprint(s, sshKeyIDOrName)
+			sshKey, err = getSSHKeyForFingerprint(cmd.Context(), s, sshKeyIDOrName)
 			if err != nil {
 				return
 			}
@@ -393,7 +402,7 @@ func createOptsFromFlags(
 	}
 	for _, volumeIDOrName := range volumes {
 		var volume *hcloud.Volume
-		volume, _, err = s.Client().Volume().Get(s, volumeIDOrName)
+		volume, _, err = s.Client().Volume().Get(cmd.Context(), volumeIDOrName)
 		if err != nil {
 			return
 		}
@@ -406,7 +415,7 @@ func createOptsFromFlags(
 	}
 	for _, networkIDOrName := range networks {
 		var network *hcloud.Network
-		network, _, err = s.Client().Network().Get(s, networkIDOrName)
+		network, _, err = s.Client().Network().Get(cmd.Context(), networkIDOrName)
 		if err != nil {
 			return
 		}
@@ -419,7 +428,7 @@ func createOptsFromFlags(
 	}
 	for _, firewallIDOrName := range firewalls {
 		var firewall *hcloud.Firewall
-		firewall, _, err = s.Client().Firewall().Get(s, firewallIDOrName)
+		firewall, _, err = s.Client().Firewall().Get(cmd.Context(), firewallIDOrName)
 		if err != nil {
 			return
 		}
@@ -433,7 +442,7 @@ func createOptsFromFlags(
 
 	if locationIDOrName != "" {
 		var location *hcloud.Location
-		location, _, err = s.Client().Location().Get(s, locationIDOrName)
+		location, _, err = s.Client().Location().Get(cmd.Context(), locationIDOrName)
 		if err != nil {
 			return
 		}
@@ -446,7 +455,7 @@ func createOptsFromFlags(
 
 	if placementGroupIDorName != "" {
 		var placementGroup *hcloud.PlacementGroup
-		placementGroup, _, err = s.Client().PlacementGroup().Get(s, placementGroupIDorName)
+		placementGroup, _, err = s.Client().PlacementGroup().Get(cmd.Context(), placementGroupIDorName)
 		if err != nil {
 			return
 		}
@@ -462,7 +471,7 @@ func createOptsFromFlags(
 }
 
 func getSSHKeyForFingerprint(
-	s state.State, file string,
+	ctx context.Context, s state.State, file string,
 ) (sshKey *hcloud.SSHKey, err error) {
 	var (
 		fileContent []byte
@@ -481,7 +490,7 @@ func getSSHKeyForFingerprint(
 		err = fmt.Errorf("lookup SSH Key by fingerprint: %w", err)
 		return
 	}
-	sshKey, _, err = s.Client().SSHKey().GetByFingerprint(s, ssh.FingerprintLegacyMD5(publicKey))
+	sshKey, _, err = s.Client().SSHKey().GetByFingerprint(ctx, ssh.FingerprintLegacyMD5(publicKey))
 	if err != nil {
 		err = fmt.Errorf("lookup SSH Key by fingerprint: %w", err)
 		return

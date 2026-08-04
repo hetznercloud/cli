@@ -9,6 +9,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -26,13 +27,13 @@ var AssignCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 		cmd.Flags().String("server", "", "Name or ID of the Server")
-		_ = cmd.RegisterFlagCompletionFunc("server", cmpl.SuggestCandidatesF(client.Server().Names))
-		_ = cmd.MarkFlagRequired("server")
+		cmpl.RegisterFlagCompletion(cmd, "server", cmpl.SuggestCandidatesF(client.Server().Names))
+		util.MarkFlagRequired(cmd, "server")
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		primaryIP, _, err := s.Client().PrimaryIP().Get(s, idOrName)
+		primaryIP, _, err := s.Client().PrimaryIP().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return err
 		}
@@ -42,7 +43,7 @@ var AssignCmd = base.Cmd{
 
 		serverIDOrName, _ := cmd.Flags().GetString("server")
 
-		server, _, err := s.Client().Server().Get(s, serverIDOrName)
+		server, _, err := s.Client().Server().Get(cmd.Context(), serverIDOrName)
 		if err != nil {
 			return err
 		}
@@ -55,12 +56,12 @@ var AssignCmd = base.Cmd{
 			AssigneeID:   server.ID,
 		}
 
-		action, _, err := s.Client().PrimaryIP().Assign(s, opts)
+		action, _, err := s.Client().PrimaryIP().Assign(cmd.Context(), opts)
 		if err != nil {
 			return err
 		}
 
-		if err := s.WaitForActions(s, cmd, action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, action); err != nil {
 			return err
 		}
 

@@ -8,6 +8,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -24,10 +25,10 @@ var AddRouteCmd = base.Cmd{
 		}
 
 		cmd.Flags().IPNet("destination", net.IPNet{}, "Destination Network or host (required)")
-		_ = cmd.MarkFlagRequired("destination")
+		util.MarkFlagRequired(cmd, "destination")
 
 		cmd.Flags().IP("gateway", net.IP{}, "Gateway IP address (required)")
-		_ = cmd.MarkFlagRequired("gateway")
+		util.MarkFlagRequired(cmd, "gateway")
 
 		return cmd
 	},
@@ -36,7 +37,7 @@ var AddRouteCmd = base.Cmd{
 		destination, _ := cmd.Flags().GetIPNet("destination")
 		idOrName := args[0]
 
-		network, _, err := s.Client().Network().Get(s, idOrName)
+		network, _, err := s.Client().Network().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return err
 		}
@@ -50,11 +51,11 @@ var AddRouteCmd = base.Cmd{
 				Destination: &destination,
 			},
 		}
-		action, _, err := s.Client().Network().AddRoute(s, network, opts)
+		action, _, err := s.Client().Network().AddRoute(cmd.Context(), network, opts)
 		if err != nil {
 			return err
 		}
-		if err := s.WaitForActions(s, cmd, action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, action); err != nil {
 			return err
 		}
 		cmd.Printf("Route added to Network %d\n", network.ID)

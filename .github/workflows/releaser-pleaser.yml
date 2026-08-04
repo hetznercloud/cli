@@ -13,12 +13,16 @@ concurrency:
   group: releaser-pleaser
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   releaser-pleaser:
     # Do not run on forks.
     if: github.repository == 'hetznercloud/cli'
 
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: releaser-pleaser
         uses: apricote/releaser-pleaser@93a3e2c401320206dcd9a9b7a5bbc0850072b3c6 # v0.9.0

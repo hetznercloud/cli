@@ -23,7 +23,7 @@ var DetachISOCmd = base.Cmd{
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		server, _, err := s.Client().Server().Get(s, idOrName)
+		server, _, err := s.Client().Server().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return err
 		}
@@ -31,12 +31,12 @@ var DetachISOCmd = base.Cmd{
 			return fmt.Errorf("Server not found: %s", idOrName)
 		}
 
-		action, _, err := s.Client().Server().DetachISO(s, server)
+		action, _, err := s.Client().Server().DetachISO(cmd.Context(), server)
 		if err != nil {
 			return err
 		}
 
-		if err := s.WaitForActions(s, cmd, action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, action); err != nil {
 			return err
 		}
 

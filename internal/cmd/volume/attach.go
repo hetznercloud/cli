@@ -7,6 +7,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -22,14 +23,14 @@ var AttachCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 		cmd.Flags().String("server", "", "Server (ID or name) (required)")
-		_ = cmd.RegisterFlagCompletionFunc("server", cmpl.SuggestCandidatesF(client.Server().Names))
-		_ = cmd.MarkFlagRequired("server")
+		cmpl.RegisterFlagCompletion(cmd, "server", cmpl.SuggestCandidatesF(client.Server().Names))
+		util.MarkFlagRequired(cmd, "server")
 		cmd.Flags().Bool("automount", false, "Automount Volume after attach (true, false)")
 
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
-		volume, _, err := s.Client().Volume().Get(s, args[0])
+		volume, _, err := s.Client().Volume().Get(cmd.Context(), args[0])
 		if err != nil {
 			return err
 		}
@@ -38,7 +39,7 @@ var AttachCmd = base.Cmd{
 		}
 
 		serverIDOrName, _ := cmd.Flags().GetString("server")
-		server, _, err := s.Client().Server().Get(s, serverIDOrName)
+		server, _, err := s.Client().Server().Get(cmd.Context(), serverIDOrName)
 		if err != nil {
 			return err
 		}
@@ -46,7 +47,7 @@ var AttachCmd = base.Cmd{
 			return fmt.Errorf("Server not found: %s", serverIDOrName)
 		}
 		automount, _ := cmd.Flags().GetBool("automount")
-		action, _, err := s.Client().Volume().AttachWithOpts(s, volume, hcloud.VolumeAttachOpts{
+		action, _, err := s.Client().Volume().AttachWithOpts(cmd.Context(), volume, hcloud.VolumeAttachOpts{
 			Server:    server,
 			Automount: &automount,
 		})
@@ -55,7 +56,7 @@ var AttachCmd = base.Cmd{
 			return err
 		}
 
-		if err := s.WaitForActions(s, cmd, action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, action); err != nil {
 			return err
 		}
 

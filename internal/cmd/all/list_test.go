@@ -23,7 +23,7 @@ func TestListAll(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	time.Local = time.UTC
+	testutil.SetTimezone(t, time.UTC)
 
 	cmd := all.ListCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
@@ -314,7 +314,7 @@ func TestListAllPaidJSON(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	time.Local = time.UTC
+	testutil.SetTimezone(t, time.UTC)
 
 	cmd := all.ListCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()

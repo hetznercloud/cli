@@ -37,7 +37,7 @@ var DeleteCmd = base.Cmd{
 			return fmt.Errorf("failed to convert Zone name to ascii: %w", err)
 		}
 
-		zone, _, err := s.Client().Zone().Get(s, zoneIDOrName)
+		zone, _, err := s.Client().Zone().Get(cmd.Context(), zoneIDOrName)
 		if err != nil {
 			return err
 		}
@@ -45,7 +45,7 @@ var DeleteCmd = base.Cmd{
 			return fmt.Errorf("Zone not found: %s", zoneIDOrName)
 		}
 
-		rrset, _, err := s.Client().Zone().GetRRSetByNameAndType(s, zone, rrsetName, hcloud.ZoneRRSetType(rrsetType))
+		rrset, _, err := s.Client().Zone().GetRRSetByNameAndType(cmd.Context(), zone, rrsetName, hcloud.ZoneRRSetType(rrsetType))
 		if err != nil {
 			return err
 		}
@@ -53,12 +53,12 @@ var DeleteCmd = base.Cmd{
 			return fmt.Errorf("Zone RRSet not found: %s %s %s", zoneIDOrName, rrsetName, rrsetType)
 		}
 
-		result, _, err := s.Client().Zone().DeleteRRSet(s, rrset)
+		result, _, err := s.Client().Zone().DeleteRRSet(cmd.Context(), rrset)
 		if err != nil {
 			return err
 		}
 
-		err = s.WaitForActions(s, cmd, result.Action)
+		err = s.WaitForActions(cmd.Context(), cmd, result.Action)
 		if err != nil {
 			return err
 		}

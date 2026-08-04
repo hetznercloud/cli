@@ -15,7 +15,7 @@ import (
 func TestList(t *testing.T) {
 	os.Clearenv()
 
-	_, deleteDeeplyNestedOption := config.NewTestOption(
+	deeplyNestedOption, deleteDeeplyNestedOption := config.NewTestOption(
 		"deeply.nested.option",
 		"deeply nested option",
 		"foo",
@@ -147,7 +147,7 @@ token                  super secret token
 
 	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
-			fx := testutil.NewFixtureWithConfigFile(t, []byte(testConfig))
+			fx := testutil.NewFixtureWithConfigFile(t, []byte(testConfig), deeplyNestedOption)
 			defer fx.Finish()
 
 			cmd := configCmd.NewListCommand(fx.State())

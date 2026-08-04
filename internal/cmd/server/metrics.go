@@ -38,8 +38,8 @@ var MetricsCmd = base.Cmd{
 		}
 
 		cmd.Flags().StringSlice("type", nil, "Types of metrics you want to show")
-		_ = cmd.MarkFlagRequired("type")
-		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates(metricTypeStrings...))
+		util.MarkFlagRequired(cmd, "type")
+		cmpl.RegisterFlagCompletion(cmd, "type", cmpl.SuggestCandidates(metricTypeStrings...))
 
 		cmd.Flags().String("start", "", "ISO 8601 timestamp")
 		cmd.Flags().String("end", "", "ISO 8601 timestamp")
@@ -48,10 +48,13 @@ var MetricsCmd = base.Cmd{
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
-		outputFlags := output.FlagsForCommand(cmd)
+		outputFlags, err := output.FlagsForCommand(cmd)
+		if err != nil {
+			return err
+		}
 
 		idOrName := args[0]
-		server, _, err := s.Client().Server().Get(s, idOrName)
+		server, _, err := s.Client().Server().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return err
 		}
@@ -87,7 +90,7 @@ var MetricsCmd = base.Cmd{
 			}
 		}
 
-		m, resp, err := s.Client().Server().GetMetrics(s, server, hcloud.ServerGetMetricsOpts{
+		m, resp, err := s.Client().Server().GetMetrics(cmd.Context(), server, hcloud.ServerGetMetricsOpts{
 			Types: metricTypes,
 			Start: startTime,
 			End:   endTime,

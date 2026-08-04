@@ -2,7 +2,6 @@ package hcapi2
 
 import (
 	"context"
-	"strconv"
 
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -11,8 +10,8 @@ import (
 // additional helper functions.
 type CertificateClient interface {
 	hcloud.ICertificateClient
-	Names() []string
-	LabelKeys(string) []string
+	Names(context.Context) ([]string, error)
+	LabelKeys(context.Context, string) ([]string, error)
 }
 
 func NewCertificateClient(client hcloud.ICertificateClient) CertificateClient {
@@ -27,28 +26,23 @@ type certificateClient struct {
 
 // Names obtains a list of available data centers. It returns nil if
 // data center names could not be fetched.
-func (c *certificateClient) Names() []string {
-	dcs, err := c.All(context.Background())
-	if err != nil || len(dcs) == 0 {
-		return nil
+func (c *certificateClient) Names(ctx context.Context) ([]string, error) {
+	certificates, err := c.All(ctx)
+	if err != nil {
+		return nil, err
 	}
-	names := make([]string, len(dcs))
-	for i, dc := range dcs {
-		name := dc.Name
-		if name == "" {
-			name = strconv.FormatInt(dc.ID, 10)
-		}
-		names[i] = name
-	}
-	return names
+	return resourceNames(certificates, func(certificate *hcloud.Certificate) int64 { return certificate.ID }, func(certificate *hcloud.Certificate) string { return certificate.Name }), nil
 }
 
 // LabelKeys returns a slice containing the keys of all labels
 // assigned to the certificate with the passed idOrName.
-func (c *certificateClient) LabelKeys(idOrName string) []string {
-	certificate, _, err := c.Get(context.Background(), idOrName)
-	if err != nil || certificate == nil || len(certificate.Labels) == 0 {
-		return nil
+func (c *certificateClient) LabelKeys(ctx context.Context, idOrName string) ([]string, error) {
+	certificate, _, err := c.Get(ctx, idOrName)
+	if err != nil {
+		return nil, err
 	}
-	return labelKeys(certificate.Labels)
+	if certificate == nil {
+		return nil, nil
+	}
+	return labelKeys(certificate.Labels), nil
 }

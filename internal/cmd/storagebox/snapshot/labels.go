@@ -1,6 +1,7 @@
 package snapshot
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -22,19 +23,19 @@ var LabelCmds = base.LabelCmds[*hcloud.StorageBoxSnapshot]{
 		return []cobra.CompletionFunc{
 			cmpl.SuggestCandidatesF(client.StorageBox().Names),
 			SuggestSnapshots(client),
-			cmpl.SuggestCandidatesCtx(func(_ *cobra.Command, args []string) []string {
+			cmpl.SuggestCandidatesCtxE(func(cmd *cobra.Command, args []string) ([]string, error) {
 				if len(args) < 2 {
-					return nil
+					return nil, nil
 				}
-				return client.StorageBox().SnapshotLabelKeys(args[0], args[1])
+				return client.StorageBox().SnapshotLabelKeys(cmd.Context(), args[0], args[1])
 			}),
 		}
 	},
 
-	FetchWithArgs: func(s state.State, args []string) (*hcloud.StorageBoxSnapshot, error) {
+	FetchWithArgs: func(ctx context.Context, s state.State, args []string) (*hcloud.StorageBoxSnapshot, error) {
 		storageBoxIDOrName := args[0]
 
-		storageBox, _, err := s.Client().StorageBox().Get(s, storageBoxIDOrName)
+		storageBox, _, err := s.Client().StorageBox().Get(ctx, storageBoxIDOrName)
 		if err != nil {
 			return nil, err
 		}
@@ -42,18 +43,18 @@ var LabelCmds = base.LabelCmds[*hcloud.StorageBoxSnapshot]{
 			return nil, fmt.Errorf("Storage Box not found: %s", storageBoxIDOrName)
 		}
 
-		snapshot, _, err := s.Client().StorageBox().GetSnapshot(s, storageBox, args[1])
+		snapshot, _, err := s.Client().StorageBox().GetSnapshot(ctx, storageBox, args[1])
 		if err != nil {
 			return nil, err
 		}
 		return snapshot, nil
 	},
 
-	SetLabels: func(s state.State, snapshot *hcloud.StorageBoxSnapshot, labels map[string]string) error {
+	SetLabels: func(ctx context.Context, s state.State, snapshot *hcloud.StorageBoxSnapshot, labels map[string]string) error {
 		opts := hcloud.StorageBoxSnapshotUpdateOpts{
 			Labels: labels,
 		}
-		_, _, err := s.Client().StorageBox().UpdateSnapshot(s, snapshot, opts)
+		_, _, err := s.Client().StorageBox().UpdateSnapshot(ctx, snapshot, opts)
 		return err
 	},
 

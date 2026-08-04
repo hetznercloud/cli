@@ -14,6 +14,9 @@
 
 - See [setting up hcloud](docs/tutorials/setup-hcloud-cli.md) for instructions on how to install and configure the CLI.
 - See the [manual](docs/reference/manual/hcloud.md) for a list of all available commands and their options.
+- See [server type support and availability](docs/reference/server-type-availability.md) before using availability
+  metadata for automated placement decisions.
+- Contributors can start with the [architecture](docs/architecture.md) and [development guide](docs/development.md).
 
 For additional information, see the [documentation](docs).
 
@@ -35,4 +38,3 @@ when running them. You can suppress this warning by enabling the `no-experimenta
 ## License
 
 MIT license
-

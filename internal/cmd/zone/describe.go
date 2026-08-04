@@ -17,14 +17,14 @@ import (
 var DescribeCmd = base.DescribeCmd[*hcloud.Zone]{
 	ResourceNameSingular: "Zone",
 	ShortDescription:     "Describe a Zone",
-	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Zone().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.Zone, any, error) {
+	NameSuggestions:      func(c hcapi2.Client) hcapi2.CompletionFunc { return c.Zone().Names },
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (*hcloud.Zone, any, error) {
 		idOrName, err := util.ParseZoneIDOrName(idOrName)
 		if err != nil {
 			return nil, nil, fmt.Errorf("failed to convert Zone name to ascii: %w", err)
 		}
 
-		zone, _, err := s.Client().Zone().Get(s, idOrName)
+		zone, _, err := s.Client().Zone().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return nil, nil, err
 		}

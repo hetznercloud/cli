@@ -1,6 +1,8 @@
 package zone
 
 import (
+	"context"
+
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
@@ -12,7 +14,7 @@ import (
 var ChangeProtectionCmds = base.ChangeProtectionCmds[*hcloud.Zone, hcloud.ZoneChangeProtectionOpts]{
 	ResourceNameSingular: "Zone",
 
-	NameSuggestions: func(client hcapi2.Client) func() []string {
+	NameSuggestions: func(client hcapi2.Client) hcapi2.CompletionFunc {
 		return client.Zone().Names
 	},
 
@@ -22,12 +24,12 @@ var ChangeProtectionCmds = base.ChangeProtectionCmds[*hcloud.Zone, hcloud.ZoneCh
 		},
 	},
 
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.Zone, *hcloud.Response, error) {
-		return s.Client().Zone().Get(s, idOrName)
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (*hcloud.Zone, *hcloud.Response, error) {
+		return s.Client().Zone().Get(cmd.Context(), idOrName)
 	},
 
-	ChangeProtectionFunction: func(s state.State, zone *hcloud.Zone, opts hcloud.ZoneChangeProtectionOpts) (*hcloud.Action, *hcloud.Response, error) {
-		return s.Client().Zone().ChangeProtection(s, zone, opts)
+	ChangeProtectionFunction: func(ctx context.Context, s state.State, zone *hcloud.Zone, opts hcloud.ZoneChangeProtectionOpts) (*hcloud.Action, *hcloud.Response, error) {
+		return s.Client().Zone().ChangeProtection(ctx, zone, opts)
 	},
 
 	IDOrName: func(zone *hcloud.Zone) string {

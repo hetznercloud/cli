@@ -24,21 +24,21 @@ var DeleteCmd = base.DeleteCmd[*hcloud.StorageBoxSubaccount]{
 		}
 	},
 
-	FetchFunc: func(s state.State, _ *cobra.Command, args []string) (base.FetchFunc[*hcloud.StorageBoxSubaccount], error) {
-		storageBox, _, err := s.Client().StorageBox().Get(s, args[0])
+	FetchFunc: func(s state.State, cmd *cobra.Command, args []string) (base.FetchFunc[*hcloud.StorageBoxSubaccount], error) {
+		storageBox, _, err := s.Client().StorageBox().Get(cmd.Context(), args[0])
 		if err != nil {
 			return nil, err
 		}
 		if storageBox == nil {
 			return nil, fmt.Errorf("Storage Box not found: %s", args[0])
 		}
-		return func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.StorageBoxSubaccount, *hcloud.Response, error) {
-			return s.Client().StorageBox().GetSubaccount(s, storageBox, idOrName)
+		return func(s state.State, cmd *cobra.Command, idOrName string) (*hcloud.StorageBoxSubaccount, *hcloud.Response, error) {
+			return s.Client().StorageBox().GetSubaccount(cmd.Context(), storageBox, idOrName)
 		}, nil
 	},
 
-	Delete: func(s state.State, _ *cobra.Command, subaccount *hcloud.StorageBoxSubaccount) ([]*hcloud.Action, error) {
-		result, _, err := s.Client().StorageBox().DeleteSubaccount(s, subaccount)
+	Delete: func(s state.State, cmd *cobra.Command, subaccount *hcloud.StorageBoxSubaccount) ([]*hcloud.Action, error) {
+		result, _, err := s.Client().StorageBox().DeleteSubaccount(cmd.Context(), subaccount)
 		return []*hcloud.Action{result.Action}, err
 	},
 }

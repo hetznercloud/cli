@@ -1,9 +1,9 @@
 package base
 
 import (
+	"context"
 	"fmt"
 	"io"
-	"os"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -25,9 +25,11 @@ type Listable interface {
 	GetJSONKeyGetByName() string
 	GetDefaultColumns() []string
 	NewOutputTable(io.Writer, hcapi2.Client) *output.Table[any]
-	FetchAny(state.State, *pflag.FlagSet, hcloud.ListOpts, []string) ([]any, error)
+	FetchAny(context.Context, state.State, *pflag.FlagSet, hcloud.ListOpts, []string) ([]any, error)
 	SchemaAny(any) any
 }
+
+const listPageSize = 50
 
 // ListCmd allows defining commands for listing resources
 // T is the type of the resource that is listed, e.g. *hcloud.Server
@@ -37,10 +39,10 @@ type ListCmd[T any, S any] struct {
 	ResourceNamePlural string // e.g. "Servers"
 	JSONKeyGetByName   string // e.g. "Servers"
 	DefaultColumns     []string
-	Fetch              func(state.State, *pflag.FlagSet, hcloud.ListOpts, []string) ([]T, error)
+	Fetch              func(context.Context, state.State, *pflag.FlagSet, hcloud.ListOpts, []string) ([]T, error)
 	// Can be set in case the resource has more than a single identifier that is used in the positional arguments.
 	// See [ListCmd.PositionalArgumentOverride].
-	FetchWithArgs   func(s state.State, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string, args []string) ([]T, error)
+	FetchWithArgs   func(ctx context.Context, s state.State, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string, args []string) ([]T, error)
 	AdditionalFlags func(*cobra.Command)
 	OutputTable     func(t *output.Table[T], client hcapi2.Client)
 	Schema          func(T) S
@@ -100,7 +102,10 @@ func (lc *ListCmd[T, S]) CobraCommand(s state.State) *cobra.Command {
 
 // Run executes a list command
 func (lc *ListCmd[T, S]) Run(s state.State, cmd *cobra.Command, args []string) error {
-	outOpts := output.FlagsForCommand(cmd)
+	outOpts, err := output.FlagsForCommand(cmd)
+	if err != nil {
+		return err
+	}
 
 	quiet, err := config.OptionQuiet.Get(s.Config())
 	if err != nil {
@@ -110,9 +115,12 @@ func (lc *ListCmd[T, S]) Run(s state.State, cmd *cobra.Command, args []string) e
 	var sorts []string
 	if cmd.Flags().Changed("sort") {
 		if lc.SortOption == nil {
-			_, _ = fmt.Fprintln(os.Stderr, "Warning: resource does not support sorting. Ignoring --sort flag.")
+			cmd.PrintErrln("Warning: resource does not support sorting. Ignoring --sort flag.")
 		} else {
-			sorts, _ = cmd.Flags().GetStringSlice("sort")
+			sorts, err = cmd.Flags().GetStringSlice("sort")
+			if err != nil {
+				return err
+			}
 		}
 	} else if lc.SortOption != nil {
 		var err error
@@ -122,17 +130,20 @@ func (lc *ListCmd[T, S]) Run(s state.State, cmd *cobra.Command, args []string) e
 		}
 	}
 
-	labelSelector, _ := cmd.Flags().GetString("selector")
+	labelSelector, err := cmd.Flags().GetString("selector")
+	if err != nil {
+		return err
+	}
 	listOpts := hcloud.ListOpts{
 		LabelSelector: labelSelector,
-		PerPage:       50,
+		PerPage:       listPageSize,
 	}
 
 	var resources []T
 	if lc.FetchWithArgs != nil {
-		resources, err = lc.FetchWithArgs(s, cmd.Flags(), listOpts, sorts, args)
+		resources, err = lc.FetchWithArgs(cmd.Context(), s, cmd.Flags(), listOpts, sorts, args)
 	} else {
-		resources, err = lc.Fetch(s, cmd.Flags(), listOpts, sorts)
+		resources, err = lc.Fetch(cmd.Context(), s, cmd.Flags(), listOpts, sorts)
 	}
 	if err != nil {
 		return err
@@ -164,8 +175,10 @@ func (lc *ListCmd[T, S]) Run(s state.State, cmd *cobra.Command, args []string) e
 	t := output.NewTable[T](out)
 	lc.OutputTable(t, s.Client())
 
-	warnings, _ := t.ValidateColumns(cols)
-	// invalid columns are already checked in output.validateOutputFlag(), we only need the warnings here
+	warnings, err := t.ValidateColumns(cols)
+	if err != nil {
+		return err
+	}
 	for _, warning := range warnings {
 		cmd.PrintErrln("Warning:", warning)
 	}
@@ -174,7 +187,9 @@ func (lc *ListCmd[T, S]) Run(s state.State, cmd *cobra.Command, args []string) e
 		t.WriteHeader(cols)
 	}
 	for _, resource := range resources {
-		t.Write(cols, resource)
+		if err := t.Write(cmd.Context(), cols, resource); err != nil {
+			return err
+		}
 	}
 	return t.Flush()
 }
@@ -199,8 +214,8 @@ func (lc *ListCmd[T, S]) GetDefaultColumns() []string {
 	return lc.DefaultColumns
 }
 
-func (lc *ListCmd[T, S]) FetchAny(s state.State, fs *pflag.FlagSet, opts hcloud.ListOpts, sorts []string) ([]any, error) {
-	resources, err := lc.Fetch(s, fs, opts, sorts)
+func (lc *ListCmd[T, S]) FetchAny(ctx context.Context, s state.State, fs *pflag.FlagSet, opts hcloud.ListOpts, sorts []string) ([]any, error) {
+	resources, err := lc.Fetch(ctx, s, fs, opts, sorts)
 	return util.ToAnySlice(resources), err
 }
 

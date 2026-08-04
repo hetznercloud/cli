@@ -13,18 +13,18 @@ import (
 var UpdateCmd = base.UpdateCmd[*hcloud.SSHKey]{
 	ResourceNameSingular: "SSH Key",
 	ShortDescription:     "Update an SSH Key",
-	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.SSHKey().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.SSHKey, *hcloud.Response, error) {
-		return s.Client().SSHKey().Get(s, idOrName)
+	NameSuggestions:      func(c hcapi2.Client) hcapi2.CompletionFunc { return c.SSHKey().Names },
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (*hcloud.SSHKey, *hcloud.Response, error) {
+		return s.Client().SSHKey().Get(cmd.Context(), idOrName)
 	},
 	DefineFlags: func(cmd *cobra.Command) {
 		cmd.Flags().String("name", "", "SSH Key name")
 	},
-	Update: func(s state.State, _ *cobra.Command, sshKey *hcloud.SSHKey, flags map[string]pflag.Value) error {
+	Update: func(s state.State, cmd *cobra.Command, sshKey *hcloud.SSHKey, flags map[string]pflag.Value) error {
 		updOpts := hcloud.SSHKeyUpdateOpts{
 			Name: flags["name"].String(),
 		}
-		_, _, err := s.Client().SSHKey().Update(s, sshKey, updOpts)
+		_, _, err := s.Client().SSHKey().Update(cmd.Context(), sshKey, updOpts)
 		if err != nil {
 			return err
 		}

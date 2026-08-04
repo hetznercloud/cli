@@ -1,6 +1,7 @@
 package floatingip
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -14,7 +15,7 @@ import (
 var ChangeProtectionCmds = base.ChangeProtectionCmds[*hcloud.FloatingIP, hcloud.FloatingIPChangeProtectionOpts]{
 	ResourceNameSingular: "Floating IP",
 
-	NameSuggestions: func(client hcapi2.Client) func() []string {
+	NameSuggestions: func(client hcapi2.Client) hcapi2.CompletionFunc {
 		return client.FloatingIP().Names
 	},
 
@@ -24,12 +25,12 @@ var ChangeProtectionCmds = base.ChangeProtectionCmds[*hcloud.FloatingIP, hcloud.
 		},
 	},
 
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.FloatingIP, *hcloud.Response, error) {
-		return s.Client().FloatingIP().Get(s, idOrName)
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (*hcloud.FloatingIP, *hcloud.Response, error) {
+		return s.Client().FloatingIP().Get(cmd.Context(), idOrName)
 	},
 
-	ChangeProtectionFunction: func(s state.State, floatingIP *hcloud.FloatingIP, opts hcloud.FloatingIPChangeProtectionOpts) (*hcloud.Action, *hcloud.Response, error) {
-		return s.Client().FloatingIP().ChangeProtection(s, floatingIP, opts)
+	ChangeProtectionFunction: func(ctx context.Context, s state.State, floatingIP *hcloud.FloatingIP, opts hcloud.FloatingIPChangeProtectionOpts) (*hcloud.Action, *hcloud.Response, error) {
+		return s.Client().FloatingIP().ChangeProtection(ctx, floatingIP, opts)
 	},
 
 	IDOrName: func(floatingIP *hcloud.FloatingIP) string {

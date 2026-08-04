@@ -19,7 +19,7 @@ func TestDescribe(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	time.Local = time.UTC
+	testutil.SetTimezone(t, time.UTC)
 
 	cmd := subaccount.DescribeCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()

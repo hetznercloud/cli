@@ -20,8 +20,8 @@ func NewSetCommand(s state.State) *cobra.Command {
 		SilenceUsage:          true,
 		RunE:                  state.Wrap(s, runSet),
 		ValidArgsFunction: cmpl.NoFileCompletion(cmpl.SuggestArgs(
-			cmpl.SuggestCandidates(getOptionNames(config.OptionFlagPreference)...),
-			cmpl.SuggestCandidatesCtx(suggestOptionCompletions),
+			cmpl.SuggestCandidates(getOptionNames(s.Config(), config.OptionFlagPreference)...),
+			cmpl.SuggestCandidatesCtx(suggestOptionCompletions(s.Config())),
 		)),
 	}
 	cmd.Flags().Bool("global", false, "Set the value globally (for all contexts) (true, false)")
@@ -37,7 +37,7 @@ func runSet(s state.State, cmd *cobra.Command, args []string) error {
 	}
 
 	key, values := args[0], args[1:]
-	opt, err := getPreference(key)
+	opt, err := getPreference(s.Config(), key)
 	if err != nil {
 		return err
 	}

@@ -23,21 +23,21 @@ import (
 var DescribeCmd = base.DescribeCmd[*hcloud.Server]{
 	ResourceNameSingular: "Server",
 	ShortDescription:     "Describe a Server",
-	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Server().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.Server, any, error) {
-		srv, _, err := s.Client().Server().Get(s, idOrName)
+	NameSuggestions:      func(c hcapi2.Client) hcapi2.CompletionFunc { return c.Server().Names },
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (*hcloud.Server, any, error) {
+		srv, _, err := s.Client().Server().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return nil, nil, err
 		}
 		return srv, hcloud.SchemaFromServer(srv), nil
 	},
-	PrintText: func(s state.State, _ *cobra.Command, out io.Writer, server *hcloud.Server) error {
+	PrintText: func(s state.State, cmd *cobra.Command, out io.Writer, server *hcloud.Server) error {
 		fmt.Fprintf(out, "ID:\t%d\n", server.ID)
 		fmt.Fprintf(out, "Name:\t%s\n", server.Name)
 		fmt.Fprintf(out, "Status:\t%s\n", server.Status)
 		fmt.Fprintf(out, "Created:\t%s (%s)\n", util.Datetime(server.Created), humanize.Time(server.Created))
 
-		serverTypeDescription, _ := servertype.DescribeServerType(s, server.ServerType, true)
+		serverTypeDescription, _ := servertype.DescribeServerType(cmd.Context(), s, server.ServerType, true)
 		fmt.Fprintln(out)
 		fmt.Fprintf(out, "Server Type:\n")
 		fmt.Fprintf(out, "%s", util.PrefixLines(serverTypeDescription, "  "))
@@ -80,7 +80,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Server]{
 		fmt.Fprintf(out, "  Floating IPs:\n")
 		if len(server.PublicNet.FloatingIPs) > 0 {
 			for _, f := range server.PublicNet.FloatingIPs {
-				floatingIP, _, err := s.Client().FloatingIP().GetByID(s, f.ID)
+				floatingIP, _, err := s.Client().FloatingIP().GetByID(cmd.Context(), f.ID)
 				if err != nil {
 					return fmt.Errorf("error fetching Floating IP: %w", err)
 				}
@@ -99,7 +99,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Server]{
 				if i > 0 {
 					fmt.Fprintln(out)
 				}
-				network, _, err := s.Client().Network().GetByID(s, n.Network.ID)
+				network, _, err := s.Client().Network().GetByID(cmd.Context(), n.Network.ID)
 				if err != nil {
 					return fmt.Errorf("error fetching Network: %w", err)
 				}
@@ -124,7 +124,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Server]{
 		fmt.Fprintf(out, "Volumes:\n")
 		if len(server.Volumes) > 0 {
 			for _, v := range server.Volumes {
-				volume, _, err := s.Client().Volume().GetByID(s, v.ID)
+				volume, _, err := s.Client().Volume().GetByID(cmd.Context(), v.ID)
 				if err != nil {
 					return fmt.Errorf("error fetching Volume: %w", err)
 				}
@@ -187,7 +187,11 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Server]{
 		fmt.Fprintln(out)
 		fmt.Fprintf(out, "Placement Group:\n")
 		if server.PlacementGroup != nil {
-			fmt.Fprint(out, util.PrefixLines(placementgroup.DescribePlacementGroup(s.Client(), server.PlacementGroup), "  "))
+			description, err := placementgroup.DescribePlacementGroup(cmd.Context(), s.Client(), server.PlacementGroup)
+			if err != nil {
+				return err
+			}
+			fmt.Fprint(out, util.PrefixLines(description, "  "))
 		} else {
 			fmt.Fprintf(out, "  No Placement Group set\n")
 		}

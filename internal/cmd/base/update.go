@@ -2,13 +2,13 @@ package base
 
 import (
 	"fmt"
-	"log"
 	"reflect"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/registration"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
@@ -19,7 +19,7 @@ import (
 type UpdateCmd[T any] struct {
 	ResourceNameSingular string // e.g. "Server"
 	ShortDescription     string
-	NameSuggestions      func(client hcapi2.Client) func() []string
+	NameSuggestions      func(client hcapi2.Client) hcapi2.CompletionFunc
 	DefineFlags          func(*cobra.Command)
 
 	Fetch func(s state.State, cmd *cobra.Command, idOrName string) (T, *hcloud.Response, error)
@@ -48,6 +48,7 @@ type UpdateCmd[T any] struct {
 // CobraCommand creates a command that can be registered with cobra.
 func (uc *UpdateCmd[T]) CobraCommand(s state.State) *cobra.Command {
 	var suggestArgs []cobra.CompletionFunc
+	var constructionErr error
 	switch {
 	case uc.NameSuggestions != nil:
 		suggestArgs = append(suggestArgs,
@@ -56,7 +57,7 @@ func (uc *UpdateCmd[T]) CobraCommand(s state.State) *cobra.Command {
 	case uc.ValidArgsFunction != nil:
 		suggestArgs = append(suggestArgs, uc.ValidArgsFunction(s.Client())...)
 	default:
-		log.Fatalf("update command %s is missing ValidArgsFunction or NameSuggestions", uc.ResourceNameSingular)
+		constructionErr = fmt.Errorf("update command %s is missing ValidArgsFunction or NameSuggestions", uc.ResourceNameSingular)
 	}
 
 	cmd := &cobra.Command{
@@ -71,6 +72,7 @@ func (uc *UpdateCmd[T]) CobraCommand(s state.State) *cobra.Command {
 			return uc.Run(s, cmd, args)
 		},
 	}
+	registration.Record(cmd, constructionErr)
 	uc.DefineFlags(cmd)
 	if uc.Configure != nil {
 		cmd = uc.Configure(s, cmd)

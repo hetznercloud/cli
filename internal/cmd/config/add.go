@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/spf13/cobra"
 
@@ -23,8 +22,8 @@ func NewAddCommand(s state.State) *cobra.Command {
 		SilenceUsage:          true,
 		RunE:                  state.Wrap(s, runAdd),
 		ValidArgsFunction: cmpl.NoFileCompletion(cmpl.SuggestArgs(
-			cmpl.SuggestCandidates(getOptionNames(config.OptionFlagPreference|config.OptionFlagSlice)...),
-			cmpl.SuggestCandidatesCtx(suggestOptionCompletions),
+			cmpl.SuggestCandidates(getOptionNames(s.Config(), config.OptionFlagPreference|config.OptionFlagSlice)...),
+			cmpl.SuggestCandidatesCtx(suggestOptionCompletions(s.Config())),
 		)),
 	}
 	cmd.Flags().Bool("global", false, "Set the value globally (for all contexts) (true, false)")
@@ -40,7 +39,7 @@ func runAdd(s state.State, cmd *cobra.Command, args []string) error {
 	}
 
 	key, values := args[0], args[1:]
-	opt, err := getPreference(key)
+	opt, err := getPreference(s.Config(), key)
 	if err != nil {
 		return err
 	}
@@ -60,9 +59,9 @@ func runAdd(s state.State, cmd *cobra.Command, args []string) error {
 	prefs.Set(key, val)
 
 	if len(added) == 0 {
-		_, _ = fmt.Fprintln(os.Stderr, "Warning: no new values were added")
+		cmd.PrintErrln("Warning: no new values were added")
 	} else if len(added) < len(values) {
-		_, _ = fmt.Fprintln(os.Stderr, "Warning: some values were already present or duplicate")
+		cmd.PrintErrln("Warning: some values were already present or duplicate")
 	}
 
 	if global {

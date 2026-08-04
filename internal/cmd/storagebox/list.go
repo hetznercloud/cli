@@ -1,6 +1,7 @@
 package storagebox
 
 import (
+	"context"
 	"time"
 
 	"github.com/dustin/go-humanize"
@@ -22,12 +23,12 @@ var ListCmd = &base.ListCmd[*hcloud.StorageBox, schema.StorageBox]{
 	DefaultColumns:     []string{"id", "name", "username", "server", "type", "size", "location", "age"},
 	SortOption:         config.OptionSortStorageBox,
 
-	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.StorageBox, error) {
+	Fetch: func(ctx context.Context, s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.StorageBox, error) {
 		opts := hcloud.StorageBoxListOpts{ListOpts: listOpts}
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		return s.Client().StorageBox().AllWithOpts(s, opts)
+		return s.Client().StorageBox().AllWithOpts(ctx, opts)
 	},
 
 	OutputTable: func(t *output.Table[*hcloud.StorageBox], _ hcapi2.Client) {

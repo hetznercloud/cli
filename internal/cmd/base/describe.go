@@ -3,8 +3,6 @@ package base
 import (
 	"fmt"
 	"io"
-	"log"
-	"os"
 	"reflect"
 	"strings"
 	"text/tabwriter"
@@ -13,6 +11,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
 	"github.com/hetznercloud/cli/internal/cmd/output"
+	"github.com/hetznercloud/cli/internal/cmd/registration"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
@@ -23,7 +22,7 @@ import (
 type DescribeCmd[T any] struct {
 	ResourceNameSingular string // e.g. "Server"
 	ShortDescription     string
-	NameSuggestions      func(client hcapi2.Client) func() []string
+	NameSuggestions      func(client hcapi2.Client) hcapi2.CompletionFunc
 	AdditionalFlags      func(*cobra.Command)
 	// Fetch is called to fetch the resource to describe.
 	// The first returned interface is the resource itself as a hcloud struct, the second is the schema for the resource.
@@ -54,6 +53,7 @@ type DescribeCmd[T any] struct {
 // CobraCommand creates a command that can be registered with cobra.
 func (dc *DescribeCmd[T]) CobraCommand(s state.State) *cobra.Command {
 	var suggestArgs []cobra.CompletionFunc
+	var constructionErr error
 	switch {
 	case dc.NameSuggestions != nil:
 		suggestArgs = append(suggestArgs,
@@ -62,7 +62,7 @@ func (dc *DescribeCmd[T]) CobraCommand(s state.State) *cobra.Command {
 	case dc.ValidArgsFunction != nil:
 		suggestArgs = append(suggestArgs, dc.ValidArgsFunction(s.Client())...)
 	default:
-		log.Fatalf("describe command %s is missing ValidArgsFunction or NameSuggestions", dc.ResourceNameSingular)
+		constructionErr = fmt.Errorf("describe command %s is missing ValidArgsFunction or NameSuggestions", dc.ResourceNameSingular)
 	}
 
 	cmd := &cobra.Command{
@@ -77,6 +77,7 @@ func (dc *DescribeCmd[T]) CobraCommand(s state.State) *cobra.Command {
 			return dc.Run(s, cmd, args)
 		},
 	}
+	registration.Record(cmd, constructionErr)
 
 	output.AddFlag(cmd, output.OptionJSON(), output.OptionYAML(), output.OptionFormat())
 
@@ -93,7 +94,10 @@ func (dc *DescribeCmd[T]) CobraCommand(s state.State) *cobra.Command {
 
 // Run executes a describe command.
 func (dc *DescribeCmd[T]) Run(s state.State, cmd *cobra.Command, args []string) error {
-	outputFlags := output.FlagsForCommand(cmd)
+	outputFlags, err := output.FlagsForCommand(cmd)
+	if err != nil {
+		return err
+	}
 
 	quiet, err := config.OptionQuiet.Get(s.Config())
 	if err != nil {
@@ -108,7 +112,7 @@ func (dc *DescribeCmd[T]) Run(s state.State, cmd *cobra.Command, args []string) 
 			schemaOut = cmd.ErrOrStderr()
 		} else {
 			// We don't want anything other than the schema in stdout, so we set the default to stderr
-			cmd.SetOut(os.Stderr)
+			cmd.SetOut(cmd.ErrOrStderr())
 		}
 	}
 

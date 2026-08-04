@@ -2,6 +2,7 @@ package hcapi2
 
 import (
 	"context"
+	"fmt"
 	"strconv"
 
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -11,8 +12,8 @@ import (
 // additional helper functions.
 type ImageClient interface {
 	hcloud.IImageClient
-	Names() []string
-	LabelKeys(string) []string
+	Names(context.Context) ([]string, error)
+	LabelKeys(context.Context, string) ([]string, error)
 }
 
 func NewImageClient(client hcloud.IImageClient) ImageClient {
@@ -27,32 +28,27 @@ type imageClient struct {
 
 // Names obtains a list of available images. It returns nil if image names
 // could not be fetched.
-func (c *imageClient) Names() []string {
-	imgs, err := c.AllWithOpts(context.Background(), hcloud.ImageListOpts{IncludeDeprecated: true})
-	if err != nil || len(imgs) == 0 {
-		return nil
+func (c *imageClient) Names(ctx context.Context) ([]string, error) {
+	images, err := c.AllWithOpts(ctx, hcloud.ImageListOpts{IncludeDeprecated: true})
+	if err != nil {
+		return nil, err
 	}
-	names := make([]string, len(imgs))
-	for i, img := range imgs {
-		name := img.Name
-		if name == "" {
-			name = strconv.FormatInt(img.ID, 10)
-		}
-		names[i] = name
-	}
-	return names
+	return resourceNames(images, func(image *hcloud.Image) int64 { return image.ID }, func(image *hcloud.Image) string { return image.Name }), nil
 }
 
 // LabelKeys returns a slice containing the keys of all labels assigned to
 // the Image with the passed id.
-func (c *imageClient) LabelKeys(id string) []string {
+func (c *imageClient) LabelKeys(ctx context.Context, id string) ([]string, error) {
 	imgID, err := strconv.ParseInt(id, 10, 64)
 	if err != nil {
-		return nil
+		return nil, fmt.Errorf("invalid image ID %q: %w", id, err)
 	}
-	img, _, err := c.GetByID(context.Background(), imgID)
-	if err != nil || img == nil || len(img.Labels) == 0 {
-		return nil
+	image, _, err := c.GetByID(ctx, imgID)
+	if err != nil {
+		return nil, err
 	}
-	return labelKeys(img.Labels)
+	if image == nil {
+		return nil, nil
+	}
+	return labelKeys(image.Labels), nil
 }

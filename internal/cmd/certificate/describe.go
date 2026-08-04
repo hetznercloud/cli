@@ -17,15 +17,15 @@ import (
 var DescribeCmd = base.DescribeCmd[*hcloud.Certificate]{
 	ResourceNameSingular: "Certificate",
 	ShortDescription:     "Describe a Certificate",
-	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Certificate().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.Certificate, any, error) {
-		cert, _, err := s.Client().Certificate().Get(s, idOrName)
+	NameSuggestions:      func(c hcapi2.Client) hcapi2.CompletionFunc { return c.Certificate().Names },
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (*hcloud.Certificate, any, error) {
+		cert, _, err := s.Client().Certificate().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return nil, nil, err
 		}
 		return cert, hcloud.SchemaFromCertificate(cert), nil
 	},
-	PrintText: func(s state.State, _ *cobra.Command, out io.Writer, cert *hcloud.Certificate) error {
+	PrintText: func(s state.State, cmd *cobra.Command, out io.Writer, cert *hcloud.Certificate) error {
 		fmt.Fprintf(out, "ID:\t%d\n", cert.ID)
 		fmt.Fprintf(out, "Name:\t%s\n", cert.Name)
 		fmt.Fprintf(out, "Type:\t%s\n", cert.Type)
@@ -72,7 +72,11 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Certificate]{
 					fmt.Fprintf(out, "  - ID:\t%d\n", ub.ID)
 					continue
 				}
-				fmt.Fprintf(out, "  - Name:\t%s\n", s.Client().LoadBalancer().LoadBalancerName(ub.ID))
+				name, err := s.Client().LoadBalancer().LoadBalancerName(cmd.Context(), ub.ID)
+				if err != nil {
+					return err
+				}
+				fmt.Fprintf(out, "  - Name:\t%s\n", name)
 			}
 		}
 		return nil

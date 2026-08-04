@@ -1,6 +1,7 @@
 package image
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 
@@ -14,14 +15,14 @@ var LabelCmds = base.LabelCmds[*hcloud.Image]{
 	ResourceNameSingular:   "Image",
 	ShortDescriptionAdd:    "Add a label to an Image",
 	ShortDescriptionRemove: "Remove a label from an Image",
-	NameSuggestions:        func(c hcapi2.Client) func() []string { return c.Image().Names },
-	LabelKeySuggestions:    func(c hcapi2.Client) func(idOrName string) []string { return c.Image().LabelKeys },
-	Fetch: func(s state.State, idOrName string) (*hcloud.Image, error) {
+	NameSuggestions:        func(c hcapi2.Client) hcapi2.CompletionFunc { return c.Image().Names },
+	LabelKeySuggestions:    func(c hcapi2.Client) hcapi2.LabelCompletionFunc { return c.Image().LabelKeys },
+	Fetch: func(ctx context.Context, s state.State, idOrName string) (*hcloud.Image, error) {
 		id, err := strconv.ParseInt(idOrName, 10, 64)
 		if err != nil {
 			return nil, fmt.Errorf("invalid snapshot or backup ID %q", idOrName)
 		}
-		image, _, err := s.Client().Image().GetByID(s, id)
+		image, _, err := s.Client().Image().GetByID(ctx, id)
 		if err != nil {
 			return nil, err
 		}
@@ -30,11 +31,11 @@ var LabelCmds = base.LabelCmds[*hcloud.Image]{
 		}
 		return image, nil
 	},
-	SetLabels: func(s state.State, image *hcloud.Image, labels map[string]string) error {
+	SetLabels: func(ctx context.Context, s state.State, image *hcloud.Image, labels map[string]string) error {
 		opts := hcloud.ImageUpdateOpts{
 			Labels: labels,
 		}
-		_, _, err := s.Client().Image().Update(s, image, opts)
+		_, _, err := s.Client().Image().Update(ctx, image, opts)
 		return err
 	},
 	GetLabels: func(image *hcloud.Image) map[string]string {

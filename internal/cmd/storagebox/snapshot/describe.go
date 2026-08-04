@@ -25,10 +25,10 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBoxSnapshot]{
 			SuggestSnapshots(client),
 		}
 	},
-	FetchWithArgs: func(s state.State, _ *cobra.Command, args []string) (*hcloud.StorageBoxSnapshot, any, error) {
+	FetchWithArgs: func(s state.State, cmd *cobra.Command, args []string) (*hcloud.StorageBoxSnapshot, any, error) {
 		storageBoxIDOrName := args[0]
 
-		storageBox, _, err := s.Client().StorageBox().Get(s, storageBoxIDOrName)
+		storageBox, _, err := s.Client().StorageBox().Get(cmd.Context(), storageBoxIDOrName)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -36,7 +36,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBoxSnapshot]{
 			return nil, nil, fmt.Errorf("Storage Box not found: %s", storageBoxIDOrName)
 		}
 
-		snapshot, _, err := s.Client().StorageBox().GetSnapshot(s, storageBox, args[1])
+		snapshot, _, err := s.Client().StorageBox().GetSnapshot(cmd.Context(), storageBox, args[1])
 		if err != nil {
 			return nil, nil, err
 		}

@@ -26,10 +26,13 @@ var ResetPasswordCmd = base.Cmd{
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
-		outputFlags := output.FlagsForCommand(cmd)
+		outputFlags, err := output.FlagsForCommand(cmd)
+		if err != nil {
+			return err
+		}
 
 		idOrName := args[0]
-		server, _, err := s.Client().Server().Get(s, idOrName)
+		server, _, err := s.Client().Server().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return err
 		}
@@ -37,12 +40,12 @@ var ResetPasswordCmd = base.Cmd{
 			return fmt.Errorf("Server not found: %s", idOrName)
 		}
 
-		result, _, err := s.Client().Server().ResetPassword(s, server)
+		result, _, err := s.Client().Server().ResetPassword(cmd.Context(), server)
 		if err != nil {
 			return err
 		}
 
-		if err := s.WaitForActions(s, cmd, result.Action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, result.Action); err != nil {
 			return err
 		}
 

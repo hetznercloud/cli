@@ -49,8 +49,8 @@ Example file content:
 		}
 
 		cmd.Flags().String("primary-nameservers-file", "", "JSON file containing the new primary nameservers. (use - to read from stdin)")
-		_ = cmd.MarkFlagRequired("primary-nameservers-file")
-		_ = cmd.MarkFlagFilename("primary-nameservers-file", "json")
+		util.MarkFlagRequired(cmd, "primary-nameservers-file")
+		util.MarkFlagFilename(cmd, "primary-nameservers-file", "json")
 
 		return cmd
 	},
@@ -61,7 +61,7 @@ Example file content:
 			return fmt.Errorf("failed to convert Zone name to ascii: %w", err)
 		}
 
-		zone, _, err := s.Client().Zone().Get(s, idOrName)
+		zone, _, err := s.Client().Zone().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return err
 		}
@@ -72,16 +72,16 @@ Example file content:
 		var opts hcloud.ZoneChangePrimaryNameserversOpts
 
 		file, _ := cmd.Flags().GetString("primary-nameservers-file")
-		opts.PrimaryNameservers, err = parsePrimaryNameservers(file)
+		opts.PrimaryNameservers, err = parsePrimaryNameservers(cmd.InOrStdin(), file)
 		if err != nil {
 			return err
 		}
 
-		action, _, err := s.Client().Zone().ChangePrimaryNameservers(s, zone, opts)
+		action, _, err := s.Client().Zone().ChangePrimaryNameservers(cmd.Context(), zone, opts)
 		if err != nil {
 			return err
 		}
-		if err := s.WaitForActions(s, cmd, action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, action); err != nil {
 			return err
 		}
 
@@ -90,13 +90,13 @@ Example file content:
 	},
 }
 
-func parsePrimaryNameservers(path string) ([]hcloud.ZoneChangePrimaryNameserversOptsPrimaryNameserver, error) {
+func parsePrimaryNameservers(stdin io.Reader, path string) ([]hcloud.ZoneChangePrimaryNameserversOptsPrimaryNameserver, error) {
 	var (
 		data []byte
 		err  error
 	)
 	if path == "-" {
-		data, err = io.ReadAll(os.Stdin)
+		data, err = io.ReadAll(stdin)
 	} else {
 		data, err = os.ReadFile(path)
 	}

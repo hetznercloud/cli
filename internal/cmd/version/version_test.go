@@ -17,7 +17,7 @@ func TestVersion(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	time.Local = time.UTC
+	testutil.SetTimezone(t, time.UTC)
 
 	cmd := version.NewCommand(fx.State())
 	out, errOut, err := fx.Run(cmd, []string{})
@@ -33,7 +33,7 @@ func TestVersionLong(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	time.Local = time.UTC
+	testutil.SetTimezone(t, time.UTC)
 
 	cmd := version.NewCommand(fx.State())
 	out, errOut, err := fx.Run(cmd, []string{"--long"})

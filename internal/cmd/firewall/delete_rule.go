@@ -8,6 +8,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -23,12 +24,12 @@ var DeleteRuleCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 		cmd.Flags().String("direction", "", "Direction (in, out) (required)")
-		_ = cmd.RegisterFlagCompletionFunc("direction", cmpl.SuggestCandidates("in", "out"))
-		_ = cmd.MarkFlagRequired("direction")
+		cmpl.RegisterFlagCompletion(cmd, "direction", cmpl.SuggestCandidates("in", "out"))
+		util.MarkFlagRequired(cmd, "direction")
 
 		cmd.Flags().String("protocol", "", "Protocol (icmp, esp, gre, udp or tcp) (required)")
-		_ = cmd.RegisterFlagCompletionFunc("protocol", cmpl.SuggestCandidates("icmp", "udp", "tcp", "esp", "gre"))
-		_ = cmd.MarkFlagRequired("protocol")
+		cmpl.RegisterFlagCompletion(cmd, "protocol", cmpl.SuggestCandidates("icmp", "udp", "tcp", "esp", "gre"))
+		util.MarkFlagRequired(cmd, "protocol")
 
 		cmd.Flags().StringSlice("source-ips", []string{}, "Source IPs (CIDR Notation) (required when direction is in)")
 
@@ -41,7 +42,7 @@ var DeleteRuleCmd = base.Cmd{
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		firewall, _, err := s.Client().Firewall().Get(s, idOrName)
+		firewall, _, err := s.Client().Firewall().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return err
 		}
@@ -63,13 +64,13 @@ var DeleteRuleCmd = base.Cmd{
 		if len(rules) == len(firewall.Rules) {
 			return fmt.Errorf("the specified rule was not found in the ruleset of Firewall %d", firewall.ID)
 		}
-		actions, _, err := s.Client().Firewall().SetRules(s, firewall,
+		actions, _, err := s.Client().Firewall().SetRules(cmd.Context(), firewall,
 			hcloud.FirewallSetRulesOpts{Rules: rules},
 		)
 		if err != nil {
 			return err
 		}
-		if err := s.WaitForActions(s, cmd, actions...); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, actions...); err != nil {
 			return err
 		}
 		cmd.Printf("Firewall Rules for Firewall %d updated\n", firewall.ID)

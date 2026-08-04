@@ -16,19 +16,30 @@ import (
 //go:generate go run $GOFILE
 
 func main() {
-	generateTable(
+	if err := run(); err != nil {
+		if _, writeErr := fmt.Fprintln(os.Stderr, err); writeErr != nil {
+			os.Exit(2)
+		}
+		os.Exit(1)
+	}
+}
+
+func run() error {
+	if err := generateTable(
 		"preferences",
 		config.OptionFlagPreference|config.OptionFlagHidden,
 		config.OptionFlagPreference,
 		table.Row{"sort.<resource>", "Default sorting for resource", "string list", "sort.<resource>", "HCLOUD_SORT_<RESOURCE>", ""},
-	)
-	generateTable("other",
+	); err != nil {
+		return err
+	}
+	return generateTable("other",
 		config.OptionFlagPreference|config.OptionFlagHidden,
 		0,
 	)
 }
 
-func generateTable(outFile string, mask, filter config.OptionFlag, extraRows ...table.Row) {
+func generateTable(outFile string, mask, filter config.OptionFlag, extraRows ...table.Row) error {
 	t := table.NewWriter()
 	t.SetStyle(table.StyleLight)
 	t.SetColumnConfigs([]table.ColumnConfig{
@@ -42,7 +53,7 @@ func generateTable(outFile string, mask, filter config.OptionFlag, extraRows ...
 	t.AppendHeader(table.Row{"Option", "Description", "Type", "Config key", "Environment variable", "Flag"})
 
 	var opts []config.IOption
-	for _, opt := range config.Options {
+	for _, opt := range config.DefaultOptions() {
 		if opt.GetFlags()&mask != filter {
 			continue
 		}
@@ -54,7 +65,11 @@ func generateTable(outFile string, mask, filter config.OptionFlag, extraRows ...
 	})
 
 	for _, opt := range opts {
-		t.AppendRow(table.Row{opt.GetName(), opt.GetDescription(), getTypeName(opt), opt.ConfigKey(), opt.EnvVar(), opt.FlagName()})
+		typeName, err := getTypeName(opt)
+		if err != nil {
+			return err
+		}
+		t.AppendRow(table.Row{opt.GetName(), opt.GetDescription(), typeName, opt.ConfigKey(), opt.EnvVar(), opt.FlagName()})
 		t.AppendSeparator()
 	}
 
@@ -63,31 +78,30 @@ func generateTable(outFile string, mask, filter config.OptionFlag, extraRows ...
 		t.AppendSeparator()
 	}
 
-	err := os.WriteFile(outFile+".txt", []byte(t.Render()+"\n"), 0644) //nolint:gosec
-	if err != nil {
-		panic(err)
+	if err := os.WriteFile(outFile+".txt", []byte(t.Render()+"\n"), 0644); err != nil { //nolint:gosec
+		return fmt.Errorf("write text table: %w", err)
 	}
 
-	err = os.WriteFile(outFile+".md", []byte(escapeString(t.RenderMarkdown())+"\n"), 0644) //nolint:gosec
-	if err != nil {
-		panic(err)
+	if err := os.WriteFile(outFile+".md", []byte(escapeString(t.RenderMarkdown())+"\n"), 0644); err != nil { //nolint:gosec
+		return fmt.Errorf("write Markdown table: %w", err)
 	}
+	return nil
 }
 
-func getTypeName(opt config.IOption) string {
+func getTypeName(opt config.IOption) (string, error) {
 	switch t := opt.T().(type) {
 	case bool:
-		return "boolean"
+		return "boolean", nil
 	case int:
-		return "integer"
+		return "integer", nil
 	case string:
-		return "string"
+		return "string", nil
 	case time.Duration:
-		return "duration"
+		return "duration", nil
 	case []string:
-		return "string list"
+		return "string list", nil
 	default:
-		panic(fmt.Sprintf("missing type name for %T", t))
+		return "", fmt.Errorf("missing type name for %T", t)
 	}
 }
 

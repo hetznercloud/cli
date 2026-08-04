@@ -27,7 +27,7 @@ var DisableSnapshotPlanCmd = base.Cmd{
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
 
-		storageBox, _, err := s.Client().StorageBox().Get(s, idOrName)
+		storageBox, _, err := s.Client().StorageBox().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return err
 		}
@@ -35,12 +35,12 @@ var DisableSnapshotPlanCmd = base.Cmd{
 			return fmt.Errorf("Storage Box not found: %s", idOrName)
 		}
 
-		action, _, err := s.Client().StorageBox().DisableSnapshotPlan(s, storageBox)
+		action, _, err := s.Client().StorageBox().DisableSnapshotPlan(cmd.Context(), storageBox)
 		if err != nil {
 			return err
 		}
 
-		if err := s.WaitForActions(s, cmd, action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, action); err != nil {
 			return err
 		}
 

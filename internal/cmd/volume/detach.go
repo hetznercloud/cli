@@ -22,7 +22,7 @@ var DetachCmd = base.Cmd{
 		}
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
-		volume, _, err := s.Client().Volume().Get(s, args[0])
+		volume, _, err := s.Client().Volume().Get(cmd.Context(), args[0])
 		if err != nil {
 			return err
 		}
@@ -30,12 +30,12 @@ var DetachCmd = base.Cmd{
 			return fmt.Errorf("Volume not found: %s", args[0])
 		}
 
-		action, _, err := s.Client().Volume().Detach(s, volume)
+		action, _, err := s.Client().Volume().Detach(cmd.Context(), volume)
 		if err != nil {
 			return err
 		}
 
-		if err := s.WaitForActions(s, cmd, action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, action); err != nil {
 			return err
 		}
 

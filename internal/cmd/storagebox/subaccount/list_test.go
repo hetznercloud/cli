@@ -19,7 +19,7 @@ func TestList(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	time.Local = time.UTC
+	testutil.SetTimezone(t, time.UTC)
 
 	cmd := subaccount.ListCmd.CobraCommand(fx.State())
 

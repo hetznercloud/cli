@@ -18,7 +18,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.ZoneRRSet]{
 	ShortDescription:           "Describe a Zone RRSet",
 	PositionalArgumentOverride: []string{"zone", "name", "type"},
 	ValidArgsFunction:          rrsetArgumentsCompletionFuncs,
-	FetchWithArgs: func(s state.State, _ *cobra.Command, args []string) (*hcloud.ZoneRRSet, any, error) {
+	FetchWithArgs: func(s state.State, cmd *cobra.Command, args []string) (*hcloud.ZoneRRSet, any, error) {
 		zoneIDOrName, rrsetName, rrsetType := args[0], args[1], args[2]
 
 		zoneIDOrName, err := util.ParseZoneIDOrName(zoneIDOrName)
@@ -26,7 +26,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.ZoneRRSet]{
 			return nil, nil, fmt.Errorf("failed to convert Zone name to ascii: %w", err)
 		}
 
-		zone, _, err := s.Client().Zone().Get(s, zoneIDOrName)
+		zone, _, err := s.Client().Zone().Get(cmd.Context(), zoneIDOrName)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -34,7 +34,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.ZoneRRSet]{
 			return nil, nil, fmt.Errorf("Zone not found: %s", zoneIDOrName)
 		}
 
-		rrset, _, err := s.Client().Zone().GetRRSetByNameAndType(s, zone, rrsetName, hcloud.ZoneRRSetType(rrsetType))
+		rrset, _, err := s.Client().Zone().GetRRSetByNameAndType(cmd.Context(), zone, rrsetName, hcloud.ZoneRRSetType(rrsetType))
 		if err != nil {
 			return nil, nil, err
 		}

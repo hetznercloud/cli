@@ -8,6 +8,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -24,8 +25,8 @@ var ChangeAliasIPsCmd = base.Cmd{
 		}
 
 		cmd.Flags().StringP("network", "n", "", "Network (ID or name) (required)")
-		_ = cmd.RegisterFlagCompletionFunc("network", cmpl.SuggestCandidatesF(client.Network().Names))
-		_ = cmd.MarkFlagRequired("network")
+		cmpl.RegisterFlagCompletion(cmd, "network", cmpl.SuggestCandidatesF(client.Network().Names))
+		util.MarkFlagRequired(cmd, "network")
 
 		cmd.Flags().StringSlice("alias-ips", nil, "New alias IPs")
 		cmd.Flags().Bool("clear", false, "Remove all alias IPs")
@@ -35,7 +36,7 @@ var ChangeAliasIPsCmd = base.Cmd{
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		clearAll, _ := cmd.Flags().GetBool("clear")
 		idOrName := args[0]
-		server, _, err := s.Client().Server().Get(s, idOrName)
+		server, _, err := s.Client().Server().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return err
 		}
@@ -44,7 +45,7 @@ var ChangeAliasIPsCmd = base.Cmd{
 		}
 
 		networkIDOrName, _ := cmd.Flags().GetString("network")
-		network, _, err := s.Client().Network().Get(s, networkIDOrName)
+		network, _, err := s.Client().Network().Get(cmd.Context(), networkIDOrName)
 		if err != nil {
 			return err
 		}
@@ -64,13 +65,13 @@ var ChangeAliasIPsCmd = base.Cmd{
 				opts.AliasIPs = append(opts.AliasIPs, net.ParseIP(aliasIP))
 			}
 		}
-		action, _, err := s.Client().Server().ChangeAliasIPs(s, server, opts)
+		action, _, err := s.Client().Server().ChangeAliasIPs(cmd.Context(), server, opts)
 
 		if err != nil {
 			return err
 		}
 
-		if err := s.WaitForActions(s, cmd, action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, action); err != nil {
 			return err
 		}
 

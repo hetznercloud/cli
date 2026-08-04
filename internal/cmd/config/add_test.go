@@ -15,7 +15,7 @@ import (
 func TestAdd(t *testing.T) {
 	os.Clearenv()
 
-	_, deleteArrayOption := config.NewTestOption[[]string](
+	arrayOption, deleteArrayOption := config.NewTestOption[[]string](
 		"array-option",
 		"array option",
 		nil,
@@ -24,7 +24,7 @@ func TestAdd(t *testing.T) {
 	)
 	defer deleteArrayOption()
 
-	_, deleteNestedArrayOption := config.NewTestOption[[]string](
+	nestedArrayOption, deleteNestedArrayOption := config.NewTestOption[[]string](
 		"nested.array-option",
 		"nested array option",
 		nil,
@@ -228,7 +228,7 @@ active_context = "test_context"
 				defer tt.postRun()
 			}
 
-			fx := testutil.NewFixtureWithConfigFile(t, []byte(tt.config))
+			fx := testutil.NewFixtureWithConfigFile(t, []byte(tt.config), arrayOption, nestedArrayOption)
 			defer fx.Finish()
 
 			cmd := configCmd.NewAddCommand(fx.State())

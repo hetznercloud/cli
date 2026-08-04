@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"fmt"
 	"slices"
 	"strconv"
@@ -42,10 +43,10 @@ var ListCmd = &base.ListCmd[*hcloud.Server, schema.Server]{
 
 	AdditionalFlags: func(cmd *cobra.Command) {
 		cmd.Flags().StringSlice("status", nil, "Only Servers with one of these statuses are displayed")
-		_ = cmd.RegisterFlagCompletionFunc("status", cmpl.SuggestCandidates(serverStatusStrings...))
+		cmpl.RegisterFlagCompletion(cmd, "status", cmpl.SuggestCandidates(serverStatusStrings...))
 	},
 
-	Fetch: func(s state.State, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.Server, error) {
+	Fetch: func(ctx context.Context, s state.State, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.Server, error) {
 		statuses, _ := flags.GetStringSlice("status")
 
 		opts := hcloud.ServerListOpts{ListOpts: listOpts}
@@ -61,7 +62,7 @@ var ListCmd = &base.ListCmd[*hcloud.Server, schema.Server]{
 				}
 			}
 		}
-		return s.Client().Server().AllWithOpts(s, opts)
+		return s.Client().Server().AllWithOpts(ctx, opts)
 	},
 
 	OutputTable: func(t *output.Table[*hcloud.Server], client hcapi2.Client) {
@@ -105,12 +106,16 @@ var ListCmd = &base.ListCmd[*hcloud.Server, schema.Server]{
 				}
 				return strings.Join(volumes, ", ")
 			}).
-			AddFieldFn("private_net", func(server *hcloud.Server) string {
+			AddFieldFnE("private_net", func(ctx context.Context, server *hcloud.Server) (string, error) {
 				var networks []string
 				for _, network := range server.PrivateNet {
-					networks = append(networks, fmt.Sprintf("%s (%s)", network.IP.String(), client.Network().Name(network.Network.ID)))
+					name, err := client.Network().Name(ctx, network.Network.ID)
+					if err != nil {
+						return "", err
+					}
+					networks = append(networks, fmt.Sprintf("%s (%s)", network.IP.String(), name))
 				}
-				return util.NA(strings.Join(networks, ", "))
+				return util.NA(strings.Join(networks, ", ")), nil
 			}).
 			AddFieldFn("protection", func(server *hcloud.Server) string {
 				var protection []string

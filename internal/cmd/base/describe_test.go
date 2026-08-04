@@ -34,7 +34,7 @@ var fakeDescribeCmd = &base.DescribeCmd[*fakeResource]{
 		return nil
 	},
 
-	NameSuggestions: func(hcapi2.Client) func() []string {
+	NameSuggestions: func(hcapi2.Client) hcapi2.CompletionFunc {
 		return nil
 	},
 }

@@ -1,6 +1,7 @@
 package placementgroup
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 
@@ -14,10 +15,10 @@ var LabelCmds = base.LabelCmds[*hcloud.PlacementGroup]{
 	ResourceNameSingular:   "Placement Group",
 	ShortDescriptionAdd:    "Add a label to a Placement Group",
 	ShortDescriptionRemove: "Remove a label from a Placement Group",
-	NameSuggestions:        func(c hcapi2.Client) func() []string { return c.PlacementGroup().Names },
-	LabelKeySuggestions:    func(c hcapi2.Client) func(idOrName string) []string { return c.PlacementGroup().LabelKeys },
-	Fetch: func(s state.State, idOrName string) (*hcloud.PlacementGroup, error) {
-		placementGroup, _, err := s.Client().PlacementGroup().Get(s, idOrName)
+	NameSuggestions:        func(c hcapi2.Client) hcapi2.CompletionFunc { return c.PlacementGroup().Names },
+	LabelKeySuggestions:    func(c hcapi2.Client) hcapi2.LabelCompletionFunc { return c.PlacementGroup().LabelKeys },
+	Fetch: func(ctx context.Context, s state.State, idOrName string) (*hcloud.PlacementGroup, error) {
+		placementGroup, _, err := s.Client().PlacementGroup().Get(ctx, idOrName)
 		if err != nil {
 			return nil, err
 		}
@@ -26,11 +27,11 @@ var LabelCmds = base.LabelCmds[*hcloud.PlacementGroup]{
 		}
 		return placementGroup, nil
 	},
-	SetLabels: func(s state.State, placementGroup *hcloud.PlacementGroup, labels map[string]string) error {
+	SetLabels: func(ctx context.Context, s state.State, placementGroup *hcloud.PlacementGroup, labels map[string]string) error {
 		opts := hcloud.PlacementGroupUpdateOpts{
 			Labels: labels,
 		}
-		_, _, err := s.Client().PlacementGroup().Update(s, placementGroup, opts)
+		_, _, err := s.Client().PlacementGroup().Update(ctx, placementGroup, opts)
 		return err
 	},
 	GetLabels: func(placementGroup *hcloud.PlacementGroup) map[string]string {

@@ -1,6 +1,7 @@
 package config_test
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -13,11 +14,18 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
+type externalContext struct{}
+
+func (externalContext) Name() string                    { return "external" }
+func (externalContext) Token() string                   { return "token" }
+func (externalContext) Preferences() config.Preferences { return nil }
+
 func TestOptionFlagParsing(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	cmd := cli.NewRootCommand(fx.State())
+	cmd, err := cli.NewRootCommand(fx.State(), false)
+	require.NoError(t, err)
 	fx.ExpectEnsureToken()
 
 	net := &hcloud.Network{ID: 1, Name: "foo"}
@@ -45,4 +53,12 @@ func TestOptionFlagParsing(t *testing.T) {
 	val, err := config.OptionDebug.Get(fx.State().Config())
 	require.NoError(t, err)
 	assert.True(t, val)
+}
+
+func TestContextMutatorsRejectExternalImplementations(t *testing.T) {
+	cfg := config.New()
+	require.NoError(t, cfg.LoadReader(strings.NewReader("")))
+
+	require.ErrorContains(t, cfg.SetActiveContext(externalContext{}), "unsupported context implementation")
+	require.ErrorContains(t, cfg.SetContexts([]config.Context{externalContext{}}), "unsupported context implementation")
 }

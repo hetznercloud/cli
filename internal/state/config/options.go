@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"slices"
 	"strings"
 	"time"
 
@@ -39,7 +40,7 @@ type FlagCompletionFunc func(client hcapi2.Client, cfg Config, cmd *cobra.Comman
 
 type IOption interface {
 	// addToFlagSet adds the option to the provided flag set
-	addToFlagSet(fs *pflag.FlagSet)
+	addToFlagSet(fs *pflag.FlagSet) error
 	// GetName returns the name of the option
 	GetName() string
 	// GetDescription returns the description of the option
@@ -76,8 +77,6 @@ type overrides struct {
 	envVar    string
 	flagName  string
 }
-
-var Options = make(map[string]IOption)
 
 // Note: &^ is the bit clear operator and is used to remove flags from the default flag set
 var (
@@ -350,6 +349,42 @@ var (
 	)
 )
 
+var defaultOptions = []IOption{
+	OptionConfig,
+	OptionToken,
+	OptionContext,
+	OptionEndpoint,
+	OptionHetznerEndpoint,
+	OptionDebug,
+	OptionDebugFile,
+	OptionNoExperimentalWarning,
+	OptionPollInterval,
+	OptionHTTPTimeout,
+	OptionQuiet,
+	OptionDefaultSSHKeys,
+	OptionSortCertificate,
+	OptionSortDatacenter,
+	OptionSortFirewall,
+	OptionSortFloatingIP,
+	OptionSortImage,
+	OptionSortLoadBalancer,
+	OptionSortLocation,
+	OptionSortPlacementGroup,
+	OptionSortPrimaryIP,
+	OptionSortServer,
+	OptionSortSSHKey,
+	OptionSortStorageBox,
+	OptionSortStorageBoxSnapshot,
+	OptionSortStorageBoxSubaccount,
+	OptionSortVolume,
+	OptionSortZone,
+	OptionSortZoneRRSet,
+}
+
+func DefaultOptions() []IOption {
+	return slices.Clone(defaultOptions)
+}
+
 type Option[T any] struct {
 	Name               string
 	Description        string
@@ -517,9 +552,9 @@ func (o *Option[T]) T() any {
 	return t
 }
 
-func (o *Option[T]) addToFlagSet(fs *pflag.FlagSet) {
+func (o *Option[T]) addToFlagSet(fs *pflag.FlagSet) error {
 	if !o.HasFlags(OptionFlagPFlag) {
-		return
+		return nil
 	}
 	switch v := any(o.Default).(type) {
 	case bool:
@@ -531,20 +566,17 @@ func (o *Option[T]) addToFlagSet(fs *pflag.FlagSet) {
 	case []string:
 		fs.StringSlice(o.Name, v, o.Description)
 	default:
-		panic(fmt.Sprintf("unsupported type %T", v))
+		return fmt.Errorf("option %q has unsupported flag type %T", o.Name, v)
 	}
+	return nil
 }
 
 func newOpt[T any](name, description string, def T, flags OptionFlag, f FlagCompletionFunc, ov *overrides) *Option[T] {
-	o := &Option[T]{Name: name, Description: description, Default: def, Flags: flags, FlagCompletionFunc: f, overrides: ov}
-	Options[name] = o
-	return o
+	return &Option[T]{Name: name, Description: description, Default: def, Flags: flags, FlagCompletionFunc: f, overrides: ov}
 }
 
 // NewTestOption is a helper function to create an option for testing purposes
 func NewTestOption[T any](name, description string, def T, flags OptionFlag, ov *overrides) (*Option[T], func()) {
 	opt := newOpt(name, description, def, flags, nil, ov)
-	return opt, func() {
-		delete(Options, name)
-	}
+	return opt, func() {}
 }

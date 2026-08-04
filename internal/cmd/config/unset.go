@@ -1,9 +1,6 @@
 package config
 
 import (
-	"fmt"
-	"os"
-
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
@@ -22,7 +19,7 @@ func NewUnsetCommand(s state.State) *cobra.Command {
 		DisableFlagsInUseLine: true,
 		SilenceUsage:          true,
 		RunE:                  state.Wrap(s, runUnset),
-		ValidArgsFunction:     cmpl.NoFileCompletion(cmpl.SuggestCandidates(getOptionNames(config.OptionFlagPreference)...)),
+		ValidArgsFunction:     cmpl.NoFileCompletion(cmpl.SuggestCandidates(getOptionNames(s.Config(), config.OptionFlagPreference)...)),
 	}
 	cmd.Flags().Bool("global", false, "Unset the value globally (for all contexts) (true, false)")
 	return cmd
@@ -37,12 +34,12 @@ func runUnset(s state.State, cmd *cobra.Command, args []string) error {
 	}
 
 	key := args[0]
-	if _, err = getPreference(key); err != nil {
+	if _, err = getPreference(s.Config(), key); err != nil {
 		return err
 	}
 
 	if !prefs.Unset(key) {
-		_, _ = fmt.Fprintf(os.Stderr, "Warning: key '%s' was not set\n", key)
+		cmd.PrintErrf("Warning: key '%s' was not set\n", key)
 	}
 	if global {
 		cmd.Printf("Unset '%s' globally\n", key)

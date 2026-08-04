@@ -43,7 +43,7 @@ var ChangeTTLCmd = base.Cmd{
 			return fmt.Errorf("failed to convert Zone name to ascii: %w", err)
 		}
 
-		zone, _, err := s.Client().Zone().Get(s, zoneIDOrName)
+		zone, _, err := s.Client().Zone().Get(cmd.Context(), zoneIDOrName)
 		if err != nil {
 			return err
 		}
@@ -51,7 +51,7 @@ var ChangeTTLCmd = base.Cmd{
 			return fmt.Errorf("Zone not found: %s", zoneIDOrName)
 		}
 
-		rrset, _, err := s.Client().Zone().GetRRSetByNameAndType(s, zone, rrsetName, hcloud.ZoneRRSetType(rrsetType))
+		rrset, _, err := s.Client().Zone().GetRRSetByNameAndType(cmd.Context(), zone, rrsetName, hcloud.ZoneRRSetType(rrsetType))
 		if err != nil {
 			return err
 		}
@@ -64,12 +64,12 @@ var ChangeTTLCmd = base.Cmd{
 			opts.TTL = &ttl
 		}
 
-		action, _, err := s.Client().Zone().ChangeRRSetTTL(s, rrset, opts)
+		action, _, err := s.Client().Zone().ChangeRRSetTTL(cmd.Context(), rrset, opts)
 		if err != nil {
 			return err
 		}
 
-		if err := s.WaitForActions(s, cmd, action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, action); err != nil {
 			return err
 		}
 

@@ -17,15 +17,15 @@ import (
 var DescribeCmd = base.DescribeCmd[*hcloud.FloatingIP]{
 	ResourceNameSingular: "Floating IP",
 	ShortDescription:     "Describe a Floating IP",
-	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.FloatingIP().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.FloatingIP, any, error) {
-		ip, _, err := s.Client().FloatingIP().Get(s, idOrName)
+	NameSuggestions:      func(c hcapi2.Client) hcapi2.CompletionFunc { return c.FloatingIP().Names },
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (*hcloud.FloatingIP, any, error) {
+		ip, _, err := s.Client().FloatingIP().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return nil, nil, err
 		}
 		return ip, hcloud.SchemaFromFloatingIP(ip), nil
 	},
-	PrintText: func(s state.State, _ *cobra.Command, out io.Writer, floatingIP *hcloud.FloatingIP) error {
+	PrintText: func(s state.State, cmd *cobra.Command, out io.Writer, floatingIP *hcloud.FloatingIP) error {
 		fmt.Fprintf(out, "ID:\t%d\n", floatingIP.ID)
 		fmt.Fprintf(out, "Type:\t%s\n", floatingIP.Type)
 		fmt.Fprintf(out, "Name:\t%s\n", floatingIP.Name)
@@ -44,8 +44,12 @@ var DescribeCmd = base.DescribeCmd[*hcloud.FloatingIP]{
 		fmt.Fprintln(out)
 		fmt.Fprintf(out, "Server:\n")
 		if floatingIP.Server != nil {
+			name, err := s.Client().Server().ServerName(cmd.Context(), floatingIP.Server.ID)
+			if err != nil {
+				return err
+			}
 			fmt.Fprintf(out, "  ID:\t%d\n", floatingIP.Server.ID)
-			fmt.Fprintf(out, "  Name:\t%s\n", s.Client().Server().ServerName(floatingIP.Server.ID))
+			fmt.Fprintf(out, "  Name:\t%s\n", name)
 		} else {
 			fmt.Fprintf(out, "  Not assigned\n")
 		}

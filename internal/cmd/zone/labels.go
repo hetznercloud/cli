@@ -1,6 +1,7 @@
 package zone
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
@@ -14,15 +15,15 @@ var LabelCmds = base.LabelCmds[*hcloud.Zone]{
 	ResourceNameSingular:   "Zone",
 	ShortDescriptionAdd:    "Add a label to a Zone",
 	ShortDescriptionRemove: "Remove a label from a Zone",
-	NameSuggestions:        func(c hcapi2.Client) func() []string { return c.Zone().Names },
-	LabelKeySuggestions:    func(c hcapi2.Client) func(idOrName string) []string { return c.Zone().LabelKeys },
-	Fetch: func(s state.State, idOrName string) (*hcloud.Zone, error) {
+	NameSuggestions:        func(c hcapi2.Client) hcapi2.CompletionFunc { return c.Zone().Names },
+	LabelKeySuggestions:    func(c hcapi2.Client) hcapi2.LabelCompletionFunc { return c.Zone().LabelKeys },
+	Fetch: func(ctx context.Context, s state.State, idOrName string) (*hcloud.Zone, error) {
 		idOrName, err := util.ParseZoneIDOrName(idOrName)
 		if err != nil {
 			return nil, fmt.Errorf("failed to convert Zone name to ascii: %w", err)
 		}
 
-		zone, _, err := s.Client().Zone().Get(s, idOrName)
+		zone, _, err := s.Client().Zone().Get(ctx, idOrName)
 		if err != nil {
 			return nil, err
 		}
@@ -32,11 +33,11 @@ var LabelCmds = base.LabelCmds[*hcloud.Zone]{
 
 		return zone, nil
 	},
-	SetLabels: func(s state.State, zone *hcloud.Zone, labels map[string]string) error {
+	SetLabels: func(ctx context.Context, s state.State, zone *hcloud.Zone, labels map[string]string) error {
 		opts := hcloud.ZoneUpdateOpts{
 			Labels: labels,
 		}
-		_, _, err := s.Client().Zone().Update(s, zone, opts)
+		_, _, err := s.Client().Zone().Update(ctx, zone, opts)
 		return err
 	},
 	GetLabels: func(zone *hcloud.Zone) map[string]string {

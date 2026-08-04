@@ -18,15 +18,15 @@ import (
 var DescribeCmd = base.DescribeCmd[*hcloud.Volume]{
 	ResourceNameSingular: "Volume",
 	ShortDescription:     "Describe a Volume",
-	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Volume().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.Volume, any, error) {
-		v, _, err := s.Client().Volume().Get(s, idOrName)
+	NameSuggestions:      func(c hcapi2.Client) hcapi2.CompletionFunc { return c.Volume().Names },
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (*hcloud.Volume, any, error) {
+		v, _, err := s.Client().Volume().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return nil, nil, err
 		}
 		return v, hcloud.SchemaFromVolume(v), nil
 	},
-	PrintText: func(s state.State, _ *cobra.Command, out io.Writer, volume *hcloud.Volume) error {
+	PrintText: func(s state.State, cmd *cobra.Command, out io.Writer, volume *hcloud.Volume) error {
 
 		fmt.Fprintf(out, "ID:\t%d\n", volume.ID)
 		fmt.Fprintf(out, "Name:\t%s\n", volume.Name)
@@ -41,8 +41,12 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Volume]{
 		fmt.Fprintln(out)
 		fmt.Fprintf(out, "Server:\n")
 		if volume.Server != nil {
+			name, err := s.Client().Server().ServerName(cmd.Context(), volume.Server.ID)
+			if err != nil {
+				return err
+			}
 			fmt.Fprintf(out, "  ID:\t%d\n", volume.Server.ID)
-			fmt.Fprintf(out, "  Name:\t%s\n", s.Client().Server().ServerName(volume.Server.ID))
+			fmt.Fprintf(out, "  Name:\t%s\n", name)
 		} else {
 			fmt.Fprintf(out, "  Not attached\n")
 		}

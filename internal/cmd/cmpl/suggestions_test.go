@@ -1,6 +1,8 @@
 package cmpl_test
 
 import (
+	"context"
+	"errors"
 	"testing"
 
 	"github.com/spf13/cobra"
@@ -38,6 +40,18 @@ func TestSuggestCandidates(t *testing.T) {
 			assert.Equal(t, tt.d, d)
 		})
 	}
+}
+
+func TestSuggestCandidatesFPropagatesErrors(t *testing.T) {
+	cmd := &cobra.Command{}
+	completion := cmpl.SuggestCandidatesF(func(_ context.Context) ([]string, error) {
+		return nil, errors.New("API unavailable")
+	})
+
+	candidates, directive := completion(cmd, nil, "")
+
+	assert.Nil(t, candidates)
+	assert.Equal(t, cobra.ShellCompDirectiveError, directive)
 }
 
 func TestSuggestArgs(t *testing.T) {

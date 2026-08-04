@@ -21,12 +21,16 @@ Columns:
  - id
  - included_traffic
  - location
- - location_available
+ - location_availability_signal
  - location_recommended
  - memory
  - name
  - storage_type
  - traffic
+
+The location column lists supported locations. location_availability_signal is an advisory snapshot of current
+capacity only; it can change at any time and does not guarantee that a create request will succeed. The create
+response is authoritative for the complete requested configuration.
 
 ```
 hcloud server-type list [options]

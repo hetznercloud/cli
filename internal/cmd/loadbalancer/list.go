@@ -1,6 +1,7 @@
 package loadbalancer
 
 import (
+	"context"
 	"strings"
 	"time"
 
@@ -22,12 +23,12 @@ var ListCmd = &base.ListCmd[*hcloud.LoadBalancer, schema.LoadBalancer]{
 	DefaultColumns:     []string{"id", "name", "health", "ipv4", "ipv6", "type", "location", "network_zone", "age"},
 	SortOption:         config.OptionSortLoadBalancer,
 
-	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.LoadBalancer, error) {
+	Fetch: func(ctx context.Context, s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.LoadBalancer, error) {
 		opts := hcloud.LoadBalancerListOpts{ListOpts: listOpts}
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		return s.Client().LoadBalancer().AllWithOpts(s, opts)
+		return s.Client().LoadBalancer().AllWithOpts(ctx, opts)
 	},
 
 	OutputTable: func(t *output.Table[*hcloud.LoadBalancer], _ hcapi2.Client) {

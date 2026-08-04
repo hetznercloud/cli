@@ -1,6 +1,7 @@
 package iso
 
 import (
+	"context"
 	"fmt"
 	"slices"
 	"strings"
@@ -25,15 +26,15 @@ var ListCmd = &base.ListCmd[*hcloud.ISO, schema.ISO]{
 
 	AdditionalFlags: func(cmd *cobra.Command) {
 		cmd.Flags().StringSlice("architecture", []string{}, "Only show Images of given architecture: x86|arm")
-		_ = cmd.RegisterFlagCompletionFunc("architecture", cmpl.SuggestCandidates(string(hcloud.ArchitectureX86), string(hcloud.ArchitectureARM)))
+		cmpl.RegisterFlagCompletion(cmd, "architecture", cmpl.SuggestCandidates(string(hcloud.ArchitectureX86), string(hcloud.ArchitectureARM)))
 
 		cmd.Flags().Bool("include-architecture-wildcard", false, "Include ISOs with unknown architecture, only required if you want so show custom ISOs and still filter for architecture. (true, false)")
 
 		cmd.Flags().StringSlice("type", []string{"public", "private"}, "Types to include (public, private)")
-		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("public", "private"))
+		cmpl.RegisterFlagCompletion(cmd, "type", cmpl.SuggestCandidates("public", "private"))
 	},
 
-	Fetch: func(s state.State, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.ISO, error) {
+	Fetch: func(ctx context.Context, s state.State, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.ISO, error) {
 		opts := hcloud.ISOListOpts{ListOpts: listOpts}
 
 		types, _ := flags.GetStringSlice("type")
@@ -66,7 +67,7 @@ var ListCmd = &base.ListCmd[*hcloud.ISO, schema.ISO]{
 			opts.Sort = sorts
 		}
 
-		isos, err := s.Client().ISO().AllWithOpts(s, opts)
+		isos, err := s.Client().ISO().AllWithOpts(ctx, opts)
 		if err != nil {
 			return nil, err
 		}

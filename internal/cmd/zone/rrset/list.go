@@ -1,6 +1,7 @@
 package rrset
 
 import (
+	"context"
 	"fmt"
 	"slices"
 	"strconv"
@@ -29,7 +30,7 @@ var ListCmd = &base.ListCmd[*hcloud.ZoneRRSet, schema.ZoneRRSet]{
 
 	AdditionalFlags: func(cmd *cobra.Command) {
 		cmd.Flags().StringSlice("type", nil, "Only Zone RRSets with one of these types are displayed")
-		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates(rrsetTypeStrings...))
+		cmpl.RegisterFlagCompletion(cmd, "type", cmpl.SuggestCandidates(rrsetTypeStrings...))
 	},
 
 	ValidArgsFunction: func(client hcapi2.Client) cobra.CompletionFunc {
@@ -38,7 +39,7 @@ var ListCmd = &base.ListCmd[*hcloud.ZoneRRSet, schema.ZoneRRSet]{
 
 	PositionalArgumentOverride: []string{"zone"},
 
-	FetchWithArgs: func(s state.State, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string, args []string) ([]*hcloud.ZoneRRSet, error) {
+	FetchWithArgs: func(ctx context.Context, s state.State, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string, args []string) ([]*hcloud.ZoneRRSet, error) {
 		zoneIDOrName := args[0]
 		zoneIDOrName, err := util.ParseZoneIDOrName(zoneIDOrName)
 		if err != nil {
@@ -47,7 +48,7 @@ var ListCmd = &base.ListCmd[*hcloud.ZoneRRSet, schema.ZoneRRSet]{
 
 		types, _ := flags.GetStringSlice("type")
 
-		zone, _, err := s.Client().Zone().Get(s, zoneIDOrName)
+		zone, _, err := s.Client().Zone().Get(ctx, zoneIDOrName)
 		if err != nil {
 			return nil, err
 		}
@@ -69,7 +70,7 @@ var ListCmd = &base.ListCmd[*hcloud.ZoneRRSet, schema.ZoneRRSet]{
 			}
 		}
 
-		return s.Client().Zone().AllRRSetsWithOpts(s, zone, opts)
+		return s.Client().Zone().AllRRSetsWithOpts(ctx, zone, opts)
 	},
 
 	OutputTable: func(t *output.Table[*hcloud.ZoneRRSet], _ hcapi2.Client) {

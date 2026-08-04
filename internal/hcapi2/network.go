@@ -12,9 +12,9 @@ import (
 // additional helper functions.
 type NetworkClient interface {
 	hcloud.INetworkClient
-	Names() []string
-	Name(int64) string
-	LabelKeys(string) []string
+	Names(context.Context) ([]string, error)
+	Name(context.Context, int64) (string, error)
+	LabelKeys(context.Context, string) ([]string, error)
 }
 
 func NewNetworkClient(client hcloud.INetworkClient) NetworkClient {
@@ -33,62 +33,46 @@ type networkClient struct {
 	err  error
 }
 
-// Name obtains the name of the network with id. If the name could not
-// be fetched it returns the value id converted to a string.
-func (c *networkClient) Name(id int64) string {
-	if err := c.init(); err != nil {
-		return strconv.FormatInt(id, 10)
+// Name obtains the name of the network with id. It returns the numeric ID when
+// the API response does not contain a matching named network.
+func (c *networkClient) Name(ctx context.Context, id int64) (string, error) {
+	if err := c.init(ctx); err != nil {
+		return "", err
 	}
 
 	net, ok := c.netsByID[id]
 	if !ok || net.Name == "" {
-		return strconv.FormatInt(id, 10)
+		return strconv.FormatInt(id, 10), nil
 	}
-	return net.Name
+	return net.Name, nil
 }
 
 // Names obtains a list of available networks. It returns nil if the
 // network names could not be fetched or if there are no networks.
-func (c *networkClient) Names() []string {
-	if err := c.init(); err != nil || len(c.netsByID) == 0 {
-		return nil
+func (c *networkClient) Names(ctx context.Context) ([]string, error) {
+	networks, err := c.All(ctx)
+	if err != nil {
+		return nil, err
 	}
-	names := make([]string, len(c.netsByID))
-	i := 0
-	for _, net := range c.netsByID {
-		name := net.Name
-		if name == "" {
-			name = strconv.FormatInt(net.ID, 10)
-		}
-		names[i] = name
-		i++
-	}
-	return names
+	return resourceNames(networks, func(network *hcloud.Network) int64 { return network.ID }, func(network *hcloud.Network) string { return network.Name }), nil
 }
 
 // LabelKeys returns a slice containing the keys of all labels assigned
 // to the Network with the passed idOrName.
-func (c *networkClient) LabelKeys(idOrName string) []string {
-	var net *hcloud.Network
-
-	if err := c.init(); err != nil || len(c.netsByID) == 0 {
-		return nil
+func (c *networkClient) LabelKeys(ctx context.Context, idOrName string) ([]string, error) {
+	network, _, err := c.Get(ctx, idOrName)
+	if err != nil {
+		return nil, err
 	}
-	if id, err := strconv.ParseInt(idOrName, 10, 64); err != nil {
-		net = c.netsByID[id]
+	if network == nil {
+		return nil, nil
 	}
-	if v, ok := c.netsByName[idOrName]; ok && net == nil {
-		net = v
-	}
-	if net == nil || len(net.Labels) == 0 {
-		return nil
-	}
-	return labelKeys(net.Labels)
+	return labelKeys(network.Labels), nil
 }
 
-func (c *networkClient) init() error {
+func (c *networkClient) init(ctx context.Context) error {
 	c.once.Do(func() {
-		nets, err := c.All(context.Background())
+		nets, err := c.All(ctx)
 		if err != nil {
 			c.err = err
 		}

@@ -15,7 +15,7 @@ import (
 func TestGet(t *testing.T) {
 	os.Clearenv()
 
-	_, deleteDeeplyNestedOption := config.NewTestOption(
+	deeplyNestedOption, deleteDeeplyNestedOption := config.NewTestOption(
 		"deeply.nested.option",
 		"deeply nested option",
 		"foo",
@@ -95,7 +95,7 @@ func TestGet(t *testing.T) {
 
 	for _, tt := range testCases {
 		t.Run(tt.key, func(t *testing.T) {
-			fx := testutil.NewFixtureWithConfigFile(t, []byte(testConfig))
+			fx := testutil.NewFixtureWithConfigFile(t, []byte(testConfig), deeplyNestedOption)
 			defer fx.Finish()
 
 			cmd := configCmd.NewGetCommand(fx.State())

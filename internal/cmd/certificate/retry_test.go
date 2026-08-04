@@ -17,7 +17,7 @@ func TestRetry(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	time.Local = time.UTC
+	testutil.SetTimezone(t, time.UTC)
 
 	cmd := certificate.RetryCmd.CobraCommand(fx.State())
 

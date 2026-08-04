@@ -36,7 +36,7 @@ func TestAddSubnet(t *testing.T) {
 		}).
 		Return(&hcloud.Action{ID: 456}, nil, nil)
 	fx.ActionWaiter.EXPECT().
-		WaitForActions(fx.State(), gomock.Any(), &hcloud.Action{ID: 456}).
+		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 456}).
 		Return(nil)
 
 	out, errOut, err := fx.Run(cmd, []string{"123", "--type", "cloud", "--network-zone", "eu-central", "--ip-range", "10.0.0.0/24"})

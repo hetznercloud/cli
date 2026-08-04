@@ -1,6 +1,7 @@
 package volume
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -14,7 +15,7 @@ import (
 var ChangeProtectionCmds = base.ChangeProtectionCmds[*hcloud.Volume, hcloud.VolumeChangeProtectionOpts]{
 	ResourceNameSingular: "Volume",
 
-	NameSuggestions: func(client hcapi2.Client) func() []string {
+	NameSuggestions: func(client hcapi2.Client) hcapi2.CompletionFunc {
 		return client.Volume().Names
 	},
 
@@ -24,12 +25,12 @@ var ChangeProtectionCmds = base.ChangeProtectionCmds[*hcloud.Volume, hcloud.Volu
 		},
 	},
 
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.Volume, *hcloud.Response, error) {
-		return s.Client().Volume().Get(s, idOrName)
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (*hcloud.Volume, *hcloud.Response, error) {
+		return s.Client().Volume().Get(cmd.Context(), idOrName)
 	},
 
-	ChangeProtectionFunction: func(s state.State, volume *hcloud.Volume, opts hcloud.VolumeChangeProtectionOpts) (*hcloud.Action, *hcloud.Response, error) {
-		return s.Client().Volume().ChangeProtection(s, volume, opts)
+	ChangeProtectionFunction: func(ctx context.Context, s state.State, volume *hcloud.Volume, opts hcloud.VolumeChangeProtectionOpts) (*hcloud.Action, *hcloud.Response, error) {
+		return s.Client().Volume().ChangeProtection(ctx, volume, opts)
 	},
 
 	IDOrName: func(volume *hcloud.Volume) string {

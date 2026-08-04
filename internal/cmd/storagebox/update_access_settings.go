@@ -41,7 +41,7 @@ var UpdateAccessSettingsCmd = base.Cmd{
 		enableZFS, _ := cmd.Flags().GetBool("enable-zfs")
 		reachableExternally, _ := cmd.Flags().GetBool("reachable-externally")
 
-		storageBox, _, err := s.Client().StorageBox().Get(s, idOrName)
+		storageBox, _, err := s.Client().StorageBox().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return err
 		}
@@ -66,12 +66,12 @@ var UpdateAccessSettingsCmd = base.Cmd{
 			opts.ReachableExternally = &reachableExternally
 		}
 
-		action, _, err := s.Client().StorageBox().UpdateAccessSettings(s, storageBox, opts)
+		action, _, err := s.Client().StorageBox().UpdateAccessSettings(cmd.Context(), storageBox, opts)
 		if err != nil {
 			return err
 		}
 
-		if err := s.WaitForActions(s, cmd, action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, action); err != nil {
 			return err
 		}
 

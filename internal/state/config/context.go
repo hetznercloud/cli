@@ -1,5 +1,7 @@
 package config
 
+import "fmt"
+
 type Context interface {
 	Name() string
 	Token() string
@@ -54,18 +56,21 @@ func ContextByName(cfg Config, name string) Context {
 	return nil
 }
 
-func RemoveContext(cfg Config, context Context) {
+func RemoveContext(cfg Config, context Context) error {
 	var filtered []Context
 	for _, c := range cfg.Contexts() {
 		if c != context {
 			filtered = append(filtered, c)
 		}
 	}
-	cfg.SetContexts(filtered)
+	return cfg.SetContexts(filtered)
 }
 
-func RenameContext(ctx Context, newName string) {
-	if ctx, ok := (ctx).(*context); ok {
-		ctx.ContextName = newName
+func RenameContext(ctx Context, newName string) error {
+	internalContext, ok := ctx.(*context)
+	if !ok {
+		return fmt.Errorf("unsupported context implementation %T", ctx)
 	}
+	internalContext.ContextName = newName
+	return nil
 }

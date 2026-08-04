@@ -15,17 +15,17 @@ import (
 var UpdateCmd = base.UpdateCmd[*hcloud.StorageBoxSnapshot]{
 	ResourceNameSingular:       "Storage Box Snapshot",
 	ShortDescription:           "Update a Storage Box Snapshot",
-	NameSuggestions:            func(c hcapi2.Client) func() []string { return c.StorageBox().Names },
+	NameSuggestions:            func(c hcapi2.Client) hcapi2.CompletionFunc { return c.StorageBox().Names },
 	PositionalArgumentOverride: []string{"storage-box", "snapshot"},
-	FetchWithArgs: func(s state.State, _ *cobra.Command, args []string) (*hcloud.StorageBoxSnapshot, *hcloud.Response, error) {
-		storageBox, _, err := s.Client().StorageBox().Get(s, args[0])
+	FetchWithArgs: func(s state.State, cmd *cobra.Command, args []string) (*hcloud.StorageBoxSnapshot, *hcloud.Response, error) {
+		storageBox, _, err := s.Client().StorageBox().Get(cmd.Context(), args[0])
 		if err != nil {
 			return nil, nil, err
 		}
 		if storageBox == nil {
 			return nil, nil, fmt.Errorf("Storage Box not found: %s", args[0])
 		}
-		return s.Client().StorageBox().GetSnapshot(s, storageBox, args[1])
+		return s.Client().StorageBox().GetSnapshot(cmd.Context(), storageBox, args[1])
 	},
 	DefineFlags: func(cmd *cobra.Command) {
 		cmd.Flags().String("description", "", "Description of the Storage Box Snapshot")
@@ -37,7 +37,7 @@ var UpdateCmd = base.UpdateCmd[*hcloud.StorageBoxSnapshot]{
 			description, _ := cmd.Flags().GetString("description")
 			opts.Description = &description
 		}
-		_, _, err := s.Client().StorageBox().UpdateSnapshot(s, snapshot, opts)
+		_, _, err := s.Client().StorageBox().UpdateSnapshot(cmd.Context(), snapshot, opts)
 		if err != nil {
 			return err
 		}

@@ -1,6 +1,7 @@
 package network
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -14,7 +15,7 @@ import (
 var ChangeProtectionCmds = base.ChangeProtectionCmds[*hcloud.Network, hcloud.NetworkChangeProtectionOpts]{
 	ResourceNameSingular: "Network",
 
-	NameSuggestions: func(client hcapi2.Client) func() []string {
+	NameSuggestions: func(client hcapi2.Client) hcapi2.CompletionFunc {
 		return client.Network().Names
 	},
 
@@ -24,12 +25,12 @@ var ChangeProtectionCmds = base.ChangeProtectionCmds[*hcloud.Network, hcloud.Net
 		},
 	},
 
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.Network, *hcloud.Response, error) {
-		return s.Client().Network().Get(s, idOrName)
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (*hcloud.Network, *hcloud.Response, error) {
+		return s.Client().Network().Get(cmd.Context(), idOrName)
 	},
 
-	ChangeProtectionFunction: func(s state.State, network *hcloud.Network, opts hcloud.NetworkChangeProtectionOpts) (*hcloud.Action, *hcloud.Response, error) {
-		return s.Client().Network().ChangeProtection(s, network, opts)
+	ChangeProtectionFunction: func(ctx context.Context, s state.State, network *hcloud.Network, opts hcloud.NetworkChangeProtectionOpts) (*hcloud.Action, *hcloud.Response, error) {
+		return s.Client().Network().ChangeProtection(ctx, network, opts)
 	},
 
 	IDOrName: func(network *hcloud.Network) string {

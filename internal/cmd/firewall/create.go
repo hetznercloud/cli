@@ -24,7 +24,7 @@ var CreateCmd = base.CreateCmd[*hcloud.Firewall]{
 			Short: "Create a Firewall",
 		}
 		cmd.Flags().String("name", "", "Name")
-		_ = cmd.MarkFlagRequired("name")
+		util.MarkFlagRequired(cmd, "name")
 
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 
@@ -42,19 +42,19 @@ var CreateCmd = base.CreateCmd[*hcloud.Firewall]{
 
 		rulesFile, _ := cmd.Flags().GetString("rules-file")
 		if rulesFile != "" {
-			rules, err := parseRulesFile(rulesFile)
+			rules, err := parseRulesFile(cmd.InOrStdin(), rulesFile)
 			if err != nil {
 				return nil, nil, err
 			}
 			opts.Rules = rules
 		}
 
-		result, _, err := s.Client().Firewall().Create(s, opts)
+		result, _, err := s.Client().Firewall().Create(cmd.Context(), opts)
 		if err != nil {
 			return nil, nil, err
 		}
 
-		if err := s.WaitForActions(s, cmd, result.Actions...); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, result.Actions...); err != nil {
 			return nil, nil, err
 		}
 
@@ -64,13 +64,13 @@ var CreateCmd = base.CreateCmd[*hcloud.Firewall]{
 	},
 }
 
-func parseRulesFile(path string) ([]hcloud.FirewallRule, error) {
+func parseRulesFile(stdin io.Reader, path string) ([]hcloud.FirewallRule, error) {
 	var (
 		data []byte
 		err  error
 	)
 	if path == "-" {
-		data, err = io.ReadAll(os.Stdin)
+		data, err = io.ReadAll(stdin)
 	} else {
 		data, err = os.ReadFile(path)
 	}

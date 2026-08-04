@@ -1,6 +1,7 @@
 package primaryip
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -14,7 +15,7 @@ import (
 var ChangeProtectionCmds = base.ChangeProtectionCmds[*hcloud.PrimaryIP, hcloud.PrimaryIPChangeProtectionOpts]{
 	ResourceNameSingular: "Primary IP",
 
-	NameSuggestions: func(client hcapi2.Client) func() []string {
+	NameSuggestions: func(client hcapi2.Client) hcapi2.CompletionFunc {
 		return client.PrimaryIP().Names(false, false, nil)
 	},
 
@@ -25,13 +26,13 @@ var ChangeProtectionCmds = base.ChangeProtectionCmds[*hcloud.PrimaryIP, hcloud.P
 		},
 	},
 
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.PrimaryIP, *hcloud.Response, error) {
-		return s.Client().PrimaryIP().Get(s, idOrName)
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (*hcloud.PrimaryIP, *hcloud.Response, error) {
+		return s.Client().PrimaryIP().Get(cmd.Context(), idOrName)
 	},
 
-	ChangeProtectionFunction: func(s state.State, primaryIP *hcloud.PrimaryIP, opts hcloud.PrimaryIPChangeProtectionOpts) (*hcloud.Action, *hcloud.Response, error) {
+	ChangeProtectionFunction: func(ctx context.Context, s state.State, primaryIP *hcloud.PrimaryIP, opts hcloud.PrimaryIPChangeProtectionOpts) (*hcloud.Action, *hcloud.Response, error) {
 		opts.ID = primaryIP.ID
-		return s.Client().PrimaryIP().ChangeProtection(s, opts)
+		return s.Client().PrimaryIP().ChangeProtection(ctx, opts)
 	},
 
 	IDOrName: func(primaryIP *hcloud.PrimaryIP) string {

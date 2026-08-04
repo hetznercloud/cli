@@ -114,9 +114,9 @@ Disk:          40 GB
 Storage Type:  local
 
 Locations:
-  - Location:     fsn1
-    Available:    yes
-    Recommended:  no
+  - Location:                        fsn1
+    Availability Signal (advisory):  yes
+    Recommended:                     no
     Deprecation:
       Announced:           %s (%s)
       Unavailable After:   %s (%s)

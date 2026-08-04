@@ -7,6 +7,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -22,12 +23,12 @@ var ReplaceRulesCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 		cmd.Flags().String("rules-file", "", "JSON file containing your routes (use - to read from stdin). The structure of the file needs to be the same as within the API: https://docs.hetzner.cloud/reference/cloud#firewalls-get-a-firewall")
-		_ = cmd.MarkFlagRequired("rules-file")
+		util.MarkFlagRequired(cmd, "rules-file")
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		firewall, _, err := s.Client().Firewall().Get(s, idOrName)
+		firewall, _, err := s.Client().Firewall().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return err
 		}
@@ -38,18 +39,18 @@ var ReplaceRulesCmd = base.Cmd{
 		opts := hcloud.FirewallSetRulesOpts{}
 		rulesFile, _ := cmd.Flags().GetString("rules-file")
 		if rulesFile != "" {
-			rules, err := parseRulesFile(rulesFile)
+			rules, err := parseRulesFile(cmd.InOrStdin(), rulesFile)
 			if err != nil {
 				return err
 			}
 			opts.Rules = rules
 		}
 
-		actions, _, err := s.Client().Firewall().SetRules(s, firewall, opts)
+		actions, _, err := s.Client().Firewall().SetRules(cmd.Context(), firewall, opts)
 		if err != nil {
 			return err
 		}
-		if err := s.WaitForActions(s, cmd, actions...); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, actions...); err != nil {
 			return err
 		}
 		cmd.Printf("Firewall Rules for Firewall %d updated\n", firewall.ID)

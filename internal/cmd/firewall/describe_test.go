@@ -20,7 +20,7 @@ func TestDescribe(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	time.Local = time.UTC
+	testutil.SetTimezone(t, time.UTC)
 
 	cmd := firewall.DescribeCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
@@ -70,14 +70,14 @@ func TestDescribe(t *testing.T) {
 		Get(gomock.Any(), "test").
 		Return(fw, nil, nil)
 	fx.Client.ServerClient.EXPECT().
-		ServerName(int64(123)).
-		Return("appliedServer1")
+		ServerName(gomock.Any(), int64(123)).
+		Return("appliedServer1", nil)
 	fx.Client.ServerClient.EXPECT().
-		ServerName(int64(456)).
-		Return("appliedServer2")
+		ServerName(gomock.Any(), int64(456)).
+		Return("appliedServer2", nil)
 	fx.Client.ServerClient.EXPECT().
-		ServerName(int64(321)).
-		Return("myServer")
+		ServerName(gomock.Any(), int64(321)).
+		Return("myServer", nil)
 
 	out, errOut, err := fx.Run(cmd, []string{"test"})
 

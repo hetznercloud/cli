@@ -14,9 +14,9 @@ import (
 var SetRDNSCmd = base.SetRdnsCmd[*hcloud.LoadBalancer]{
 	ResourceNameSingular: "Load Balancer",
 	ShortDescription:     "Change reverse DNS of a Load Balancer",
-	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.LoadBalancer().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.LoadBalancer, *hcloud.Response, error) {
-		return s.Client().LoadBalancer().Get(s, idOrName)
+	NameSuggestions:      func(c hcapi2.Client) hcapi2.CompletionFunc { return c.LoadBalancer().Names },
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (*hcloud.LoadBalancer, *hcloud.Response, error) {
+		return s.Client().LoadBalancer().Get(cmd.Context(), idOrName)
 	},
 	GetDefaultIP: func(loadBalancer *hcloud.LoadBalancer) net.IP {
 		return loadBalancer.PublicNet.IPv4.IP

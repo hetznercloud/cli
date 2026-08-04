@@ -1,6 +1,7 @@
 package primaryip
 
 import (
+	"context"
 	"fmt"
 	"strings"
 	"time"
@@ -23,12 +24,12 @@ var ListCmd = &base.ListCmd[*hcloud.PrimaryIP, schema.PrimaryIP]{
 	DefaultColumns:     []string{"id", "type", "name", "ip", "assignee", "dns", "auto_delete", "age"},
 	SortOption:         config.OptionSortPrimaryIP,
 
-	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.PrimaryIP, error) {
+	Fetch: func(ctx context.Context, s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.PrimaryIP, error) {
 		opts := hcloud.PrimaryIPListOpts{ListOpts: listOpts}
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		return s.Client().PrimaryIP().AllWithOpts(s, opts)
+		return s.Client().PrimaryIP().AllWithOpts(ctx, opts)
 	},
 
 	OutputTable: func(t *output.Table[*hcloud.PrimaryIP], client hcapi2.Client) {
@@ -53,15 +54,19 @@ var ListCmd = &base.ListCmd[*hcloud.PrimaryIP, schema.PrimaryIP]{
 				}
 				return util.NA(dns)
 			}).
-			AddFieldFn("assignee", func(primaryIP *hcloud.PrimaryIP) string {
+			AddFieldFnE("assignee", func(ctx context.Context, primaryIP *hcloud.PrimaryIP) (string, error) {
 				assignee := ""
 				if primaryIP.AssigneeID != 0 {
 					switch primaryIP.AssigneeType {
 					case "server":
-						assignee = fmt.Sprintf("Server %s", client.Server().ServerName(primaryIP.AssigneeID))
+						name, err := client.Server().ServerName(ctx, primaryIP.AssigneeID)
+						if err != nil {
+							return "", err
+						}
+						assignee = fmt.Sprintf("Server %s", name)
 					}
 				}
-				return util.NA(assignee)
+				return util.NA(assignee), nil
 			}).
 			AddFieldFn("protection", func(primaryIP *hcloud.PrimaryIP) string {
 				var protection []string

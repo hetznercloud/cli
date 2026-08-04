@@ -59,8 +59,13 @@ func runCreate(s state.State, cmd *cobra.Command, args []string) error {
 			token = envToken
 		default:
 			cmd.Print("The HCLOUD_TOKEN environment variable is set. Do you want to use the token from HCLOUD_TOKEN for the new context? (Y/n): ")
-			scanner := bufio.NewScanner(os.Stdin)
-			scanner.Scan()
+			scanner := bufio.NewScanner(cmd.InOrStdin())
+			if !scanner.Scan() {
+				if err := scanner.Err(); err != nil {
+					return err
+				}
+				return errors.New("no response received")
+			}
 			if s := strings.ToLower(scanner.Text()); s == "" || s == "y" || s == "yes" {
 				token = envToken
 			}
@@ -94,8 +99,12 @@ func runCreate(s state.State, cmd *cobra.Command, args []string) error {
 
 	context := config.NewContext(name, token)
 
-	cfg.SetContexts(append(cfg.Contexts(), context))
-	cfg.SetActiveContext(context)
+	if err := cfg.SetContexts(append(cfg.Contexts(), context)); err != nil {
+		return err
+	}
+	if err := cfg.SetActiveContext(context); err != nil {
+		return err
+	}
 
 	if err := cfg.Write(nil); err != nil {
 		return err

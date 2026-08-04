@@ -4,9 +4,9 @@ See our [contributing guidelines](https://github.com/hetznercloud/.github/blob/m
 
 ## Installing tools
 
-We recommend installing tools using [mise](https://github.com/jdx/mise). Once mise is installed and activated
-in your env, run `mise install` in this repository to install all required tools. Tools will then be automatically
-added to your `PATH` when entering the directory.
+We recommend installing tools using [mise](https://mise.jdx.dev/). After reviewing `mise.toml`, run `mise trust` and
+`mise install` in this repository. The pinned tools will then be available on `PATH` while working in the directory.
+See the [development guide](docs/development.md) for the complete setup and verification workflow.
 
 ## Generated files
 
@@ -19,12 +19,16 @@ go generate ./...
 in the root directory of this repository. Make sure to keep generated files up-to-date
 when making changes to the code.
 
-## Unit tests
+## Verification
 
 Unit tests are located in the `internal` directory. Run them with:
 
 ```sh
 go test ./...
+go test -race ./...
+go vet ./...
+golangci-lint run
+govulncheck ./...
 ```
 
 ## Build
@@ -38,7 +42,7 @@ go build -o hcloud-cli ./cmd/hcloud
 To include version information in the resulting binary and build for all targets, use GoReleaser:
 
 ```sh
-goreleaser --snapshot --skip-publish --rm-dist
+goreleaser release --snapshot --clean --skip=publish
 ```
 
 ## Conventions

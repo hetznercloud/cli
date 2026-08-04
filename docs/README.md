@@ -7,6 +7,9 @@ This documentation is written and organized following the [Diátaxis](https://di
 - [Tutorials](tutorials)
 - [Guides](guides)
 - [Reference](reference)
+- [Architecture](architecture.md)
+- [Development](development.md)
+- [Audit and decision records](audits)
 
 ## Getting help
 

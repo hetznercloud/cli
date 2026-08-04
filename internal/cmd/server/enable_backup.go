@@ -27,7 +27,7 @@ var EnableBackupCmd = base.Cmd{
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		server, _, err := s.Client().Server().Get(s, idOrName)
+		server, _, err := s.Client().Server().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return err
 		}
@@ -40,12 +40,12 @@ var EnableBackupCmd = base.Cmd{
 			cmd.Print("[WARN] The ability to specify a backup window when enabling backups has been removed. Ignoring flag.\n")
 		}
 
-		action, _, err := s.Client().Server().EnableBackup(s, server, "")
+		action, _, err := s.Client().Server().EnableBackup(cmd.Context(), server, "")
 		if err != nil {
 			return err
 		}
 
-		if err := s.WaitForActions(s, cmd, action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, action); err != nil {
 			return err
 		}
 

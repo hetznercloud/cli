@@ -1,6 +1,7 @@
 package firewall
 
 import (
+	"context"
 	"fmt"
 	"strconv"
 
@@ -14,10 +15,10 @@ var LabelCmds = base.LabelCmds[*hcloud.Firewall]{
 	ResourceNameSingular:   "Firewall",
 	ShortDescriptionAdd:    "Add a label to a Firewall",
 	ShortDescriptionRemove: "Remove a label from a Firewall",
-	NameSuggestions:        func(c hcapi2.Client) func() []string { return c.Firewall().Names },
-	LabelKeySuggestions:    func(c hcapi2.Client) func(idOrName string) []string { return c.Firewall().LabelKeys },
-	Fetch: func(s state.State, idOrName string) (*hcloud.Firewall, error) {
-		firewall, _, err := s.Client().Firewall().Get(s, idOrName)
+	NameSuggestions:        func(c hcapi2.Client) hcapi2.CompletionFunc { return c.Firewall().Names },
+	LabelKeySuggestions:    func(c hcapi2.Client) hcapi2.LabelCompletionFunc { return c.Firewall().LabelKeys },
+	Fetch: func(ctx context.Context, s state.State, idOrName string) (*hcloud.Firewall, error) {
+		firewall, _, err := s.Client().Firewall().Get(ctx, idOrName)
 		if err != nil {
 			return nil, err
 		}
@@ -26,11 +27,11 @@ var LabelCmds = base.LabelCmds[*hcloud.Firewall]{
 		}
 		return firewall, nil
 	},
-	SetLabels: func(s state.State, firewall *hcloud.Firewall, labels map[string]string) error {
+	SetLabels: func(ctx context.Context, s state.State, firewall *hcloud.Firewall, labels map[string]string) error {
 		opts := hcloud.FirewallUpdateOpts{
 			Labels: labels,
 		}
-		_, _, err := s.Client().Firewall().Update(s, firewall, opts)
+		_, _, err := s.Client().Firewall().Update(ctx, firewall, opts)
 		return err
 	},
 	GetLabels: func(firewall *hcloud.Firewall) map[string]string {

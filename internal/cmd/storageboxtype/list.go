@@ -1,6 +1,7 @@
 package storageboxtype
 
 import (
+	"context"
 	"strconv"
 
 	"github.com/dustin/go-humanize"
@@ -21,9 +22,9 @@ var ListCmd = base.ListCmd[*hcloud.StorageBoxType, schema.StorageBoxType]{
 	DefaultColumns:     []string{"id", "name", "description", "size", "snapshot_limit", "automatic_snapshot_limit", "subaccounts_limit"},
 	SortOption:         nil, // Storage Box Types do not support sorting
 
-	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, _ []string) ([]*hcloud.StorageBoxType, error) {
+	Fetch: func(ctx context.Context, s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, _ []string) ([]*hcloud.StorageBoxType, error) {
 		opts := hcloud.StorageBoxTypeListOpts{ListOpts: listOpts}
-		return s.Client().StorageBoxType().AllWithOpts(s, opts)
+		return s.Client().StorageBoxType().AllWithOpts(ctx, opts)
 	},
 
 	OutputTable: func(t *output.Table[*hcloud.StorageBoxType], _ hcapi2.Client) {

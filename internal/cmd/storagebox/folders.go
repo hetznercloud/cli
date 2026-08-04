@@ -31,9 +31,12 @@ var FoldersCmd = base.Cmd{
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
 		path, _ := cmd.Flags().GetString("path")
-		outOpts := output.FlagsForCommand(cmd)
+		outOpts, err := output.FlagsForCommand(cmd)
+		if err != nil {
+			return err
+		}
 
-		storageBox, _, err := s.Client().StorageBox().Get(s, idOrName)
+		storageBox, _, err := s.Client().StorageBox().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return err
 		}
@@ -46,7 +49,7 @@ var FoldersCmd = base.Cmd{
 			opts.Path = path
 		}
 
-		result, _, err := s.Client().StorageBox().Folders(s, storageBox, opts)
+		result, _, err := s.Client().StorageBox().Folders(cmd.Context(), storageBox, opts)
 		if err != nil {
 			return err
 		}

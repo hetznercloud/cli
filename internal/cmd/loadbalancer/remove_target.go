@@ -25,7 +25,7 @@ var RemoveTargetCmd = base.Cmd{
 		}
 
 		cmd.Flags().String("server", "", "Name or ID of the server")
-		_ = cmd.RegisterFlagCompletionFunc("server", cmpl.SuggestCandidatesF(client.Server().Names))
+		cmpl.RegisterFlagCompletion(cmd, "server", cmpl.SuggestCandidatesF(client.Server().Names))
 
 		cmd.Flags().String("label-selector", "", "Label Selector")
 
@@ -46,7 +46,7 @@ var RemoveTargetCmd = base.Cmd{
 
 		idOrName := args[0]
 
-		loadBalancer, _, err = s.Client().LoadBalancer().Get(s, idOrName)
+		loadBalancer, _, err = s.Client().LoadBalancer().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return err
 		}
@@ -62,19 +62,19 @@ var RemoveTargetCmd = base.Cmd{
 		}
 		switch {
 		case serverIDOrName != "":
-			server, _, err := s.Client().Server().Get(s, serverIDOrName)
+			server, _, err := s.Client().Server().Get(cmd.Context(), serverIDOrName)
 			if err != nil {
 				return err
 			}
 			if server == nil {
 				return fmt.Errorf("server not found: %s", serverIDOrName)
 			}
-			action, _, err = s.Client().LoadBalancer().RemoveServerTarget(s, loadBalancer, server)
+			action, _, err = s.Client().LoadBalancer().RemoveServerTarget(cmd.Context(), loadBalancer, server)
 			if err != nil {
 				return err
 			}
 		case labelSelector != "":
-			action, _, err = s.Client().LoadBalancer().RemoveLabelSelectorTarget(s, loadBalancer, labelSelector)
+			action, _, err = s.Client().LoadBalancer().RemoveLabelSelectorTarget(cmd.Context(), loadBalancer, labelSelector)
 			if err != nil {
 				return err
 			}
@@ -83,14 +83,14 @@ var RemoveTargetCmd = base.Cmd{
 			if ip == nil {
 				return fmt.Errorf("invalid ip provided")
 			}
-			if action, _, err = s.Client().LoadBalancer().RemoveIPTarget(s, loadBalancer, ip); err != nil {
+			if action, _, err = s.Client().LoadBalancer().RemoveIPTarget(cmd.Context(), loadBalancer, ip); err != nil {
 				return err
 			}
 		default:
 			return fmt.Errorf("specify one of --server, --label-selector, or --ip")
 		}
 
-		if err := s.WaitForActions(s, cmd, action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, action); err != nil {
 			return err
 		}
 		cmd.Printf("Target removed from Load Balancer %d\n", loadBalancer.ID)

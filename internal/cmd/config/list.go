@@ -36,7 +36,10 @@ func runList(s state.State, cmd *cobra.Command, _ []string) error {
 	all, _ := cmd.Flags().GetBool("all")
 	global, _ := cmd.Flags().GetBool("global")
 	allowSensitive, _ := cmd.Flags().GetBool("allow-sensitive")
-	outOpts := output.FlagsForCommand(cmd)
+	outOpts, err := output.FlagsForCommand(cmd)
+	if err != nil {
+		return err
+	}
 
 	if global {
 		if err := s.Config().UseContext(nil); err != nil {
@@ -50,7 +53,7 @@ func runList(s state.State, cmd *cobra.Command, _ []string) error {
 	}
 
 	var options []option
-	for name, opt := range config.Options {
+	for _, opt := range s.Config().Options() {
 		val, err := opt.GetAsAny(s.Config())
 		if err != nil {
 			return err
@@ -62,7 +65,7 @@ func runList(s state.State, cmd *cobra.Command, _ []string) error {
 		if !all && !opt.Changed(s.Config()) {
 			continue
 		}
-		options = append(options, option{name, val})
+		options = append(options, option{opt.GetName(), val})
 	}
 
 	// Sort options for reproducible output
@@ -89,7 +92,9 @@ func runList(s state.State, cmd *cobra.Command, _ []string) error {
 		t.WriteHeader(cols)
 	}
 	for _, opt := range options {
-		t.Write(cols, opt)
+		if err := t.Write(cmd.Context(), cols, opt); err != nil {
+			return err
+		}
 	}
 	return t.Flush()
 }

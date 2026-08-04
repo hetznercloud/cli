@@ -2,6 +2,7 @@ package base_test
 
 import (
 	"cmp"
+	"context"
 	"slices"
 	"testing"
 
@@ -29,7 +30,7 @@ var fakeListCmd = &base.ListCmd[*fakeResource, *fakeResource]{
 
 	DefaultColumns: []string{"id", "name"},
 
-	Fetch: func(_ state.State, _ *pflag.FlagSet, _ hcloud.ListOpts, sort []string) ([]*fakeResource, error) {
+	Fetch: func(_ context.Context, _ state.State, _ *pflag.FlagSet, _ hcloud.ListOpts, sort []string) ([]*fakeResource, error) {
 		resources := []*fakeResource{
 			{
 				ID:   456,

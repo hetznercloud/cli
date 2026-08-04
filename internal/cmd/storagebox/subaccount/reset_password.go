@@ -7,6 +7,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -26,7 +27,7 @@ var ResetPasswordCmd = base.Cmd{
 		}
 
 		cmd.Flags().String("password", "", "New password for the Storage Box Subaccount")
-		_ = cmd.MarkFlagRequired("password")
+		util.MarkFlagRequired(cmd, "password")
 
 		return cmd
 	},
@@ -34,7 +35,7 @@ var ResetPasswordCmd = base.Cmd{
 		storageBoxIDOrName, subaccountIDOrName := args[0], args[1]
 		password, _ := cmd.Flags().GetString("password")
 
-		storageBox, _, err := s.Client().StorageBox().Get(s, storageBoxIDOrName)
+		storageBox, _, err := s.Client().StorageBox().Get(cmd.Context(), storageBoxIDOrName)
 		if err != nil {
 			return err
 		}
@@ -42,7 +43,7 @@ var ResetPasswordCmd = base.Cmd{
 			return fmt.Errorf("Storage Box not found: %s", storageBoxIDOrName)
 		}
 
-		subaccount, _, err := s.Client().StorageBox().GetSubaccount(s, storageBox, subaccountIDOrName)
+		subaccount, _, err := s.Client().StorageBox().GetSubaccount(cmd.Context(), storageBox, subaccountIDOrName)
 		if err != nil {
 			return err
 		}
@@ -54,12 +55,12 @@ var ResetPasswordCmd = base.Cmd{
 			Password: password,
 		}
 
-		action, _, err := s.Client().StorageBox().ResetSubaccountPassword(s, subaccount, opts)
+		action, _, err := s.Client().StorageBox().ResetSubaccountPassword(cmd.Context(), subaccount, opts)
 		if err != nil {
 			return err
 		}
 
-		if err := s.WaitForActions(s, cmd, action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, action); err != nil {
 			return err
 		}
 

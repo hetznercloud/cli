@@ -11,8 +11,8 @@ import (
 // some additional helper functions.
 type PrimaryIPClient interface {
 	hcloud.IPrimaryIPClient
-	Names(hideAssigned, hideUnassigned bool, ipType *hcloud.PrimaryIPType) func() []string
-	LabelKeys(idOrName string) []string
+	Names(hideAssigned, hideUnassigned bool, ipType *hcloud.PrimaryIPType) func(context.Context) ([]string, error)
+	LabelKeys(context.Context, string) ([]string, error)
 }
 
 // NewPrimaryIPClient creates a new primary IP client.
@@ -33,36 +33,39 @@ type primaryIPClient struct {
 // hideUnassigned: if true, only returns names of primary IPs that are assigned to a server
 // hideAssigned: if true, only returns names of primary IPs that are not assigned to a server
 // ipType: if not nil, only returns primary IPs of the specified type (IPv4 or IPv6)
-// Returns a func() []string so that the list can be lazily evaluated
-func (c *primaryIPClient) Names(hideAssigned, hideUnassigned bool, ipType *hcloud.PrimaryIPType) func() []string {
-	return func() []string {
-		fips, err := c.All(context.Background())
-		if err != nil || len(fips) == 0 {
-			return nil
+// Returns a function so that the list can be lazily evaluated with the command context.
+func (c *primaryIPClient) Names(hideAssigned, hideUnassigned bool, ipType *hcloud.PrimaryIPType) func(context.Context) ([]string, error) {
+	return func(ctx context.Context) ([]string, error) {
+		primaryIPs, err := c.All(ctx)
+		if err != nil {
+			return nil, err
 		}
-		names := make([]string, len(fips))
-		for i, fip := range fips {
-			if (hideAssigned && fip.AssigneeID > 0) ||
-				(hideUnassigned && fip.AssigneeID == 0) ||
-				(ipType != nil && fip.Type != *ipType) {
+		names := make([]string, 0, len(primaryIPs))
+		for _, primaryIP := range primaryIPs {
+			if (hideAssigned && primaryIP.AssigneeID > 0) ||
+				(hideUnassigned && primaryIP.AssigneeID == 0) ||
+				(ipType != nil && primaryIP.Type != *ipType) {
 				continue
 			}
-			name := fip.Name
+			name := primaryIP.Name
 			if name == "" {
-				name = strconv.FormatInt(fip.ID, 10)
+				name = strconv.FormatInt(primaryIP.ID, 10)
 			}
-			names[i] = name
+			names = append(names, name)
 		}
-		return names
+		return names, nil
 	}
 }
 
 // LabelKeys returns a slice containing the keys of all labels
 // assigned to the Primary IP with the passed idOrName.
-func (c *primaryIPClient) LabelKeys(idOrName string) []string {
-	fip, _, err := c.Get(context.Background(), idOrName)
-	if err != nil || fip == nil || len(fip.Labels) == 0 {
-		return nil
+func (c *primaryIPClient) LabelKeys(ctx context.Context, idOrName string) ([]string, error) {
+	primaryIP, _, err := c.Get(ctx, idOrName)
+	if err != nil {
+		return nil, err
 	}
-	return labelKeys(fip.Labels)
+	if primaryIP == nil {
+		return nil, nil
+	}
+	return labelKeys(primaryIP.Labels), nil
 }

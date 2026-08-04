@@ -3,7 +3,6 @@ package image
 import (
 	"fmt"
 	"io"
-	"os"
 	"strconv"
 	"strings"
 
@@ -23,9 +22,9 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Image]{
 	ShortDescription:     "Describe an Image",
 	AdditionalFlags: func(cmd *cobra.Command) {
 		cmd.Flags().StringP("architecture", "a", string(hcloud.ArchitectureX86), "architecture of the Image, default is x86")
-		_ = cmd.RegisterFlagCompletionFunc("architecture", cmpl.SuggestCandidates(string(hcloud.ArchitectureX86), string(hcloud.ArchitectureARM)))
+		cmpl.RegisterFlagCompletion(cmd, "architecture", cmpl.SuggestCandidates(string(hcloud.ArchitectureX86), string(hcloud.ArchitectureARM)))
 	},
-	NameSuggestions: func(c hcapi2.Client) func() []string { return c.Image().Names },
+	NameSuggestions: func(c hcapi2.Client) hcapi2.CompletionFunc { return c.Image().Names },
 	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (*hcloud.Image, any, error) {
 		_, err := strconv.ParseInt(idOrName, 10, 64)
 		isID := err == nil
@@ -36,10 +35,10 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Image]{
 		}
 
 		if !isID && !cmd.Flags().Changed("architecture") {
-			fmt.Fprintln(os.Stderr, "INFO: This command only returns x86 images by default. Explicitly set the --architecture=x86|arm flag to hide this message.")
+			cmd.PrintErrln("INFO: This command only returns x86 images by default. Explicitly set the --architecture=x86|arm flag to hide this message.")
 		}
 
-		img, _, err := s.Client().Image().GetForArchitecture(s, idOrName, hcloud.Architecture(arch))
+		img, _, err := s.Client().Image().GetForArchitecture(cmd.Context(), idOrName, hcloud.Architecture(arch))
 		if err != nil {
 			return nil, nil, err
 		}

@@ -18,7 +18,7 @@ import (
 type SetRdnsCmd[T hcloud.RDNSSupporter] struct {
 	ResourceNameSingular string // e.g. "Server"
 	ShortDescription     string
-	NameSuggestions      func(client hcapi2.Client) func() []string
+	NameSuggestions      func(client hcapi2.Client) hcapi2.CompletionFunc
 	Fetch                func(s state.State, cmd *cobra.Command, idOrName string) (T, *hcloud.Response, error)
 	GetDefaultIP         func(resource T) net.IP
 
@@ -81,12 +81,12 @@ func (rc *SetRdnsCmd[T]) Run(s state.State, cmd *cobra.Command, args []string) e
 		ip = rc.GetDefaultIP(resource)
 	}
 
-	action, _, err := s.Client().RDNS().ChangeDNSPtr(s, resource, ip, hostnamePtr)
+	action, _, err := s.Client().RDNS().ChangeDNSPtr(cmd.Context(), resource, ip, hostnamePtr)
 	if err != nil {
 		return err
 	}
 
-	if err := s.WaitForActions(s, cmd, action); err != nil {
+	if err := s.WaitForActions(cmd.Context(), cmd, action); err != nil {
 		return err
 	}
 

@@ -8,9 +8,19 @@ on:
 env:
   GOTOOLCHAIN: local
 
+permissions:
+  contents: write
+  id-token: write
+  attestations: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
 jobs:
   release:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -43,5 +53,7 @@ jobs:
           QUILL_NOTARY_KEY_ID: ${{ secrets.APPLE_NOTARY_KEY_ID }}
           QUILL_NOTARY_KEY: ${{ secrets.APPLE_NOTARY_KEY }}
 
-      - name: Check for release errors
-        run: scripts/check-release-error.sh
+      - name: Attest released artifacts
+        uses: actions/attest@508db95dd578ae2727ebd6217d5ba78e4fbda05d # v4.2.1
+        with:
+          subject-checksums: dist/checksums.txt

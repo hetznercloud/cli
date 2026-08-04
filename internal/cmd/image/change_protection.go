@@ -1,6 +1,7 @@
 package image
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"strconv"
@@ -18,7 +19,7 @@ var ChangeProtectionCmds = base.ChangeProtectionCmds[*hcloud.Image, hcloud.Image
 	ShortEnableDescription:  "Enable resource protection for an Image",
 	ShortDisableDescription: "Disable resource protection for an Image",
 
-	NameSuggestions: func(client hcapi2.Client) func() []string {
+	NameSuggestions: func(client hcapi2.Client) hcapi2.CompletionFunc {
 		return client.Image().Names
 	},
 
@@ -36,8 +37,8 @@ var ChangeProtectionCmds = base.ChangeProtectionCmds[*hcloud.Image, hcloud.Image
 		return &hcloud.Image{ID: imageID}, nil, nil
 	},
 
-	ChangeProtectionFunction: func(s state.State, image *hcloud.Image, opts hcloud.ImageChangeProtectionOpts) (*hcloud.Action, *hcloud.Response, error) {
-		return s.Client().Image().ChangeProtection(s, image, opts)
+	ChangeProtectionFunction: func(ctx context.Context, s state.State, image *hcloud.Image, opts hcloud.ImageChangeProtectionOpts) (*hcloud.Action, *hcloud.Response, error) {
+		return s.Client().Image().ChangeProtection(ctx, image, opts)
 	},
 
 	IDOrName: func(image *hcloud.Image) string {

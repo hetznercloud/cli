@@ -7,6 +7,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -19,8 +20,8 @@ var CreateImageCmd = base.Cmd{
 			Short: "Create an Image from a Server",
 		}
 		cmd.Flags().String("type", "", "Image type (backup, snapshot) (required)")
-		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("backup", "snapshot"))
-		_ = cmd.MarkFlagRequired("type")
+		cmpl.RegisterFlagCompletion(cmd, "type", cmpl.SuggestCandidates("backup", "snapshot"))
+		util.MarkFlagRequired(cmd, "type")
 
 		cmd.Flags().String("description", "", "Image description")
 
@@ -30,7 +31,7 @@ var CreateImageCmd = base.Cmd{
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		server, _, err := s.Client().Server().Get(s, idOrName)
+		server, _, err := s.Client().Server().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return err
 		}
@@ -54,12 +55,12 @@ var CreateImageCmd = base.Cmd{
 			Description: hcloud.Ptr(description),
 			Labels:      labels,
 		}
-		result, _, err := s.Client().Server().CreateImage(s, server, opts)
+		result, _, err := s.Client().Server().CreateImage(cmd.Context(), server, opts)
 		if err != nil {
 			return err
 		}
 
-		if err := s.WaitForActions(s, cmd, result.Action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, result.Action); err != nil {
 			return err
 		}
 

@@ -1,8 +1,10 @@
 package testutil
 
 import (
-	"context"
+	"bytes"
 	"errors"
+	"io"
+	"log/slog"
 	"os"
 	"testing"
 
@@ -32,12 +34,11 @@ func NewFixture(t *testing.T) *Fixture {
 }
 
 // NewFixtureWithConfigFile creates a new Fixture with the given config file.
-// See [config.Config.Read] for the supported types of f.
-func NewFixtureWithConfigFile(t *testing.T, f any) *Fixture {
+func NewFixtureWithConfigFile(t *testing.T, contents []byte, options ...config.IOption) *Fixture {
 	ctrl := gomock.NewController(t)
 
-	cfg := config.New()
-	if err := cfg.Read(f); err != nil {
+	cfg := config.New(config.WithOptions(options...))
+	if err := cfg.LoadReader(bytes.NewReader(contents)); err != nil {
 		t.Fatal(err)
 	}
 
@@ -76,7 +77,6 @@ func (f *Fixture) Finish() {
 
 // fixtureState implements state.State for testing purposes.
 type fixtureState struct {
-	context.Context
 	state.TokenEnsurer
 	state.ActionWaiter
 
@@ -101,10 +101,17 @@ func (s *fixtureState) Terminal() terminal.Terminal {
 	return s.term
 }
 
+func (*fixtureState) Logger() *slog.Logger {
+	return slog.New(slog.NewTextHandler(io.Discard, nil))
+}
+
+func (*fixtureState) Close() error {
+	return nil
+}
+
 // State returns a state.State implementation for testing purposes.
 func (f *Fixture) State() state.State {
 	return &fixtureState{
-		Context:      context.Background(),
 		TokenEnsurer: f.TokenEnsurer,
 		ActionWaiter: f.ActionWaiter,
 		client:       f.Client,

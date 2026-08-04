@@ -1,6 +1,7 @@
 package firewall
 
 import (
+	"context"
 	"fmt"
 	"time"
 
@@ -22,12 +23,12 @@ var ListCmd = &base.ListCmd[*hcloud.Firewall, schema.Firewall]{
 	DefaultColumns:     []string{"id", "name", "rules_count", "applied_to_count", "age"},
 	SortOption:         config.OptionSortFirewall,
 
-	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.Firewall, error) {
+	Fetch: func(ctx context.Context, s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.Firewall, error) {
 		opts := hcloud.FirewallListOpts{ListOpts: listOpts}
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		return s.Client().Firewall().AllWithOpts(s, opts)
+		return s.Client().Firewall().AllWithOpts(ctx, opts)
 	},
 
 	OutputTable: func(t *output.Table[*hcloud.Firewall], _ hcapi2.Client) {

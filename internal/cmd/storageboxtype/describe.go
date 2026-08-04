@@ -1,6 +1,7 @@
 package storageboxtype
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"strings"
@@ -18,16 +19,16 @@ import (
 var DescribeCmd = base.DescribeCmd[*hcloud.StorageBoxType]{
 	ResourceNameSingular: "Storage Box Type",
 	ShortDescription:     "Describe a Storage Box Type",
-	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.StorageBoxType().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.StorageBoxType, any, error) {
-		st, _, err := s.Client().StorageBoxType().Get(s, idOrName)
+	NameSuggestions:      func(c hcapi2.Client) hcapi2.CompletionFunc { return c.StorageBoxType().Names },
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (*hcloud.StorageBoxType, any, error) {
+		st, _, err := s.Client().StorageBoxType().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return nil, nil, err
 		}
 		return st, hcloud.SchemaFromStorageBoxType(st), nil
 	},
-	PrintText: func(s state.State, _ *cobra.Command, out io.Writer, storageBoxType *hcloud.StorageBoxType) error {
-		description, err := DescribeStorageBoxType(s, storageBoxType, false)
+	PrintText: func(s state.State, cmd *cobra.Command, out io.Writer, storageBoxType *hcloud.StorageBoxType) error {
+		description, err := DescribeStorageBoxType(cmd.Context(), s, storageBoxType, false)
 		if err != nil {
 			return err
 		}
@@ -36,7 +37,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBoxType]{
 	},
 }
 
-func DescribeStorageBoxType(s state.State, storageBoxType *hcloud.StorageBoxType, short bool) (string, error) {
+func DescribeStorageBoxType(ctx context.Context, s state.State, storageBoxType *hcloud.StorageBoxType, short bool) (string, error) {
 	var sb strings.Builder
 
 	fmt.Fprintf(&sb, "ID:\t%d\n", storageBoxType.ID)
@@ -60,7 +61,7 @@ func DescribeStorageBoxType(s state.State, storageBoxType *hcloud.StorageBoxType
 		return sb.String(), nil
 	}
 
-	err := loadCurrencyFromAPI(s, storageBoxType)
+	err := loadCurrencyFromAPI(ctx, s, storageBoxType)
 	if err != nil {
 		return "", fmt.Errorf("failed to get currency for Storage Box Type prices: %w", err)
 	}
@@ -80,8 +81,8 @@ func DescribeStorageBoxType(s state.State, storageBoxType *hcloud.StorageBoxType
 	return sb.String(), nil
 }
 
-func loadCurrencyFromAPI(s state.State, storageBoxType *hcloud.StorageBoxType) error {
-	pricing, _, err := s.Client().Pricing().Get(s)
+func loadCurrencyFromAPI(ctx context.Context, s state.State, storageBoxType *hcloud.StorageBoxType) error {
+	pricing, _, err := s.Client().Pricing().Get(ctx)
 	if err != nil {
 		return err
 	}

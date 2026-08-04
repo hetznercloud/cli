@@ -21,7 +21,7 @@ func NewGetCommand(s state.State) *cobra.Command {
 		DisableFlagsInUseLine: true,
 		SilenceUsage:          true,
 		RunE:                  state.Wrap(s, runGet),
-		ValidArgsFunction:     cmpl.NoFileCompletion(cmpl.SuggestCandidates(getOptionNames(0)...)),
+		ValidArgsFunction:     cmpl.NoFileCompletion(cmpl.SuggestCandidates(getOptionNames(s.Config(), 0)...)),
 	}
 	cmd.Flags().Bool("global", false, "Get the value globally (true, false)")
 	cmd.Flags().Bool("allow-sensitive", false, "Allow showing sensitive values (true, false)")
@@ -39,7 +39,7 @@ func runGet(s state.State, cmd *cobra.Command, args []string) error {
 	}
 
 	key := args[0]
-	opt, ok := config.Options[key]
+	opt, ok := s.Config().LookupOption(key)
 	if !ok {
 		return fmt.Errorf("unknown key: %s", key)
 	}

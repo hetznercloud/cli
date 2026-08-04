@@ -9,6 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/hetznercloud/cli/internal/cmd/util"
+	"github.com/hetznercloud/cli/internal/testutil"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
@@ -31,7 +32,7 @@ func (t testDeprecatable) DeprecationAnnounced() time.Time {
 }
 
 func TestDescribeDeprecation(t *testing.T) {
-	time.Local = time.UTC
+	testutil.SetTimezone(t, time.UTC)
 
 	type testCase struct {
 		deprecatable hcloud.Deprecatable

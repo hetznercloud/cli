@@ -36,10 +36,14 @@ func runRename(s state.State, _ *cobra.Command, args []string) error {
 	if config.ContextByName(cfg, newName) != nil {
 		return fmt.Errorf("context with name %v already exists", newName)
 	}
-	config.RenameContext(context, newName)
+	if err := config.RenameContext(context, newName); err != nil {
+		return err
+	}
 	if isActive {
 		// re-set the active context to ensure the name is updated
-		cfg.SetActiveContext(context)
+		if err := cfg.SetActiveContext(context); err != nil {
+			return err
+		}
 	}
 	return cfg.Write(nil)
 }

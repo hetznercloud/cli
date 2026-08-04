@@ -17,7 +17,7 @@ func TestList(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	time.Local = time.UTC
+	testutil.SetTimezone(t, time.UTC)
 
 	cmd := iso.ListCmd.CobraCommand(fx.State())
 
@@ -55,7 +55,7 @@ func TestListPrivate(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	time.Local = time.UTC
+	testutil.SetTimezone(t, time.UTC)
 
 	cmd := iso.ListCmd.CobraCommand(fx.State())
 

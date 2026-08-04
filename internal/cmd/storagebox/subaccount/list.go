@@ -1,6 +1,7 @@
 package subaccount
 
 import (
+	"context"
 	"fmt"
 	"time"
 
@@ -31,10 +32,10 @@ var ListCmd = base.ListCmd[*hcloud.StorageBoxSubaccount, schema.StorageBoxSubacc
 	PositionalArgumentOverride: []string{"storage-box"},
 	SortOption:                 config.OptionSortStorageBoxSubaccount,
 
-	FetchWithArgs: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string, args []string) ([]*hcloud.StorageBoxSubaccount, error) {
+	FetchWithArgs: func(ctx context.Context, s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string, args []string) ([]*hcloud.StorageBoxSubaccount, error) {
 		storageBoxIDOrName := args[0]
 
-		storageBox, _, err := s.Client().StorageBox().Get(s, storageBoxIDOrName)
+		storageBox, _, err := s.Client().StorageBox().Get(ctx, storageBoxIDOrName)
 		if err != nil {
 			return nil, err
 		}
@@ -46,7 +47,7 @@ var ListCmd = base.ListCmd[*hcloud.StorageBoxSubaccount, schema.StorageBoxSubacc
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		return s.Client().StorageBox().AllSubaccountsWithOpts(s, storageBox, opts)
+		return s.Client().StorageBox().AllSubaccountsWithOpts(ctx, storageBox, opts)
 	},
 
 	OutputTable: func(t *output.Table[*hcloud.StorageBoxSubaccount], _ hcapi2.Client) {

@@ -31,17 +31,26 @@ func TestMain(m *testing.M) {
 
 func newRootCommand(t *testing.T) *cobra.Command {
 	t.Helper()
-	cfg := config.New()
-	if err := cfg.Read("config.toml"); err != nil {
+	cfg := config.New(config.WithWarningWriter(os.Stderr))
+	if err := cfg.LoadFile("config.toml"); err != nil {
 		t.Fatalf("unable to read config file \"%s\": %s\n", cfg.Path(), err)
 	}
 
-	s, err := state.New(t.Context(), cfg)
+	s, err := state.New(cfg, state.Options{Stderr: os.Stderr})
 	if err != nil {
 		t.Fatal(err)
 	}
+	t.Cleanup(func() {
+		if err := s.Close(); err != nil {
+			t.Error(err)
+		}
+	})
 
-	return cli.NewRootCommand(s)
+	cmd, err := cli.NewRootCommand(s, false)
+	if err != nil {
+		t.Fatal(err)
+	}
+	return cmd
 }
 
 func runCommand(t *testing.T, args ...string) (string, error) {
@@ -50,7 +59,7 @@ func runCommand(t *testing.T, args ...string) (string, error) {
 	var buf bytes.Buffer
 	cmd.SetArgs(args)
 	cmd.SetOut(&buf)
-	err := cmd.Execute()
+	err := cmd.ExecuteContext(t.Context())
 	return buf.String(), err
 }
 

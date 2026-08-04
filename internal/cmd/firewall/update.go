@@ -13,18 +13,18 @@ import (
 var UpdateCmd = base.UpdateCmd[*hcloud.Firewall]{
 	ResourceNameSingular: "Firewall",
 	ShortDescription:     "Update a Firewall",
-	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Firewall().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.Firewall, *hcloud.Response, error) {
-		return s.Client().Firewall().Get(s, idOrName)
+	NameSuggestions:      func(c hcapi2.Client) hcapi2.CompletionFunc { return c.Firewall().Names },
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (*hcloud.Firewall, *hcloud.Response, error) {
+		return s.Client().Firewall().Get(cmd.Context(), idOrName)
 	},
 	DefineFlags: func(cmd *cobra.Command) {
 		cmd.Flags().String("name", "", "Firewall name")
 	},
-	Update: func(s state.State, _ *cobra.Command, firewall *hcloud.Firewall, flags map[string]pflag.Value) error {
+	Update: func(s state.State, cmd *cobra.Command, firewall *hcloud.Firewall, flags map[string]pflag.Value) error {
 		updOpts := hcloud.FirewallUpdateOpts{
 			Name: flags["name"].String(),
 		}
-		_, _, err := s.Client().Firewall().Update(s, firewall, updOpts)
+		_, _, err := s.Client().Firewall().Update(cmd.Context(), firewall, updOpts)
 		if err != nil {
 			return err
 		}

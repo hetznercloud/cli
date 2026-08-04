@@ -22,28 +22,32 @@ func getPreferences(cfg config.Config, global bool) (ctx config.Context, prefs c
 	return
 }
 
-func getPreference(key string) (config.IOption, error) {
-	opt, ok := config.Options[key]
+func getPreference(cfg config.Config, key string) (config.IOption, error) {
+	opt, ok := cfg.LookupOption(key)
 	if !ok || !opt.HasFlags(config.OptionFlagPreference) {
 		return nil, fmt.Errorf("unknown preference: %s", key)
 	}
 	return opt, nil
 }
 
-func getOptionNames(flags config.OptionFlag) []string {
+func getOptionNames(cfg config.Config, flags config.OptionFlag) []string {
 	var names []string
-	for name, opt := range config.Options {
+	for _, opt := range cfg.Options() {
 		if opt.HasFlags(flags) {
-			names = append(names, name)
+			names = append(names, opt.GetName())
 		}
 	}
 	return names
 }
 
-func suggestOptionCompletions(_ *cobra.Command, args []string) []string {
-	var comps []string
-	if opt, ok := config.Options[args[0]]; ok {
-		comps = opt.Completions()
+func suggestOptionCompletions(cfg config.Config) func(*cobra.Command, []string) []string {
+	return func(_ *cobra.Command, args []string) []string {
+		if len(args) == 0 {
+			return nil
+		}
+		if opt, ok := cfg.LookupOption(args[0]); ok {
+			return opt.Completions()
+		}
+		return nil
 	}
-	return comps
 }

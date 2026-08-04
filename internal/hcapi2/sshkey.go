@@ -2,7 +2,6 @@ package hcapi2
 
 import (
 	"context"
-	"strconv"
 
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
@@ -11,8 +10,8 @@ import (
 // additional helper functions.
 type SSHKeyClient interface {
 	hcloud.ISSHKeyClient
-	Names() []string
-	LabelKeys(idOrName string) []string
+	Names(context.Context) ([]string, error)
+	LabelKeys(context.Context, string) ([]string, error)
 }
 
 func NewSSHKeyClient(client hcloud.ISSHKeyClient) SSHKeyClient {
@@ -27,28 +26,23 @@ type sshKeyClient struct {
 
 // Names obtains a list of available SSH keys. It returns nil if SSH key
 // names could not be fetched or none are available.
-func (c *sshKeyClient) Names() []string {
-	sshKeys, err := c.All(context.Background())
-	if err != nil || len(sshKeys) == 0 {
-		return nil
+func (c *sshKeyClient) Names(ctx context.Context) ([]string, error) {
+	sshKeys, err := c.All(ctx)
+	if err != nil {
+		return nil, err
 	}
-	names := make([]string, len(sshKeys))
-	for i, key := range sshKeys {
-		name := key.Name
-		if name == "" {
-			name = strconv.FormatInt(key.ID, 10)
-		}
-		names[i] = name
-	}
-	return names
+	return resourceNames(sshKeys, func(key *hcloud.SSHKey) int64 { return key.ID }, func(key *hcloud.SSHKey) string { return key.Name }), nil
 }
 
 // LabelKeys returns a slice containing the keys of all labels
 // assigned to the SSH Key with the passed idOrName.
-func (c *sshKeyClient) LabelKeys(idOrName string) []string {
-	sshKey, _, err := c.Get(context.Background(), idOrName)
-	if err != nil || sshKey == nil || len(sshKey.Labels) == 0 {
-		return nil
+func (c *sshKeyClient) LabelKeys(ctx context.Context, idOrName string) ([]string, error) {
+	sshKey, _, err := c.Get(ctx, idOrName)
+	if err != nil {
+		return nil, err
 	}
-	return labelKeys(sshKey.Labels)
+	if sshKey == nil {
+		return nil, nil
+	}
+	return labelKeys(sshKey.Labels), nil
 }

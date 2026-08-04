@@ -8,6 +8,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -24,7 +25,7 @@ var UpdateServiceCmd = base.Cmd{
 		}
 
 		cmd.Flags().Int("listen-port", 0, "The listen port of the service that you want to update (required)")
-		_ = cmd.MarkFlagRequired("listen-port")
+		util.MarkFlagRequired(cmd, "listen-port")
 
 		cmd.Flags().Int("destination-port", 0, "Destination port of the service on the targets")
 
@@ -56,7 +57,7 @@ var UpdateServiceCmd = base.Cmd{
 		idOrName := args[0]
 		listenPort, _ := cmd.Flags().GetInt("listen-port")
 
-		loadBalancer, _, err := s.Client().LoadBalancer().Get(s, idOrName)
+		loadBalancer, _, err := s.Client().LoadBalancer().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return err
 		}
@@ -111,7 +112,7 @@ var UpdateServiceCmd = base.Cmd{
 		if cmd.Flag("http-certificates").Changed {
 			certificates, _ := cmd.Flags().GetStringSlice("http-certificates")
 			for _, idOrName := range certificates {
-				cert, _, err := s.Client().Certificate().Get(s, idOrName)
+				cert, _, err := s.Client().Certificate().Get(cmd.Context(), idOrName)
 				if err != nil {
 					return err
 				}
@@ -167,11 +168,11 @@ var UpdateServiceCmd = base.Cmd{
 			}
 		}
 
-		action, _, err := s.Client().LoadBalancer().UpdateService(s, loadBalancer, listenPort, opts)
+		action, _, err := s.Client().LoadBalancer().UpdateService(cmd.Context(), loadBalancer, listenPort, opts)
 		if err != nil {
 			return err
 		}
-		if err := s.WaitForActions(s, cmd, action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, action); err != nil {
 			return err
 		}
 		cmd.Printf("Service %d on Load Balancer %d was updated\n", listenPort, loadBalancer.ID)

@@ -56,7 +56,7 @@ func TestCreateJSON(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	time.Local = time.UTC
+	testutil.SetTimezone(t, time.UTC)
 
 	cmd := network.CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()

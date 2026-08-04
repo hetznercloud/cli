@@ -19,9 +19,9 @@ import (
 var DescribeCmd = base.DescribeCmd[*hcloud.LoadBalancer]{
 	ResourceNameSingular: "Load Balancer",
 	ShortDescription:     "Describe a Load Balancer",
-	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.LoadBalancer().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.LoadBalancer, any, error) {
-		lb, _, err := s.Client().LoadBalancer().Get(s, idOrName)
+	NameSuggestions:      func(c hcapi2.Client) hcapi2.CompletionFunc { return c.LoadBalancer().Names },
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (*hcloud.LoadBalancer, any, error) {
+		lb, _, err := s.Client().LoadBalancer().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -50,8 +50,12 @@ var DescribeCmd = base.DescribeCmd[*hcloud.LoadBalancer]{
 		fmt.Fprintf(out, "Private Net:\n")
 		if len(loadBalancer.PrivateNet) > 0 {
 			for _, n := range loadBalancer.PrivateNet {
+				name, err := s.Client().Network().Name(cmd.Context(), n.Network.ID)
+				if err != nil {
+					return err
+				}
 				fmt.Fprintf(out, "  - ID:\t%d\n", n.Network.ID)
-				fmt.Fprintf(out, "    Name:\t%s\n", s.Client().Network().Name(n.Network.ID))
+				fmt.Fprintf(out, "    Name:\t%s\n", name)
 				fmt.Fprintf(out, "    IP:\t%s\n", n.IP.String())
 			}
 		} else {
@@ -60,7 +64,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.LoadBalancer]{
 
 		fmt.Fprintln(out)
 		fmt.Fprintf(out, "Load Balancer Type:\n")
-		fmt.Fprintf(out, "%s", util.PrefixLines(loadbalancertype.DescribeLoadBalancerType(s, loadBalancer.LoadBalancerType, true), "  "))
+		fmt.Fprintf(out, "%s", util.PrefixLines(loadbalancertype.DescribeLoadBalancerType(cmd.Context(), s, loadBalancer.LoadBalancerType, true), "  "))
 
 		fmt.Fprintln(out)
 		fmt.Fprintf(out, "Services:\n")
@@ -117,9 +121,13 @@ var DescribeCmd = base.DescribeCmd[*hcloud.LoadBalancer]{
 				fmt.Fprintf(out, "  - Type:\t%s\n", target.Type)
 				switch target.Type {
 				case hcloud.LoadBalancerTargetTypeServer:
+					name, err := s.Client().Server().ServerName(cmd.Context(), target.Server.Server.ID)
+					if err != nil {
+						return err
+					}
 					fmt.Fprintf(out, "    Server:\t\n")
 					fmt.Fprintf(out, "      ID:\t%d\n", target.Server.Server.ID)
-					fmt.Fprintf(out, "      Name:\t%s\n", s.Client().Server().ServerName(target.Server.Server.ID))
+					fmt.Fprintf(out, "      Name:\t%s\n", name)
 					fmt.Fprintf(out, "    Use Private IP:\t%s\n", util.YesNo(target.UsePrivateIP))
 					fmt.Fprintf(out, "    Status:\t\n")
 					for _, healthStatus := range target.HealthStatus {

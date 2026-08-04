@@ -1,6 +1,7 @@
 package loadbalancer
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -14,7 +15,7 @@ import (
 var ChangeProtectionCmds = base.ChangeProtectionCmds[*hcloud.LoadBalancer, hcloud.LoadBalancerChangeProtectionOpts]{
 	ResourceNameSingular: "Load Balancer",
 
-	NameSuggestions: func(client hcapi2.Client) func() []string {
+	NameSuggestions: func(client hcapi2.Client) hcapi2.CompletionFunc {
 		return client.LoadBalancer().Names
 	},
 
@@ -24,12 +25,12 @@ var ChangeProtectionCmds = base.ChangeProtectionCmds[*hcloud.LoadBalancer, hclou
 		},
 	},
 
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.LoadBalancer, *hcloud.Response, error) {
-		return s.Client().LoadBalancer().Get(s, idOrName)
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (*hcloud.LoadBalancer, *hcloud.Response, error) {
+		return s.Client().LoadBalancer().Get(cmd.Context(), idOrName)
 	},
 
-	ChangeProtectionFunction: func(s state.State, loadBalancer *hcloud.LoadBalancer, opts hcloud.LoadBalancerChangeProtectionOpts) (*hcloud.Action, *hcloud.Response, error) {
-		return s.Client().LoadBalancer().ChangeProtection(s, loadBalancer, opts)
+	ChangeProtectionFunction: func(ctx context.Context, s state.State, loadBalancer *hcloud.LoadBalancer, opts hcloud.LoadBalancerChangeProtectionOpts) (*hcloud.Action, *hcloud.Response, error) {
+		return s.Client().LoadBalancer().ChangeProtection(ctx, loadBalancer, opts)
 	},
 
 	IDOrName: func(loadBalancer *hcloud.LoadBalancer) string {

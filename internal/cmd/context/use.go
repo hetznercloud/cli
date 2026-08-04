@@ -26,9 +26,9 @@ func NewUseCommand(s state.State) *cobra.Command {
 	return cmd
 }
 
-func runUse(s state.State, _ *cobra.Command, args []string) error {
+func runUse(s state.State, cmd *cobra.Command, args []string) error {
 	if os.Getenv("HCLOUD_TOKEN") != "" {
-		_, _ = fmt.Fprintln(os.Stderr, "Warning: HCLOUD_TOKEN is set. The active context will have no effect.")
+		cmd.PrintErrln("Warning: HCLOUD_TOKEN is set. The active context will have no effect.")
 	}
 	name := args[0]
 	cfg := s.Config()
@@ -36,6 +36,8 @@ func runUse(s state.State, _ *cobra.Command, args []string) error {
 	if context == nil {
 		return fmt.Errorf("context not found: %v", name)
 	}
-	cfg.SetActiveContext(context)
+	if err := cfg.SetActiveContext(context); err != nil {
+		return err
+	}
 	return cfg.Write(nil)
 }

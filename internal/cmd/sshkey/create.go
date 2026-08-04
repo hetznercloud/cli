@@ -20,7 +20,7 @@ var CreateCmd = base.CreateCmd[*hcloud.SSHKey]{
 			Short: "Create an SSH Key",
 		}
 		cmd.Flags().String("name", "", "Key name (required)")
-		_ = cmd.MarkFlagRequired("name")
+		util.MarkFlagRequired(cmd, "name")
 
 		cmd.Flags().String("public-key", "", "Public key")
 		cmd.Flags().String("public-key-from-file", "", "Path to file containing public key")
@@ -41,7 +41,7 @@ var CreateCmd = base.CreateCmd[*hcloud.SSHKey]{
 				err  error
 			)
 			if publicKeyFile == "-" {
-				data, err = io.ReadAll(os.Stdin)
+				data, err = io.ReadAll(cmd.InOrStdin())
 			} else {
 				data, err = os.ReadFile(publicKeyFile)
 			}
@@ -56,7 +56,7 @@ var CreateCmd = base.CreateCmd[*hcloud.SSHKey]{
 			PublicKey: publicKey,
 			Labels:    labels,
 		}
-		sshKey, _, err := s.Client().SSHKey().Create(s, opts)
+		sshKey, _, err := s.Client().SSHKey().Create(cmd.Context(), opts)
 		if err != nil {
 			return nil, nil, err
 		}

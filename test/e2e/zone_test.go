@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -170,20 +171,24 @@ func TestZone(t *testing.T) {
 			out, err := runCommand(t, "zone", "rrset", "list", zoneName, "-o=columns=name,type,ttl,protection,records,labels", "--sort=name:asc")
 			require.NoError(t, err)
 
-			// TODO: Output looks good, but test regex needs to be fixed after release.
-			t.SkipNow()
+			lines := strings.Split(strings.TrimSpace(out), "\n")
+			require.Len(t, lines, 5)
+			assert.Equal(t, []string{"NAME", "TYPE", "TTL", "PROTECTION", "RECORDS", "LABELS"}, strings.Fields(lines[0]))
 
-			assert.Regexp(t,
-				NewRegex().Start().
-					SeparatedByWhitespace("NAME", "TYPE", "TTL", "PROTECTION", "RECORDS", "LABELS").Whitespace().Newline().
-					Lit("@").Whitespace().Lit("NS").Whitespace().Lit("-").Whitespace().AnyString().Newline().
-					Lit("@").Whitespace().Lit("SOA").Whitespace().Lit("-").Whitespace().AnyString().Newline().
-					Lit("foobar").Whitespace().Lit("A").Whitespace().Lit("1337").Whitespace().Lit("change").
-					Whitespace().Lit("192.168.0.2").Whitespace().Lit("foo=bar").Newline().
-					Lit("www").Whitespace().Lit("A").Whitespace().Lit("-").Whitespace().Lit("192.168.0.1").Whitespace().Newline().
-					End(),
-				out,
-			)
+			nsFields := strings.Fields(lines[1])
+			require.GreaterOrEqual(t, len(nsFields), 4)
+			assert.Equal(t, []string{"@", "NS", "-"}, nsFields[:3])
+
+			soaFields := strings.Fields(lines[2])
+			require.GreaterOrEqual(t, len(soaFields), 4)
+			assert.Equal(t, []string{"@", "SOA", "-"}, soaFields[:3])
+
+			assert.Equal(t, []string{"foobar", "A", "1337", "change", "192.168.0.2", "foo=bar"}, strings.Fields(lines[3]))
+
+			wwwFields := strings.Fields(lines[4])
+			require.GreaterOrEqual(t, len(wwwFields), 4)
+			assert.Equal(t, []string{"www", "A", "-"}, wwwFields[:3])
+			assert.Contains(t, wwwFields, "192.168.0.1")
 		})
 
 		t.Run("delete-protected", func(t *testing.T) {

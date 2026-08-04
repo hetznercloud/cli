@@ -49,7 +49,10 @@ func runList(s state.State, cmd *cobra.Command, _ []string) error {
 	allowSensitive, _ := cmd.Flags().GetBool("allow-sensitive")
 
 	cfg := s.Config()
-	outOpts := output.FlagsForCommand(cmd)
+	outOpts, err := output.FlagsForCommand(cmd)
+	if err != nil {
+		return err
+	}
 
 	cols := []string{"active", "name"}
 	if outOpts.IsSet("columns") {
@@ -110,7 +113,9 @@ func runList(s state.State, cmd *cobra.Command, _ []string) error {
 			presentation.Active = "*"
 		}
 
-		tw.Write(cols, presentation)
+		if err := tw.Write(cmd.Context(), cols, presentation); err != nil {
+			return err
+		}
 	}
 	return tw.Flush()
 }

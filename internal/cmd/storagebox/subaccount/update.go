@@ -16,7 +16,7 @@ import (
 var UpdateCmd = base.UpdateCmd[*hcloud.StorageBoxSubaccount]{
 	ResourceNameSingular: "Storage Box Subaccount",
 	ShortDescription:     "Update a Storage Box Subaccount",
-	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.StorageBox().Names },
+	NameSuggestions:      func(c hcapi2.Client) hcapi2.CompletionFunc { return c.StorageBox().Names },
 	ValidArgsFunction: func(client hcapi2.Client) []cobra.CompletionFunc {
 		return []cobra.CompletionFunc{
 			cmpl.SuggestCandidatesF(client.StorageBox().Names),
@@ -24,16 +24,16 @@ var UpdateCmd = base.UpdateCmd[*hcloud.StorageBoxSubaccount]{
 		}
 	},
 	PositionalArgumentOverride: []string{"storage-box", "subaccount"},
-	FetchWithArgs: func(s state.State, _ *cobra.Command, args []string) (*hcloud.StorageBoxSubaccount, *hcloud.Response, error) {
+	FetchWithArgs: func(s state.State, cmd *cobra.Command, args []string) (*hcloud.StorageBoxSubaccount, *hcloud.Response, error) {
 		storageBoxIDOrName, subaccountIDOrName := args[0], args[1]
-		storageBox, _, err := s.Client().StorageBox().Get(s, storageBoxIDOrName)
+		storageBox, _, err := s.Client().StorageBox().Get(cmd.Context(), storageBoxIDOrName)
 		if err != nil {
 			return nil, nil, err
 		}
 		if storageBox == nil {
 			return nil, nil, fmt.Errorf("Storage Box not found: %s", storageBoxIDOrName)
 		}
-		return s.Client().StorageBox().GetSubaccount(s, storageBox, subaccountIDOrName)
+		return s.Client().StorageBox().GetSubaccount(cmd.Context(), storageBox, subaccountIDOrName)
 	},
 	DefineFlags: func(cmd *cobra.Command) {
 		cmd.Flags().String("name", "", "Name of the Storage Box Subaccount")
@@ -50,7 +50,7 @@ var UpdateCmd = base.UpdateCmd[*hcloud.StorageBoxSubaccount]{
 			description, _ := cmd.Flags().GetString("description")
 			opts.Description = &description
 		}
-		_, _, err := s.Client().StorageBox().UpdateSubaccount(s, subaccount, opts)
+		_, _, err := s.Client().StorageBox().UpdateSubaccount(cmd.Context(), subaccount, opts)
 		if err != nil {
 			return err
 		}

@@ -21,6 +21,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/network"
 	"github.com/hetznercloud/cli/internal/cmd/placementgroup"
 	"github.com/hetznercloud/cli/internal/cmd/primaryip"
+	"github.com/hetznercloud/cli/internal/cmd/registration"
 	"github.com/hetznercloud/cli/internal/cmd/server"
 	"github.com/hetznercloud/cli/internal/cmd/servertype"
 	"github.com/hetznercloud/cli/internal/cmd/sshkey"
@@ -34,7 +35,7 @@ import (
 	"github.com/hetznercloud/cli/internal/state/config"
 )
 
-func NewRootCommand(s state.State) *cobra.Command {
+func NewRootCommand(s state.State, markdownTables bool) (*cobra.Command, error) {
 	cmd := &cobra.Command{
 		Use:                   "hcloud",
 		Short:                 "Hetzner Cloud CLI",
@@ -73,21 +74,23 @@ func NewRootCommand(s state.State) *cobra.Command {
 		version.NewCommand(s),
 		completion.NewCommand(s),
 		context.NewCommand(s),
-		configCmd.NewCommand(s),
+		configCmd.NewCommand(s, markdownTables),
 	)
 
 	cmd.PersistentFlags().AddFlagSet(s.Config().FlagSet())
 
-	for _, opt := range config.Options {
+	for _, opt := range s.Config().Options() {
 		f := opt.GetFlagCompletionFunc()
 		if !opt.HasFlags(config.OptionFlagPFlag) || f == nil {
 			continue
 		}
 		// opt.FlagName() is prefixed with --
 		flagName := opt.FlagName()[2:]
-		_ = cmd.RegisterFlagCompletionFunc(flagName, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
+		if err := cmd.RegisterFlagCompletionFunc(flagName, func(cmd *cobra.Command, args []string, toComplete string) ([]string, cobra.ShellCompDirective) {
 			return f(s.Client(), s.Config(), cmd, args, toComplete)
-		})
+		}); err != nil {
+			return nil, err
+		}
 	}
 
 	cmd.PersistentPreRunE = func(cmd *cobra.Command, _ []string) error {
@@ -104,5 +107,8 @@ func NewRootCommand(s state.State) *cobra.Command {
 		cmd.SetOut(out)
 		return nil
 	}
-	return cmd
+	if err := registration.Error(cmd); err != nil {
+		return nil, err
+	}
+	return cmd, nil
 }

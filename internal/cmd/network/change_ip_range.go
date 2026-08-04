@@ -8,6 +8,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -24,13 +25,13 @@ var ChangeIPRangeCmd = base.Cmd{
 		}
 
 		cmd.Flags().IPNet("ip-range", net.IPNet{}, "New IP range (required)")
-		_ = cmd.MarkFlagRequired("ip-range")
+		util.MarkFlagRequired(cmd, "ip-range")
 
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		network, _, err := s.Client().Network().Get(s, idOrName)
+		network, _, err := s.Client().Network().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return err
 		}
@@ -43,12 +44,12 @@ var ChangeIPRangeCmd = base.Cmd{
 			IPRange: &ipRange,
 		}
 
-		action, _, err := s.Client().Network().ChangeIPRange(s, network, opts)
+		action, _, err := s.Client().Network().ChangeIPRange(cmd.Context(), network, opts)
 		if err != nil {
 			return err
 		}
 
-		if err := s.WaitForActions(s, cmd, action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, action); err != nil {
 			return err
 		}
 		cmd.Printf("IP range of Network %d changed\n", network.ID)

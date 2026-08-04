@@ -19,15 +19,15 @@ import (
 var DescribeCmd = base.DescribeCmd[*hcloud.StorageBox]{
 	ResourceNameSingular: "Storage Box",
 	ShortDescription:     "Describe a Storage Box",
-	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.StorageBox().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.StorageBox, any, error) {
-		storageBox, _, err := s.Client().StorageBox().Get(s, idOrName)
+	NameSuggestions:      func(c hcapi2.Client) hcapi2.CompletionFunc { return c.StorageBox().Names },
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (*hcloud.StorageBox, any, error) {
+		storageBox, _, err := s.Client().StorageBox().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return nil, nil, err
 		}
 		return storageBox, hcloud.SchemaFromStorageBox(storageBox), nil
 	},
-	PrintText: func(s state.State, _ *cobra.Command, out io.Writer, storageBox *hcloud.StorageBox) error {
+	PrintText: func(s state.State, cmd *cobra.Command, out io.Writer, storageBox *hcloud.StorageBox) error {
 
 		fmt.Fprintf(out, "ID:\t%d\n", storageBox.ID)
 		fmt.Fprintf(out, "Name:\t%s\n", storageBox.Name)
@@ -79,7 +79,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.StorageBox]{
 		fmt.Fprintf(out, "  WebDAV Enabled:\t%t\n", accessSettings.WebDAVEnabled)
 		fmt.Fprintf(out, "  ZFS Enabled:\t%t\n", accessSettings.ZFSEnabled)
 
-		typeDescription, _ := storageboxtype.DescribeStorageBoxType(s, storageBox.StorageBoxType, true)
+		typeDescription, _ := storageboxtype.DescribeStorageBoxType(cmd.Context(), s, storageBox.StorageBoxType, true)
 		fmt.Fprintln(out)
 		fmt.Fprintf(out, "Storage Box Type:\n")
 		fmt.Fprintf(out, "%s", util.PrefixLines(typeDescription, "  "))

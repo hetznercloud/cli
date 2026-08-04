@@ -21,7 +21,7 @@ var RetryCmd = base.Cmd{
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		certificate, _, err := s.Client().Certificate().Get(s, idOrName)
+		certificate, _, err := s.Client().Certificate().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return err
 		}
@@ -29,12 +29,12 @@ var RetryCmd = base.Cmd{
 			return fmt.Errorf("Certificate not found: %s", idOrName)
 		}
 
-		action, _, err := s.Client().Certificate().RetryIssuance(s, certificate)
+		action, _, err := s.Client().Certificate().RetryIssuance(cmd.Context(), certificate)
 		if err != nil {
 			return err
 		}
 
-		if err := s.WaitForActions(s, cmd, action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, action); err != nil {
 			return err
 		}
 

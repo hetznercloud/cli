@@ -18,9 +18,9 @@ import (
 var DescribeCmd = base.DescribeCmd[*hcloud.Network]{
 	ResourceNameSingular: "Network",
 	ShortDescription:     "Describe a Network",
-	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Network().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.Network, any, error) {
-		n, _, err := s.Client().Network().Get(s, idOrName)
+	NameSuggestions:      func(c hcapi2.Client) hcapi2.CompletionFunc { return c.Network().Names },
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (*hcloud.Network, any, error) {
+		n, _, err := s.Client().Network().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return nil, nil, err
 		}

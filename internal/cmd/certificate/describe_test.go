@@ -20,7 +20,7 @@ func TestDescribe(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	time.Local = time.UTC
+	testutil.SetTimezone(t, time.UTC)
 
 	cmd := certificate.DescribeCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
@@ -52,8 +52,8 @@ func TestDescribe(t *testing.T) {
 		Get(gomock.Any(), "test").
 		Return(cert, nil, nil)
 	fx.Client.LoadBalancerClient.EXPECT().
-		LoadBalancerName(int64(123)).
-		Return("test")
+		LoadBalancerName(gomock.Any(), int64(123)).
+		Return("test", nil)
 
 	out, errOut, err := fx.Run(cmd, []string{"test"})
 

@@ -72,10 +72,19 @@ Listed resources are:
 	},
 	Run: func(s state.State, cmd *cobra.Command, _ []string) error {
 
-		paid, _ := cmd.Flags().GetBool("paid")
-		labelSelector, _ := cmd.Flags().GetString("selector")
+		paid, err := cmd.Flags().GetBool("paid")
+		if err != nil {
+			return err
+		}
+		labelSelector, err := cmd.Flags().GetString("selector")
+		if err != nil {
+			return err
+		}
 
-		outOpts := output.FlagsForCommand(cmd)
+		outOpts, err := output.FlagsForCommand(cmd)
+		if err != nil {
+			return err
+		}
 
 		cmds := allCmds
 		if paid {
@@ -108,7 +117,7 @@ Listed resources are:
 					LabelSelector: labelSelector,
 				}
 
-				flagSet := pflag.NewFlagSet(lc.GetJSONKeyGetByName(), pflag.ExitOnError)
+				flagSet := pflag.NewFlagSet(lc.GetJSONKeyGetByName(), pflag.ContinueOnError)
 
 				switch lc.GetJSONKeyGetByName() {
 				case image.ListCmd.JSONKeyGetByName:
@@ -119,9 +128,12 @@ Listed resources are:
 
 				// FlagSet has to be parsed to be populated.
 				// We pass an empty slice because we defined the flags earlier.
-				_ = flagSet.Parse([]string{})
+				if err := flagSet.Parse(nil); err != nil {
+					ch <- response{err: err}
+					return
+				}
 
-				result, err := lc.FetchAny(s, flagSet, listOpts, []string{})
+				result, err := lc.FetchAny(cmd.Context(), s, flagSet, listOpts, []string{})
 				ch <- response{result, err}
 			}()
 		}
@@ -162,7 +174,9 @@ Listed resources are:
 
 			cmd.Print(strings.ToUpper(lc.GetResourceNamePlural()) + "\n---\n")
 			for _, resource := range resources[i] {
-				table.Write(cols, resource)
+				if err := table.Write(cmd.Context(), cols, resource); err != nil {
+					return err
+				}
 			}
 			if err := table.Flush(); err != nil {
 				return err

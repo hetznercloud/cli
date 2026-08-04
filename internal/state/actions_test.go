@@ -2,8 +2,6 @@ package state
 
 import (
 	"context"
-	"io"
-	"os"
 	"strings"
 	"testing"
 
@@ -44,16 +42,15 @@ func TestWaitForActionsSuccess(t *testing.T) {
 			return nil
 		})
 
-	stderr := captureStderr(t, func() {
-		_ = waitForActions(context.Background(), client, action)
-	})
+	var stderr strings.Builder
+	require.NoError(t, waitForActions(t.Context(), client, &stderr, action))
 
 	assert.Equal(t,
 		strings.Join([]string{
 			"Waiting for attach_volume (server: 46830545, volume: 46830546) ...\n",
 			"Waiting for attach_volume (server: 46830545, volume: 46830546) ... done\n",
 		}, ""),
-		stderr,
+		stderr.String(),
 	)
 }
 
@@ -82,48 +79,48 @@ func TestWaitForActionsError(t *testing.T) {
 			action.Status = hcloud.ActionStatusError
 			action.ErrorCode = "action_failed"
 			action.ErrorMessage = "action failed"
-			require.Error(t, handleUpdate(action))
+			require.NoError(t, handleUpdate(action))
 
-			return action.Error()
+			return nil
 		})
 
-	stderr := captureStderr(t, func() {
-		_ = waitForActions(context.Background(), client, action)
-	})
+	var stderr strings.Builder
+	err := waitForActions(t.Context(), client, &stderr, action)
+	var actionWaitErr *ActionWaitError
+	require.ErrorAs(t, err, &actionWaitErr)
+	require.Len(t, actionWaitErr.Failures, 1)
+	assert.Equal(t, action.ID, actionWaitErr.Failures[0].ActionID)
+	require.ErrorContains(t, actionWaitErr.Failures[0].Err, "action failed")
 
 	assert.Equal(t,
 		strings.Join([]string{
 			"Waiting for attach_volume (server: 46830545, volume: 46830546) ...\n",
 			"Waiting for attach_volume (server: 46830545, volume: 46830546) ... failed\n",
 		}, ""),
-		stderr,
+		stderr.String(),
 	)
 }
 
-func captureStderr(t *testing.T, next func()) string {
-	t.Helper()
+func TestCollectActionFailuresWaitsForEveryAction(t *testing.T) {
+	ctrl := gomock.NewController(t)
 
-	pipeReader, pipeWriter, err := os.Pipe()
-	if err != nil {
-		t.Fatal(err)
-	}
+	actions := []*hcloud.Action{{ID: 1}, {ID: 2}}
+	client := hcapi2_mock.NewMockActionClient(ctrl)
+	client.EXPECT().
+		WaitForFunc(gomock.Any(), gomock.Any(), actions[0], actions[1]).
+		DoAndReturn(func(_ context.Context, handleUpdate func(*hcloud.Action) error, _ ...*hcloud.Action) error {
+			for _, action := range actions {
+				action.Status = hcloud.ActionStatusError
+				action.ErrorCode = "action_failed"
+				action.ErrorMessage = "failed"
+				require.NoError(t, handleUpdate(action))
+			}
+			return nil
+		})
 
-	stderrOrig := os.Stderr
-	os.Stderr = pipeWriter
-	defer func() {
-		os.Stderr = stderrOrig
-	}()
-
-	next()
-
-	if err := pipeWriter.Close(); err != nil {
-		t.Fatal(err)
-	}
-
-	stderrOutput, err := io.ReadAll(pipeReader)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	return string(stderrOutput)
+	err := waitForActionsQuiet(t.Context(), client, actions...)
+	var actionWaitErr *ActionWaitError
+	require.ErrorAs(t, err, &actionWaitErr)
+	assert.Len(t, actionWaitErr.Failures, 2)
+	assert.NoError(t, actionWaitErr.Cause)
 }

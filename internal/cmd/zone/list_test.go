@@ -19,7 +19,7 @@ func TestList(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	time.Local = time.UTC
+	testutil.SetTimezone(t, time.UTC)
 
 	cmd := zone.ListCmd.CobraCommand(fx.State())
 
@@ -68,7 +68,7 @@ func TestListPrimaryNameservers(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	time.Local = time.UTC
+	testutil.SetTimezone(t, time.UTC)
 
 	cmd := zone.ListCmd.CobraCommand(fx.State())
 
@@ -110,7 +110,7 @@ func TestListAuthoritativeNameservers(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	time.Local = time.UTC
+	testutil.SetTimezone(t, time.UTC)
 
 	cmd := zone.ListCmd.CobraCommand(fx.State())
 

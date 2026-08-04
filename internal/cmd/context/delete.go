@@ -2,7 +2,6 @@ package context
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/spf13/cobra"
 
@@ -26,7 +25,7 @@ func NewDeleteCommand(s state.State) *cobra.Command {
 	return cmd
 }
 
-func runDelete(s state.State, _ *cobra.Command, args []string) error {
+func runDelete(s state.State, cmd *cobra.Command, args []string) error {
 	name := args[0]
 	cfg := s.Config()
 	context := config.ContextByName(cfg, name)
@@ -34,9 +33,13 @@ func runDelete(s state.State, _ *cobra.Command, args []string) error {
 		return fmt.Errorf("context not found: %v", name)
 	}
 	if cfg.ActiveContext() == context {
-		_, _ = fmt.Fprintln(os.Stderr, "Warning: You deleted the currently active context. Please select a new active context.")
-		cfg.SetActiveContext(nil)
+		cmd.PrintErrln("Warning: You deleted the currently active context. Please select a new active context.")
+		if err := cfg.SetActiveContext(nil); err != nil {
+			return err
+		}
 	}
-	config.RemoveContext(cfg, context)
+	if err := config.RemoveContext(cfg, context); err != nil {
+		return err
+	}
 	return cfg.Write(nil)
 }

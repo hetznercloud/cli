@@ -92,11 +92,11 @@ func TestCreate(t *testing.T) {
 		WaitForActions(gomock.Any(), gomock.Any(), []*hcloud.Action{{ID: 123}, {ID: 234}}).
 		Return(nil)
 	fx.Client.NetworkClient.EXPECT().
-		Name(int64(4461841)).
-		Return("foo")
+		Name(gomock.Any(), int64(4461841)).
+		Return("foo", nil)
 	fx.Client.NetworkClient.EXPECT().
-		Name(int64(4461842)).
-		Return("bar")
+		Name(gomock.Any(), int64(4461842)).
+		Return("bar", nil)
 
 	args := []string{"--name", "cli-test", "--type", "cpx22", "--image", "ubuntu-20.04"}
 	out, errOut, err := fx.Run(cmd, args)
@@ -119,7 +119,7 @@ func TestCreateJSON(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	time.Local = time.UTC
+	testutil.SetTimezone(t, time.UTC)
 
 	cmd := server.CreateCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()

@@ -1,6 +1,7 @@
 package servertype
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"strings"
@@ -18,16 +19,16 @@ import (
 var DescribeCmd = base.DescribeCmd[*hcloud.ServerType]{
 	ResourceNameSingular: "Server Type",
 	ShortDescription:     "Describe a Server Type",
-	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.ServerType().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.ServerType, any, error) {
-		st, _, err := s.Client().ServerType().Get(s, idOrName)
+	NameSuggestions:      func(c hcapi2.Client) hcapi2.CompletionFunc { return c.ServerType().Names },
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (*hcloud.ServerType, any, error) {
+		st, _, err := s.Client().ServerType().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return nil, nil, err
 		}
 		return st, hcloud.SchemaFromServerType(st), nil
 	},
-	PrintText: func(s state.State, _ *cobra.Command, out io.Writer, serverType *hcloud.ServerType) error {
-		description, err := DescribeServerType(s, serverType, false)
+	PrintText: func(s state.State, cmd *cobra.Command, out io.Writer, serverType *hcloud.ServerType) error {
+		description, err := DescribeServerType(cmd.Context(), s, serverType, false)
 		if err != nil {
 			return err
 		}
@@ -36,7 +37,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.ServerType]{
 	},
 }
 
-func DescribeServerType(s state.State, serverType *hcloud.ServerType, short bool) (string, error) {
+func DescribeServerType(ctx context.Context, s state.State, serverType *hcloud.ServerType, short bool) (string, error) {
 	var sb strings.Builder
 
 	fmt.Fprintf(&sb, "ID:\t%d\n", serverType.ID)
@@ -54,7 +55,7 @@ func DescribeServerType(s state.State, serverType *hcloud.ServerType, short bool
 		return sb.String(), nil
 	}
 
-	pricings, err := fullPricingInfo(s, serverType)
+	pricings, err := fullPricingInfo(ctx, s, serverType)
 	if err != nil {
 		return "", fmt.Errorf("failed to get prices for Server Type: %w", err)
 	}
@@ -65,7 +66,7 @@ func DescribeServerType(s state.State, serverType *hcloud.ServerType, short bool
 	for _, info := range locations {
 
 		fmt.Fprintf(&sb, "  - Location:\t%s\n", info.Location.Name)
-		fmt.Fprintf(&sb, "    Available:\t%s\n", util.YesNo(info.Available))
+		fmt.Fprintf(&sb, "    Availability Signal (advisory):\t%s\n", util.YesNo(info.Available))
 		fmt.Fprintf(&sb, "    Recommended:\t%s\n", util.YesNo(info.Recommended))
 
 		if deprecationText := util.DescribeDeprecation(info); deprecationText != "" {
@@ -83,8 +84,8 @@ func DescribeServerType(s state.State, serverType *hcloud.ServerType, short bool
 	return sb.String(), nil
 }
 
-func fullPricingInfo(s state.State, serverType *hcloud.ServerType) ([]hcloud.ServerTypeLocationPricing, error) {
-	pricing, _, err := s.Client().Pricing().Get(s)
+func fullPricingInfo(ctx context.Context, s state.State, serverType *hcloud.ServerType) ([]hcloud.ServerTypeLocationPricing, error) {
+	pricing, _, err := s.Client().Pricing().Get(ctx)
 	if err != nil {
 		return nil, err
 	}

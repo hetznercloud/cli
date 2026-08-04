@@ -3,7 +3,6 @@ package server
 import (
 	"errors"
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -44,7 +43,7 @@ var ShutdownCmd = base.Cmd{
 		timeout, _ := cmd.Flags().GetDuration("wait-timeout")
 
 		idOrName := args[0]
-		server, _, err := s.Client().Server().Get(s, idOrName)
+		server, _, err := s.Client().Server().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return err
 		}
@@ -52,12 +51,12 @@ var ShutdownCmd = base.Cmd{
 			return fmt.Errorf("Server not found: %s", idOrName)
 		}
 
-		action, _, err := s.Client().Server().Shutdown(s, server)
+		action, _, err := s.Client().Server().Shutdown(cmd.Context(), server)
 		if err != nil {
 			return err
 		}
 
-		if err := s.WaitForActions(s, cmd, action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, action); err != nil {
 			return err
 		}
 
@@ -75,7 +74,7 @@ var ShutdownCmd = base.Cmd{
 			defer ticker.Stop()
 
 			progress := ui.NewProgress(
-				os.Stderr,
+				cmd.ErrOrStderr(),
 				ui.FakeActionMessage("Waiting for Server to shut down"),
 				ui.ActionResourcesMessage(&hcloud.ActionResource{ID: server.ID, Type: hcloud.ActionResourceTypeServer}),
 			)
@@ -87,7 +86,7 @@ var ShutdownCmd = base.Cmd{
 					return errors.New("failed to shut down server")
 				}
 
-				server, _, err = s.Client().Server().GetByID(s, server.ID)
+				server, _, err = s.Client().Server().GetByID(cmd.Context(), server.ID)
 				if err != nil {
 					progress.SetError()
 					return err

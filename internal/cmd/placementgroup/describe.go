@@ -1,6 +1,7 @@
 package placementgroup
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"strings"
@@ -18,21 +19,25 @@ import (
 var DescribeCmd = base.DescribeCmd[*hcloud.PlacementGroup]{
 	ResourceNameSingular: "Placement Group",
 	ShortDescription:     "Describe a Placement Group",
-	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.PlacementGroup().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.PlacementGroup, any, error) {
-		pg, _, err := s.Client().PlacementGroup().Get(s, idOrName)
+	NameSuggestions:      func(c hcapi2.Client) hcapi2.CompletionFunc { return c.PlacementGroup().Names },
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (*hcloud.PlacementGroup, any, error) {
+		pg, _, err := s.Client().PlacementGroup().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return nil, nil, err
 		}
 		return pg, hcloud.SchemaFromPlacementGroup(pg), nil
 	},
-	PrintText: func(s state.State, _ *cobra.Command, out io.Writer, placementGroup *hcloud.PlacementGroup) error {
-		fmt.Fprintf(out, "%s", DescribePlacementGroup(s.Client(), placementGroup))
-		return nil
+	PrintText: func(s state.State, cmd *cobra.Command, out io.Writer, placementGroup *hcloud.PlacementGroup) error {
+		description, err := DescribePlacementGroup(cmd.Context(), s.Client(), placementGroup)
+		if err != nil {
+			return err
+		}
+		_, err = fmt.Fprint(out, description)
+		return err
 	},
 }
 
-func DescribePlacementGroup(client hcapi2.Client, placementGroup *hcloud.PlacementGroup) string {
+func DescribePlacementGroup(ctx context.Context, client hcapi2.Client, placementGroup *hcloud.PlacementGroup) (string, error) {
 	var sb strings.Builder
 
 	fmt.Fprintf(&sb, "ID:\t%d\n", placementGroup.ID)
@@ -49,10 +54,14 @@ func DescribePlacementGroup(client hcapi2.Client, placementGroup *hcloud.Placeme
 		fmt.Fprintf(&sb, "  No servers\n")
 	} else {
 		for _, serverID := range placementGroup.Servers {
+			name, err := client.Server().ServerName(ctx, serverID)
+			if err != nil {
+				return "", err
+			}
 			fmt.Fprintf(&sb, "  - Server ID:\t%d\n", serverID)
-			fmt.Fprintf(&sb, "    Server Name:\t%s\n", client.Server().ServerName(serverID))
+			fmt.Fprintf(&sb, "    Server Name:\t%s\n", name)
 		}
 	}
 
-	return sb.String()
+	return sb.String(), nil
 }

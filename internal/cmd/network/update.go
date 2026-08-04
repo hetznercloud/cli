@@ -13,18 +13,18 @@ import (
 var UpdateCmd = base.UpdateCmd[*hcloud.Network]{
 	ResourceNameSingular: "Network",
 	ShortDescription:     "Update a Network.\n\nTo enable or disable exposing routes to the vSwitch connection you can use the subcommand \"hcloud network expose-routes-to-vswitch\".",
-	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Network().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.Network, *hcloud.Response, error) {
-		return s.Client().Network().Get(s, idOrName)
+	NameSuggestions:      func(c hcapi2.Client) hcapi2.CompletionFunc { return c.Network().Names },
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (*hcloud.Network, *hcloud.Response, error) {
+		return s.Client().Network().Get(cmd.Context(), idOrName)
 	},
 	DefineFlags: func(cmd *cobra.Command) {
 		cmd.Flags().String("name", "", "Network name")
 	},
-	Update: func(s state.State, _ *cobra.Command, network *hcloud.Network, flags map[string]pflag.Value) error {
+	Update: func(s state.State, cmd *cobra.Command, network *hcloud.Network, flags map[string]pflag.Value) error {
 		updOpts := hcloud.NetworkUpdateOpts{
 			Name: flags["name"].String(),
 		}
-		_, _, err := s.Client().Network().Update(s, network, updOpts)
+		_, _, err := s.Client().Network().Update(cmd.Context(), network, updOpts)
 		if err != nil {
 			return err
 		}

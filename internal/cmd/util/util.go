@@ -438,12 +438,12 @@ func WeekdayFromString(s string) (time.Weekday, error) {
 }
 
 func DescribeLabels(out io.Writer, labels map[string]string, prefix string) {
-	_, _ = fmt.Fprintf(out, "%sLabels:\n", prefix)
+	fmt.Fprintf(out, "%sLabels:\n", prefix)
 	if len(labels) == 0 {
-		_, _ = fmt.Fprintf(out, "%s  No labels\n", prefix)
+		fmt.Fprintf(out, "%s  No labels\n", prefix)
 	} else {
 		for key, value := range IterateInOrder(labels) {
-			_, _ = fmt.Fprintf(out, "%s  %s:\t%s\n", prefix, key, value)
+			fmt.Fprintf(out, "%s  %s:\t%s\n", prefix, key, value)
 		}
 	}
 }

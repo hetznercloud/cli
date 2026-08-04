@@ -48,10 +48,7 @@ builds:
     goarch: [amd64, arm64]
     hooks:
       post:
-        # sign-and-notarize might fails if the Apple license agreement is not signed.
-        # This ensures that the release process continues instead of stopping and having
-        # a release without assets. The error is reported at the end of the CI job.
-        - cmd: bash -c 'quill sign-and-notarize "{{ .Path }}" --dry-run={{ .IsSnapshot }} --ad-hoc={{ .IsSnapshot }} || touch sign-and-notarize.error'
+        - cmd: quill sign-and-notarize "{{ .Path }}" --dry-run={{ .IsSnapshot }} --ad-hoc={{ .IsSnapshot }}
           output: true
 
 nfpms:
@@ -100,7 +97,7 @@ kos:
     platforms:
       - linux/amd64
       - linux/arm64
-    base_image: alpine
+    base_image: alpine:3.23.3@sha256:25109184c71bdad752c8312a8623239686a9a2071e8825f20acb8f2198c3f659
     bare: true
     labels:
       org.opencontainers.image.source: https://github.com/hetznercloud/cli
@@ -115,7 +112,7 @@ kos:
       - -X {{ .ModulePath }}/internal/version.commit={{ .FullCommit }}
       - -X {{ .ModulePath }}/internal/version.commitDate={{ .CommitDate }}
       - -X {{ .ModulePath }}/internal/version.modified={{ .IsGitDirty }}
-      - -X {{ .ModulePath }}/internal/state/config.defaultConfigPathOverride=/config.toml
+      - -X main.defaultConfigPath=/config.toml
 
 snapshot:
   version_template: "{{ .Version }}"
@@ -148,6 +145,12 @@ archives:
       - LICENSE
       - README.md
       - docs/**/*
+
+sboms:
+  - id: archive-sboms
+    artifacts: archive
+  - id: package-sboms
+    artifacts: package
 
 release:
   draft: false

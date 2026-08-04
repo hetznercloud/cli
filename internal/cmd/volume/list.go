@@ -1,6 +1,7 @@
 package volume
 
 import (
+	"context"
 	"strings"
 	"time"
 
@@ -23,23 +24,23 @@ var ListCmd = &base.ListCmd[*hcloud.Volume, schema.Volume]{
 	DefaultColumns:     []string{"id", "name", "size", "server", "location", "age"},
 	SortOption:         config.OptionSortVolume,
 
-	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.Volume, error) {
+	Fetch: func(ctx context.Context, s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.Volume, error) {
 		opts := hcloud.VolumeListOpts{ListOpts: listOpts}
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		return s.Client().Volume().AllWithOpts(s, opts)
+		return s.Client().Volume().AllWithOpts(ctx, opts)
 	},
 
 	OutputTable: func(t *output.Table[*hcloud.Volume], client hcapi2.Client) {
 		t.
 			AddAllowedFields(&hcloud.Volume{}).
-			AddFieldFn("server", func(volume *hcloud.Volume) string {
+			AddFieldFnE("server", func(ctx context.Context, volume *hcloud.Volume) (string, error) {
 				var server string
 				if volume.Server != nil {
-					return client.Server().ServerName(volume.Server.ID)
+					return client.Server().ServerName(ctx, volume.Server.ID)
 				}
-				return util.NA(server)
+				return util.NA(server), nil
 			}).
 			AddFieldFn("size", func(volume *hcloud.Volume) string {
 				return humanize.Bytes(uint64(volume.Size) * humanize.GByte)

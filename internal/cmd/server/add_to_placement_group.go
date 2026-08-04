@@ -7,6 +7,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 )
@@ -20,14 +21,14 @@ var AddToPlacementGroupCmd = base.Cmd{
 		}
 
 		cmd.Flags().StringP("placement-group", "g", "", "Placement Group (ID or name) (required)")
-		_ = cmd.RegisterFlagCompletionFunc("placement-group", cmpl.SuggestCandidatesF(client.PlacementGroup().Names))
-		_ = cmd.MarkFlagRequired(("placement-group"))
+		cmpl.RegisterFlagCompletion(cmd, "placement-group", cmpl.SuggestCandidatesF(client.PlacementGroup().Names))
+		util.MarkFlagRequired(cmd, ("placement-group"))
 
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
-		server, _, err := s.Client().Server().Get(s, idOrName)
+		server, _, err := s.Client().Server().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return err
 		}
@@ -36,7 +37,7 @@ var AddToPlacementGroupCmd = base.Cmd{
 		}
 
 		placementGroupIDOrName, _ := cmd.Flags().GetString("placement-group")
-		placementGroup, _, err := s.Client().PlacementGroup().Get(s, placementGroupIDOrName)
+		placementGroup, _, err := s.Client().PlacementGroup().Get(cmd.Context(), placementGroupIDOrName)
 		if err != nil {
 			return err
 		}
@@ -44,12 +45,12 @@ var AddToPlacementGroupCmd = base.Cmd{
 			return fmt.Errorf("Placement Group not found: %s", placementGroupIDOrName)
 		}
 
-		action, _, err := s.Client().Server().AddToPlacementGroup(s, server, placementGroup)
+		action, _, err := s.Client().Server().AddToPlacementGroup(cmd.Context(), server, placementGroup)
 		if err != nil {
 			return err
 		}
 
-		if err := s.WaitForActions(s, cmd, action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, action); err != nil {
 			return err
 		}
 

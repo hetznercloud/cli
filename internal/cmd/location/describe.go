@@ -17,9 +17,9 @@ import (
 var DescribeCmd = base.DescribeCmd[*hcloud.Location]{
 	ResourceNameSingular: "Location",
 	ShortDescription:     "Describe a Location",
-	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Location().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.Location, any, error) {
-		l, _, err := s.Client().Location().Get(s, idOrName)
+	NameSuggestions:      func(c hcapi2.Client) hcapi2.CompletionFunc { return c.Location().Names },
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (*hcloud.Location, any, error) {
+		l, _, err := s.Client().Location().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return nil, nil, err
 		}

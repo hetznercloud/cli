@@ -95,8 +95,8 @@ func TestDescribeWithTypes(t *testing.T) {
 
 	for _, st := range serverTypes {
 		fx.Client.ServerTypeClient.EXPECT().
-			ServerTypeName(st.ID).
-			Return(st.Name)
+			ServerTypeName(gomock.Any(), st.ID).
+			Return(st.Name, nil)
 	}
 
 	out, errOut, err := fx.Run(cmd, []string{"test"})

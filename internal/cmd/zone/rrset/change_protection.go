@@ -1,6 +1,7 @@
 package rrset
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -24,7 +25,7 @@ var ChangeProtectionCmds = base.ChangeProtectionCmds[*hcloud.ZoneRRSet, hcloud.Z
 		},
 	},
 
-	FetchWithArgs: func(s state.State, _ *cobra.Command, args []string) (*hcloud.ZoneRRSet, *hcloud.Response, error) {
+	FetchWithArgs: func(s state.State, cmd *cobra.Command, args []string) (*hcloud.ZoneRRSet, *hcloud.Response, error) {
 		zoneIDOrName, rrsetName, rrsetType := args[0], args[1], args[2]
 
 		zoneIDOrName, err := util.ParseZoneIDOrName(zoneIDOrName)
@@ -32,7 +33,7 @@ var ChangeProtectionCmds = base.ChangeProtectionCmds[*hcloud.ZoneRRSet, hcloud.Z
 			return nil, nil, fmt.Errorf("failed to convert Zone name to ascii: %w", err)
 		}
 
-		zone, res, err := s.Client().Zone().Get(s, zoneIDOrName)
+		zone, res, err := s.Client().Zone().Get(cmd.Context(), zoneIDOrName)
 		if err != nil {
 			return nil, res, err
 		}
@@ -40,7 +41,7 @@ var ChangeProtectionCmds = base.ChangeProtectionCmds[*hcloud.ZoneRRSet, hcloud.Z
 			return nil, res, fmt.Errorf("Zone not found: %s", zoneIDOrName)
 		}
 
-		rrset, res, err := s.Client().Zone().GetRRSetByNameAndType(s, zone, rrsetName, hcloud.ZoneRRSetType(rrsetType))
+		rrset, res, err := s.Client().Zone().GetRRSetByNameAndType(cmd.Context(), zone, rrsetName, hcloud.ZoneRRSetType(rrsetType))
 		if err != nil {
 			return nil, res, err
 		}
@@ -51,8 +52,8 @@ var ChangeProtectionCmds = base.ChangeProtectionCmds[*hcloud.ZoneRRSet, hcloud.Z
 		return rrset, res, nil
 	},
 
-	ChangeProtectionFunction: func(s state.State, rrset *hcloud.ZoneRRSet, opts hcloud.ZoneRRSetChangeProtectionOpts) (*hcloud.Action, *hcloud.Response, error) {
-		return s.Client().Zone().ChangeRRSetProtection(s, rrset, opts)
+	ChangeProtectionFunction: func(ctx context.Context, s state.State, rrset *hcloud.ZoneRRSet, opts hcloud.ZoneRRSetChangeProtectionOpts) (*hcloud.Action, *hcloud.Response, error) {
+		return s.Client().Zone().ChangeRRSetProtection(ctx, rrset, opts)
 	},
 
 	IDOrName: func(rrset *hcloud.ZoneRRSet) string {

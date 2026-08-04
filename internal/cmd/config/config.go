@@ -21,10 +21,10 @@ var preferenceOptionsPlain string
 //go:embed helptext/preferences.md
 var preferenceOptionsMd string
 
-func NewCommand(s state.State) *cobra.Command {
+func NewCommand(s state.State, markdownTables bool) *cobra.Command {
 	var nonPreferenceOptions, preferenceOptions string
 
-	if s.Value(state.ContextKeyMarkdownTables{}) == true {
+	if markdownTables {
 		nonPreferenceOptions = nonPreferenceOptionsMd
 		preferenceOptions = preferenceOptionsMd
 	} else {

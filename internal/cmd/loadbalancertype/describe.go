@@ -1,6 +1,7 @@
 package loadbalancertype
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"strings"
@@ -18,21 +19,21 @@ import (
 var DescribeCmd = base.DescribeCmd[*hcloud.LoadBalancerType]{
 	ResourceNameSingular: "Load Balancer Type",
 	ShortDescription:     "Describe a Load Balancer Type",
-	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.LoadBalancerType().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.LoadBalancerType, any, error) {
-		lbt, _, err := s.Client().LoadBalancerType().Get(s, idOrName)
+	NameSuggestions:      func(c hcapi2.Client) hcapi2.CompletionFunc { return c.LoadBalancerType().Names },
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (*hcloud.LoadBalancerType, any, error) {
+		lbt, _, err := s.Client().LoadBalancerType().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return nil, nil, err
 		}
 		return lbt, hcloud.SchemaFromLoadBalancerType(lbt), nil
 	},
-	PrintText: func(s state.State, _ *cobra.Command, out io.Writer, loadBalancerType *hcloud.LoadBalancerType) error {
-		fmt.Fprint(out, DescribeLoadBalancerType(s, loadBalancerType, false))
+	PrintText: func(s state.State, cmd *cobra.Command, out io.Writer, loadBalancerType *hcloud.LoadBalancerType) error {
+		fmt.Fprint(out, DescribeLoadBalancerType(cmd.Context(), s, loadBalancerType, false))
 		return nil
 	},
 }
 
-func DescribeLoadBalancerType(s state.State, loadBalancerType *hcloud.LoadBalancerType, short bool) string {
+func DescribeLoadBalancerType(ctx context.Context, s state.State, loadBalancerType *hcloud.LoadBalancerType, short bool) string {
 	var sb strings.Builder
 
 	fmt.Fprintf(&sb, "ID:\t%d\n", loadBalancerType.ID)
@@ -52,7 +53,7 @@ func DescribeLoadBalancerType(s state.State, loadBalancerType *hcloud.LoadBalanc
 		return sb.String()
 	}
 
-	pricings, err := fullPricingInfo(s, loadBalancerType)
+	pricings, err := fullPricingInfo(ctx, s, loadBalancerType)
 	if err != nil {
 		fmt.Fprintf(&sb, "failed to get prices for Load Balancer Type: %v", err)
 	}
@@ -75,8 +76,8 @@ func DescribeLoadBalancerType(s state.State, loadBalancerType *hcloud.LoadBalanc
 	return sb.String()
 }
 
-func fullPricingInfo(s state.State, loadBalancerType *hcloud.LoadBalancerType) ([]hcloud.LoadBalancerTypeLocationPricing, error) {
-	pricing, _, err := s.Client().Pricing().Get(s)
+func fullPricingInfo(ctx context.Context, s state.State, loadBalancerType *hcloud.LoadBalancerType) ([]hcloud.LoadBalancerTypeLocationPricing, error) {
+	pricing, _, err := s.Client().Pricing().Get(ctx)
 	if err != nil {
 		return nil, err
 	}

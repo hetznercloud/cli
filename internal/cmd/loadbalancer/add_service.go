@@ -8,6 +8,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -23,7 +24,7 @@ var AddServiceCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 		cmd.Flags().String("protocol", "", "Protocol of the service (required)")
-		_ = cmd.MarkFlagRequired("protocol")
+		util.MarkFlagRequired(cmd, "protocol")
 
 		cmd.Flags().Int("listen-port", 0, "Listen port of the service")
 		cmd.Flags().Int("destination-port", 0, "Destination port of the service on the targets")
@@ -94,7 +95,7 @@ var AddServiceCmd = base.Cmd{
 		httpRedirect, _ := cmd.Flags().GetBool("http-redirect-http")
 		httpTimeoutIdle, _ := cmd.Flags().GetDuration("http-timeout-idle")
 
-		loadBalancer, _, err := s.Client().LoadBalancer().Get(s, idOrName)
+		loadBalancer, _, err := s.Client().LoadBalancer().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return err
 		}
@@ -130,7 +131,7 @@ var AddServiceCmd = base.Cmd{
 			}
 
 			for _, idOrName := range httpCertificates {
-				cert, _, err := s.Client().Certificate().Get(s, idOrName)
+				cert, _, err := s.Client().Certificate().Get(cmd.Context(), idOrName)
 				if err != nil {
 					return err
 				}
@@ -211,11 +212,11 @@ var AddServiceCmd = base.Cmd{
 			}
 		}
 
-		action, _, err := s.Client().LoadBalancer().AddService(s, loadBalancer, opts)
+		action, _, err := s.Client().LoadBalancer().AddService(cmd.Context(), loadBalancer, opts)
 		if err != nil {
 			return err
 		}
-		if err := s.WaitForActions(s, cmd, action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, action); err != nil {
 			return err
 		}
 		cmd.Printf("Service was added to Load Balancer %d\n", loadBalancer.ID)

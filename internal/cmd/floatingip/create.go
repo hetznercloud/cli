@@ -23,23 +23,23 @@ var CreateCmd = base.CreateCmd[*hcloud.FloatingIP]{
 			DisableFlagsInUseLine: true,
 		}
 		cmd.Flags().String("type", "", "Type (ipv4 or ipv6) (required)")
-		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("ipv4", "ipv6"))
-		_ = cmd.MarkFlagRequired("type")
+		cmpl.RegisterFlagCompletion(cmd, "type", cmpl.SuggestCandidates("ipv4", "ipv6"))
+		util.MarkFlagRequired(cmd, "type")
 
 		cmd.Flags().String("description", "", "Description")
 
 		cmd.Flags().String("name", "", "Name")
 
 		cmd.Flags().String("home-location", "", "Home Location")
-		_ = cmd.RegisterFlagCompletionFunc("home-location", cmpl.SuggestCandidatesF(client.Location().Names))
+		cmpl.RegisterFlagCompletion(cmd, "home-location", cmpl.SuggestCandidatesF(client.Location().Names))
 
 		cmd.Flags().String("server", "", "Server to assign Floating IP to")
-		_ = cmd.RegisterFlagCompletionFunc("server", cmpl.SuggestCandidatesF(client.Server().Names))
+		cmpl.RegisterFlagCompletion(cmd, "server", cmpl.SuggestCandidatesF(client.Server().Names))
 
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 
 		cmd.Flags().StringSlice("enable-protection", []string{}, "Enable protection (delete) (default: none)")
-		_ = cmd.RegisterFlagCompletionFunc("enable-protection", cmpl.SuggestCandidates("delete"))
+		cmpl.RegisterFlagCompletion(cmd, "enable-protection", cmpl.SuggestCandidates("delete"))
 
 		return cmd
 	},
@@ -78,7 +78,7 @@ var CreateCmd = base.CreateCmd[*hcloud.FloatingIP]{
 			createOpts.HomeLocation = &hcloud.Location{Name: homeLocation}
 		}
 		if serverNameOrID != "" {
-			server, _, err := s.Client().Server().Get(s, serverNameOrID)
+			server, _, err := s.Client().Server().Get(cmd.Context(), serverNameOrID)
 			if err != nil {
 				return nil, nil, err
 			}
@@ -88,13 +88,13 @@ var CreateCmd = base.CreateCmd[*hcloud.FloatingIP]{
 			createOpts.Server = server
 		}
 
-		result, _, err := s.Client().FloatingIP().Create(s, createOpts)
+		result, _, err := s.Client().FloatingIP().Create(cmd.Context(), createOpts)
 		if err != nil {
 			return nil, nil, err
 		}
 
 		if result.Action != nil {
-			if err := s.WaitForActions(s, cmd, result.Action); err != nil {
+			if err := s.WaitForActions(cmd.Context(), cmd, result.Action); err != nil {
 				return nil, nil, err
 			}
 		}
@@ -107,7 +107,7 @@ var CreateCmd = base.CreateCmd[*hcloud.FloatingIP]{
 			}
 		}
 
-		floatingIP, _, err := s.Client().FloatingIP().GetByID(s, result.FloatingIP.ID)
+		floatingIP, _, err := s.Client().FloatingIP().GetByID(cmd.Context(), result.FloatingIP.ID)
 		if err != nil {
 			return nil, nil, err
 		}
@@ -118,7 +118,8 @@ var CreateCmd = base.CreateCmd[*hcloud.FloatingIP]{
 		return floatingIP, util.Wrap("floating_ip", hcloud.SchemaFromFloatingIP(floatingIP)), nil
 	},
 
-	PrintResource: func(_ state.State, cmd *cobra.Command, floatingIP *hcloud.FloatingIP) {
-		cmd.Printf("IP%s: %s\n", floatingIP.Type[2:], floatingIP.IP)
+	PrintResource: func(_ state.State, cmd *cobra.Command, floatingIP *hcloud.FloatingIP) error {
+		_, err := fmt.Fprintf(cmd.OutOrStdout(), "IP%s: %s\n", floatingIP.Type[2:], floatingIP.IP)
+		return err
 	},
 }

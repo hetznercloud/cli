@@ -20,7 +20,7 @@ func TestDescribe(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	time.Local = time.UTC
+	testutil.SetTimezone(t, time.UTC)
 
 	cmd := placementgroup.DescribeCmd.CobraCommand(fx.State())
 	fx.ExpectEnsureToken()
@@ -38,11 +38,11 @@ func TestDescribe(t *testing.T) {
 		Get(gomock.Any(), placementGroup.Name).
 		Return(&placementGroup, nil, nil)
 	fx.Client.ServerClient.EXPECT().
-		ServerName(int64(4711)).
-		Return("server1")
+		ServerName(gomock.Any(), int64(4711)).
+		Return("server1", nil)
 	fx.Client.ServerClient.EXPECT().
-		ServerName(int64(4712)).
-		Return("server2")
+		ServerName(gomock.Any(), int64(4712)).
+		Return("server2", nil)
 
 	out, errOut, err := fx.Run(cmd, []string{placementGroup.Name})
 

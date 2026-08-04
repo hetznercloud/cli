@@ -18,9 +18,9 @@ import (
 var DescribeCmd = base.DescribeCmd[*hcloud.SSHKey]{
 	ResourceNameSingular: "SSH Key",
 	ShortDescription:     "Describe an SSH Key",
-	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.SSHKey().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.SSHKey, any, error) {
-		key, _, err := s.Client().SSHKey().Get(s, idOrName)
+	NameSuggestions:      func(c hcapi2.Client) hcapi2.CompletionFunc { return c.SSHKey().Names },
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (*hcloud.SSHKey, any, error) {
+		key, _, err := s.Client().SSHKey().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return nil, nil, err
 		}

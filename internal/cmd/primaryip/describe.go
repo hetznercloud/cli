@@ -18,9 +18,9 @@ import (
 var DescribeCmd = base.DescribeCmd[*hcloud.PrimaryIP]{
 	ResourceNameSingular: "Primary IP",
 	ShortDescription:     "Describe a Primary IP",
-	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.PrimaryIP().Names(false, false, nil) },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.PrimaryIP, any, error) {
-		ip, _, err := s.Client().PrimaryIP().Get(s, idOrName)
+	NameSuggestions:      func(c hcapi2.Client) hcapi2.CompletionFunc { return c.PrimaryIP().Names(false, false, nil) },
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (*hcloud.PrimaryIP, any, error) {
+		ip, _, err := s.Client().PrimaryIP().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return nil, nil, err
 		}

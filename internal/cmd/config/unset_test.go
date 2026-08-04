@@ -15,7 +15,7 @@ import (
 func TestUnset(t *testing.T) {
 	os.Clearenv()
 
-	_, deleteNestedOption := config.NewTestOption(
+	nestedOption, deleteNestedOption := config.NewTestOption(
 		"nested.option",
 		"nested option",
 		"foo",
@@ -24,7 +24,7 @@ func TestUnset(t *testing.T) {
 	)
 	defer deleteNestedOption()
 
-	_, deleteDeeplyNestedOption := config.NewTestOption(
+	deeplyNestedOption, deleteDeeplyNestedOption := config.NewTestOption(
 		"deeply.nested.option",
 		"deeply nested option",
 		"foo",
@@ -268,7 +268,7 @@ active_context = "test_context"
 				defer tt.postRun()
 			}
 
-			fx := testutil.NewFixtureWithConfigFile(t, []byte(tt.config))
+			fx := testutil.NewFixtureWithConfigFile(t, []byte(tt.config), nestedOption, deeplyNestedOption)
 			defer fx.Finish()
 
 			cmd := configCmd.NewUnsetCommand(fx.State())

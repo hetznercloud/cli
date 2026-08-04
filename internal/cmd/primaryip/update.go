@@ -13,9 +13,9 @@ import (
 var UpdateCmd = base.UpdateCmd[*hcloud.PrimaryIP]{
 	ResourceNameSingular: "Primary IP",
 	ShortDescription:     "Update a Primary IP",
-	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.PrimaryIP().Names(false, false, nil) },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.PrimaryIP, *hcloud.Response, error) {
-		return s.Client().PrimaryIP().Get(s, idOrName)
+	NameSuggestions:      func(c hcapi2.Client) hcapi2.CompletionFunc { return c.PrimaryIP().Names(false, false, nil) },
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (*hcloud.PrimaryIP, *hcloud.Response, error) {
+		return s.Client().PrimaryIP().Get(cmd.Context(), idOrName)
 	},
 	DefineFlags: func(cmd *cobra.Command) {
 		cmd.Flags().String("name", "", "Primary IP name")
@@ -31,7 +31,7 @@ var UpdateCmd = base.UpdateCmd[*hcloud.PrimaryIP]{
 			updOpts.AutoDelete = hcloud.Ptr(autoDelete)
 		}
 
-		_, _, err := s.Client().PrimaryIP().Update(s, primaryIP, updOpts)
+		_, _, err := s.Client().PrimaryIP().Update(cmd.Context(), primaryIP, updOpts)
 		if err != nil {
 			return err
 		}

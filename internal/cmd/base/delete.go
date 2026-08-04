@@ -3,13 +3,13 @@ package base
 import (
 	"errors"
 	"fmt"
-	"log"
 	"slices"
 	"strings"
 
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/registration"
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
@@ -21,7 +21,7 @@ type DeleteCmd[T any] struct {
 	ResourceNameSingular string // e.g. "Server"
 	ResourceNamePlural   string // e.g. "Servers"
 	ShortDescription     string
-	NameSuggestions      func(client hcapi2.Client) func() []string
+	NameSuggestions      func(client hcapi2.Client) hcapi2.CompletionFunc
 	AdditionalFlags      func(*cobra.Command)
 	Fetch                FetchFunc[T]
 	Delete               func(s state.State, cmd *cobra.Command, resource T) ([]*hcloud.Action, error)
@@ -53,6 +53,7 @@ type FetchFunc[T any] func(s state.State, cmd *cobra.Command, idOrName string) (
 // CobraCommand creates a command that can be registered with cobra.
 func (dc *DeleteCmd[T]) CobraCommand(s state.State) *cobra.Command {
 	var suggestArgs []cobra.CompletionFunc
+	var constructionErr error
 	switch {
 	case dc.NameSuggestions != nil:
 		suggestArgs = append(suggestArgs,
@@ -61,7 +62,7 @@ func (dc *DeleteCmd[T]) CobraCommand(s state.State) *cobra.Command {
 	case dc.ValidArgsFunction != nil:
 		suggestArgs = append(suggestArgs, dc.ValidArgsFunction(s.Client())...)
 	default:
-		log.Fatalf("delete command %s is missing ValidArgsFunction or NameSuggestions", dc.ResourceNameSingular)
+		constructionErr = fmt.Errorf("delete command %s is missing ValidArgsFunction or NameSuggestions", dc.ResourceNameSingular)
 	}
 
 	opts := ""
@@ -81,6 +82,7 @@ func (dc *DeleteCmd[T]) CobraCommand(s state.State) *cobra.Command {
 			return dc.Run(s, cmd, args)
 		},
 	}
+	registration.Record(cmd, constructionErr)
 	if dc.AdditionalFlags != nil {
 		dc.AdditionalFlags(cmd)
 	}
@@ -115,6 +117,8 @@ func (dc *DeleteCmd[T]) Run(s state.State, cmd *cobra.Command, args []string) er
 
 	for batch := range slices.Chunk(toDelete, deleteBatchSize) {
 		results := make([]util.ResourceState, len(batch))
+		actionsByResult := make([][]*hcloud.Action, len(batch))
+		actionFailureByResult := make([]bool, len(batch))
 		var actions []*hcloud.Action
 
 		for i, idOrName := range batch {
@@ -135,21 +139,53 @@ func (dc *DeleteCmd[T]) Run(s state.State, cmd *cobra.Command, args []string) er
 				results[i].Error = err
 				continue
 			}
+			actionsByResult[i] = deleteActions
 			actions = append(actions, deleteActions...)
 		}
 
-		for _, result := range results {
-			if result.Error != nil {
-				errs = append(errs, result.Error)
-			} else {
-				deleted = append(deleted, result.IDOrName)
+		waitIncomplete := false
+		if len(actions) > 0 {
+			waitErr := s.WaitForActions(cmd.Context(), cmd, actions...)
+			if waitErr != nil {
+				var actionWaitErr *state.ActionWaitError
+				if errors.As(waitErr, &actionWaitErr) {
+					failedActions := make(map[int64]error, len(actionWaitErr.Failures))
+					for _, failure := range actionWaitErr.Failures {
+						failedActions[failure.ActionID] = failure
+					}
+					for i, resultActions := range actionsByResult {
+						for _, action := range resultActions {
+							if failure, ok := failedActions[action.ID]; ok {
+								results[i].Error = errors.Join(results[i].Error, failure)
+								actionFailureByResult[i] = true
+								delete(failedActions, action.ID)
+							}
+						}
+					}
+					for _, failure := range failedActions {
+						errs = append(errs, failure)
+					}
+					if actionWaitErr.Cause != nil {
+						errs = append(errs, actionWaitErr.Cause)
+						waitIncomplete = true
+					}
+				} else {
+					errs = append(errs, waitErr)
+					waitIncomplete = true
+				}
 			}
 		}
 
-		if len(actions) > 0 {
-			// TODO: We do not check if an action fails for a specific resource
-			if err := s.WaitForActions(s, cmd, actions...); err != nil {
-				errs = append(errs, err)
+		for i, result := range results {
+			switch {
+			case result.Error != nil && actionFailureByResult[i]:
+				errs = append(errs, fmt.Errorf("%s %s: %w", dc.ResourceNameSingular, result.IDOrName, result.Error))
+			case result.Error != nil:
+				errs = append(errs, result.Error)
+			case waitIncomplete && len(actionsByResult[i]) > 0:
+				// The wait was interrupted before this resource reached a terminal state.
+			default:
+				deleted = append(deleted, result.IDOrName)
 			}
 		}
 	}

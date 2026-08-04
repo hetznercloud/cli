@@ -8,6 +8,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -24,12 +25,12 @@ var AddSubnetCmd = base.Cmd{
 		}
 
 		cmd.Flags().String("type", "", "Type of subnet (required)")
-		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("cloud", "server", "vswitch"))
-		_ = cmd.MarkFlagRequired("type")
+		cmpl.RegisterFlagCompletion(cmd, "type", cmpl.SuggestCandidates("cloud", "server", "vswitch"))
+		util.MarkFlagRequired(cmd, "type")
 
 		cmd.Flags().String("network-zone", "", "Name of Network zone (required)")
-		_ = cmd.RegisterFlagCompletionFunc("network-zone", cmpl.SuggestCandidatesF(client.Location().NetworkZones))
-		_ = cmd.MarkFlagRequired("network-zone")
+		cmpl.RegisterFlagCompletion(cmd, "network-zone", cmpl.SuggestCandidatesF(client.Location().NetworkZones))
+		util.MarkFlagRequired(cmd, "network-zone")
 
 		cmd.Flags().IPNet("ip-range", net.IPNet{}, "Range to allocate IPs from")
 
@@ -43,7 +44,7 @@ var AddSubnetCmd = base.Cmd{
 		vSwitchID, _ := cmd.Flags().GetInt64("vswitch-id")
 		idOrName := args[0]
 
-		network, _, err := s.Client().Network().Get(s, idOrName)
+		network, _, err := s.Client().Network().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return err
 		}
@@ -65,11 +66,11 @@ var AddSubnetCmd = base.Cmd{
 		opts := hcloud.NetworkAddSubnetOpts{
 			Subnet: subnet,
 		}
-		action, _, err := s.Client().Network().AddSubnet(s, network, opts)
+		action, _, err := s.Client().Network().AddSubnet(cmd.Context(), network, opts)
 		if err != nil {
 			return err
 		}
-		if err := s.WaitForActions(s, cmd, action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, action); err != nil {
 			return err
 		}
 		cmd.Printf("Subnet added to Network %d\n", network.ID)

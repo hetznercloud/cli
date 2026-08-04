@@ -1,6 +1,8 @@
 package location
 
 import (
+	"context"
+
 	"github.com/spf13/pflag"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
@@ -18,12 +20,12 @@ var ListCmd = base.ListCmd[*hcloud.Location, schema.Location]{
 	DefaultColumns:     []string{"id", "name", "description", "network_zone", "country", "city"},
 	SortOption:         config.OptionSortLocation,
 
-	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.Location, error) {
+	Fetch: func(ctx context.Context, s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.Location, error) {
 		opts := hcloud.LocationListOpts{ListOpts: listOpts}
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		return s.Client().Location().AllWithOpts(s, opts)
+		return s.Client().Location().AllWithOpts(ctx, opts)
 	},
 
 	OutputTable: func(t *output.Table[*hcloud.Location], _ hcapi2.Client) {

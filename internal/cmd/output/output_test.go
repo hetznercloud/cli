@@ -2,6 +2,8 @@ package output
 
 import (
 	"bytes"
+	"context"
+	"errors"
 	"io"
 	"testing"
 
@@ -67,7 +69,7 @@ func TestTableOutput(t *testing.T) {
 
 	t.Run("WriteHeader", func(t *testing.T) {
 		to.WriteHeader([]string{"leeroy_jenkins", "name"})
-		_ = to.Flush()
+		require.NoError(t, to.Flush())
 
 		assert.Equal(t, "LEEROY JENKINS   NAME\n", ws.String())
 
@@ -75,8 +77,8 @@ func TestTableOutput(t *testing.T) {
 	})
 
 	t.Run("WriteLine", func(t *testing.T) {
-		to.Write([]string{"leeroy_jenkins", "name", "number"}, &testFieldsStruct{"test123", 1000000000})
-		_ = to.Flush()
+		require.NoError(t, to.Write(t.Context(), []string{"leeroy_jenkins", "name", "number"}, &testFieldsStruct{"test123", 1000000000}))
+		require.NoError(t, to.Flush())
 
 		assert.Equal(t, "LEEROY JENKINS!!!   test123   1000000000\n", ws.String())
 
@@ -88,6 +90,24 @@ func TestTableOutput(t *testing.T) {
 			t.Errorf("unexpected number of columns: %v", to.Columns())
 		}
 	})
+}
+
+func TestAddAllowedFieldsRejectsNonStruct(t *testing.T) {
+	to := NewTable[any](io.Discard)
+	to.AddAllowedFields("not a struct")
+
+	_, err := to.ValidateColumns(nil)
+	require.ErrorContains(t, err, "got string")
+}
+
+func TestTableWritePropagatesFieldError(t *testing.T) {
+	to := NewTable[any](io.Discard).
+		AddFieldFnE("remote", func(context.Context, any) (string, error) {
+			return "", errors.New("lookup failed")
+		})
+
+	err := to.Write(t.Context(), []string{"remote"}, struct{}{})
+	require.ErrorContains(t, err, `render column "remote": lookup failed`)
 }
 
 func TestFieldName(t *testing.T) {

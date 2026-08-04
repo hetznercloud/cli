@@ -18,7 +18,7 @@ func TestList(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	time.Local = time.UTC
+	testutil.SetTimezone(t, time.UTC)
 
 	cmd := firewall.ListCmd.CobraCommand(fx.State())
 
@@ -57,7 +57,7 @@ func TestListJSON(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 
-	time.Local = time.UTC
+	testutil.SetTimezone(t, time.UTC)
 
 	cmd := firewall.ListCmd.CobraCommand(fx.State())
 

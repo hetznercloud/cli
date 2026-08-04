@@ -1,6 +1,7 @@
 package storagebox
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/spf13/cobra"
@@ -14,7 +15,7 @@ import (
 var ChangeProtectionCmds = base.ChangeProtectionCmds[*hcloud.StorageBox, hcloud.StorageBoxChangeProtectionOpts]{
 	ResourceNameSingular: "Storage Box",
 
-	NameSuggestions: func(client hcapi2.Client) func() []string {
+	NameSuggestions: func(client hcapi2.Client) hcapi2.CompletionFunc {
 		return client.StorageBox().Names
 	},
 
@@ -24,12 +25,12 @@ var ChangeProtectionCmds = base.ChangeProtectionCmds[*hcloud.StorageBox, hcloud.
 		},
 	},
 
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.StorageBox, *hcloud.Response, error) {
-		return s.Client().StorageBox().Get(s, idOrName)
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (*hcloud.StorageBox, *hcloud.Response, error) {
+		return s.Client().StorageBox().Get(cmd.Context(), idOrName)
 	},
 
-	ChangeProtectionFunction: func(s state.State, storageBox *hcloud.StorageBox, opts hcloud.StorageBoxChangeProtectionOpts) (*hcloud.Action, *hcloud.Response, error) {
-		return s.Client().StorageBox().ChangeProtection(s, storageBox, opts)
+	ChangeProtectionFunction: func(ctx context.Context, s state.State, storageBox *hcloud.StorageBox, opts hcloud.StorageBoxChangeProtectionOpts) (*hcloud.Action, *hcloud.Response, error) {
+		return s.Client().StorageBox().ChangeProtection(ctx, storageBox, opts)
 	},
 
 	IDOrName: func(storageBox *hcloud.StorageBox) string {

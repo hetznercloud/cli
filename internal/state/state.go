@@ -1,12 +1,12 @@
 package state
 
 import (
-	"context"
+	"errors"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/http"
 	"os"
-	"strings"
 	"time"
 
 	"github.com/hetznercloud/cli/internal/hcapi2"
@@ -16,40 +16,61 @@ import (
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
-type ContextKeyMarkdownTables struct{}
-
 type State interface {
-	context.Context
-
 	TokenEnsurer
 	ActionWaiter
+	io.Closer
 
 	Client() hcapi2.Client
 	Config() config.Config
 	Terminal() terminal.Terminal
+	Logger() *slog.Logger
 }
 
 type state struct {
-	context.Context
-
-	client hcapi2.Client
-	config config.Config
-	term   terminal.Terminal
+	client  hcapi2.Client
+	config  config.Config
+	term    terminal.Terminal
+	stderr  io.Writer
+	logger  *slog.Logger
+	closers []io.Closer
 }
 
-func New(ctx context.Context, cfg config.Config) (State, error) {
+type Options struct {
+	Stderr   io.Writer
+	Terminal terminal.Terminal
+}
+
+func New(cfg config.Config, opts Options) (State, error) {
+	if opts.Stderr == nil {
+		opts.Stderr = io.Discard
+	}
+	if opts.Terminal == nil {
+		opts.Terminal = terminal.DefaultTerminal{}
+	}
+
 	s := &state{
-		Context: ctx,
-		config:  cfg,
-		term:    terminal.DefaultTerminal{},
+		config: cfg,
+		term:   opts.Terminal,
+		stderr: opts.Stderr,
+		logger: slog.New(slog.NewTextHandler(io.Discard, nil)),
 	}
 
 	var err error
 	s.client, err = s.newClient()
 	if err != nil {
-		return nil, err
+		return nil, errors.Join(err, s.Close())
 	}
 	return s, nil
+}
+
+func (c *state) Close() error {
+	errs := make([]error, 0, len(c.closers))
+	for _, closer := range c.closers {
+		errs = append(errs, closer.Close())
+	}
+	c.closers = nil
+	return errors.Join(errs...)
 }
 
 func (c *state) Client() hcapi2.Client {
@@ -62,6 +83,10 @@ func (c *state) Config() config.Config {
 
 func (c *state) Terminal() terminal.Terminal {
 	return c.term
+}
+
+func (c *state) Logger() *slog.Logger {
+	return c.logger
 }
 
 func (c *state) newClient() (hcapi2.Client, error) {
@@ -100,23 +125,21 @@ func (c *state) newClient() (hcapi2.Client, error) {
 
 		var debugWriter io.Writer
 		if filePath == "" {
-			debugWriter = os.Stderr
+			debugWriter = c.stderr
 		} else {
-			f, err := os.OpenFile(filePath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644) //nolint:gosec
+			f, err := os.OpenFile(filePath, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0600)
 			if err != nil {
 				return nil, err
 			}
 			debugWriter = f
+			c.closers = append(c.closers, f)
 		}
 
-		quotedArgs := make([]string, 0, len(os.Args))
-		for _, arg := range os.Args {
-			quotedArgs = append(quotedArgs, fmt.Sprintf("%q", arg))
-		}
-		_, err = debugWriter.Write([]byte("--- Command:\n" + strings.Join(quotedArgs, " ") + "\n\n\n\n"))
+		_, err = fmt.Fprintf(debugWriter, "--- hcloud debug session (%s) ---\n\n", time.Now().UTC().Format(time.RFC3339))
 		if err != nil {
 			return nil, err
 		}
+		c.logger = slog.New(slog.NewJSONHandler(debugWriter, &slog.HandlerOptions{Level: slog.LevelDebug}))
 
 		opts = append(opts, hcloud.WithDebugWriter(debugWriter))
 	}
@@ -149,19 +172,26 @@ func (c *state) newClient() (hcapi2.Client, error) {
 }
 
 func customPollBackoffFunc() hcloud.BackoffFunc {
-	constantFunc := hcloud.ConstantBackoff(500 * time.Millisecond)
+	const (
+		initialPollInterval = 500 * time.Millisecond
+		backoffMultiplier   = 1.5
+		maximumPollInterval = 2500 * time.Millisecond
+		constantPollRetries = 10
+	)
+
+	constantFunc := hcloud.ConstantBackoff(initialPollInterval)
 
 	exponentialFunc := hcloud.ExponentialBackoffWithOpts(hcloud.ExponentialBackoffOpts{
-		Base:       500 * time.Millisecond,
-		Multiplier: 1.5,
-		Cap:        2500 * time.Millisecond,
+		Base:       initialPollInterval,
+		Multiplier: backoffMultiplier,
+		Cap:        maximumPollInterval,
 	})
 
 	// Poll every 500ms for the first 5s, then use an exponential backoff capped to 2500ms
 	return func(retries int) time.Duration {
-		if retries < 10 {
+		if retries < constantPollRetries {
 			return constantFunc(retries)
 		}
-		return exponentialFunc(retries - 10)
+		return exponentialFunc(retries - constantPollRetries)
 	}
 }

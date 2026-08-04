@@ -22,14 +22,14 @@ var CreateCmd = base.CreateCmd[*hcloud.Certificate]{
 		}
 
 		cmd.Flags().String("name", "", "Certificate name (required)")
-		_ = cmd.MarkFlagRequired("name")
+		util.MarkFlagRequired(cmd, "name")
 
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 
 		cmd.Flags().StringP("type", "t", string(hcloud.CertificateTypeUploaded),
 			fmt.Sprintf("Type of Certificate to create. Valid choices: %v, %v",
 				hcloud.CertificateTypeUploaded, hcloud.CertificateTypeManaged))
-		_ = cmd.RegisterFlagCompletionFunc(
+		cmpl.RegisterFlagCompletion(cmd,
 			"type",
 			cmpl.SuggestCandidates(string(hcloud.CertificateTypeUploaded), string(hcloud.CertificateTypeManaged)),
 		)
@@ -101,7 +101,7 @@ func createUploaded(s state.State, cmd *cobra.Command) (*hcloud.Certificate, err
 		Certificate: string(certPEM),
 		PrivateKey:  string(keyPEM),
 	}
-	cert, _, err = s.Client().Certificate().Create(s, createOpts)
+	cert, _, err = s.Client().Certificate().Create(cmd.Context(), createOpts)
 	if err != nil {
 		return nil, err
 	}
@@ -137,15 +137,15 @@ func createManaged(s state.State, cmd *cobra.Command) (*hcloud.Certificate, erro
 		Type:        hcloud.CertificateTypeManaged,
 		DomainNames: domains,
 	}
-	res, _, err = s.Client().Certificate().CreateCertificate(s, createOpts)
+	res, _, err = s.Client().Certificate().CreateCertificate(cmd.Context(), createOpts)
 	if err != nil {
 		return nil, err
 	}
-	if err := s.WaitForActions(s, cmd, res.Action); err != nil {
+	if err := s.WaitForActions(cmd.Context(), cmd, res.Action); err != nil {
 		return nil, err
 	}
 	defer cmd.Printf("Certificate %d created\n", res.Certificate.ID)
-	cert, _, err := s.Client().Certificate().GetByID(s, res.Certificate.ID)
+	cert, _, err := s.Client().Certificate().GetByID(cmd.Context(), res.Certificate.ID)
 	if err != nil {
 		return nil, err
 	}

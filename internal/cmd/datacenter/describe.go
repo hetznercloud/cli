@@ -1,6 +1,7 @@
 package datacenter
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"slices"
@@ -20,17 +21,21 @@ import (
 var DescribeCmd = base.DescribeCmd[*hcloud.Datacenter]{
 	ResourceNameSingular: "Datacenter",
 	ShortDescription:     "Describe a Datacenter",
-	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.Datacenter().Names },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.Datacenter, any, error) {
-		dc, _, err := s.Client().Datacenter().Get(s, idOrName)
+	NameSuggestions:      func(c hcapi2.Client) hcapi2.CompletionFunc { return c.Datacenter().Names },
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (*hcloud.Datacenter, any, error) {
+		dc, _, err := s.Client().Datacenter().Get(cmd.Context(), idOrName)
 		if err != nil {
 			return nil, nil, err
 		}
 		return dc, hcloud.SchemaFromDatacenter(dc), nil
 	},
-	PrintText: func(s state.State, _ *cobra.Command, out io.Writer, datacenter *hcloud.Datacenter) error {
-		fmt.Fprint(out, DescribeDatacenter(s.Client(), datacenter, false))
-		return nil
+	PrintText: func(s state.State, cmd *cobra.Command, out io.Writer, datacenter *hcloud.Datacenter) error {
+		description, err := DescribeDatacenter(cmd.Context(), s.Client(), datacenter, false)
+		if err != nil {
+			return err
+		}
+		_, err = fmt.Fprint(out, description)
+		return err
 	},
 	Configure: func(_ state.State, c *cobra.Command) *cobra.Command {
 		c.Short += " (deprecated)"
@@ -39,7 +44,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Datacenter]{
 	},
 }
 
-func DescribeDatacenter(client hcapi2.Client, datacenter *hcloud.Datacenter, short bool) string {
+func DescribeDatacenter(ctx context.Context, client hcapi2.Client, datacenter *hcloud.Datacenter, short bool) (string, error) {
 	var sb strings.Builder
 
 	fmt.Fprintf(&sb, "ID:\t%d\n", datacenter.ID)
@@ -47,7 +52,7 @@ func DescribeDatacenter(client hcapi2.Client, datacenter *hcloud.Datacenter, sho
 	fmt.Fprintf(&sb, "Description:\t%s\n", datacenter.Description)
 
 	if short {
-		return sb.String()
+		return sb.String(), nil
 	}
 
 	fmt.Fprintln(&sb)
@@ -56,7 +61,7 @@ func DescribeDatacenter(client hcapi2.Client, datacenter *hcloud.Datacenter, sho
 
 	// datacenter.ServerTypes will not be populated anymore after 2026-10-01.
 	if dst := datacenter.ServerTypes; dst.Available == nil && dst.Supported == nil && dst.AvailableForMigration == nil {
-		return sb.String()
+		return sb.String(), nil
 	}
 
 	type ServerTypeStatus struct {
@@ -85,9 +90,13 @@ func DescribeDatacenter(client hcapi2.Client, datacenter *hcloud.Datacenter, sho
 	fmt.Fprintf(&sb, "Server Types:\n")
 	if len(allServerTypeStatus) > 0 {
 		for _, t := range allServerTypeStatus {
+			name, err := client.ServerType().ServerTypeName(ctx, t.ID)
+			if err != nil {
+				return "", err
+			}
 			fmt.Fprintf(&sb, "  - ID: %d\tName: %s\tSupported: %s\tAvailable: %s\n",
 				t.ID,
-				client.ServerType().ServerTypeName(t.ID),
+				name,
 				strconv.FormatBool(t.Supported),
 				strconv.FormatBool(t.Available),
 			)
@@ -96,5 +105,5 @@ func DescribeDatacenter(client hcapi2.Client, datacenter *hcloud.Datacenter, sho
 		fmt.Fprintf(&sb, "  No Server Types\n")
 	}
 
-	return sb.String()
+	return sb.String(), nil
 }

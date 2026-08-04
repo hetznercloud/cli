@@ -2,6 +2,8 @@ package state
 
 import (
 	"errors"
+	"log/slog"
+	"time"
 
 	"github.com/spf13/cobra"
 
@@ -10,7 +12,17 @@ import (
 
 func Wrap(s State, f func(State, *cobra.Command, []string) error) func(*cobra.Command, []string) error {
 	return func(cmd *cobra.Command, args []string) error {
-		return f(s, cmd, args)
+		started := time.Now()
+		err := f(s, cmd, args)
+		attrs := []slog.Attr{
+			slog.String("command", cmd.CommandPath()),
+			slog.Duration("duration", time.Since(started)),
+		}
+		if err != nil {
+			attrs = append(attrs, slog.String("error", err.Error()))
+		}
+		s.Logger().LogAttrs(cmd.Context(), slog.LevelDebug, "command completed", attrs...)
+		return err
 	}
 }
 

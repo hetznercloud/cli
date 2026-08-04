@@ -7,6 +7,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
@@ -27,7 +28,7 @@ var ChangeHomeDirectoryCmd = base.Cmd{
 		}
 
 		cmd.Flags().String("home-directory", "", "Home directory of the Subaccount. Will be created if it doesn't exist yet")
-		_ = cmd.MarkFlagRequired("home-directory")
+		util.MarkFlagRequired(cmd, "home-directory")
 
 		return cmd
 	},
@@ -35,7 +36,7 @@ var ChangeHomeDirectoryCmd = base.Cmd{
 		storageBoxIDOrName, subaccountIDOrName := args[0], args[1]
 		homeDirectory, _ := cmd.Flags().GetString("home-directory")
 
-		storageBox, _, err := s.Client().StorageBox().Get(s, storageBoxIDOrName)
+		storageBox, _, err := s.Client().StorageBox().Get(cmd.Context(), storageBoxIDOrName)
 		if err != nil {
 			return err
 		}
@@ -43,7 +44,7 @@ var ChangeHomeDirectoryCmd = base.Cmd{
 			return fmt.Errorf("Storage Box not found: %s", storageBoxIDOrName)
 		}
 
-		subaccount, _, err := s.Client().StorageBox().GetSubaccount(s, storageBox, subaccountIDOrName)
+		subaccount, _, err := s.Client().StorageBox().GetSubaccount(cmd.Context(), storageBox, subaccountIDOrName)
 		if err != nil {
 			return err
 		}
@@ -51,14 +52,14 @@ var ChangeHomeDirectoryCmd = base.Cmd{
 			return fmt.Errorf("Storage Box Subaccount not found: %s", subaccountIDOrName)
 		}
 
-		action, _, err := s.Client().StorageBox().ChangeSubaccountHomeDirectory(s, subaccount, hcloud.StorageBoxSubaccountChangeHomeDirectoryOpts{
+		action, _, err := s.Client().StorageBox().ChangeSubaccountHomeDirectory(cmd.Context(), subaccount, hcloud.StorageBoxSubaccountChangeHomeDirectoryOpts{
 			HomeDirectory: homeDirectory,
 		})
 		if err != nil {
 			return err
 		}
 
-		if err := s.WaitForActions(s, cmd, action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, action); err != nil {
 			return err
 		}
 

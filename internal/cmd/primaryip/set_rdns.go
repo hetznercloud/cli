@@ -14,9 +14,9 @@ import (
 var SetRDNSCmd = base.SetRdnsCmd[*hcloud.PrimaryIP]{
 	ResourceNameSingular: "Primary IP",
 	ShortDescription:     "Change reverse DNS of a Primary IP",
-	NameSuggestions:      func(c hcapi2.Client) func() []string { return c.PrimaryIP().Names(false, false, nil) },
-	Fetch: func(s state.State, _ *cobra.Command, idOrName string) (*hcloud.PrimaryIP, *hcloud.Response, error) {
-		return s.Client().PrimaryIP().Get(s, idOrName)
+	NameSuggestions:      func(c hcapi2.Client) hcapi2.CompletionFunc { return c.PrimaryIP().Names(false, false, nil) },
+	Fetch: func(s state.State, cmd *cobra.Command, idOrName string) (*hcloud.PrimaryIP, *hcloud.Response, error) {
+		return s.Client().PrimaryIP().Get(cmd.Context(), idOrName)
 	},
 	GetDefaultIP: func(primaryIP *hcloud.PrimaryIP) net.IP {
 		return primaryIP.IP

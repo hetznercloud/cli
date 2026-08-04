@@ -1,10 +1,12 @@
 package servertype
 
 import (
+	"context"
 	"fmt"
 	"strings"
 	"time"
 
+	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
@@ -21,12 +23,12 @@ var ListCmd = &base.ListCmd[*hcloud.ServerType, schema.ServerType]{
 	DefaultColumns:     []string{"id", "name", "cores", "cpu_type", "architecture", "memory", "disk", "location"},
 	SortOption:         nil, // Server Types do not support sorting
 
-	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.ServerType, error) {
+	Fetch: func(ctx context.Context, s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.ServerType, error) {
 		opts := hcloud.ServerTypeListOpts{ListOpts: listOpts}
 		if len(sorts) > 0 {
 			opts.Sort = sorts
 		}
-		return s.Client().ServerType().AllWithOpts(s, opts)
+		return s.Client().ServerType().AllWithOpts(ctx, opts)
 	},
 
 	OutputTable: func(t *output.Table[*hcloud.ServerType], _ hcapi2.Client) {
@@ -38,7 +40,7 @@ var ListCmd = &base.ListCmd[*hcloud.ServerType, schema.ServerType]{
 					return l.IsDeprecated() && l.UnavailableAfter().Before(now)
 				})
 			}).
-			AddFieldFn("location_available", func(serverType *hcloud.ServerType) string {
+			AddFieldFn("location_availability_signal", func(serverType *hcloud.ServerType) string {
 				now := time.Now()
 				return listLocationNames(serverType, func(l hcloud.ServerTypeLocation) bool {
 					return (l.IsDeprecated() && l.UnavailableAfter().Before(now)) || !l.Available
@@ -80,6 +82,14 @@ var ListCmd = &base.ListCmd[*hcloud.ServerType, schema.ServerType]{
 	},
 
 	Schema: hcloud.SchemaFromServerType,
+	Configure: func(_ state.State, cmd *cobra.Command) *cobra.Command {
+		cmd.Long += `
+
+The location column lists supported locations. location_availability_signal is an advisory snapshot of current
+capacity only; it can change at any time and does not guarantee that a create request will succeed. The create
+response is authoritative for the complete requested configuration.`
+		return cmd
+	},
 }
 
 func listLocationNames(serverType *hcloud.ServerType, del func(hcloud.ServerTypeLocation) bool) string {

@@ -76,11 +76,20 @@ func (p Preferences) Unset(key string) bool {
 }
 
 func (p Preferences) Validate() error {
-	return validate(p, "")
+	return p.ValidateWithOptions()
 }
 
-func (p Preferences) merge(v *viper.Viper) error {
-	if err := p.Validate(); err != nil {
+func (p Preferences) ValidateWithOptions(options ...IOption) error {
+	allOptions := append(DefaultOptions(), options...)
+	optionByName := make(map[string]IOption, len(allOptions))
+	for _, option := range allOptions {
+		optionByName[option.GetName()] = option
+	}
+	return validate(p, "", optionByName)
+}
+
+func (p Preferences) merge(v *viper.Viper, optionByName map[string]IOption) error {
+	if err := validate(p, "", optionByName); err != nil {
 		return err
 	}
 	m := make(map[string]any)
@@ -95,16 +104,16 @@ func (p Preferences) merge(v *viper.Viper) error {
 	return v.MergeConfig(&buf)
 }
 
-func validate(m map[string]any, prefix string) error {
+func validate(m map[string]any, prefix string, optionByName map[string]IOption) error {
 	for configKey, val := range m {
 		key := prefix + strings.ReplaceAll(configKey, "_", "-")
 		if val, ok := val.(map[string]any); ok {
-			if err := validate(val, key+"."); err != nil {
+			if err := validate(val, key+".", optionByName); err != nil {
 				return err
 			}
 			continue
 		}
-		opt, ok := Options[key]
+		opt, ok := optionByName[key]
 		if !ok || !opt.HasFlags(OptionFlagPreference) {
 			return fmt.Errorf("unknown preference: %s", key)
 		}

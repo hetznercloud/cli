@@ -2,15 +2,14 @@ package hcapi2
 
 import (
 	"context"
-	"strconv"
 
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
 type PlacementGroupClient interface {
 	hcloud.IPlacementGroupClient
-	Names() []string
-	LabelKeys(string) []string
+	Names(context.Context) ([]string, error)
+	LabelKeys(context.Context, string) ([]string, error)
 }
 
 func NewPlacementGroupClient(client hcloud.IPlacementGroupClient) PlacementGroupClient {
@@ -23,26 +22,21 @@ type placementGroupClient struct {
 	hcloud.IPlacementGroupClient
 }
 
-func (c *placementGroupClient) Names() []string {
-	placementGroups, err := c.All(context.Background())
-	if err != nil || len(placementGroups) == 0 {
-		return nil
+func (c *placementGroupClient) Names(ctx context.Context) ([]string, error) {
+	placementGroups, err := c.All(ctx)
+	if err != nil {
+		return nil, err
 	}
-	names := make([]string, len(placementGroups))
-	for i, firewall := range placementGroups {
-		name := firewall.Name
-		if name == "" {
-			name = strconv.FormatInt(firewall.ID, 10)
-		}
-		names[i] = name
-	}
-	return names
+	return resourceNames(placementGroups, func(group *hcloud.PlacementGroup) int64 { return group.ID }, func(group *hcloud.PlacementGroup) string { return group.Name }), nil
 }
 
-func (c *placementGroupClient) LabelKeys(idOrName string) []string {
-	placementGroups, _, err := c.Get(context.Background(), idOrName)
-	if err != nil || placementGroups == nil || len(placementGroups.Labels) == 0 {
-		return nil
+func (c *placementGroupClient) LabelKeys(ctx context.Context, idOrName string) ([]string, error) {
+	placementGroup, _, err := c.Get(ctx, idOrName)
+	if err != nil {
+		return nil, err
 	}
-	return labelKeys(placementGroups.Labels)
+	if placementGroup == nil {
+		return nil, nil
+	}
+	return labelKeys(placementGroup.Labels), nil
 }

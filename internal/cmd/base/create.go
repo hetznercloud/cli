@@ -1,8 +1,6 @@
 package base
 
 import (
-	"os"
-
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/output"
@@ -18,7 +16,7 @@ type CreateCmd[T any] struct {
 	// Run is the function that will be called when the command is executed.
 	// It should return the created resource, the schema of the resource and an error.
 	Run           func(state.State, *cobra.Command, []string) (T, any, error)
-	PrintResource func(state.State, *cobra.Command, T)
+	PrintResource func(state.State, *cobra.Command, T) error
 	// Configure is a function that can be used to configure the command directly.
 	Configure func(state.State, *cobra.Command) *cobra.Command
 }
@@ -43,7 +41,10 @@ func (cc *CreateCmd[T]) CobraCommand(s state.State) *cobra.Command {
 	}
 
 	cmd.RunE = func(cmd *cobra.Command, args []string) error {
-		outputFlags := output.FlagsForCommand(cmd)
+		outputFlags, err := output.FlagsForCommand(cmd)
+		if err != nil {
+			return err
+		}
 
 		quiet, err := config.OptionQuiet.Get(s.Config())
 		if err != nil {
@@ -58,7 +59,7 @@ func (cc *CreateCmd[T]) CobraCommand(s state.State) *cobra.Command {
 				schemaOut = cmd.ErrOrStderr()
 			} else {
 				// We don't want anything other than the schema in stdout, so we set the default to stderr
-				cmd.SetOut(os.Stderr)
+				cmd.SetOut(cmd.ErrOrStderr())
 			}
 		}
 
@@ -73,7 +74,7 @@ func (cc *CreateCmd[T]) CobraCommand(s state.State) *cobra.Command {
 			}
 			return util.DescribeYAML(schemaOut, schema)
 		} else if cc.PrintResource != nil && !util.IsNil(resource) {
-			cc.PrintResource(s, cmd, resource)
+			return cc.PrintResource(s, cmd, resource)
 		}
 		return nil
 	}

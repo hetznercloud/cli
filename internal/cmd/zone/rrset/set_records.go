@@ -71,7 +71,7 @@ var SetRecordsCmd = base.Cmd{
 			return fmt.Errorf("failed to convert Zone name to ascii: %w", err)
 		}
 
-		zone, _, err := s.Client().Zone().Get(s, zoneIDOrName)
+		zone, _, err := s.Client().Zone().Get(cmd.Context(), zoneIDOrName)
 		if err != nil {
 			return err
 		}
@@ -79,7 +79,7 @@ var SetRecordsCmd = base.Cmd{
 			return fmt.Errorf("Zone not found: %s", zoneIDOrName)
 		}
 
-		rrset, _, err := s.Client().Zone().GetRRSetByNameAndType(s, zone, rrsetName, hcloud.ZoneRRSetType(rrsetType))
+		rrset, _, err := s.Client().Zone().GetRRSetByNameAndType(cmd.Context(), zone, rrsetName, hcloud.ZoneRRSetType(rrsetType))
 		if err != nil {
 			return err
 		}
@@ -88,11 +88,11 @@ var SetRecordsCmd = base.Cmd{
 			if rrset == nil {
 				cmd.Printf("Zone RRSet %s %s doesn't exist. No action necessary.\n", rrsetName, rrsetType)
 			} else {
-				result, _, err := s.Client().Zone().DeleteRRSet(s, rrset)
+				result, _, err := s.Client().Zone().DeleteRRSet(cmd.Context(), rrset)
 				if err != nil {
 					return err
 				}
-				if err := s.WaitForActions(s, cmd, result.Action); err != nil {
+				if err := s.WaitForActions(cmd.Context(), cmd, result.Action); err != nil {
 					return err
 				}
 				cmd.Printf("Zone RRSet %s %s deleted\n", rrset.Name, rrset.Type)
@@ -101,7 +101,7 @@ var SetRecordsCmd = base.Cmd{
 		}
 
 		if rrset == nil {
-			result, _, err := s.Client().Zone().CreateRRSet(s, zone, hcloud.ZoneRRSetCreateOpts{
+			result, _, err := s.Client().Zone().CreateRRSet(cmd.Context(), zone, hcloud.ZoneRRSetCreateOpts{
 				Name:    rrsetName,
 				Type:    hcloud.ZoneRRSetType(rrsetType),
 				Records: records,
@@ -109,7 +109,7 @@ var SetRecordsCmd = base.Cmd{
 			if err != nil {
 				return err
 			}
-			if err := s.WaitForActions(s, cmd, result.Action); err != nil {
+			if err := s.WaitForActions(cmd.Context(), cmd, result.Action); err != nil {
 				return err
 			}
 			rrset := result.RRSet
@@ -119,12 +119,12 @@ var SetRecordsCmd = base.Cmd{
 
 		opts := hcloud.ZoneRRSetSetRecordsOpts{Records: records}
 
-		action, _, err := s.Client().Zone().SetRRSetRecords(s, rrset, opts)
+		action, _, err := s.Client().Zone().SetRRSetRecords(cmd.Context(), rrset, opts)
 		if err != nil {
 			return err
 		}
 
-		if err := s.WaitForActions(s, cmd, action); err != nil {
+		if err := s.WaitForActions(cmd.Context(), cmd, action); err != nil {
 			return err
 		}
 
@@ -133,13 +133,13 @@ var SetRecordsCmd = base.Cmd{
 	},
 }
 
-func parseRecords(path string) ([]hcloud.ZoneRRSetRecord, error) {
+func parseRecords(stdin io.Reader, path string) ([]hcloud.ZoneRRSetRecord, error) {
 	var (
 		data []byte
 		err  error
 	)
 	if path == "-" {
-		data, err = io.ReadAll(os.Stdin)
+		data, err = io.ReadAll(stdin)
 	} else {
 		data, err = os.ReadFile(path)
 	}
