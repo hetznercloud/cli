@@ -96,6 +96,7 @@ jobs:
         run: govulncheck ./...
 
   test-e2e:
+    if: github.repository == 'hetznercloud/cli'
     runs-on: ubuntu-latest
     timeout-minutes: 40
     permissions:

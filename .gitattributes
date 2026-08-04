@@ -1,1 +1,3 @@
+* text=auto eol=lf
+
 docs/reference/manual/*.md linguist-generated=true
