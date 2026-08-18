@@ -2,7 +2,7 @@ module github.com/hetznercloud/cli
 
 go 1.25.0
 
-toolchain go1.26.5
+toolchain go1.26.6
 
 require (
 	github.com/BurntSushi/toml v1.6.0
