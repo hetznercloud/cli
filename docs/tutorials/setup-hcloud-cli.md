@@ -213,19 +213,19 @@ When prompted, enter the API token you created earlier. Your context should now 
 To verify that the hcloud CLI is working correctly, you can run the following command:
 
 ```bash
-hcloud datacenter list
+hcloud location list
 ```
 
 You should see something like this:
 
 ```plaintext
-ID   NAME        DESCRIPTION                   LOCATION
-2    nbg1-dc3    Nuremberg 1 virtual DC 3      nbg1    
-3    hel1-dc2    Helsinki 1 virtual DC 2       hel1    
-4    fsn1-dc14   Falkenstein 1 virtual DC 14   fsn1    
-5    ash-dc1     Ashburn virtual DC 1          ash     
-6    hil-dc1     Hillsboro virtual DC 1        hil     
-7    sin-dc1     Singapore virtual DC 1        sin     
+ID   NAME   DESCRIPTION             NETWORK ZONE   COUNTRY   CITY
+1    fsn1   Falkenstein DC Park 1   eu-central     DE        Falkenstein
+2    nbg1   Nuremberg DC Park 1     eu-central     DE        Nuremberg
+3    hel1   Helsinki DC Park 1      eu-central     FI        Helsinki
+4    ash    Ashburn, VA             us-east        US        Ashburn, VA
+5    hil    Hillsboro, OR           us-west        US        Hillsboro, OR
+6    sin    Singapore               ap-southeast   SG        Singapore
 ```
 
 If you see this output, congratulations! You have successfully set up the hcloud CLI on your local machine.
