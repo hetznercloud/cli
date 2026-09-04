@@ -1,3 +1,19 @@
+<!--
+---
+date: "2026-09-07"
+date_changed: "2026-09-07"
+title: "Creating a server"
+tags: []
+language: "en"
+description: ""
+docs_type: ["getting_started"]
+product_category: ["Integrations"]
+translation: ["Integrations", "CLI", "Getting Started", "Creating a server"]
+scrape_type: "whole"
+priority: 80
+---
+-->
+
 # Creating a server
 
 This tutorial covers the process of creating a server using the Hetzner Cloud CLI. It includes creating an SSH Key, 
@@ -22,7 +38,7 @@ Your private key will now be located at `~/.ssh/hcloud`. **Do not share your pri
 
 ### 1.2 Upload the SSH Key
 
-You can upload your SSH key to Hetzner Cloud using the following command:
+You can upload your SSH key to Hetzner Console using the following command:
 
 ```bash
 hcloud ssh-key create --name my-ssh-key --public-key-from-file ~/.ssh/hcloud.pub
@@ -60,7 +76,7 @@ hcloud image list
 ```
 
 There are many images available, including various Linux distributions and pre-configured app images.
-For this example we will use the `ubuntu-24.04` image.
+For this example we will use the `ubuntu-26.04` image.
 
 ### 2.3 Pick a Location (Optional)
 
@@ -77,7 +93,7 @@ If you don't specify a location, one will be chosen for you. This is what we wil
 Now you can create the server using the following command:
 
 ```bash
-hcloud server create --name my-server --type cpx22 --image ubuntu-24.04 --ssh-key my-ssh-key
+hcloud server create --name my-server --type cpx22 --image ubuntu-26.04 --ssh-key my-ssh-key
 ```
 
 If you set the SSH key as the default SSH key for your context, you can omit the `--ssh-key` flag.
