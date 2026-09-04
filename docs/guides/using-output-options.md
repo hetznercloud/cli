@@ -1,3 +1,19 @@
+<!--
+---
+date: "2026-09-07"
+date_changed: "2026-09-07"
+title: "Output options"
+tags: []
+language: "en"
+description: ""
+docs_type: ["how_to"]
+product_category: ["Integrations"]
+translation: ["Integrations", "CLI", "How-To: Usage", "Output options"]
+scrape_type: "whole"
+priority: 100
+---
+-->
+
 # Using output options
 
 The CLI allows you to customize the output format of some commands using the `--output` flag. 
@@ -132,7 +148,7 @@ $ hcloud server describe my-server --output format='{{.ServerType.Cores}}'
 if not using JSON or YAML.
 
 > [!NOTE]
-> You can also combine both of the below options to use them at once: ``--output noheader --output columns=id,name,network_zone``
+> You can also combine both of the below options to use them at once: `--output noheader --output columns=id,name,network_zone`
 
 ### noheader
 
@@ -163,5 +179,5 @@ ID   NAME   NETWORK ZONE
 6    sin    ap-southeast
 ```
 
-Using the ``--help`` flag will show you a list of all available columns for this command. Note that these might include
+Using the `--help` flag will show you a list of all available columns for this command. Note that these might include
 more than the default columns.
