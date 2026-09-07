@@ -1,3 +1,19 @@
+<!--
+---
+date: "2026-09-07"
+date_changed: "2026-09-07"
+title: "Configuring hcloud"
+tags: []
+language: "en"
+description: ""
+docs_type: ["getting_started"]
+product_category: ["Integrations"]
+translation: ["Integrations", "CLI", "Getting Started", "Configuring hcloud"]
+scrape_type: "whole"
+priority: 90
+---
+-->
+
 # Configuring hcloud
 
 The hcloud CLI tool can be configured using following methods:
