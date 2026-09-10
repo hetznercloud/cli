@@ -118,6 +118,9 @@ Public Net:
   Floating IPs:
     No Floating IPs
 
+  Firewalls:
+    No Firewalls
+
 Private Net:
   No Private Networks
 

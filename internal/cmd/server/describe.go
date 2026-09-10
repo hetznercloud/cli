@@ -93,6 +93,17 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Server]{
 		}
 
 		fmt.Fprintln(out)
+		fmt.Fprintf(out, "  Firewalls:\n")
+		if len(server.PublicNet.Firewalls) > 0 {
+			for _, f := range server.PublicNet.Firewalls {
+				fmt.Fprintf(out, "  - ID:\t%d\n", f.Firewall.ID)
+				fmt.Fprintf(out, "    Status:\t%s\n", f.Status)
+			}
+		} else {
+			fmt.Fprintf(out, "    No Firewalls\n")
+		}
+
+		fmt.Fprintln(out)
 		fmt.Fprintf(out, "Private Net:\n")
 		if len(server.PrivateNet) > 0 {
 			for i, n := range server.PrivateNet {
