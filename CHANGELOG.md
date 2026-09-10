@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.68.0](https://github.com/hetznercloud/cli/releases/tag/v1.68.0)
+
+[Compare to previous version](https://github.com/hetznercloud/cli/compare/v1.67.0...v1.68.0)
+
+### Features
+
+- print deprecated Load Balancer Type information (#1461) ([22a60bc](https://github.com/hetznercloud/cli/commit/22a60bc66a62afc821e686eeaeb8119b99a51a40))
+
 ## [v1.67.0](https://github.com/hetznercloud/cli/releases/tag/v1.67.0)
 
 ### Removed deprecated Datacenter from Server and Primary IP
