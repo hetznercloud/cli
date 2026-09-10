@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/hetznercloud/cli/internal/cmd/all"
+	"github.com/hetznercloud/cli/internal/cmd/api"
 	"github.com/hetznercloud/cli/internal/cmd/certificate"
 	"github.com/hetznercloud/cli/internal/cmd/completion"
 	configCmd "github.com/hetznercloud/cli/internal/cmd/config"
@@ -74,6 +75,7 @@ func NewRootCommand(s state.State) *cobra.Command {
 		completion.NewCommand(s),
 		context.NewCommand(s),
 		configCmd.NewCommand(s),
+		api.APICmd.CobraCommand(s),
 	)
 
 	cmd.PersistentFlags().AddFlagSet(s.Config().FlagSet())
