@@ -93,6 +93,26 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Server]{
 		}
 
 		fmt.Fprintln(out)
+		fmt.Fprintf(out, "  Firewalls:\n")
+		if len(server.PublicNet.Firewalls) > 0 {
+			for _, f := range server.PublicNet.Firewalls {
+				var err error
+				fw, _, err := s.Client().Firewall().GetByID(s, f.Firewall.ID)
+				if err != nil {
+					return err
+				}
+				if fw == nil {
+					continue
+				}
+				fmt.Fprintf(out, "  - ID:\t%d\n", fw.ID)
+				fmt.Fprintf(out, "    Name:\t%s\n", fw.Name)
+				fmt.Fprintf(out, "    Status:\t%s\n", f.Status)
+			}
+		} else {
+			fmt.Fprintf(out, "    No Firewalls\n")
+		}
+
+		fmt.Fprintln(out)
 		fmt.Fprintf(out, "Private Net:\n")
 		if len(server.PrivateNet) > 0 {
 			for i, n := range server.PrivateNet {
