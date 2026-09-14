@@ -1,10 +1,13 @@
 package mock
 
 import (
+	"context"
+	"io"
+	"net/http"
+
 	"go.uber.org/mock/gomock"
 
 	"github.com/hetznercloud/cli/internal/hcapi2"
-	"github.com/hetznercloud/cli/internal/state/config"
 	"github.com/hetznercloud/hcloud-go/v2/hcloud"
 )
 
@@ -157,6 +160,12 @@ func (*Client) WithOpts(_ ...hcloud.ClientOption) {
 	// no-op
 }
 
-func (*Client) FromConfig(_ config.Config) {
+func (*Client) NewRequest(_ context.Context, _, _ string, _ io.Reader) (*http.Request, error) {
 	// no-op
+	return nil, nil
+}
+
+func (*Client) Do(_ *http.Request, _ any) (*hcloud.Response, error) {
+	// no-op
+	return nil, nil
 }

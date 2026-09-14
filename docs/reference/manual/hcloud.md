@@ -25,6 +25,7 @@ A command-line interface for Hetzner Cloud
 ### SEE ALSO
 
 * [hcloud all](hcloud_all.md)	 - Commands that apply to all resources
+* [hcloud api](hcloud_api.md)	 - Make API call
 * [hcloud certificate](hcloud_certificate.md)	 - Manage Certificates
 * [hcloud completion](hcloud_completion.md)	 - Output shell completion code for the specified shell
 * [hcloud config](hcloud_config.md)	 - Manage configuration
