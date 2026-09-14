@@ -41,12 +41,26 @@ func TestList(t *testing.T) {
 				DiskSize:     15,
 				Created:      time.Date(2036, 8, 20, 12, 0, 0, 0, time.UTC),
 			},
+			{
+				ID:           456,
+				Type:         hcloud.ImageTypeSystem,
+				Name:         "deprecated",
+				Architecture: hcloud.ArchitectureX86,
+				ImageSize:    20.0,
+				DiskSize:     15,
+				Created:      time.Date(2036, 8, 20, 12, 0, 0, 0, time.UTC),
+				DeprecatableResource: hcloud.DeprecatableResource{Deprecation: &hcloud.DeprecationInfo{
+					Announced:        time.Date(2036, 1, 1, 0, 0, 0, 0, time.UTC),
+					UnavailableAfter: time.Date(2036, 12, 31, 0, 0, 0, 0, time.UTC),
+				}},
+			},
 		}, nil)
 
 	out, errOut, err := fx.Run(cmd, []string{})
 
-	expOut := `ID    TYPE     NAME   DESCRIPTION   ARCHITECTURE   IMAGE SIZE   DISK SIZE   CREATED                   DEPRECATED
-123   system   test   -             x86            20.00 GB     15 GB       2036-08-20 12:00:00 UTC   -
+	expOut := `ID    TYPE     NAME         DESCRIPTION   ARCHITECTURE   IMAGE SIZE   DISK SIZE   CREATED                   DEPRECATED
+123   system   test         -             x86            20.00 GB     15 GB       2036-08-20 12:00:00 UTC   -
+456   system   deprecated   -             x86            20.00 GB     15 GB       2036-08-20 12:00:00 UTC   2036-01-01 00:00:00 UTC
 `
 
 	require.NoError(t, err)

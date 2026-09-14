@@ -57,7 +57,10 @@ func TestRebuildDeprecated(t *testing.T) {
 	cmd.SilenceUsage = true // Silence usage output for this test; usually handled by root command
 
 	srv := &hcloud.Server{ID: 123, Name: "my-server", ServerType: &hcloud.ServerType{Architecture: hcloud.ArchitectureARM}}
-	img := &hcloud.Image{ID: 456, Name: "ubuntu-22.04", Deprecated: time.Date(2036, 5, 20, 0, 0, 0, 0, time.UTC)}
+	img := &hcloud.Image{ID: 456, Name: "ubuntu-22.04", DeprecatableResource: hcloud.DeprecatableResource{Deprecation: &hcloud.DeprecationInfo{
+		Announced:        time.Date(2036, 2, 20, 0, 0, 0, 0, time.UTC),
+		UnavailableAfter: time.Date(2036, 8, 20, 0, 0, 0, 0, time.UTC),
+	}}}
 
 	fx.Client.ServerClient.EXPECT().
 		Get(gomock.Any(), "my-server").
@@ -69,7 +72,7 @@ func TestRebuildDeprecated(t *testing.T) {
 	args := []string{"my-server", "--image", "ubuntu-22.04"}
 	out, errOut, err := fx.Run(cmd, args)
 
-	errorMsg := "image ubuntu-22.04 is deprecated, please use --allow-deprecated-image to create a Server with this image. It will continue to be available until 2036-08-20"
+	errorMsg := `Image "ubuntu-22.04" is deprecated and will no longer be available for order as of 2036-08-20, please use --allow-deprecated-image to create a Server with this Image`
 
 	require.Error(t, err, errorMsg)
 	assert.Equal(t, "Error: "+errorMsg+"\n", errOut)

@@ -20,3 +20,15 @@ func deprecatedServerTypeWarning(serverType *hcloud.ServerType, locationName str
 
 	return fmt.Sprintf("Attention: %s. %s\n\n", message, ChangeDeprecatedServerTypeMessage)
 }
+
+func deprecatedImageWarning(image *hcloud.Image, allowDeprecated bool) (string, error) {
+	message, _ := deprecationutil.ImageMessage(image)
+	if message == "" {
+		return "", nil
+	}
+
+	if allowDeprecated {
+		return fmt.Sprintf("Attention: %s\n", message), nil
+	}
+	return "", fmt.Errorf("%s, please use --allow-deprecated-image to create a Server with this Image", message)
+}

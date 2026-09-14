@@ -2,7 +2,6 @@ package server
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/spf13/cobra"
 
@@ -57,12 +56,10 @@ var RebuildCmd = base.Cmd{
 		}
 
 		allowDeprecatedImage, _ := cmd.Flags().GetBool("allow-deprecated-image")
-		if !image.Deprecated.IsZero() {
-			if allowDeprecatedImage {
-				cmd.Printf("Attention: Image %s is deprecated. It will continue to be available until %s.\n", image.Name, image.Deprecated.AddDate(0, 3, 0).Format(time.DateOnly))
-			} else {
-				return fmt.Errorf("image %s is deprecated, please use --allow-deprecated-image to create a Server with this image. It will continue to be available until %s", image.Name, image.Deprecated.AddDate(0, 3, 0).Format(time.DateOnly))
-			}
+		if warning, err := deprecatedImageWarning(image, allowDeprecatedImage); err != nil {
+			return err
+		} else if warning != "" {
+			cmd.Print(warning)
 		}
 
 		opts := hcloud.ServerRebuildOpts{
