@@ -123,7 +123,7 @@ var ListCmd = &base.ListCmd[*hcloud.Image, schema.Image]{
 				if !image.IsDeprecated() {
 					return "-"
 				}
-				return util.Datetime(image.UnavailableAfter())
+				return util.Datetime(image.DeprecationAnnounced())
 			})
 	},
 
