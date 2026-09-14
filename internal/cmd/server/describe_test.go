@@ -78,12 +78,24 @@ func TestDescribe(t *testing.T) {
 		},
 		IncludedTraffic: 20 * util.Tebibyte,
 		Protection:      hcloud.ServerProtection{Delete: true, Rebuild: true},
-		Created:         time.Date(2036, 8, 12, 12, 0, 0, 0, time.UTC),
+		PublicNet: hcloud.ServerPublicNet{
+			Firewalls: []*hcloud.ServerFirewallStatus{
+				{
+					Firewall: hcloud.Firewall{ID: 321},
+					Status:   hcloud.FirewallStatusApplied,
+				},
+			},
+		},
+		Created: time.Date(2036, 8, 12, 12, 0, 0, 0, time.UTC),
 	}
 
 	fx.Client.ServerClient.EXPECT().
 		Get(gomock.Any(), "test").
 		Return(srv, nil, nil)
+
+	fx.Client.FirewallClient.EXPECT().
+		GetByID(gomock.Any(), int64(321)).
+		Return(&hcloud.Firewall{ID: 321, Name: "test-firewall"}, nil, nil)
 
 	out, errOut, err := fx.Run(cmd, []string{"test"})
 
@@ -117,6 +129,11 @@ Public Net:
 
   Floating IPs:
     No Floating IPs
+
+  Firewalls:
+  - ID:      321
+    Name:    test-firewall
+    Status:  applied
 
 Private Net:
   No Private Networks
