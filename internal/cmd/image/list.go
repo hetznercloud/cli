@@ -120,10 +120,10 @@ var ListCmd = &base.ListCmd[*hcloud.Image, schema.Image]{
 				return util.Age(image.Created, time.Now())
 			}).
 			AddFieldFn("deprecated", func(image *hcloud.Image) string {
-				if image.Deprecated.IsZero() {
+				if !image.IsDeprecated() {
 					return "-"
 				}
-				return util.Datetime(image.Deprecated)
+				return util.Datetime(image.UnavailableAfter())
 			})
 	},
 

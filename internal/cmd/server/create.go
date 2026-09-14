@@ -10,7 +10,6 @@ import (
 	"net/textproto"
 	"os"
 	"strings"
-	"time"
 
 	"github.com/spf13/cobra"
 	"golang.org/x/crypto/ssh"
@@ -305,13 +304,11 @@ func createOptsFromFlags(
 		return
 	}
 
-	if !image.Deprecated.IsZero() {
-		if allowDeprecatedImage {
-			cmd.Printf("Attention: Image %s is deprecated. It will continue to be available until %s.\n", image.Name, image.Deprecated.AddDate(0, 3, 0).Format(time.DateOnly))
-		} else {
-			err = fmt.Errorf("image %s is deprecated, please use --allow-deprecated-image to create a Server with this Image. It will continue to be available until %s", image.Name, image.Deprecated.AddDate(0, 3, 0).Format(time.DateOnly))
-			return
-		}
+	if warning, wErr := deprecatedImageWarning(image, allowDeprecatedImage); wErr != nil {
+		err = wErr
+		return
+	} else if warning != "" {
+		cmd.Print(warning)
 	}
 
 	if withoutIPv4 && withoutIPv6 && len(networks) == 0 {

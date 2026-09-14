@@ -59,9 +59,6 @@ func DescribeImage(image *hcloud.Image) string {
 	fmt.Fprintf(&sb, "Status:\t%s\n", image.Status)
 	fmt.Fprintf(&sb, "Name:\t%s\n", util.NA(image.Name))
 	fmt.Fprintf(&sb, "Created:\t%s (%s)\n", util.Datetime(image.Created), humanize.Time(image.Created))
-	if !image.Deprecated.IsZero() {
-		fmt.Fprintf(&sb, "Deprecated:\t%s (%s)\n", util.Datetime(image.Deprecated), humanize.Time(image.Deprecated))
-	}
 	fmt.Fprintf(&sb, "Description:\t%s\n", image.Description)
 	if image.ImageSize != 0 {
 		fmt.Fprintf(&sb, "Image size:\t%.2f GB\n", image.ImageSize)
@@ -81,9 +78,9 @@ func DescribeImage(image *hcloud.Image) string {
 	fmt.Fprintln(&sb)
 	util.DescribeLabels(&sb, image.Labels, "")
 
-	if !image.Deprecated.IsZero() {
+	if deprecationText := util.DescribeDeprecation(image); deprecationText != "" {
 		fmt.Fprintln(&sb)
-		fmt.Fprintf(&sb, "\nAttention: This Image is deprecated and will be removed in the future.\n")
+		fmt.Fprint(&sb, deprecationText)
 	}
 	return sb.String()
 }

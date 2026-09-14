@@ -38,6 +38,12 @@ func TestDescribe(t *testing.T) {
 		Labels: map[string]string{
 			"key": "value",
 		},
+		DeprecatableResource: hcloud.DeprecatableResource{
+			Deprecation: &hcloud.DeprecationInfo{
+				Announced:        time.Date(2036, 1, 1, 0, 0, 0, 0, time.UTC),
+				UnavailableAfter: time.Date(2036, 8, 12, 12, 0, 0, 0, time.UTC),
+			},
+		},
 	}
 
 	fx.Client.ImageClient.EXPECT().
@@ -64,7 +70,13 @@ Protection:
 
 Labels:
   key:  value
-`, util.Datetime(img.Created), humanize.Time(img.Created))
+
+Deprecation:
+  Announced:          2036-01-01 00:00:00 UTC (%s)
+  Unavailable After:  2036-08-12 12:00:00 UTC (%s)
+`,
+		util.Datetime(img.Created), humanize.Time(img.Created),
+		humanize.Time(img.DeprecationAnnounced()), humanize.Time(img.UnavailableAfter()))
 
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
