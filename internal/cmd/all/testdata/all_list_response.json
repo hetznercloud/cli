@@ -20,6 +20,7 @@
         "delete": false
       },
       "deprecated": null,
+      "deprecation": null,
       "deleted": null,
       "labels": null
     }

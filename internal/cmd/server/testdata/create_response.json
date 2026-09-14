@@ -21,6 +21,7 @@
       "created_from": null,
       "deleted": null,
       "deprecated": null,
+      "deprecation": null,
       "description": "Ubuntu 20.04",
       "disk_size": 0,
       "id": 1,
