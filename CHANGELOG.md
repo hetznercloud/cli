@@ -1,5 +1,19 @@
 # Changelog
 
+## [v1.68.0](https://github.com/hetznercloud/cli/releases/tag/v1.68.0)
+
+[Compare to previous version](https://github.com/hetznercloud/cli/compare/v1.67.0...v1.68.0)
+
+### Features
+
+- print deprecated Load Balancer Type information (#1461) ([22a60bc](https://github.com/hetznercloud/cli/commit/22a60bc66a62afc821e686eeaeb8119b99a51a40))
+- add api command (#1457) ([bd9f704](https://github.com/hetznercloud/cli/commit/bd9f70431c880e1663cb35366aec49f78745cc11))
+- **image**: print deprecated Image information (#1485) ([c7badc0](https://github.com/hetznercloud/cli/commit/c7badc0e41103ad1e637ea3c8b8cfba6efb6fda8))
+
+### Bug Fixes
+
+- **server**: missing firewalls in describe (#1482) ([93f8381](https://github.com/hetznercloud/cli/commit/93f8381a08b3feb2b807449fea7dc0571cd5c979))
+
 ## [v1.67.0](https://github.com/hetznercloud/cli/releases/tag/v1.67.0)
 
 ### Removed deprecated Datacenter from Server and Primary IP
