@@ -18,6 +18,8 @@ hcloud load-balancer create [options] --name <name> --type <type>
       --network string              Name or ID of the Network the Load Balancer should be attached to on creation
       --network-zone string         Network Zone
   -o, --output stringArray          output options: json|yaml
+      --primary-ipv4 string         Primary IPv4 (ID or name) to assign to the Load Balancer
+      --primary-ipv6 string         Primary IPv6 (ID or name) to assign to the Load Balancer
       --type string                 Load Balancer Type (ID or name) (required)
 ```
 

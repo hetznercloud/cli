@@ -48,6 +48,12 @@ var CreateCmd = base.CreateCmd[*hcloud.LoadBalancer]{
 		cmd.Flags().String("network", "", "Name or ID of the Network the Load Balancer should be attached to on creation")
 		_ = cmd.RegisterFlagCompletionFunc("network", cmpl.SuggestCandidatesF(client.Network().Names))
 
+		cmd.Flags().String("primary-ipv4", "", "Primary IPv4 (ID or name) to assign to the Load Balancer")
+		_ = cmd.RegisterFlagCompletionFunc("primary-ipv4", cmpl.SuggestCandidatesF(client.PrimaryIP().Names(true, false, hcloud.Ptr(hcloud.PrimaryIPTypeIPv4))))
+
+		cmd.Flags().String("primary-ipv6", "", "Primary IPv6 (ID or name) to assign to the Load Balancer")
+		_ = cmd.RegisterFlagCompletionFunc("primary-ipv6", cmpl.SuggestCandidatesF(client.PrimaryIP().Names(true, false, hcloud.Ptr(hcloud.PrimaryIPTypeIPv6))))
+
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, _ []string) (*hcloud.LoadBalancer, any, error) {
@@ -59,6 +65,8 @@ var CreateCmd = base.CreateCmd[*hcloud.LoadBalancer]{
 		labels, _ := cmd.Flags().GetStringToString("label")
 		protection, _ := cmd.Flags().GetStringSlice("enable-protection")
 		network, _ := cmd.Flags().GetString("network")
+		primaryIPv4IDOrName, _ := cmd.Flags().GetString("primary-ipv4")
+		primaryIPv6IDOrName, _ := cmd.Flags().GetString("primary-ipv6")
 
 		protectionOpts, err := ChangeProtectionCmds.GetChangeProtectionOpts(true, protection)
 		if err != nil {
@@ -98,6 +106,30 @@ var CreateCmd = base.CreateCmd[*hcloud.LoadBalancer]{
 				return nil, nil, fmt.Errorf("Network not found: %s", network)
 			}
 			createOpts.Network = net
+		}
+		publicNet := &hcloud.LoadBalancerCreateOptsPublicNet{}
+		if primaryIPv4IDOrName != "" {
+			primaryIPv4, _, err := s.Client().PrimaryIP().Get(s, primaryIPv4IDOrName)
+			if err != nil {
+				return nil, nil, err
+			}
+			if primaryIPv4 == nil {
+				return nil, nil, fmt.Errorf("Primary IPv4 not found: %s", primaryIPv4IDOrName)
+			}
+			publicNet.IPv4 = primaryIPv4
+		}
+		if primaryIPv6IDOrName != "" {
+			primaryIPv6, _, err := s.Client().PrimaryIP().Get(s, primaryIPv6IDOrName)
+			if err != nil {
+				return nil, nil, err
+			}
+			if primaryIPv6 == nil {
+				return nil, nil, fmt.Errorf("Primary IPv6 not found: %s", primaryIPv6IDOrName)
+			}
+			publicNet.IPv6 = primaryIPv6
+		}
+		if primaryIPv4IDOrName != "" || primaryIPv6IDOrName != "" {
+			createOpts.PublicNet = publicNet
 		}
 		result, _, err := s.Client().LoadBalancer().Create(s, createOpts)
 		if err != nil {

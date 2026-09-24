@@ -18,7 +18,7 @@ var DeleteCmd = base.DeleteCmd[*hcloud.LoadBalancer]{
 		return s.Client().LoadBalancer().Get(s, idOrName)
 	},
 	Delete: func(s state.State, _ *cobra.Command, loadBalancer *hcloud.LoadBalancer) ([]*hcloud.Action, error) {
-		_, err := s.Client().LoadBalancer().Delete(s, loadBalancer)
-		return nil, err
+		result, _, err := s.Client().LoadBalancer().DeleteWithResult(s, loadBalancer)
+		return []*hcloud.Action{result.Action}, err
 	},
 }

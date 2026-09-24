@@ -66,6 +66,83 @@ IPv6: ::
 	assert.Equal(t, expOut, out)
 }
 
+func TestCreatePrimaryIPs(t *testing.T) {
+	fx := testutil.NewFixture(t)
+	defer fx.Finish()
+
+	cmd := loadbalancer.CreateCmd.CobraCommand(fx.State())
+	fx.ExpectEnsureToken()
+
+	primaryIPv4 := &hcloud.PrimaryIP{
+		ID:   1,
+		Name: "myPrimaryIP",
+		Type: hcloud.PrimaryIPTypeIPv4,
+		IP:   net.ParseIP("192.168.2.1"),
+	}
+	primaryIPv6 := &hcloud.PrimaryIP{
+		ID:   2,
+		Name: "myPrimaryIPv6",
+		Type: hcloud.PrimaryIPTypeIPv6,
+		IP:   net.IPv6zero,
+	}
+
+	fx.Client.LoadBalancerTypeClient.EXPECT().
+		Get(gomock.Any(), "lb11").
+		Return(&hcloud.LoadBalancerType{Name: "lb11"}, nil, nil)
+	fx.Client.PrimaryIPClient.EXPECT().
+		Get(gomock.Any(), "myPrimaryIP").
+		Return(primaryIPv4, nil, nil)
+	fx.Client.PrimaryIPClient.EXPECT().
+		Get(gomock.Any(), "myPrimaryIPv6").
+		Return(primaryIPv6, nil, nil)
+	fx.Client.LoadBalancerClient.EXPECT().
+		Create(gomock.Any(), hcloud.LoadBalancerCreateOpts{
+			Name:             "myLoadBalancer",
+			LoadBalancerType: &hcloud.LoadBalancerType{Name: "lb11"},
+			Location:         &hcloud.Location{Name: "fsn1"},
+			Labels:           make(map[string]string),
+			PublicNet: &hcloud.LoadBalancerCreateOptsPublicNet{
+				IPv4: primaryIPv4,
+				IPv6: primaryIPv6,
+			},
+		}).
+		Return(hcloud.LoadBalancerCreateResult{
+			LoadBalancer: &hcloud.LoadBalancer{ID: 123},
+			Action:       &hcloud.Action{ID: 321},
+		}, nil, nil)
+	fx.ActionWaiter.EXPECT().WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321}).Return(nil)
+	fx.Client.LoadBalancerClient.EXPECT().
+		GetByID(gomock.Any(), int64(123)).
+		Return(&hcloud.LoadBalancer{
+			ID: 123,
+			PublicNet: hcloud.LoadBalancerPublicNet{
+				IPv4: hcloud.LoadBalancerPublicNetIPv4{
+					IP: net.ParseIP("192.168.2.1"),
+				},
+				IPv6: hcloud.LoadBalancerPublicNetIPv6{
+					IP: net.IPv6zero,
+				},
+			},
+		}, nil, nil)
+
+	out, errOut, err := fx.Run(cmd, []string{
+		"--name", "myLoadBalancer",
+		"--type", "lb11",
+		"--location", "fsn1",
+		"--primary-ipv4", "myPrimaryIP",
+		"--primary-ipv6", "myPrimaryIPv6",
+	})
+
+	expOut := `Load Balancer 123 created
+IPv4: 192.168.2.1
+IPv6: ::
+`
+
+	require.NoError(t, err)
+	assert.Empty(t, errOut)
+	assert.Equal(t, expOut, out)
+}
+
 func TestCreateJSON(t *testing.T) {
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
