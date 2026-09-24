@@ -66,10 +66,10 @@ func TestListMembers(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{"test-network"})
 
-	expOut := `TYPE            ID   IP         STATUS      ALIAS IPS   SUBNET
-server          42   10.0.0.2   ok          10.0.0.3    10.0.0.0/24
+	expOut := `TYPE            ID   STATUS      IP         ALIAS IPS   SUBNET
+server          42   ok          10.0.0.2   10.0.0.3    10.0.0.0/24
                                             10.0.0.4
-load_balancer   7    10.0.0.5   attaching   -           10.0.0.0/24
+load_balancer   7    attaching   10.0.0.5   -           10.0.0.0/24
 `
 
 	require.NoError(t, err)

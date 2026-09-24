@@ -37,7 +37,7 @@ var ListMembersCmd = &base.ListCmd[*hcloud.NetworkMember, schema.NetworkMember]{
 	ResourceNamePlural: "Network Members",
 	JSONKeyGetByName:   "members",
 
-	DefaultColumns: []string{"type", "id", "ip", "status", "alias_ips", "subnet"},
+	DefaultColumns: []string{"type", "id", "status", "ip", "alias_ips", "subnet"},
 	SortOption:     config.OptionSortNetworkMember,
 
 	ValidArgsFunction: func(client hcapi2.Client) cobra.CompletionFunc {
