@@ -50,6 +50,7 @@ func runCommand(t *testing.T, args ...string) (string, error) {
 	var buf bytes.Buffer
 	cmd.SetArgs(args)
 	cmd.SetOut(&buf)
+	cmd.SetErr(t.Output())
 	err := cmd.Execute()
 	return buf.String(), err
 }
