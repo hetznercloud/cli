@@ -75,7 +75,7 @@ func TestNetwork(t *testing.T) {
 		t.Run("no-members", func(t *testing.T) {
 			out, err := runCommand(t, "network", "list-members", strconv.FormatInt(networkID, 10))
 			require.NoError(t, err)
-			assert.Equal(t, "TYPE            ID   IP         STATUS      ALIAS IPS   SUBNET\n", out)
+			assert.Equal(t, "TYPE   ID   STATUS   IP   ALIAS IPS   SUBNET\n", out)
 		})
 	})
 
