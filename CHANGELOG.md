@@ -1,5 +1,17 @@
 # Changelog
 
+## [v1.69.0](https://github.com/hetznercloud/cli/releases/tag/v1.69.0)
+
+[Compare to previous version](https://github.com/hetznercloud/cli/compare/v1.68.0...v1.69.0)
+
+### Features
+
+- **network**: implement list-members command (#1491) ([d4e3726](https://github.com/hetznercloud/cli/commit/d4e3726cbebba9f5a61389573fc518f03bc3a7ad))
+
+### Bug Fixes
+
+- **primary-ip**: add fallback for unknown assignee types (#1493) ([0856baa](https://github.com/hetznercloud/cli/commit/0856baa767793f9e9d86a870fcd6432b4aedb954))
+
 ## [v1.68.0](https://github.com/hetznercloud/cli/releases/tag/v1.68.0)
 
 [Compare to previous version](https://github.com/hetznercloud/cli/compare/v1.67.0...v1.68.0)
