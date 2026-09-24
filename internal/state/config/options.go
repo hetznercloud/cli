@@ -259,6 +259,15 @@ var (
 		nil,
 	)
 
+	OptionSortNetworkMember = newOpt(
+		"sort.network.member",
+		"Default sorting for Network Member resource",
+		[]string{"id:asc"},
+		(DefaultPreferenceFlags&^OptionFlagPFlag)|OptionFlagSlice|OptionFlagHidden,
+		nil,
+		nil,
+	)
+
 	OptionSortPlacementGroup = newOpt(
 		"sort.placement-group",
 		"Default sorting for Placement Group resource",

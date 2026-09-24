@@ -37,6 +37,7 @@ Manage Networks
 * [hcloud network enable-protection](hcloud_network_enable-protection.md)	 - Enable resource protection for a Network
 * [hcloud network expose-routes-to-vswitch](hcloud_network_expose-routes-to-vswitch.md)	 - Expose routes to connected vSwitch
 * [hcloud network list](hcloud_network_list.md)	 - List Networks
+* [hcloud network list-members](hcloud_network_list-members.md)	 - List Network Members
 * [hcloud network remove-label](hcloud_network_remove-label.md)	 - Remove a label from a Network
 * [hcloud network remove-route](hcloud_network_remove-route.md)	 - Remove a route from a Network
 * [hcloud network remove-subnet](hcloud_network_remove-subnet.md)	 - Remove a subnet from a Network
