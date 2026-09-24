@@ -2529,6 +2529,36 @@ func (mr *MockNetworkClientMockRecorder) All(ctx any) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "All", reflect.TypeOf((*MockNetworkClient)(nil).All), ctx)
 }
 
+// AllMembers mocks base method.
+func (m *MockNetworkClient) AllMembers(ctx context.Context, network *hcloud.Network) ([]*hcloud.NetworkMember, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AllMembers", ctx, network)
+	ret0, _ := ret[0].([]*hcloud.NetworkMember)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AllMembers indicates an expected call of AllMembers.
+func (mr *MockNetworkClientMockRecorder) AllMembers(ctx, network any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AllMembers", reflect.TypeOf((*MockNetworkClient)(nil).AllMembers), ctx, network)
+}
+
+// AllMembersWithOpts mocks base method.
+func (m *MockNetworkClient) AllMembersWithOpts(ctx context.Context, network *hcloud.Network, opts hcloud.NetworkMemberListOpts) ([]*hcloud.NetworkMember, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "AllMembersWithOpts", ctx, network, opts)
+	ret0, _ := ret[0].([]*hcloud.NetworkMember)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// AllMembersWithOpts indicates an expected call of AllMembersWithOpts.
+func (mr *MockNetworkClientMockRecorder) AllMembersWithOpts(ctx, network, opts any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "AllMembersWithOpts", reflect.TypeOf((*MockNetworkClient)(nil).AllMembersWithOpts), ctx, network, opts)
+}
+
 // AllWithOpts mocks base method.
 func (m *MockNetworkClient) AllWithOpts(ctx context.Context, opts hcloud.NetworkListOpts) ([]*hcloud.Network, error) {
 	m.ctrl.T.Helper()
@@ -2715,6 +2745,22 @@ func (m *MockNetworkClient) List(ctx context.Context, opts hcloud.NetworkListOpt
 func (mr *MockNetworkClientMockRecorder) List(ctx, opts any) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "List", reflect.TypeOf((*MockNetworkClient)(nil).List), ctx, opts)
+}
+
+// ListMembers mocks base method.
+func (m *MockNetworkClient) ListMembers(ctx context.Context, network *hcloud.Network, opts hcloud.NetworkMemberListOpts) ([]*hcloud.NetworkMember, *hcloud.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ListMembers", ctx, network, opts)
+	ret0, _ := ret[0].([]*hcloud.NetworkMember)
+	ret1, _ := ret[1].(*hcloud.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// ListMembers indicates an expected call of ListMembers.
+func (mr *MockNetworkClientMockRecorder) ListMembers(ctx, network, opts any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ListMembers", reflect.TypeOf((*MockNetworkClient)(nil).ListMembers), ctx, network, opts)
 }
 
 // Name mocks base method.
