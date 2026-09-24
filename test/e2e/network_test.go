@@ -65,6 +65,20 @@ func TestNetwork(t *testing.T) {
 		)
 	})
 
+	t.Run("list-members", func(t *testing.T) {
+		t.Run("non-existing-network", func(t *testing.T) {
+			out, err := runCommand(t, "network", "list-members", "non-existing-network")
+			require.EqualError(t, err, "Network not found: non-existing-network")
+			assert.Empty(t, out)
+		})
+
+		t.Run("no-members", func(t *testing.T) {
+			out, err := runCommand(t, "network", "list-members", strconv.FormatInt(networkID, 10))
+			require.NoError(t, err)
+			assert.Equal(t, "TYPE   ID   STATUS   IP   ALIAS IPS   SUBNET\n", out)
+		})
+	})
+
 	t.Run("change-ip-range", func(t *testing.T) {
 		t.Run("non-existing-network", func(t *testing.T) {
 			out, err := runCommand(t, "network", "change-ip-range", "--ip-range", "10.0.2.0/16", "non-existing-network")

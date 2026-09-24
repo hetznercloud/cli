@@ -43,5 +43,9 @@ func NewCommand(s state.State) *cobra.Command {
 		AddSubnetCmd.CobraCommand(s),
 		RemoveSubnetCmd.CobraCommand(s),
 	)
+
+	util.AddGroup(cmd, "member", "Members",
+		ListMembersCmd.CobraCommand(s),
+	)
 	return cmd
 }
