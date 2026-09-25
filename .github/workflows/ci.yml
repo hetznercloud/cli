@@ -16,9 +16,9 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Set up tools
-        uses: jdx/mise-action@9e7f7633ff6f6d6048a9418a68d48f288f50eb14 # v4
+        uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4
         with:
-          version: 2026.9.11 # renovate: datasource=github-releases depName=jdx/mise
+          version: 2026.9.12 # renovate: datasource=github-releases depName=jdx/mise
 
       - name: Run gofmt
         run: diff -u <(echo -n) <(gofmt -d -s .)
@@ -36,9 +36,9 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Set up tools
-        uses: jdx/mise-action@9e7f7633ff6f6d6048a9418a68d48f288f50eb14 # v4
+        uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4
         with:
-          version: 2026.9.11 # renovate: datasource=github-releases depName=jdx/mise
+          version: 2026.9.12 # renovate: datasource=github-releases depName=jdx/mise
 
       - name: Run tests
         run: go test -coverpkg=./internal/... -coverprofile=coverage.txt -v -race ./...
@@ -47,7 +47,7 @@ jobs:
         if: >
           !startsWith(github.head_ref, 'renovate/') &&
           !startsWith(github.head_ref, 'releaser-pleaser--')
-        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           flags: unit
@@ -61,9 +61,9 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Set up tools
-        uses: jdx/mise-action@9e7f7633ff6f6d6048a9418a68d48f288f50eb14 # v4
+        uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4
         with:
-          version: 2026.9.11 # renovate: datasource=github-releases depName=jdx/mise
+          version: 2026.9.12 # renovate: datasource=github-releases depName=jdx/mise
 
       - uses: hetznercloud/tps-action@5bfcef547f41c44aa626d0474c0491a1dbda792a # main
 
@@ -78,7 +78,7 @@ jobs:
         if: >
           !startsWith(github.head_ref, 'renovate/') &&
           !startsWith(github.head_ref, 'release-please--')
-        uses: codecov/codecov-action@fb8b3582c8e4def4969c97caa2f19720cb33a72f # v7
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           flags: e2e
@@ -90,9 +90,9 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Set up tools
-        uses: jdx/mise-action@9e7f7633ff6f6d6048a9418a68d48f288f50eb14 # v4
+        uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4
         with:
-          version: 2026.9.11 # renovate: datasource=github-releases depName=jdx/mise
+          version: 2026.9.12 # renovate: datasource=github-releases depName=jdx/mise
 
       - name: Delete old generated files
         run: find . -name 'zz_*.go' -delete
@@ -113,9 +113,9 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Set up tools
-        uses: jdx/mise-action@9e7f7633ff6f6d6048a9418a68d48f288f50eb14 # v4
+        uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4
         with:
-          version: 2026.9.11 # renovate: datasource=github-releases depName=jdx/mise
+          version: 2026.9.12 # renovate: datasource=github-releases depName=jdx/mise
 
       - name: Run go mod tidy
         run: go mod tidy -diff
@@ -130,9 +130,9 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
 
       - name: Set up tools
-        uses: jdx/mise-action@9e7f7633ff6f6d6048a9418a68d48f288f50eb14 # v4
+        uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4
         with:
-          version: 2026.9.11 # renovate: datasource=github-releases depName=jdx/mise
+          version: 2026.9.12 # renovate: datasource=github-releases depName=jdx/mise
 
       - name: Run go mod tidy
         run: go fix -diff ./...
