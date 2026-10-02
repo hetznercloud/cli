@@ -83,6 +83,24 @@ func TestDescribe(t *testing.T) {
 		IncludedTraffic: 20 * util.Tebibyte,
 		IngoingTraffic:  10 * util.Tebibyte,
 		OutgoingTraffic: 10 * util.Tebibyte,
+		Targets: []hcloud.LoadBalancerTarget{
+			{
+				Type: hcloud.LoadBalancerTargetTypeIP,
+				IP:   &hcloud.LoadBalancerTargetIP{IP: "10.0.0.1"},
+				HealthStatus: []hcloud.LoadBalancerTargetHealthStatus{
+					{
+						ListenPort: 80,
+						Status:     hcloud.LoadBalancerTargetHealthStatusStatusHealthy,
+					},
+					{
+						ListenPort:     443,
+						Status:         hcloud.LoadBalancerTargetHealthStatusStatusUnhealthy,
+						Detail:         hcloud.Ptr(hcloud.LoadBalancerTargetHealthStatusDetailUnexpectedHTTPStatus),
+						HTTPStatusCode: hcloud.Ptr(500),
+					},
+				},
+			},
+		},
 	}
 
 	fx.Client.LoadBalancerClient.EXPECT().
@@ -136,7 +154,15 @@ Services:
       Status Codes:  [200 201]
 
 Targets:
-  No targets
+  - Type:                ip
+    IP:                  10.0.0.1
+    Status:              
+    - Service:           80
+      Status:            healthy
+    - Service:           443
+      Status:            unhealthy
+      Detail:            unexpected_http_status
+      HTTP Status Code:  500
 
 Traffic:
   Outgoing:  10 TiB
