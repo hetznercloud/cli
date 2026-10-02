@@ -122,10 +122,7 @@ var DescribeCmd = base.DescribeCmd[*hcloud.LoadBalancer]{
 					fmt.Fprintf(out, "      Name:\t%s\n", s.Client().Server().ServerName(target.Server.Server.ID))
 					fmt.Fprintf(out, "    Use Private IP:\t%s\n", util.YesNo(target.UsePrivateIP))
 					fmt.Fprintf(out, "    Status:\t\n")
-					for _, healthStatus := range target.HealthStatus {
-						fmt.Fprintf(out, "    - Service:\t%d\n", healthStatus.ListenPort)
-						fmt.Fprintf(out, "      Status:\t%s\n", healthStatus.Status)
-					}
+					describeHealthStatus(out, target.HealthStatus, "    ")
 				case hcloud.LoadBalancerTargetTypeLabelSelector:
 					fmt.Fprintf(out, "    Label Selector:\t%s\n", target.LabelSelector.Selector)
 					fmt.Fprintf(out, "      Targets: (%d)\t\n", len(target.Targets))
@@ -139,18 +136,12 @@ var DescribeCmd = base.DescribeCmd[*hcloud.LoadBalancer]{
 						fmt.Fprintf(out, "      - Type:\t%s\n", lbtarget.Type)
 						fmt.Fprintf(out, "        Server ID:\t%d\n", lbtarget.Server.Server.ID)
 						fmt.Fprintf(out, "        Status:\t\n")
-						for _, healthStatus := range lbtarget.HealthStatus {
-							fmt.Fprintf(out, "          - Service:\t%d\n", healthStatus.ListenPort)
-							fmt.Fprintf(out, "            Status:\t%s\n", healthStatus.Status)
-						}
+						describeHealthStatus(out, lbtarget.HealthStatus, "          ")
 					}
 				case hcloud.LoadBalancerTargetTypeIP:
 					fmt.Fprintf(out, "    IP:\t%s\n", target.IP.IP)
 					fmt.Fprintf(out, "    Status:\t\n")
-					for _, healthStatus := range target.HealthStatus {
-						fmt.Fprintf(out, "    - Service:\t%d\n", healthStatus.ListenPort)
-						fmt.Fprintf(out, "      Status:\t%s\n", healthStatus.Status)
-					}
+					describeHealthStatus(out, target.HealthStatus, "    ")
 				}
 			}
 		}
@@ -170,4 +161,17 @@ var DescribeCmd = base.DescribeCmd[*hcloud.LoadBalancer]{
 
 		return nil
 	},
+}
+
+func describeHealthStatus(out io.Writer, healthStatuses []hcloud.LoadBalancerTargetHealthStatus, indent string) {
+	for _, healthStatus := range healthStatuses {
+		fmt.Fprintf(out, "%s- Service:\t%d\n", indent, healthStatus.ListenPort)
+		fmt.Fprintf(out, "%s  Status:\t%s\n", indent, healthStatus.Status)
+		if healthStatus.Detail != nil {
+			fmt.Fprintf(out, "%s  Detail:\t%s\n", indent, *healthStatus.Detail)
+		}
+		if healthStatus.HTTPStatusCode != nil {
+			fmt.Fprintf(out, "%s  HTTP Status Code:\t%d\n", indent, *healthStatus.HTTPStatusCode)
+		}
+	}
 }
