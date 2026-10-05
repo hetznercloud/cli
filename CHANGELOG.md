@@ -1,5 +1,29 @@
 # Changelog
 
+## [v1.70.0](https://github.com/hetznercloud/cli/releases/tag/v1.70.0)
+
+[Compare to previous version](https://github.com/hetznercloud/cli/compare/v1.69.0...v1.70.0)
+
+### Load Balancers can now be created with existing Primary IPs
+
+Primary IPs, which were previously available exclusively for Servers, are now also available for Load Balancers. When creating a Load Balancer, you can assign an [existing Primary IP](https://docs.hetzner.cloud/reference/cloud#tag/primary-ips/list_primary_ips) instead of having an IP address allocated automatically. Currently, you cannot change the Primary IP once the Load Balancer has been created.
+
+To support this change, we added the following flags to the load balancer create command:
+
+- `--primary-ipv4 <primary-ip>`: Name or id of an IPv4 Primary IP to assign to the Load Balancer.
+- `--primary-ipv6 <primary-ip>`: Name or id of an IPv6 Primary IP to assign to the Load Balancer.
+
+If you omit a property, a new Primary IP of that version is allocated for the Load Balancer, as before.
+
+A Primary IP can currently only be assigned when the Load Balancer is created. It stays assigned for the entire lifetime of the Load Balancer.
+
+Related to https://docs.hetzner.cloud/changelog#2026-10-05-load-balancers-can-use-existing-primary-ips.
+
+### Features
+
+- **load-balancer**: allow creating with Primary IPs (#1500) ([fe26d1f](https://github.com/hetznercloud/cli/commit/fe26d1f2a97e9ab06e0ab5e95701aed3da4532f4))
+- **load-balancer**: add health check diagnostic details (#1496) ([300430a](https://github.com/hetznercloud/cli/commit/300430ae11f69ff8686ad7aad1c72d0cf542960f))
+
 ## [v1.69.0](https://github.com/hetznercloud/cli/releases/tag/v1.69.0)
 
 [Compare to previous version](https://github.com/hetznercloud/cli/compare/v1.68.0...v1.69.0)
