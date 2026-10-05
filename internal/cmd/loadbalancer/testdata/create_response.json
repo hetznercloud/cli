@@ -39,11 +39,15 @@
     "public_net": {
       "enabled": false,
       "ipv4": {
+        "blocked": false,
         "dns_ptr": "",
+        "id": 0,
         "ip": "192.168.2.1"
       },
       "ipv6": {
+        "blocked": false,
         "dns_ptr": "",
+        "id": 0,
         "ip": "::"
       }
     },

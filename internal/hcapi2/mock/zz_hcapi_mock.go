@@ -2048,6 +2048,22 @@ func (mr *MockLoadBalancerClientMockRecorder) DeleteService(ctx, loadBalancer, l
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteService", reflect.TypeOf((*MockLoadBalancerClient)(nil).DeleteService), ctx, loadBalancer, listenPort)
 }
 
+// DeleteWithResult mocks base method.
+func (m *MockLoadBalancerClient) DeleteWithResult(ctx context.Context, loadBalancer *hcloud.LoadBalancer) (hcloud.LoadBalancerDeleteResult, *hcloud.Response, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "DeleteWithResult", ctx, loadBalancer)
+	ret0, _ := ret[0].(hcloud.LoadBalancerDeleteResult)
+	ret1, _ := ret[1].(*hcloud.Response)
+	ret2, _ := ret[2].(error)
+	return ret0, ret1, ret2
+}
+
+// DeleteWithResult indicates an expected call of DeleteWithResult.
+func (mr *MockLoadBalancerClientMockRecorder) DeleteWithResult(ctx, loadBalancer any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteWithResult", reflect.TypeOf((*MockLoadBalancerClient)(nil).DeleteWithResult), ctx, loadBalancer)
+}
+
 // DetachFromNetwork mocks base method.
 func (m *MockLoadBalancerClient) DetachFromNetwork(ctx context.Context, loadBalancer *hcloud.LoadBalancer, opts hcloud.LoadBalancerDetachFromNetworkOpts) (*hcloud.Action, *hcloud.Response, error) {
 	m.ctrl.T.Helper()
