@@ -2,3 +2,8 @@ include:
   - project: cloud/integrations/ci
     file:
       - cli/.gitlab-ci.yml
+  - project: cloud/integrations/ci
+    file: docs-sync.yml
+    inputs:
+      target-base-branch: "docs-integrations"
+
