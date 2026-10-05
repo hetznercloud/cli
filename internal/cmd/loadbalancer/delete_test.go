@@ -28,8 +28,12 @@ func TestDelete(t *testing.T) {
 		Get(gomock.Any(), "test").
 		Return(loadBalancer, nil, nil)
 	fx.Client.LoadBalancerClient.EXPECT().
-		Delete(gomock.Any(), loadBalancer).
-		Return(nil, nil)
+		DeleteWithResult(gomock.Any(), loadBalancer).
+		Return(hcloud.LoadBalancerDeleteResult{
+			Action: &hcloud.Action{ID: 321},
+		}, nil, nil)
+	fx.ActionWaiter.EXPECT().
+		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321})
 
 	out, errOut, err := fx.Run(cmd, []string{"test"})
 
@@ -69,9 +73,14 @@ func TestDeleteMultiple(t *testing.T) {
 			Get(gomock.Any(), lb.Name).
 			Return(lb, nil, nil)
 		fx.Client.LoadBalancerClient.EXPECT().
-			Delete(gomock.Any(), lb).
-			Return(nil, nil)
+			DeleteWithResult(gomock.Any(), lb).
+			Return(hcloud.LoadBalancerDeleteResult{
+				Action: &hcloud.Action{ID: 321},
+			}, nil, nil)
 	}
+
+	fx.ActionWaiter.EXPECT().
+		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321})
 
 	out, errOut, err := fx.Run(cmd, names)
 
