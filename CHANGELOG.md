@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.70.1](https://github.com/hetznercloud/cli/releases/tag/v1.70.1)
+
+[Compare to previous version](https://github.com/hetznercloud/cli/compare/v1.70.0...v1.70.1)
+
+### Bug Fixes
+
+- apple notarize and sign release pipeline ([5bf4d76](https://github.com/hetznercloud/cli/commit/5bf4d76884da4b1dc890f41ecbd33ee3af90c9c4))
+
 ## [v1.70.0](https://github.com/hetznercloud/cli/releases/tag/v1.70.0)
 
 [Compare to previous version](https://github.com/hetznercloud/cli/compare/v1.69.0...v1.70.0)
