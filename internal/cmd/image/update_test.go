@@ -24,7 +24,7 @@ func TestUpdateDescription(t *testing.T) {
 		Return(&hcloud.Image{ID: 123}, nil, nil)
 	fx.Client.ImageClient.EXPECT().
 		Update(gomock.Any(), &hcloud.Image{ID: 123}, hcloud.ImageUpdateOpts{
-			Description: hcloud.Ptr("new-description"),
+			Description: new("new-description"),
 		})
 
 	out, errOut, err := fx.Run(cmd, []string{"123", "--description", "new-description"})
@@ -48,7 +48,7 @@ func TestUpdateType(t *testing.T) {
 		Return(&hcloud.Image{ID: 123}, nil, nil)
 	fx.Client.ImageClient.EXPECT().
 		Update(gomock.Any(), &hcloud.Image{ID: 123}, hcloud.ImageUpdateOpts{
-			Description: hcloud.Ptr(""),
+			Description: new(""),
 			Type:        hcloud.ImageTypeSnapshot,
 		})
 

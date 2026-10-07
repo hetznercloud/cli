@@ -32,7 +32,7 @@ func TestDescribe(t *testing.T) {
 		ID:   "www/A",
 		Name: "www",
 		Type: hcloud.ZoneRRSetTypeA,
-		TTL:  hcloud.Ptr(600),
+		TTL:  new(600),
 		Labels: map[string]string{
 			"environment":    "prod",
 			"example.com/my": "label",

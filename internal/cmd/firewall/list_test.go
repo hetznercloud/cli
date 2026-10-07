@@ -100,7 +100,7 @@ func TestListJSON(t *testing.T) {
 						},
 						DestinationIPs: []net.IPNet{},
 						Protocol:       hcloud.FirewallRuleProtocolTCP,
-						Port:           hcloud.Ptr("80"),
+						Port:           new("80"),
 					},
 				},
 				AppliedTo: []hcloud.FirewallResource{

@@ -96,7 +96,7 @@ func TestDescribe(t *testing.T) {
 						ListenPort:     443,
 						Status:         hcloud.LoadBalancerTargetHealthStatusStatusUnhealthy,
 						Detail:         hcloud.Ptr(hcloud.LoadBalancerTargetHealthStatusDetailUnexpectedHTTPStatus),
-						HTTPStatusCode: hcloud.Ptr(500),
+						HTTPStatusCode: new(500),
 					},
 				},
 			},

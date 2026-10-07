@@ -29,7 +29,7 @@ func TestSetRDNS(t *testing.T) {
 		Get(gomock.Any(), "test").
 		Return(floatingIP, nil, nil)
 	fx.Client.RDNSClient.EXPECT().
-		ChangeDNSPtr(gomock.Any(), floatingIP, floatingIP.IP, hcloud.Ptr("example.com")).
+		ChangeDNSPtr(gomock.Any(), floatingIP, floatingIP.IP, new("example.com")).
 		Return(&hcloud.Action{ID: 123}, nil, nil)
 	fx.ActionWaiter.EXPECT().
 		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 123}).

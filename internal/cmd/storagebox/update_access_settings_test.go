@@ -27,9 +27,9 @@ func TestUpdateAccessSettings(t *testing.T) {
 	fx.Client.StorageBoxClient.EXPECT().
 		UpdateAccessSettings(gomock.Any(), sb, hcloud.StorageBoxUpdateAccessSettingsOpts{
 			SambaEnabled:        nil,
-			SSHEnabled:          hcloud.Ptr(true),
-			WebDAVEnabled:       hcloud.Ptr(false),
-			ZFSEnabled:          hcloud.Ptr(true),
+			SSHEnabled:          new(true),
+			WebDAVEnabled:       new(false),
+			ZFSEnabled:          new(true),
 			ReachableExternally: nil,
 		}).
 		Return(&hcloud.Action{ID: 456}, nil, nil)

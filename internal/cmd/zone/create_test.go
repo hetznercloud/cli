@@ -28,7 +28,7 @@ func TestCreate(t *testing.T) {
 		Create(gomock.Any(), hcloud.ZoneCreateOpts{
 			Name:   "example.com",
 			Mode:   hcloud.ZoneModePrimary,
-			TTL:    hcloud.Ptr(600),
+			TTL:    new(600),
 			Labels: map[string]string{"foo": "bar"},
 		}).
 		Return(hcloud.ZoneCreateResult{
@@ -86,7 +86,7 @@ func TestCreateJSON(t *testing.T) {
 		Create(gomock.Any(), hcloud.ZoneCreateOpts{
 			Name:   "example.com",
 			Mode:   hcloud.ZoneModePrimary,
-			TTL:    hcloud.Ptr(600),
+			TTL:    new(600),
 			Labels: map[string]string{"foo": "bar"},
 		}).
 		Return(hcloud.ZoneCreateResult{

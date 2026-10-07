@@ -38,7 +38,7 @@ func TestCreate(t *testing.T) {
 			Labels: map[string]string{
 				"foo": "bar",
 			},
-			TTL: hcloud.Ptr(42),
+			TTL: new(42),
 		}).
 		Return(hcloud.ZoneRRSetCreateResult{
 			RRSet: &hcloud.ZoneRRSet{
