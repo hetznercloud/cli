@@ -3,6 +3,7 @@ package config
 import (
 	"bytes"
 	"fmt"
+	"slices"
 	"strings"
 
 	"github.com/BurntSushi/toml"
@@ -57,8 +58,8 @@ func (p Preferences) Unset(key string) bool {
 			_, ok := m[key]
 			delete(m, key)
 			// delete parent maps if they are empty
-			for i := len(parents) - 1; i >= 0; i-- {
-				if len(parents[i]) == 0 {
+			for i, parent := range slices.Backward(parents) {
+				if len(parent) == 0 {
 					if i > 0 {
 						delete(parents[i-1], path[i-1])
 					}
