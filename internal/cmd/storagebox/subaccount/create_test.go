@@ -41,8 +41,8 @@ func TestCreate(t *testing.T) {
 			HomeDirectory: "/home/directory",
 			Password:      "my-password",
 			AccessSettings: &hcloud.StorageBoxSubaccountCreateOptsAccessSettings{
-				Readonly:   hcloud.Ptr(true),
-				SSHEnabled: hcloud.Ptr(true),
+				Readonly:   new(true),
+				SSHEnabled: new(true),
 			},
 			Labels: make(map[string]string),
 		}).
@@ -110,8 +110,8 @@ func TestCreateJSON(t *testing.T) {
 			HomeDirectory: "/home/directory",
 			Password:      "my-password",
 			AccessSettings: &hcloud.StorageBoxSubaccountCreateOptsAccessSettings{
-				Readonly:   hcloud.Ptr(true),
-				SSHEnabled: hcloud.Ptr(true),
+				Readonly:   new(true),
+				SSHEnabled: new(true),
 			},
 			Labels: make(map[string]string),
 		}).

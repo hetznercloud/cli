@@ -43,8 +43,8 @@ func TestReplaceRules(t *testing.T) {
 					},
 					DestinationIPs: nil,
 					Protocol:       hcloud.FirewallRuleProtocolTCP,
-					Port:           hcloud.Ptr("80"),
-					Description:    hcloud.Ptr("Allow port 80"),
+					Port:           new("80"),
+					Description:    new("Allow port 80"),
 				},
 				{
 					Direction: hcloud.FirewallRuleDirectionIn,
@@ -57,8 +57,8 @@ func TestReplaceRules(t *testing.T) {
 					},
 					DestinationIPs: nil,
 					Protocol:       hcloud.FirewallRuleProtocolTCP,
-					Port:           hcloud.Ptr("443"),
-					Description:    hcloud.Ptr("Allow port 443"),
+					Port:           new("443"),
+					Description:    new("Allow port 443"),
 				},
 				{
 					Direction: hcloud.FirewallRuleDirectionOut,
@@ -72,7 +72,7 @@ func TestReplaceRules(t *testing.T) {
 						},
 					},
 					Protocol: hcloud.FirewallRuleProtocolTCP,
-					Port:     hcloud.Ptr("80"),
+					Port:     new("80"),
 				},
 			},
 		}).

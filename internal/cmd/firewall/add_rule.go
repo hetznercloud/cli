@@ -101,11 +101,11 @@ func parseRuleFromArgs(flags *pflag.FlagSet) (*hcloud.FirewallRule, error) {
 	}
 
 	if port != "" {
-		rule.Port = hcloud.Ptr(port)
+		rule.Port = new(port)
 	}
 
 	if description != "" {
-		rule.Description = hcloud.Ptr(description)
+		rule.Description = new(description)
 	}
 
 	switch rule.Protocol {

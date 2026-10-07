@@ -26,7 +26,7 @@ func TestEnableProtection(t *testing.T) {
 		Return(v, nil, nil)
 	fx.Client.VolumeClient.EXPECT().
 		ChangeProtection(gomock.Any(), v, hcloud.VolumeChangeProtectionOpts{
-			Delete: hcloud.Ptr(true),
+			Delete: new(true),
 		}).
 		Return(&hcloud.Action{ID: 789}, nil, nil)
 	fx.ActionWaiter.EXPECT().
@@ -55,7 +55,7 @@ func TestDisableProtection(t *testing.T) {
 		Return(v, nil, nil)
 	fx.Client.VolumeClient.EXPECT().
 		ChangeProtection(gomock.Any(), v, hcloud.VolumeChangeProtectionOpts{
-			Delete: hcloud.Ptr(false),
+			Delete: new(false),
 		}).
 		Return(&hcloud.Action{ID: 789}, nil, nil)
 	fx.ActionWaiter.EXPECT().

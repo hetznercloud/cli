@@ -35,7 +35,7 @@ func TestSetRDNS(t *testing.T) {
 			gomock.Any(),
 			&hcloud.PrimaryIP{ID: 13},
 			net.ParseIP("192.168.0.1"),
-			hcloud.Ptr("server.your-host.de"),
+			new("server.your-host.de"),
 		).
 		Return(
 			action,

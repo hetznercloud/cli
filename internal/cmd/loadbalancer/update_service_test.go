@@ -28,29 +28,29 @@ func TestUpdateService(t *testing.T) {
 		Return(&hcloud.Certificate{ID: 1}, nil, nil)
 	fx.Client.LoadBalancerClient.EXPECT().
 		UpdateService(gomock.Any(), &hcloud.LoadBalancer{ID: 123}, 80, hcloud.LoadBalancerUpdateServiceOpts{
-			DestinationPort: hcloud.Ptr(8080),
+			DestinationPort: new(8080),
 			Protocol:        hcloud.LoadBalancerServiceProtocolTCP,
-			Proxyprotocol:   hcloud.Ptr(true),
+			Proxyprotocol:   new(true),
 			HTTP: &hcloud.LoadBalancerUpdateServiceOptsHTTP{
-				RedirectHTTP:   hcloud.Ptr(true),
-				StickySessions: hcloud.Ptr(true),
-				CookieName:     hcloud.Ptr("test"),
+				RedirectHTTP:   new(true),
+				StickySessions: new(true),
+				CookieName:     new("test"),
 				CookieLifetime: hcloud.Ptr(10 * time.Minute),
 				Certificates:   []*hcloud.Certificate{{ID: 1}},
 				TimeoutIdle:    hcloud.Ptr(60 * time.Second),
 			},
 			HealthCheck: &hcloud.LoadBalancerUpdateServiceOptsHealthCheck{
 				Protocol: hcloud.LoadBalancerServiceProtocolTCP,
-				Port:     hcloud.Ptr(8080),
+				Port:     new(8080),
 				Interval: hcloud.Ptr(10 * time.Second),
 				Timeout:  hcloud.Ptr(5 * time.Second),
-				Retries:  hcloud.Ptr(2),
+				Retries:  new(2),
 				HTTP: &hcloud.LoadBalancerUpdateServiceOptsHealthCheckHTTP{
-					Domain:      hcloud.Ptr("example.com"),
-					Path:        hcloud.Ptr("/health"),
+					Domain:      new("example.com"),
+					Path:        new("/health"),
 					StatusCodes: []string{"200"},
-					Response:    hcloud.Ptr("OK"),
-					TLS:         hcloud.Ptr(true),
+					Response:    new("OK"),
+					TLS:         new(true),
 				},
 			},
 		}).

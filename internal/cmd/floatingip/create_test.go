@@ -33,11 +33,11 @@ func TestCreate(t *testing.T) {
 
 	fx.Client.FloatingIPClient.EXPECT().
 		Create(gomock.Any(), hcloud.FloatingIPCreateOpts{
-			Name:         hcloud.Ptr("myFloatingIP"),
+			Name:         new("myFloatingIP"),
 			Type:         hcloud.FloatingIPTypeIPv4,
 			HomeLocation: &hcloud.Location{Name: "fsn1"},
 			Labels:       make(map[string]string),
-			Description:  hcloud.Ptr(""),
+			Description:  new(""),
 		}).
 		Return(hcloud.FloatingIPCreateResult{
 			FloatingIP: floatingIP,
@@ -76,11 +76,11 @@ func TestCreateJSON(t *testing.T) {
 
 	fx.Client.FloatingIPClient.EXPECT().
 		Create(gomock.Any(), hcloud.FloatingIPCreateOpts{
-			Name:         hcloud.Ptr("myFloatingIP"),
+			Name:         new("myFloatingIP"),
 			Type:         hcloud.FloatingIPTypeIPv4,
 			HomeLocation: &hcloud.Location{Name: "fsn1"},
 			Labels:       make(map[string]string),
-			Description:  hcloud.Ptr(""),
+			Description:  new(""),
 		}).
 		Return(hcloud.FloatingIPCreateResult{
 			FloatingIP: floatingIP,
@@ -115,11 +115,11 @@ func TestCreateProtection(t *testing.T) {
 
 	fx.Client.FloatingIPClient.EXPECT().
 		Create(gomock.Any(), hcloud.FloatingIPCreateOpts{
-			Name:         hcloud.Ptr("myFloatingIP"),
+			Name:         new("myFloatingIP"),
 			Type:         hcloud.FloatingIPTypeIPv4,
 			HomeLocation: &hcloud.Location{Name: "fsn1"},
 			Labels:       make(map[string]string),
-			Description:  hcloud.Ptr(""),
+			Description:  new(""),
 		}).
 		Return(hcloud.FloatingIPCreateResult{
 			FloatingIP: floatingIP,
@@ -131,7 +131,7 @@ func TestCreateProtection(t *testing.T) {
 
 	fx.Client.FloatingIPClient.EXPECT().
 		ChangeProtection(gomock.Any(), floatingIP, hcloud.FloatingIPChangeProtectionOpts{
-			Delete: hcloud.Ptr(true),
+			Delete: new(true),
 		}).
 		Return(&hcloud.Action{ID: 333}, nil, nil)
 	fx.ActionWaiter.EXPECT().WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 333}).Return(nil)

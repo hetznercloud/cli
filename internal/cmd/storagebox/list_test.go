@@ -49,7 +49,7 @@ func TestList(t *testing.T) {
 			Minute:       1,
 			Hour:         2,
 			DayOfWeek:    hcloud.Ptr(time.Sunday),
-			DayOfMonth:   hcloud.Ptr(4),
+			DayOfMonth:   new(4),
 		},
 		Created: time.Now().Add(-3 * time.Hour),
 	}

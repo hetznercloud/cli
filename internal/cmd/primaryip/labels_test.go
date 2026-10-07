@@ -24,7 +24,7 @@ func TestLabelAdd(t *testing.T) {
 		Return(&hcloud.PrimaryIP{ID: 123}, nil, nil)
 	fx.Client.PrimaryIPClient.EXPECT().
 		Update(gomock.Any(), &hcloud.PrimaryIP{ID: 123}, hcloud.PrimaryIPUpdateOpts{
-			Labels: hcloud.Ptr(map[string]string{
+			Labels: new(map[string]string{
 				"key": "value",
 			}),
 		})
@@ -57,7 +57,7 @@ func TestLabelRemove(t *testing.T) {
 		Return(primaryIP, nil, nil)
 	fx.Client.PrimaryIPClient.EXPECT().
 		Update(gomock.Any(), primaryIP, hcloud.PrimaryIPUpdateOpts{
-			Labels: hcloud.Ptr(make(map[string]string)),
+			Labels: new(make(map[string]string)),
 		})
 
 	out, errOut, err := fx.Run(cmd, []string{"123", "key"})

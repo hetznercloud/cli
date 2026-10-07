@@ -26,14 +26,14 @@ func TestAddService(t *testing.T) {
 	fx.Client.LoadBalancerClient.EXPECT().
 		AddService(gomock.Any(), &hcloud.LoadBalancer{ID: 123}, hcloud.LoadBalancerAddServiceOpts{
 			Protocol:        hcloud.LoadBalancerServiceProtocolHTTP,
-			ListenPort:      hcloud.Ptr(80),
-			DestinationPort: hcloud.Ptr(8080),
+			ListenPort:      new(80),
+			DestinationPort: new(8080),
 			HTTP: &hcloud.LoadBalancerAddServiceOptsHTTP{
-				StickySessions: hcloud.Ptr(false),
-				RedirectHTTP:   hcloud.Ptr(false),
+				StickySessions: new(false),
+				RedirectHTTP:   new(false),
 				TimeoutIdle:    hcloud.Ptr(60 * time.Second),
 			},
-			Proxyprotocol: hcloud.Ptr(false),
+			Proxyprotocol: new(false),
 		}).
 		Return(&hcloud.Action{ID: 123}, nil, nil)
 	fx.ActionWaiter.EXPECT().
@@ -65,28 +65,28 @@ func TestAddServiceWithHealthCheck(t *testing.T) {
 	fx.Client.LoadBalancerClient.EXPECT().
 		AddService(gomock.Any(), &hcloud.LoadBalancer{ID: 123}, hcloud.LoadBalancerAddServiceOpts{
 			Protocol:        hcloud.LoadBalancerServiceProtocolHTTP,
-			ListenPort:      hcloud.Ptr(80),
-			DestinationPort: hcloud.Ptr(8080),
+			ListenPort:      new(80),
+			DestinationPort: new(8080),
 			HTTP: &hcloud.LoadBalancerAddServiceOptsHTTP{
-				StickySessions: hcloud.Ptr(true),
-				RedirectHTTP:   hcloud.Ptr(true),
-				CookieName:     hcloud.Ptr("test"),
+				StickySessions: new(true),
+				RedirectHTTP:   new(true),
+				CookieName:     new("test"),
 				Certificates:   []*hcloud.Certificate{{ID: 1}},
 				CookieLifetime: hcloud.Ptr(10 * time.Minute),
 			},
-			Proxyprotocol: hcloud.Ptr(false),
+			Proxyprotocol: new(false),
 			HealthCheck: &hcloud.LoadBalancerAddServiceOptsHealthCheck{
 				Protocol: hcloud.LoadBalancerServiceProtocolHTTP,
-				Port:     hcloud.Ptr(80),
+				Port:     new(80),
 				Interval: hcloud.Ptr(10 * time.Second),
 				Timeout:  hcloud.Ptr(5 * time.Second),
-				Retries:  hcloud.Ptr(2),
+				Retries:  new(2),
 				HTTP: &hcloud.LoadBalancerAddServiceOptsHealthCheckHTTP{
-					Domain:      hcloud.Ptr("example.com"),
-					Path:        hcloud.Ptr("/health"),
+					Domain:      new("example.com"),
+					Path:        new("/health"),
 					StatusCodes: []string{"200"},
-					Response:    hcloud.Ptr("OK"),
-					TLS:         hcloud.Ptr(true),
+					Response:    new("OK"),
+					TLS:         new(true),
 				},
 			},
 		}).

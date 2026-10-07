@@ -51,7 +51,7 @@ var CreateImageCmd = base.Cmd{
 
 		opts := &hcloud.ServerCreateImageOpts{
 			Type:        hcloud.ImageType(imageType),
-			Description: hcloud.Ptr(description),
+			Description: new(description),
 			Labels:      labels,
 		}
 		result, _, err := s.Client().Server().CreateImage(s, server, opts)

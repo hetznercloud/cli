@@ -46,9 +46,9 @@ func TestCreate(t *testing.T) {
 			Location:       &hcloud.Location{Name: "fsn1"},
 			Password:       "my-password",
 			AccessSettings: &hcloud.StorageBoxCreateOptsAccessSettings{
-				SambaEnabled: hcloud.Ptr(true),
-				SSHEnabled:   hcloud.Ptr(true),
-				ZFSEnabled:   hcloud.Ptr(true),
+				SambaEnabled: new(true),
+				SSHEnabled:   new(true),
+				ZFSEnabled:   new(true),
 			},
 			Labels:  make(map[string]string),
 			SSHKeys: []*hcloud.SSHKey{sshKey1, sshKey2},
@@ -94,8 +94,8 @@ func TestCreateJSON(t *testing.T) {
 			ID:                     42,
 			Name:                   "bx11",
 			Description:            "BX11",
-			SnapshotLimit:          hcloud.Ptr(10),
-			AutomaticSnapshotLimit: hcloud.Ptr(10),
+			SnapshotLimit:          new(10),
+			AutomaticSnapshotLimit: new(10),
 			SubaccountsLimit:       200,
 			Size:                   1073741824,
 			Pricings: []hcloud.StorageBoxTypeLocationPricing{
@@ -171,9 +171,9 @@ func TestCreateJSON(t *testing.T) {
 			Location:       &hcloud.Location{Name: "fsn1"},
 			Password:       "my-password",
 			AccessSettings: &hcloud.StorageBoxCreateOptsAccessSettings{
-				SambaEnabled: hcloud.Ptr(true),
-				SSHEnabled:   hcloud.Ptr(true),
-				ZFSEnabled:   hcloud.Ptr(true),
+				SambaEnabled: new(true),
+				SSHEnabled:   new(true),
+				ZFSEnabled:   new(true),
 			},
 			Labels:  make(map[string]string),
 			SSHKeys: []*hcloud.SSHKey{sshKey1},
@@ -220,9 +220,9 @@ func TestCreateProtection(t *testing.T) {
 			Location:       &hcloud.Location{Name: "fsn1"},
 			Password:       "my-password",
 			AccessSettings: &hcloud.StorageBoxCreateOptsAccessSettings{
-				SambaEnabled: hcloud.Ptr(true),
-				SSHEnabled:   hcloud.Ptr(true),
-				ZFSEnabled:   hcloud.Ptr(true),
+				SambaEnabled: new(true),
+				SSHEnabled:   new(true),
+				ZFSEnabled:   new(true),
 			},
 			Labels:  make(map[string]string),
 			SSHKeys: []*hcloud.SSHKey{sshKey1},
@@ -233,7 +233,7 @@ func TestCreateProtection(t *testing.T) {
 		}, nil, nil)
 	fx.Client.StorageBoxClient.EXPECT().
 		ChangeProtection(gomock.Any(), sb, hcloud.StorageBoxChangeProtectionOpts{
-			Delete: hcloud.Ptr(true),
+			Delete: new(true),
 		}).
 		Return(&hcloud.Action{ID: 789}, nil, nil)
 	fx.ActionWaiter.EXPECT().

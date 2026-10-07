@@ -39,7 +39,7 @@ func TestEnableProtection(t *testing.T) {
 		Return(rrSet, nil, nil)
 	fx.Client.ZoneClient.EXPECT().
 		ChangeRRSetProtection(gomock.Any(), rrSet, hcloud.ZoneRRSetChangeProtectionOpts{
-			Change: hcloud.Ptr(true),
+			Change: new(true),
 		}).
 		Return(&hcloud.Action{ID: 789}, nil, nil)
 	fx.ActionWaiter.EXPECT().
@@ -81,7 +81,7 @@ func TestDisableProtection(t *testing.T) {
 		Return(rrSet, nil, nil)
 	fx.Client.ZoneClient.EXPECT().
 		ChangeRRSetProtection(gomock.Any(), rrSet, hcloud.ZoneRRSetChangeProtectionOpts{
-			Change: hcloud.Ptr(false),
+			Change: new(false),
 		}).
 		Return(&hcloud.Action{ID: 789}, nil, nil)
 	fx.ActionWaiter.EXPECT().

@@ -26,7 +26,7 @@ func TestExposeRoutesToVSwitchEnable(t *testing.T) {
 		Return(n, nil, nil)
 	fx.Client.NetworkClient.EXPECT().
 		Update(gomock.Any(), n, hcloud.NetworkUpdateOpts{
-			ExposeRoutesToVSwitch: hcloud.Ptr(true),
+			ExposeRoutesToVSwitch: new(true),
 		}).
 		Return(n, nil, nil)
 
@@ -52,7 +52,7 @@ func TestExposeRoutesToVSwitchDisable(t *testing.T) {
 		Return(n, nil, nil)
 	fx.Client.NetworkClient.EXPECT().
 		Update(gomock.Any(), n, hcloud.NetworkUpdateOpts{
-			ExposeRoutesToVSwitch: hcloud.Ptr(false),
+			ExposeRoutesToVSwitch: new(false),
 		}).
 		Return(n, nil, nil)
 
