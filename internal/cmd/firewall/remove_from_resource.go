@@ -25,7 +25,7 @@ var RemoveFromResourceCmd = base.Cmd{
 		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("server", "label_selector"))
 		_ = cmd.MarkFlagRequired("type")
 
-		cmd.Flags().String("server", "", "Server name of ID (required when type is server)")
+		cmd.Flags().String("server", "", "Server name or ID (required when type is server)")
 		_ = cmd.RegisterFlagCompletionFunc("server", cmpl.SuggestCandidatesF(client.Server().Names))
 
 		cmd.Flags().StringP("label-selector", "l", "", "Label Selector")
