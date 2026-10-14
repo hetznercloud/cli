@@ -62,6 +62,11 @@ var ScreenshotCmd = base.Cmd{
 			cmd.Printf("Warning: Only .png output file are supported\n")
 		}
 
-		return util.TakeScreenshot(s, result.WSSURL, output, timeout)
+		if err := util.TakeScreenshot(s, result.WSSURL, output, timeout); err != nil {
+			return err
+		}
+
+		cmd.Printf("Screenshot captured and saved to '%s'\n", output)
+		return nil
 	},
 }
