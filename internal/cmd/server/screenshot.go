@@ -3,6 +3,7 @@ package server
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/spf13/cobra"
 
@@ -23,10 +24,14 @@ var ScreenshotCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 		cmd.Flags().StringP("output", "o", "screenshot.png", "Output file for the screenshot (must be a .png file).")
+		cmd.Flags().Duration("timeout", 10*time.Second, "Timeout for taking the screenshot (0s disables the timeout)")
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
+		output, _ := cmd.Flags().GetString("output")
+		timeout, _ := cmd.Flags().GetDuration("timeout")
+
 		server, _, err := s.Client().Server().Get(s, idOrName)
 		if err != nil {
 			return err
@@ -44,11 +49,10 @@ var ScreenshotCmd = base.Cmd{
 			return err
 		}
 
-		output, _ := cmd.Flags().GetString("output")
 		if !strings.HasSuffix(strings.ToLower(output), ".png") {
 			cmd.Printf("Warning: Only .png output file are supported\n")
 		}
 
-		return screenshot.TakeScreenshot(s, result.WSSURL, output)
+		return screenshot.TakeScreenshot(s, result.WSSURL, output, timeout)
 	},
 }
