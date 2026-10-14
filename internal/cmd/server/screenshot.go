@@ -9,7 +9,7 @@ import (
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/cmpl"
-	"github.com/hetznercloud/cli/internal/cmd/server/screenshot"
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
 )
@@ -53,6 +53,6 @@ var ScreenshotCmd = base.Cmd{
 			cmd.Printf("Warning: Only .png output file are supported\n")
 		}
 
-		return screenshot.TakeScreenshot(s, result.WSSURL, output, timeout)
+		return util.TakeScreenshot(s, result.WSSURL, output, timeout)
 	},
 }
