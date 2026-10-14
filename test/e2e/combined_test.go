@@ -285,6 +285,16 @@ func TestCombined(t *testing.T) {
 			assert.Positive(t, img.Bounds().Dy())
 		})
 
+		t.Run("stdout", func(t *testing.T) {
+			out, err := runCommand(t, "server", "screenshot", strconv.FormatInt(serverID, 10), "--output", "-")
+			require.NoError(t, err)
+
+			img, err := png.Decode(bytes.NewReader([]byte(out)))
+			require.NoError(t, err)
+			assert.Positive(t, img.Bounds().Dx())
+			assert.Positive(t, img.Bounds().Dy())
+		})
+
 		t.Run("timeout", func(t *testing.T) {
 			output := path.Join(t.TempDir(), "screenshot.png")
 

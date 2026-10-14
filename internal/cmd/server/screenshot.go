@@ -2,6 +2,7 @@ package server
 
 import (
 	"fmt"
+	"io"
 	"os"
 	"strings"
 	"time"
@@ -24,7 +25,7 @@ var ScreenshotCmd = base.Cmd{
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
 		}
-		cmd.Flags().StringP("output", "o", "screenshot.png", "Output file for the screenshot (must be a .png file).")
+		cmd.Flags().StringP("output", "o", "screenshot.png", "Output file for the screenshot ('-' for stdout; must be a .png file otherwise)")
 		cmd.Flags().Duration("timeout", 10*time.Second, "Timeout for taking the screenshot (0s disables the timeout)")
 		cmd.Flags().Bool("overwrite", false, "Overwrite the output file if it exists already (true, false)")
 		return cmd
@@ -34,8 +35,13 @@ var ScreenshotCmd = base.Cmd{
 		output, _ := cmd.Flags().GetString("output")
 		timeout, _ := cmd.Flags().GetDuration("timeout")
 		overwrite, _ := cmd.Flags().GetBool("overwrite")
+		toStdout := output == "-"
 
-		if !overwrite {
+		if toStdout && s.Terminal().StdoutIsTerminal() {
+			return fmt.Errorf("interactive tty detected. use --output <file> or redirect stdout")
+		}
+
+		if !toStdout && !overwrite {
 			if _, err := os.Stat(output); err == nil {
 				return fmt.Errorf("output file %s already exists", output)
 			}
@@ -58,15 +64,29 @@ var ScreenshotCmd = base.Cmd{
 			return err
 		}
 
-		if !strings.HasSuffix(strings.ToLower(output), ".png") {
+		if !toStdout && !strings.HasSuffix(strings.ToLower(output), ".png") {
 			cmd.Printf("Warning: Only .png output file are supported\n")
 		}
 
-		if err := util.TakeScreenshot(s, result.WSSURL, output, timeout); err != nil {
+		var w io.Writer
+		if toStdout {
+			w = cmd.OutOrStdout()
+		} else {
+			f, err := os.OpenFile(output, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600)
+			if err != nil {
+				return err
+			}
+			defer f.Close()
+			w = f
+		}
+
+		if err := util.TakeScreenshot(s, result.WSSURL, w, timeout); err != nil {
 			return err
 		}
 
-		cmd.Printf("Screenshot captured and saved to '%s'\n", output)
+		if !toStdout {
+			cmd.Printf("Screenshot captured and saved to '%s'\n", output)
+		}
 		return nil
 	},
 }
