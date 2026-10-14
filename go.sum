@@ -2,8 +2,6 @@ github.com/BurntSushi/toml v1.6.0 h1:dRaEfpa2VI55EwlIW72hMRHdWouJeRF7TPYhI+AUQjk
 github.com/BurntSushi/toml v1.6.0/go.mod h1:ukJfTF/6rtPPRCnwkur4qwRxa8vTRFBF0uk2lLoLwho=
 github.com/VividCortex/ewma v1.2.0 h1:f58SaIzcDXrSy3kWaHNvuJgJ3Nmz59Zji6XoJR/q1ow=
 github.com/VividCortex/ewma v1.2.0/go.mod h1:nz4BbCtbLyFDeC9SUHbtcT5644juEuWfUAUnGx7j5l4=
-github.com/alexsnet/go-vnc v0.1.0 h1:vBCwPNy79WEL8V/Z5A0ngEFCvTWBAjmS048lkR2rdmY=
-github.com/alexsnet/go-vnc v0.1.0/go.mod h1:bbRsg41Sh3zvrnWsw+REKJVGZd8Of2+S0V1G0ZaBhlU=
 github.com/beorn7/perks v1.0.1 h1:VlbKKnNfV8bJzeqoa4cOKqO6bYr3WgKZxO8Z16+hsOM=
 github.com/beorn7/perks v1.0.1/go.mod h1:G2ZrVWU2WbWT9wwq4/hrbKbnv/1ERSJQ0ibhJ6rlkpw=
 github.com/bool64/dev v0.2.43 h1:yQ7qiZVef6WtCl2vDYU0Y+qSq+0aBrQzY8KXkklk9cQ=
@@ -106,6 +104,8 @@ github.com/subosito/gotenv v1.6.0 h1:9NlTDc1FTs4qu0DDq7AEtTPNw6SVm7uBMsUCUjABIf8
 github.com/subosito/gotenv v1.6.0/go.mod h1:Dk4QP5c2W3ibzajGcXpNraDfq2IrhjMIvMSWPKKo0FU=
 github.com/swaggest/assertjson v1.10.0 h1:OYIx29UbgqjwAekKbeIO8T0XbAMyViJ8qqrVj2GQY2M=
 github.com/swaggest/assertjson v1.10.0/go.mod h1:31+ufMpzrCO/daIRZ4s1UZAA1R2q9EEUfJaoczgAty8=
+github.com/tenthirtyam/go-vnc v1.0.1 h1:jJBNsPkhnkNR1va5yfFY7v7rVc1C45x4pBMCr0a54oU=
+github.com/tenthirtyam/go-vnc v1.0.1/go.mod h1:J009Y0mesUZAmX6vBWBjcI8f7mOBNtQmhs47mman5NU=
 github.com/yudai/golcs v0.0.0-20170316035057-ecda9a501e82 h1:BHyfKlQyqbsFN5p3IfnEUduWvb9is428/nNb5L3U01M=
 github.com/yudai/golcs v0.0.0-20170316035057-ecda9a501e82/go.mod h1:lgjkn3NuSvDfVJdfcVVdX+jpBxNmX4rDAzaS45IcYoM=
 go.uber.org/goleak v1.3.0 h1:2K3zAYmnTNqV73imy9J1T3WC+gmCePx2hEGkimedGto=
