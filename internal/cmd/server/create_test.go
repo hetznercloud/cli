@@ -269,7 +269,7 @@ func TestCreateProtectionBackup(t *testing.T) {
 
 	fx.Client.ServerClient.EXPECT().
 		ChangeProtection(gomock.Any(), srv, hcloud.ServerChangeProtectionOpts{
-			Rebuild: hcloud.Ptr(true), Delete: hcloud.Ptr(true),
+			Rebuild: new(true), Delete: new(true),
 		}).
 		Return(&hcloud.Action{
 			ID: 1337,

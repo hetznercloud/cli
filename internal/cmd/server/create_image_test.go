@@ -27,7 +27,7 @@ func TestCreateImage(t *testing.T) {
 	fx.Client.ServerClient.EXPECT().
 		CreateImage(gomock.Any(), srv, &hcloud.ServerCreateImageOpts{
 			Type:        hcloud.ImageTypeSnapshot,
-			Description: hcloud.Ptr("my-snapshot"),
+			Description: new("my-snapshot"),
 			Labels:      make(map[string]string),
 		}).
 		Return(hcloud.ServerCreateImageResult{

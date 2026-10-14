@@ -29,7 +29,7 @@ func TestAddTargetServer(t *testing.T) {
 	fx.Client.LoadBalancerClient.EXPECT().
 		AddServerTarget(gomock.Any(), &hcloud.LoadBalancer{ID: 123}, hcloud.LoadBalancerAddServerTargetOpts{
 			Server:       &hcloud.Server{ID: 321},
-			UsePrivateIP: hcloud.Ptr(false),
+			UsePrivateIP: new(false),
 		}).
 		Return(&hcloud.Action{ID: 123}, nil, nil)
 	fx.ActionWaiter.EXPECT().
@@ -58,7 +58,7 @@ func TestAddTargetLabelSelector(t *testing.T) {
 	fx.Client.LoadBalancerClient.EXPECT().
 		AddLabelSelectorTarget(gomock.Any(), &hcloud.LoadBalancer{ID: 123}, hcloud.LoadBalancerAddLabelSelectorTargetOpts{
 			Selector:     "my-label",
-			UsePrivateIP: hcloud.Ptr(false),
+			UsePrivateIP: new(false),
 		}).
 		Return(&hcloud.Action{ID: 123}, nil, nil)
 	fx.ActionWaiter.EXPECT().

@@ -235,7 +235,7 @@ func TestCreateProtection(t *testing.T) {
 		Return(loadBalancer, nil, nil)
 	fx.Client.LoadBalancerClient.EXPECT().
 		ChangeProtection(gomock.Any(), loadBalancer, hcloud.LoadBalancerChangeProtectionOpts{
-			Delete: hcloud.Ptr(true),
+			Delete: new(true),
 		}).
 		Return(&hcloud.Action{ID: 333}, nil, nil)
 	fx.ActionWaiter.EXPECT().WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 333}).Return(nil)

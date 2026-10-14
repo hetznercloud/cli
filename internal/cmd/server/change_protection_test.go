@@ -26,8 +26,8 @@ func TestEnableProtection(t *testing.T) {
 		Return(srv, nil, nil)
 	fx.Client.ServerClient.EXPECT().
 		ChangeProtection(gomock.Any(), srv, hcloud.ServerChangeProtectionOpts{
-			Delete:  hcloud.Ptr(false),
-			Rebuild: hcloud.Ptr(false),
+			Delete:  new(false),
+			Rebuild: new(false),
 		}).
 		Return(&hcloud.Action{ID: 789}, nil, nil)
 	fx.ActionWaiter.EXPECT().
@@ -56,8 +56,8 @@ func TestDisableProtection(t *testing.T) {
 		Return(srv, nil, nil)
 	fx.Client.ServerClient.EXPECT().
 		ChangeProtection(gomock.Any(), srv, hcloud.ServerChangeProtectionOpts{
-			Delete:  hcloud.Ptr(false),
-			Rebuild: hcloud.Ptr(false),
+			Delete:  new(false),
+			Rebuild: new(false),
 		}).
 		Return(&hcloud.Action{ID: 789}, nil, nil)
 	fx.ActionWaiter.EXPECT().

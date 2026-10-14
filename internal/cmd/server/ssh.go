@@ -66,8 +66,7 @@ var SSHCmd = base.Cmd{
 		sshCommand.Stderr = os.Stderr
 
 		if err := sshCommand.Run(); err != nil {
-			var exitError *exec.ExitError
-			if errors.As(err, &exitError) {
+			if exitError, ok := errors.AsType[*exec.ExitError](err); ok {
 				waitStatus := exitError.Sys().(syscall.WaitStatus)
 				os.Exit(waitStatus.ExitStatus())
 			}

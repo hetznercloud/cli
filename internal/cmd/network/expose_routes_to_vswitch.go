@@ -39,7 +39,7 @@ var ExposeRoutesToVSwitchCmd = base.Cmd{
 
 		disable, _ := cmd.Flags().GetBool("disable")
 		opts := hcloud.NetworkUpdateOpts{
-			ExposeRoutesToVSwitch: hcloud.Ptr(!disable),
+			ExposeRoutesToVSwitch: new(!disable),
 		}
 
 		_, _, err = s.Client().Network().Update(s, network, opts)

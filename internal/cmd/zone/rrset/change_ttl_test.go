@@ -39,7 +39,7 @@ func TestChangeTTL(t *testing.T) {
 		GetRRSetByNameAndType(gomock.Any(), z, "www", hcloud.ZoneRRSetTypeA).
 		Return(rrSet, nil, nil)
 	fx.Client.ZoneClient.EXPECT().
-		ChangeRRSetTTL(gomock.Any(), rrSet, hcloud.ZoneRRSetChangeTTLOpts{TTL: hcloud.Ptr(1337)}).
+		ChangeRRSetTTL(gomock.Any(), rrSet, hcloud.ZoneRRSetChangeTTLOpts{TTL: new(1337)}).
 		Return(&hcloud.Action{ID: 321}, nil, nil)
 	fx.ActionWaiter.EXPECT().
 		WaitForActions(gomock.Any(), gomock.Any(), []*hcloud.Action{{ID: 321}})

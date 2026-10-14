@@ -35,8 +35,8 @@ func TestAddRule(t *testing.T) {
 				SourceIPs:      []net.IPNet{{IP: net.IP{0, 0, 0, 0}, Mask: net.IPMask{0, 0, 0, 0}}, {IP: net.IP{127, 0, 0, 1}, Mask: net.IPMask{255, 255, 255, 255}}},
 				DestinationIPs: []net.IPNet{},
 				Protocol:       hcloud.FirewallRuleProtocolTCP,
-				Port:           hcloud.Ptr("80"),
-				Description:    hcloud.Ptr("http"),
+				Port:           new("80"),
+				Description:    new("http"),
 			}},
 		}).
 		Return([]*hcloud.Action{{ID: 123}, {ID: 321}}, nil, nil)

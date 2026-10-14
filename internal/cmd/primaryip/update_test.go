@@ -49,7 +49,7 @@ func TestUpdateAutoDelete(t *testing.T) {
 		Return(&hcloud.PrimaryIP{ID: 123}, nil, nil)
 	fx.Client.PrimaryIPClient.EXPECT().
 		Update(gomock.Any(), &hcloud.PrimaryIP{ID: 123}, hcloud.PrimaryIPUpdateOpts{
-			AutoDelete: hcloud.Ptr(false),
+			AutoDelete: new(false),
 		})
 
 	out, errOut, err := fx.Run(cmd, []string{"123", "--auto-delete=false"})

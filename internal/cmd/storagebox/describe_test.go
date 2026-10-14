@@ -33,8 +33,8 @@ func TestDescribe(t *testing.T) {
 			ID:                     42,
 			Name:                   "bx11",
 			Description:            "BX11",
-			SnapshotLimit:          hcloud.Ptr(10),
-			AutomaticSnapshotLimit: hcloud.Ptr(10),
+			SnapshotLimit:          new(10),
+			AutomaticSnapshotLimit: new(10),
 			SubaccountsLimit:       200,
 			Size:                   1073741824,
 			Pricings: []hcloud.StorageBoxTypeLocationPricing{
@@ -98,7 +98,7 @@ func TestDescribe(t *testing.T) {
 			Minute:       1,
 			Hour:         2,
 			DayOfWeek:    hcloud.Ptr(time.Sunday),
-			DayOfMonth:   hcloud.Ptr(4),
+			DayOfMonth:   new(4),
 		},
 		Created: time.Date(2016, 1, 30, 23, 55, 0, 0, time.UTC),
 	}

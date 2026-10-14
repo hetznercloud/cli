@@ -138,7 +138,7 @@ func TestCreateProtection(t *testing.T) {
 		WaitForActions(gomock.Any(), gomock.Any(), []*hcloud.Action{{ID: 321}, {ID: 1}, {ID: 2}, {ID: 3}})
 	fx.Client.VolumeClient.EXPECT().
 		ChangeProtection(gomock.Any(), v, hcloud.VolumeChangeProtectionOpts{
-			Delete: hcloud.Ptr(true),
+			Delete: new(true),
 		}).
 		Return(&hcloud.Action{ID: 123}, nil, nil)
 	fx.ActionWaiter.EXPECT().

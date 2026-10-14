@@ -41,7 +41,7 @@ func TestCreate(t *testing.T) {
 				Type:       "ipv4",
 				Location:   "fsn1",
 				Labels:     map[string]string{"foo": "bar"},
-				AutoDelete: hcloud.Ptr(true),
+				AutoDelete: new(true),
 			},
 		).
 		Return(
@@ -106,7 +106,7 @@ func TestCreateJSON(t *testing.T) {
 				Type:       "ipv4",
 				Location:   "fsn1",
 				Labels:     map[string]string{"foo": "bar"},
-				AutoDelete: hcloud.Ptr(true),
+				AutoDelete: new(true),
 			},
 		).
 		Return(

@@ -31,7 +31,7 @@ func TestAttach(t *testing.T) {
 	fx.Client.VolumeClient.EXPECT().
 		AttachWithOpts(gomock.Any(), v, hcloud.VolumeAttachOpts{
 			Server:    srv,
-			Automount: hcloud.Ptr(false),
+			Automount: new(false),
 		}).Return(&hcloud.Action{ID: 321}, nil, nil)
 	fx.ActionWaiter.EXPECT().
 		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321}).

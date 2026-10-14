@@ -21,7 +21,7 @@ func TestEnableProtection(t *testing.T) {
 
 	fx.Client.ImageClient.EXPECT().
 		ChangeProtection(gomock.Any(), &hcloud.Image{ID: 123}, hcloud.ImageChangeProtectionOpts{
-			Delete: hcloud.Ptr(true),
+			Delete: new(true),
 		}).
 		Return(&hcloud.Action{ID: 123}, nil, nil)
 	fx.ActionWaiter.EXPECT().
@@ -46,7 +46,7 @@ func TestDisableProtection(t *testing.T) {
 
 	fx.Client.ImageClient.EXPECT().
 		ChangeProtection(gomock.Any(), &hcloud.Image{ID: 123}, hcloud.ImageChangeProtectionOpts{
-			Delete: hcloud.Ptr(false),
+			Delete: new(false),
 		}).
 		Return(&hcloud.Action{ID: 123}, nil, nil)
 	fx.ActionWaiter.EXPECT().

@@ -31,8 +31,8 @@ func TestDescribe(t *testing.T) {
 		Rules: []hcloud.FirewallRule{
 			{
 				Direction:   hcloud.FirewallRuleDirectionIn,
-				Description: hcloud.Ptr("ssh"),
-				Port:        hcloud.Ptr("22"),
+				Description: new("ssh"),
+				Port:        new("22"),
 				Protocol:    hcloud.FirewallRuleProtocolTCP,
 			},
 		},

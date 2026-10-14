@@ -36,7 +36,7 @@ func TestUpdate(t *testing.T) {
 		Return(sbs, nil, nil)
 	fx.Client.StorageBoxClient.EXPECT().
 		UpdateSubaccount(gomock.Any(), sbs, hcloud.StorageBoxSubaccountUpdateOpts{
-			Description: hcloud.Ptr("new description"),
+			Description: new("new description"),
 		})
 
 	out, errOut, err := fx.Run(cmd, []string{"my-storage-box", "456", "--description", "new description"})
