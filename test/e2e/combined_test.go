@@ -274,7 +274,7 @@ func TestCombined(t *testing.T) {
 
 			out, err := runCommand(t, "server", "screenshot", strconv.FormatInt(serverID, 10), "--output", output)
 			require.NoError(t, err)
-			assert.Empty(t, out)
+			assert.Equal(t, fmt.Sprintf("Screenshot captured and saved to '%s'\n", output), out)
 
 			data, err := os.ReadFile(output)
 			require.NoError(t, err)
