@@ -30,6 +30,7 @@ var ScreenshotCmd = base.Cmd{
 		cmd.Flags().Bool("overwrite", false, "Overwrite the output file if it exists already (true, false)")
 		return cmd
 	},
+	Experimental: base.ExperimentalWrapper("The server screenshot command", "experimental", ""),
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
 		output, _ := cmd.Flags().GetString("output")
