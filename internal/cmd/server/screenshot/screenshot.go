@@ -11,6 +11,7 @@ import (
 	"log/slog"
 	"net/url"
 	"os"
+	"time"
 
 	"github.com/tenthirtyam/go-vnc"
 	"golang.org/x/net/websocket"
@@ -45,7 +46,13 @@ func dialWebsocket(ctx context.Context, wsURL string) (*websocket.Conn, error) {
 	return ws, nil
 }
 
-func TakeScreenshot(ctx context.Context, wsURL string, filename string) error {
+func TakeScreenshot(ctx context.Context, wsURL string, filename string, timeout time.Duration) error {
+	if timeout > 0 {
+		var cancel context.CancelFunc
+		ctx, cancel = context.WithTimeout(ctx, timeout)
+		defer cancel()
+	}
+
 	slog.Debug("dialing websocket")
 	ws, err := dialWebsocket(ctx, wsURL)
 	if err != nil {

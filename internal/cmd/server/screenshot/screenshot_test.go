@@ -1,7 +1,6 @@
 package screenshot
 
 import (
-	"context"
 	"log/slog"
 	"os"
 	"testing"
@@ -27,11 +26,8 @@ func TestTakeScreenshot(t *testing.T) {
 	err = client.Action.WaitFor(ctx, result.Action)
 	require.NoError(t, err)
 
-	ctx, cancel := context.WithTimeout(t.Context(), 10*time.Second)
-	defer cancel()
-
 	slog.SetDefault(slog.New(slog.NewTextHandler(os.Stderr, &slog.HandlerOptions{Level: slog.LevelDebug})))
 
-	err = TakeScreenshot(ctx, result.WSSURL, "screenshot.png")
+	err = TakeScreenshot(ctx, result.WSSURL, "screenshot.png", 10*time.Second)
 	require.NoError(t, err)
 }
