@@ -10,14 +10,13 @@ import (
 	"io"
 	"log/slog"
 	"net/url"
-	"os"
 	"time"
 
 	"github.com/tenthirtyam/go-vnc"
 	"golang.org/x/net/websocket"
 )
 
-func TakeScreenshot(ctx context.Context, wsURL string, filename string, timeout time.Duration) error {
+func TakeScreenshot(ctx context.Context, wsURL string, w io.Writer, timeout time.Duration) error {
 	if timeout > 0 {
 		var cancel context.CancelFunc
 		ctx, cancel = context.WithTimeout(ctx, timeout)
@@ -98,10 +97,8 @@ func TakeScreenshot(ctx context.Context, wsURL string, filename string, timeout 
 		}
 	}
 
-	if err := os.WriteFile(filename, imgData.Bytes(), 0600); err != nil {
-		return err
-	}
-	return nil
+	_, err = w.Write(imgData.Bytes())
+	return err
 }
 
 func websocketOrigin(wsURL string) (string, error) {
