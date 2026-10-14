@@ -2,6 +2,7 @@ package server
 
 import (
 	"fmt"
+	"os"
 	"strings"
 	"time"
 
@@ -25,12 +26,20 @@ var ScreenshotCmd = base.Cmd{
 		}
 		cmd.Flags().StringP("output", "o", "screenshot.png", "Output file for the screenshot (must be a .png file).")
 		cmd.Flags().Duration("timeout", 10*time.Second, "Timeout for taking the screenshot (0s disables the timeout)")
+		cmd.Flags().Bool("overwrite", false, "Overwrite the output file if it exists already (true, false)")
 		return cmd
 	},
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
 		output, _ := cmd.Flags().GetString("output")
 		timeout, _ := cmd.Flags().GetDuration("timeout")
+		overwrite, _ := cmd.Flags().GetBool("overwrite")
+
+		if !overwrite {
+			if _, err := os.Stat(output); err == nil {
+				return fmt.Errorf("output file %s already exists", output)
+			}
+		}
 
 		server, _, err := s.Client().Server().Get(s, idOrName)
 		if err != nil {
