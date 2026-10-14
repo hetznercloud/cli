@@ -11,6 +11,7 @@ hcloud server screenshot [options] <server>
 ```
   -h, --help               help for screenshot
   -o, --output string      Output file for the screenshot (must be a .png file). (default "screenshot.png")
+      --overwrite          Overwrite the output file if it exists already (true, false)
       --timeout duration   Timeout for taking the screenshot (0s disables the timeout) (default 10s)
 ```
 
