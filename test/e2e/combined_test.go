@@ -296,7 +296,7 @@ func TestCombined(t *testing.T) {
 		})
 
 		t.Run("timeout", func(t *testing.T) {
-			output := path.Join(t.TempDir(), "screenshot.png")
+			output := path.Join(t.TempDir(), "timeout.png")
 
 			out, err := runCommand(t, "server", "screenshot", strconv.FormatInt(serverID, 10), "--output", output, "--timeout", "1ms")
 			require.Error(t, err)
