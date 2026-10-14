@@ -41,11 +41,13 @@ func ExperimentalWrapper(product, maturity, url string) func(state.State, *cobra
 		}
 
 		cmd.Short = "[experimental] " + cmd.Short
-		cmd.Long += fmt.Sprintf(`
-
-Experimental: %s is %s, breaking changes may occur within minor releases.
-See %s for more details.
-`, product, maturity, url)
+		cmd.Long += fmt.Sprintf(
+			"\n\nExperimental: %s is %s, breaking changes may occur within minor releases.\n",
+			product, maturity,
+		)
+		if url != "" {
+			cmd.Long += fmt.Sprintf("See %s for more details.\n", url)
+		}
 
 		cmd.PreRunE = util.ChainRunE(cmd.PreRunE, func(cmd *cobra.Command, _ []string) error {
 			hideWarning, err := config.OptionNoExperimentalWarning.Get(s.Config())

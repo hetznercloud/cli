@@ -1,6 +1,13 @@
 ## hcloud server screenshot
 
+[experimental] Take a screenshot of the Server VNC console
+
+### Synopsis
+
 Take a screenshot of the Server VNC console
+
+Experimental: The server screenshot command is experimental, breaking changes may occur within minor releases.
+
 
 ```
 hcloud server screenshot [options] <server>
