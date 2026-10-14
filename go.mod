@@ -6,7 +6,6 @@ toolchain go1.27.3
 
 require (
 	github.com/BurntSushi/toml v1.6.0
-	github.com/alexsnet/go-vnc v0.1.0
 	github.com/cheggaaa/pb/v3 v3.3.0
 	github.com/dustin/go-humanize v1.1.0
 	github.com/fatih/color v1.19.0
@@ -21,6 +20,7 @@ require (
 	github.com/spf13/viper v1.21.0
 	github.com/stretchr/testify v1.12.1
 	github.com/swaggest/assertjson v1.10.0
+	github.com/tenthirtyam/go-vnc v1.0.1
 	go.uber.org/mock v0.6.0
 	golang.org/x/crypto v0.58.0
 	golang.org/x/exp v0.0.0-20261014143641-f0251eb4aa3e

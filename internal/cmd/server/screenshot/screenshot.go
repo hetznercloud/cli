@@ -12,8 +12,7 @@ import (
 	"net/url"
 	"os"
 
-	"github.com/alexsnet/go-vnc"
-	"github.com/alexsnet/go-vnc/rfbflags"
+	"github.com/tenthirtyam/go-vnc"
 	"golang.org/x/net/websocket"
 )
 
@@ -55,69 +54,69 @@ func TakeScreenshot(ctx context.Context, wsURL string, filename string) error {
 	defer ws.Close()
 
 	slog.Debug("creating vnc client")
-	vncCfg := &vnc.ClientConfig{
-		Auth: []vnc.ClientAuth{
-			// Auth is managed at the HTTP/websocket level,therefore no password is
-			// needed for the VNC client.
-			&vnc.ClientAuthNone{},
-		},
-		ServerMessages: []vnc.ServerMessage{
-			&vnc.FramebufferUpdate{},
-		},
-		ServerMessageCh: make(chan vnc.ServerMessage, 1),
-	}
+	serverMessages := make(chan vnc.ServerMessage, 8)
 
 	slog.Debug("connecting vnc client")
-	vncConn, err := vnc.Connect(ctx, ws, vncCfg)
+	vncConn, err := vnc.ClientWithOptions(ctx, ws,
+		// Auth is managed at the HTTP/websocket level,therefore no password is
+		// needed for the VNC client.
+		vnc.WithAuth(&vnc.ClientAuthNone{}),
+		vnc.WithServerMessageChannel(serverMessages),
+	)
 	if err != nil {
 		return err
 	}
 	defer vncConn.Close()
 
-	go func() {
-		slog.Debug("listening for vnc server messages")
-		if err := vncConn.ListenAndHandle(); err != nil {
-			slog.Error("failed to listen and handle incoming vnc server messages", "err", err)
-		}
-	}()
+	width, height := vncConn.GetFrameBufferSize()
 
 	slog.Debug("requesting framebuffer update")
-	if err := vncConn.FramebufferUpdateRequest(
-		rfbflags.RFBFalse,
-		0, 0,
-		vncConn.FramebufferWidth(), vncConn.FramebufferHeight(),
-	); err != nil {
+	if err := vncConn.FramebufferUpdateRequest(false, 0, 0, width, height); err != nil {
 		return err
 	}
 
 	slog.Debug("waiting for server message")
-	msg := <-vncCfg.ServerMessageCh
-
-	framebufferUpdate, ok := msg.(*vnc.FramebufferUpdate)
-	if !ok {
-		return fmt.Errorf("received unexpected server message: %T", msg)
+	var framebufferUpdate *vnc.FramebufferUpdateMessage
+	for framebufferUpdate == nil {
+		select {
+		case msg, ok := <-serverMessages:
+			if !ok {
+				return fmt.Errorf("vnc connection closed before receiving framebuffer update")
+			}
+			update, ok := msg.(*vnc.FramebufferUpdateMessage)
+			if !ok {
+				slog.Debug("ignoring unexpected server message", "type", msg.Type())
+				continue
+			}
+			framebufferUpdate = update
+		case <-ctx.Done():
+			return ctx.Err()
+		}
 	}
 
 	// Sanity checks
-	if len(framebufferUpdate.Rects) != 1 ||
-		framebufferUpdate.Rects[0].X != 0 ||
-		framebufferUpdate.Rects[0].Y != 0 ||
-		framebufferUpdate.Rects[0].Width != vncConn.FramebufferWidth() ||
-		framebufferUpdate.Rects[0].Height != vncConn.FramebufferHeight() {
+	if len(framebufferUpdate.Rectangles) != 1 ||
+		framebufferUpdate.Rectangles[0].X != 0 ||
+		framebufferUpdate.Rectangles[0].Y != 0 ||
+		framebufferUpdate.Rectangles[0].Width != width ||
+		framebufferUpdate.Rectangles[0].Height != height {
 		return fmt.Errorf("received invalid frame buffer update")
 	}
 
-	width := int(vncConn.FramebufferWidth())
-	height := int(vncConn.FramebufferHeight())
-
 	slog.Debug("composing image from framebuffer")
-	img := image.NewRGBA(image.Rect(0, 0, width, height))
+	img := image.NewRGBA(image.Rect(0, 0, int(width), int(height)))
 	{
-		rect := framebufferUpdate.Rects[0]
+		rect := framebufferUpdate.Rectangles[0]
 		enc := rect.Enc.(*vnc.RawEncoding)
+		pf := vncConn.GetPixelFormat()
 		for index, clr := range enc.Colors {
-			x, y := index%width, index/width
-			img.Set(int(rect.X)+x, int(rect.Y)+y, color.RGBA{uint8(clr.R), uint8(clr.G), uint8(clr.B), 255})
+			x, y := index%int(width), index/int(width)
+			img.Set(int(rect.X)+x, int(rect.Y)+y, color.RGBA{
+				R: scaleColor(clr.R, pf.RedMax),
+				G: scaleColor(clr.G, pf.GreenMax),
+				B: scaleColor(clr.B, pf.BlueMax),
+				A: 255,
+			})
 		}
 	}
 
@@ -136,4 +135,11 @@ func TakeScreenshot(ctx context.Context, wsURL string, filename string) error {
 	}
 
 	return nil
+}
+
+func scaleColor(value, maxValue uint16) uint8 {
+	if maxValue == 0 {
+		return 0
+	}
+	return uint8(uint32(value) * 255 / uint32(maxValue))
 }
