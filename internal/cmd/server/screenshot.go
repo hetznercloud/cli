@@ -14,6 +14,7 @@ import (
 	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state"
+	"github.com/hetznercloud/cli/internal/state/config"
 )
 
 var ScreenshotCmd = base.Cmd{
@@ -81,7 +82,16 @@ var ScreenshotCmd = base.Cmd{
 			w = f
 		}
 
-		if err := util.TakeScreenshot(s, result.WSSURL, w, timeout); err != nil {
+		isDebug, err := config.OptionDebug.Get(s.Config())
+		if err != nil {
+			return err
+		}
+		var debugOut io.Writer
+		if isDebug {
+			debugOut = cmd.ErrOrStderr()
+		}
+
+		if err := util.TakeScreenshot(s, result.WSSURL, w, debugOut, timeout); err != nil {
 			return err
 		}
 
