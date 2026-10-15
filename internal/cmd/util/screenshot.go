@@ -10,10 +10,8 @@ import (
 	"io"
 	"log"
 	"log/slog"
-	"net/url"
 
 	"github.com/tenthirtyam/go-vnc"
-	"golang.org/x/net/websocket"
 )
 
 type ScreenshotSession struct {
@@ -23,7 +21,7 @@ type ScreenshotSession struct {
 
 func OpenScreenshotSession(ctx context.Context, wsURL string, debugOut io.Writer) (*ScreenshotSession, error) {
 	slog.Debug("dialing websocket")
-	ws, err := dialWebsocket(ctx, wsURL)
+	ws, err := DialWebsocket(ctx, wsURL)
 	if err != nil {
 		return nil, err
 	}
@@ -123,35 +121,6 @@ func (s *ScreenshotSession) Capture(ctx context.Context, w io.Writer) error {
 	slog.Debug("writing image")
 	_, err := w.Write(imgData.Bytes())
 	return err
-}
-
-func websocketOrigin(wsURL string) (string, error) {
-	u, err := url.Parse(wsURL)
-	if err != nil {
-		return "", err
-	}
-	u.Scheme = "https"
-	return u.String(), nil
-}
-
-func dialWebsocket(ctx context.Context, wsURL string) (*websocket.Conn, error) {
-	origin, err := websocketOrigin(wsURL)
-	if err != nil {
-		return nil, err
-	}
-
-	cfg, err := websocket.NewConfig(wsURL, origin)
-	if err != nil {
-		return nil, err
-	}
-
-	ws, err := cfg.DialContext(ctx)
-	if err != nil {
-		return nil, err
-	}
-	ws.PayloadType = websocket.BinaryFrame
-
-	return ws, nil
 }
 
 func scaleColor(value, maxValue uint16) uint8 {
