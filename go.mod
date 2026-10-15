@@ -1,6 +1,6 @@
 module github.com/hetznercloud/cli
 
-go 1.26.0
+go 1.26.5
 
 toolchain go1.27.2
 
@@ -20,6 +20,7 @@ require (
 	github.com/spf13/viper v1.21.0
 	github.com/stretchr/testify v1.12.1
 	github.com/swaggest/assertjson v1.10.0
+	github.com/tenthirtyam/go-vnc v1.0.1
 	go.uber.org/mock v0.6.0
 	golang.org/x/crypto v0.57.0
 	golang.org/x/exp v0.0.0-20260718201538-764159d718ef

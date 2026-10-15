@@ -1,0 +1,44 @@
+## hcloud server screenshot
+
+[experimental] Take a screenshot of the Server VNC console
+
+### Synopsis
+
+Take a screenshot of the Server VNC console
+
+Experimental: The server screenshot command is experimental, breaking changes may occur within minor releases.
+
+
+```
+hcloud server screenshot [options] <server>
+```
+
+### Options
+
+```
+  -h, --help               help for screenshot
+  -o, --output string      Output file for the screenshot ('-' for stdout; must be a .png file otherwise) (default "screenshot.png")
+      --overwrite          Overwrite the output file if it exists already (true, false)
+      --timeout duration   Timeout for taking the screenshot (0s disables the timeout) (default 10s)
+      --watch duration     Take a screenshot at the given interval (minimum 1s)
+```
+
+### Options inherited from parent commands
+
+```
+      --config string              Config file path (default "~/.config/hcloud/cli.toml")
+      --context string             Currently active context
+      --debug                      Enable debug output
+      --debug-file string          File to write debug output to
+      --endpoint string            Hetzner Cloud API endpoint (default "https://api.hetzner.cloud/v1")
+      --hetzner-endpoint string    Hetzner API endpoint (default "https://api.hetzner.com/v1")
+      --http-timeout duration      Timeout for HTTP requests (default 0 = no timeout)
+      --no-experimental-warnings   If true, experimental warnings are not shown
+      --poll-interval duration     Interval at which to poll information, for example action progress (default 500ms)
+      --quiet                      If true, only print error messages
+```
+
+### SEE ALSO
+
+* [hcloud server](hcloud_server.md)	 - Manage Servers
+
