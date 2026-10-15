@@ -2,6 +2,7 @@ package cli
 
 import (
 	"io"
+	"log/slog"
 
 	"github.com/spf13/cobra"
 
@@ -104,6 +105,14 @@ func NewRootCommand(s state.State) *cobra.Command {
 			out = io.Discard
 		}
 		cmd.SetOut(out)
+
+		isDebug, err := config.OptionDebug.Get(s.Config())
+		if err != nil {
+			return err
+		}
+		if isDebug {
+			slog.SetLogLoggerLevel(slog.LevelDebug)
+		}
 		return nil
 	}
 	return cmd

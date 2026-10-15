@@ -24,6 +24,7 @@ func TakeScreenshot(ctx context.Context, wsURL string, w io.Writer, debugOut io.
 		defer cancel()
 	}
 
+	slog.Debug("dialing websocket")
 	ws, err := dialWebsocket(ctx, wsURL)
 	if err != nil {
 		return err
@@ -37,6 +38,7 @@ func TakeScreenshot(ctx context.Context, wsURL string, w io.Writer, debugOut io.
 		}
 	}
 
+	slog.Debug("creating vnc client")
 	serverMessages := make(chan vnc.ServerMessage, 8)
 	vncConn, err := vnc.ClientWithOptions(ctx, ws,
 		// Auth is managed at the HTTP/websocket level,therefore no password is
@@ -50,11 +52,13 @@ func TakeScreenshot(ctx context.Context, wsURL string, w io.Writer, debugOut io.
 	}
 	defer vncConn.Close()
 
+	slog.Debug("requesting framebuffer update")
 	width, height := vncConn.GetFrameBufferSize()
 	if err := vncConn.FramebufferUpdateRequest(false, 0, 0, width, height); err != nil {
 		return err
 	}
 
+	slog.Debug("waiting for server message")
 	var framebufferUpdate *vnc.FramebufferUpdateMessage
 	for framebufferUpdate == nil {
 		select {
@@ -82,6 +86,7 @@ func TakeScreenshot(ctx context.Context, wsURL string, w io.Writer, debugOut io.
 		return fmt.Errorf("received invalid frame buffer update")
 	}
 
+	slog.Debug("composing image from framebuffer")
 	img := image.NewRGBA(image.Rect(0, 0, int(width), int(height)))
 	{
 		rect := framebufferUpdate.Rectangles[0]
@@ -98,6 +103,7 @@ func TakeScreenshot(ctx context.Context, wsURL string, w io.Writer, debugOut io.
 		}
 	}
 
+	slog.Debug("encoding image")
 	imgData := bytes.NewBuffer(nil)
 	{
 		pngEncoder := png.Encoder{CompressionLevel: png.DefaultCompression}
@@ -106,6 +112,7 @@ func TakeScreenshot(ctx context.Context, wsURL string, w io.Writer, debugOut io.
 		}
 	}
 
+	slog.Debug("writing image to file")
 	_, err = w.Write(imgData.Bytes())
 	return err
 }
