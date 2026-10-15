@@ -8,6 +8,7 @@ import (
 	"image/color"
 	"image/png"
 	"io"
+	"log"
 	"log/slog"
 	"net/url"
 	"time"
@@ -16,7 +17,7 @@ import (
 	"golang.org/x/net/websocket"
 )
 
-func TakeScreenshot(ctx context.Context, wsURL string, w io.Writer, timeout time.Duration) error {
+func TakeScreenshot(ctx context.Context, wsURL string, w io.Writer, debugOut io.Writer, timeout time.Duration) error {
 	if timeout > 0 {
 		var cancel context.CancelFunc
 		ctx, cancel = context.WithTimeout(ctx, timeout)
@@ -29,12 +30,20 @@ func TakeScreenshot(ctx context.Context, wsURL string, w io.Writer, timeout time
 	}
 	defer ws.Close()
 
+	var logger vnc.Logger = &vnc.NoOpLogger{}
+	if debugOut != nil {
+		logger = &vnc.StandardLogger{
+			Logger: log.New(debugOut, "VNC", 0),
+		}
+	}
+
 	serverMessages := make(chan vnc.ServerMessage, 8)
 	vncConn, err := vnc.ClientWithOptions(ctx, ws,
 		// Auth is managed at the HTTP/websocket level,therefore no password is
 		// needed for the VNC client.
 		vnc.WithAuth(&vnc.ClientAuthNone{}),
 		vnc.WithServerMessageChannel(serverMessages),
+		vnc.WithLogger(logger),
 	)
 	if err != nil {
 		return err
