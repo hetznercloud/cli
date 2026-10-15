@@ -1,9 +1,12 @@
 package server
 
 import (
+	"bytes"
+	"context"
 	"fmt"
 	"io"
 	"os"
+	"os/signal"
 	"strings"
 	"time"
 
@@ -29,6 +32,9 @@ var ScreenshotCmd = base.Cmd{
 		cmd.Flags().StringP("output", "o", "screenshot.png", "Output file for the screenshot ('-' for stdout; must be a .png file otherwise)")
 		cmd.Flags().Duration("timeout", 10*time.Second, "Timeout for taking the screenshot (0s disables the timeout)")
 		cmd.Flags().Bool("overwrite", false, "Overwrite the output file if it exists already (true, false)")
+		cmd.Flags().Duration("watch", 0, "Take a screenshot at the given interval (minimum 1s)")
+
+		cmd.MarkFlagsMutuallyExclusive("timeout", "watch")
 		return cmd
 	},
 	Experimental: base.ExperimentalWrapper("The server screenshot command", "experimental", ""),
@@ -37,15 +43,30 @@ var ScreenshotCmd = base.Cmd{
 		output, _ := cmd.Flags().GetString("output")
 		timeout, _ := cmd.Flags().GetDuration("timeout")
 		overwrite, _ := cmd.Flags().GetBool("overwrite")
+		watch, _ := cmd.Flags().GetDuration("watch")
+		isWatch := cmd.Flags().Changed("watch")
 		toStdout := output == "-"
+
+		if isWatch {
+			if watch < time.Second {
+				return fmt.Errorf("--watch interval must be at least 1s")
+			}
+			if toStdout {
+				return fmt.Errorf("--watch cannot be used with output to stdout")
+			}
+		}
 
 		if toStdout && s.Terminal().StdoutIsTerminal() {
 			return fmt.Errorf("interactive tty detected. use --output <file> or redirect stdout")
 		}
 
 		if !toStdout && !overwrite {
-			if _, err := os.Stat(output); err == nil {
-				return fmt.Errorf("output file %s already exists", output)
+			firstOutput := output
+			if isWatch {
+				firstOutput = util.IndexedFilePath(output, 1)
+			}
+			if _, err := os.Stat(firstOutput); err == nil {
+				return fmt.Errorf("output file %s already exists", firstOutput)
 			}
 		}
 
@@ -70,18 +91,6 @@ var ScreenshotCmd = base.Cmd{
 			cmd.Printf("Warning: Only .png output file are supported\n")
 		}
 
-		var w io.Writer
-		if toStdout {
-			w = cmd.OutOrStdout()
-		} else {
-			f, err := os.OpenFile(output, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0600)
-			if err != nil {
-				return err
-			}
-			defer f.Close()
-			w = f
-		}
-
 		isDebug, err := config.OptionDebug.Get(s.Config())
 		if err != nil {
 			return err
@@ -91,13 +100,91 @@ var ScreenshotCmd = base.Cmd{
 			debugOut = cmd.ErrOrStderr()
 		}
 
-		if err := util.TakeScreenshot(s, result.WSSURL, w, debugOut, timeout); err != nil {
+		if isWatch {
+			return watchScreenshots(s, cmd, result.WSSURL, output, overwrite, watch, debugOut)
+		}
+
+		ctx := context.Context(s)
+		if timeout > 0 {
+			var cancel context.CancelFunc
+			ctx, cancel = context.WithTimeout(ctx, timeout)
+			defer cancel()
+		}
+
+		session, err := util.OpenScreenshotSession(ctx, result.WSSURL, debugOut)
+		if err != nil {
+			return err
+		}
+		defer session.Close()
+
+		var buf bytes.Buffer
+		if err := session.Capture(ctx, &buf); err != nil {
 			return err
 		}
 
-		if !toStdout {
-			cmd.Printf("Screenshot captured and saved to '%s'\n", output)
+		if toStdout {
+			_, err := cmd.OutOrStdout().Write(buf.Bytes())
+			return err
 		}
+		if err := writeScreenshotFile(output, buf.Bytes(), overwrite); err != nil {
+			return err
+		}
+		cmd.Printf("Screenshot captured and saved to '%s'\n", output)
 		return nil
 	},
+}
+
+func watchScreenshots(
+	ctx context.Context, cmd *cobra.Command, wsURL, output string, overwrite bool,
+	interval time.Duration, debugOut io.Writer,
+) error {
+	// capture ctrl + c to stop taking screenshots
+	ctx, stop := signal.NotifyContext(ctx, os.Interrupt)
+	defer stop()
+
+	session, err := util.OpenScreenshotSession(ctx, wsURL, debugOut)
+	if err != nil {
+		if ctx.Err() != nil {
+			return nil
+		}
+		return err
+	}
+	defer session.Close()
+
+	cmd.Printf("Taking a screenshot every %s, press Ctrl+C to stop\n", interval)
+
+	ticker := time.NewTicker(interval)
+	defer ticker.Stop()
+
+	for idx := 1; ; idx++ {
+		var buf bytes.Buffer
+		if err := session.Capture(ctx, &buf); err != nil {
+			if ctx.Err() != nil {
+				// ctrl + c signal received
+				return nil
+			}
+			return err
+		}
+
+		path := util.IndexedFilePath(output, idx)
+		if err := writeScreenshotFile(path, buf.Bytes(), overwrite); err != nil {
+			return err
+		}
+		cmd.Printf("Screenshot captured and saved to '%s'\n", path)
+
+		select {
+		case <-ctx.Done():
+			return nil
+		case <-ticker.C:
+		}
+	}
+}
+
+func writeScreenshotFile(path string, data []byte, overwrite bool) error {
+	if !overwrite {
+		if _, err := os.Stat(path); err == nil {
+			return fmt.Errorf("output file %s already exists", path)
+		}
+	}
+	return os.WriteFile(path, data, 0600)
 }

@@ -11,25 +11,22 @@ import (
 	"log"
 	"log/slog"
 	"net/url"
-	"time"
 
 	"github.com/tenthirtyam/go-vnc"
 	"golang.org/x/net/websocket"
 )
 
-func TakeScreenshot(ctx context.Context, wsURL string, w io.Writer, debugOut io.Writer, timeout time.Duration) error {
-	if timeout > 0 {
-		var cancel context.CancelFunc
-		ctx, cancel = context.WithTimeout(ctx, timeout)
-		defer cancel()
-	}
+type ScreenshotSession struct {
+	vncConn        *vnc.ClientConn
+	serverMessages chan vnc.ServerMessage
+}
 
+func OpenScreenshotSession(ctx context.Context, wsURL string, debugOut io.Writer) (*ScreenshotSession, error) {
 	slog.Debug("dialing websocket")
 	ws, err := dialWebsocket(ctx, wsURL)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	defer ws.Close()
 
 	var logger vnc.Logger = &vnc.NoOpLogger{}
 	if debugOut != nil {
@@ -48,13 +45,24 @@ func TakeScreenshot(ctx context.Context, wsURL string, w io.Writer, debugOut io.
 		vnc.WithLogger(logger),
 	)
 	if err != nil {
-		return err
+		_ = ws.Close()
+		return nil, err
 	}
-	defer vncConn.Close()
 
+	return &ScreenshotSession{
+		vncConn:        vncConn,
+		serverMessages: serverMessages,
+	}, nil
+}
+
+func (s *ScreenshotSession) Close() error {
+	return s.vncConn.Close()
+}
+
+func (s *ScreenshotSession) Capture(ctx context.Context, w io.Writer) error {
 	slog.Debug("requesting framebuffer update")
-	width, height := vncConn.GetFrameBufferSize()
-	if err := vncConn.FramebufferUpdateRequest(false, 0, 0, width, height); err != nil {
+	width, height := s.vncConn.GetFrameBufferSize()
+	if err := s.vncConn.FramebufferUpdateRequest(false, 0, 0, width, height); err != nil {
 		return err
 	}
 
@@ -62,7 +70,7 @@ func TakeScreenshot(ctx context.Context, wsURL string, w io.Writer, debugOut io.
 	var framebufferUpdate *vnc.FramebufferUpdateMessage
 	for framebufferUpdate == nil {
 		select {
-		case msg, ok := <-serverMessages:
+		case msg, ok := <-s.serverMessages:
 			if !ok {
 				return fmt.Errorf("vnc connection closed before receiving framebuffer update")
 			}
@@ -91,7 +99,7 @@ func TakeScreenshot(ctx context.Context, wsURL string, w io.Writer, debugOut io.
 	{
 		rect := framebufferUpdate.Rectangles[0]
 		enc := rect.Enc.(*vnc.RawEncoding)
-		pf := vncConn.GetPixelFormat()
+		pf := s.vncConn.GetPixelFormat()
 		for index, clr := range enc.Colors {
 			x, y := index%int(width), index/int(width)
 			img.Set(int(rect.X)+x, int(rect.Y)+y, color.RGBA{
@@ -112,8 +120,8 @@ func TakeScreenshot(ctx context.Context, wsURL string, w io.Writer, debugOut io.
 		}
 	}
 
-	slog.Debug("writing image to file")
-	_, err = w.Write(imgData.Bytes())
+	slog.Debug("writing image")
+	_, err := w.Write(imgData.Bytes())
 	return err
 }
 
