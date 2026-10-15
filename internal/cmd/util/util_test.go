@@ -573,3 +573,24 @@ func TestWeekdayFromString(t *testing.T) {
 	require.Error(t, err)
 	require.EqualError(t, err, "invalid weekday: 8")
 }
+
+func TestIndexedFilePath(t *testing.T) {
+	tests := []struct {
+		path   string
+		index  int
+		expect string
+	}{
+		{"screenshot.png", 1, "screenshot-0001.png"},
+		{"screenshot.png", 42, "screenshot-0042.png"},
+		{"screenshot.png", 12345, "screenshot-12345.png"},
+		{"screenshot", 3, "screenshot-0003"},
+		{"screenshot.PNG", 5, "screenshot-0005.PNG"},
+		{"screenshots/screenshot.png", 2, "screenshots/screenshot-0002.png"},
+		{"some.dir/screenshot.png", 4, "some.dir/screenshot-0004.png"},
+		{"../../screenshot.png", 4, "../../screenshot-0004.png"},
+		{"screenshot.tar.gz", 7, "screenshot.tar-0007.gz"},
+	}
+	for _, tt := range tests {
+		assert.Equal(t, tt.expect, util.IndexedFilePath(tt.path, tt.index))
+	}
+}
