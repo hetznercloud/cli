@@ -8,7 +8,7 @@ language: "en"
 description: ""
 docs_type: ["getting_started"]
 product_category: ["Integrations"]
-translation: ["Integrations", "CLI", "Getting Started", "Creating a server"]
+translation: ["Integrations", "CLI", "Tutorials", "Creating a server"]
 scrape_type: "whole"
 priority: 80
 ---
