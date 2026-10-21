@@ -8,7 +8,7 @@ language: "en"
 description: ""
 docs_type: ["how_to"]
 product_category: ["Integrations"]
-translation: ["Integrations", "CLI", "How-To: Usage", "Output options"]
+translation: ["Integrations", "CLI", "Guides", "Output options"]
 scrape_type: "whole"
 priority: 100
 ---

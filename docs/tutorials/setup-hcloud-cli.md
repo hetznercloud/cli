@@ -8,7 +8,7 @@ language: "en"
 description: ""
 docs_type: ["getting_started"]
 product_category: ["Integrations"]
-translation: ["Integrations", "CLI", "Getting Started", "Installing the hcloud CLI"]
+translation: ["Integrations", "CLI", "Tutorials", "Installing the hcloud CLI"]
 scrape_type: "whole"
 priority: 100
 ---
