@@ -18,12 +18,12 @@ jobs:
       - name: Set up tools
         uses: jdx/mise-action@9b200bcecbfd6303e69a4a261b2e09e3757440a7 # v5
         with:
-          version: 2026.10.7 # renovate: datasource=github-releases depName=jdx/mise
+          version: 2026.10.12 # renovate: datasource=github-releases depName=jdx/mise
 
       - name: Run GoReleaser
         run: goreleaser release --clean --snapshot --skip=sign
 
-      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: Preview Binaries
           path: dist/hcloud-*/hcloud
