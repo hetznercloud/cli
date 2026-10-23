@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.70.2](https://github.com/hetznercloud/cli/releases/tag/v1.70.2)
+
+[Compare to previous version](https://github.com/hetznercloud/cli/compare/v1.70.1...v1.70.2)
+
+### Bug Fixes
+
+- update Go to mitigate CVE-2026-111943 (#1520) ([84a9043](https://github.com/hetznercloud/cli/commit/84a9043a13f1da7e76899d10d04a150a9f558ef8))
+
 ## [v1.70.1](https://github.com/hetznercloud/cli/releases/tag/v1.70.1)
 
 [Compare to previous version](https://github.com/hetznercloud/cli/compare/v1.70.0...v1.70.1)
