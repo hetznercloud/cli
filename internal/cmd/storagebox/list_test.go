@@ -48,7 +48,7 @@ func TestList(t *testing.T) {
 			MaxSnapshots: 10,
 			Minute:       1,
 			Hour:         2,
-			DayOfWeek:    hcloud.Ptr(time.Sunday),
+			DayOfWeek:    new(time.Sunday),
 			DayOfMonth:   new(4),
 		},
 		Created: time.Now().Add(-3 * time.Hour),

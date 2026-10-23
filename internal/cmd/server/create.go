@@ -84,9 +84,9 @@ See https://docs.hetzner.cloud/changelog#2026-07-01-removing-datacenters.`,
 		cmd.Flags().String("placement-group", "", "Placement Group (ID of name)")
 		_ = cmd.RegisterFlagCompletionFunc("placement-group", cmpl.SuggestCandidatesF(client.PlacementGroup().Names))
 		cmd.Flags().String("primary-ipv4", "", "Primary IPv4 (ID of name)")
-		_ = cmd.RegisterFlagCompletionFunc("primary-ipv4", cmpl.SuggestCandidatesF(client.PrimaryIP().Names(true, false, hcloud.Ptr(hcloud.PrimaryIPTypeIPv4))))
+		_ = cmd.RegisterFlagCompletionFunc("primary-ipv4", cmpl.SuggestCandidatesF(client.PrimaryIP().Names(true, false, new(hcloud.PrimaryIPTypeIPv4))))
 		cmd.Flags().String("primary-ipv6", "", "Primary IPv6 (ID of name)")
-		_ = cmd.RegisterFlagCompletionFunc("primary-ipv6", cmpl.SuggestCandidatesF(client.PrimaryIP().Names(true, false, hcloud.Ptr(hcloud.PrimaryIPTypeIPv6))))
+		_ = cmd.RegisterFlagCompletionFunc("primary-ipv6", cmpl.SuggestCandidatesF(client.PrimaryIP().Names(true, false, new(hcloud.PrimaryIPTypeIPv6))))
 
 		cmd.Flags().Bool("without-ipv4", false, "Creates the Server without an IPv4 (default: false) (true, false)")
 		cmd.Flags().Bool("without-ipv6", false, "Creates the Server without an IPv6 (default: false) (true, false)")

@@ -30,7 +30,7 @@ func TestEnableSnapshotPlan(t *testing.T) {
 			MaxSnapshots: 10,
 			Minute:       0,
 			Hour:         2,
-			DayOfWeek:    hcloud.Ptr(time.Tuesday),
+			DayOfWeek:    new(time.Tuesday),
 			DayOfMonth:   nil,
 		}).
 		Return(&hcloud.Action{ID: 456}, nil, nil)
