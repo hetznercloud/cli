@@ -36,7 +36,7 @@ func TestList(t *testing.T) {
 				Name:         "test",
 				Description:  "Test ISO",
 				Type:         hcloud.ISOTypePublic,
-				Architecture: hcloud.Ptr(hcloud.ArchitectureX86),
+				Architecture: new(hcloud.ArchitectureX86),
 			},
 		}, nil)
 
@@ -74,21 +74,21 @@ func TestListPrivate(t *testing.T) {
 				Name:         "public1",
 				Description:  "Test Public ISO",
 				Type:         hcloud.ISOTypePublic,
-				Architecture: hcloud.Ptr(hcloud.ArchitectureX86),
+				Architecture: new(hcloud.ArchitectureX86),
 			},
 			{
 				ID:           456,
 				Name:         "private1",
 				Description:  "Test Private ISO 1",
 				Type:         hcloud.ISOTypePrivate,
-				Architecture: hcloud.Ptr(hcloud.ArchitectureX86),
+				Architecture: new(hcloud.ArchitectureX86),
 			},
 			{
 				ID:           789,
 				Name:         "private2",
 				Description:  "Test Private ISO 2",
 				Type:         hcloud.ISOTypePrivate,
-				Architecture: hcloud.Ptr(hcloud.ArchitectureX86),
+				Architecture: new(hcloud.ArchitectureX86),
 			},
 		}, nil)
 

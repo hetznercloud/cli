@@ -150,7 +150,7 @@ func TestListAll(t *testing.T) {
 				ID:           123,
 				Name:         "test",
 				Type:         hcloud.ISOTypePrivate,
-				Architecture: hcloud.Ptr(hcloud.ArchitectureARM),
+				Architecture: new(hcloud.ArchitectureARM),
 			},
 		}, nil)
 	fx.Client.PlacementGroupClient.EXPECT().
@@ -202,7 +202,7 @@ func TestListAll(t *testing.T) {
 					MaxSnapshots: 10,
 					Minute:       1,
 					Hour:         2,
-					DayOfWeek:    hcloud.Ptr(time.Sunday),
+					DayOfWeek:    new(time.Sunday),
 					DayOfMonth:   new(4),
 				},
 				Created: time.Now().Add(-3 * time.Hour),
@@ -380,7 +380,7 @@ func TestListAllPaidJSON(t *testing.T) {
 					MaxSnapshots: 10,
 					Minute:       1,
 					Hour:         2,
-					DayOfWeek:    hcloud.Ptr(time.Sunday),
+					DayOfWeek:    new(time.Sunday),
 					DayOfMonth:   new(4),
 				},
 				Created: time.Date(2024, 4, 2, 10, 0, 0, 0, time.UTC),

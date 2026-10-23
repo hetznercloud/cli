@@ -26,7 +26,7 @@ func TestDescribe(t *testing.T) {
 			Name:         "test",
 			Description:  "Test ISO",
 			Type:         hcloud.ISOTypePublic,
-			Architecture: hcloud.Ptr(hcloud.ArchitectureX86),
+			Architecture: new(hcloud.ArchitectureX86),
 		}, nil, nil)
 
 	out, errOut, err := fx.Run(cmd, []string{"test"})

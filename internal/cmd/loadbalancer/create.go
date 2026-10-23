@@ -49,10 +49,10 @@ var CreateCmd = base.CreateCmd[*hcloud.LoadBalancer]{
 		_ = cmd.RegisterFlagCompletionFunc("network", cmpl.SuggestCandidatesF(client.Network().Names))
 
 		cmd.Flags().String("primary-ipv4", "", "Primary IPv4 (ID or name) to assign to the Load Balancer")
-		_ = cmd.RegisterFlagCompletionFunc("primary-ipv4", cmpl.SuggestCandidatesF(client.PrimaryIP().Names(true, false, hcloud.Ptr(hcloud.PrimaryIPTypeIPv4))))
+		_ = cmd.RegisterFlagCompletionFunc("primary-ipv4", cmpl.SuggestCandidatesF(client.PrimaryIP().Names(true, false, new(hcloud.PrimaryIPTypeIPv4))))
 
 		cmd.Flags().String("primary-ipv6", "", "Primary IPv6 (ID or name) to assign to the Load Balancer")
-		_ = cmd.RegisterFlagCompletionFunc("primary-ipv6", cmpl.SuggestCandidatesF(client.PrimaryIP().Names(true, false, hcloud.Ptr(hcloud.PrimaryIPTypeIPv6))))
+		_ = cmd.RegisterFlagCompletionFunc("primary-ipv6", cmpl.SuggestCandidatesF(client.PrimaryIP().Names(true, false, new(hcloud.PrimaryIPTypeIPv6))))
 
 		return cmd
 	},

@@ -97,7 +97,7 @@ func TestDescribe(t *testing.T) {
 			MaxSnapshots: 10,
 			Minute:       1,
 			Hour:         2,
-			DayOfWeek:    hcloud.Ptr(time.Sunday),
+			DayOfWeek:    new(time.Sunday),
 			DayOfMonth:   new(4),
 		},
 		Created: time.Date(2016, 1, 30, 23, 55, 0, 0, time.UTC),

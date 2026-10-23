@@ -31,7 +31,7 @@ func TestAddService(t *testing.T) {
 			HTTP: &hcloud.LoadBalancerAddServiceOptsHTTP{
 				StickySessions: new(false),
 				RedirectHTTP:   new(false),
-				TimeoutIdle:    hcloud.Ptr(60 * time.Second),
+				TimeoutIdle:    new(60 * time.Second),
 			},
 			Proxyprotocol: new(false),
 		}).
@@ -72,14 +72,14 @@ func TestAddServiceWithHealthCheck(t *testing.T) {
 				RedirectHTTP:   new(true),
 				CookieName:     new("test"),
 				Certificates:   []*hcloud.Certificate{{ID: 1}},
-				CookieLifetime: hcloud.Ptr(10 * time.Minute),
+				CookieLifetime: new(10 * time.Minute),
 			},
 			Proxyprotocol: new(false),
 			HealthCheck: &hcloud.LoadBalancerAddServiceOptsHealthCheck{
 				Protocol: hcloud.LoadBalancerServiceProtocolHTTP,
 				Port:     new(80),
-				Interval: hcloud.Ptr(10 * time.Second),
-				Timeout:  hcloud.Ptr(5 * time.Second),
+				Interval: new(10 * time.Second),
+				Timeout:  new(5 * time.Second),
 				Retries:  new(2),
 				HTTP: &hcloud.LoadBalancerAddServiceOptsHealthCheckHTTP{
 					Domain:      new("example.com"),
