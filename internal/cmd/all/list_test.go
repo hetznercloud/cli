@@ -140,9 +140,13 @@ func TestListAll(t *testing.T) {
 				Name:     "test",
 				Location: &hcloud.Location{Name: "fsn1"},
 				Size:     50,
+				Assignee: &hcloud.VolumeAssignee{Type: "server", ID: 123},
 				Created:  time.Now().Add(-500 * time.Hour),
 			},
 		}, nil)
+	fx.Client.ServerClient.EXPECT().
+		ServerName(int64(123)).
+		Return("my server")
 	fx.Client.ISOClient.EXPECT().
 		AllWithOpts(gomock.Any(), hcloud.ISOListOpts{}).
 		Return([]*hcloud.ISO{
@@ -260,8 +264,8 @@ ID    NAME   DESCRIPTION   TYPE      ARCHITECTURE
 
 VOLUMES
 ---
-ID    NAME   SIZE    SERVER   LOCATION   AGE
-123   test   50 GB   -        fsn1       20d
+ID    NAME   SIZE    ASSIGNEE           LOCATION   AGE
+123   test   50 GB   Server my server   fsn1       20d
 
 LOAD BALANCER
 ---

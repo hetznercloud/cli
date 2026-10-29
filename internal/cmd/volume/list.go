@@ -1,6 +1,7 @@
 package volume
 
 import (
+	"fmt"
 	"strings"
 	"time"
 
@@ -20,7 +21,7 @@ import (
 var ListCmd = &base.ListCmd[*hcloud.Volume, schema.Volume]{
 	ResourceNamePlural: "Volumes",
 	JSONKeyGetByName:   "volumes",
-	DefaultColumns:     []string{"id", "name", "size", "server", "location", "age"},
+	DefaultColumns:     []string{"id", "name", "size", "assignee", "location", "age"},
 	SortOption:         config.OptionSortVolume,
 
 	Fetch: func(s state.State, _ *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string) ([]*hcloud.Volume, error) {
@@ -36,10 +37,22 @@ var ListCmd = &base.ListCmd[*hcloud.Volume, schema.Volume]{
 			AddAllowedFields(&hcloud.Volume{}).
 			AddFieldFn("server", func(volume *hcloud.Volume) string {
 				var server string
-				if volume.Server != nil {
-					return client.Server().ServerName(volume.Server.ID)
+				if volume.Assignee != nil && volume.Assignee.Type == "server" {
+					return client.Server().ServerName(volume.Assignee.ID)
 				}
 				return util.NA(server)
+			}).
+			AddFieldFn("assignee", func(volume *hcloud.Volume) string {
+				var assignee string
+				if volume.Assignee != nil {
+					switch volume.Assignee.Type {
+					case "server":
+						assignee = fmt.Sprintf("Server %s", client.Server().ServerName(volume.Assignee.ID))
+					default:
+						assignee = util.ResourceDisplayName(volume.Assignee.Type, volume.Assignee.ID)
+					}
+				}
+				return util.NA(assignee)
 			}).
 			AddFieldFn("size", func(volume *hcloud.Volume) string {
 				return humanize.Bytes(uint64(volume.Size) * humanize.GByte)

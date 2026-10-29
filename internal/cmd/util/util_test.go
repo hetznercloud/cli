@@ -573,3 +573,8 @@ func TestWeekdayFromString(t *testing.T) {
 	require.Error(t, err)
 	require.EqualError(t, err, "invalid weekday: 8")
 }
+
+func TestResourceDisplayName(t *testing.T) {
+	assert.Equal(t, "Server 123", util.ResourceDisplayName("server", 123))
+	assert.Equal(t, "Foo Bar 123", util.ResourceDisplayName("foo_bar", 123))
+}

@@ -30,14 +30,14 @@ func TestAttach(t *testing.T) {
 		Return(srv, nil, nil)
 	fx.Client.VolumeClient.EXPECT().
 		AttachWithOpts(gomock.Any(), v, hcloud.VolumeAttachOpts{
-			Server:    srv,
+			Assignee:  &hcloud.VolumeAssignee{Type: "server", ID: srv.ID},
 			Automount: new(false),
 		}).Return(&hcloud.Action{ID: 321}, nil, nil)
 	fx.ActionWaiter.EXPECT().
 		WaitForActions(gomock.Any(), gomock.Any(), &hcloud.Action{ID: 321}).
 		Return(nil)
 
-	out, errOut, err := fx.Run(cmd, []string{"123", "--server", "456"})
+	out, errOut, err := fx.Run(cmd, []string{"123", "--assignee", "456", "--assignee-type", "server"})
 
 	expOut := "Volume 123 attached to Server myServer\n"
 

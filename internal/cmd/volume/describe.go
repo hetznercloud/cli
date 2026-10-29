@@ -39,10 +39,14 @@ var DescribeCmd = base.DescribeCmd[*hcloud.Volume]{
 		fmt.Fprintf(out, "%s", util.PrefixLines(location.DescribeLocation(volume.Location), "  "))
 
 		fmt.Fprintln(out)
-		fmt.Fprintf(out, "Server:\n")
-		if volume.Server != nil {
-			fmt.Fprintf(out, "  ID:\t%d\n", volume.Server.ID)
-			fmt.Fprintf(out, "  Name:\t%s\n", s.Client().Server().ServerName(volume.Server.ID))
+		fmt.Fprintf(out, "Assignee:\n")
+		if volume.Assignee != nil {
+			fmt.Fprintf(out, "  ID:\t%d\n", volume.Assignee.ID)
+			fmt.Fprintf(out, "  Type:\t%s\n", volume.Assignee.Type)
+			switch volume.Assignee.Type {
+			case "server":
+				fmt.Fprintf(out, "  Name:\t%s\n", s.Client().Server().ServerName(volume.Assignee.ID))
+			}
 		} else {
 			fmt.Fprintf(out, "  Not attached\n")
 		}

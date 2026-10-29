@@ -2,16 +2,25 @@
 
 Attach a Volume to a Server
 
+### Synopsis
+
+Attach a Volume to a Server.
+
+The --server flag is deprecated. Use --assignee and --assignee-type instead.
+See https://docs.hetzner.cloud/changelog#2026-10-27-volumes-allow-generic-resource-targets.
+
 ```
-hcloud volume attach [--automount] --server <server> <volume>
+hcloud volume attach [--automount] --assignee-type <type> --assignee <assignee> <volume>
 ```
 
 ### Options
 
 ```
-      --automount       Automount Volume after attach (true, false)
-  -h, --help            help for attach
-      --server string   Server (ID or name) (required)
+      --assignee string        Assignee (ID, or name if the assignee type is server)
+      --assignee-type string   Assignee type (server)
+      --automount              Automount Volume after attach (true, false)
+  -h, --help                   help for attach
+      --server string          Server (ID or name) (deprecated)
 ```
 
 ### Options inherited from parent commands
