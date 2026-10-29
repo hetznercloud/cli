@@ -2,6 +2,13 @@
 
 Create a Volume
 
+### Synopsis
+
+Create a Volume.
+
+The --server flag is deprecated. Use --assignee and --assignee-type instead.
+See https://docs.hetzner.cloud/changelog#2026-10-27-volumes-allow-generic-resource-targets.
+
 ```
 hcloud volume create [options] --name <name> --size <size>
 ```
@@ -9,7 +16,9 @@ hcloud volume create [options] --name <name> --size <size>
 ### Options
 
 ```
-      --automount                   Automount Volume after attach (Server must be provided) (true, false)
+      --assignee string             Assignee (ID, or name if the assignee type is server)
+      --assignee-type string        Assignee type (server)
+      --automount                   Automount Volume after attach (assignee must be provided) (true, false)
       --enable-protection strings   Enable protection (delete) (default: none)
       --format string               Format Volume after creation (ext4 or xfs)
   -h, --help                        help for create
@@ -17,7 +26,7 @@ hcloud volume create [options] --name <name> --size <size>
       --location string             Location (ID or name)
       --name string                 Volume name (required)
   -o, --output stringArray          output options: json|yaml
-      --server string               Server (ID or name)
+      --server string               Server (ID or name) (deprecated)
       --size int                    Size (GB) (required)
 ```
 

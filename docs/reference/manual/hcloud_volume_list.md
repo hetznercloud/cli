@@ -8,10 +8,11 @@ Displays a list of Volumes.
 
 Output can be controlled with the -o flag. Use -o noheader to suppress the
 table header. Displayed columns and their order can be set with
--o columns=age,created (see available columns below).
+-o columns=age,assignee (see available columns below).
 
 Columns:
  - age
+ - assignee
  - created
  - id
  - labels

@@ -2,6 +2,10 @@
   "volume": {
     "id": 123,
     "name": "test",
+    "assignee": {
+      "id": 123,
+      "type": "server"
+    },
     "server": 123,
     "status": "available",
     "location": {

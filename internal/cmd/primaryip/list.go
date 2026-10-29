@@ -6,8 +6,6 @@ import (
 	"time"
 
 	"github.com/spf13/pflag"
-	"golang.org/x/text/cases"
-	"golang.org/x/text/language"
 
 	"github.com/hetznercloud/cli/internal/cmd/base"
 	"github.com/hetznercloud/cli/internal/cmd/output"
@@ -64,8 +62,7 @@ var ListCmd = &base.ListCmd[*hcloud.PrimaryIP, schema.PrimaryIP]{
 					case "unassigned", "":
 						break
 					default:
-						// fallback: foo_bar 123 -> Foo Bar 123
-						assignee = fmt.Sprintf("%s %d", cases.Title(language.English).String(strings.ReplaceAll(primaryIP.AssigneeType, "_", " ")), primaryIP.AssigneeID)
+						assignee = util.ResourceDisplayName(primaryIP.AssigneeType, primaryIP.AssigneeID)
 					}
 				}
 				return util.NA(assignee)
