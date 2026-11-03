@@ -40,7 +40,7 @@ var ListCmd = &base.ListCmd[*hcloud.Server, schema.Server]{
 	DefaultColumns:     []string{"id", "name", "status", "ipv4", "ipv6", "private_net", "location", "age"},
 	SortOption:         config.OptionSortServer,
 
-	AdditionalFlags: func(cmd *cobra.Command) {
+	AdditionalFlags: func(cmd *cobra.Command, _ hcapi2.Client) {
 		cmd.Flags().StringSlice("status", nil, "Only Servers with one of these statuses are displayed")
 		_ = cmd.RegisterFlagCompletionFunc("status", cmpl.SuggestCandidates(serverStatusStrings...))
 	},

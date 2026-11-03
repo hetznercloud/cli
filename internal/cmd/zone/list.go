@@ -27,7 +27,7 @@ var ListCmd = &base.ListCmd[*hcloud.Zone, schema.Zone]{
 	DefaultColumns:     []string{"id", "name", "status", "mode", "record_count", "age"},
 	SortOption:         config.OptionSortZone,
 
-	AdditionalFlags: func(cmd *cobra.Command) {
+	AdditionalFlags: func(cmd *cobra.Command, _ hcapi2.Client) {
 		cmd.Flags().String("mode", "", "Only Zones with this mode are displayed")
 		_ = cmd.RegisterFlagCompletionFunc("mode", cmpl.SuggestCandidates(string(hcloud.ZoneModePrimary), string(hcloud.ZoneModeSecondary)))
 	},

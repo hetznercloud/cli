@@ -46,7 +46,7 @@ var ListMembersCmd = &base.ListCmd[*hcloud.NetworkMember, schema.NetworkMember]{
 
 	PositionalArgumentOverride: []string{"network"},
 
-	AdditionalFlags: func(cmd *cobra.Command) {
+	AdditionalFlags: func(cmd *cobra.Command, _ hcapi2.Client) {
 		cmd.Flags().StringSlice("type", nil, "Only Members with one of these types are displayed")
 		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates(networkMemberTypeStrings...))
 
