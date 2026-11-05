@@ -1,5 +1,13 @@
 # Changelog
 
+## [v1.70.3](https://github.com/hetznercloud/cli/releases/tag/v1.70.3)
+
+[Compare to previous version](https://github.com/hetznercloud/cli/compare/v1.70.2...v1.70.3)
+
+### Bug Fixes
+
+- **output**: do not render empty output table (#1524) ([c9b04e2](https://github.com/hetznercloud/cli/commit/c9b04e23ca876d1f5b35f872f68b0957f2b7e5a8))
+
 ## [v1.70.2](https://github.com/hetznercloud/cli/releases/tag/v1.70.2)
 
 [Compare to previous version](https://github.com/hetznercloud/cli/compare/v1.70.1...v1.70.2)
