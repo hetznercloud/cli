@@ -291,7 +291,11 @@ func (o *Table[T]) WriteHeader(columns []string) {
 }
 
 func (o *Table[T]) Flush() error {
-	_, _ = o.out.Write([]byte(o.w.Render()))
+	rendered := o.w.Render()
+	if rendered == "" {
+		return nil
+	}
+	_, _ = o.out.Write([]byte(rendered))
 	_, _ = o.out.Write([]byte("\n"))
 	return nil
 }
