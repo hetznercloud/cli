@@ -112,14 +112,14 @@ var ScreenshotCmd = base.Cmd{
 			defer cancel()
 		}
 
-		session, err := vncutil.OpenScreenshotSession(ctx, result.WSSURL, debugOut)
+		session, err := vncutil.OpenVNCSession(ctx, result.WSSURL, debugOut)
 		if err != nil {
 			return err
 		}
 		defer session.Close()
 
 		var buf bytes.Buffer
-		if err := session.Capture(ctx, &buf); err != nil {
+		if err := session.CaptureScreenshot(ctx, &buf); err != nil {
 			return err
 		}
 
@@ -143,7 +143,7 @@ func watchScreenshots(
 	ctx, stop := signal.NotifyContext(ctx, os.Interrupt)
 	defer stop()
 
-	session, err := vncutil.OpenScreenshotSession(ctx, wsURL, debugOut)
+	session, err := vncutil.OpenVNCSession(ctx, wsURL, debugOut)
 	if err != nil {
 		if ctx.Err() != nil {
 			return nil
@@ -159,7 +159,7 @@ func watchScreenshots(
 
 	for idx := 1; ; idx++ {
 		var buf bytes.Buffer
-		if err := session.Capture(ctx, &buf); err != nil {
+		if err := session.CaptureScreenshot(ctx, &buf); err != nil {
 			if ctx.Err() != nil {
 				// ctrl + c signal received
 				return nil
