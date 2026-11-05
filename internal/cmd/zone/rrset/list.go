@@ -27,7 +27,7 @@ var ListCmd = &base.ListCmd[*hcloud.ZoneRRSet, schema.ZoneRRSet]{
 	DefaultColumns: []string{"name", "type", "records"},
 	SortOption:     config.OptionSortZoneRRSet,
 
-	AdditionalFlags: func(cmd *cobra.Command) {
+	AdditionalFlags: func(cmd *cobra.Command, _ hcapi2.Client) {
 		cmd.Flags().StringSlice("type", nil, "Only Zone RRSets with one of these types are displayed")
 		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates(rrsetTypeStrings...))
 	},

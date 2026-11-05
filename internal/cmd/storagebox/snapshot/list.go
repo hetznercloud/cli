@@ -32,7 +32,7 @@ var ListCmd = base.ListCmd[*hcloud.StorageBoxSnapshot, schema.StorageBoxSnapshot
 	PositionalArgumentOverride: []string{"storage-box"},
 	SortOption:                 config.OptionSortStorageBoxSnapshot,
 
-	AdditionalFlags: func(cmd *cobra.Command) {
+	AdditionalFlags: func(cmd *cobra.Command, _ hcapi2.Client) {
 		cmd.Flags().Bool("automatic", false, "Only show automatic snapshots (true, false)")
 	},
 

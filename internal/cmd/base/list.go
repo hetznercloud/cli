@@ -41,7 +41,7 @@ type ListCmd[T any, S any] struct {
 	// Can be set in case the resource has more than a single identifier that is used in the positional arguments.
 	// See [ListCmd.PositionalArgumentOverride].
 	FetchWithArgs   func(s state.State, flags *pflag.FlagSet, listOpts hcloud.ListOpts, sorts []string, args []string) ([]T, error)
-	AdditionalFlags func(*cobra.Command)
+	AdditionalFlags func(*cobra.Command, hcapi2.Client)
 	OutputTable     func(t *output.Table[T], client hcapi2.Client)
 	Schema          func(T) S
 
@@ -52,6 +52,9 @@ type ListCmd[T any, S any] struct {
 	// Would result in the usage string:
 	//     <a> <b> <c>
 	PositionalArgumentOverride []string
+
+	// Can be used to override the default 'list' Use
+	UseOverride string
 
 	// Can be set if auto-completion is needed (usually if [ListCmd.FetchWithArgs] is used)
 	ValidArgsFunction func(client hcapi2.Client) cobra.CompletionFunc
@@ -66,8 +69,13 @@ func (lc *ListCmd[T, S]) CobraCommand(s state.State) *cobra.Command {
 	lc.OutputTable(t, s.Client())
 	outputColumns := t.Columns()
 
+	use := "list"
+	if lc.UseOverride != "" {
+		use = lc.UseOverride
+	}
+
 	cmd := &cobra.Command{
-		Use:   fmt.Sprintf("list [options]%s", listPositionalArguments(lc.PositionalArgumentOverride)),
+		Use:   fmt.Sprintf("%s [options]%s", use, listPositionalArguments(lc.PositionalArgumentOverride)),
 		Short: fmt.Sprintf("List %s", lc.ResourceNamePlural),
 		Long: util.ListLongDescription(
 			fmt.Sprintf("Displays a list of %s.", lc.ResourceNamePlural),
@@ -89,7 +97,7 @@ func (lc *ListCmd[T, S]) CobraCommand(s state.State) *cobra.Command {
 	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(outputColumns), output.OptionJSON(), output.OptionYAML())
 	cmd.Flags().StringP("selector", "l", "", "Selector to filter by labels")
 	if lc.AdditionalFlags != nil {
-		lc.AdditionalFlags(cmd)
+		lc.AdditionalFlags(cmd, s.Client())
 	}
 	cmd.Flags().StringSliceP("sort", "s", []string{}, "Determine the sorting of the result")
 	if lc.Configure != nil {

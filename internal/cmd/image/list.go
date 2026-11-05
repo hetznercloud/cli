@@ -26,7 +26,7 @@ var ListCmd = &base.ListCmd[*hcloud.Image, schema.Image]{
 	DefaultColumns:     []string{"id", "type", "name", "description", "architecture", "image_size", "disk_size", "created", "deprecated"},
 	SortOption:         config.OptionSortImage,
 
-	AdditionalFlags: func(cmd *cobra.Command) {
+	AdditionalFlags: func(cmd *cobra.Command, _ hcapi2.Client) {
 		cmd.Flags().StringSliceP("type", "t", []string{}, "Only show Images of given type: system|app|snapshot|backup")
 		_ = cmd.RegisterFlagCompletionFunc("type", cmpl.SuggestCandidates("backup", "snapshot", "system", "app"))
 

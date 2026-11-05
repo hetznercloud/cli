@@ -23,7 +23,7 @@ var ListCmd = &base.ListCmd[*hcloud.ISO, schema.ISO]{
 	DefaultColumns:     []string{"id", "name", "description", "type", "architecture"},
 	SortOption:         nil, // ISOs does not support sorting
 
-	AdditionalFlags: func(cmd *cobra.Command) {
+	AdditionalFlags: func(cmd *cobra.Command, _ hcapi2.Client) {
 		cmd.Flags().StringSlice("architecture", []string{}, "Only show Images of given architecture: x86|arm")
 		_ = cmd.RegisterFlagCompletionFunc("architecture", cmpl.SuggestCandidates(string(hcloud.ArchitectureX86), string(hcloud.ArchitectureARM)))
 
