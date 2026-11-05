@@ -16,12 +16,12 @@ import (
 	"golang.org/x/net/websocket"
 )
 
-type ScreenshotSession struct {
+type VNCSession struct {
 	vncConn        *vnc.ClientConn
 	serverMessages chan vnc.ServerMessage
 }
 
-func OpenScreenshotSession(ctx context.Context, wsURL string, debugOut io.Writer) (*ScreenshotSession, error) {
+func OpenVNCSession(ctx context.Context, wsURL string, debugOut io.Writer) (*VNCSession, error) {
 	slog.Debug("dialing websocket")
 	ws, err := dialWebsocket(ctx, wsURL)
 	if err != nil {
@@ -49,17 +49,17 @@ func OpenScreenshotSession(ctx context.Context, wsURL string, debugOut io.Writer
 		return nil, err
 	}
 
-	return &ScreenshotSession{
+	return &VNCSession{
 		vncConn:        vncConn,
 		serverMessages: serverMessages,
 	}, nil
 }
 
-func (s *ScreenshotSession) Close() error {
+func (s *VNCSession) Close() error {
 	return s.vncConn.Close()
 }
 
-func (s *ScreenshotSession) Capture(ctx context.Context, w io.Writer) error {
+func (s *VNCSession) CaptureScreenshot(ctx context.Context, w io.Writer) error {
 	slog.Debug("requesting framebuffer update")
 	width, height := s.vncConn.GetFrameBufferSize()
 	if err := s.vncConn.FramebufferUpdateRequest(false, 0, 0, width, height); err != nil {
