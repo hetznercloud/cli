@@ -8,6 +8,7 @@ import (
 	"io"
 	"iter"
 	"maps"
+	"path/filepath"
 	"reflect"
 	"slices"
 	"strconv"
@@ -446,4 +447,9 @@ func DescribeLabels(out io.Writer, labels map[string]string, prefix string) {
 			_, _ = fmt.Fprintf(out, "%s  %s:\t%s\n", prefix, key, value)
 		}
 	}
+}
+
+func IndexedFilePath(path string, index int) string {
+	ext := filepath.Ext(path)
+	return fmt.Sprintf("%s-%04d%s", strings.TrimSuffix(path, ext), index, ext)
 }

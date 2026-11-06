@@ -3,7 +3,9 @@
 package e2e
 
 import (
+	"bytes"
 	"fmt"
+	"image/png"
 	"os"
 	"path"
 	"strconv"
@@ -258,6 +260,50 @@ func TestCombined(t *testing.T) {
 		)
 		require.NoError(t, err)
 		assert.Empty(t, out)
+	})
+
+	t.Run("screenshot", func(t *testing.T) {
+		t.Run("non-existing-server", func(t *testing.T) {
+			out, err := runCommand(t, "server", "screenshot", "non-existing-server")
+			require.EqualError(t, err, "Server not found: non-existing-server")
+			assert.Empty(t, out)
+		})
+
+		t.Run("default", func(t *testing.T) {
+			output := path.Join(t.TempDir(), "screenshot.png")
+
+			out, err := runCommand(t, "server", "screenshot", strconv.FormatInt(serverID, 10), "--output", output)
+			require.NoError(t, err)
+			assert.Equal(t, fmt.Sprintf("Screenshot captured and saved to '%s'\n", output), out)
+
+			data, err := os.ReadFile(output)
+			require.NoError(t, err)
+
+			img, err := png.Decode(bytes.NewReader(data))
+			require.NoError(t, err)
+			assert.Positive(t, img.Bounds().Dx())
+			assert.Positive(t, img.Bounds().Dy())
+		})
+
+		t.Run("stdout", func(t *testing.T) {
+			out, err := runCommand(t, "server", "screenshot", strconv.FormatInt(serverID, 10), "--output", "-")
+			require.NoError(t, err)
+
+			img, err := png.Decode(bytes.NewReader([]byte(out)))
+			require.NoError(t, err)
+			assert.Positive(t, img.Bounds().Dx())
+			assert.Positive(t, img.Bounds().Dy())
+		})
+
+		t.Run("timeout", func(t *testing.T) {
+			output := path.Join(t.TempDir(), "timeout.png")
+
+			out, err := runCommand(t, "server", "screenshot", strconv.FormatInt(serverID, 10), "--output", output, "--timeout", "1ms")
+			require.Error(t, err)
+			assert.Regexp(t, `(?i)timeout|deadline exceeded`, err.Error())
+			assert.Empty(t, out)
+			assert.NoFileExists(t, output)
+		})
 	})
 
 	t.Run("image", func(t *testing.T) {
