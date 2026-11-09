@@ -148,6 +148,11 @@ func (cfg *config) Read(f any) error {
 	if err := toml.Unmarshal(cfgBytes, &cfg.schema); err != nil {
 		return err
 	}
+	for _, ctx := range cfg.schema.Contexts {
+		if err := ctx.validateCredentials(); err != nil {
+			return fmt.Errorf("context %q: %w", ctx.Name(), err)
+		}
+	}
 
 	if cfg.schema.ActiveContext != "" {
 		// ReadConfig resets the current config and reads the new values

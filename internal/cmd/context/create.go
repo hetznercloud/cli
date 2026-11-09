@@ -17,7 +17,7 @@ import (
 
 func NewCreateCommand(s state.State) *cobra.Command {
 	cmd := &cobra.Command{
-		Use:                   "create [--token-from-env] <name>",
+		Use:                   "create [options] <name>",
 		Short:                 "Create a new context",
 		Args:                  util.Validate,
 		TraverseChildren:      true,
@@ -26,14 +26,21 @@ func NewCreateCommand(s state.State) *cobra.Command {
 		RunE:                  state.Wrap(s, runCreate),
 	}
 	cmd.Flags().Bool("token-from-env", false, "If true, the HCLOUD_TOKEN from the environment will be used without asking")
+	cmd.Flags().String("credential-helper", "", "Credential helper executable (uses the Git credential protocol)")
+	cmd.Flags().StringArray("credential-helper-arg", nil, "Argument to pass to the credential helper (repeatable)")
+	cmd.Flags().String("credential-url", "", "URL identifying the credential to retrieve")
 	return cmd
 }
 
 func runCreate(s state.State, cmd *cobra.Command, args []string) error {
 	tokenFromEnv, _ := cmd.Flags().GetBool("token-from-env")
+	helperConfigured := cmd.Flags().Changed("credential-helper") || cmd.Flags().Changed("credential-helper-arg") || cmd.Flags().Changed("credential-url")
+	if helperConfigured && tokenFromEnv {
+		return errors.New("credential helper settings and --token-from-env are mutually exclusive")
+	}
 
 	cfg := s.Config()
-	if !s.Terminal().StdoutIsTerminal() && !tokenFromEnv {
+	if !helperConfigured && !s.Terminal().StdoutIsTerminal() && !tokenFromEnv {
 		return errors.New("non-interactive tty detected. Use --token-from-env to use HCLOUD_TOKEN from the environment")
 	}
 
@@ -43,6 +50,16 @@ func runCreate(s state.State, cmd *cobra.Command, args []string) error {
 	}
 	if config.ContextByName(cfg, name) != nil {
 		return errors.New("name already used")
+	}
+	if helperConfigured {
+		helper, _ := cmd.Flags().GetString("credential-helper")
+		helperArgs, _ := cmd.Flags().GetStringArray("credential-helper-arg")
+		credentialURL, _ := cmd.Flags().GetString("credential-url")
+		ctx, err := config.NewCredentialContext(name, append([]string{helper}, helperArgs...), credentialURL)
+		if err != nil {
+			return err
+		}
+		return saveCreatedContext(s, cmd, ctx)
 	}
 
 	var token string
@@ -92,16 +109,19 @@ func runCreate(s state.State, cmd *cobra.Command, args []string) error {
 		}
 	}
 
-	context := config.NewContext(name, token)
+	return saveCreatedContext(s, cmd, config.NewContext(name, token))
+}
 
-	cfg.SetContexts(append(cfg.Contexts(), context))
-	cfg.SetActiveContext(context)
+func saveCreatedContext(s state.State, cmd *cobra.Command, ctx config.Context) error {
+	cfg := s.Config()
+	cfg.SetContexts(append(cfg.Contexts(), ctx))
+	cfg.SetActiveContext(ctx)
 
 	if err := cfg.Write(nil); err != nil {
 		return err
 	}
 
-	cmd.Printf("Context %s created and activated\n", name)
+	cmd.Printf("Context %s created and activated\n", ctx.Name())
 
 	return nil
 }

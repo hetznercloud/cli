@@ -14,10 +14,20 @@ func Wrap(s State, f func(State, *cobra.Command, []string) error) func(*cobra.Co
 	}
 }
 
-func (c *state) EnsureToken(_ *cobra.Command, _ []string) error {
+func (c *state) EnsureToken(cmd *cobra.Command, _ []string) error {
 	token, err := config.OptionToken.Get(c.config)
 	if err != nil {
 		return err
+	}
+	if token == "" && c.credentials != nil {
+		ctx := c.Context
+		if cmd != nil {
+			ctx = cmd.Context()
+		}
+		token, err = c.credentials.resolve(ctx)
+		if err != nil {
+			return err
+		}
 	}
 	if token == "" {
 		return errors.New("no active context or token (see `hcloud context --help`)")

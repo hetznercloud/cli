@@ -3,6 +3,8 @@ package config
 type Context interface {
 	Name() string
 	Token() string
+	CredentialHelper() []string
+	CredentialURL() string
 	Preferences() Preferences
 }
 
@@ -14,9 +16,11 @@ func NewContext(name, token string) Context {
 }
 
 type context struct {
-	ContextName        string      `toml:"name"`
-	ContextToken       string      `toml:"token"`
-	ContextPreferences Preferences `toml:"preferences"`
+	ContextName             string      `toml:"name"`
+	ContextToken            string      `toml:"token,omitempty"`
+	ContextCredentialHelper []string    `toml:"credential_helper,omitempty"`
+	ContextCredentialURL    string      `toml:"credential_url,omitempty"`
+	ContextPreferences      Preferences `toml:"preferences"`
 }
 
 func (ctx *context) Name() string {
@@ -27,6 +31,16 @@ func (ctx *context) Name() string {
 // If you just need the token regardless of the context, please use [OptionToken] instead.
 func (ctx *context) Token() string {
 	return ctx.ContextToken
+}
+
+// CredentialHelper returns the executable and arguments used to retrieve credentials.
+func (ctx *context) CredentialHelper() []string {
+	return append([]string(nil), ctx.ContextCredentialHelper...)
+}
+
+// CredentialURL identifies the credential to retrieve, independently of the context name.
+func (ctx *context) CredentialURL() string {
+	return ctx.ContextCredentialURL
 }
 
 func (ctx *context) Preferences() Preferences {

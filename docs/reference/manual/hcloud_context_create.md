@@ -3,14 +3,17 @@
 Create a new context
 
 ```
-hcloud context create [--token-from-env] <name>
+hcloud context create [options] <name>
 ```
 
 ### Options
 
 ```
-  -h, --help             help for create
-      --token-from-env   If true, the HCLOUD_TOKEN from the environment will be used without asking
+      --credential-helper string            Credential helper executable (uses the Git credential protocol)
+      --credential-helper-arg stringArray   Argument to pass to the credential helper (repeatable)
+      --credential-url string               URL identifying the credential to retrieve
+  -h, --help                                help for create
+      --token-from-env                      If true, the HCLOUD_TOKEN from the environment will be used without asking
 ```
 
 ### Options inherited from parent commands

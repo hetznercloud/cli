@@ -18,10 +18,12 @@ type presentation struct {
 }
 
 type schemaPresentation struct {
-	Name        string         `json:"name"`
-	Token       string         `json:"token,omitempty"`
-	Active      bool           `json:"active"`
-	Preferences map[string]any `json:"preferences,omitempty"`
+	Name             string         `json:"name"`
+	Token            string         `json:"token,omitempty"`
+	CredentialHelper []string       `json:"credential_helper,omitempty"`
+	CredentialURL    string         `json:"credential_url,omitempty"`
+	Active           bool           `json:"active"`
+	Preferences      map[string]any `json:"preferences,omitempty"`
 }
 
 func NewListCommand(s state.State) *cobra.Command {
@@ -73,9 +75,11 @@ func runList(s state.State, cmd *cobra.Command, _ []string) error {
 		schema := make([]schemaPresentation, 0, len(contexts))
 		for _, ctx := range contexts {
 			pres := schemaPresentation{
-				Name:        ctx.Name(),
-				Active:      ctx == activeCtx,
-				Preferences: ctx.Preferences(),
+				Name:             ctx.Name(),
+				Active:           ctx == activeCtx,
+				Preferences:      ctx.Preferences(),
+				CredentialHelper: ctx.CredentialHelper(),
+				CredentialURL:    ctx.CredentialURL(),
 			}
 			if allowSensitive {
 				pres.Token = ctx.Token()

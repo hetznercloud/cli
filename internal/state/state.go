@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/hetznercloud/cli/internal/cmd/util"
 	"github.com/hetznercloud/cli/internal/hcapi2"
 	"github.com/hetznercloud/cli/internal/state/config"
 	"github.com/hetznercloud/cli/internal/testutil/terminal"
@@ -32,9 +33,10 @@ type State interface {
 type state struct {
 	context.Context
 
-	client hcapi2.Client
-	config config.Config
-	term   terminal.Terminal
+	client      hcapi2.Client
+	config      config.Config
+	term        terminal.Terminal
+	credentials *credentialResolver
 }
 
 func New(ctx context.Context, cfg config.Config) (State, error) {
@@ -68,6 +70,10 @@ func (c *state) newClient() (hcapi2.Client, error) {
 	tok, err := config.OptionToken.Get(c.config)
 	if err != nil {
 		return nil, err
+	}
+	if ctx := c.config.ActiveContext(); tok == "" && !util.IsNil(ctx) && len(ctx.CredentialHelper()) > 0 {
+		c.credentials = &credentialResolver{helper: ctx.CredentialHelper(), url: ctx.CredentialURL()}
+		tok = credentialMarker
 	}
 
 	opts := []hcloud.ClientOption{
@@ -143,6 +149,9 @@ func (c *state) newClient() (hcapi2.Client, error) {
 
 	client := &http.Client{}
 	client.Timeout = httpTimeout
+	if c.credentials != nil {
+		client.Transport = &credentialTransport{resolver: c.credentials, base: http.DefaultTransport}
+	}
 	opts = append(opts, hcloud.WithHTTPClient(client))
 
 	return hcapi2.NewClient(opts...), nil
