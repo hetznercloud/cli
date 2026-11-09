@@ -26,21 +26,19 @@ func NewCreateCommand(s state.State) *cobra.Command {
 		RunE:                  state.Wrap(s, runCreate),
 	}
 	cmd.Flags().Bool("token-from-env", false, "If true, the HCLOUD_TOKEN from the environment will be used without asking")
-	cmd.Flags().String("credential-helper", "", "Credential helper executable (uses the Git credential protocol)")
-	cmd.Flags().StringArray("credential-helper-arg", nil, "Argument to pass to the credential helper (repeatable)")
-	cmd.Flags().String("credential-url", "", "URL identifying the credential to retrieve")
+	cmd.Flags().String("token-command", "", "Shell command that prints the API token to stdout")
 	return cmd
 }
 
 func runCreate(s state.State, cmd *cobra.Command, args []string) error {
 	tokenFromEnv, _ := cmd.Flags().GetBool("token-from-env")
-	helperConfigured := cmd.Flags().Changed("credential-helper") || cmd.Flags().Changed("credential-helper-arg") || cmd.Flags().Changed("credential-url")
-	if helperConfigured && tokenFromEnv {
-		return errors.New("credential helper settings and --token-from-env are mutually exclusive")
+	commandConfigured := cmd.Flags().Changed("token-command")
+	if commandConfigured && tokenFromEnv {
+		return errors.New("--token-command and --token-from-env are mutually exclusive")
 	}
 
 	cfg := s.Config()
-	if !helperConfigured && !s.Terminal().StdoutIsTerminal() && !tokenFromEnv {
+	if !commandConfigured && !s.Terminal().StdoutIsTerminal() && !tokenFromEnv {
 		return errors.New("non-interactive tty detected. Use --token-from-env to use HCLOUD_TOKEN from the environment")
 	}
 
@@ -51,15 +49,12 @@ func runCreate(s state.State, cmd *cobra.Command, args []string) error {
 	if config.ContextByName(cfg, name) != nil {
 		return errors.New("name already used")
 	}
-	if helperConfigured {
-		helper, _ := cmd.Flags().GetString("credential-helper")
-		helperArgs, _ := cmd.Flags().GetStringArray("credential-helper-arg")
-		credentialURL, _ := cmd.Flags().GetString("credential-url")
-		ctx, err := config.NewCredentialContext(name, append([]string{helper}, helperArgs...), credentialURL)
-		if err != nil {
-			return err
+	if commandConfigured {
+		command, _ := cmd.Flags().GetString("token-command")
+		if strings.TrimSpace(command) == "" {
+			return errors.New("token command must not be empty")
 		}
-		return saveCreatedContext(s, cmd, ctx)
+		return saveCreatedContext(s, cmd, config.NewTokenCommandContext(name, command))
 	}
 
 	var token string

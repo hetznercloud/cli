@@ -125,33 +125,27 @@ Context new-context created and activated
 	}
 }
 
-func TestCreateWithCredentialHelper(t *testing.T) {
+func TestCreateWithTokenCommand(t *testing.T) {
 	t.Setenv("HCLOUD_TOKEN", "environment-token-must-not-be-stored")
 	t.Setenv("HCLOUD_CONTEXT", "")
 	fx := testutil.NewFixture(t)
 	defer fx.Finish()
 	cmd := context.NewCreateCommand(fx.State())
 	out, errOut, err := fx.Run(cmd, []string{
-		"--credential-helper", "missing-helper",
-		"--credential-helper-arg=argument with spaces",
-		"--credential-helper-arg=--option=value",
-		"--credential-url", "https://example.com/resource", "production",
+		"--token-command", "passbolt resource password --id example", "production",
 	})
 	require.NoError(t, err)
 	assert.Empty(t, errOut)
-	assert.Contains(t, out, `credential_helper = ["missing-helper", "argument with spaces", "--option=value"]`)
-	assert.Contains(t, out, `credential_url = "https://example.com/resource"`)
+	assert.Contains(t, out, `token_command = "passbolt resource password --id example"`)
 	assert.NotContains(t, out, "token =")
 	assert.Contains(t, out, "Context production created and activated")
 }
 
-func TestCreateInvalidCredentialSettings(t *testing.T) {
+func TestCreateInvalidTokenCommandSettings(t *testing.T) {
 	for _, args := range [][]string{
-		{"--credential-helper", "helper"},
-		{"--credential-url", "https://example.com"},
-		{"--credential-helper-arg=arg"},
-		{"--credential-helper", "helper", "--credential-url", "https://example.com", "--token-from-env"},
-		{"--credential-helper", "helper", "--credential-url", "https://alice:secret@example.com"},
+		{"--token-command", ""},
+		{"--token-command", " \t"},
+		{"--token-command", "command", "--token-from-env"},
 	} {
 		t.Run(fmt.Sprint(args), func(t *testing.T) {
 			fx := testutil.NewFixture(t)

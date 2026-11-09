@@ -9,11 +9,9 @@ hcloud context create [options] <name>
 ### Options
 
 ```
-      --credential-helper string            Credential helper executable (uses the Git credential protocol)
-      --credential-helper-arg stringArray   Argument to pass to the credential helper (repeatable)
-      --credential-url string               URL identifying the credential to retrieve
-  -h, --help                                help for create
-      --token-from-env                      If true, the HCLOUD_TOKEN from the environment will be used without asking
+  -h, --help                   help for create
+      --token-command string   Shell command that prints the API token to stdout
+      --token-from-env         If true, the HCLOUD_TOKEN from the environment will be used without asking
 ```
 
 ### Options inherited from parent commands

@@ -19,12 +19,12 @@ func (c *state) EnsureToken(cmd *cobra.Command, _ []string) error {
 	if err != nil {
 		return err
 	}
-	if token == "" && c.credentials != nil {
+	if c.tokens != nil {
 		ctx := c.Context
-		if cmd != nil {
+		if cmd != nil && cmd.Context() != nil {
 			ctx = cmd.Context()
 		}
-		token, err = c.credentials.resolve(ctx)
+		token, err = c.tokens.resolve(ctx)
 		if err != nil {
 			return err
 		}

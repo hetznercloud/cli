@@ -33,10 +33,10 @@ type State interface {
 type state struct {
 	context.Context
 
-	client      hcapi2.Client
-	config      config.Config
-	term        terminal.Terminal
-	credentials *credentialResolver
+	client hcapi2.Client
+	config config.Config
+	term   terminal.Terminal
+	tokens *tokenResolver
 }
 
 func New(ctx context.Context, cfg config.Config) (State, error) {
@@ -71,9 +71,9 @@ func (c *state) newClient() (hcapi2.Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	if ctx := c.config.ActiveContext(); tok == "" && !util.IsNil(ctx) && len(ctx.CredentialHelper()) > 0 {
-		c.credentials = &credentialResolver{helper: ctx.CredentialHelper(), url: ctx.CredentialURL()}
-		tok = credentialMarker
+	if ctx := c.config.ActiveContext(); !util.IsNil(ctx) && strings.TrimSpace(ctx.TokenCommand()) != "" && os.Getenv("HCLOUD_TOKEN") == "" {
+		c.tokens = &tokenResolver{command: ctx.TokenCommand()}
+		tok = tokenCommandMarker
 	}
 
 	opts := []hcloud.ClientOption{
@@ -149,8 +149,8 @@ func (c *state) newClient() (hcapi2.Client, error) {
 
 	client := &http.Client{}
 	client.Timeout = httpTimeout
-	if c.credentials != nil {
-		client.Transport = &credentialTransport{resolver: c.credentials, base: http.DefaultTransport}
+	if c.tokens != nil {
+		client.Transport = &tokenTransport{resolver: c.tokens, base: http.DefaultTransport}
 	}
 	opts = append(opts, hcloud.WithHTTPClient(client))
 

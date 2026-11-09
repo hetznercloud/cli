@@ -3,8 +3,7 @@ package config
 type Context interface {
 	Name() string
 	Token() string
-	CredentialHelper() []string
-	CredentialURL() string
+	TokenCommand() string
 	Preferences() Preferences
 }
 
@@ -15,12 +14,16 @@ func NewContext(name, token string) Context {
 	}
 }
 
+// NewTokenCommandContext creates a context that retrieves its token from a command.
+func NewTokenCommandContext(name, command string) Context {
+	return &context{ContextName: name, ContextTokenCommand: command}
+}
+
 type context struct {
-	ContextName             string      `toml:"name"`
-	ContextToken            string      `toml:"token,omitempty"`
-	ContextCredentialHelper []string    `toml:"credential_helper,omitempty"`
-	ContextCredentialURL    string      `toml:"credential_url,omitempty"`
-	ContextPreferences      Preferences `toml:"preferences"`
+	ContextName         string      `toml:"name"`
+	ContextToken        string      `toml:"token,omitempty"`
+	ContextTokenCommand string      `toml:"token_command,omitempty"`
+	ContextPreferences  Preferences `toml:"preferences"`
 }
 
 func (ctx *context) Name() string {
@@ -33,14 +36,9 @@ func (ctx *context) Token() string {
 	return ctx.ContextToken
 }
 
-// CredentialHelper returns the executable and arguments used to retrieve credentials.
-func (ctx *context) CredentialHelper() []string {
-	return append([]string(nil), ctx.ContextCredentialHelper...)
-}
-
-// CredentialURL identifies the credential to retrieve, independently of the context name.
-func (ctx *context) CredentialURL() string {
-	return ctx.ContextCredentialURL
+// TokenCommand returns the shell command used to retrieve this context's token.
+func (ctx *context) TokenCommand() string {
+	return ctx.ContextTokenCommand
 }
 
 func (ctx *context) Preferences() Preferences {

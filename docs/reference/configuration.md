@@ -28,7 +28,7 @@ The configuration file is located at `~/.config/hcloud/cli.toml` by default
 (On Windows: `%APPDATA%\hcloud\cli.toml`). You can change the location by setting
 the `HCLOUD_CONFIG` environment variable or the `--config` flag. The configuration file
 stores global preferences, the currently active context, all contexts and
-context-specific preferences. Contexts store a token or credential helper settings and can optionally have
+context-specific preferences. Contexts store a token or a token command and can optionally have
 additional preferences which take precedence over the globally set preferences.
 
 However, a config file is not required. If no config file is found, the CLI will
@@ -40,91 +40,63 @@ You can use the `hcloud config` command to manage your configuration, for exampl
 to get, list, set and unset configuration options and preferences. You can view a list
 of all available options and preferences [here](manual/hcloud_config.md#synopsis).
 
-## Credential helpers
+## Token commands
 
-A context can retrieve its API token from an external credential helper instead of
-storing the token in `cli.toml`. Helpers use the retrieval operation of the
-[Git credential protocol](https://git-scm.com/docs/gitcredentials).
+A context can retrieve its API token from an external command instead of storing
+it in `cli.toml`. The command must print only the token to stdout. Leading and
+trailing whitespace, including newlines and carriage returns, is removed.
+Diagnostics and interactive prompts must use stderr or `/dev/tty`.
 
 ```sh
 hcloud context create \
-  --credential-helper /path/to/git-credential-helper \
-  --credential-helper-arg=--some-option \
-  --credential-url https://api.hetzner.cloud/production \
+  --token-command 'your-secret-manager print-token' \
   production
 ```
 
-`--credential-helper-arg` can be repeated; each occurrence supplies one argument,
-including spaces or commas literally. hcloud runs the executable directly, with
-these arguments followed by `get`. It does not invoke a shell, expand helper names
-to `git-credential-*`, or read Git configuration. The executable can be an absolute
-path or a name found on `PATH`.
-
-The resulting context is stored as:
+This creates the following context in `~/.config/hcloud/cli.toml`:
 
 ```toml
+active_context = "production"
+
 [[contexts]]
 name = "production"
-credential_helper = ["/path/to/git-credential-helper", "--some-option"]
-credential_url = "https://api.hetzner.cloud/production"
+token_command = "your-secret-manager print-token"
 ```
 
-`credential_url` identifies the secret to look up; it does not change the API
-endpoint and hcloud does not connect to it. Its scheme, host (including an optional
-port), path without the leading slash, and optional username are sent to the
-helper. The path is always included when present, so different projects can select
-different tokens. Renaming the context preserves its credential URL. URLs must not
-contain passwords, query strings, fragments, or newline/NUL characters.
+On Unix, hcloud executes the string using `/bin/sh -c`; on Windows it uses
+`cmd.exe /D /C`. Shell quoting, environment expansion, and pipelines follow that
+shell's rules. Standard input and standard error are inherited directly from
+hcloud, so a secret manager can prompt for a passphrase, PIN, or MFA code. Only
+standard output is captured. No credential protocol or JSON response is needed.
 
-For the URL above, the helper receives the following input, terminated by a blank
-line:
+Tokens are resolved lazily when authentication is needed and cached for the client
+lifecycle. A nonempty `HCLOUD_TOKEN` overrides the command. Otherwise, a nonblank
+`token_command` takes precedence over a stored context `token`. If `token_command`
+is empty or contains only whitespace, the stored token is used. A command failure
+or empty output stops authentication; it does not fall back to the stored token.
 
-```text
-protocol=https
-host=api.hetzner.cloud
-path=production
-
-```
-
-The helper must return a nonempty `password` field containing the API token:
-
-```text
-password=YOUR_API_TOKEN
-
-```
-
-hcloud retrieves credentials only when authentication is needed and caches the
-result for the current process. Creating, listing, renaming, or deleting contexts,
-inspecting configuration, and displaying help do not execute the helper. Retrieved
-tokens are never written back to the configuration or included in configuration
-inspection or context-list output, even with `--allow-sensitive`.
-
-A nonempty `HCLOUD_TOKEN` overrides the helper without executing it. A context
-cannot contain both a stored token and helper settings. Both helper settings are
-required, and helper creation cannot be combined with `--token-from-env`.
-An unsuccessful lookup stops the operation; there is no fallback to another
-credential source. hcloud reports helper failures without displaying captured
-stdout or stderr, since either may contain secrets. Manage and authenticate your
-credential store separately; hcloud only invokes `get`, never `store` or `erase`.
+Creating, listing, renaming, or deleting contexts, inspecting configuration, and
+displaying help do not execute token commands. Retrieved tokens are never written
+back to configuration or included in configuration inspection, context-list
+output, or debug traces. The command string itself is stored in the configuration
+and can appear in context-list output; use it to reference secrets, rather than
+embedding them directly. `--token-command` cannot be combined with
+`--token-from-env` when creating a context.
 
 ### Passbolt example
 
-The repository includes a Python 3
-[Passbolt adapter](../../examples/credential-helper/passbolt.py) that translates
-this protocol into `passbolt get resource --id <resource-id> --json`.
-Install the adapter as an executable, install `passbolt` on `PATH`, and configure
-Passbolt authentication separately. The example uses noninteractive Passbolt
-authentication; it does not forward a terminal for passphrase or MFA prompts.
-See the [Passbolt Go CLI documentation](https://www.passbolt.com/docs/user/quickstart/go-cli/).
+With a Passbolt version that supports raw password output through
+`get resource --field password --raw`, configure:
 
-Use the Passbolt resource ID as the credential URL path:
+```toml
+active_context = "production"
 
-```sh
-hcloud context create \
-  --credential-helper /path/to/passbolt.py \
-  --credential-url https://api.hetzner.cloud/01234567-89ab-cdef-0123-456789abcdef \
-  production
+[[contexts]]
+name = "production"
+token_command = "passbolt get resource --id 01234567-89ab-cdef-0123-456789abcdef --field password --raw"
 ```
 
-The API token is stored in the resource's password field. The Passbolt server URL
-and authentication belong to Passbolt's own configuration, not `credential_url`.
+Passbolt manages its own server configuration and authentication. The resource's
+password field contains the hcloud API token. Passbolt may prompt on stderr or
+`/dev/tty`; its stdout must contain only the decrypted password. No adapter is
+required. Other secret managers work the same way when they provide raw output.
