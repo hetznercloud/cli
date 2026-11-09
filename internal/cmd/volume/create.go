@@ -20,14 +20,14 @@ var CreateCmd = base.CreateCmd[*hcloud.Volume]{
 		cmd := &cobra.Command{
 			Use:                   "create [options] --name <name> --size <size>",
 			Short:                 "Create a Volume",
+			Long:                  "Create a Volume.\n\n" + assigneeDeprecationNotice,
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
 		}
 		cmd.Flags().String("name", "", "Volume name (required)")
 		_ = cmd.MarkFlagRequired("name")
 
-		cmd.Flags().String("server", "", "Server (ID or name)")
-		_ = cmd.RegisterFlagCompletionFunc("server", cmpl.SuggestCandidatesF(client.Server().Names))
+		addAssigneeFlags(cmd, client)
 
 		cmd.Flags().String("location", "", "Location (ID or name)")
 		_ = cmd.RegisterFlagCompletionFunc("location", cmpl.SuggestCandidatesF(client.Location().Names))
@@ -35,7 +35,7 @@ var CreateCmd = base.CreateCmd[*hcloud.Volume]{
 		cmd.Flags().Int("size", 0, "Size (GB) (required)")
 		_ = cmd.MarkFlagRequired("size")
 
-		cmd.Flags().Bool("automount", false, "Automount Volume after attach (Server must be provided) (true, false)")
+		cmd.Flags().Bool("automount", false, "Automount Volume after attach (assignee must be provided) (true, false)")
 
 		cmd.Flags().String("format", "", "Format Volume after creation (ext4 or xfs)")
 		_ = cmd.RegisterFlagCompletionFunc("format", cmpl.SuggestCandidates("ext4", "xfs"))
@@ -49,7 +49,6 @@ var CreateCmd = base.CreateCmd[*hcloud.Volume]{
 	},
 	Run: func(s state.State, cmd *cobra.Command, _ []string) (*hcloud.Volume, any, error) {
 		name, _ := cmd.Flags().GetString("name")
-		serverIDOrName, _ := cmd.Flags().GetString("server")
 		size, _ := cmd.Flags().GetInt("size")
 		location, _ := cmd.Flags().GetString("location")
 		automount, _ := cmd.Flags().GetBool("automount")
@@ -76,15 +75,9 @@ var CreateCmd = base.CreateCmd[*hcloud.Volume]{
 				createOpts.Location = &hcloud.Location{Name: location}
 			}
 		}
-		if serverIDOrName != "" {
-			server, _, err := s.Client().Server().Get(s, serverIDOrName)
-			if err != nil {
-				return nil, nil, err
-			}
-			if server == nil {
-				return nil, nil, fmt.Errorf("Server not found: %s", serverIDOrName)
-			}
-			createOpts.Server = server
+		createOpts.Assignee, _, err = getAssignee(s, cmd)
+		if err != nil {
+			return nil, nil, err
 		}
 		if automount {
 			createOpts.Automount = &automount

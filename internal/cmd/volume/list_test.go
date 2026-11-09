@@ -35,7 +35,7 @@ func TestList(t *testing.T) {
 				ID:       123,
 				Name:     "test",
 				Size:     50,
-				Server:   &hcloud.Server{ID: 321},
+				Assignee: &hcloud.VolumeAssignee{Type: "server", ID: 321},
 				Location: &hcloud.Location{Name: "fsn1"},
 				Created:  time.Now().Add(-1 * time.Hour),
 			},
@@ -46,8 +46,8 @@ func TestList(t *testing.T) {
 
 	out, errOut, err := fx.Run(cmd, []string{})
 
-	expOut := `ID    NAME   SIZE    SERVER     LOCATION   AGE
-123   test   50 GB   myServer   fsn1       1h
+	expOut := `ID    NAME   SIZE    ASSIGNEE          LOCATION   AGE
+123   test   50 GB   Server myServer   fsn1       1h
 `
 
 	require.NoError(t, err)

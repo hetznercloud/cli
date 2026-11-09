@@ -26,10 +26,10 @@ func TestDescribe(t *testing.T) {
 	fx.ExpectEnsureToken()
 
 	v := &hcloud.Volume{
-		ID:     123,
-		Name:   "test",
-		Size:   50,
-		Server: &hcloud.Server{ID: 321},
+		ID:       123,
+		Name:     "test",
+		Size:     50,
+		Assignee: &hcloud.VolumeAssignee{Type: "server", ID: 321},
 		Location: &hcloud.Location{
 			ID:          3,
 			Name:        "hel1",
@@ -68,8 +68,9 @@ Location:
   Latitude:      60.169855
   Longitude:     24.938379
 
-Server:
+Assignee:
   ID:    321
+  Type:  server
   Name:  myServer
 
 Protection:

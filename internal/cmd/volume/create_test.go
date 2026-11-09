@@ -29,13 +29,18 @@ func TestCreate(t *testing.T) {
 		Name:     "test",
 		Size:     20,
 		Location: &hcloud.Location{Name: "fsn1"},
+		Assignee: &hcloud.VolumeAssignee{Type: "server", ID: 456},
 	}
 
+	fx.Client.ServerClient.EXPECT().
+		Get(gomock.Any(), "myServer").
+		Return(&hcloud.Server{ID: 456, Name: "myServer"}, nil, nil)
 	fx.Client.VolumeClient.EXPECT().
 		Create(gomock.Any(), hcloud.VolumeCreateOpts{
 			Name:     "test",
 			Size:     20,
 			Location: &hcloud.Location{Name: "fsn1"},
+			Assignee: &hcloud.VolumeAssignee{Type: "server", ID: 456},
 			Labels:   make(map[string]string),
 		}).
 		Return(hcloud.VolumeCreateResult{
@@ -49,7 +54,7 @@ func TestCreate(t *testing.T) {
 		GetByID(gomock.Any(), vol.ID).
 		Return(vol, nil, nil)
 
-	out, errOut, err := fx.Run(cmd, []string{"--name", "test", "--size", "20", "--location", "fsn1"})
+	out, errOut, err := fx.Run(cmd, []string{"--name", "test", "--size", "20", "--location", "fsn1", "--assignee", "myServer", "--assignee-type", "server"})
 
 	expOut := "Volume 123 created\n"
 
@@ -78,7 +83,7 @@ func TestCreateJSON(t *testing.T) {
 		Protection: hcloud.VolumeProtection{
 			Delete: true,
 		},
-		Server: &hcloud.Server{ID: 123},
+		Assignee: &hcloud.VolumeAssignee{Type: "server", ID: 123},
 	}
 
 	fx.Client.VolumeClient.EXPECT().

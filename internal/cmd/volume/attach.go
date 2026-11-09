@@ -15,15 +15,15 @@ import (
 var AttachCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:                   "attach [--automount] --server <server> <volume>",
+			Use:                   "attach [--automount] --assignee-type <type> --assignee <assignee> <volume>",
 			Short:                 "Attach a Volume to a Server",
+			Long:                  "Attach a Volume to a Server.\n\n" + assigneeDeprecationNotice,
 			ValidArgsFunction:     cmpl.SuggestArgs(cmpl.SuggestCandidatesF(client.Volume().Names)),
 			TraverseChildren:      true,
 			DisableFlagsInUseLine: true,
 		}
-		cmd.Flags().String("server", "", "Server (ID or name) (required)")
-		_ = cmd.RegisterFlagCompletionFunc("server", cmpl.SuggestCandidatesF(client.Server().Names))
-		_ = cmd.MarkFlagRequired("server")
+		addAssigneeFlags(cmd, client)
+		cmd.MarkFlagsOneRequired("assignee", "server")
 		cmd.Flags().Bool("automount", false, "Automount Volume after attach (true, false)")
 
 		return cmd
@@ -37,17 +37,13 @@ var AttachCmd = base.Cmd{
 			return fmt.Errorf("volume not found: %s", args[0])
 		}
 
-		serverIDOrName, _ := cmd.Flags().GetString("server")
-		server, _, err := s.Client().Server().Get(s, serverIDOrName)
+		assignee, assigneeName, err := getAssignee(s, cmd)
 		if err != nil {
 			return err
 		}
-		if server == nil {
-			return fmt.Errorf("Server not found: %s", serverIDOrName)
-		}
 		automount, _ := cmd.Flags().GetBool("automount")
 		action, _, err := s.Client().Volume().AttachWithOpts(s, volume, hcloud.VolumeAttachOpts{
-			Server:    server,
+			Assignee:  assignee,
 			Automount: &automount,
 		})
 
@@ -59,7 +55,7 @@ var AttachCmd = base.Cmd{
 			return err
 		}
 
-		cmd.Printf("Volume %d attached to Server %s\n", volume.ID, server.Name)
+		cmd.Printf("Volume %d attached to %s\n", volume.ID, assigneeName)
 		return nil
 	},
 }
