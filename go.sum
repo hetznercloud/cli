@@ -104,6 +104,8 @@ github.com/subosito/gotenv v1.6.0 h1:9NlTDc1FTs4qu0DDq7AEtTPNw6SVm7uBMsUCUjABIf8
 github.com/subosito/gotenv v1.6.0/go.mod h1:Dk4QP5c2W3ibzajGcXpNraDfq2IrhjMIvMSWPKKo0FU=
 github.com/swaggest/assertjson v1.10.0 h1:OYIx29UbgqjwAekKbeIO8T0XbAMyViJ8qqrVj2GQY2M=
 github.com/swaggest/assertjson v1.10.0/go.mod h1:31+ufMpzrCO/daIRZ4s1UZAA1R2q9EEUfJaoczgAty8=
+github.com/tenthirtyam/go-vnc v1.0.1 h1:jJBNsPkhnkNR1va5yfFY7v7rVc1C45x4pBMCr0a54oU=
+github.com/tenthirtyam/go-vnc v1.0.1/go.mod h1:J009Y0mesUZAmX6vBWBjcI8f7mOBNtQmhs47mman5NU=
 github.com/yudai/golcs v0.0.0-20170316035057-ecda9a501e82 h1:BHyfKlQyqbsFN5p3IfnEUduWvb9is428/nNb5L3U01M=
 github.com/yudai/golcs v0.0.0-20170316035057-ecda9a501e82/go.mod h1:lgjkn3NuSvDfVJdfcVVdX+jpBxNmX4rDAzaS45IcYoM=
 go.uber.org/goleak v1.3.0 h1:2K3zAYmnTNqV73imy9J1T3WC+gmCePx2hEGkimedGto=
