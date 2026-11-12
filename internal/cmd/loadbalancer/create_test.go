@@ -33,7 +33,6 @@ func TestCreate(t *testing.T) {
 			Name:             "myLoadBalancer",
 			LoadBalancerType: &hcloud.LoadBalancerType{Name: "lb11"},
 			Location:         &hcloud.Location{Name: "fsn1"},
-			Labels:           make(map[string]string),
 		}).
 		Return(hcloud.LoadBalancerCreateResult{
 			LoadBalancer: &hcloud.LoadBalancer{ID: 123},
@@ -100,7 +99,6 @@ func TestCreatePrimaryIPs(t *testing.T) {
 			Name:             "myLoadBalancer",
 			LoadBalancerType: &hcloud.LoadBalancerType{Name: "lb11"},
 			Location:         &hcloud.Location{Name: "fsn1"},
-			Labels:           make(map[string]string),
 			PublicNet: &hcloud.LoadBalancerCreateOptsPublicNet{
 				IPv4: primaryIPv4,
 				IPv6: primaryIPv6,
@@ -176,7 +174,6 @@ func TestCreateJSON(t *testing.T) {
 			Name:             "myLoadBalancer",
 			LoadBalancerType: &hcloud.LoadBalancerType{Name: "lb11"},
 			Location:         &hcloud.Location{Name: "fsn1"},
-			Labels:           make(map[string]string),
 		}).
 		Return(hcloud.LoadBalancerCreateResult{
 			LoadBalancer: lb,
@@ -223,7 +220,6 @@ func TestCreateProtection(t *testing.T) {
 			Name:             "myLoadBalancer",
 			LoadBalancerType: &hcloud.LoadBalancerType{Name: "lb11"},
 			Location:         &hcloud.Location{Name: "fsn1"},
-			Labels:           make(map[string]string),
 		}).
 		Return(hcloud.LoadBalancerCreateResult{
 			LoadBalancer: loadBalancer,

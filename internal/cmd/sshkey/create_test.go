@@ -28,7 +28,6 @@ func TestCreate(t *testing.T) {
 		Create(gomock.Any(), hcloud.SSHKeyCreateOpts{
 			Name:      "test",
 			PublicKey: "test",
-			Labels:    make(map[string]string),
 		}).
 		Return(&hcloud.SSHKey{
 			ID:        123,
@@ -58,7 +57,6 @@ func TestCreateJSON(t *testing.T) {
 		Create(gomock.Any(), hcloud.SSHKeyCreateOpts{
 			Name:      "test",
 			PublicKey: "test",
-			Labels:    make(map[string]string),
 		}).
 		Return(&hcloud.SSHKey{
 			ID:          123,

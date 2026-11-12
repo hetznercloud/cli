@@ -77,7 +77,7 @@ func (lc *LabelCmds[T]) AddCobraCommand(s state.State) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().BoolP("overwrite", "o", false, "Overwrite label if it exists already (true, false)")
+	cmd.Flags().BoolP("overwrite", "o", false, "Overwrite label if it exists already")
 
 	if lc.Configure != nil {
 		cmd = lc.Configure(s, cmd)

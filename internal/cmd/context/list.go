@@ -39,7 +39,7 @@ func NewListCommand(s state.State) *cobra.Command {
 		RunE:                  state.Wrap(s, runList),
 	}
 
-	cmd.Flags().Bool("allow-sensitive", false, "Allow showing sensitive values in JSON/YAML output (true, false)")
+	cmd.Flags().Bool("allow-sensitive", false, "Allow showing sensitive values in JSON/YAML output")
 
 	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(cols), output.OptionJSON(), output.OptionYAML())
 	return cmd
