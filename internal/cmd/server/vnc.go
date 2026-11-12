@@ -22,7 +22,7 @@ import (
 var VNCCmd = base.Cmd{
 	BaseCobraCommand: func(client hcapi2.Client) *cobra.Command {
 		cmd := &cobra.Command{
-			Use:   "vnc [options] <server>",
+			Use:   "vnc-port-foward [options] <server>",
 			Short: "Forward the Server VNC console to a local port",
 			Long: `Forward the Server VNC console to a local port, so it can be accessed with any VNC client.
 
@@ -35,7 +35,7 @@ Note that the local VNC server has no password protection.`,
 		cmd.Flags().IntP("port", "p", 5900, "Local port to listen on (0 picks a random free port)")
 		return cmd
 	},
-	Experimental: base.ExperimentalWrapper("The server vnc command", "experimental", ""),
+	Experimental: base.ExperimentalWrapper("The vnc-port-foward command", "experimental", ""),
 	Run: func(s state.State, cmd *cobra.Command, args []string) error {
 		idOrName := args[0]
 		address, _ := cmd.Flags().GetString("address")
