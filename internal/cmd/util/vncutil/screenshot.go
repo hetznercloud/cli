@@ -21,7 +21,7 @@ type VNCSession struct {
 	serverMessages chan vnc.ServerMessage
 }
 
-func OpenVNCSession(ctx context.Context, wsURL string, debugOut io.Writer) (*VNCSession, error) {
+func NewVNCSession(ctx context.Context, wsURL string, debugOut io.Writer) (*VNCSession, error) {
 	slog.Debug("dialing websocket")
 	ws, err := dialWebsocket(ctx, wsURL)
 	if err != nil {

@@ -112,7 +112,7 @@ var ScreenshotCmd = base.Cmd{
 			defer cancel()
 		}
 
-		session, err := vncutil.OpenVNCSession(ctx, result.WSSURL, debugOut)
+		session, err := vncutil.NewVNCSession(ctx, result.WSSURL, debugOut)
 		if err != nil {
 			return err
 		}
@@ -143,7 +143,7 @@ func watchScreenshots(
 	ctx, stop := signal.NotifyContext(ctx, os.Interrupt)
 	defer stop()
 
-	session, err := vncutil.OpenVNCSession(ctx, wsURL, debugOut)
+	session, err := vncutil.NewVNCSession(ctx, wsURL, debugOut)
 	if err != nil {
 		if ctx.Err() != nil {
 			return nil
