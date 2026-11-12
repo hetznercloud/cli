@@ -52,7 +52,7 @@ and https://docs.hetzner.cloud/changelog#2026-04-27-primary-ips-make-assignee_ty
 		cmd.Flags().StringSlice("enable-protection", []string{}, "Enable protection (delete) (default: none)")
 		_ = cmd.RegisterFlagCompletionFunc("enable-protection", cmpl.SuggestCandidates("delete"))
 
-		cmd.Flags().Bool("auto-delete", false, "Delete Primary IP if assigned resource is deleted (true, false)")
+		cmd.Flags().Bool("auto-delete", false, "Delete Primary IP if assigned resource is deleted")
 
 		cmd.MarkFlagsOneRequired("assignee-id", "location")
 		cmd.MarkFlagsMutuallyExclusive("assignee-id", "location")

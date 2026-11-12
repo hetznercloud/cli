@@ -25,16 +25,15 @@ func TestCreate(t *testing.T) {
 	fx.ExpectEnsureToken()
 
 	opts := hcloud.PlacementGroupCreateOpts{
-		Name:   "my Placement Group",
-		Labels: map[string]string{},
-		Type:   hcloud.PlacementGroupTypeSpread,
+		Name: "my Placement Group",
+		Type: hcloud.PlacementGroupTypeSpread,
 	}
 
 	placementGroup := hcloud.PlacementGroup{
 		ID:      897,
 		Name:    opts.Name,
 		Created: time.Now(),
-		Labels:  opts.Labels,
+		Labels:  map[string]string{},
 		Type:    opts.Type,
 	}
 
@@ -65,9 +64,8 @@ func TestCreateJSON(t *testing.T) {
 	fx.ExpectEnsureToken()
 
 	opts := hcloud.PlacementGroupCreateOpts{
-		Name:   "myPlacementGroup",
-		Labels: map[string]string{},
-		Type:   hcloud.PlacementGroupTypeSpread,
+		Name: "myPlacementGroup",
+		Type: hcloud.PlacementGroupTypeSpread,
 	}
 
 	fx.Client.PlacementGroupClient.EXPECT().

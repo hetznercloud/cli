@@ -50,7 +50,6 @@ func TestCreate(t *testing.T) {
 				SSHEnabled:   new(true),
 				ZFSEnabled:   new(true),
 			},
-			Labels:  make(map[string]string),
 			SSHKeys: []*hcloud.SSHKey{sshKey1, sshKey2},
 		}).
 		Return(hcloud.StorageBoxCreateResult{
@@ -175,7 +174,6 @@ func TestCreateJSON(t *testing.T) {
 				SSHEnabled:   new(true),
 				ZFSEnabled:   new(true),
 			},
-			Labels:  make(map[string]string),
 			SSHKeys: []*hcloud.SSHKey{sshKey1},
 		}).
 		Return(hcloud.StorageBoxCreateResult{
@@ -224,7 +222,6 @@ func TestCreateProtection(t *testing.T) {
 				SSHEnabled:   new(true),
 				ZFSEnabled:   new(true),
 			},
-			Labels:  make(map[string]string),
 			SSHKeys: []*hcloud.SSHKey{sshKey1},
 		}).
 		Return(hcloud.StorageBoxCreateResult{

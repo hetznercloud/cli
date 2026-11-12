@@ -44,7 +44,6 @@ func TestCreate(t *testing.T) {
 				Readonly:   new(true),
 				SSHEnabled: new(true),
 			},
-			Labels: make(map[string]string),
 		}).
 		Return(hcloud.StorageBoxSubaccountCreateResult{
 			Subaccount: sbs,
@@ -113,7 +112,6 @@ func TestCreateJSON(t *testing.T) {
 				Readonly:   new(true),
 				SSHEnabled: new(true),
 			},
-			Labels: make(map[string]string),
 		}).
 		Return(hcloud.StorageBoxSubaccountCreateResult{
 			Subaccount: sbs,

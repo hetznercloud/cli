@@ -36,7 +36,6 @@ func TestCreate(t *testing.T) {
 			Name:     "test",
 			Size:     20,
 			Location: &hcloud.Location{Name: "fsn1"},
-			Labels:   make(map[string]string),
 		}).
 		Return(hcloud.VolumeCreateResult{
 			Volume:      vol,
@@ -86,7 +85,6 @@ func TestCreateJSON(t *testing.T) {
 			Name:     "test",
 			Size:     20,
 			Location: &hcloud.Location{Name: "fsn1"},
-			Labels:   make(map[string]string),
 		}).
 		Return(hcloud.VolumeCreateResult{
 			Volume:      vol,
@@ -127,7 +125,6 @@ func TestCreateProtection(t *testing.T) {
 			Name:     "test",
 			Size:     20,
 			Location: &hcloud.Location{Name: "fsn1"},
-			Labels:   make(map[string]string),
 		}).
 		Return(hcloud.VolumeCreateResult{
 			Volume:      v,

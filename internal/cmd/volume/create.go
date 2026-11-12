@@ -35,7 +35,7 @@ var CreateCmd = base.CreateCmd[*hcloud.Volume]{
 		cmd.Flags().Int("size", 0, "Size (GB) (required)")
 		_ = cmd.MarkFlagRequired("size")
 
-		cmd.Flags().Bool("automount", false, "Automount Volume after attach (Server must be provided) (true, false)")
+		cmd.Flags().Bool("automount", false, "Automount Volume after attach (Server must be provided)")
 
 		cmd.Flags().String("format", "", "Format Volume after creation (ext4 or xfs)")
 		_ = cmd.RegisterFlagCompletionFunc("format", cmpl.SuggestCandidates("ext4", "xfs"))
