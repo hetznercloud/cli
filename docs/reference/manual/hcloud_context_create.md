@@ -3,14 +3,15 @@
 Create a new context
 
 ```
-hcloud context create [--token-from-env] <name>
+hcloud context create [options] <name>
 ```
 
 ### Options
 
 ```
-  -h, --help             help for create
-      --token-from-env   If true, the HCLOUD_TOKEN from the environment will be used without asking
+  -h, --help                   help for create
+      --token-command string   Shell command that prints the API token to stdout
+      --token-from-env         If true, the HCLOUD_TOKEN from the environment will be used without asking
 ```
 
 ### Options inherited from parent commands

@@ -1,6 +1,7 @@
 package context_test
 
 import (
+	"fmt"
 	"io"
 	"syscall"
 	"testing"
@@ -120,6 +121,39 @@ Context new-context created and activated
 			}
 			assert.Equal(t, tt.expErr, errOut)
 			assert.Equal(t, tt.expOut, out)
+		})
+	}
+}
+
+func TestCreateWithTokenCommand(t *testing.T) {
+	t.Setenv("HCLOUD_TOKEN", "environment-token-must-not-be-stored")
+	t.Setenv("HCLOUD_CONTEXT", "")
+	fx := testutil.NewFixture(t)
+	defer fx.Finish()
+	cmd := context.NewCreateCommand(fx.State())
+	out, errOut, err := fx.Run(cmd, []string{
+		"--token-command", "passbolt resource password --id example", "production",
+	})
+	require.NoError(t, err)
+	assert.Empty(t, errOut)
+	assert.Contains(t, out, `token_command = "passbolt resource password --id example"`)
+	assert.NotContains(t, out, "token =")
+	assert.Contains(t, out, "Context production created and activated")
+}
+
+func TestCreateInvalidTokenCommandSettings(t *testing.T) {
+	for _, args := range [][]string{
+		{"--token-command", ""},
+		{"--token-command", " \t"},
+		{"--token-command", "command", "--token-from-env"},
+	} {
+		t.Run(fmt.Sprint(args), func(t *testing.T) {
+			fx := testutil.NewFixture(t)
+			defer fx.Finish()
+			cmd := context.NewCreateCommand(fx.State())
+			_, _, err := fx.Run(cmd, append(args, "production"))
+			require.Error(t, err)
+			assert.Empty(t, fx.Config.Contexts())
 		})
 	}
 }
