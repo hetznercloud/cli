@@ -74,7 +74,7 @@ func NewCommand(s state.State) *cobra.Command {
 		IPCmd.CobraCommand(s),
 		RequestConsoleCmd.CobraCommand(s),
 		ScreenshotCmd.CobraCommand(s),
-		VNCCmd.CobraCommand(s),
+		VNCPortForwardCmd.CobraCommand(s),
 		ResetPasswordCmd.CobraCommand(s),
 		MetricsCmd.CobraCommand(s),
 		SetRDNSCmd.CobraCommand(s),
