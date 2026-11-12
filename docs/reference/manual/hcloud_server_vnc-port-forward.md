@@ -1,4 +1,4 @@
-## hcloud server vnc
+## hcloud server vnc-port-forward
 
 [experimental] Forward the Server VNC console to a local port
 
@@ -8,18 +8,18 @@ Forward the Server VNC console to a local port, so it can be accessed with any V
 
 Note that the local VNC server has no password protection.
 
-Experimental: The server vnc command is experimental, breaking changes may occur within minor releases.
+Experimental: The vnc-port-forward command is experimental, breaking changes may occur within minor releases.
 
 
 ```
-hcloud server vnc [options] <server>
+hcloud server vnc-port-forward [options] <server>
 ```
 
 ### Options
 
 ```
       --address string   Local address to listen on (default "127.0.0.1")
-  -h, --help             help for vnc
+  -h, --help             help for vnc-port-forward
   -p, --port int         Local port to listen on (0 picks a random free port) (default 5900)
 ```
 
