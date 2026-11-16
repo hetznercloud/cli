@@ -1,8 +1,10 @@
-/hcloud
-/dist
-/bats
 /completions
+/dist
 /manpages
+/vendor
+
+/hcloud
 /cmd/hcloud/hcloud
+
 hcloud_cli.p12
 coverage.txt
