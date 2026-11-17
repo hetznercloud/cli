@@ -91,5 +91,6 @@ var ListCmd = &base.ListCmd[*hcloud.ISO, schema.ISO]{
 			})
 	},
 
-	Schema: hcloud.SchemaFromISO,
+	Schema:         hcloud.SchemaFromISO,
+	OmitLabelsFlag: true,
 }

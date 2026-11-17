@@ -31,5 +31,6 @@ var ListCmd = base.ListCmd[*hcloud.Location, schema.Location]{
 			AddAllowedFields(&hcloud.Location{})
 	},
 
-	Schema: hcloud.SchemaFromLocation,
+	Schema:         hcloud.SchemaFromLocation,
+	OmitLabelsFlag: true,
 }
