@@ -99,7 +99,9 @@ func (lc *ListCmd[T, S]) CobraCommand(s state.State) *cobra.Command {
 	if lc.AdditionalFlags != nil {
 		lc.AdditionalFlags(cmd, s.Client())
 	}
-	cmd.Flags().StringSliceP("sort", "s", []string{}, "Determine the sorting of the result")
+	if lc.SortOption != nil {
+		cmd.Flags().StringSliceP("sort", "s", []string{}, "Determine the sorting of the result")
+	}
 	if lc.Configure != nil {
 		cmd = lc.Configure(s, cmd)
 	}
