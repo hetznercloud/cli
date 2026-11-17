@@ -29,7 +29,6 @@ hcloud iso list [options]
       --include-architecture-wildcard   Include ISOs with unknown architecture, only required if you want so show custom ISOs and still filter for architecture. (true, false)
   -o, --output stringArray              output options: noheader|columns=...|json|yaml
   -l, --selector string                 Selector to filter by labels
-  -s, --sort strings                    Determine the sorting of the result
       --type strings                    Types to include (public, private) (default [public,private])
 ```
 

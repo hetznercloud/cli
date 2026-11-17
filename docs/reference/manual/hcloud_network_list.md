@@ -31,7 +31,6 @@ hcloud network list [options]
   -h, --help                 help for list
   -o, --output stringArray   output options: noheader|columns=...|json|yaml
   -l, --selector string      Selector to filter by labels
-  -s, --sort strings         Determine the sorting of the result
 ```
 
 ### Options inherited from parent commands
