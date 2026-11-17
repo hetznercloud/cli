@@ -66,19 +66,27 @@ func Age(t, currentTime time.Time) string {
 }
 
 func GrossPrice(price hcloud.Price) string {
-	currencyDisplay := formatPriceCurrency(price)
-
-	// The code/symbol and the amount are separated by a non-breaking space:
-	// https://style-guide.europa.eu/en/content/-/isg/topic?identifier=7.3.3-rules-for-expressing-monetary-units#id370303__id370303_PositionISO
-	return fmt.Sprintf("%s\u00a0%s", currencyDisplay, price.Gross)
+	return formatPrice(price.Currency, price.Gross)
 }
 
 func NetPrice(price hcloud.Price) string {
-	currencyDisplay := formatPriceCurrency(price)
+	return formatPrice(price.Currency, price.Net)
+}
+
+func formatPrice(currency string, amount string) string {
+	// Currency is the ISO 4217 code, but we want to the show currency symbol
+	switch currency {
+	case "EUR":
+		currency = "€"
+	case "USD":
+		currency = "$"
+	default:
+		// unchanged
+	}
 
 	// The code/symbol and the amount are separated by a non-breaking space:
 	// https://style-guide.europa.eu/en/content/-/isg/topic?identifier=7.3.3-rules-for-expressing-monetary-units#id370303__id370303_PositionISO
-	return fmt.Sprintf("%s\u00a0%s", currencyDisplay, price.Net)
+	return fmt.Sprintf("%s\u00a0%s", currency, amount)
 }
 
 func ChainRunE(fns ...func(cmd *cobra.Command, args []string) error) func(cmd *cobra.Command, args []string) error {
@@ -450,20 +458,4 @@ func DescribeLabels(out io.Writer, labels map[string]string, prefix string) {
 func IndexedFilePath(path string, index int) string {
 	ext := filepath.Ext(path)
 	return fmt.Sprintf("%s-%04d%s", strings.TrimSuffix(path, ext), index, ext)
-}
-
-func formatPriceCurrency(price hcloud.Price) string {
-	currencyDisplay := price.Currency
-
-	// Currency is the ISO 4217 code, but we want to the show currency symbol
-	switch price.Currency {
-	case "EUR":
-		currencyDisplay = "€"
-	case "USD":
-		currencyDisplay = "$"
-	default:
-		// unchanged
-	}
-
-	return currencyDisplay
 }
