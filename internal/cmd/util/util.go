@@ -66,17 +66,7 @@ func Age(t, currentTime time.Time) string {
 }
 
 func GrossPrice(price hcloud.Price) string {
-	currencyDisplay := price.Currency
-
-	// Currency is the ISO 4217 code, but we want to the show currency symbol
-	switch price.Currency {
-	case "EUR":
-		currencyDisplay = "€"
-	case "USD":
-		currencyDisplay = "$"
-	default:
-		// unchanged
-	}
+	currencyDisplay := formatPriceCurrency(price)
 
 	// The code/symbol and the amount are separated by a non-breaking space:
 	// https://style-guide.europa.eu/en/content/-/isg/topic?identifier=7.3.3-rules-for-expressing-monetary-units#id370303__id370303_PositionISO
@@ -84,17 +74,7 @@ func GrossPrice(price hcloud.Price) string {
 }
 
 func NetPrice(price hcloud.Price) string {
-	currencyDisplay := price.Currency
-
-	// Currency is the ISO 4217 code, but we want to the show currency symbol
-	switch price.Currency {
-	case "EUR":
-		currencyDisplay = "€"
-	case "USD":
-		currencyDisplay = "$"
-	default:
-		// unchanged
-	}
+	currencyDisplay := formatPriceCurrency(price)
 
 	// The code/symbol and the amount are separated by a non-breaking space:
 	// https://style-guide.europa.eu/en/content/-/isg/topic?identifier=7.3.3-rules-for-expressing-monetary-units#id370303__id370303_PositionISO
@@ -470,4 +450,20 @@ func DescribeLabels(out io.Writer, labels map[string]string, prefix string) {
 func IndexedFilePath(path string, index int) string {
 	ext := filepath.Ext(path)
 	return fmt.Sprintf("%s-%04d%s", strings.TrimSuffix(path, ext), index, ext)
+}
+
+func formatPriceCurrency(price hcloud.Price) string {
+	currencyDisplay := price.Currency
+
+	// Currency is the ISO 4217 code, but we want to the show currency symbol
+	switch price.Currency {
+	case "EUR":
+		currencyDisplay = "€"
+	case "USD":
+		currencyDisplay = "$"
+	default:
+		// unchanged
+	}
+
+	return currencyDisplay
 }
