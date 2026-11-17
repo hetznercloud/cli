@@ -1,8 +1,10 @@
 package base_test
 
 import (
+	"bytes"
 	"cmp"
 	"slices"
+	"strings"
 	"testing"
 
 	"github.com/spf13/pflag"
@@ -140,4 +142,33 @@ func TestList(t *testing.T) {
 			ExpOutType: testutil.DataTypeJSON,
 		},
 	})
+}
+
+func TestList_OmitLabelsFlag(t *testing.T) {
+	fx := testutil.NewFixture(t)
+	t.Cleanup(fx.Finish)
+
+	for _, omit := range []bool{true, false} {
+		fakeListCmd.OmitLabelsFlag = omit
+
+		buf := bytes.NewBuffer(nil)
+		cmd := fakeListCmd.CobraCommand(fx.State())
+		cmd.SetOut(buf)
+
+		if err := cmd.Help(); err != nil {
+			t.Errorf("help command failed: %s", err)
+		}
+
+		if omit {
+			if strings.Contains(buf.String(), "-l, --selector") ||
+				strings.Contains(buf.String(), "Selector to filter by labels") {
+				t.Error("expected list command help text to not include a label-selector flag")
+			}
+		} else {
+			if !strings.Contains(buf.String(), "-l, --selector") ||
+				!strings.Contains(buf.String(), "Selector to filter by labels") {
+				t.Error("expected list command help text to include a label-selector flag")
+			}
+		}
+	}
 }

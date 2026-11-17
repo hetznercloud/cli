@@ -61,6 +61,10 @@ type ListCmd[T any, S any] struct {
 
 	// Configure is a function that can be used to configure the command directly.
 	Configure func(state.State, *cobra.Command) *cobra.Command
+
+	// Can be set to indicate that the [ListCmd] for a resource does not support labels.
+	// As result the corresponding flag will not be printed in the help text or documentation.
+	OmitLabelsFlag bool
 }
 
 // CobraCommand creates a command that can be registered with cobra.
@@ -95,7 +99,9 @@ func (lc *ListCmd[T, S]) CobraCommand(s state.State) *cobra.Command {
 	}
 
 	output.AddFlag(cmd, output.OptionNoHeader(), output.OptionColumns(outputColumns), output.OptionJSON(), output.OptionYAML())
-	cmd.Flags().StringP("selector", "l", "", "Selector to filter by labels")
+	if !lc.OmitLabelsFlag {
+		cmd.Flags().StringP("selector", "l", "", "Selector to filter by labels")
+	}
 	if lc.AdditionalFlags != nil {
 		lc.AdditionalFlags(cmd, s.Client())
 	}
