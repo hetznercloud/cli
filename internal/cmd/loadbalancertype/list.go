@@ -37,5 +37,6 @@ var ListCmd = base.ListCmd[*hcloud.LoadBalancerType, schema.LoadBalancerType]{
 			})
 	},
 
-	Schema: hcloud.SchemaFromLoadBalancerType,
+	Schema:         hcloud.SchemaFromLoadBalancerType,
+	OmitLabelsFlag: true,
 }

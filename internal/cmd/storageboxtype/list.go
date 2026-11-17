@@ -52,5 +52,6 @@ var ListCmd = base.ListCmd[*hcloud.StorageBoxType, schema.StorageBoxType]{
 			})
 	},
 
-	Schema: hcloud.SchemaFromStorageBoxType,
+	Schema:         hcloud.SchemaFromStorageBoxType,
+	OmitLabelsFlag: true,
 }

@@ -79,7 +79,8 @@ var ListCmd = &base.ListCmd[*hcloud.ServerType, schema.ServerType]{
 			})
 	},
 
-	Schema: hcloud.SchemaFromServerType,
+	Schema:         hcloud.SchemaFromServerType,
+	OmitLabelsFlag: true,
 }
 
 func listLocationNames(serverType *hcloud.ServerType, del func(hcloud.ServerTypeLocation) bool) string {

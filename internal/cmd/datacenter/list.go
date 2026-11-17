@@ -44,4 +44,5 @@ var ListCmd = &base.ListCmd[*hcloud.Datacenter, schema.Datacenter]{
 		c.Long = fmt.Sprintf("%s\n%s", deprecationNotice, c.Long)
 		return c
 	},
+	OmitLabelsFlag: true,
 }
