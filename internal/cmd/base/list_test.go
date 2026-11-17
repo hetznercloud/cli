@@ -3,6 +3,7 @@ package base_test
 import (
 	"cmp"
 	"slices"
+	"strings"
 	"testing"
 
 	"github.com/spf13/pflag"
@@ -140,4 +141,24 @@ func TestList(t *testing.T) {
 			ExpOutType: testutil.DataTypeJSON,
 		},
 	})
+}
+
+func TestListNoSortSupport(t *testing.T) {
+	cmd := &base.ListCmd[*fakeResource, *fakeResource]{
+		ResourceNamePlural: "Fake resources",
+		Schema:             func(r *fakeResource) *fakeResource { return r },
+		OutputTable:        func(t *output.Table[*fakeResource], _ hcapi2.Client) { t.AddAllowedFields(&fakeResource{}) },
+		DefaultColumns:     []string{"id"},
+		Fetch:              func(_ state.State, _ *pflag.FlagSet, _ hcloud.ListOpts, _ []string) ([]*fakeResource, error) { return nil, nil },
+		SortOption:         nil,
+	}
+
+	c := cmd.CobraCommand(testutil.MockState())
+	helpText, _ := c.Flags().GetStringShorthand("sort")
+	if helpText != "" {
+		t.Errorf("Expected sort flag not to exist, but got shorthand: %s", helpText)
+	}
+	if c.Flags().Lookup("sort") != nil {
+		t.Error("Expected sort flag not to exist, but it was found")
+	}
 }
