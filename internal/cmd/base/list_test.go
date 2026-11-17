@@ -141,3 +141,29 @@ func TestList(t *testing.T) {
 		},
 	})
 }
+
+func TestListSortFlagRegistration(t *testing.T) {
+	sortOpt, cleanup := config.NewTestOption(
+		"sort.fakeresource",
+		"",
+		[]string{"id:asc"},
+		(config.DefaultPreferenceFlags&^config.OptionFlagPFlag)|config.OptionFlagSlice,
+		nil,
+	)
+	defer cleanup()
+
+	fx := testutil.NewFixture(t)
+	defer fx.Finish()
+
+	withSort := *fakeListCmd
+	withSort.SortOption = sortOpt
+	if withSort.CobraCommand(fx.State()).Flags().Lookup("sort") == nil {
+		t.Error("expected --sort flag when SortOption is set")
+	}
+
+	withoutSort := *fakeListCmd
+	withoutSort.SortOption = nil
+	if withoutSort.CobraCommand(fx.State()).Flags().Lookup("sort") != nil {
+		t.Error("expected no --sort flag when SortOption is nil")
+	}
+}

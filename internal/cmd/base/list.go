@@ -3,7 +3,6 @@ package base
 import (
 	"fmt"
 	"io"
-	"os"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
@@ -99,7 +98,9 @@ func (lc *ListCmd[T, S]) CobraCommand(s state.State) *cobra.Command {
 	if lc.AdditionalFlags != nil {
 		lc.AdditionalFlags(cmd, s.Client())
 	}
-	cmd.Flags().StringSliceP("sort", "s", []string{}, "Determine the sorting of the result")
+	if lc.SortOption != nil {
+		cmd.Flags().StringSliceP("sort", "s", []string{}, "Determine the sorting of the result")
+	}
 	if lc.Configure != nil {
 		cmd = lc.Configure(s, cmd)
 	}
@@ -116,17 +117,15 @@ func (lc *ListCmd[T, S]) Run(s state.State, cmd *cobra.Command, args []string) e
 	}
 
 	var sorts []string
-	if cmd.Flags().Changed("sort") {
-		if lc.SortOption == nil {
-			_, _ = fmt.Fprintln(os.Stderr, "Warning: resource does not support sorting. Ignoring --sort flag.")
-		} else {
+	if lc.SortOption != nil {
+		if cmd.Flags().Changed("sort") {
 			sorts, _ = cmd.Flags().GetStringSlice("sort")
-		}
-	} else if lc.SortOption != nil {
-		var err error
-		sorts, err = lc.SortOption.Get(s.Config())
-		if err != nil {
-			return err
+		} else {
+			var err error
+			sorts, err = lc.SortOption.Get(s.Config())
+			if err != nil {
+				return err
+			}
 		}
 	}
 
