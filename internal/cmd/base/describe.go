@@ -43,6 +43,9 @@ type DescribeCmd[T any] struct {
 	//     <a> <b> <c>
 	PositionalArgumentOverride []string
 
+	// Can be used to override the default 'describe' Use
+	UseOverride string
+
 	// Can be set if the default [DescribeCmd.NameSuggestions] is not enough. This is usually the case when
 	// [DescribeCmd.FetchWithArgs] and [DescribeCmd.PositionalArgumentOverride] is being used.
 	ValidArgsFunction func(client hcapi2.Client) []cobra.CompletionFunc
@@ -65,8 +68,13 @@ func (dc *DescribeCmd[T]) CobraCommand(s state.State) *cobra.Command {
 		log.Fatalf("describe command %s is missing ValidArgsFunction or NameSuggestions", dc.ResourceNameSingular)
 	}
 
+	use := "describe"
+	if dc.UseOverride != "" {
+		use = dc.UseOverride
+	}
+
 	cmd := &cobra.Command{
-		Use:                   fmt.Sprintf("describe [options] %s", positionalArguments(dc.ResourceNameSingular, dc.PositionalArgumentOverride)),
+		Use:                   fmt.Sprintf("%s [options] %s", use, positionalArguments(dc.ResourceNameSingular, dc.PositionalArgumentOverride)),
 		Short:                 dc.ShortDescription,
 		Args:                  util.Validate,
 		ValidArgsFunction:     cmpl.SuggestArgs(suggestArgs...),
