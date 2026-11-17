@@ -426,33 +426,39 @@ func TestRemoveDuplicates(t *testing.T) {
 
 func TestPrice(t *testing.T) {
 	tests := []struct {
-		name     string
-		price    hcloud.Price
-		amount   string
-		currency string
-		want     string
+		name        string
+		price       hcloud.Price
+		grossAmount string
+		netAmount   string
+		currency    string
+		wantGross   string
+		wantNet     string
 	}{
 		{
-			name:  "known currency (EUR)",
-			price: hcloud.Price{Currency: "EUR", Gross: "5.00"},
-			want:  "€\u00a05.00",
+			name:      "known currency (EUR)",
+			price:     hcloud.Price{Currency: "EUR", Net: "4.20", Gross: "5.00"},
+			wantNet:   "€\u00a04.20",
+			wantGross: "€\u00a05.00",
 		},
 		{
-			name:  "known currency (USD)",
-			price: hcloud.Price{Currency: "USD", Gross: "5.00"},
-			want:  "$\u00a05.00",
+			name:      "known currency (USD)",
+			price:     hcloud.Price{Currency: "USD", Net: "4.20", Gross: "5.00"},
+			wantNet:   "$\u00a04.20",
+			wantGross: "$\u00a05.00",
 		},
 		{
-			name:     "unknown currency",
-			price:    hcloud.Price{Currency: "HOL", Gross: "1.2"},
-			amount:   "1.2",
-			currency: "HOL",
-			want:     "HOL\u00a01.2",
+			name:        "unknown currency",
+			price:       hcloud.Price{Currency: "HOL", Net: "1.0", Gross: "1.2"},
+			grossAmount: "1.2",
+			currency:    "HOL",
+			wantNet:     "HOL\u00a01.0",
+			wantGross:   "HOL\u00a01.2",
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equalf(t, tt.want, util.GrossPrice(tt.price), "GrossPrice(%v, %v)", tt.amount, tt.currency)
+			assert.Equalf(t, tt.wantGross, util.GrossPrice(tt.price), "GrossPrice(%v, %v)", tt.grossAmount, tt.currency)
+			assert.Equalf(t, tt.wantNet, util.NetPrice(tt.price), "NetPrice(%v, %v)", tt.netAmount, tt.currency)
 		})
 	}
 }
