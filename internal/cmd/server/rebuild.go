@@ -26,7 +26,7 @@ var RebuildCmd = base.Cmd{
 		_ = cmd.RegisterFlagCompletionFunc("image", cmpl.SuggestCandidatesF(client.Image().Names))
 		_ = cmd.MarkFlagRequired("image")
 
-		cmd.Flags().Bool("allow-deprecated-image", false, "Enable the use of deprecated images (default: false) (true, false)")
+		cmd.Flags().Bool("allow-deprecated-image", false, "Enable the use of deprecated images")
 
 		cmd.Flags().StringArray("user-data-from-file", []string{}, "Read user data from specified file (use - to read from stdin)")
 

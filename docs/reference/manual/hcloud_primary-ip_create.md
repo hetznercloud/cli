@@ -26,9 +26,9 @@ hcloud primary-ip create [options] --type <ipv4|ipv6> --name <name>
 ```
       --assignee-id int             Assignee (usually a Server) to assign Primary IP to
       --assignee-type string        Assignee Type to assign Primary IP to (default: server) (default "server")
-      --auto-delete                 Delete Primary IP if assigned resource is deleted (true, false)
+      --auto-delete[=true|false]    Delete Primary IP if assigned resource is deleted
       --enable-protection strings   Enable protection (delete) (default: none)
-  -h, --help                        help for create
+  -h, --help[=true|false]           help for create
       --label stringToString        User-defined labels ('key=value') (can be specified multiple times) (default [])
       --location string             Location (ID or name) of Primary IP
       --name string                 Name (required)
@@ -39,16 +39,16 @@ hcloud primary-ip create [options] --type <ipv4|ipv6> --name <name>
 ### Options inherited from parent commands
 
 ```
-      --config string              Config file path (default "~/.config/hcloud/cli.toml")
-      --context string             Currently active context
-      --debug                      Enable debug output
-      --debug-file string          File to write debug output to
-      --endpoint string            Hetzner Cloud API endpoint (default "https://api.hetzner.cloud/v1")
-      --hetzner-endpoint string    Hetzner API endpoint (default "https://api.hetzner.com/v1")
-      --http-timeout duration      Timeout for HTTP requests (default 0 = no timeout)
-      --no-experimental-warnings   If true, experimental warnings are not shown
-      --poll-interval duration     Interval at which to poll information, for example action progress (default 500ms)
-      --quiet                      If true, only print error messages
+      --config string                           Config file path (default "~/.config/hcloud/cli.toml")
+      --context string                          Currently active context
+      --debug[=true|false]                      Enable debug output
+      --debug-file string                       File to write debug output to
+      --endpoint string                         Hetzner Cloud API endpoint (default "https://api.hetzner.cloud/v1")
+      --hetzner-endpoint string                 Hetzner API endpoint (default "https://api.hetzner.com/v1")
+      --http-timeout duration                   Timeout for HTTP requests (default 0 = no timeout)
+      --no-experimental-warnings[=true|false]   If true, experimental warnings are not shown
+      --poll-interval duration                  Interval at which to poll information, for example action progress (default 500ms)
+      --quiet[=true|false]                      If true, only print error messages
 ```
 
 ### SEE ALSO

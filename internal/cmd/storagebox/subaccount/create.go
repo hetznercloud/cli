@@ -35,11 +35,11 @@ var CreateCmd = base.CreateCmd[*hcloud.StorageBoxSubaccount]{
 
 		cmd.Flags().StringToString("label", nil, "User-defined labels ('key=value') (can be specified multiple times)")
 
-		cmd.Flags().Bool("enable-samba", false, "Whether the Samba subsystem should be enabled (true, false)")
-		cmd.Flags().Bool("enable-ssh", false, "Whether the SSH subsystem should be enabled (true, false)")
-		cmd.Flags().Bool("enable-webdav", false, "Whether the WebDAV subsystem should be enabled (true, false)")
-		cmd.Flags().Bool("reachable-externally", false, "Whether the Storage Box should be accessible from outside the Hetzner network (true, false)")
-		cmd.Flags().Bool("readonly", false, "Whether the Subaccount should be read-only (true, false)")
+		cmd.Flags().Bool("enable-samba", false, "Whether the Samba subsystem should be enabled")
+		cmd.Flags().Bool("enable-ssh", false, "Whether the SSH subsystem should be enabled")
+		cmd.Flags().Bool("enable-webdav", false, "Whether the WebDAV subsystem should be enabled")
+		cmd.Flags().Bool("reachable-externally", false, "Whether the Storage Box should be accessible from outside the Hetzner network")
+		cmd.Flags().Bool("readonly", false, "Whether the Subaccount should be read-only")
 
 		return cmd
 	},

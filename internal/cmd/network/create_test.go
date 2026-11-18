@@ -36,7 +36,6 @@ func TestCreate(t *testing.T) {
 		Create(gomock.Any(), hcloud.NetworkCreateOpts{
 			Name:    "myNetwork",
 			IPRange: ipRange,
-			Labels:  make(map[string]string),
 		}).
 		Return(n, nil, nil)
 	fx.Client.NetworkClient.EXPECT().
@@ -78,7 +77,6 @@ func TestCreateJSON(t *testing.T) {
 		Create(gomock.Any(), hcloud.NetworkCreateOpts{
 			Name:    "myNetwork",
 			IPRange: ipRange,
-			Labels:  make(map[string]string),
 		}).
 		Return(n, nil, nil)
 	fx.Client.NetworkClient.EXPECT().
@@ -112,7 +110,6 @@ func TestCreateProtection(t *testing.T) {
 		Create(gomock.Any(), hcloud.NetworkCreateOpts{
 			Name:    "myNetwork",
 			IPRange: ipRange,
-			Labels:  make(map[string]string),
 		}).
 		Return(n, nil, nil)
 	fx.Client.NetworkClient.EXPECT().

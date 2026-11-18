@@ -12,7 +12,7 @@ hcloud firewall add-rule [options] (--direction in --source-ips <ips> | --direct
       --description string        Description of the Firewall rule
       --destination-ips strings   Destination IPs (CIDR Notation) (required when direction is out)
       --direction string          Direction (in, out) (required)
-  -h, --help                      help for add-rule
+  -h, --help[=true|false]         help for add-rule
       --port string               Port to which traffic will be allowed, only applicable for protocols TCP and UDP, you can specify port ranges, sample: 80-85
       --protocol string           Protocol (icmp, esp, gre, udp or tcp) (required)
       --source-ips strings        Source IPs (CIDR Notation) (required when direction is in)
@@ -21,16 +21,16 @@ hcloud firewall add-rule [options] (--direction in --source-ips <ips> | --direct
 ### Options inherited from parent commands
 
 ```
-      --config string              Config file path (default "~/.config/hcloud/cli.toml")
-      --context string             Currently active context
-      --debug                      Enable debug output
-      --debug-file string          File to write debug output to
-      --endpoint string            Hetzner Cloud API endpoint (default "https://api.hetzner.cloud/v1")
-      --hetzner-endpoint string    Hetzner API endpoint (default "https://api.hetzner.com/v1")
-      --http-timeout duration      Timeout for HTTP requests (default 0 = no timeout)
-      --no-experimental-warnings   If true, experimental warnings are not shown
-      --poll-interval duration     Interval at which to poll information, for example action progress (default 500ms)
-      --quiet                      If true, only print error messages
+      --config string                           Config file path (default "~/.config/hcloud/cli.toml")
+      --context string                          Currently active context
+      --debug[=true|false]                      Enable debug output
+      --debug-file string                       File to write debug output to
+      --endpoint string                         Hetzner Cloud API endpoint (default "https://api.hetzner.cloud/v1")
+      --hetzner-endpoint string                 Hetzner API endpoint (default "https://api.hetzner.com/v1")
+      --http-timeout duration                   Timeout for HTTP requests (default 0 = no timeout)
+      --no-experimental-warnings[=true|false]   If true, experimental warnings are not shown
+      --poll-interval duration                  Interval at which to poll information, for example action progress (default 500ms)
+      --quiet[=true|false]                      If true, only print error messages
 ```
 
 ### SEE ALSO

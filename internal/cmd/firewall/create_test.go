@@ -27,8 +27,7 @@ func TestCreate(t *testing.T) {
 
 	fx.Client.FirewallClient.EXPECT().
 		Create(gomock.Any(), hcloud.FirewallCreateOpts{
-			Name:   "test",
-			Labels: make(map[string]string),
+			Name: "test",
 			Rules: []hcloud.FirewallRule{
 				{
 					Direction: hcloud.FirewallRuleDirectionIn,
@@ -103,8 +102,7 @@ func TestCreateJSON(t *testing.T) {
 
 	fx.Client.FirewallClient.EXPECT().
 		Create(gomock.Any(), hcloud.FirewallCreateOpts{
-			Name:   "test",
-			Labels: make(map[string]string),
+			Name: "test",
 		}).
 		Return(hcloud.FirewallCreateResult{
 			Firewall: &hcloud.Firewall{

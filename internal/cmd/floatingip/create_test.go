@@ -36,7 +36,6 @@ func TestCreate(t *testing.T) {
 			Name:         new("myFloatingIP"),
 			Type:         hcloud.FloatingIPTypeIPv4,
 			HomeLocation: &hcloud.Location{Name: "fsn1"},
-			Labels:       make(map[string]string),
 			Description:  new(""),
 		}).
 		Return(hcloud.FloatingIPCreateResult{
@@ -79,7 +78,6 @@ func TestCreateJSON(t *testing.T) {
 			Name:         new("myFloatingIP"),
 			Type:         hcloud.FloatingIPTypeIPv4,
 			HomeLocation: &hcloud.Location{Name: "fsn1"},
-			Labels:       make(map[string]string),
 			Description:  new(""),
 		}).
 		Return(hcloud.FloatingIPCreateResult{
@@ -118,7 +116,6 @@ func TestCreateProtection(t *testing.T) {
 			Name:         new("myFloatingIP"),
 			Type:         hcloud.FloatingIPTypeIPv4,
 			HomeLocation: &hcloud.Location{Name: "fsn1"},
-			Labels:       make(map[string]string),
 			Description:  new(""),
 		}).
 		Return(hcloud.FloatingIPCreateResult{

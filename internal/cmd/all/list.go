@@ -64,7 +64,7 @@ Listed resources are:
 
 		cmd.Flags().StringP("selector", "l", "", "Selector to filter by labels")
 
-		cmd.Flags().Bool("paid", false, "Only list resources that cost money (true, false)")
+		cmd.Flags().Bool("paid", false, "Only list resources that cost money")
 
 		output.AddFlag(cmd, output.OptionJSON(), output.OptionYAML())
 

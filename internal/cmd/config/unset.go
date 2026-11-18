@@ -24,7 +24,7 @@ func NewUnsetCommand(s state.State) *cobra.Command {
 		RunE:                  state.Wrap(s, runUnset),
 		ValidArgsFunction:     cmpl.NoFileCompletion(cmpl.SuggestCandidates(getOptionNames(config.OptionFlagPreference)...)),
 	}
-	cmd.Flags().Bool("global", false, "Unset the value globally (for all contexts) (true, false)")
+	cmd.Flags().Bool("global", false, "Unset the value globally (for all contexts)")
 	return cmd
 }
 

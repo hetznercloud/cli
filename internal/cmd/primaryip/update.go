@@ -19,7 +19,7 @@ var UpdateCmd = base.UpdateCmd[*hcloud.PrimaryIP]{
 	},
 	DefineFlags: func(cmd *cobra.Command) {
 		cmd.Flags().String("name", "", "Primary IP name")
-		cmd.Flags().Bool("auto-delete", false, "Delete this Primary IP when the resource it is assigned to is deleted (true, false)")
+		cmd.Flags().Bool("auto-delete", false, "Delete this Primary IP when the resource it is assigned to is deleted")
 	},
 	Update: func(s state.State, cmd *cobra.Command, primaryIP *hcloud.PrimaryIP, flags map[string]pflag.Value) error {
 		updOpts := hcloud.PrimaryIPUpdateOpts{

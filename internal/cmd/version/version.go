@@ -20,7 +20,7 @@ func NewCommand(_ state.State) *cobra.Command {
 		DisableFlagsInUseLine: true,
 		RunE:                  runVersion,
 	}
-	cmd.Flags().Bool("long", false, "Print more version information (true, false)")
+	cmd.Flags().Bool("long", false, "Print more version information")
 	return cmd
 }
 

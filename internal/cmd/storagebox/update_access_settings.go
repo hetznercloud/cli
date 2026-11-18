@@ -23,11 +23,11 @@ var UpdateAccessSettingsCmd = base.Cmd{
 			DisableFlagsInUseLine: true,
 		}
 
-		cmd.Flags().Bool("enable-samba", false, "Whether the Samba subsystem should be enabled (true, false)")
-		cmd.Flags().Bool("enable-ssh", false, "Whether the SSH subsystem should be enabled (true, false)")
-		cmd.Flags().Bool("enable-webdav", false, "Whether the WebDAV subsystem should be enabled (true, false)")
-		cmd.Flags().Bool("enable-zfs", false, "Whether the ZFS Snapshot folder should be visible (true, false)")
-		cmd.Flags().Bool("reachable-externally", false, "Whether the Storage Box should be accessible from outside the Hetzner network (true, false)")
+		cmd.Flags().Bool("enable-samba", false, "Whether the Samba subsystem should be enabled")
+		cmd.Flags().Bool("enable-ssh", false, "Whether the SSH subsystem should be enabled")
+		cmd.Flags().Bool("enable-webdav", false, "Whether the WebDAV subsystem should be enabled")
+		cmd.Flags().Bool("enable-zfs", false, "Whether the ZFS Snapshot folder should be visible")
+		cmd.Flags().Bool("reachable-externally", false, "Whether the Storage Box should be accessible from outside the Hetzner network")
 
 		cmd.MarkFlagsOneRequired("enable-samba", "enable-ssh", "enable-webdav", "enable-zfs", "reachable-externally")
 
