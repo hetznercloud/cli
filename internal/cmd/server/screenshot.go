@@ -32,7 +32,7 @@ var ScreenshotCmd = base.Cmd{
 		}
 		cmd.Flags().StringP("output", "o", "screenshot.png", "Output file for the screenshot ('-' for stdout; must be a .png file otherwise)")
 		cmd.Flags().Duration("timeout", 10*time.Second, "Timeout for taking the screenshot (0s disables the timeout)")
-		cmd.Flags().Bool("overwrite", false, "Overwrite the output file if it exists already (true, false)")
+		cmd.Flags().Bool("overwrite", false, "Overwrite the output file if it exists already")
 		cmd.Flags().Duration("watch", 0, "Take a screenshot at the given interval (minimum 1s)")
 
 		cmd.MarkFlagsMutuallyExclusive("timeout", "watch")
