@@ -3,6 +3,7 @@ package config
 type Context interface {
 	Name() string
 	Token() string
+	TokenCommand() string
 	Preferences() Preferences
 }
 
@@ -13,10 +14,16 @@ func NewContext(name, token string) Context {
 	}
 }
 
+// NewTokenCommandContext creates a context that retrieves its token from a command.
+func NewTokenCommandContext(name, command string) Context {
+	return &context{ContextName: name, ContextTokenCommand: command}
+}
+
 type context struct {
-	ContextName        string      `toml:"name"`
-	ContextToken       string      `toml:"token"`
-	ContextPreferences Preferences `toml:"preferences"`
+	ContextName         string      `toml:"name"`
+	ContextToken        string      `toml:"token,omitempty"`
+	ContextTokenCommand string      `toml:"token_command,omitempty"`
+	ContextPreferences  Preferences `toml:"preferences"`
 }
 
 func (ctx *context) Name() string {
@@ -27,6 +34,11 @@ func (ctx *context) Name() string {
 // If you just need the token regardless of the context, please use [OptionToken] instead.
 func (ctx *context) Token() string {
 	return ctx.ContextToken
+}
+
+// TokenCommand returns the shell command used to retrieve this context's token.
+func (ctx *context) TokenCommand() string {
+	return ctx.ContextTokenCommand
 }
 
 func (ctx *context) Preferences() Preferences {
