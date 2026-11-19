@@ -12,6 +12,7 @@ type StorageBoxClient interface {
 	Names() []string
 	LabelKeys(string) []string
 	SnapshotLabelKeys(string, string) []string
+	SubaccountLabelKeys(string, string) []string
 }
 
 func NewStorageBoxClient(client hcloud.IStorageBoxClient) StorageBoxClient {
@@ -64,4 +65,18 @@ func (c *storageBoxClient) SnapshotLabelKeys(storageBoxNameOrID, snapshotNameOrI
 		return nil
 	}
 	return labelKeys(storageBoxSnapshot.Labels)
+}
+
+// SubaccountLabelKeys returns a slice containing the keys of all labels assigned to
+// the Storage Box Subaccount with the passed name or id.
+func (c *storageBoxClient) SubaccountLabelKeys(storageBoxNameOrID, subaccountNameOrID string) []string {
+	storageBox, _, err := c.Get(context.Background(), storageBoxNameOrID)
+	if err != nil || storageBox == nil {
+		return nil
+	}
+	storageBoxSubaccount, _, err := c.GetSubaccount(context.Background(), storageBox, subaccountNameOrID)
+	if err != nil || storageBoxSubaccount == nil || len(storageBoxSubaccount.Labels) == 0 {
+		return nil
+	}
+	return labelKeys(storageBoxSubaccount.Labels)
 }

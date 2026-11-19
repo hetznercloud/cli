@@ -4965,6 +4965,20 @@ func (mr *MockStorageBoxClientMockRecorder) SnapshotLabelKeys(arg0, arg1 any) *g
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SnapshotLabelKeys", reflect.TypeOf((*MockStorageBoxClient)(nil).SnapshotLabelKeys), arg0, arg1)
 }
 
+// SubaccountLabelKeys mocks base method.
+func (m *MockStorageBoxClient) SubaccountLabelKeys(arg0, arg1 string) []string {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "SubaccountLabelKeys", arg0, arg1)
+	ret0, _ := ret[0].([]string)
+	return ret0
+}
+
+// SubaccountLabelKeys indicates an expected call of SubaccountLabelKeys.
+func (mr *MockStorageBoxClientMockRecorder) SubaccountLabelKeys(arg0, arg1 any) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "SubaccountLabelKeys", reflect.TypeOf((*MockStorageBoxClient)(nil).SubaccountLabelKeys), arg0, arg1)
+}
+
 // Update mocks base method.
 func (m *MockStorageBoxClient) Update(ctx context.Context, storageBox *hcloud.StorageBox, opts hcloud.StorageBoxUpdateOpts) (*hcloud.StorageBox, *hcloud.Response, error) {
 	m.ctrl.T.Helper()
