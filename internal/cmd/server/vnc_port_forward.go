@@ -93,7 +93,12 @@ Note that the local VNC server has no password protection.`,
 }
 
 func forwardVNC(ctx context.Context, s state.State, cmd *cobra.Command, server *hcloud.Server, conn net.Conn) error {
-	defer conn.Close()
+	cmd.Printf("Accepted connection from %s\n", conn.RemoteAddr())
+
+	defer func() {
+		_ = conn.Close()
+		cmd.Printf("Closed connection from %s\n", conn.RemoteAddr())
+	}()
 
 	result, _, err := s.Client().Server().RequestConsole(ctx, server)
 	if err != nil {
@@ -107,9 +112,6 @@ func forwardVNC(ctx context.Context, s state.State, cmd *cobra.Command, server *
 	if err != nil {
 		return err
 	}
-
-	cmd.Printf("Accepted connection from %s\n", conn.RemoteAddr())
-	defer cmd.Printf("Closed connection from %s\n", conn.RemoteAddr())
 
 	return vncutil.ProxyWebsocket(ctx, conn, ws)
 }
