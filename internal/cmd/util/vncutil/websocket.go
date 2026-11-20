@@ -60,7 +60,7 @@ func ProxyWebsocket(ctx context.Context, conn net.Conn, ws *websocket.Conn) erro
 	// close both connections if one side errors
 	err := <-errs
 	closeAll()
-	<-errs
+	<-errs //nolint:errcheck // ignore net.ErrClosed
 
 	if ctx.Err() != nil || errors.Is(err, net.ErrClosed) {
 		return nil
