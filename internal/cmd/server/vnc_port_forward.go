@@ -100,6 +100,7 @@ func forwardVNC(ctx context.Context, s state.State, cmd *cobra.Command, server *
 		cmd.Printf("Closed connection from %s\n", conn.RemoteAddr())
 	}()
 
+	cmd.Printf("Requesting VNC console for Server %d...\n", server.ID)
 	result, _, err := s.Client().Server().RequestConsole(ctx, server)
 	if err != nil {
 		return err
@@ -108,6 +109,7 @@ func forwardVNC(ctx context.Context, s state.State, cmd *cobra.Command, server *
 		return err
 	}
 
+	cmd.Printf("Dialing VNC console Websocket for Server %d...\n", server.ID)
 	ws, err := vncutil.DialWebsocket(ctx, result.WSSURL)
 	if err != nil {
 		if srv, _, getErr := s.Client().Server().GetByID(ctx, server.ID); getErr == nil &&
@@ -117,5 +119,6 @@ func forwardVNC(ctx context.Context, s state.State, cmd *cobra.Command, server *
 		return err
 	}
 
+	cmd.Printf("Proxying VNC console for Server %d...\n", server.ID)
 	return vncutil.ProxyWebsocket(ctx, conn, ws)
 }
