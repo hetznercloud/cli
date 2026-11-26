@@ -32,7 +32,7 @@ var LabelCmds = base.LabelCmds[*hcloud.StorageBoxSubaccount]{
 	},
 
 	FetchWithArgs: func(s state.State, args []string) (*hcloud.StorageBoxSubaccount, error) {
-		storageBoxIDOrName := args[0]
+		storageBoxIDOrName, subaccountIDOrName := args[0], args[1]
 
 		storageBox, _, err := s.Client().StorageBox().Get(s, storageBoxIDOrName)
 		if err != nil {
@@ -42,9 +42,12 @@ var LabelCmds = base.LabelCmds[*hcloud.StorageBoxSubaccount]{
 			return nil, fmt.Errorf("Storage Box not found: %s", storageBoxIDOrName)
 		}
 
-		subaccount, _, err := s.Client().StorageBox().GetSubaccount(s, storageBox, args[1])
+		subaccount, _, err := s.Client().StorageBox().GetSubaccount(s, storageBox, subaccountIDOrName)
 		if err != nil {
 			return nil, err
+		}
+		if subaccount == nil {
+			return nil, fmt.Errorf("Storage Box Subaccount not found: %s", subaccountIDOrName)
 		}
 		return subaccount, nil
 	},
