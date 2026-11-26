@@ -20,7 +20,6 @@ type VNCSession struct {
 }
 
 func NewVNCSession(ctx context.Context, wsURL string, debugOut io.Writer) (*VNCSession, error) {
-	slog.Debug("dialing websocket")
 	ws, err := DialWebsocket(ctx, wsURL)
 	if err != nil {
 		return nil, err
