@@ -104,7 +104,7 @@ func forwardVNC(ctx context.Context, s state.State, cmd *cobra.Command, server *
 	if err != nil {
 		return err
 	}
-	if err := s.WaitForActions(ctx, cmd, result.Action); err != nil {
+	if err := s.Client().Action().WaitFor(ctx, result.Action); err != nil {
 		return err
 	}
 
