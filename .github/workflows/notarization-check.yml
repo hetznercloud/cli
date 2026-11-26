@@ -1,0 +1,35 @@
+name: Notarization check
+
+on:
+  pull_request:
+
+env:
+  GOTOOLCHAIN: local
+
+jobs:
+  notarize:
+#    if: >
+#      github.head_ref == 'releaser-pleaser--branches--main' &&
+#      github.event.pull_request.head.repo.full_name == 'hetznercloud/cli'
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+
+      - name: Set up tools
+        uses: jdx/mise-action@9b200bcecbfd6303e69a4a261b2e09e3757440a7 # v5
+        with:
+          version: 2026.11.12 # renovate: datasource=github-releases depName=jdx/mise
+
+      - name: Build darwin binary
+        run: GOOS=darwin GOARCH=arm64 go build -o hcloud ./cmd/hcloud
+
+      - name: Sign and notarize
+        run: quill sign-and-notarize hcloud
+        env:
+          QUILL_SIGN_P12: ${{ secrets.APPLE_CERTIFICATE_P12_FILE }}
+          QUILL_SIGN_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_P12_PASSWORD }}
+          QUILL_NOTARY_ISSUER: ${{ secrets.APPLE_NOTARY_ISSUER }}
+          QUILL_NOTARY_KEY_ID: ${{ secrets.APPLE_NOTARY_KEY_ID }}
+          QUILL_NOTARY_KEY: ${{ secrets.APPLE_NOTARY_KEY }}
