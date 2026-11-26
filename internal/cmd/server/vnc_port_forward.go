@@ -110,6 +110,10 @@ func forwardVNC(ctx context.Context, s state.State, cmd *cobra.Command, server *
 
 	ws, err := vncutil.DialWebsocket(ctx, result.WSSURL)
 	if err != nil {
+		if srv, _, getErr := s.Client().Server().GetByID(ctx, server.ID); getErr == nil &&
+			srv != nil && srv.Status != hcloud.ServerStatusRunning {
+			return fmt.Errorf("Server %d is not running (status: %s)", server.ID, srv.Status)
+		}
 		return err
 	}
 

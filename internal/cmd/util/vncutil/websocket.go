@@ -3,6 +3,7 @@ package vncutil
 import (
 	"context"
 	"errors"
+	"fmt"
 	"io"
 	"net"
 	"net/url"
@@ -32,7 +33,11 @@ func DialWebsocket(ctx context.Context, wsURL string) (*websocket.Conn, error) {
 
 	ws, err := cfg.DialContext(ctx)
 	if err != nil {
-		return nil, err
+		// unwrap *websocket.DialError to not leak connection token to stdout
+		if dialErr, ok := errors.AsType[*websocket.DialError](err); ok {
+			err = dialErr.Err
+		}
+		return nil, fmt.Errorf("could not connect to VNC console: %w", err)
 	}
 	ws.PayloadType = websocket.BinaryFrame
 
