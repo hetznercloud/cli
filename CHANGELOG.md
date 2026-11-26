@@ -1,5 +1,20 @@
 # Changelog
 
+## [v1.71.0](https://github.com/hetznercloud/cli/releases/tag/v1.71.0)
+
+[Compare to previous version](https://github.com/hetznercloud/cli/compare/v1.70.2...v1.71.0)
+
+### Features
+
+- **server**: add screenshot command (#1435) ([06903a4](https://github.com/hetznercloud/cli/commit/06903a44d9c18bcbe309fb8406e7c995cc270eb2))
+- **server**: allow forwarding VNC port locally (#1515) ([1e06c94](https://github.com/hetznercloud/cli/commit/1e06c94accc007196688181f9542b126b8d17300))
+
+### Bug Fixes
+
+- **output**: do not render empty output table (#1524) ([c9b04e2](https://github.com/hetznercloud/cli/commit/c9b04e23ca876d1f5b35f872f68b0957f2b7e5a8))
+- **storage-box**: missing nil check in snapshot label commands ([434b489](https://github.com/hetznercloud/cli/commit/434b489af612f8cb714600e795e05383ed1f15bf))
+- **storage-box**: implement missing subaccount label commands (#1553) ([db53edc](https://github.com/hetznercloud/cli/commit/db53edc18f03af2121108d16a4ece267fe8f9803))
+
 ## [v1.70.2](https://github.com/hetznercloud/cli/releases/tag/v1.70.2)
 
 [Compare to previous version](https://github.com/hetznercloud/cli/compare/v1.70.1...v1.70.2)
