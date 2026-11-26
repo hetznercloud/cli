@@ -32,7 +32,7 @@ var LabelCmds = base.LabelCmds[*hcloud.StorageBoxSnapshot]{
 	},
 
 	FetchWithArgs: func(s state.State, args []string) (*hcloud.StorageBoxSnapshot, error) {
-		storageBoxIDOrName := args[0]
+		storageBoxIDOrName, snapshotIDOrName := args[0], args[1]
 
 		storageBox, _, err := s.Client().StorageBox().Get(s, storageBoxIDOrName)
 		if err != nil {
@@ -42,9 +42,12 @@ var LabelCmds = base.LabelCmds[*hcloud.StorageBoxSnapshot]{
 			return nil, fmt.Errorf("Storage Box not found: %s", storageBoxIDOrName)
 		}
 
-		snapshot, _, err := s.Client().StorageBox().GetSnapshot(s, storageBox, args[1])
+		snapshot, _, err := s.Client().StorageBox().GetSnapshot(s, storageBox, snapshotIDOrName)
 		if err != nil {
 			return nil, err
+		}
+		if snapshot == nil {
+			return nil, fmt.Errorf("Storage Box Snapshot not found: %s", snapshotIDOrName)
 		}
 		return snapshot, nil
 	},
